@@ -1134,11 +1134,14 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
   const q = question
 
   // Handle questions with no options (broken data or unsupported format)
-  if (!q.options || Object.keys(q.options).length === 0) {
+  // Skip this check for matching/ordering questions that use available_options/available_steps
+  const hasMatchingData = q.type === 'matching' && q.available_options?.length > 0 && q.matches?.length > 0
+  const hasOrderingData = q.type === 'ordering' && q.available_steps?.length > 0 && q.ordered_steps?.length > 0
+  if (!hasMatchingData && !hasOrderingData && (!q.options || Object.keys(q.options).length === 0)) {
     return (
       <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200">
         <p className="font-medium">此題目格式不支援作答（可能為拖拉配對題或排序題，選項資料缺失）。</p>
-        {q.answer && <p className="mt-2">正確答案：<strong>{q.answer}</strong></p>}
+        {q.answer && <p className="mt-2">正確答案：<strong>{Array.isArray(q.answer) ? q.answer.join(', ') : q.answer}</strong></p>}
       </div>
     )
   }
