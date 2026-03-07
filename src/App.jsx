@@ -149,6 +149,8 @@ function reducer(state, action) {
       return {
         ...state,
         questions: merged,
+        practiceFiltered: merged,
+        practiceIndex: 0,
         uploadHistory: [...state.uploadHistory, {
           filename: action.filename,
           count: newQs.length,
