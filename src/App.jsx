@@ -340,14 +340,25 @@ function reducer(state, action) {
 
     case 'GOTO_PRACTICE_QUESTION': {
       const q = action.question
+      const questions = action.questions || [q]
+      const startIndex = action.startIndex ?? 0
+      const newAnswers = { ...state.practiceAnswers }
+      const newSubmitted = { ...state.practiceSubmitted }
+      const newResults = { ...state.practiceResults }
+      questions.forEach(qq => {
+        const k = `${qq.exam}-${qq.id}`
+        newAnswers[k] = undefined
+        newSubmitted[k] = false
+        newResults[k] = undefined
+      })
       return {
         ...state,
         activeTab: 'practice',
-        practiceFiltered: [q],
-        practiceIndex: 0,
-        practiceAnswers: { ...state.practiceAnswers, [`${q.exam}-${q.id}`]: undefined },
-        practiceSubmitted: { ...state.practiceSubmitted, [`${q.exam}-${q.id}`]: false },
-        practiceResults: { ...state.practiceResults, [`${q.exam}-${q.id}`]: undefined },
+        practiceFiltered: questions,
+        practiceIndex: startIndex,
+        practiceAnswers: newAnswers,
+        practiceSubmitted: newSubmitted,
+        practiceResults: newResults,
       }
     }
 
@@ -1862,16 +1873,25 @@ function StatsTab({ state, dispatch, examTypes }) {
 }
 
 function QuestionList({ items, dispatch }) {
+  const allQuestions = items.map(item => item.question)
   return (
     <div className="space-y-2">
-      {items.map(item => (
+      {items.length > 1 && (
+        <button
+          onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: allQuestions[0], questions: allQuestions, startIndex: 0 })}
+          className="w-full mb-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+        >
+          <Play size={14} /> 全部練習 ({items.length} 題)
+        </button>
+      )}
+      {items.map((item, idx) => (
         <div key={item.key} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium">{item.exam} #{item.id}</span>
             <span className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">{typeLabels[item.type]}</span>
           </div>
           <button
-            onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: item.question })}
+            onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: item.question, questions: allQuestions, startIndex: idx })}
             className="px-3 py-1 text-xs bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1"
           >
             <RotateCcw size={12} /> 重做
