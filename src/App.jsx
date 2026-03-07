@@ -1167,7 +1167,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
             }
             return (
               <div key={i} className={`p-3 rounded-lg border-2 ${borderClass}`}>
-                <p className="text-sm font-medium mb-2">{m.use_case}</p>
+                <p className="text-sm font-medium mb-2">{m.use_case || m.description}</p>
                 <select
                   value={selections[i] || ''}
                   onChange={e => {
