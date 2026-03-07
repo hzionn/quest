@@ -477,8 +477,8 @@ export default function App() {
         <header className="bg-[#232f3e] shadow-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
-              <BookOpen size={24} className="text-orange-400" />
-              <span>AWS <span className="text-orange-400">證照考試練習器</span></span>
+              <img src="/aws-logo.svg" alt="AWS" className="h-6 md:h-7" />
+              <span className="text-orange-400">證照考試練習器</span>
             </h1>
             <div className="flex items-center gap-2">
               {/* Nav tabs - desktop */}
