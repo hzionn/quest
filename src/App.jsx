@@ -472,17 +472,18 @@ export default function App() {
 
   return (
     <div className={rootClass}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-        {/* Header */}
-        <header className="bg-[#232f3e] shadow-md sticky top-0 z-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100">
+        {/* Header - Glassmorphism */}
+        <header className="glass-header bg-aws-dark/95 dark:bg-aws-darker/95 shadow-lg sticky top-0 z-50 border-b border-white/5">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+            <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2.5">
               <img src="/aws-logo.svg" alt="AWS" className="h-6 md:h-7" />
-              <span className="text-orange-400">證照考試練習器</span>
+              <span className="hidden sm:inline text-orange-400 tracking-tight">證照考試練習器</span>
+              <span className="sm:hidden text-orange-400 tracking-tight">考試練習</span>
             </h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {/* Nav tabs - desktop */}
-              <nav className="hidden md:flex gap-1">
+              <nav className="hidden md:flex gap-0.5 bg-white/5 rounded-xl p-1">
                 {[
                   { key: 'upload', label: '上傳題庫', icon: Upload },
                   { key: 'practice', label: '練習模式', icon: BookOpen },
@@ -492,10 +493,10 @@ export default function App() {
                   <button
                     key={t.key}
                     onClick={() => dispatch({ type: 'SET_TAB', tab: t.key })}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors ${
+                    className={`tab-indicator px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-all duration-200 ${
                       state.activeTab === t.key
-                        ? 'bg-[#37475a] text-orange-400'
-                        : 'hover:bg-[#37475a] text-gray-300'
+                        ? 'active bg-white/10 text-orange-400 shadow-sm'
+                        : 'hover:bg-white/5 text-gray-400 hover:text-gray-200'
                     }`}
                   >
                     <t.icon size={16} />
@@ -503,17 +504,20 @@ export default function App() {
                   </button>
                 ))}
               </nav>
+              <div className="w-px h-6 bg-white/10 mx-1 hidden md:block" />
               <button
                 onClick={() => dispatch({ type: 'TOGGLE_DARK' })}
-                className="p-2 rounded-lg hover:bg-[#37475a] text-gray-300 transition-colors"
+                className="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-orange-400 transition-all duration-200"
                 title={state.darkMode ? '切換淺色模式' : '切換深色模式'}
               >
-                {state.darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                <span key={state.darkMode ? 'sun' : 'moon'} className="block animate-rotate-in">
+                  {state.darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </span>
               </button>
             </div>
           </div>
           {/* Nav tabs - mobile */}
-          <nav className="flex md:hidden border-t border-[#37475a]">
+          <nav className="flex md:hidden border-t border-white/5">
             {[
               { key: 'upload', label: '上傳', icon: Upload },
               { key: 'practice', label: '練習', icon: BookOpen },
@@ -523,25 +527,30 @@ export default function App() {
               <button
                 key={t.key}
                 onClick={() => dispatch({ type: 'SET_TAB', tab: t.key })}
-                className={`flex-1 py-2 text-xs font-medium flex flex-col items-center gap-0.5 transition-colors ${
+                className={`flex-1 py-2.5 text-xs font-medium flex flex-col items-center gap-1 transition-all duration-200 relative ${
                   state.activeTab === t.key
-                    ? 'text-orange-400 bg-[#37475a]'
-                    : 'text-gray-400 hover:text-gray-300'
+                    ? 'text-orange-400'
+                    : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
-                <t.icon size={18} />
+                <t.icon size={18} className={state.activeTab === t.key ? 'scale-110' : ''} style={{ transition: 'transform 200ms' }} />
                 {t.label}
+                {state.activeTab === t.key && (
+                  <span className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-orange-400 rounded-full" />
+                )}
               </button>
             ))}
           </nav>
         </header>
 
         {/* Content */}
-        <main className="max-w-5xl mx-auto px-4 py-6">
-          {state.activeTab === 'upload' && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
-          {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-          {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-          {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} />}
+        <main className="max-w-5xl mx-auto px-4 py-8">
+          <div className="animate-fade-in" key={state.activeTab}>
+            {state.activeTab === 'upload' && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
+            {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} />}
+          </div>
         </main>
       </div>
     </div>
@@ -669,31 +678,33 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
   return (
     <div className="space-y-6">
       {/* GitHub Token Config */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <Github size={20} className="text-gray-700 dark:text-gray-300" />
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 card-hover">
+        <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
+            <Github size={18} className="text-gray-700 dark:text-gray-300" />
+          </div>
           GitHub 連結設定
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 ml-10">
           設定 GitHub Token 後，上傳的題庫會自動存到 GitHub，任何裝置開啟都能使用
         </p>
         {tokenSaved ? (
           <div className="flex items-center gap-3">
-            <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
               <CheckCircle size={16} className="text-green-500" />
-              <span className="text-sm text-green-700 dark:text-green-400">GitHub Token 已設定</span>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">GitHub Token 已設定</span>
             </div>
             <button
               onClick={() => reloadFromGitHub()}
               disabled={state.githubLoading}
-              className="p-2 text-gray-500 hover:text-orange-500 transition-colors disabled:opacity-50"
+              className="p-2.5 rounded-xl text-gray-500 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 disabled:opacity-50"
               title="重新同步"
             >
               <RefreshCw size={18} className={state.githubLoading ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={clearToken}
-              className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+              className="p-2.5 rounded-xl text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
               title="移除 Token"
             >
               <XCircle size={18} />
@@ -709,11 +720,11 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                   placeholder="ghp_xxxxxxxxxxxx"
-                  className="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                  className="w-full pl-9 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
                 />
                 <button
                   onClick={() => setShowToken(!showToken)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showToken ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -721,7 +732,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
               <button
                 onClick={saveToken}
                 disabled={!token.trim()}
-                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-sm hover:shadow"
               >
                 儲存
               </button>
@@ -732,7 +743,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
           </div>
         )}
         {state.githubError && (
-          <div className="mt-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="mt-3 px-4 py-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl animate-fade-in">
             <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
               <AlertCircle size={14} />
               {state.githubError}
@@ -743,21 +754,27 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* GitHub stored banks */}
       {tokenSaved && state.githubBanks.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <Database size={20} className="text-orange-500" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 card-hover">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/30">
+              <Database size={18} className="text-orange-500" />
+            </div>
             GitHub 題庫檔案
           </h3>
-          <div className="space-y-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {state.githubBanks.map((bank, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                <FileJson size={16} className="text-orange-500 shrink-0" />
-                <span className="font-medium">{bank.name}</span>
-                <span className="text-gray-500 dark:text-gray-400">{bank.count} 題</span>
+              <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-700 bg-gray-50/50 dark:bg-gray-750 transition-all duration-200 group">
+                <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
+                  <FileJson size={16} className="text-orange-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{bank.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{bank.count} 題</p>
+                </div>
                 <button
                   onClick={() => handleDeleteBank(bank)}
                   disabled={state.githubSyncing}
-                  className="ml-auto p-1 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 opacity-0 group-hover:opacity-100 disabled:opacity-50"
                   title="從 GitHub 刪除"
                 >
                   <Trash2 size={14} />
@@ -768,16 +785,19 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
         </div>
       )}
 
-      {/* Upload area */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-            <Upload size={32} className="text-orange-600 dark:text-orange-400" />
+      {/* Upload area - with dashed border */}
+      <div
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-orange-400 dark:hover:border-orange-600 p-10 text-center transition-all duration-300 cursor-pointer group"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <div className="flex flex-col items-center gap-5">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-orange-900/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <Upload size={36} className="text-orange-500 dark:text-orange-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">上傳 JSON 題庫</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {tokenSaved ? '上傳後自動存到 GitHub，所有裝置都能使用' : '設定 GitHub Token 後可永久保存題庫'}
+            <h2 className="text-xl font-semibold">上傳 JSON 題庫</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              {tokenSaved ? '上傳後自動存到 GitHub，所有裝置都能使用' : '點擊選擇檔案或設定 GitHub Token 永久保存'}
             </p>
           </div>
           <input
@@ -788,9 +808,9 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
             className="hidden"
           />
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}
             disabled={state.githubSyncing}
-            className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+            className="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-orange-300 disabled:to-orange-300 text-white rounded-xl font-medium flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
           >
             {state.githubSyncing ? (
               <><RefreshCw size={18} className="animate-spin" /> 同步中...</>
@@ -803,35 +823,45 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* Stats */}
       {state.questions.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <CheckCircle size={20} className="text-green-500" />
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+          <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-green-50 dark:bg-green-900/30">
+              <CheckCircle size={18} className="text-green-500" />
+            </div>
             題庫統計
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <StatCard label="總題數" value={state.questions.length} />
-            <StatCard label="科別數" value={examTypes.length} />
-            <StatCard label="上傳次數" value={state.uploadHistory.length} />
-            <StatCard label="題型數" value={Object.keys(stats.byType).length} />
+            <StatCard label="總題數" value={state.questions.length} icon={Database} />
+            <StatCard label="科別數" value={examTypes.length} icon={ListChecks} />
+            <StatCard label="上傳次數" value={state.uploadHistory.length} icon={Upload} />
+            <StatCard label="題型數" value={Object.keys(stats.byType).length} icon={Shuffle} />
           </div>
 
           {/* By exam */}
-          <h4 className="font-medium mb-2 text-sm text-gray-500 dark:text-gray-400">各科別統計</h4>
-          <div className="overflow-x-auto mb-4">
+          <h4 className="font-medium mb-3 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+            <Target size={14} />
+            各科別統計
+          </h4>
+          <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200 dark:border-gray-700">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-2 px-3">科別</th>
-                  <th className="text-left py-2 px-3">題數</th>
-                  <th className="text-left py-2 px-3">題號範圍</th>
+                <tr className="bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">科別</th>
+                  <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">題數</th>
+                  <th className="text-left py-2.5 px-4 font-medium text-gray-600 dark:text-gray-400">題號範圍</th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(stats.byExam).map(([exam, count]) => (
-                  <tr key={exam} className="border-b border-gray-100 dark:border-gray-700/50">
-                    <td className="py-2 px-3 font-medium">{exam}</td>
-                    <td className="py-2 px-3">{count}</td>
-                    <td className="py-2 px-3">{stats.ranges[exam]?.min} ~ {stats.ranges[exam]?.max}</td>
+                  <tr key={exam} className="border-b border-gray-100 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-750/50 transition-colors">
+                    <td className="py-2.5 px-4 font-medium">{exam}</td>
+                    <td className="py-2.5 px-4">
+                      <span className="inline-flex items-center gap-2">
+                        {count}
+                        <span className="inline-block h-1.5 rounded-full bg-orange-400" style={{ width: `${Math.min(count / 2, 60)}px` }} />
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400">{stats.ranges[exam]?.min} ~ {stats.ranges[exam]?.max}</td>
                   </tr>
                 ))}
               </tbody>
@@ -839,11 +869,14 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
           </div>
 
           {/* By type */}
-          <h4 className="font-medium mb-2 text-sm text-gray-500 dark:text-gray-400">各題型統計</h4>
-          <div className="flex flex-wrap gap-3">
+          <h4 className="font-medium mb-3 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+            <Shuffle size={14} />
+            各題型統計
+          </h4>
+          <div className="flex flex-wrap gap-2">
             {Object.entries(stats.byType).map(([type, count]) => (
-              <span key={type} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
-                {typeLabels[type] || type}: {count}
+              <span key={type} className="px-3.5 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600">
+                {typeLabels[type] || type}: <span className="text-orange-500">{count}</span>
               </span>
             ))}
           </div>
@@ -852,15 +885,22 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* Upload history */}
       {state.uploadHistory.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold mb-4">上傳紀錄</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
+              <Clock size={18} className="text-gray-500" />
+            </div>
+            上傳紀錄
+          </h3>
           <div className="space-y-2">
             {state.uploadHistory.map((h, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                <FileJson size={16} className="text-orange-500 shrink-0" />
+              <div key={i} className="flex items-center gap-3 text-sm p-3 rounded-xl border border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                <div className="p-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/20">
+                  <FileJson size={14} className="text-orange-500" />
+                </div>
                 <span className="font-medium truncate">{h.filename}</span>
-                <span className="text-gray-500 dark:text-gray-400">{h.count} 題</span>
-                <span className="text-gray-400 dark:text-gray-500 text-xs ml-auto">
+                <span className="text-gray-500 dark:text-gray-400 shrink-0">{h.count} 題</span>
+                <span className="text-gray-400 dark:text-gray-500 text-xs ml-auto shrink-0">
                   {new Date(h.timestamp).toLocaleTimeString('zh-TW')}
                 </span>
               </div>
@@ -872,11 +912,12 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
   )
 }
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, icon: Icon }) {
   return (
-    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 text-center">
-      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{value}</div>
-      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{label}</div>
+    <div className="stat-card bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-600/50">
+      {Icon && <Icon size={16} className="mx-auto mb-1.5 text-gray-400 dark:text-gray-500" />}
+      <div className="text-2xl font-bold gradient-text animate-count">{value}</div>
+      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</div>
     </div>
   )
 }
@@ -904,101 +945,125 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     )
   }
 
+  // Calculate progress
+  const answeredCount = practiceFiltered.filter((q) => practiceSubmitted[`${q.exam}-${q.id}`]).length
+  const progressPct = practiceFiltered.length > 0 ? Math.round((answeredCount / practiceFiltered.length) * 100) : 0
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <FilterBar state={state} dispatch={dispatch} examTypes={examTypes} showStart />
+
+      {/* Progress bar */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
+          <span className="text-xs font-bold text-orange-500">{answeredCount} / {practiceFiltered.length} ({progressPct}%)</span>
+        </div>
+        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="progress-bar h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${progressPct}%` }} />
+        </div>
+      </div>
 
       {/* Question card */}
       {currentQ && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          {/* Question header */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded text-xs font-medium">{currentQ.exam}</span>
-              <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded text-xs font-medium">{typeLabels[currentQ.type]}</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">#{currentQ.id}</span>
-              <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => dispatch({ type: 'TOGGLE_BOOKMARK', qKey })}
-                className={`p-1.5 rounded transition-colors ${bookmarked[qKey] ? 'text-yellow-500' : 'text-gray-400 hover:text-yellow-500'}`}
-                title="書籤"
-              >
-                <Star size={18} fill={bookmarked[qKey] ? 'currentColor' : 'none'} />
-              </button>
-              <button
-                onClick={() => dispatch({ type: 'TOGGLE_REVIEW', qKey })}
-                className={`p-1.5 rounded transition-colors ${reviewMarked[qKey] ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500'}`}
-                title="標記複習"
-              >
-                <Flag size={18} fill={reviewMarked[qKey] ? 'currentColor' : 'none'} />
-              </button>
-            </div>
-          </div>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden animate-fade-in" key={qKey}>
+          {/* Color accent bar based on exam type */}
+          <div className="h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
 
-          {/* Question text */}
-          <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{currentQ.question}</p>
-
-          {/* Answer area */}
-          <QuestionInput
-            question={currentQ}
-            answer={practiceAnswers[qKey]}
-            submitted={isSubmitted}
-            onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
-          />
-
-          {/* Submit button - show for questions with options, or matching/ordering with proper data */}
-          {!isSubmitted && (
-            (currentQ.options && Object.keys(currentQ.options).length > 0) ||
-            (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
-            (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
-          ) && (
-            <button
-              onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQ })}
-              disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
-              className="mt-4 px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
-            >
-              提交答案
-            </button>
-          )}
-
-          {/* Result */}
-          {isSubmitted && (
-            <div className={`mt-4 p-4 rounded-lg ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
-              <div className="flex items-center gap-2 mb-3">
-                {isCorrect
-                  ? <><CheckCircle size={20} className="text-green-600 dark:text-green-400" /><span className="font-semibold text-green-700 dark:text-green-400">正確！</span></>
-                  : <><XCircle size={20} className="text-red-600 dark:text-red-400" /><span className="font-semibold text-red-700 dark:text-red-400">錯誤</span></>
-                }
+          <div className="p-6 md:p-8">
+            {/* Question header */}
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{currentQ.exam}</span>
+                <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
               </div>
-              <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={() => dispatch({ type: 'TOGGLE_BOOKMARK', qKey })}
+                  className={`p-2 rounded-xl transition-all duration-200 ${bookmarked[qKey] ? 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'}`}
+                  title="書籤"
+                >
+                  <Star size={18} fill={bookmarked[qKey] ? 'currentColor' : 'none'} />
+                </button>
+                <button
+                  onClick={() => dispatch({ type: 'TOGGLE_REVIEW', qKey })}
+                  className={`p-2 rounded-xl transition-all duration-200 ${reviewMarked[qKey] ? 'text-orange-500 bg-orange-50 dark:bg-orange-900/20' : 'text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20'}`}
+                  title="標記複習"
+                >
+                  <Flag size={18} fill={reviewMarked[qKey] ? 'currentColor' : 'none'} />
+                </button>
+              </div>
             </div>
-          )}
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button
-              onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
-              disabled={practiceIndex === 0}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm transition-colors"
-            >
-              <ChevronLeft size={16} /> 上一題
-            </button>
-            <button
-              onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
-              disabled={practiceIndex >= practiceFiltered.length - 1}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm transition-colors"
-            >
-              下一題 <ChevronRight size={16} />
-            </button>
+            {/* Question text */}
+            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{currentQ.question}</p>
+
+            {/* Answer area */}
+            <QuestionInput
+              question={currentQ}
+              answer={practiceAnswers[qKey]}
+              submitted={isSubmitted}
+              onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
+            />
+
+            {/* Submit button - show for questions with options, or matching/ordering with proper data */}
+            {!isSubmitted && (
+              (currentQ.options && Object.keys(currentQ.options).length > 0) ||
+              (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
+              (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
+            ) && (
+              <button
+                onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQ })}
+                disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
+                className={`mt-5 px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
+              >
+                <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
+                提交答案
+              </button>
+            )}
+
+            {/* Result */}
+            {isSubmitted && (
+              <div className={`mt-5 p-5 rounded-xl animate-scale-in ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
+                <div className="flex items-center gap-2 mb-3">
+                  {isCorrect
+                    ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
+                    : <><XCircle size={22} className="text-red-600 dark:text-red-400" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
+                  }
+                </div>
+                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
+              </div>
+            )}
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+                disabled={practiceIndex === 0}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <ChevronLeft size={16} /> 上一題
+              </button>
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+                disabled={practiceIndex >= practiceFiltered.length - 1}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                下一題 <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Navigation bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">題目導覽</h4>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
+        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-1.5">
+          <ListChecks size={14} />
+          題目導覽
+        </h4>
         <div className="flex flex-wrap gap-1.5">
           {practiceFiltered.map((q, i) => {
             const k = `${q.exam}-${q.id}`
@@ -1007,7 +1072,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             const isBookmarked = bookmarked[k]
             const isReview = reviewMarked[k]
             const isCurrent = i === practiceIndex
-            let bgClass = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+            let bgClass = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
             if (submitted) {
               bgClass = correct
                 ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400'
@@ -1017,10 +1082,10 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               <button
                 key={k}
                 onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: i })}
-                className={`relative w-9 h-9 rounded-lg text-xs font-medium transition-all ${bgClass} ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-1 dark:ring-offset-gray-800' : ''} ${isBookmarked ? 'border-2 border-yellow-400' : ''}`}
+                className={`relative w-9 h-9 rounded-lg text-xs font-bold transition-all duration-200 ${bgClass} ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-gray-800 scale-110' : ''} ${isBookmarked ? 'border-2 border-yellow-400' : ''}`}
               >
                 {q.id}
-                {isReview && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-500 rounded-full" />}
+                {isReview && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white dark:ring-gray-800" />}
               </button>
             )
           })}
@@ -1035,27 +1100,27 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 // ══════════════════════════════════════════
 function FilterBar({ state, dispatch, examTypes, showStart }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-[140px]">
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            <Filter size={12} className="inline mr-1" />科別
+          <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
+            <Filter size={12} />科別
           </label>
           <select
             value={state.filterExam}
             onChange={e => dispatch({ type: 'SET_FILTER', key: 'filterExam', value: e.target.value })}
-            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
             {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
           </select>
         </div>
         <div className="flex-1 min-w-[140px]">
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">題型</label>
+          <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">題型</label>
           <select
             value={state.filterType}
             onChange={e => dispatch({ type: 'SET_FILTER', key: 'filterType', value: e.target.value })}
-            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
             <option value="single">單選題</option>
@@ -1065,21 +1130,21 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
           </select>
         </div>
         <div className="flex-1 min-w-[120px]">
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            <Search size={12} className="inline mr-1" />題號
+          <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
+            <Search size={12} />題號
           </label>
           <input
             type="text"
             value={state.filterSearch}
             onChange={e => dispatch({ type: 'SET_FILTER', key: 'filterSearch', value: e.target.value })}
             placeholder="搜尋題號..."
-            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           />
         </div>
         {showStart && (
           <button
             onClick={() => dispatch({ type: 'START_PRACTICE' })}
-            className="px-4 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+            className="px-5 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow"
           >
             <Play size={14} /> 開始練習
           </button>
@@ -1152,20 +1217,21 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
 
   if (q.type === 'single') {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {Object.entries(q.options).map(([key, text]) => {
           const selected = answer === key
-          let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+          let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-sm'
+          let accentClass = ''
           if (submitted && !examMode) {
-            if (key === q.answer) optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'
-            else if (selected && key !== q.answer) optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            if (key === q.answer) { optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'; accentClass = 'correct' }
+            else if (selected && key !== q.answer) { optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'; accentClass = 'incorrect' }
           } else if (selected) {
-            optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+            optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 shadow-sm'; accentClass = 'selected'
           }
           return (
             <label
               key={key}
-              className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
+              className={`option-accent ${accentClass} flex items-start gap-3 p-3.5 pl-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
             >
               <input
                 type="radio"
@@ -1173,7 +1239,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                 checked={selected}
                 onChange={() => !submitted && onAnswer(key)}
                 disabled={submitted && !examMode}
-                className="mt-0.5 accent-orange-600"
+                className="mt-0.5 accent-orange-500"
               />
               <OptionText label={key} text={text} />
             </label>
@@ -1187,24 +1253,26 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
     const selected = Array.isArray(answer) ? answer : []
     const needed = Array.isArray(q.answer) ? q.answer.length : 0
     return (
-      <div className="space-y-2">
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-          <AlertCircle size={14} className="inline mr-1" />
-          請選擇 {needed} 個選項
+      <div className="space-y-2.5">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
+          <AlertCircle size={14} className="text-blue-500 shrink-0" />
+          請選擇 <span className="font-bold text-blue-600 dark:text-blue-400">{needed}</span> 個選項
+          {selected.length > 0 && <span className="ml-auto text-xs font-medium">已選 {selected.length}/{needed}</span>}
         </p>
         {Object.entries(q.options).map(([key, text]) => {
           const checked = selected.includes(key)
-          let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+          let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600 hover:shadow-sm'
+          let accentClass = ''
           if (submitted && !examMode) {
-            if (q.answer.includes(key)) optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'
-            else if (checked && !q.answer.includes(key)) optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            if (q.answer.includes(key)) { optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'; accentClass = 'correct' }
+            else if (checked && !q.answer.includes(key)) { optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'; accentClass = 'incorrect' }
           } else if (checked) {
-            optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+            optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 shadow-sm'; accentClass = 'selected'
           }
           return (
             <label
               key={key}
-              className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
+              className={`option-accent ${accentClass} flex items-start gap-3 p-3.5 pl-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
             >
               <input
                 type="checkbox"
@@ -1215,7 +1283,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   onAnswer(newSel)
                 }}
                 disabled={submitted && !examMode}
-                className="mt-0.5 accent-orange-600"
+                className="mt-0.5 accent-orange-500"
               />
               <OptionText label={key} text={text} />
             </label>
@@ -1233,14 +1301,14 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
         <div className="space-y-3">
           {q.matches.map((m, i) => {
             let borderClass = 'border-gray-200 dark:border-gray-700'
+            let accentClass = ''
             if (submitted && !examMode) {
-              borderClass = selections[i] === m.correct_answer
-                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                : 'border-red-500 bg-red-50 dark:bg-red-900/20'
+              if (selections[i] === m.correct_answer) { borderClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'; accentClass = 'correct' }
+              else { borderClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'; accentClass = 'incorrect' }
             }
             return (
-              <div key={i} className={`p-3 rounded-lg border-2 ${borderClass}`}>
-                <p className="text-sm font-medium mb-2">{m.use_case || m.description}</p>
+              <div key={i} className={`option-accent ${accentClass} p-4 pl-5 rounded-xl border-2 transition-all duration-200 ${borderClass}`}>
+                <p className="text-sm font-medium mb-2.5">{m.use_case || m.description}</p>
                 <select
                   value={selections[i] || ''}
                   onChange={e => {
@@ -1250,7 +1318,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                     onAnswer(newSel)
                   }}
                   disabled={submitted && !examMode}
-                  className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
                 >
                   <option value="">-- 請選擇 --</option>
                   {q.available_options.map(opt => (
@@ -1258,7 +1326,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   ))}
                 </select>
                 {submitted && !examMode && selections[i] !== m.correct_answer && (
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">正確答案：{m.correct_answer}</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1"><CheckCircle size={12} />正確答案：{m.correct_answer}</p>
                 )}
               </div>
             )
@@ -1567,53 +1635,59 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
         {state.questions.length === 0 ? (
           <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 max-w-lg mx-auto">
-            <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-              <Clock size={20} />
-              模擬考設定
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">題數</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={state.questions.length}
-                  value={state.examConfig.count}
-                  onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { count: parseInt(e.target.value) || 1 } })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">可用題數：{state.questions.length}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden max-w-lg mx-auto animate-slide-up">
+            <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500" />
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-orange-900/10 flex items-center justify-center mx-auto mb-4">
+                  <Clock size={32} className="text-orange-500" />
+                </div>
+                <h2 className="text-xl font-bold">模擬考設定</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">設定考試參數後開始挑戰</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">時間限制（分鐘）</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={300}
-                  value={state.examConfig.timeLimit}
-                  onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { timeLimit: parseInt(e.target.value) || 1 } })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">科別篩選</label>
-                <select
-                  value={state.examConfig.examFilter}
-                  onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { examFilter: e.target.value } })}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">題數</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={state.questions.length}
+                    value={state.examConfig.count}
+                    onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { count: parseInt(e.target.value) || 1 } })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">可用題數：{state.questions.length}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">時間限制（分鐘）</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={300}
+                    value={state.examConfig.timeLimit}
+                    onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { timeLimit: parseInt(e.target.value) || 1 } })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">科別篩選</label>
+                  <select
+                    value={state.examConfig.examFilter}
+                    onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { examFilter: e.target.value } })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
+                  >
+                    <option value="">全部科別</option>
+                    {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
+                  </select>
+                </div>
+                <button
+                  onClick={() => dispatch({ type: 'START_EXAM' })}
+                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg text-base"
                 >
-                  <option value="">全部科別</option>
-                  {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
-                </select>
+                  <Play size={20} />
+                  開始考試
+                </button>
               </div>
-              <button
-                onClick={() => dispatch({ type: 'START_EXAM' })}
-                className="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
-              >
-                <Play size={18} />
-                開始考試
-              </button>
             </div>
           </div>
         )}
@@ -1625,37 +1699,52 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   if (state.examSubmitted && state.examResults) {
     const r = state.examResults
     const pct = r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0
+    const passed = pct >= 70
     return (
-      <div className="space-y-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center">
-          <Trophy size={48} className={`mx-auto mb-4 ${pct >= 70 ? 'text-yellow-500' : 'text-gray-400'}`} />
-          <h2 className="text-2xl font-bold mb-2">考試結果</h2>
-          <div className="text-5xl font-bold mb-2">
-            <span className={pct >= 70 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>{pct}%</span>
-          </div>
-          <p className="text-gray-500 dark:text-gray-400">{r.correct} / {r.total} 題正確</p>
+      <div className="space-y-6 animate-slide-up">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
+          <div className={`h-1.5 ${passed ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-red-400 to-red-500'}`} />
+          <div className="p-8 text-center">
+            <div className={`w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center ${passed ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-100 dark:bg-gray-700'}`}>
+              <Trophy size={40} className={`animate-count ${passed ? 'text-yellow-500' : 'text-gray-400'}`} />
+            </div>
+            <h2 className="text-2xl font-bold mb-3">考試結果</h2>
+            <div className="text-6xl font-extrabold mb-3 animate-count">
+              <span className={passed ? 'gradient-text' : 'text-red-600 dark:text-red-400'}>{pct}%</span>
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">{r.correct} / {r.total} 題正確</p>
+            <p className={`text-sm font-semibold mt-2 ${passed ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>
+              {passed ? '恭喜通過！' : '繼續加油，再接再厲！'}
+            </p>
 
-          {/* Type breakdown */}
-          <div className="flex flex-wrap justify-center gap-3 mt-4">
-            {Object.entries(r.typeStats).map(([type, s]) => (
-              <span key={type} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
-                {typeLabels[type]}: {s.correct}/{s.total} ({s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0}%)
-              </span>
-            ))}
-          </div>
+            {/* Type breakdown */}
+            <div className="flex flex-wrap justify-center gap-2 mt-5">
+              {Object.entries(r.typeStats).map(([type, s]) => {
+                const typePct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0
+                return (
+                  <span key={type} className="px-3.5 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-xl text-sm font-medium border border-gray-200 dark:border-gray-600">
+                    {typeLabels[type]}: <span className={typePct >= 70 ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>{s.correct}/{s.total}</span>
+                  </span>
+                )
+              })}
+            </div>
 
-          <button
-            onClick={() => dispatch({ type: 'SET_EXAM_CONFIG', config: {} }) || dispatch({ type: 'SET_TAB', tab: 'exam' })}
-            className="mt-6 px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium inline-flex items-center gap-2 transition-colors"
-          >
-            <RotateCcw size={16} /> 再考一次
-          </button>
+            <button
+              onClick={() => dispatch({ type: 'SET_EXAM_CONFIG', config: {} }) || dispatch({ type: 'SET_TAB', tab: 'exam' })}
+              className="mt-8 px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold inline-flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <RotateCcw size={16} /> 再考一次
+            </button>
+          </div>
         </div>
 
         {/* Detail review */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold mb-4">逐題檢視</h3>
-          <div className="space-y-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <ListChecks size={18} />
+            逐題檢視
+          </h3>
+          <div className="space-y-3">
             {r.details.map((d, i) => (
               <ExamReviewItem key={d.qKey} detail={d} index={i} examAnswers={state.examAnswers} />
             ))}
@@ -1671,69 +1760,90 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   const minutes = Math.floor(state.examRemaining / 60)
   const seconds = state.examRemaining % 60
 
+  const examAnsweredCount = state.examQuestionIds.filter(qk => state.examAnswers[qk] !== undefined).length
+  const examProgressPct = state.examQuestionIds.length > 0 ? Math.round((examAnsweredCount / state.examQuestionIds.length) * 100) : 0
+  const totalSeconds = (state.examConfig?.timeLimit || 60) * 60
+  const timerPct = totalSeconds > 0 ? Math.max(0, (state.examRemaining / totalSeconds) * 100) : 100
+
   return (
     <div className="space-y-4">
       {/* Timer bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between">
-        <span className="text-sm font-medium">
-          題目 {state.examIndex + 1} / {state.examQuestionIds.length}
-        </span>
-        <div className={`flex items-center gap-2 font-mono text-lg font-bold ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400' : ''}`}>
-          <Clock size={18} />
-          {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold">
+            題目 {state.examIndex + 1} / {state.examQuestionIds.length}
+            <span className="text-xs text-gray-400 ml-2">已答 {examAnsweredCount} 題</span>
+          </span>
+          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : ''}`}>
+            <Clock size={18} />
+            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+          </div>
+        </div>
+        <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="progress-bar h-full rounded-full" style={{ width: `${timerPct}%`, background: state.examRemaining < 300 ? 'linear-gradient(90deg, #ef4444, #f87171)' : 'linear-gradient(90deg, #ff9900, #ec7211)' }} />
         </div>
       </div>
 
       {/* Question */}
       {examQ && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded text-xs font-medium">{examQ.exam}</span>
-            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded text-xs font-medium">{typeLabels[examQ.type]}</span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">#{examQ.id}</span>
-          </div>
-          <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{examQ.question}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
+          <div className="p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-5">
+              <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{examQ.exam}</span>
+              <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
+              <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
+            </div>
+            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{examQ.question}</p>
 
-          <QuestionInput
-            question={examQ}
-            answer={state.examAnswers[examQKey]}
-            submitted={false}
-            onAnswer={(ans) => dispatch({ type: 'SET_EXAM_ANSWER', qKey: examQKey, answer: ans })}
-            examMode
-          />
+            <QuestionInput
+              question={examQ}
+              answer={state.examAnswers[examQKey]}
+              submitted={false}
+              onAnswer={(ans) => dispatch({ type: 'SET_EXAM_ANSWER', qKey: examQKey, answer: ans })}
+              examMode
+            />
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button
-              onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 })}
-              disabled={state.examIndex === 0}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm transition-colors"
-            >
-              <ChevronLeft size={16} /> 上一題
-            </button>
-            <button
-              onClick={() => {
-                if (confirm('確定要交卷嗎？未作答的題目將視為錯誤。')) {
-                  dispatch({ type: 'SUBMIT_EXAM' })
-                }
-              }}
-              className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors flex items-center gap-1"
-            >
-              <Square size={14} /> 交卷
-            </button>
-            <button
-              onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 })}
-              disabled={state.examIndex >= state.examQuestionIds.length - 1}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 text-sm transition-colors"
-            >
-              下一題 <ChevronRight size={16} />
-            </button>
+            {/* Navigation */}
+            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 })}
+                disabled={state.examIndex === 0}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <ChevronLeft size={16} /> 上一題
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm('確定要交卷嗎？未作答的題目將視為錯誤。')) {
+                    dispatch({ type: 'SUBMIT_EXAM' })
+                  }
+                }}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm"
+              >
+                <Square size={14} /> 交卷
+              </button>
+              <button
+                onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 })}
+                disabled={state.examIndex >= state.examQuestionIds.length - 1}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                下一題 <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Exam navigation bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
+          <span className="text-xs font-bold text-orange-500">{examProgressPct}%</span>
+        </div>
+        <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-3">
+          <div className="progress-bar h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${examProgressPct}%` }} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {state.examQuestionIds.map((qk, i) => {
             const answered = state.examAnswers[qk] !== undefined
@@ -1742,11 +1852,11 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <button
                 key={qk}
                 onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: i })}
-                className={`w-9 h-9 rounded-lg text-xs font-medium transition-all ${
+                className={`w-9 h-9 rounded-lg text-xs font-bold transition-all duration-200 ${
                   answered
                     ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                } ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-1 dark:ring-offset-gray-800' : ''}`}
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                } ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-gray-800 scale-110' : ''}`}
               >
                 {i + 1}
               </button>
@@ -1761,20 +1871,20 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
 function ExamReviewItem({ detail, index, examAnswers }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <div className={`border-2 rounded-lg p-3 ${detail.correct ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'}`}>
-      <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center justify-between text-left">
-        <div className="flex items-center gap-2">
+    <div className={`border-2 rounded-xl overflow-hidden transition-all duration-200 ${detail.correct ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'} ${expanded ? 'shadow-md' : ''}`}>
+      <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center justify-between text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+        <div className="flex items-center gap-2.5">
           {detail.correct
-            ? <CheckCircle size={16} className="text-green-600 dark:text-green-400 shrink-0" />
-            : <XCircle size={16} className="text-red-600 dark:text-red-400 shrink-0" />
+            ? <CheckCircle size={18} className="text-green-600 dark:text-green-400 shrink-0" />
+            : <XCircle size={18} className="text-red-600 dark:text-red-400 shrink-0" />
           }
-          <span className="text-sm font-medium">第 {index + 1} 題 — {detail.question.exam} #{detail.question.id}</span>
-          <span className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">{typeLabels[detail.question.type]}</span>
+          <span className="text-sm font-semibold">第 {index + 1} 題 — {detail.question.exam} #{detail.question.id}</span>
+          <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium">{typeLabels[detail.question.type]}</span>
         </div>
-        <ChevronRight size={16} className={`transition-transform ${expanded ? 'rotate-90' : ''}`} />
+        <ChevronRight size={16} className={`transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} />
       </button>
       {expanded && (
-        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-700 animate-fade-in">
           <p className="text-sm mb-3 whitespace-pre-wrap">{detail.question.question}</p>
           <QuestionInput
             question={detail.question}
@@ -1835,64 +1945,77 @@ function StatsTab({ state, dispatch, examTypes }) {
     <div className="space-y-6">
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="已作答" value={totalAnswered} />
-        <StatCard label="答對" value={totalCorrect} />
-        <StatCard label="正確率" value={`${overallAccuracy}%`} />
-        <StatCard label="錯題數" value={wrongQuestions.length} />
+        <StatCard label="已作答" value={totalAnswered} icon={CheckCircle} />
+        <StatCard label="答對" value={totalCorrect} icon={Trophy} />
+        <StatCard label="正確率" value={`${overallAccuracy}%`} icon={Target} />
+        <StatCard label="錯題數" value={wrongQuestions.length} icon={XCircle} />
+      </div>
+
+      {/* Overall accuracy visual */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">整體正確率</span>
+          <span className={`text-2xl font-extrabold ${overallAccuracy >= 70 ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{overallAccuracy}%</span>
+        </div>
+        <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="progress-bar h-full rounded-full" style={{ width: `${overallAccuracy}%`, background: overallAccuracy >= 70 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : 'linear-gradient(90deg, #ef4444, #dc2626)' }} />
+        </div>
+        <div className="flex justify-between mt-1.5">
+          <span className="text-xs text-gray-400">0%</span>
+          <span className="text-xs text-gray-400 font-medium">及格線 70%</span>
+          <span className="text-xs text-gray-400">100%</span>
+        </div>
       </div>
 
       {/* Section tabs */}
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto pb-1">
         {[
-          { key: 'overview', label: '各科正確率' },
-          { key: 'wrong', label: `錯題清單 (${wrongQuestions.length})` },
-          { key: 'bookmark', label: `書籤 (${bookmarkedList.length})` },
-          { key: 'review', label: `複習 (${reviewList.length})` },
+          { key: 'overview', label: '各科正確率', icon: Target },
+          { key: 'wrong', label: `錯題清單 (${wrongQuestions.length})`, icon: XCircle },
+          { key: 'bookmark', label: `書籤 (${bookmarkedList.length})`, icon: Star },
+          { key: 'review', label: `複習 (${reviewList.length})`, icon: Flag },
         ].map(s => (
           <button
             key={s.key}
             onClick={() => setActiveSection(s.key)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
               activeSection === s.key
-                ? 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300'
+                ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 shadow-sm'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
+            <s.icon size={14} />
             {s.label}
           </button>
         ))}
       </div>
 
       {/* Section content */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 animate-fade-in" key={activeSection}>
         {activeSection === 'overview' && (
           <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Target size={18} />各科正確率</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="text-left py-2 px-3">科別</th>
-                    <th className="text-left py-2 px-3">已作答</th>
-                    <th className="text-left py-2 px-3">答對</th>
-                    <th className="text-left py-2 px-3">正確率</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(examStats).map(([exam, s]) => (
-                    <tr key={exam} className="border-b border-gray-100 dark:border-gray-700/50">
-                      <td className="py-2 px-3 font-medium">{exam}</td>
-                      <td className="py-2 px-3">{s.total}</td>
-                      <td className="py-2 px-3">{s.correct}</td>
-                      <td className="py-2 px-3">
-                        <span className={`font-medium ${s.total > 0 && (s.correct / s.total) >= 0.7 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
+              <Target size={18} className="text-orange-500" />各科正確率
+            </h3>
+            <div className="space-y-4">
+              {Object.entries(examStats).map(([exam, s]) => {
+                const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0
+                const passed = pct >= 70
+                return (
+                  <div key={exam} className="p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-sm">{exam}</span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <span className="text-gray-500 dark:text-gray-400">{s.correct}/{s.total}</span>
+                        <span className={`font-bold ${passed ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{pct}%</span>
+                      </div>
+                    </div>
+                    <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div className="progress-bar h-full rounded-full" style={{ width: `${pct}%`, background: passed ? 'linear-gradient(90deg, #22c55e, #16a34a)' : 'linear-gradient(90deg, #ef4444, #dc2626)' }} />
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}
@@ -1937,24 +2060,24 @@ function StatsTab({ state, dispatch, examTypes }) {
 function QuestionList({ items, dispatch }) {
   const allQuestions = items.map(item => item.question)
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {items.length > 1 && (
         <button
           onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: allQuestions[0], questions: allQuestions, startIndex: 0 })}
-          className="w-full mb-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+          className="w-full mb-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
         >
           <Play size={14} /> 全部練習 ({items.length} 題)
         </button>
       )}
       {items.map((item, idx) => (
-        <div key={item.key} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{item.exam} #{item.id}</span>
-            <span className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">{typeLabels[item.type]}</span>
+        <div key={item.key} className="flex items-center justify-between p-3.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-700 transition-all duration-200 group">
+          <div className="flex items-center gap-2.5">
+            <span className="text-sm font-semibold">{item.exam} #{item.id}</span>
+            <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium">{typeLabels[item.type]}</span>
           </div>
           <button
             onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: item.question, questions: allQuestions, startIndex: idx })}
-            className="px-3 py-1 text-xs bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1"
+            className="px-3.5 py-1.5 text-xs bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 shadow-sm"
           >
             <RotateCcw size={12} /> 重做
           </button>
@@ -1969,13 +2092,15 @@ function QuestionList({ items, dispatch }) {
 // ══════════════════════════════════════════
 function EmptyState({ message, icon: Icon, action, actionLabel }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-      <Icon size={48} className="mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-      <p className="text-gray-500 dark:text-gray-400 mb-4">{message}</p>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-16 text-center animate-fade-in">
+      <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-5">
+        <Icon size={36} className="text-gray-300 dark:text-gray-500" />
+      </div>
+      <p className="text-gray-500 dark:text-gray-400 mb-5 text-base">{message}</p>
       {action && (
         <button
           onClick={action}
-          className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
+          className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
         >
           {actionLabel}
         </button>
