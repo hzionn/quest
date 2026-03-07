@@ -3,7 +3,7 @@ import {
   Upload, FileJson, CheckCircle, XCircle, Sun, Moon, Star, Flag,
   ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
-  AlertCircle, Trophy, Target, ListChecks, Shuffle, X
+  AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database, RefreshCw, Download
 } from 'lucide-react'
 
 // ── Initial State ──
@@ -40,6 +40,11 @@ const initialState = {
 
   // Stats
   statsHistory: {},
+
+  // Bundled question banks
+  bundledLoading: false,
+  bundledBanks: [],   // [{ name, filename, count }]
+  bundledLoaded: false,
 }
 
 // ── Reducer ──
@@ -224,6 +229,30 @@ function reducer(state, action) {
       }
     }
 
+    case 'SET_BUNDLED_LOADING':
+      return { ...state, bundledLoading: action.value }
+
+    case 'SET_BUNDLED_BANKS':
+      return { ...state, bundledBanks: action.banks, bundledLoaded: true }
+
+    case 'LOAD_BUNDLED_QUESTIONS': {
+      const newQs = action.questions
+      const map = new Map()
+      state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
+      newQs.forEach(q => map.set(`${q.exam}-${q.id}`, q))
+      const merged = Array.from(map.values())
+      return {
+        ...state,
+        questions: merged,
+        uploadHistory: [...state.uploadHistory, {
+          filename: action.filename,
+          count: newQs.length,
+          timestamp: Date.now(),
+          bundled: true,
+        }]
+      }
+    }
+
     default:
       return state
   }
@@ -236,6 +265,34 @@ const typeLabels = { single: '單選題', multiple: '多選題', matching: '配�
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
+
+  // Auto-load bundled question banks on startup
+  useEffect(() => {
+    const basePath = import.meta.env.BASE_URL || '/'
+    const loadBundled = async () => {
+      try {
+        dispatch({ type: 'SET_BUNDLED_LOADING', value: true })
+        const manifestRes = await fetch(`${basePath}data/manifest.json`)
+        if (!manifestRes.ok) { dispatch({ type: 'SET_BUNDLED_BANKS', banks: [] }); return }
+        const manifest = await manifestRes.json()
+        const banks = manifest.banks || []
+        dispatch({ type: 'SET_BUNDLED_BANKS', banks })
+        for (const bank of banks) {
+          try {
+            const res = await fetch(`${basePath}data/${bank.filename}`)
+            if (!res.ok) continue
+            const data = await res.json()
+            const questions = Array.isArray(data) ? data : (data.questions || [])
+            if (questions.length) {
+              dispatch({ type: 'LOAD_BUNDLED_QUESTIONS', questions, filename: `📦 ${bank.name}` })
+            }
+          } catch { /* skip individual bank errors */ }
+        }
+      } catch { /* manifest not found, skip */ }
+      finally { dispatch({ type: 'SET_BUNDLED_LOADING', value: false }) }
+    }
+    loadBundled()
+  }, [])
 
   // Timer for exam
   useEffect(() => {
@@ -376,6 +433,40 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
   return (
     <div className="space-y-6">
+      {/* Bundled question banks */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <Database size={20} className="text-orange-500" />
+          內建題庫
+        </h3>
+        {state.bundledLoading ? (
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 py-4 justify-center">
+            <RefreshCw size={16} className="animate-spin" />
+            正在載入內建題庫...
+          </div>
+        ) : state.bundledBanks.length > 0 ? (
+          <div className="space-y-2">
+            {state.bundledBanks.map((bank, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
+                <Download size={16} className="text-green-500 shrink-0" />
+                <span className="font-medium">{bank.name}</span>
+                <span className="text-gray-500 dark:text-gray-400">{bank.count || ''} 題</span>
+                <CheckCircle size={14} className="text-green-500 ml-auto" />
+                <span className="text-xs text-green-600 dark:text-green-400">已載入</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">尚未設定內建題庫</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              將 JSON 題庫放入 <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">public/data/</code> 目錄，
+              並在 <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">manifest.json</code> 中註冊即可自動載入
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Upload area */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
         <div className="flex flex-col items-center gap-4">
@@ -383,7 +474,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
             <FileJson size={32} className="text-orange-600 dark:text-orange-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">上傳 JSON 題庫</h2>
+            <h2 className="text-lg font-semibold">手動上傳 JSON 題庫</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">支援多次上傳合併（不同題號範圍）</p>
           </div>
           <input
@@ -459,7 +550,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
           <div className="space-y-2">
             {state.uploadHistory.map((h, i) => (
               <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                <FileJson size={16} className="text-orange-500 shrink-0" />
+                {h.bundled ? <Database size={16} className="text-green-500 shrink-0" /> : <FileJson size={16} className="text-orange-500 shrink-0" />}
                 <span className="font-medium truncate">{h.filename}</span>
                 <span className="text-gray-500 dark:text-gray-400">{h.count} 題</span>
                 <span className="text-gray-400 dark:text-gray-500 text-xs ml-auto">
