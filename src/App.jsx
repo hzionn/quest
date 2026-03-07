@@ -187,7 +187,15 @@ function reducer(state, action) {
           userAns.length === q.answer.length &&
           [...userAns].sort().join(',') === [...q.answer].sort().join(',')
       } else if (q.type === 'matching') {
-        correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
+        if (q.matches) {
+          correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
+        } else {
+          // Fallback: matching with options/answer (like multi-select)
+          const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+          correct = Array.isArray(userAns) &&
+            userAns.length === correctAnswers.length &&
+            [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+        }
       } else if (q.type === 'ordering') {
         correct = Array.isArray(userAns) && Array.isArray(q.ordered_steps) &&
           userAns.length === q.ordered_steps.length &&
@@ -270,7 +278,14 @@ function reducer(state, action) {
             userAns.length === q.answer.length &&
             [...userAns].sort().join(',') === [...q.answer].sort().join(',')
         } else if (q.type === 'matching') {
-          correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
+          if (q.matches) {
+            correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
+          } else {
+            const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+            correct = Array.isArray(userAns) &&
+              userAns.length === correctAnswers.length &&
+              [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+          }
         } else if (q.type === 'ordering') {
           correct = Array.isArray(userAns) && Array.isArray(q.ordered_steps) &&
             userAns.length === q.ordered_steps.length &&
@@ -1115,43 +1130,91 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
   }
 
   if (q.type === 'matching') {
-    const selections = Array.isArray(answer) ? answer : q.matches.map(() => '')
-    return (
-      <div className="space-y-3">
-        {q.matches.map((m, i) => {
-          let borderClass = 'border-gray-200 dark:border-gray-700'
-          if (submitted && !examMode) {
-            borderClass = selections[i] === m.correct_answer
-              ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-              : 'border-red-500 bg-red-50 dark:bg-red-900/20'
-          }
-          return (
-            <div key={i} className={`p-3 rounded-lg border-2 ${borderClass}`}>
-              <p className="text-sm font-medium mb-2">{m.use_case}</p>
-              <select
-                value={selections[i] || ''}
-                onChange={e => {
-                  if (submitted && !examMode) return
-                  const newSel = [...selections]
-                  newSel[i] = e.target.value
-                  onAnswer(newSel)
-                }}
-                disabled={submitted && !examMode}
-                className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+    // If matches/available_options exist, use dropdown matching UI
+    if (q.matches && q.available_options) {
+      const selections = Array.isArray(answer) ? answer : q.matches.map(() => '')
+      return (
+        <div className="space-y-3">
+          {q.matches.map((m, i) => {
+            let borderClass = 'border-gray-200 dark:border-gray-700'
+            if (submitted && !examMode) {
+              borderClass = selections[i] === m.correct_answer
+                ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                : 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            }
+            return (
+              <div key={i} className={`p-3 rounded-lg border-2 ${borderClass}`}>
+                <p className="text-sm font-medium mb-2">{m.use_case}</p>
+                <select
+                  value={selections[i] || ''}
+                  onChange={e => {
+                    if (submitted && !examMode) return
+                    const newSel = [...selections]
+                    newSel[i] = e.target.value
+                    onAnswer(newSel)
+                  }}
+                  disabled={submitted && !examMode}
+                  className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+                >
+                  <option value="">-- 請選擇 --</option>
+                  {q.available_options.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+                {submitted && !examMode && selections[i] !== m.correct_answer && (
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">正確答案：{m.correct_answer}</p>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+    // Fallback: matching question with options/answer (render as multi-select)
+    if (q.options) {
+      const selected = Array.isArray(answer) ? answer : []
+      const needed = Array.isArray(q.answer) ? q.answer.length : 0
+      return (
+        <div className="space-y-2">
+          {needed > 0 && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <AlertCircle size={14} className="inline mr-1" />
+              請選擇 {needed} 個選項
+            </p>
+          )}
+          {Object.entries(q.options).map(([key, text]) => {
+            const checked = selected.includes(key)
+            let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+            if (submitted && !examMode) {
+              const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+              if (correctAnswers.includes(key)) optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'
+              else if (checked && !correctAnswers.includes(key)) optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            } else if (checked) {
+              optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+            }
+            return (
+              <label
+                key={key}
+                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
               >
-                <option value="">-- 請選擇 --</option>
-                {q.available_options.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              {submitted && !examMode && selections[i] !== m.correct_answer && (
-                <p className="text-xs text-green-600 dark:text-green-400 mt-1">正確答案：{m.correct_answer}</p>
-              )}
-            </div>
-          )
-        })}
-      </div>
-    )
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => {
+                    if (submitted && !examMode) return
+                    const newSel = checked ? selected.filter(s => s !== key) : [...selected, key]
+                    onAnswer(newSel)
+                  }}
+                  disabled={submitted && !examMode}
+                  className="mt-0.5 accent-orange-600"
+                />
+                <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+              </label>
+            )
+          })}
+        </div>
+      )
+    }
   }
 
   if (q.type === 'ordering') {
