@@ -146,7 +146,7 @@
   {
     "exam": "MLA-C01",
     "id": 109,
-    "question": "一位機器學習工程師需要合併並轉換來自兩個數據源的數據，以重新訓練現有Amazon S3 .csv的機器學習模型。一個數據源由存儲在 存儲桶中的 文件組.成。每個csv Amazon Aurora文件包含數百萬條記錄。另一個數據源是一個數據庫集群。合併過程的結果必須寫入第二個S3存儲桶。機器學習工程師需要每周執行一次此合併和轉換任務。哪種解決方案可以以最少的運營開銷滿足這些需求？",
+    "question": "一位機器學習工程師需要合併並轉換來自兩個數據源的數據，以重新訓練現有的機器學習模型。一個數據源由存儲在 Amazon S3 存儲桶中的 .csv 文件組成。每個 .csv 文件包含數百萬條記錄。另一個數據源是一個 Amazon Aurora 數據庫集群。合併過程的結果必須寫入第二個 S3 存儲桶。機器學習工程師需要每周執行一次此合併和轉換任務。哪種解決方案可以以最少的運營開銷滿足這些需求？",
     "explanations": {
       "B": "✅ 正確性分析：AWS Glue是一個託管的ETL Apache服務，支持引擎，並且可以通過Spark DynamicFrame高效處理和轉換數據。作業可以定期運行，且無需管理底層基礎設施，運營開銷最低。結論：滿足需求且運營開銷最低，是最佳選擇Glue。",
       "C": "❌ ✅ 正確性分析：AWS Lambda不支持直接運行Apache Spark代碼。適合處理小規模任務，但不適合處理數百萬條記錄的大規模數據處理。結論：技術上不可行，錯誤選項Lambda。",
@@ -154,10 +154,10 @@
     },
     "type": "single",
     "options": {
-      "A": "每周創建一個臨時Amazon EMR Apache集群。使用該集群運行一個Spark作業來合併和轉換數據。",
+      "A": "每周創建一個臨時 Amazon EMR 集群。使用該集群運行一個 Apache Spark 作業來合併和轉換數據。",
       "B": "創建一個每周運行的AWS Glue作業，使用Apache Spark引擎。使用DynamicFrame原生操作來合併和轉換數據。",
       "C": "創建一個AWS Lambda函數，每周運行Apache Spark代碼來合併和轉換數據。配置Lambda函數以連接到初始S3存儲桶和數據庫集群。",
-      "D": "創建一個AWS作業，每周在Batch Amazon EC2 Apache實例上運行代碼。配置Spark代碼將數據從Spark實例保存到第二個EC2 S3存儲桶。"
+      "D": "創建一個 AWS Batch 作業，每周在 Amazon EC2 實例上運行 Apache Spark 代碼。配置 Spark 代碼將數據從 EC2 實例保存到第二個 S3 存儲桶。"
     },
     "answer": "B"
   },
@@ -182,7 +182,7 @@
   {
     "exam": "MLA-C01",
     "id": 111,
-    "question": "(一位機器學習工程師需要確保數據集符合有關個人身份信息PII)的法規要求。該機器學習工程師將使用這些數據在Amazon SageMaker實例上訓練機器學習模型。 必須不能使用任何SageMaker PII。 哪種解決方案能夠以最具操作效率的方式滿足這些要求？",
+    "question": "一位機器學習工程師需要確保數據集符合有關個人身份信息 (PII) 的法規要求。該機器學習工程師將使用這些數據在 Amazon SageMaker 實例上訓練機器學習模型。SageMaker 必須不能使用任何 PII。哪種解決方案能夠以最具操作效率的方式滿足這些要求？",
     "explanations": {
       "A": "考察的知識點數據隱私與合規性：如何處理包含個人身份信息（PII）的數據以確保合規性。服務選擇：了解AWS、Amazon Comprehend Amazon S3 Amazon、、EFS和AWS Glue DataBrew Amazon Macie的功能及適用場景。Amazon SageMaker數據處理：如何準備數據以供機器學習模型訓練。選項分析使用A. Amazon Comprehend DetectPiiEntities API調用從數據中刪除PII，將數據存儲在Amazon S3存儲桶中，從SageMaker實例訪問S3存儲桶以進行模型訓練。正確性分析：Amazon Comprehend的DetectPiiEntities API可以有效識別和刪除PII，確保數據合規性。將數據存儲在Amazon S3中是高效且常見的做法，S3與SageMaker集成良好，支持直接訪問。操作效率：此方法直接使用S3存儲，避免了額外的掛載操作，最為高效。結論：正確。",
       "B": "❌ 使用Amazon Comprehend DetectPiiEntities API調用從數據中刪除PII，將數據存儲在Amazon文件系統中，將EFS EFS文件系統掛載到SageMaker實例以進行模型訓練。正確性分析：Amazon Comprehend可以識別和刪除PII EFS，但使用存儲數據並掛載到SageMaker EFS實例增加了複雜性。 通常用於共享文件系統，而不是存儲訓練數據的最佳選擇。操作效率：相比S3，EFS的操作效率較低，且需要額外的掛載步驟。結論：錯誤。",
@@ -191,10 +191,10 @@
     },
     "type": "single",
     "options": {
-      "A": "使用Amazon Comprehend DetectPiiEntities API調用從數據中刪除。將數據存儲在PII存儲桶中。從Amazon S3 SageMaker S3實例訪問存儲桶以進行模型訓練。",
-      "B": "使用Amazon Comprehend DetectPiiEntities API調用從數據中刪除。將數據存儲在PII Amazon Elastic File System （Amazon EFS）文件系統中。將EFS文件系統掛載到SageMaker實例以進行模型訓練。",
-      "C": "使用AWS Glue DataBrew清理數據集中的PII。將數據存儲在文件系統中。將Amazon Elastic File System （Amazon EFS） EFS文件系統掛載到SageMaker實例以進行模型訓練。",
-      "D": "使用Amazon自動發現數據中的Macie。移除PII PII。將數據存儲在存儲桶中。將Amazon S3存儲桶掛載到S3 SageMaker實例以進行模型訓練。"
+      "A": "使用 Amazon Comprehend DetectPiiEntities API 調用從數據中刪除 PII。將數據存儲在 Amazon S3 存儲桶中。從 SageMaker 實例訪問 S3 存儲桶以進行模型訓練。",
+      "B": "使用 Amazon Comprehend DetectPiiEntities API 調用從數據中刪除 PII。將數據存儲在 Amazon Elastic File System (Amazon EFS) 文件系統中。將 EFS 文件系統掛載到 SageMaker 實例以進行模型訓練。",
+      "C": "使用 AWS Glue DataBrew 清理數據集中的 PII。將數據存儲在 Amazon Elastic File System (Amazon EFS) 文件系統中。將 EFS 文件系統掛載到 SageMaker 實例以進行模型訓練。",
+      "D": "使用 Amazon Macie 自動發現數據中的 PII。移除 PII。將數據存儲在 Amazon S3 存儲桶中。將 S3 存儲桶掛載到 SageMaker 實例以進行模型訓練。"
     },
     "answer": "A"
   },
@@ -211,9 +211,9 @@
     "type": "single",
     "options": {
       "A": "創建一個生命周期配置腳本，在創建新的SageMaker notebook時安裝自定義腳本。在創建步驟中，將生命周期配置附加到每個新的SageMaker notebook。",
-      "B": "Amazon Elastic Container Registry創建一個包含自定義腳本的（Amazon ECR） 自定義鏡像。將ECR鏡像推送到Docker註冊表。將鏡像附加到Docker SageMaker Studio SageMaker域。選擇內核作為notebook的一部分運行。",
+      "B": "創建一個包含自定義腳本的 Amazon Elastic Container Registry (Amazon ECR) 自定義鏡像。將 ECR 鏡像推送到 Docker 註冊表。將 Docker 鏡像附加到 SageMaker Studio 域。選擇內核作為 SageMaker notebook 的一部分運行。",
       "C": "創建一個自定義包索引存儲庫。使用AWS CodeArtifact管理自定義腳本的安裝。設置AWS PrivateLink端點以連接CodeArtifact到SageMaker實例。安裝腳本。",
-      "D": "將自定義腳本存儲在Amazon S3中。創建一個AWS Lambda函數，在新的SageMaker notebook Amazon上安裝自定義腳本。配置在初始化新的EventBridge時調用SageMaker notebook Lambda函數。"
+      "D": "將自定義腳本存儲在 Amazon S3 中。創建一個 AWS Lambda 函數，在新的 SageMaker notebook 上安裝自定義腳本。配置 Amazon EventBridge 在初始化新的 SageMaker notebook 時調用 Lambda 函數。"
     },
     "answer": "A"
   },
@@ -256,7 +256,7 @@
   {
     "exam": "MLA-C01",
     "id": 115,
-    "question": "Amazon一名機器學習工程師正在開發一個分類模型。該工程師需要在SageMaker的處理任務、訓練任務和管道中使用自定義庫。哪種解決方案能夠以最少的實施工作量提供此功能？",
+    "question": "一名機器學習工程師正在開發一個分類模型。該工程師需要在 Amazon SageMaker 的處理任務、訓練任務和管道中使用自定義庫。哪種解決方案能夠以最少的實施工作量提供此功能？",
     "explanations": {
       "B": "構建一個包含所需庫的自定義Docker容器。將容器托管在中。在Amazon ECR任務和管道中使用SageMaker ECR鏡像。優點：通過構建自定義Docker容器，可以一次性打包所有所需的庫，ECR托管在 中後可重複使用，適合處理任務、訓練任務和管道。實現自動化，減少重複工作。缺點：需要初次構建容器，但後續使用非常高效。“ ”結論：正確。此方法符合 最少實現努力 的要求。",
       "C": "❌ 創建一個SageMaker notebook AWS實例來托管任務。創建一個函數，在Lambda notebook實例啟動時安裝這些庫。配置任務和管道在SageMaker notebook實例上運行。優點：可以動態安裝庫，適合小規模任務。缺點：需要額外創建Lambda函數和notebook實例，增加複雜性。Notebook實例並不適合大規模管道任務，且動態安裝庫可能導致啟動時間延长。“ ”結論：錯誤。此方法複雜度較高，不符合 最少實現努力 的要求。",
@@ -265,9 +265,9 @@
     "type": "single",
     "options": {
       "A": "手動在SageMaker容器中安裝這些庫。",
-      "B": "構建一個包含所需庫的自定義Docker Amazon容器。將容器托管在中。在Elastic Container Registry （Amazon ECR） SageMaker任務和管道中使用ECR鏡像。",
-      "C": "創建一個SageMaker notebook AWS實例來托管任務。創建一個函數，在Lambda notebook SageMaker實例啟動時安裝這些庫。配置任務和管道在notebook實例上運行。",
-      "D": "在Amazon EC2實例上外部運行這些庫的代碼。將結果存儲在中。在Amazon S3 SageMaker任務和管道中導入這些結果。"
+      "B": "構建一個包含所需庫的自定義 Docker 容器。將容器托管在 Amazon Elastic Container Registry (Amazon ECR) 中。在 SageMaker 任務和管道中使用 ECR 鏡像。",
+      "C": "創建一個 SageMaker notebook 實例來托管任務。創建一個 AWS Lambda 函數，在 notebook 實例啟動時安裝這些庫。配置 SageMaker 任務和管道在 notebook 實例上運行。",
+      "D": "在 Amazon EC2 實例上外部運行這些庫的代碼。將結果存儲在 Amazon S3 中。在 SageMaker 任務和管道中導入這些結果。"
     },
     "answer": "B"
   },
@@ -367,7 +367,7 @@
   {
     "exam": "MLA-C01",
     "id": 121,
-    "question": "Amazon SageMaker Clarify Foundation Model一家電子商務公司正在使用Evaluations （FMEval）來評估機器學習模型。 從以下列表中為每個電子商務用例選擇正確的模型評估任務。每個模型評估任務應僅選擇一次。",
+    "question": "一家電子商務公司正在使用 Amazon SageMaker Clarify Foundation Model Evaluations (FMEval) 來評估機器學習模型。從以下列表中為每個電子商務用例選擇正確的模型評估任務。每個模型評估任務應僅選擇一次。",
     "explanations": {
       "_full": "考察的知識點 Amazon SageMaker Clarify Foundation Model 本題考察的是 Evaluations （FMEval） 的不同任務類型及其適用場景。 Classification 需要了解每種任務類型的定義和適用場景，包括分類評估（  ）、開放式生成（evaluation Open-ended generation Question）、問答（  ）和文本摘要（answering）。 獨立分析每個選項Text summarization第一項： →將顧客評論分為正面、中性或負面情緒。  ：正確。情感分析任務屬於分類問題，需要Classification將客户評論歸類為正面、中性或負面情感。 第二項：evaluation根據完整的製造商資訊建立簡潔的產品描述  ：正確。文本摘要任務適用於從詳細信息中提取Text簡短的產品描述。 第三項：summarization根據使用者的瀏覽記錄推薦產品  ：正確。開放式生成適用於生成推薦內容，Open-ended例如基於用户瀏覽歷史生成的個性化推薦。 第四項：generation回覆客户關於產品功能的具體諮詢  ：正確。問答任務專門用於根據問題從文本中提Question answering取答案，適用於回答客户查詢。"
     },
