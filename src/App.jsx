@@ -145,7 +145,7 @@ function reducer(state, action) {
       const map = new Map()
       state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
       newQs.forEach(q => map.set(`${q.exam}-${q.id}`, q))
-      const merged = Array.from(map.values())
+      const merged = Array.from(map.values()).sort((a, b) => a.id - b.id)
       return {
         ...state,
         questions: merged,
@@ -165,6 +165,7 @@ function reducer(state, action) {
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
       if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
+      filtered.sort((a, b) => a.id - b.id)
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
