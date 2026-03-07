@@ -948,8 +948,12 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
           />
 
-          {/* Submit button - hide for questions with no options */}
-          {!isSubmitted && currentQ.options && Object.keys(currentQ.options).length > 0 && (
+          {/* Submit button - show for questions with options, or matching/ordering with proper data */}
+          {!isSubmitted && (
+            (currentQ.options && Object.keys(currentQ.options).length > 0) ||
+            (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
+            (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
+          ) && (
             <button
               onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQ })}
               disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
