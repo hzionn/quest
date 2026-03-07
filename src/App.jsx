@@ -197,9 +197,16 @@ function reducer(state, action) {
             [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
         }
       } else if (q.type === 'ordering') {
-        correct = Array.isArray(userAns) && Array.isArray(q.ordered_steps) &&
-          userAns.length === q.ordered_steps.length &&
-          userAns.every((s, i) => s === q.ordered_steps[i])
+        if (q.ordered_steps) {
+          correct = Array.isArray(userAns) &&
+            userAns.length === q.ordered_steps.length &&
+            userAns.every((s, i) => s === q.ordered_steps[i])
+        } else {
+          const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+          correct = Array.isArray(userAns) &&
+            userAns.length === correctAnswers.length &&
+            [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+        }
       }
       return {
         ...state,
@@ -287,9 +294,16 @@ function reducer(state, action) {
               [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
           }
         } else if (q.type === 'ordering') {
-          correct = Array.isArray(userAns) && Array.isArray(q.ordered_steps) &&
-            userAns.length === q.ordered_steps.length &&
-            userAns.every((s, i) => s === q.ordered_steps[i])
+          if (q.ordered_steps) {
+            correct = Array.isArray(userAns) &&
+              userAns.length === q.ordered_steps.length &&
+              userAns.every((s, i) => s === q.ordered_steps[i])
+          } else {
+            const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+            correct = Array.isArray(userAns) &&
+              userAns.length === correctAnswers.length &&
+              [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+          }
         }
         if (correct) totalCorrect++
         if (!typeStats[q.type]) typeStats[q.type] = { total: 0, correct: 0 }
@@ -1218,109 +1232,157 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
   }
 
   if (q.type === 'ordering') {
-    const selectedSteps = Array.isArray(answer) ? answer : []
-    const availableSteps = q.available_steps.filter(s => !selectedSteps.includes(s))
-    const neededCount = q.ordered_steps.length
+    // If available_steps/ordered_steps exist, use the ordering UI
+    if (q.available_steps && q.ordered_steps) {
+      const selectedSteps = Array.isArray(answer) ? answer : []
+      const availableSteps = q.available_steps.filter(s => !selectedSteps.includes(s))
+      const neededCount = q.ordered_steps.length
 
-    return (
-      <div className="space-y-4">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          <AlertCircle size={14} className="inline mr-1" />
-          請從下方選擇 {neededCount} 個步驟並排列正確順序
-        </p>
+      return (
+        <div className="space-y-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            <AlertCircle size={14} className="inline mr-1" />
+            請從下方選擇 {neededCount} 個步驟並排列正確順序
+          </p>
 
-        {/* Available steps */}
-        <div>
-          <h5 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">可選步驟：</h5>
-          <div className="flex flex-wrap gap-2">
-            {availableSteps.map(step => (
-              <button
-                key={step}
-                onClick={() => {
-                  if (submitted && !examMode) return
-                  if (selectedSteps.length < neededCount) {
-                    onAnswer([...selectedSteps, step])
-                  }
-                }}
-                disabled={(submitted && !examMode) || selectedSteps.length >= neededCount}
-                className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Plus size={12} className="inline mr-1" />{step}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Selected & ordered steps */}
-        {selectedSteps.length > 0 && (
+          {/* Available steps */}
           <div>
-            <h5 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">已選步驟（排序）：</h5>
-            <div className="space-y-1.5">
-              {selectedSteps.map((step, i) => {
-                let itemClass = 'border-gray-200 dark:border-gray-700'
-                if (submitted && !examMode) {
-                  itemClass = (i < q.ordered_steps.length && step === q.ordered_steps[i])
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                    : 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                }
-                return (
-                  <div key={`${step}-${i}`} className={`flex items-center gap-2 p-2 rounded-lg border-2 ${itemClass}`}>
-                    <span className="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-xs font-bold flex items-center justify-center shrink-0">
-                      {i + 1}
-                    </span>
-                    <span className="text-sm flex-1">{step}</span>
-                    {!(submitted && !examMode) && (
-                      <div className="flex items-center gap-0.5">
-                        <button
-                          onClick={() => {
-                            if (i === 0) return
-                            const newArr = [...selectedSteps];
-                            [newArr[i - 1], newArr[i]] = [newArr[i], newArr[i - 1]]
-                            onAnswer(newArr)
-                          }}
-                          disabled={i === 0}
-                          className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
-                        >
-                          <ArrowUp size={14} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (i === selectedSteps.length - 1) return
-                            const newArr = [...selectedSteps];
-                            [newArr[i], newArr[i + 1]] = [newArr[i + 1], newArr[i]]
-                            onAnswer(newArr)
-                          }}
-                          disabled={i === selectedSteps.length - 1}
-                          className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
-                        >
-                          <ArrowDown size={14} />
-                        </button>
-                        <button
-                          onClick={() => onAnswer(selectedSteps.filter((_, j) => j !== i))}
-                          className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+            <h5 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">可選步驟：</h5>
+            <div className="flex flex-wrap gap-2">
+              {availableSteps.map(step => (
+                <button
+                  key={step}
+                  onClick={() => {
+                    if (submitted && !examMode) return
+                    if (selectedSteps.length < neededCount) {
+                      onAnswer([...selectedSteps, step])
+                    }
+                  }}
+                  disabled={(submitted && !examMode) || selectedSteps.length >= neededCount}
+                  className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Plus size={12} className="inline mr-1" />{step}
+                </button>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Show correct answer after submit */}
-        {submitted && !examMode && (
-          <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-            <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">正確順序：</p>
-            {q.ordered_steps.map((step, i) => (
-              <p key={i} className="text-sm text-green-600 dark:text-green-400">{i + 1}. {step}</p>
-            ))}
-          </div>
-        )}
-      </div>
-    )
+          {/* Selected & ordered steps */}
+          {selectedSteps.length > 0 && (
+            <div>
+              <h5 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">已選步驟（排序）：</h5>
+              <div className="space-y-1.5">
+                {selectedSteps.map((step, i) => {
+                  let itemClass = 'border-gray-200 dark:border-gray-700'
+                  if (submitted && !examMode) {
+                    itemClass = (i < q.ordered_steps.length && step === q.ordered_steps[i])
+                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                      : 'border-red-500 bg-red-50 dark:bg-red-900/20'
+                  }
+                  return (
+                    <div key={`${step}-${i}`} className={`flex items-center gap-2 p-2 rounded-lg border-2 ${itemClass}`}>
+                      <span className="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-xs font-bold flex items-center justify-center shrink-0">
+                        {i + 1}
+                      </span>
+                      <span className="text-sm flex-1">{step}</span>
+                      {!(submitted && !examMode) && (
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            onClick={() => {
+                              if (i === 0) return
+                              const newArr = [...selectedSteps];
+                              [newArr[i - 1], newArr[i]] = [newArr[i], newArr[i - 1]]
+                              onAnswer(newArr)
+                            }}
+                            disabled={i === 0}
+                            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
+                          >
+                            <ArrowUp size={14} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (i === selectedSteps.length - 1) return
+                              const newArr = [...selectedSteps];
+                              [newArr[i], newArr[i + 1]] = [newArr[i + 1], newArr[i]]
+                              onAnswer(newArr)
+                            }}
+                            disabled={i === selectedSteps.length - 1}
+                            className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-30 transition-colors"
+                          >
+                            <ArrowDown size={14} />
+                          </button>
+                          <button
+                            onClick={() => onAnswer(selectedSteps.filter((_, j) => j !== i))}
+                            className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Show correct answer after submit */}
+          {submitted && !examMode && (
+            <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+              <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">正確順序：</p>
+              {q.ordered_steps.map((step, i) => (
+                <p key={i} className="text-sm text-green-600 dark:text-green-400">{i + 1}. {step}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+    // Fallback: ordering question with options/answer (render as multi-select)
+    if (q.options) {
+      const selected = Array.isArray(answer) ? answer : []
+      const needed = Array.isArray(q.answer) ? q.answer.length : 0
+      return (
+        <div className="space-y-2">
+          {needed > 0 && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <AlertCircle size={14} className="inline mr-1" />
+              請選擇 {needed} 個選項
+            </p>
+          )}
+          {Object.entries(q.options).map(([key, text]) => {
+            const checked = selected.includes(key)
+            let optClass = 'border-gray-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-600'
+            if (submitted && !examMode) {
+              const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
+              if (correctAnswers.includes(key)) optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'
+              else if (checked && !correctAnswers.includes(key)) optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            } else if (checked) {
+              optClass = 'border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+            }
+            return (
+              <label
+                key={key}
+                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${optClass} ${submitted && !examMode ? 'cursor-default' : ''}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => {
+                    if (submitted && !examMode) return
+                    const newSel = checked ? selected.filter(s => s !== key) : [...selected, key]
+                    onAnswer(newSel)
+                  }}
+                  disabled={submitted && !examMode}
+                  className="mt-0.5 accent-orange-600"
+                />
+                <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+              </label>
+            )
+          })}
+        </div>
+      )
+    }
   }
 
   return <p className="text-gray-500">不支援的題型：{q.type}</p>
