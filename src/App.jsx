@@ -187,25 +187,30 @@ function reducer(state, action) {
           userAns.length === q.answer.length &&
           [...userAns].sort().join(',') === [...q.answer].sort().join(',')
       } else if (q.type === 'matching') {
-        if (q.matches) {
+        if (q.matches?.length > 0) {
           correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
-        } else {
-          // Fallback: matching with options/answer (like multi-select)
+        } else if (q.options && q.answer) {
           const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
           correct = Array.isArray(userAns) &&
             userAns.length === correctAnswers.length &&
             [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+        } else {
+          // Self-assessment mode
+          correct = userAns === 'self-assessed-correct'
         }
       } else if (q.type === 'ordering') {
-        if (q.ordered_steps) {
+        if (q.ordered_steps?.length > 0) {
           correct = Array.isArray(userAns) &&
             userAns.length === q.ordered_steps.length &&
             userAns.every((s, i) => s === q.ordered_steps[i])
-        } else {
+        } else if (q.options && q.answer) {
           const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
           correct = Array.isArray(userAns) &&
             userAns.length === correctAnswers.length &&
             [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+        } else {
+          // Self-assessment mode
+          correct = userAns === 'self-assessed-correct'
         }
       }
       return {
@@ -285,24 +290,28 @@ function reducer(state, action) {
             userAns.length === q.answer.length &&
             [...userAns].sort().join(',') === [...q.answer].sort().join(',')
         } else if (q.type === 'matching') {
-          if (q.matches) {
+          if (q.matches?.length > 0) {
             correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
-          } else {
+          } else if (q.options && q.answer) {
             const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
             correct = Array.isArray(userAns) &&
               userAns.length === correctAnswers.length &&
               [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+          } else {
+            correct = userAns === 'self-assessed-correct'
           }
         } else if (q.type === 'ordering') {
-          if (q.ordered_steps) {
+          if (q.ordered_steps?.length > 0) {
             correct = Array.isArray(userAns) &&
               userAns.length === q.ordered_steps.length &&
               userAns.every((s, i) => s === q.ordered_steps[i])
-          } else {
+          } else if (q.options && q.answer) {
             const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
             correct = Array.isArray(userAns) &&
               userAns.length === correctAnswers.length &&
               [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
+          } else {
+            correct = userAns === 'self-assessed-correct'
           }
         }
         if (correct) totalCorrect++
@@ -1145,7 +1154,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
 
   if (q.type === 'matching') {
     // If matches/available_options exist, use dropdown matching UI
-    if (q.matches && q.available_options) {
+    if (q.matches?.length > 0 && q.available_options?.length > 0) {
       const selections = Array.isArray(answer) ? answer : q.matches.map(() => '')
       return (
         <div className="space-y-3">
@@ -1229,11 +1238,36 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
         </div>
       )
     }
+    // Final fallback: self-assessment mode (no structured data)
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          <AlertCircle size={14} className="inline mr-1" />
+          此題為自我評估模式，請閱讀題目後點擊「提交答案」查看解析。
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => !submitted && onAnswer('self-assessed-correct')}
+            disabled={submitted && !examMode}
+            className={`px-4 py-2 text-sm rounded-lg border-2 transition-colors ${answer === 'self-assessed-correct' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' : 'border-gray-200 dark:border-gray-600 hover:border-green-400'}`}
+          >
+            <CheckCircle size={14} className="inline mr-1" />我答對了
+          </button>
+          <button
+            onClick={() => !submitted && onAnswer('self-assessed-incorrect')}
+            disabled={submitted && !examMode}
+            className={`px-4 py-2 text-sm rounded-lg border-2 transition-colors ${answer === 'self-assessed-incorrect' ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300' : 'border-gray-200 dark:border-gray-600 hover:border-red-400'}`}
+          >
+            <XCircle size={14} className="inline mr-1" />我答錯了
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (q.type === 'ordering') {
     // If available_steps/ordered_steps exist, use the ordering UI
-    if (q.available_steps && q.ordered_steps) {
+    if (q.available_steps?.length > 0 && q.ordered_steps?.length > 0) {
       const selectedSteps = Array.isArray(answer) ? answer : []
       const availableSteps = q.available_steps.filter(s => !selectedSteps.includes(s))
       const neededCount = q.ordered_steps.length
@@ -1383,6 +1417,31 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
         </div>
       )
     }
+    // Final fallback: self-assessment mode (no structured data)
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          <AlertCircle size={14} className="inline mr-1" />
+          此題為自我評估模式，請閱讀題目後點擊「提交答案」查看解析。
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => !submitted && onAnswer('self-assessed-correct')}
+            disabled={submitted && !examMode}
+            className={`px-4 py-2 text-sm rounded-lg border-2 transition-colors ${answer === 'self-assessed-correct' ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' : 'border-gray-200 dark:border-gray-600 hover:border-green-400'}`}
+          >
+            <CheckCircle size={14} className="inline mr-1" />我答對了
+          </button>
+          <button
+            onClick={() => !submitted && onAnswer('self-assessed-incorrect')}
+            disabled={submitted && !examMode}
+            className={`px-4 py-2 text-sm rounded-lg border-2 transition-colors ${answer === 'self-assessed-incorrect' ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300' : 'border-gray-200 dark:border-gray-600 hover:border-red-400'}`}
+          >
+            <XCircle size={14} className="inline mr-1" />我答錯了
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return <p className="text-gray-500">不支援的題型：{q.type}</p>
@@ -1408,26 +1467,13 @@ function ExplanationView({ question, userAnswer }) {
     )
   }
 
-  if (q.type === 'matching') {
+  if (q.type === 'matching' || q.type === 'ordering') {
     return (
       <div className="space-y-2 mt-2">
         <h5 className="text-sm font-medium">解析：</h5>
         {Object.entries(q.explanations).map(([key, text]) => (
-          <div key={key} className="text-sm pl-2 border-l-2 border-gray-300 dark:border-gray-600 ml-1">
-            <strong>配對 {key}：</strong> {text}
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  if (q.type === 'ordering') {
-    return (
-      <div className="space-y-2 mt-2">
-        <h5 className="text-sm font-medium">解析：</h5>
-        {Object.entries(q.explanations).map(([key, text]) => (
-          <div key={key} className="text-sm pl-2 border-l-2 border-gray-300 dark:border-gray-600 ml-1">
-            <strong>{key}：</strong> {text}
+          <div key={key} className="text-sm pl-2 border-l-2 border-gray-300 dark:border-gray-600 ml-1 whitespace-pre-wrap">
+            {key === '_full' ? text : <><strong>{q.type === 'matching' ? `配對 ${key}` : key}：</strong> {text}</>}
           </div>
         ))}
       </div>
