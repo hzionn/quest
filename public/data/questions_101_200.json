@@ -494,7 +494,7 @@
     "id": 128,
     "question": "⼀位機器學習⼯程師需要在Amazon SageMaker推理管道中部署四個機器學習模型。這些模型是使⽤不同的框架構建的。該機器學習⼯程師還需要為客⼾提供使⽤invoke_endpoint調⽤來對每個模型執⾏推理的能⼒。哪種解決⽅案將最具成本效益地滿⾜這些需求？",
     "explanations": {
-      "B": "SageMaker創建⼀個 多容器端點多容器端點允許在⼀個端點中部署多個容器，每個容器可以運⾏不同的框架和模型。“ ” “ ”這種⽅法可以滿⾜題⽬中 不同框架 和 單⼀端點調⽤ 的需求。此選項正確。",
+      "B": "創建⼀個SageMaker多容器端點多容器端點允許在⼀個端點中部署多個容器，每個容器可以運⾏不同的框架和模型。“ ” “ ”這種⽅法可以滿⾜題⽬中 不同框架 和 單⼀端點調⽤ 的需求。此選項正確。",
       "C": "❌ 創建多個SageMaker單模型端點單模型端點適⽤於每個端點只運⾏⼀個模型的情況。雖然可以滿⾜不同框架的需求，但需要創建多個端點，增加了成本和管理複雜性。此選項不夠成本效益，因此錯誤。",
       "D": "❌ 運⾏⼀個SparkML作業以⽣成多個端點SparkML通常⽤於分佈式機器學習任務，⽽不是直接⽤於部署端點。此選項與題⽬要求不符，因為題⽬要求使⽤SageMaker端點進⾏推理。此選項錯誤。"
     },
@@ -551,7 +551,7 @@
     "explanations": {
       "B": "無服務器推理端點適⽤於間歇性流量場景，因為它按請求計費，無流量時不會產⽣成本。通過配置預置並發量，可以在⼯作時間內滿⾜流量需求，同時在⾮⼯作時間避免額外成本。“ ”此選項符合 最具成本效益 的要求。正確。",
       "C": "❌ 異步推理端點適⽤於需要處理⼤批量請求且對延遲要求較低的場景。雖然可以通過⾃動擴展策略在⾮⼯作時間縮減到零，但異步推理端點的設計並不適合實時預測場景。“ ”此選項不符合題⽬中 實時預測 的要求。錯誤。",
-      "D": "❌ Lambda實時端點無法通過 函數完全關閉或激活，實時端點的實例會持續運⾏並產⽣成本，即使沒有流量。“ ”此選項無法實現 最具成本效益 的⽬標。錯誤。"
+      "D": "❌ 實時端點無法通過Lambda函數完全關閉或激活，實時端點的實例會持續運⾏並產⽣成本，即使沒有流量。“ ”此選項無法實現 最具成本效益 的⽬標。錯誤。"
     },
     "type": "single",
     "options": {
@@ -868,7 +868,7 @@
   {
     "exam": "MLA-C01",
     "id": 149,
-    "question": "Amazon S3 .csv⼀家公司⼤幅增加了儲存在 儲存桶中的 檔案資料量。現在，資料轉換腳本和查詢的運⾏時間⽐以前⻑得多。⼀位機器學習⼯程師必須實施⼀個解決⽅案來優化數據，從⽽提⾼查詢效能。哪種解決⽅案能夠在滿⾜此要求的同時，將維運開銷降⾄最低？",
+    "question": "⼀家公司⼤幅增加了儲存在Amazon S3儲存桶中的.csv檔案資料量。現在，資料轉換腳本和查詢的運⾏時間⽐以前⻑得多。⼀位機器學習⼯程師必須實施⼀個解決⽅案來優化數據，從⽽提⾼查詢效能。哪種解決⽅案能夠在滿⾜此要求的同時，將維運開銷降⾄最低？",
     "explanations": {
       "C": "✅ AWS Glue ETL .使⽤csv將Apache轉換為Parquet格式-正確分析：效能優化：Parquet是列式存儲，且內建壓縮，是AWS數據湖的最佳Athena, Glue, 實踐，能顯著提升查詢（如SageMaker）的速度。低維運開銷：AWS Glue ETL是⼀個託管服務，你只需要定義來源與⽬的地，AWS會負責所有的運算資源管理。為什麼正確：這同時滿⾜了「提⾼效能」與「最低維運開銷」這兩個核⼼要求。",
       "B": "❌  -使⽤AWS刪除具有字串類型值的資料列Glue錯誤(分析：這是在做「數據清理Data Cleaning)」，⽽⾮「效能優化」。為什麼不選：直接刪除數據會導致資訊丟失，且這完全無法解決因資料量龐⼤導致的查詢緩慢問題。",
@@ -876,9 +876,9 @@
     },
     "type": "single",
     "options": {
-      "A": "AWS Lambda .csv S3配置 函數，將 檔案拆分為 儲存桶中的較⼩物件。",
+      "A": "配置AWS Lambda函數，將.csv檔案拆分為S3儲存桶中的較⼩物件。",
       "B": "設定AWS Glue S3作業，刪除具有字串類型值的資料列，並將結果儲存到儲存桶。",
-      "C": "AWS Glue (ETL) .csv配置 提取、轉換和載⼊ 作業，將 檔案轉換為Apache Parquet格式。",
+      "C": "配置AWS Glue提取、轉換和載⼊(ETL)作業，將.csv檔案轉換為Apache Parquet格式。",
       "D": "配置Amazon EMR叢集來處理S3儲存桶中的資料。"
     },
     "answer": "C"
@@ -926,7 +926,7 @@
     "explanations": {
       "A": "答案是1. Amazon SageMaker Ground Truth核⼼知識點：標註效率優化：對於視訊資料，⼿動標註每⼀影格（Frame）極其耗時。SageMaker Ground Truth提供了多種加速功能：⾃動化資料標註（Automated Data Labeling）：利⽤機器學習模型先進⾏預標註，只有在信⼼值低時才交給⼈⼯。輔助標註⼯具（Assisted Labeling）：例如在視訊標註中，它⽀援物件追蹤（Object Tracking）。標註員只需在第⼀幀畫出框，系統會⾃動預測該物件在後續影格的位置，標註員只需微調。視訊⼯作流程：Ground Truth內建了專⾨針對視訊物件偵測、視訊物件追蹤和視訊分類的介⾯。2.選項獨⽴分析 -使⽤A.對視訊畫⾯進⾏標註SageMaker Ground Truth正確分析：Ground Truth正是為了縮短標註時間⽽設計。為什麼正確：它提供了專⾨的視訊標註⼯作流。透過「輔助標註」和「⾃動化資料標註」功能，可以⼤幅減少⼯程師在視訊影格上花費的重複性體",
       "B": "❌  -使⽤SageMaker發展標註模型JumpStart錯誤分析：JumpStart提供了預訓練模型和⼀鍵式⽅案，⽅便快速部署模型。為什麼不選：JumpStart是⼀個模型庫，雖然你可以⽤裡⾯的模型來做預測，但它本⾝不是⼀個標註平台。要建⽴⼀個完整的標註⼯作流（包含⼈⼯審核介⾯、任務分配等），JumpStart並不具備這些功能。",
-      "C": "❌ SageMaker Data Wrangler -使⽤ 建⽴資料⼯作流程 錯誤分析：Data Wrangler主要⽤於資料清理、轉換與特徵⼯程（例如處理缺失值、編碼、特徵縮放）。為什麼不選：Data Wrangler的強項在於處理結構化（Tabular）資料或影像資料的「處理」，⽽⾮⼈⼯與機器協作的「標註」。它無法提供視訊標註所需的互動式UI。",
+      "C": "❌ 使⽤SageMaker Data Wrangler建⽴資料⼯作流程-錯誤分析：Data Wrangler主要⽤於資料清理、轉換與特徵⼯程（例如處理缺失值、編碼、特徵縮放）。為什麼不選：Data Wrangler的強項在於處理結構化（Tabular）資料或影像資料的「處理」，⽽⾮⼈⼯與機器協作的「標註」。它無法提供視訊標註所需的互動式UI。",
       "D": "❌  -使⽤Amazon的A2I標註介⾯Amazon Rekognition錯誤Amazon A2I （Augmented AI） ** Human Review分析： ⽤於 ⼈⼯審核（ ）**  /模型低信⼼的預測結果；Amazon是預先訓練好的影像Rekognition視訊分析服務。為什麼不選：Rekognition是封裝好的API，雖然可以⽤於偵測，但不適A2I合⽤來標註「⾃定義」運動分類的專⽤訓練資料集。 主要是「審核」⽽⾮從零開始的⼤規模「標註」流程。3.解題關鍵與總結\"Labeling\" + \"Reduce time\" + \"\"關鍵字對應：看到Video，⾸選答案⼀定是SageMaker Ground Truth。視訊標註的特殊性：考試常考Ground Truth的「物件追蹤」如何透過插值（Interpolation）和機器學習追蹤來減少⼈⼯⼯作量。"
     },
     "type": "single",
@@ -945,7 +945,7 @@
     "explanations": {
       "D": "✅ 使⽤Amazon SageMaker Clarify監控模型和特徵歸因偏差-正確分析：SageMaker Clarify與Model Monitor深度整合。當模型表現下降時，往往是因為某些特徵（Features）的權重發⽣了偏移（例如某個原本不重要的特徵突然變得極具影響⼒）。(為什麼正確：監控「特徵歸因偏差Feature Attribution Drift)」是識別模型預測邏輯失效的關鍵。透過Clarify的持續監控，可以⾃動檢測到模型何時「不再以正確的邏輯」做預測，並藉此「指導模型重新訓練」，這是最精準的⾃動化緩解⽅案。3.解題關鍵與總結關鍵詞對應：\"Performance degrades over time\" ( ) = Drift (效能隨時間下降 漂)移 。\"Automated solution\" ( ) = SageMaker Model Monitor⾃動化⽅案/ Clarify。解題⼼法：在AWS考試中，處理⽣產環境模型「準確度」問題，⾸選家族。若選項中沒有直接列出Model Monitor Model Monitor，則選擇其核⼼元件Clarify。",
       "B": "❌  -使⽤AWS監控X-Ray端點的效能SageMaker AI錯誤AWS X（Ray (分析：Tracing)是⼀個應⽤程式追蹤API⼯具，⽤於分析請求的延遲、路徑與錯誤率。X（為什麼不選：Ray監控的是系統效能（如HTTP 200/500錯誤、響應時間），它完全無法得知模型預測的「邏輯正確性」或「數據分佈」是否發⽣偏移。",
-      "C": "❌ Amazon SageMaker Ground Truth使⽤ 整理⾼品質資料-集 錯誤Ground Truth (Labeling)分析： 是⼀個資料標註 服務。為什麼不選：雖然重訓模型確實需要新標註的數據，但題⽬要求的是⼀個Ground Truth「⻑期且⾃動化的解決⽅案」來「緩解」效能下降。 本⾝不會主動「監控」模型效能，它只是數據準備階段的⼀個環節，無法滿⾜⾃動化監控與觸發的要求。"
+      "C": "❌ 使⽤Amazon SageMaker Ground Truth整理⾼品質資料-集 錯誤Ground Truth (Labeling)分析： 是⼀個資料標註 服務。為什麼不選：雖然重訓模型確實需要新標註的數據，但題⽬要求的是⼀個Ground Truth「⻑期且⾃動化的解決⽅案」來「緩解」效能下降。 本⾝不會主動「監控」模型效能，它只是數據準備階段的⼀個環節，無法滿⾜⾃動化監控與觸發的要求。"
     },
     "type": "single",
     "options": {
@@ -980,9 +980,9 @@
     "id": 155,
     "question": "⼀家公司訓練了⼀個機器學習模型，並將其打包在⼀個容器中。該公司需要將該模型整合到現有的Python應⽤程式中。該公司需要使⽤Web Kubernetes AWS在上託管該模型。該公司不希望管理控制平⾯，並且必須以可重複的⽅式配置資源。基礎架構必須使⽤Python進⾏配置。哪種解決⽅案能夠滿⾜這些要求？",
     "explanations": {
-      "C": "✅ AWS CDK Amazon EKS -使⽤ 來設定 叢集 正確分析：（（ 滿⾜管理要求：使⽤EKS解決了「不管理控制平⾯」的問題。（（ 滿⾜語⾔要求：AWS CDK⽀援Python。這意味著機器學習⼯程師可以⽤Python編寫類別（Classes）和物件來定義EKS Node叢集、以及Groups ECR儲存庫。（（ 滿⾜重複性要求：CDK是標準的IaC，版本控制友好且可重複佈署。為什麼正確：這是唯⼀⼀個同時滿⾜「託管K8s」、「可重複性」以及「使⽤Python配置」所有條件的選項。",
+      "C": "✅ 使⽤AWS CDK來設定Amazon EKS叢集-正確分析：（（滿⾜管理要求：使⽤EKS解決了「不管理控制平⾯」的問題。（（ 滿⾜語⾔要求：AWS CDK⽀援Python。這意味著機器學習⼯程師可以⽤Python編寫類別（Classes）和物件來定義EKS Node叢集、以及Groups ECR儲存庫。（（ 滿⾜重複性要求：CDK是標準的IaC，版本控制友好且可重複佈署。為什麼正確：這是唯⼀⼀個同時滿⾜「託管K8s」、「可重複性」以及「使⽤Python配置」所有條件的選項。",
       "B": "❌ AWS CLI Amazon EKS -使⽤ 設定 叢集 錯誤分析：AWS CLI是命令列⼯具，適合執⾏單次操作。為什麼不選：（（ 重複性差：雖然可以寫Shell，但與Script⼯具（如IaC CDK或CloudFormation）相⽐，它缺乏狀態管理和宣告式配置。（（ ⾮Python配置：CLI Python是命令列指令，不符合題⽬要求「使⽤進⾏配置」的標準開發流程。",
-      "D": "❌ AWS CloudFormation Amazon EKS -使⽤ 設定 叢集 錯誤分析：CloudFormation確實是可重複的IaC⼯具，也使⽤了託管的EKS。為什麼不選：CloudFormation使⽤的是YAML或JSON格式來撰寫範本。題⽬明確要求基礎架構必須使⽤Python進⾏配置，雖然可以使⽤⼀些轉換⼯具，但原⽣⽀援Python定義的IaC⾸選是AWS CDK。3.解題關鍵與總結關鍵字對應：\"Do not want to manage control plane\" = Amazon EKS。\"Configured using Python\" = AWS CDK （Python）。考試陷阱：很多⼈會看到CloudFormation就選，因為它是（D） AWS最權威的IaC。但CDK的出現就是為了讓開發者能⽤程式語⾔（如Python）代替繁瑣的YAML，這正是本題的「陷阱」所在。"
+      "D": "❌ 使⽤AWS CloudFormation設定Amazon EKS叢集-錯誤分析：CloudFormation確實是可重複的IaC⼯具，也使⽤了託管的EKS。為什麼不選：CloudFormation使⽤的是YAML或JSON格式來撰寫範本。題⽬明確要求基礎架構必須使⽤Python進⾏配置，雖然可以使⽤⼀些轉換⼯具，但原⽣⽀援Python定義的IaC⾸選是AWS CDK。3.解題關鍵與總結關鍵字對應：\"Do not want to manage control plane\" = Amazon EKS。\"Configured using Python\" = AWS CDK （Python）。考試陷阱：很多⼈會看到CloudFormation就選，因為它是（D） AWS最權威的IaC。但CDK的出現就是為了讓開發者能⽤程式語⾔（如Python）代替繁瑣的YAML，這正是本題的「陷阱」所在。"
     },
     "type": "single",
     "options": {
@@ -1036,7 +1036,7 @@
     "question": "⼀位機器學習⼯程師想要使⽤、準備和載⼊來⾃Amazon S3的資料進⾏分析。該(⼯程師必須執⾏⼀個提取、轉換和載⼊ETL)作業來發現資料模式並儲存元資料。哪⼀種解決⽅案能夠以最少的⼈⼯幹預滿⾜這些要求？",
     "explanations": {
       "A": "核⼼知識點：1. AWS Glue⽣態系統•  ( )爬蟲AWS Glue Crawler：這是實現「最少⼈⼯⼲預」的關鍵。它可以⾃S3 CSV, JSON, Parquet動掃描 中的檔案（如 ），識別檔案格式，並推斷其架構（Schema/模式）。•  ( )資料⽬錄AWS Glue Data Catalog：這是⼀個集中式的元資料儲存庫。它Athena, 存儲了數據的表定義、位置和模式資訊。這讓Redshift Spectrum和等服務能直接讀取SageMaker S3數據⽽不需要⼿動定義結構。• ：Serverless ETL AWS Glue是⼀個無伺服器環境，⾃動處理底層資源的擴展，⼯程師只需專注於轉換邏輯。2.選項獨⽴分析 -使⽤A.執⾏AWS Glue並將元資料儲存在資料⽬錄中ETL正確• 分析：AWS Glue是專⾨為此場景設計的。•為什麼正確：⾃動化：1. Glue Crawler可以⾃動發現數據模式。整合性：2.是儲存元資料的標準Glue Data Catalog AWS服務。低維運：它是3. Serverless服務，符合「最少⼈⼯⼲預」的要求。",
-      "B": "❌ Amazon SageMaker Data Wrangler -建⽴ 流 錯誤• 分析：Data Wrangler是⼀個視覺化⼯具，旨在幫助⼯程師「⼿動」進⾏數據準備、特徵⼯程和視覺化。• 為什麼不選：雖然Data Wrangler很好⽤，但它主要⽤於互動式探索，⽽⾮⼤規模⾃動化ETL與全局元資料⽬錄管理。此外，它的元資料通常是流程的⼀部分，⽽不是像Glue Data Catalog那樣供全公司服務調⽤的全局⽬錄。",
+      "B": "❌ 建⽴Amazon SageMaker Data Wrangler流-錯誤• 分析：Data Wrangler是⼀個視覺化⼯具，旨在幫助⼯程師「⼿動」進⾏數據準備、特徵⼯程和視覺化。• 為什麼不選：雖然Data Wrangler很好⽤，但它主要⽤於互動式探索，⽽⾮⼤規模⾃動化ETL與全局元資料⽬錄管理。此外，它的元資料通常是流程的⼀部分，⽽不是像Glue Data Catalog那樣供全公司服務調⽤的全局⽬錄。",
       "C": "❌  -使⽤Athena和Step建⽴Functions管道ETL錯誤• 分析：這是⼀個「⾃建」⽅案。你需要寫Step Functions的狀態機邏輯，還要在Athena中編寫DDL SQL來定義表結構。•為什麼不選：這涉及⼤量的程式碼撰寫與元件整合，⼈⼯⼲預程度⾼，不符合題⽬「最少⼈⼯⼲預」的優先級。",
       "D": "❌  -啟動EC2執⾏個體來執⾏ETL並儲存⾄Redshift錯誤•分析：這是最傳統、維運負擔最⼤的做法。•為什麼不選：⾼維運：需要管理1. EC2補丁、擴展與儲存。不匹配：2.⽤於建模⽽⾮scikit-learn ETL。成本⾼：為了存儲元資料⽽啟動3. Redshift（數據倉庫）是⼤材⼩⽤且成本極⾼。3.解題關鍵與總結•關鍵詞對應：◦ \"Discover data patterns\" ( 發現數據模式 ) $\\rightarrow$ AWS GlueCrawler。◦ \"Store metadata\" ( 儲存元資料 ) $\\rightarrow$ AWS Glue DataCatalog。◦ \"Minimal manual intervention\" ( 最少⼈⼯⼲預 ) $\\rightarrow$Serverless / Fully Managed services ( 如Glue)。"
     },
@@ -1127,7 +1127,7 @@
     },
     "type": "single",
     "options": {
-      "A": "AWS Glue AWS Glue (ETL)使⽤ 爬蟲和 擷取、轉換和載⼊ 作業來偵測資料漂移。使⽤AWS Glue觸發器來⾃動執⾏重新訓練作業。",
+      "A": "使⽤AWS Glue爬蟲和AWS Glue擷取、轉換和載⼊(ETL)作業來偵測資料漂移。使⽤AWS Glue觸發器來⾃動執⾏重新訓練作業。",
       "B": "使⽤Amazon Managed Service for Apache Flink偵測資料漂移。使⽤AWS Lambda函數⾃動執⾏重新訓練任務。",
       "C": "使⽤SageMaker模型監控器偵測資料漂移。使⽤AWS Lambda函數⾃動執⾏重新訓練作業。",
       "D": "使⽤Amazon QuickSight AWS Step異常檢測功能來偵測資料漂移。使⽤Functions⼯作流程來⾃動執⾏重新訓練作業。"
@@ -1692,7 +1692,7 @@
   {
     "exam": "MLA-C01",
     "id": 193,
-    "question": "Amazon QuickSight⼀位機器學習⼯程師正在使⽤ 異常檢測功能來偵測機器運作“ ” “ ”溫度是否過⾼或過低（與正常值相⽐）。該⼯程師將 嚴重性 參數設為 低及以上 ，“ ” “ ”並將 ⽅向 參數設為 全部 。“ ” “ ”如果該⼯程師將 ⽅向 參數更改為 低於預期 ，則異常檢測結果會受到什麼影響？",
+    "question": "⼀位機器學習⼯程師正在使⽤Amazon QuickSight異常檢測功能來偵測機器運作“ ” “ ”溫度是否過⾼或過低（與正常值相⽐）。該⼯程師將 嚴重性 參數設為 低及以上 ，“ ” “ ”並將 ⽅向 參數設為 全部 。“ ” “ ”如果該⼯程師將 ⽅向 參數更改為 低於預期 ，則異常檢測結果會受到什麼影響？",
     "explanations": {
       "_full": " 為什麼選擇B？ Frequency 頻率（ ）下降：原本系統會抓出「太熱」和「太冷」兩類異 常，現在只抓「太冷」，因此識別出的異常數量（頻率）必然會減少。 Recall / 召回率（ 回憶率）下降：召回率衡量的是模型抓到「所有真正異 常」的能⼒。題⽬背景是⼯程師需要監控溫度過⾼或過低。當參數改為 Miss 「低於預期」時，系統會漏掉（ ）所有溫度過⾼的真實異常點。在評 + 估整體異常（⾼ 低）的⽬標下，漏報增加導致召回率下降。"
     },
