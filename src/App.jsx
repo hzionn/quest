@@ -3,8 +3,91 @@ import {
   Upload, FileJson, CheckCircle, XCircle, Sun, Moon, Star, Flag,
   ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
-  AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database
+  AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
+  Github, Key, RefreshCw, Trash2, Eye, EyeOff
 } from 'lucide-react'
+
+// ── GitHub Config ──
+const GITHUB_OWNER = 'awsjin510'
+const GITHUB_REPO = 'quest'
+const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
+const DATA_PATH = 'public/data'
+
+// ── GitHub API Helpers ──
+async function githubApiFetch(path, token, options = {}) {
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, {
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      ...options.headers,
+    },
+    ...options,
+  })
+  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`)
+  return res.json()
+}
+
+async function githubPutFile(path, content, token, sha = null) {
+  const body = {
+    message: `data: update ${path.split('/').pop()}`,
+    content: btoa(unescape(encodeURIComponent(content))),
+    branch: GITHUB_BRANCH,
+  }
+  if (sha) body.sha = sha
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.message || `GitHub API ${res.status}`)
+  }
+  return res.json()
+}
+
+async function githubDeleteFile(path, token, sha) {
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: `data: delete ${path.split('/').pop()}`,
+      sha,
+      branch: GITHUB_BRANCH,
+    }),
+  })
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`)
+  return res.json()
+}
+
+async function loadQuestionsFromGitHub(token) {
+  // List files in public/data/
+  const files = await githubApiFetch(DATA_PATH, token)
+  const jsonFiles = files.filter(f => f.name.endsWith('.json'))
+  const allQuestions = []
+  const bankInfo = []
+  for (const file of jsonFiles) {
+    try {
+      const fileData = await githubApiFetch(`${DATA_PATH}/${file.name}`, token)
+      const content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))))
+      const data = JSON.parse(content)
+      const questions = Array.isArray(data) ? data : (data.questions || [])
+      if (questions.length) {
+        allQuestions.push(...questions)
+        bankInfo.push({ name: file.name, count: questions.length, sha: fileData.sha })
+      }
+    } catch { /* skip bad files */ }
+  }
+  return { questions: allQuestions, banks: bankInfo }
+}
 
 // ── Initial State ──
 const initialState = {
@@ -40,6 +123,12 @@ const initialState = {
 
   // Stats
   statsHistory: {},
+
+  // GitHub sync
+  githubLoading: false,
+  githubSyncing: false,
+  githubBanks: [],  // [{ name, count, sha }]
+  githubError: null,
 }
 
 // ── Reducer ──
@@ -233,8 +322,20 @@ function reducer(state, action) {
     case 'RESTORE_REVIEWS':
       return { ...state, reviewMarked: action.reviewMarked }
 
+    case 'SET_GITHUB_LOADING':
+      return { ...state, githubLoading: action.value }
+
+    case 'SET_GITHUB_SYNCING':
+      return { ...state, githubSyncing: action.value }
+
+    case 'SET_GITHUB_BANKS':
+      return { ...state, githubBanks: action.banks }
+
+    case 'SET_GITHUB_ERROR':
+      return { ...state, githubError: action.error }
+
     case 'CLEAR_ALL_DATA':
-      try { localStorage.removeItem('quest-data') } catch {}
+      try { localStorage.removeItem('quest-stats') } catch {}
       return { ...initialState, darkMode: state.darkMode }
 
     default:
@@ -250,34 +351,51 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
 
-  // Load persisted data from localStorage on startup
+  // Load questions from GitHub on startup
+  useEffect(() => {
+    const token = localStorage.getItem('quest-github-token')
+    if (!token) return
+    const load = async () => {
+      dispatch({ type: 'SET_GITHUB_LOADING', value: true })
+      dispatch({ type: 'SET_GITHUB_ERROR', error: null })
+      try {
+        const { questions, banks } = await loadQuestionsFromGitHub(token)
+        dispatch({ type: 'SET_GITHUB_BANKS', banks })
+        if (questions.length) {
+          dispatch({ type: 'LOAD_QUESTIONS', questions, filename: 'GitHub 題庫' })
+        }
+      } catch (err) {
+        dispatch({ type: 'SET_GITHUB_ERROR', error: err.message })
+      } finally {
+        dispatch({ type: 'SET_GITHUB_LOADING', value: false })
+      }
+    }
+    load()
+  }, [])
+
+  // Persist stats/bookmarks to localStorage (user-specific, not question data)
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('quest-data')
+      const saved = localStorage.getItem('quest-stats')
       if (saved) {
         const data = JSON.parse(saved)
-        if (data.questions?.length) {
-          dispatch({ type: 'LOAD_QUESTIONS', questions: data.questions, filename: '已儲存的題庫' })
-        }
         if (data.statsHistory) dispatch({ type: 'RESTORE_STATS', statsHistory: data.statsHistory })
         if (data.bookmarked) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: data.bookmarked })
         if (data.reviewMarked) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: data.reviewMarked })
       }
-    } catch { /* ignore corrupt data */ }
+    } catch {}
   }, [])
 
-  // Save to localStorage whenever questions/stats change
   useEffect(() => {
-    if (!state.questions.length && !Object.keys(state.statsHistory).length) return
+    if (!Object.keys(state.statsHistory).length && !Object.keys(state.bookmarked).length) return
     try {
-      localStorage.setItem('quest-data', JSON.stringify({
-        questions: state.questions,
+      localStorage.setItem('quest-stats', JSON.stringify({
         statsHistory: state.statsHistory,
         bookmarked: state.bookmarked,
         reviewMarked: state.reviewMarked,
       }))
-    } catch { /* storage full, ignore */ }
-  }, [state.questions, state.statsHistory, state.bookmarked, state.reviewMarked])
+    } catch {}
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked])
 
   // Timer for exam
   useEffect(() => {
@@ -382,22 +500,102 @@ export default function App() {
 // Upload Tab
 // ══════════════════════════════════════════
 function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
-  const handleFile = (e) => {
+  const [token, setToken] = useState(() => localStorage.getItem('quest-github-token') || '')
+  const [showToken, setShowToken] = useState(false)
+  const [tokenSaved, setTokenSaved] = useState(() => !!localStorage.getItem('quest-github-token'))
+
+  const saveToken = () => {
+    if (token.trim()) {
+      localStorage.setItem('quest-github-token', token.trim())
+      setTokenSaved(true)
+      // Reload from GitHub
+      reloadFromGitHub(token.trim())
+    }
+  }
+
+  const clearToken = () => {
+    localStorage.removeItem('quest-github-token')
+    setToken('')
+    setTokenSaved(false)
+    dispatch({ type: 'SET_GITHUB_BANKS', banks: [] })
+  }
+
+  const reloadFromGitHub = async (t) => {
+    const tk = t || localStorage.getItem('quest-github-token')
+    if (!tk) return
+    dispatch({ type: 'SET_GITHUB_LOADING', value: true })
+    dispatch({ type: 'SET_GITHUB_ERROR', error: null })
+    try {
+      const { questions, banks } = await loadQuestionsFromGitHub(tk)
+      dispatch({ type: 'SET_GITHUB_BANKS', banks })
+      if (questions.length) {
+        dispatch({ type: 'LOAD_QUESTIONS', questions, filename: 'GitHub 題庫' })
+      }
+    } catch (err) {
+      dispatch({ type: 'SET_GITHUB_ERROR', error: err.message })
+    } finally {
+      dispatch({ type: 'SET_GITHUB_LOADING', value: false })
+    }
+  }
+
+  const handleFile = async (e) => {
     const file = e.target.files[0]
     if (!file) return
+    const tk = localStorage.getItem('quest-github-token')
     const reader = new FileReader()
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
-        const data = JSON.parse(ev.target.result)
+        const rawText = ev.target.result
+        const data = JSON.parse(rawText)
         const questions = Array.isArray(data) ? data : (data.questions || [])
         if (!questions.length) { alert('找不到有效的題目資料'); return }
+
+        // Load locally first
         dispatch({ type: 'LOAD_QUESTIONS', questions, filename: file.name })
+
+        // Upload to GitHub if token exists
+        if (tk) {
+          dispatch({ type: 'SET_GITHUB_SYNCING', value: true })
+          dispatch({ type: 'SET_GITHUB_ERROR', error: null })
+          try {
+            // Check if file already exists to get sha
+            let sha = null
+            try {
+              const existing = await githubApiFetch(`${DATA_PATH}/${file.name}`, tk)
+              sha = existing.sha
+            } catch { /* file doesn't exist yet */ }
+            await githubPutFile(`${DATA_PATH}/${file.name}`, rawText, tk, sha)
+            await reloadFromGitHub(tk)
+          } catch (err) {
+            dispatch({ type: 'SET_GITHUB_ERROR', error: `上傳 GitHub 失敗: ${err.message}` })
+          } finally {
+            dispatch({ type: 'SET_GITHUB_SYNCING', value: false })
+          }
+        }
       } catch {
         alert('JSON 解析失敗，請確認檔案格式正確')
       }
     }
     reader.readAsText(file)
     e.target.value = ''
+  }
+
+  const handleDeleteBank = async (bank) => {
+    if (!confirm(`確定要刪除 ${bank.name} 嗎？`)) return
+    const tk = localStorage.getItem('quest-github-token')
+    if (!tk) return
+    dispatch({ type: 'SET_GITHUB_SYNCING', value: true })
+    try {
+      await githubDeleteFile(`${DATA_PATH}/${bank.name}`, tk, bank.sha)
+      await reloadFromGitHub(tk)
+      // Reset local questions and reload
+      dispatch({ type: 'CLEAR_ALL_DATA' })
+      await reloadFromGitHub(tk)
+    } catch (err) {
+      dispatch({ type: 'SET_GITHUB_ERROR', error: `刪除失敗: ${err.message}` })
+    } finally {
+      dispatch({ type: 'SET_GITHUB_SYNCING', value: false })
+    }
   }
 
   const stats = useMemo(() => {
@@ -418,23 +616,116 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
   return (
     <div className="space-y-6">
+      {/* GitHub Token Config */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <Github size={20} className="text-gray-700 dark:text-gray-300" />
+          GitHub 連結設定
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          設定 GitHub Token 後，上傳的題庫會自動存到 GitHub，任何裝置開啟都能使用
+        </p>
+        {tokenSaved ? (
+          <div className="flex items-center gap-3">
+            <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <CheckCircle size={16} className="text-green-500" />
+              <span className="text-sm text-green-700 dark:text-green-400">GitHub Token 已設定</span>
+            </div>
+            <button
+              onClick={() => reloadFromGitHub()}
+              disabled={state.githubLoading}
+              className="p-2 text-gray-500 hover:text-orange-500 transition-colors disabled:opacity-50"
+              title="重新同步"
+            >
+              <RefreshCw size={18} className={state.githubLoading ? 'animate-spin' : ''} />
+            </button>
+            <button
+              onClick={clearToken}
+              className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+              title="移除 Token"
+            >
+              <XCircle size={18} />
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Key size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type={showToken ? 'text' : 'password'}
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  placeholder="ghp_xxxxxxxxxxxx"
+                  className="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                />
+                <button
+                  onClick={() => setShowToken(!showToken)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showToken ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <button
+                onClick={saveToken}
+                disabled={!token.trim()}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                儲存
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              需要 repo 的讀寫權限。前往 GitHub → Settings → Developer settings → Personal access tokens 建立
+            </p>
+          </div>
+        )}
+        {state.githubError && (
+          <div className="mt-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+              <AlertCircle size={14} />
+              {state.githubError}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* GitHub stored banks */}
+      {tokenSaved && state.githubBanks.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+            <Database size={20} className="text-orange-500" />
+            GitHub 題庫檔案
+          </h3>
+          <div className="space-y-2">
+            {state.githubBanks.map((bank, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
+                <FileJson size={16} className="text-orange-500 shrink-0" />
+                <span className="font-medium">{bank.name}</span>
+                <span className="text-gray-500 dark:text-gray-400">{bank.count} 題</span>
+                <button
+                  onClick={() => handleDeleteBank(bank)}
+                  disabled={state.githubSyncing}
+                  className="ml-auto p-1 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                  title="從 GitHub 刪除"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Upload area */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-            {state.questions.length > 0
-              ? <Database size={32} className="text-orange-600 dark:text-orange-400" />
-              : <FileJson size={32} className="text-orange-600 dark:text-orange-400" />
-            }
+            <Upload size={32} className="text-orange-600 dark:text-orange-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">
-              {state.questions.length > 0 ? `已載入 ${state.questions.length} 題` : '上傳 JSON 題庫'}
-            </h2>
+            <h2 className="text-lg font-semibold">上傳 JSON 題庫</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {state.questions.length > 0
-                ? '題庫已自動儲存，下次開啟無需重新上傳'
-                : '上傳後自動儲存至瀏覽器，下次開啟直接使用'}
+              {tokenSaved ? '上傳後自動存到 GitHub，所有裝置都能使用' : '設定 GitHub Token 後可永久保存題庫'}
             </p>
           </div>
           <input
@@ -444,24 +735,17 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
             onChange={handleFile}
             className="hidden"
           />
-          <div className="flex gap-3">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
-            >
-              <Upload size={18} />
-              {state.questions.length > 0 ? '追加題庫' : '選擇 JSON 檔案'}
-            </button>
-            {state.questions.length > 0 && (
-              <button
-                onClick={() => { if (confirm('確定要清除所有題庫和練習紀錄嗎？')) dispatch({ type: 'CLEAR_ALL_DATA' }) }}
-                className="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
-              >
-                <RotateCcw size={16} />
-                清除題庫
-              </button>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={state.githubSyncing}
+            className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+          >
+            {state.githubSyncing ? (
+              <><RefreshCw size={18} className="animate-spin" /> 同步中...</>
+            ) : (
+              <><Upload size={18} /> 選擇 JSON 檔案</>
             )}
-          </div>
+          </button>
         </div>
       </div>
 
