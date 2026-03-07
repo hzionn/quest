@@ -3,7 +3,7 @@ import {
   Upload, FileJson, CheckCircle, XCircle, Sun, Moon, Star, Flag,
   ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
-  AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database, RefreshCw, Download
+  AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database
 } from 'lucide-react'
 
 // ── Initial State ──
@@ -40,11 +40,6 @@ const initialState = {
 
   // Stats
   statsHistory: {},
-
-  // Bundled question banks
-  bundledLoading: false,
-  bundledBanks: [],   // [{ name, filename, count }]
-  bundledLoaded: false,
 }
 
 // ── Reducer ──
@@ -229,29 +224,18 @@ function reducer(state, action) {
       }
     }
 
-    case 'SET_BUNDLED_LOADING':
-      return { ...state, bundledLoading: action.value }
+    case 'RESTORE_STATS':
+      return { ...state, statsHistory: action.statsHistory }
 
-    case 'SET_BUNDLED_BANKS':
-      return { ...state, bundledBanks: action.banks, bundledLoaded: true }
+    case 'RESTORE_BOOKMARKS':
+      return { ...state, bookmarked: action.bookmarked }
 
-    case 'LOAD_BUNDLED_QUESTIONS': {
-      const newQs = action.questions
-      const map = new Map()
-      state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
-      newQs.forEach(q => map.set(`${q.exam}-${q.id}`, q))
-      const merged = Array.from(map.values())
-      return {
-        ...state,
-        questions: merged,
-        uploadHistory: [...state.uploadHistory, {
-          filename: action.filename,
-          count: newQs.length,
-          timestamp: Date.now(),
-          bundled: true,
-        }]
-      }
-    }
+    case 'RESTORE_REVIEWS':
+      return { ...state, reviewMarked: action.reviewMarked }
+
+    case 'CLEAR_ALL_DATA':
+      try { localStorage.removeItem('quest-data') } catch {}
+      return { ...initialState, darkMode: state.darkMode }
 
     default:
       return state
@@ -266,33 +250,34 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
 
-  // Auto-load bundled question banks on startup
+  // Load persisted data from localStorage on startup
   useEffect(() => {
-    const basePath = import.meta.env.BASE_URL || '/'
-    const loadBundled = async () => {
-      try {
-        dispatch({ type: 'SET_BUNDLED_LOADING', value: true })
-        const manifestRes = await fetch(`${basePath}data/manifest.json`)
-        if (!manifestRes.ok) { dispatch({ type: 'SET_BUNDLED_BANKS', banks: [] }); return }
-        const manifest = await manifestRes.json()
-        const banks = manifest.banks || []
-        dispatch({ type: 'SET_BUNDLED_BANKS', banks })
-        for (const bank of banks) {
-          try {
-            const res = await fetch(`${basePath}data/${bank.filename}`)
-            if (!res.ok) continue
-            const data = await res.json()
-            const questions = Array.isArray(data) ? data : (data.questions || [])
-            if (questions.length) {
-              dispatch({ type: 'LOAD_BUNDLED_QUESTIONS', questions, filename: `📦 ${bank.name}` })
-            }
-          } catch { /* skip individual bank errors */ }
+    try {
+      const saved = localStorage.getItem('quest-data')
+      if (saved) {
+        const data = JSON.parse(saved)
+        if (data.questions?.length) {
+          dispatch({ type: 'LOAD_QUESTIONS', questions: data.questions, filename: '已儲存的題庫' })
         }
-      } catch { /* manifest not found, skip */ }
-      finally { dispatch({ type: 'SET_BUNDLED_LOADING', value: false }) }
-    }
-    loadBundled()
+        if (data.statsHistory) dispatch({ type: 'RESTORE_STATS', statsHistory: data.statsHistory })
+        if (data.bookmarked) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: data.bookmarked })
+        if (data.reviewMarked) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: data.reviewMarked })
+      }
+    } catch { /* ignore corrupt data */ }
   }, [])
+
+  // Save to localStorage whenever questions/stats change
+  useEffect(() => {
+    if (!state.questions.length && !Object.keys(state.statsHistory).length) return
+    try {
+      localStorage.setItem('quest-data', JSON.stringify({
+        questions: state.questions,
+        statsHistory: state.statsHistory,
+        bookmarked: state.bookmarked,
+        reviewMarked: state.reviewMarked,
+      }))
+    } catch { /* storage full, ignore */ }
+  }, [state.questions, state.statsHistory, state.bookmarked, state.reviewMarked])
 
   // Timer for exam
   useEffect(() => {
@@ -433,49 +418,24 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
   return (
     <div className="space-y-6">
-      {/* Bundled question banks */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <Database size={20} className="text-orange-500" />
-          內建題庫
-        </h3>
-        {state.bundledLoading ? (
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 py-4 justify-center">
-            <RefreshCw size={16} className="animate-spin" />
-            正在載入內建題庫...
-          </div>
-        ) : state.bundledBanks.length > 0 ? (
-          <div className="space-y-2">
-            {state.bundledBanks.map((bank, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                <Download size={16} className="text-green-500 shrink-0" />
-                <span className="font-medium">{bank.name}</span>
-                <span className="text-gray-500 dark:text-gray-400">{bank.count || ''} 題</span>
-                <CheckCircle size={14} className="text-green-500 ml-auto" />
-                <span className="text-xs text-green-600 dark:text-green-400">已載入</span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">尚未設定內建題庫</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">
-              將 JSON 題庫放入 <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">public/data/</code> 目錄，
-              並在 <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">manifest.json</code> 中註冊即可自動載入
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Upload area */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-            <FileJson size={32} className="text-orange-600 dark:text-orange-400" />
+            {state.questions.length > 0
+              ? <Database size={32} className="text-orange-600 dark:text-orange-400" />
+              : <FileJson size={32} className="text-orange-600 dark:text-orange-400" />
+            }
           </div>
           <div>
-            <h2 className="text-lg font-semibold">手動上傳 JSON 題庫</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">支援多次上傳合併（不同題號範圍）</p>
+            <h2 className="text-lg font-semibold">
+              {state.questions.length > 0 ? `已載入 ${state.questions.length} 題` : '上傳 JSON 題庫'}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {state.questions.length > 0
+                ? '題庫已自動儲存，下次開啟無需重新上傳'
+                : '上傳後自動儲存至瀏覽器，下次開啟直接使用'}
+            </p>
           </div>
           <input
             ref={fileInputRef}
@@ -484,13 +444,24 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
             onChange={handleFile}
             className="hidden"
           />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
-          >
-            <Upload size={18} />
-            選擇 JSON 檔案
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-6 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
+            >
+              <Upload size={18} />
+              {state.questions.length > 0 ? '追加題庫' : '選擇 JSON 檔案'}
+            </button>
+            {state.questions.length > 0 && (
+              <button
+                onClick={() => { if (confirm('確定要清除所有題庫和練習紀錄嗎？')) dispatch({ type: 'CLEAR_ALL_DATA' }) }}
+                className="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium flex items-center gap-2 transition-colors text-sm"
+              >
+                <RotateCcw size={16} />
+                清除題庫
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -550,7 +521,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
           <div className="space-y-2">
             {state.uploadHistory.map((h, i) => (
               <div key={i} className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-gray-700/50 last:border-0">
-                {h.bundled ? <Database size={16} className="text-green-500 shrink-0" /> : <FileJson size={16} className="text-orange-500 shrink-0" />}
+                <FileJson size={16} className="text-orange-500 shrink-0" />
                 <span className="font-medium truncate">{h.filename}</span>
                 <span className="text-gray-500 dark:text-gray-400">{h.count} 題</span>
                 <span className="text-gray-400 dark:text-gray-500 text-xs ml-auto">
