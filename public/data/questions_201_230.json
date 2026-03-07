@@ -1,0 +1,630 @@
+[
+  {
+    "exam": "MLA-C01",
+    "id": 201,
+    "type": "matching",
+    "question": "一家公司使用 Amazon SageMaker AI 來支援機器學習工作流程，例如模型訓練和部署。請從以下清單中選擇正確的註冊表，以滿足每個用例的要求，並盡可能減少運維開銷。每個註冊表應選擇一次或多次。（選擇四個。）",
+    "available_options": [
+      "Amazon Elastic Container Registry (Amazon ECR)",
+      "SageMaker Model Registry"
+    ],
+    "matches": [
+      {
+        "use_case": "標記模型包，並使用包含用於訓練和部署的容器鏡像的模型包組。",
+        "correct_answer": "SageMaker Model Registry"
+      },
+      {
+        "use_case": "儲存預定義的語言包、核心和相關依賴項。",
+        "correct_answer": "Amazon Elastic Container Registry (Amazon ECR)"
+      },
+      {
+        "use_case": "將模型及其圖像整理成模型組，以便更好地發現模型。",
+        "correct_answer": "SageMaker Model Registry"
+      },
+      {
+        "use_case": "提取內建的 SageMaker AI 影像用於模型訓練。",
+        "correct_answer": "Amazon Elastic Container Registry (Amazon ECR)"
+      }
+    ],
+    "explanations": {
+      "1": "✅ SageMaker Model Registry — 儘管名稱中提到了「容器鏡像」，但「模型套件（Model Package）」是 SageMaker 模型註冊表中的特有資源。它將模型工件與其推理鏡像組合在一起，並允許使用「模型套件組」來管理版本和標籤。",
+      "2": "✅ Amazon ECR — 語言包、內核和依賴項通常被打包在 Docker 鏡像中。ECR 是 AWS 上儲存這些基礎環境與自定義運行環境鏡像的標準服務。",
+      "3": "✅ SageMaker Model Registry — 模型註冊表的核心功能就是「模型組（Model Groups）」。它專門用於組織、目錄化模型，並提供更好的發現性（Discoverability）。",
+      "4": "✅ Amazon ECR — SageMaker 提供的所有「內建演算法」或「預構建框架」鏡像，實際上都是存放在 AWS 託管的公共 ECR 儲存庫中。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 202,
+    "type": "single",
+    "question": "一家旅行公司希望創建一個機器學習模型，為用戶推薦下一個機場目的地。該公司已收集了數百萬筆數據記錄，包括用戶位置、近期在公司網站上的搜尋歷史記錄以及 2000 個可用機場的資訊。這些資料包含多個類別特徵，其中一個目標列預計是一個高維稀疏矩陣。該公司需要使用 Amazon SageMaker AI 的內建演算法來建立模型。一位機器學習工程師使用獨熱編碼轉換了這些類別特徵。為了滿足這些要求，這位機器學習工程師應該實作哪種演算法？",
+    "options": {
+      "A": "使用 CatBoost 演算法推薦下一個機場目的地。",
+      "B": "使用 DeepAR 預測演算法推薦下一個機場目的地。",
+      "C": "使用 Factorization Machines 因子分解機演算法推薦下一個機場目的地。",
+      "D": "使用 k 均值演算法將使用者聚類成組。根據用戶的搜尋歷史，將每個群組映射到下一個機場目的地。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "❌ CatBoost 雖然在處理類別特徵上非常強大，但它並非 Amazon SageMaker 的「內建演算法」（它通常需要透過容器或腳本模式使用）。此外，它對於極端稀疏的矩陣處理效率不如專門的推薦演算法。",
+      "B": "❌ DeepAR 是專門用於「時間序列預測」（例如預測未來一週的機票銷售量）的演算法。雖然推薦也與歷史有關，但 DeepAR 並非為處理高維稀疏特徵的推薦系統設計的。",
+      "C": "✅ 因子分解機（Factorization Machines, FM）是 SageMaker 內建演算法中，專為處理高維稀疏數據下的特徵交互作用而設計的。它在推薦系統（點擊率預測、項目推薦）中表現極佳，能捕捉用戶與 2000 個機場之間複雜的關聯性。",
+      "D": "❌ k-means 是一種「非監督式學習」的分群（Clustering）演算法。雖然分群後可以進行對應，但這是一種非常間接且準確度較低的方法，且無法直接處理類別特徵產生的稀疏矩陣交互。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 203,
+    "type": "single",
+    "question": "一位機器學習工程師正在為運行在 Amazon SageMaker AI 端點後面的模型推理組件配置自動擴展。該工程師將 SageMaker AI 自動擴展的目標追蹤擴展策略設定為每個模型每分鐘 100 次呼叫。在正常工作時間內，SageMaker AI 端點能夠正常擴充。但是，該工程師注意到，在每個工作日開始時，沒有實例可用於處理請求，這導致處理延遲。該工程師必須確保 SageMaker AI 端點能夠處理每個工作日開始時的傳入請求。哪種解決方案可以滿足此要求？",
+    "options": {
+      "A": "將 SageMaker AI 自動擴展冷卻時間縮短至支援的最小值。新增一個自動擴展生命週期鉤子來擴展 SageMaker AI 實例。",
+      "B": "將目標指標改為 CPU 使用率。",
+      "C": "將縮放策略目標值修改為 1。",
+      "D": "應用基於 Amazon CloudWatch 警報的步進式擴充策略。應用第二個 CloudWatch 警報和擴展策略，在每個工作日開始時將最小實例數從零擴展到一個。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ 冷卻時間（Cooldown）是為了防止擴展過於頻繁。縮短它雖能讓系統更快反應，但無法解決「最初沒有實例」的問題。生命週期鉤子通常用於自定義動作，對於 SageMaker 端點的冷啟動緩解並非標準做法。",
+      "B": "❌ 改為 CPU 使用率仍是基於負載的反應式擴展。如果初始實例數為零，CPU 使用率無法被監控（因為沒有實例），問題依然存在。",
+      "C": "❌ 將目標值修改為 1（即每分鐘 1 次呼叫就擴展）會讓系統極度敏感，容易導致頻繁擴展與縮減，且依然無法保證在「第一通電話」進來前實例已經就緒。",
+      "D": "✅ 這是處理可預測流量波動的標準做法。透過 CloudWatch 警報與步進式擴充（Step Scaling），你可以設定一個排程任務或基於時間的警報，在工作日開始前主動將 MinCapacity 從 0 改為 1。這樣當第一個請求進來時，實例已經處於 Warm 狀態，消除了延遲。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 204,
+    "type": "single",
+    "question": "一位機器學習工程師正在使用 Amazon SageMaker Studio 筆記本建立一個估計器來訓練神經網路。該估計器運行一個 Python 訓練腳本，該腳本使用分散式資料並行 (DDP) 技術在具有多個 GPU 的單一實例上運行。這位機器學習工程師發現訓練腳本對 GPU 資源的使用不足。他必須找出訓練腳本中可以優化資源使用率的位置。哪個解決方案能夠滿足此要求？",
+    "options": {
+      "A": "使用 Amazon CloudWatch 指標建立一份報告，描述 GPU 隨時間推移的使用情況。",
+      "B": "將 SageMaker Profiler 註解加入訓練腳本。運行腳本並根據結果產生報告。",
+      "C": "使用 AWS CloudTrail 建立一個報告，描述 GPU 利用率和 GPU 記憶體利用率隨時間的變化。",
+      "D": "在 Amazon SageMaker 模型監控器中建立一個預設監控器並建議一個基準。根據監控器產生的約束和統計資訊產生一份報告。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ Amazon CloudWatch 提供的是系統級指標（如整體的 GPU 利用率百分比）。它能告訴你「資源利用率很低」，但無法告訴你「腳本中的哪一行」或「哪個特定操作」導致了利用率不足。",
+      "B": "✅ SageMaker Profiler 是專為深層神經網路設計的性能分析工具。透過在訓練腳本中加入註解（Annotations）或使用其自動捕獲功能，工程師可以詳細追蹤內核執行（Kernel execution）、資料傳輸延遲和 GPU 核心的使用分佈。它可以產生詳細的報告，幫助識別例如「DataLoader 瓶頸」或「算子分發延遲」等具體問題。",
+      "C": "❌ AWS CloudTrail 記錄的是 AWS 帳戶內的 API 調用活動（例如誰啟動了訓練作業）。它完全無法監控執行個體內部的硬體利用率或腳本執行細節。",
+      "D": "❌ SageMaker 模型監控器（Model Monitor）用於監控部署後的數據漂移（Data Drift）或模型質量下降。它與訓練階段的硬體性能優化無關。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 205,
+    "type": "single",
+    "question": "一家保險公司的機器學習工程師訓練了一個迴歸模型來預測每月的保單銷售數量。模型訓練完成後，工程師使用 Amazon SageMaker AI 部署模型進行推理。該工程師希望監控模型預測結果，以偵測當客戶行為改變時，生產資料分佈是否與訓練資料分佈有差異。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "確定資料品質是否有漂移。",
+      "B": "確定模型質量是否有漂移。",
+      "C": "確定模型偏差是否有漂移。",
+      "D": "確定特徵歸因是否有漂移。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "✅ 資料品質漂移（Data Quality Drift）專門監控輸入特徵的分佈變化。當「客戶行為改變」時，輸入特徵（如年齡、地區、搜尋頻率）的統計特性會偏離訓練時的基準，這正是題目所要求的偵測目標。",
+      "B": "❌ 模型品質漂移（Model Quality Drift）監控的是模型的預測準確度（如回歸模型的 RMSE）。雖然行為改變可能導致準確度下降，但要偵測「分佈差異」，資料品質監控更為直接。",
+      "C": "❌ 模型偏差漂移（Bias Drift）監控模型是否對特定群體（如性別、種族）產生不公平的偏見，與整體的數據分佈變化無關。",
+      "D": "❌ 特徵歸因漂移（Feature Attribution Drift）監控特徵對模型預測的「重要性」是否發生變化。雖然這能提供解釋，但並非偵測數據分佈差異的首選工具。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 206,
+    "type": "single",
+    "question": "一家公司正在開發一款內部成本估算工具，該工具使用 Amazon SageMaker AI 中的機器學習模型。用戶向該工具上傳高解析度圖像。模型必須處理每張影像並預測影像中物體的成本。此外，模型還必須在處理完成後通知使用者。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "將影像儲存在 Amazon S3 儲存桶中。將模型部署在 SageMaker AI 上。使用批次轉換作業進行模型推理。使用 Amazon Simple Queue Service (Amazon SQS) 佇列通知使用者。",
+      "B": "將影像儲存在 Amazon S3 儲存桶中。將模型部署在 SageMaker AI 上。使用非同步推理策略進行模型推理。使用 Amazon Simple Notification Service (Amazon SNS) 主題通知使用者。",
+      "C": "將影像儲存在 Amazon Elastic File System (Amazon EFS) 檔案系統中。將模型部署在 SageMaker AI 上。使用批次轉換作業進行模型推理。使用 Amazon Simple Queue Service (Amazon SQS) 佇列來通知使用者。",
+      "D": "將映像儲存在 Amazon Elastic File System (Amazon EFS) 檔案系統中。將模型部署在 SageMaker AI 上。使用非同步推理策略進行模型推理。使用 Amazon Simple Notification Service (Amazon SNS) 主題通知使用者。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 批次轉換（Batch Transform）通常用於離線、週期性的大規模預測。雖然 S3 是正確的儲存方式，但 SQS 主要是訊息佇列而非主動推播通知。",
+      "B": "✅ 非同步推理（Asynchronous Inference）是處理大型負載（高解析度影像）的最佳選擇，它支援高達 1GB 的請求。它具備內建的通知機制：你可以配置 Amazon SNS 成功或失敗的主題，在模型預測完成後，自動發送通知給使用者。S3 同時也是存放大型影像資料的首選。",
+      "C": "❌ 同選項 A，批次轉換不適合這種基於觸發且需要即時反饋通知的場景。此外，模型推理通常直接從 S3 讀取數據，使用 EFS 會增加不必要的管理開銷。",
+      "D": "❌ 雖然使用了非同步推理，但 EFS 並非機器學習輸入影像的最佳儲存標準（S3 具備更好的擴展性且與 SageMaker 原生整合）。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 207,
+    "type": "single",
+    "question": "一家醫療保健公司使用 Amazon SageMaker AI 端點託管一個預測病患再次入院風險的模型。該公司希望高精度預測患者再次入院情況，並願意容忍一定的誤報。目前模型的性能在過去一年中有所下降。該公司訓練並部署了一個新模型作為影子模型，用於在醫院的實際流量上進行測試。該公司對新模型的性能進行了為期一個月的監控。在測試期間，影子模型的召回率高於現有模型，但精確率較低。該公司接下來該怎麼做？",
+    "options": {
+      "A": "將影子變體推向全面生產。",
+      "B": "延長影子測試期以收集更多資料。監測新模型以確定精度是否有所提高。",
+      "C": "使用藍綠部署策略，將一小部分流量分配給影子變體，以減少模型誤差。",
+      "D": "禁用影子變體並回滾到主變體。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "✅ 醫療保健公司的需求是「高精度預測病患再次入院」並明確表示「願意容忍一定的誤報（False Positives）」。在機器學習中，這意味著召回率（Recall）比精確率（Precision）更重要。既然影子模型的召回率更高，且舊模型性能已下降，它更符合業務目標，應將其轉為正式生產。",
+      "B": "❌ 影子測試已經進行了一個月，對於醫療場景通常已有足夠的樣本量。既然新模型已經展現出高召回率的特性（符合需求），繼續延長測試並不會改變模型本身的統計特性。",
+      "C": "❌ 影子模型已經是在實際流量上運行了，只是不對外回傳結果。藍綠部署是部署過程的技術手段，但題目問的是「該怎麼做」，即是否接受這個模型。",
+      "D": "❌ 回滾到主變體（舊模型）是不合理的，因為題目提到舊模型的性能在過去一年中已經「下降」，而新模型在關鍵指標（召回率）上表現更好。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 208,
+    "type": "matching",
+    "question": "一家公司正在使用 Amazon SageMaker 部署其機器學習模型的新版本。請為每個用例選擇正確的流量切換策略。",
+    "available_options": [
+      "金絲雀流量切換 (Canary traffic shifting)",
+      "一次性流量切換 (All at once traffic shifting)",
+      "線性流量切換 (Linear traffic shifting)"
+    ],
+    "matches": [
+      {
+        "use_case": "分兩個步驟切換流量以驗證新模型版本。",
+        "correct_answer": "金絲雀流量切換 (Canary traffic shifting)"
+      },
+      {
+        "use_case": "在最短的時間內將流量切換到新模型版本。",
+        "correct_answer": "一次性流量切換 (All at once traffic shifting)"
+      },
+      {
+        "use_case": "隨著時間推移，逐步增加切換到新模型版本的流量。",
+        "correct_answer": "線性流量切換 (Linear traffic shifting)"
+      }
+    ],
+    "explanations": {
+      "1": "✅ 金絲雀流量切換 — 先將少量流量（如 10%）導向新版本，驗證無誤後再全部切換，共兩個步驟。",
+      "2": "✅ 一次性流量切換 — 直接將 100% 流量切到新版本，速度最快但風險最高。",
+      "3": "✅ 線性流量切換 — 以固定比例逐步增加流量（如每 10 分鐘增加 10%），最平穩。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 209,
+    "type": "ordering",
+    "question": "一家公司需要整合來自多個資料來源的資料。該公司必須使用 Amazon Redshift Serverless 來查詢 AWS Glue 資料目錄資料庫以及儲存在 Amazon S3 儲存桶中的底層資料。請從以下清單中選擇並排序正確的步驟以滿足這些要求。（選擇並排序三個步驟。）",
+    "available_steps": [
+      "將 IAM 角色附加到 Redshift 叢集。",
+      "將 IAM 角色附加到 Redshift 命名空間。",
+      "在 Amazon Redshift 中建立一個外部資料庫，指向資料目錄模式。",
+      "在 Amazon Redshift 中建立一個外部模式，指向資料目錄資料庫。",
+      "為 Amazon Redshift 建立一個 IAM 角色，用於僅存取包含底層資料的 S3 儲存桶。",
+      "為 Amazon Redshift 建立一個 IAM 角色，用於存取資料目錄以及包含底層資料的 S3 儲存桶。"
+    ],
+    "ordered_steps": [
+      "為 Amazon Redshift 建立一個 IAM 角色，用於存取資料目錄以及包含底層資料的 S3 儲存桶。",
+      "將 IAM 角色附加到 Redshift 命名空間。",
+      "在 Amazon Redshift 中建立一個外部模式，指向資料目錄資料庫。"
+    ],
+    "explanations": {
+      "Step 1": "✅ 這是安全基礎。Redshift 需要權限來讀取 Glue Data Catalog（獲取表結構）以及 S3 儲存桶（獲取實際數據）。如果只存取 S3，Redshift 將無法獲取元數據。",
+      "Step 2": "✅ 在 Redshift Serverless 架構中，權限是與「命名空間（Namespace）」關聯的，而非傳統架構中的「叢集（Cluster）」。",
+      "Step 3": "✅ 最後，在 Redshift 內部執行 CREATE EXTERNAL SCHEMA。這會在 Redshift 與 Glue Data Catalog 之間建立邏輯映射，讓用戶能像查詢本地表一樣查詢 S3 資料。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 210,
+    "type": "single",
+    "question": "一家航空公司使用機器學習模型根據需求調整機票價格。此模型運行在 Amazon SageMaker 即時終端節點上。在先前的部署中，當網站流量增加時，模型無法快速擴展，導致價格調整延遲。一位機器學習工程師需要為 SageMaker 終端節點配置自動擴展，以便快速回應流量變化。該解決方案必須使用目標追蹤擴展策略。哪種配置能夠最迅速地回應流量的突變？",
+    "options": {
+      "A": "基於 SageMaker AI InvocationsPerInstance 標準指標配置自動擴縮容。配置 10 秒間隔分辨率，並設定預設的 300 秒縮容冷卻期。",
+      "B": "根據 SageMaker AI InvocationsPerInstance 指標配置自動擴縮容。配置高解析度的 10 秒間隔，並設定 600 秒的縮容冷卻期。",
+      "C": "根據 SageMaker InvocationsPerInstance 標準指標配置自動擴縮容。配置 10 秒間隔分辨率，並設定 600 秒縮容冷卻期。",
+      "D": "根據 SageMaker InvocationsPerInstance 指標配置自動擴縮容。配置高解析度的 10 秒間隔，並設定預設的 300 秒縮容冷卻期。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ 標準指標 (Standard Metrics) 的解析度通常是 1 分鐘。對於「快速回應突發流量」的需求，標準指標的延遲太高。",
+      "B": "❌ 雖然使用了高解析度，但 600 秒（10 分鐘）的縮容冷卻期過長，在連續波動的場景下會降低系統的靈活性。",
+      "C": "❌ 同時犯了標準指標（慢）和長冷卻期（不靈活）的錯誤，反應最慢。",
+      "D": "✅ 高解析度 (High-resolution) 指標提供 10 秒級別的監控，這意味著 CloudWatch 能在幾秒鐘內偵測到流量激增並觸發擴展。配合預設的 300 秒（5 分鐘）縮容冷卻期，能在保證穩定的前提下提供最敏捷的反應。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 211,
+    "type": "single",
+    "question": "一位機器學習工程師正在使用 Amazon SageMaker AI 收集資料來訓練分類機器學習模型。目標列有兩個可能的值：A 類或 B 類。該工程師希望確保 A 類和 B 類的樣本數量平衡，同時不遺失任何現有的訓練資料。他需要測試訓練資料的平衡性。哪種解決方案能夠滿足此要求？",
+    "options": {
+      "A": "使用 SageMaker Clarify 檢查類別不平衡 (CI)。如果該值等於 0，則使用 SageMaker Data Wrangler 中的隨機欠取樣來平衡類別。",
+      "B": "使用 SageMaker Clarify 檢查類別不平衡 (CI)。如果該值大於 0，則使用 SageMaker Data Wrangler 中的合成少數類過採樣技術 (SMOTE) 來平衡類別。",
+      "C": "使用 SageMaker JumpStart 產生類別不平衡 (CI) 報告。如果值大於 0，則在 SageMaker Studio 中使用隨機欠取樣來平衡類別。",
+      "D": "使用 SageMaker JumpStart 產生類別不平衡 (CI) 報告。如果該值為 0，則在 SageMaker Studio 中使用合成少數類過採樣技術 (SMOTE) 來平衡類別。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 隨機欠取樣（Random Undersampling）會刪除多數類別的樣本。這直接違反了題目要求「不遺失任何現有的訓練資料」的限制。此外，CI 值等於 0 代表完全平衡，不需要處理。",
+      "B": "✅ SageMaker Clarify 是檢測偏見（包括 CI 類別不平衡指標）的標準工具。CI 指標若大於 0，代表類別分佈不均。SMOTE 透過在特徵空間中插值來創造「新」的少數類樣本，不僅能達到平衡，且不會刪除任何原始數據，完美符合要求。",
+      "C": "❌ SageMaker JumpStart 主要用於快速部署模型和演算法，並非用於數據準備階段的偏見檢測。且欠取樣會導致數據流失。",
+      "D": "❌ CI 值為 0 表示數據已經平衡，不需要再進行 SMOTE。且 JumpStart 並非產出此類報告的主力工具。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 212,
+    "type": "single",
+    "question": "一位機器學習工程師正在建立一個邏輯迴歸模型來預測訂閱服務的客戶流失率。此工程師使用的資料集包含兩個字串變數：location 和 job_seniority_level。location 變數有 3 個不同的值，而 job_seniority_level 變數有超過 10 個不同的值。該工程師必須對這些變數進行預處理。哪種解決方案能夠滿足此要求？",
+    "options": {
+      "A": "對位置資訊進行分詞。對 job_seniority_level 進行序數編碼。",
+      "B": "對 location 進行獨熱編碼。對 job_seniority_level 進行序數編碼。",
+      "C": "對位置進行分箱。對職位等級套用標準縮放。",
+      "D": "對位置資訊應用獨熱編碼。對職位等級套用標準縮放。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 分詞適用於非結構化長文本（如評論），處理單一地點名稱（如 \"Taipei\"）無意義。",
+      "B": "✅ Location 基數低且無順序，適合 One-Hot；Seniority 具備天然順序且基數較高，適合 Ordinal 以保留階層資訊並節省維度。",
+      "C": "❌ 3 個地點無需分箱；標準縮放僅能套用於「數值型」特徵，無法直接套用於「字串」變數。",
+      "D": "❌ Location 處理正確，但同樣錯誤地對字串類別（職位等級）套用了數值型的標準縮放。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 213,
+    "type": "ordering",
+    "question": "一位機器學習工程師需要使用 Amazon SageMaker 為一家公司開發機器學習解決方案。該解決方案將利用攝影機拍攝的視訊串流來統計每天經過該公司門市的人數。請從以下清單中選擇並排序步驟，以實作演算法的第一個版本。每個步驟只能選擇一次。（選擇並排序三個步驟。）",
+    "available_steps": [
+      "選擇一個內建演算法或預訓練模型。",
+      "確定資料輸入格式，並在必要時套用資料增強。",
+      "確定該挑戰是分類問題、偵測問題或分割問題。"
+    ],
+    "ordered_steps": [
+      "確定該挑戰是分類問題、偵測問題或分割問題。",
+      "選擇一個內建演算法或預訓練模型。",
+      "確定資料輸入格式，並在必要時套用資料增強。"
+    ],
+    "explanations": {
+      "Step 1": "✅ 這是開發任何機器學習解決方案的第一步（問題定義）。為了統計人數，模型需要識別視訊畫面中每個人的位置，因此這通常被定義為「物件偵測 (Object Detection)」問題。",
+      "Step 2": "✅ 確定問題類型後，接下來要選擇適合的工具。在 SageMaker 中，您可以選擇內建的 Object Detection 演算法，或者從 SageMaker JumpStart 中選擇預訓練模型（如 YOLO 或 SSD）。",
+      "Step 3": "✅ 選定演算法後，必須根據該演算法的要求調整數據格式（如 RecordIO 或 COCO JSON）。同時，透過「資料增強（Data Augmentation）」來增加訓練數據的多樣性。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 214,
+    "type": "single",
+    "question": "一家公司需要在 AWS 上部署一個客製化訓練的分類機器學習模型。該模型必須能夠以低延遲進行近乎即時的預測，並且能夠處理變化的請求量。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "建立一個 Amazon SageMaker AI 批次轉換作業，以批次處理推理請求。",
+      "B": "使用 Amazon API Gateway 接收預測請求。使用 Amazon S3 儲存桶託管和提供模型服務。",
+      "C": "部署 Amazon SageMaker AI 終端節點。為該終端節點配置自動擴充功能。",
+      "D": "在兩個 Amazon EC2 執行個體上啟動 AWS 深度學習 AMI (DLAMI)。將這些執行個體部署在應用程式負載平衡器後面執行。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "❌ 批次處理主要用於「離線」的大規模數據處理（如每晚產出報告），不符合「低延遲」與「即時」的要求。",
+      "B": "❌ S3 是儲存服務，無法直接運行模型推理邏輯。模型必須在計算資源（如容器或伺服器）上運行才能提供服務。",
+      "C": "✅ SageMaker 實時端點專為毫秒級延遲設計；配合自動擴展 (Auto Scaling)，可根據流量自動增減實例數量，既保證性能又兼顧成本效益。",
+      "D": "❌ 雖然可行，但屬於「自行管理」方案。相比於 SageMaker，這需要工程師手動管理作業系統更新、模型部署流水線與複雜的擴展邏輯，運維開銷極高。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 215,
+    "type": "single",
+    "question": "一家公司運行一個神經網路模型，並在效能下降時重新訓練該模型。該公司使用 Amazon SageMaker AI 分散式資料並行 (DDP) 進行訓練。該訓練任務需要幾個小時才能完成。該公司希望縮短訓練任務所需的時間。哪種解決方案可以滿足此要求？",
+    "options": {
+      "A": "增加訓練輪數。",
+      "B": "增加隱藏層中的神經元數量。",
+      "C": "增加層數。",
+      "D": "增加實例數。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ 增加輪數意味著模型需要完整掃描資料集的次數增加，這會直接導致總訓練時間成倍增長。",
+      "B": "❌ 隱藏層的神經元越多，模型的參數矩陣越大，每一層的矩陣運算量隨之增加，通常會減慢單次迭代的速度。",
+      "C": "❌ 模型變深會增加正向傳播與反向傳播的計算路徑，同樣會提高計算開銷並延長訓練時間。",
+      "D": "✅ DDP 的核心原理是將訓練資料分發到多個節點（實例）上並行計算。增加實例數可以讓每個實例處理更少的資料，從而大幅提高整體的吞吐量（Throughput），縮短完成相同輪數所需的時間。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 216,
+    "type": "single",
+    "question": "一位機器學習工程師決定使用 Amazon SageMaker AI 的自動模型調優 (AMT) 來進行超參數最佳化 (HPO)。該工程師需要一種調優策略，該策略使用迴歸方法，根據先前的運行結果，緩慢且順序地選擇下一組超參數。此策略必須適用於較小的超參數範圍。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "Grid Search 網格搜索",
+      "B": "Random Search 隨機搜尋",
+      "C": "Bayesian 貝葉斯優化",
+      "D": "Hyperband 超頻帶"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "❌ 網格搜索在預定義的範圍內嘗試所有可能的組合。窮舉法，當參數多時會遇到「維度災難」，效率極低，且無法從先前結果學習。",
+      "B": "❌ 隨機搜尋在範圍內隨機選取參數組合進行測試。比網格搜索高效，且易於並行化，但同樣無法利用先前的運行經驗。",
+      "C": "✅ 貝葉斯優化將 HPO 視為迴歸問題。它會建立一個代理模型（通常是高斯過程），根據已完成訓練的指標預測下一組最有潛力的參數。序列化執行，能智能地朝著最佳點收斂。適合參數範圍小、資源有限且追求極致準確度的場景。",
+      "D": "❌ 超頻帶使用多個資源子集，透過「早期停止」表現不佳的候選組合來提速。速度極快，適合參數空間巨大或模型訓練極慢的場景。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 217,
+    "type": "single",
+    "question": "一家醫療保健公司希望檢測患者生命徵像中的異常情況，這些異常情況可能預示著疾病的早期跡象。該公司擁有一個未標記的資料集，其中包含患者的健康記錄、用藥史和生活方式變化。為了滿足這項需求，該公司應該使用哪種演算法和超參數？",
+    "options": {
+      "A": "使用 Amazon SageMaker AI XGBoost 演算法。將 max_depth 設定為大於 100 以控制樹的複雜度。",
+      "B": "使用 Amazon SageMaker AI k-means 聚類演算法。設定 k 值以確定聚類數量。",
+      "C": "使用 Amazon SageMaker AI DeepAR 演算法。將 epochs 設定為訓練迭代次數。",
+      "D": "使用 Amazon SageMaker AI 隨機割森林 (RCF) 演算法。將 num_trees 設定為大於 100。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ XGBoost 需要「標記資料」（Labeled Data）來訓練。此外，max_depth 超過 100 會導致嚴重的過擬合，而非控制複雜度。",
+      "B": "❌ 雖然分群可用於發現離群點，但它並非專門為異常檢測設計，且對於高維度健康數據的異常特徵不夠敏感。",
+      "C": "❌ DeepAR 用於預測未來數值（如未來一週的血壓值），而非直接辨識當前數據中的異常模式。",
+      "D": "✅ RCF 是 SageMaker 專門為處理未標記數據中的異常檢測而設計的演算法。它能為每個數據點計算「異常分數」。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 218,
+    "type": "single",
+    "question": "一家公司正在 Amazon SageMaker AI 上訓練一個圖像分類模型，用於區分貓和狗的圖像。該公司使用的圖像來自第三方來源。該公司需要為每個圖像添加正確的標籤，並將這些標籤添加到附加到每個圖像的元資料摘要檔案中。該公司希望確保資料集中貓和狗的圖像數量相等。哪種解決方案能夠滿足此要求？",
+    "options": {
+      "A": "使用 SageMaker Clarify 檢查類別不平衡 (CI)。如果該值接近 1，則表示資料集是平衡的。",
+      "B": "使用 SageMaker Clarify 檢查類別不平衡 (CI)。如果該值接近 0，則表示資料集是平衡的。",
+      "C": "使用 SageMaker Data Wrangler 檢查標籤比例差異 (DPL)。如果該值接近 1，則資料集是平衡的。",
+      "D": "使用 SageMaker Data Wrangler 檢查標籤比例差異 (DPL)。如果該值接近 -1，則資料集是平衡的。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 值接近 1 代表極度不平衡（某類佔絕大多數）。",
+      "B": "✅ 值接近 0 代表資料集完全平衡。",
+      "C": "❌ 值接近 1 代表標籤分佈極度偏向某一側。",
+      "D": "❌ 值接近 -1 同樣代表嚴重的標籤分佈不均。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 219,
+    "type": "single",
+    "question": "一家娛樂公司的機器學習工程師正在改進一個用於預測觀眾偏好的機器學習模型。隨著模型從資料中學習，這位工程師注意到模型的效能在初期達到高峰後便開始逐漸下降。他必須防止模型在初期成功後出現性能下滑。哪種解決方案能夠滿足這項要求？",
+    "options": {
+      "A": "增加層數。",
+      "B": "實施提前停止。",
+      "C": "在每一層中添加更多神經元以捕捉複雜的模式。",
+      "D": "檢查模型偏差和方差，以了解效能問題。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 增加模型的深度會提高模型的複雜度，使其更容易記住訓練數據，進而加劇過擬合。",
+      "B": "✅ 提前停止會在驗證集（Validation Set）效能停止進步（或開始變差）時自動中斷訓練。這能確保模型停在泛化能力最強的時間點，防止後期的效能下滑。",
+      "C": "❌ 與增加層數類似，這會增加模型的容量，導致模型更傾向於「背誦」數據而非「學習」規律。",
+      "D": "❌ 雖然這有助於確認問題是過擬合（高方差），但它本身不是一個能直接「防止」效能下滑的實作方案。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 220,
+    "type": "single",
+    "question": "一位機器學習工程師正在調整一個影像分類模型，該模型在預測過程中對兩個可用類別中的一個表現不佳。分析表明，模型表現不佳的類別所對應的圖像僅佔整個訓練資料集的極小一部分。這位機器學習工程師必須提高模型的效能。哪種解決方案能夠滿足此要求？",
+    "options": {
+      "A": "優化準確率。對不常見的影像使用影像增強技術產生新的樣本。",
+      "B": "優化 F1 分數。對不常見的影像使用影像增強技術產生新的樣本。",
+      "C": "優化精度。對不常見的影像使用合成少數類過採樣技術（SMOTE）產生新樣本。",
+      "D": "優化 F1 分數。對不常見影像使用合成少數類過採樣技術 (SMOTE) 產生新樣本。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 在類別不平衡時，準確率會被多數類主導，無法反映模型對少數類的真實表現。",
+      "B": "✅ F1 分數同時考慮了精確率與召回率，最適合衡量不平衡數據。影像增強（旋轉、翻轉等）是處理影像數據最有效的擴充方式。",
+      "C": "❌ 只優化精確度會導致模型變得過於「保守」而漏掉大量樣本。SMOTE 主要用於結構化數據，對影像像素特徵效果不佳。",
+      "D": "❌ 雖然 F1 分數正確，但在影像分類中，SMOTE（在像素空間插值）產生的樣本通常缺乏真實語義，不如影像增強自然且有效。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 221,
+    "type": "single",
+    "question": "一家醫療分析公司希望將患者按相似風險因素分組，以便制定個人化治療方案。該公司擁有一個包含患者健康記錄、用藥史和生活方式改變的數據集。該公司必須找到合適的演算法，並利用超參數來決定分組數量。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "使用 Amazon SageMaker AI XGBoost 演算法。設定 max_depth 以控制風險群組的決策樹複雜度。",
+      "B": "使用 Amazon SageMaker k-means 聚類演算法。設定 k 值以指定聚類數量。",
+      "C": "使用 Amazon SageMaker AI DeepAR 演算法。設定 epochs 以確定風險組的訓練迭代次數。",
+      "D": "使用 Amazon SageMaker AI 隨機切割森林 (RCF) 演算法。為風險異常組設定污染超參數。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ XGBoost 需要標籤（Labels）來進行訓練。它無法在沒有預設標籤的情況下，僅憑相似性自動將數據分成不同的「組」。",
+      "B": "✅ k-means 是處理分組問題的最經典演算法。它會根據特徵（健康記錄、生活方式等）的相似度將數據聚合。超參數 k 直接用來指定要分成的群組數量。",
+      "C": "❌ DeepAR 是專門用於預測未來數值趨勢的。它不具備將靜態或歷史記錄數據進行相似性分組的功能。",
+      "D": "❌ 隨機切割森林 (RCF) 的目的是找出「離群點」（例如罕見病例）。雖然它能識別異常，但無法將所有正常的患者系統性地劃分為多個特定的風險組。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 222,
+    "type": "single",
+    "question": "一位機器學習工程師需要使用 Amazon Bedrock 中的檢索增強生成 (RAG) 技術來開發一個 AI 助理。該公司將一系列 PDF 文字檔案儲存在 Amazon S3 儲存桶中。該機器學習工程師必須建立一個 Amazon Bedrock 知識庫來處理這些 PDF 文件，並將處理後的文件儲存在向量儲存中。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "使用最新版本的 Amazon Titan Text Premier 執行文件嵌入。",
+      "B": "使用最新版本的 Mistral 7B Instruct 進行指令調校。",
+      "C": "使用最新版本的 Anthropic Claude Sonnet 進行指令調校。",
+      "D": "使用 Cohere Embed Multilingual 進行文件嵌入。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ Amazon Titan Text Premier 屬於大型語言模型 (LLM)，專門用於文本生成、摘要和聊天。它並非設計用於將文件內容轉換為數值向量的「嵌入模型」。",
+      "B": "❌ Mistral 7B Instruct 是經過優化的生成式模型，用於遵循人類指令。指令調校是為了提升回答品質，無法將 PDF 處理成向量儲存。",
+      "C": "❌ Claude Sonnet 具備極強的推理與生成能力。在 RAG 流程中，它擔任最後的「生成器」，而非初期負責文件向量化的「嵌入器」。",
+      "D": "✅ 嵌入模型 (Embedding Model) 是 RAG 技術的基礎。它能將 PDF 文字轉換為高維向量，讓處理後的文件能儲存在向量儲存中，以便後續進行語義檢索。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 223,
+    "type": "single",
+    "question": "一位機器學習工程師需要建立一個處理流程，用於從 PB 級非結構化資料中識別並移除個人識別資訊（PII）。該工程師將使用處理後的資料在 Amazon SageMaker AI 中訓練機器學習模型。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "使用 AWS Glue 互動式會話中的基於 Apache Spark 的無伺服器引擎。使用「檢測 PII」轉換功能來識別和刪除 PII 資料。",
+      "B": "使用 Amazon SageMaker Canvas 中的 AWS Glue Data Wrangler 來偵測和刪除 PII。",
+      "C": "使用 Amazon SageMaker Clarify API 來偵測和封鎖 PII 資料。",
+      "D": "使用 Amazon Comprehend 中的 DetectEntities API 操作來識別和刪除 PII 資料。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "✅ Apache Spark 是專為大規模資料處理設計的分散式引擎，非常適合處理 PB 級數據。AWS Glue 內建的「偵測 PII (Detect PII)」轉換功能可以自動識別敏感資訊並執行遮罩或刪除，與後續的 SageMaker 訓練流程完美整合。",
+      "B": "❌ Canvas 和 Data Wrangler 主要設計用於視覺化資料準備與探索。雖然它們功能強大，但面對 PB 級的非結構化原始數據時，效能與成本效益不如專業的 Glue Spark 任務。",
+      "C": "❌ SageMaker Clarify 的主要用途是偵測機器學習模型中的偏見（Bias）以及提供模型解釋性（Explainability）。它並非用於大規模非結構化數據清理或 PII 移除的專門工具。",
+      "D": "❌ DetectEntities API 主要用於自然語言處理（NLP）中的實體辨識。雖然 Comprehend 確實有 PII 偵測 API，但直接使用 API 調用來處理 PB 級數據會面臨極高的請求延遲與成本問題。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 224,
+    "type": "single",
+    "question": "一家公司開發了一個推薦模型，並將其託管在 Amazon SageMaker AI 端點上。該模型利用 SageMaker AI 端點進行近乎即時的推理，根據用戶的瀏覽歷史記錄、購買記錄和應用程式內交互，為客戶提供個人化的產品推薦。在一次大型行銷活動後，該公司發現模型的表現急劇下降。該公司需要一個解決方案，以便在未來的行銷活動之前主動監控、檢測和驗證模型的性能。哪個解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "使用 SageMaker Clarify 分析特徵分佈的變化。配置 SageMaker Model Monitor 以實現近實時輸入驗證。",
+      "B": "使用 Amazon CloudWatch 控制面板監控終端節點指標。使用 SageMaker 模型監控器追蹤功能歸因。",
+      "C": "使用 SageMaker Clarify 進行偏差檢測。設定 Amazon CloudWatch 警報以監控模型延遲。",
+      "D": "使用 SageMaker 模型監控器監控限制條件。使用 Amazon CloudWatch Logs Insights 分析錯誤模式。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "✅ SageMaker Clarify 可以分析特徵分佈，幫助工程師理解數據隨時間的變化。結合 SageMaker Model Monitor，系統能自動將即時推理請求與基準（Baseline）進行比對，偵測輸入資料是否偏離預期範圍（資料品質漂移），從而主動預警性能下降。",
+      "B": "❌ CloudWatch 指標（如 CPU、內存、調用次數）雖能監控系統健康，但無法直接偵測「模型預測效能」的下降。追蹤特徵歸因雖能解釋模型，但不如 A 選項在「驗證輸入與分佈」上直接有效。",
+      "C": "❌ 偏差檢測主要關注公平性。監控「延遲」雖然重要，但題目描述的是「表現下降」（預測不準），延遲高低與推薦品質的準確性無直接正相關。",
+      "D": "❌ 雖然 Model Monitor 可以監控限制條件（Constraints），但這通常屬於技術層面的欄位驗證。對於行銷活動導致的「行為改變」，A 選項中的特徵分佈分析與輸入驗證更符合「主動偵測行為改變」的需求。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 225,
+    "type": "single",
+    "question": "一家公司正在使用 Amazon SageMaker AI 創建一個分類模型，將過去 20 年中每個月的銷售業績按 1 到 5 的等級進行分類。資料集包含月份、銷售區域、區域總銷售額以及每個銷售區域中的門市數量等欄位。該公司注意到，每年有兩個月的總銷售額異常高。該公司對訓練集和驗證集中的所有非數值特徵進行了獨熱編碼。該公司使用訓練集來訓練分類模型。當該公司使用驗證集評估模型時，結果的準確率低於預期。該公司必須提高模型在驗證集上的準確率。哪個解決方案能夠滿足此要求？",
+    "options": {
+      "A": "刪除所有特徵均包含異常值的記錄。",
+      "B": "按月份和銷售區域特徵進行分層拆分。",
+      "C": "對總計銷售特性進行歸一化。",
+      "D": "對每個銷售區域的總銷售特徵進行歸一化。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ 題目提到的「異常高銷售額」並非錯誤數據，而是真實的業務模式（如季節性高峰）。刪除這些記錄會讓模型完全失去預測高銷售等級的能力。",
+      "B": "✅ 分層拆分 (Stratified Splitting) 確保訓練集和驗證集中各類別（以及關鍵特徵如月份）的比例一致。由於特定月份（銷售高峰期）對結果影響極大，若不進行分層，驗證集可能缺乏這些特定月份的樣本，導致模型在驗證時表現不佳。",
+      "C": "❌ 歸一化（Normalization）通常用於幫助梯度下降演算法更快收斂。雖然它是好的實踐，但對於解決「分類準確率低於預期」的結構性問題（如訓練/驗證集分佈不均），效果不如分層拆分顯著。",
+      "D": "❌ 與選項 C 類似，這屬於特徵工程的縮放操作。雖然能幫助模型處理不同區域間的量級差異，但無法解決因樣本採樣偏差導致的驗證集準確率低迷。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 226,
+    "type": "single",
+    "question": "一家公司正在創建一個機器學習模型來識別產品缺陷。該公司收集了一個資料集，並將其以 TIFF 格式儲存在 Amazon S3 中。該資料集包含 200 張圖像，其中顯示了最常見的缺陷。此外，該資料集還包含 1800 張圖像，其中沒有顯示任何缺陷。一位機器學習工程師訓練了該模型，並注意到某些類別的表現不佳。這位工程師發現資料集中存在類別不平衡問題。這位工程師該如何解決這個問題？",
+    "options": {
+      "A": "使用數百張圖像和 Amazon Rekognition 自訂標籤來訓練一個新模型。",
+      "B": "對最常見缺陷可見的 200 張影像進行欠取樣。",
+      "C": "對最常見缺陷可見的 200 張影像進行過採樣。",
+      "D": "使用全部 2,000 張圖像和 Amazon Rekognition 自訂標籤來訓練一個新模型。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "❌ 只使用數百張圖像會損失大量「無缺陷」樣本的特徵資訊，且未解決核心的不平衡邏輯。",
+      "B": "❌ 欠取樣通常是指減少「多數類」的數量。選項卻建議減少原本就已經很少的「有缺陷」影像（200 張），這會讓資料更稀缺，表現更差。",
+      "C": "✅ 過採樣是指增加「少數類」（200 張有缺陷圖）的數量。透過複製樣本或使用影像增強（Image Augmentation）技術（如旋轉、縮放、調整亮度），讓缺陷樣本的數量接近無缺陷樣本，能有效提升模型對缺陷的辨識能力。",
+      "D": "❌ 簡單地使用原始 2,000 張圖像重新訓練而不處理不平衡問題，模型依然會遇到同樣的效能瓶頸。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 227,
+    "type": "single",
+    "question": "一位機器學習工程師正在 Amazon SageMaker AI 中建立機器學習模型。該工程師需要將歷史資料直接從 Amazon S3、Amazon Athena 和 Snowflake 載入到 SageMaker AI 中。哪種解決方案可以滿足此要求？",
+    "options": {
+      "A": "使用 AWS Glue DataBrew 將資料匯入 SageMaker AI。",
+      "B": "在 SageMaker Pipelines 中建立資料處理管道。使用 AWS DataSync 將處理後的資料載入到 SageMaker AI 中。",
+      "C": "在 SageMaker Feature Store 中建立一個要素儲存。使用 Apache Spark 連接器連接到要素儲存以存取資料。",
+      "D": "使用 SageMaker Data Wrangler 查詢和導入資料。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "❌ DataBrew 是視覺化資料準備工具，雖然支援多種資料源，但它是一個獨立服務，並非專門為了「直接將資料載入 SageMaker AI 環境」而設計的最簡便路徑。",
+      "B": "❌ DataSync 主要用於在儲存服務之間（如地端到 S3）搬運大量資料。它不具備查詢 Athena 或 Snowflake 內核資料的能力。",
+      "C": "❌ Feature Store 是用來儲存和共享經過特徵工程處理後的「特徵」。雖然它能儲存資料，但它本身不是一個直接從 Snowflake 等外部來源「載入與匯入」原始資料的連接工具。",
+      "D": "✅ Data Wrangler 是 SageMaker 專為資料準備設計的介面。它內建了大量的連接器（Connectors），讓工程師能透過簡單的 UI 甚至 SQL 語法，直接連接並查詢 Amazon S3、Amazon Athena 以及 Snowflake。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 228,
+    "type": "single",
+    "question": "一位機器學習工程師開發了一個自訂的 scikit-learn 腳本，用於轉換表格資料以訓練迴歸模型。該工程師希望使用 Amazon SageMaker AI 來準備資料並訓練和評估模型。哪種解決方案能夠滿足這些要求？",
+    "options": {
+      "A": "建立一個 AWS Lambda 函數來執行自訂腳本。將處理後的資料載入到 SageMaker AI 中以訓練模型。",
+      "B": "使用 SageMaker Python SDK 中的 SKLearnProcessor 類別來執行自訂腳本。",
+      "C": "在 SageMaker Python SDK 中應用 HuggingFaceProcessor 類別來執行自訂腳本。",
+      "D": "使用 AWS Glue ETL 自訂配方執行資料轉換。將處理後的資料載入到 SageMaker AI 中以訓練模型。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "❌ Lambda 有執行時間限制（15 分鐘）與內存限制。對於大規模的機器學習資料轉換，Lambda 往往不足以應付，且需要手動管理相依庫。",
+      "B": "✅ SageMaker Processing 提供專門的 SKLearnProcessor。它可以直接使用 SageMaker 預建的 scikit-learn 容器來執行您的自訂腳本，並自動處理輸入/輸出 S3 路徑，是處理表格資料轉換的最標準做法。",
+      "C": "❌ HuggingFaceProcessor 是專為自然語言處理（NLP）或使用 Hugging Face 函式庫的模型設計的。對於傳統的表格資料與 scikit-learn 腳本，選用 B 更為精確。",
+      "D": "❌ AWS Glue 雖然強大，但它是獨立於 SageMaker 的服務。題目強調工程師希望使用「Amazon SageMaker AI」來完成流程，使用內建的 SKLearnProcessor 能在同一個 SDK 環境下完成。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 229,
+    "type": "matching",
+    "question": "一家公司開發了一個機器學習模型來對產品進行分類。該模型使用文字資料和視覺資料將產品分類到一個層級分類體系中。機器學習工程師必須使用特定的策略來提高模型的準確率並處理類別不平衡問題。請從以下清單中為每個用例選擇正確的策略。每種策略選擇一次。（選擇五個。）",
+    "available_options": [
+      "分類交叉熵 (Categorical cross-entropy)",
+      "回退指標 (Fallback metric)",
+      "層級損失 (Hierarchical loss)",
+      "通用過採樣 (General oversampling)",
+      "文本合成少數類過採樣技術 (SMOTE for text)"
+    ],
+    "matches": [
+      {
+        "use_case": "評估預測時容忍較寬泛的類別匹配。",
+        "correct_answer": "回退指標 (Fallback metric)"
+      },
+      {
+        "use_case": "透過增加少數類別的出現來平衡數據。",
+        "correct_answer": "通用過採樣 (General oversampling)"
+      },
+      {
+        "use_case": "增強模型識別產品類別中嵌套結構的能力。",
+        "correct_answer": "層級損失 (Hierarchical loss)"
+      },
+      {
+        "use_case": "增強代表性不足類別的文本資料表現。",
+        "correct_answer": "文本合成少數類過採樣技術 (SMOTE for text)"
+      },
+      {
+        "use_case": "衡量模型在精確類別匹配上的成功率。",
+        "correct_answer": "分類交叉熵 (Categorical cross-entropy)"
+      }
+    ],
+    "explanations": {
+      "1": "✅ 回退指標 — 允許在層級結構中進行「回退」匹配，即如果精確子類別預測錯誤，但父類別正確，仍給予部分分數。",
+      "2": "✅ 通用過採樣 — 透過複製或生成少數類別的樣本來平衡整體數據分佈。",
+      "3": "✅ 層級損失 — 在損失函數中嵌入類別的層級關係，讓模型學會區分不同層次的分類結構。",
+      "4": "✅ 文本 SMOTE — 專門針對文本特徵的少數類過採樣，在文本嵌入空間中進行插值生成新樣本。",
+      "5": "✅ 分類交叉熵 — 標準的多類別分類損失函數，直接衡量模型對精確類別預測的準確度。"
+    }
+  },
+  {
+    "exam": "MLA-C01",
+    "id": 230,
+    "type": "multiple",
+    "question": "一家公司正在開發一款應用程序，該應用程式讀取用戶輸入的動物描述，並根據這些資訊生成圖像。該應用程式從 Amazon Simple Queue Service (Amazon SQS) 佇列中讀取一則訊息。然後，該應用程式使用 Amazon Bedrock 上的 Amazon Titan Image Generator 根據訊息中的資訊產生圖像。最後，該應用程式從 SQS 佇列中移除該訊息。該公司應該為該應用程式的 IAM 角色分配哪些 IAM 權限？（選兩項。）",
+    "options": {
+      "A": "允許對 Amazon Titan Image Generator 資源執行 bedrock:InvokeModel 操作。",
+      "B": "允許對 Amazon Titan Image Generator 資源執行 bedrock:Get* 操作。",
+      "C": "允許對 SQS 佇列資源執行 sqs:ReceiveMessage 操作和 sqs:DeleteMessage 操作。",
+      "D": "允許對 SQS 佇列資源執行 sqs:GetQueueAttributes 操作和 sqs:DeleteMessage 操作。",
+      "E": "允許對 Amazon Titan Image Generator 資源執行 sagemaker:PutRecord* 操作。"
+    },
+    "answer": ["A", "C"],
+    "explanations": {
+      "A": "✅ 要使用 Amazon Titan Image Generator 產生圖像，應用程式必須能夠「調用」該模型。InvokeModel 是執行模型推理（Text-to-Image）的標準 API。",
+      "B": "❌ Get* 操作通常用於獲取模型的元數據（Metadata）或配置資訊，無法觸發模型生成內容。",
+      "C": "✅ ReceiveMessage 允許應用程式從佇列獲取訊息；DeleteMessage 則是在處理完成後，確保訊息不會被重複處理而將其移除。這完全符合題目要求。",
+      "D": "❌ 獲取佇列屬性（如訊息數量）並非讀取訊息內容的必要權限，題目明確指出需要「讀取用戶輸入」。",
+      "E": "❌ Amazon Bedrock 是獨立於 SageMaker 的服務。PutRecord 通常用於 SageMaker Feature Store，與 Bedrock 的圖像生成完全無關。"
+    }
+  }
+]
