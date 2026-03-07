@@ -145,10 +145,12 @@ function reducer(state, action) {
       const map = new Map()
       state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
       newQs.forEach(q => map.set(`${q.exam}-${q.id}`, q))
-      const merged = Array.from(map.values())
+      const merged = Array.from(map.values()).sort((a, b) => a.id - b.id)
       return {
         ...state,
         questions: merged,
+        practiceFiltered: merged,
+        practiceIndex: 0,
         uploadHistory: [...state.uploadHistory, {
           filename: action.filename,
           count: newQs.length,
@@ -165,6 +167,7 @@ function reducer(state, action) {
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
       if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
+      filtered.sort((a, b) => a.id - b.id)
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
@@ -1083,6 +1086,48 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
 }
 
 // ══════════════════════════════════════════
+// Bilingual option text renderer
+// ══════════════════════════════════════════
+function OptionText({ label, text }) {
+  // Detect if text has substantial bilingual content (English sentences + Chinese sentences)
+  const sentences = text.split(/(?<=[。.!！?？])\s*/).filter(s => s.trim())
+  if (sentences.length < 2) {
+    return <span className="text-sm"><strong className="mr-1">{label}.</strong>{text}</span>
+  }
+
+  const enSents = []
+  const zhSents = []
+  for (const sent of sentences) {
+    const cjk = (sent.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []).length
+    const latin = (sent.match(/[A-Za-z]/g) || []).length
+    const total = cjk + latin
+    if (total === 0) continue
+    if (cjk / total > 0.4) zhSents.push(sent)
+    else enSents.push(sent)
+  }
+
+  // Only reformat if we have both languages with substantial English
+  const totalEnChars = enSents.join('').replace(/\s/g, '').length
+  if (enSents.length === 0 || zhSents.length === 0 || totalEnChars < 30) {
+    return <span className="text-sm"><strong className="mr-1">{label}.</strong>{text}</span>
+  }
+
+  const enText = enSents.join(' ').replace(/\s+/g, ' ').trim()
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]{2,})([a-z])/g, '$1 $2')
+  const zhText = zhSents.join('').trim()
+
+  return (
+    <span className="text-sm">
+      <strong className="mr-1">{label}.</strong>
+      <span className="font-medium">{enText}</span>
+      <br />
+      <span className="text-gray-600 dark:text-gray-400">{zhText}</span>
+    </span>
+  )
+}
+
+// ══════════════════════════════════════════
 // Question Input (shared between practice & exam)
 // ══════════════════════════════════════════
 function QuestionInput({ question, answer, submitted, onAnswer, examMode = false }) {
@@ -1113,7 +1158,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                 disabled={submitted && !examMode}
                 className="mt-0.5 accent-orange-600"
               />
-              <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+              <OptionText label={key} text={text} />
             </label>
           )
         })}
@@ -1155,7 +1200,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                 disabled={submitted && !examMode}
                 className="mt-0.5 accent-orange-600"
               />
-              <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+              <OptionText label={key} text={text} />
             </label>
           )
         })}
@@ -1242,7 +1287,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   disabled={submitted && !examMode}
                   className="mt-0.5 accent-orange-600"
                 />
-                <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+                <OptionText label={key} text={text} />
               </label>
             )
           })}
@@ -1421,7 +1466,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   disabled={submitted && !examMode}
                   className="mt-0.5 accent-orange-600"
                 />
-                <span className="text-sm"><strong className="mr-1">{key}.</strong>{text}</span>
+                <OptionText label={key} text={text} />
               </label>
             )
           })}
