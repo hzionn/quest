@@ -948,8 +948,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
           />
 
-          {/* Submit button */}
-          {!isSubmitted && (
+          {/* Submit button - hide for questions with no options */}
+          {!isSubmitted && currentQ.options && Object.keys(currentQ.options).length > 0 && (
             <button
               onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQ })}
               disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
@@ -1132,6 +1132,16 @@ function OptionText({ label, text }) {
 // ══════════════════════════════════════════
 function QuestionInput({ question, answer, submitted, onAnswer, examMode = false }) {
   const q = question
+
+  // Handle questions with no options (broken data or unsupported format)
+  if (!q.options || Object.keys(q.options).length === 0) {
+    return (
+      <div className="p-4 rounded-lg border-2 border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200">
+        <p className="font-medium">此題目格式不支援作答（可能為拖拉配對題或排序題，選項資料缺失）。</p>
+        {q.answer && <p className="mt-2">正確答案：<strong>{q.answer}</strong></p>}
+      </div>
+    )
+  }
 
   if (q.type === 'single') {
     return (
