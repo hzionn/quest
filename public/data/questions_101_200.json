@@ -1778,19 +1778,19 @@
   {
     "exam": "MLA-C01",
     "id": 194,
-    "question": "一家公司在本地Kubernetes叢集上運行其機器學習工作流程。這些工作流程包含用於訓練和推理機器學習模型的機器學習服務。每個機器學習服務都運行在各自獨立的Docker映像中。該公司需要將工作流程從本地Kubernetes Amazon Elastic叢集遷移到Kubernetes Service （Amazon EKS）叢集。哪一種解決方案能夠以最小的運維開銷滿足此要求？",
+    "question": "一家公司在本地 Kubernetes 叢集上運行其機器學習工作流程。這些工作流程包含用於訓練和推理機器學習模型的機器學習服務。每個機器學習服務都運行在各自獨立的 Docker 映像中。該公司需要將工作流程從本地 Kubernetes 叢集遷移到 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。哪一種解決方案能夠以最小的運維開銷滿足此要求？",
     "explanations": {
-      "A": "❌ 務以適應 Kubeflow 的架構會帶來巨大的開發與運維成本。這不符合「最小開銷」的要求。因為該公司的服務已經封裝在 Docker 映像中，遷移到 EKS 的最快路徑就是利用鏡像的移植性。只需將鏡像推送到 Amazon ECR（AWS",
-      "B": "✅ 的受管容器註冊表），然後更新 Kubernetes 的部署清單（YAML）將其部署到 EKS 即可。這幾乎不需要更改代碼，運維開銷最小。Amazon Redshift ML 是為了讓 SQL 開發人員能直接在資料庫內建置模型。將資料遷移到",
-      "C": "❌ Redshift 並重新訓練模型是一個完全不同的技術路徑，對於已經擁有成熟 Docker 工作流的公司來說，這增加了極大的複雜度。 筆記本SageMaker主要用於開發。重新訓練模型並手動部署到 EKS 會中斷原本自動化的容器",
-      "D": "❌ 化流程，且「重新訓練」在單純的基礎設施遷移場景中通常是不必要的額外負擔。"
+      "A": "❌ 重新設計為 Kubeflow 需要額外的開發和架構變更，增加運維開銷。",
+      "B": "✅ 直接將現有 Docker 映像上傳到 ECR 並部署到 EKS，無需重新設計或重新訓練，是最直接的遷移方式，運維開銷最小。",
+      "C": "❌ 將資料移轉到 Redshift 並重新訓練模型完全偏離了簡單遷移的目標，增加大量不必要的工作。",
+      "D": "❌ 使用 SageMaker 重新訓練模型是不必要的，現有模型已經可用，只需遷移部署環境即可。"
     },
     "type": "single",
     "options": {
-      "A": "重新設計要在Kubeflow中設定的機器學習服務。將新的Kubeflow管理的機器學習服務部署到EKS叢集。",
-      "B": "Docker Amazon Elastic Container Registry （將Amazon映像上傳到ECR（ 儲存庫。配置部署管道，將鏡像部署到EKS叢集。",
-      "C": "將訓練資料移轉到Amazon Redshift叢集。使用Amazon Redshift ML從遷移後的訓練資料重新訓練模型。將重新訓練的模型部署到EKS叢集。",
-      "D": "配置Amazon SageMaker AI筆記本。使用相同的程式碼重新訓練模型。將重新訓練的模型部署到EKS叢集。"
+      "A": "重新設計要在 Kubeflow 中設定的機器學習服務。將新的 Kubeflow 管理的機器學習服務部署到 EKS 叢集。",
+      "B": "將 Docker 映像上傳到 Amazon Elastic Container Registry (Amazon ECR) 儲存庫。配置部署管道，將鏡像部署到 EKS 叢集。",
+      "C": "將訓練資料移轉到 Amazon Redshift 叢集。使用 Amazon Redshift ML 從遷移後的訓練資料重新訓練模型。將重新訓練的模型部署到 EKS 叢集。",
+      "D": "配置 Amazon SageMaker AI 筆記本。使用相同的程式碼重新訓練模型。將重新訓練的模型部署到 EKS 叢集。"
     },
     "answer": "B"
   },
