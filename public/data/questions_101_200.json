@@ -424,16 +424,19 @@
   {
     "exam": "MLA-C01",
     "id": 123,
-    "question": "一家公司希望構建一個使用社交媒體流數據的實時分析應用程序。 一名機器學習工程師必須實施一個解決方案，該解決方案每分鐘攝取和轉換5 GB的數據。 該解決方案還必須將數據加載到支持實時分析快速查詢的數據存儲中。哪個解決方案可以滿足這些要求？",
+    "question": "一家公司希望構建一個使用社交媒體流數據的實時分析應用程序。一名機器學習工程師必須實施一個解決方案，該解決方案每分鐘攝取和轉換 5 GB 的數據。該解決方案還必須將數據加載到支持實時分析快速查詢的數據存儲中。哪個解決方案可以滿足這些要求？",
     "explanations": {
-      "_full": "考察的知識點 實時數據流處理：如何高效地攝取、轉換和存儲大規模實時數據。  服務的選擇與組合：包括數據流攝取、數據轉換和存儲服務的最AWS佳實踐。  性能與可擴展性：處理高吞吐量數據（每分鐘5GB）的能力。 查詢效率：支持實時分析的存儲解決方案。 獨立分析每個選項  使用A. Amazon EventBridge AWS Glue攝取社交媒體數據，使用  轉換數據，將轉換後的數據存儲在Amazon ElastiCache（）Memcached中。  攝取數據：Amazon EventBridge主要用於事件驅動架構，適合處理  事件通知，但不適合高吞吐量的實時數據流（如每分鐘5GB）。  數據轉換：AWS是批處理Glue工具，適合處理大規模數據，但不ETL適合實時流數據轉換。  數據存儲：Amazon是一個內存緩存服ElastiCache （Memcached）務，適合快速查詢，但不適合存儲大規模數據或支持複雜查詢。 結論：此選項無法滿足實時數據流處理和存儲需求。  使用B. Amazon Simple Queue Service （Amazon SQS）攝取社交  媒體數據，使用AWS Lambda轉換數據，將轉換後的數據存儲在 Amazon S3 中。  攝取數據：Amazon是消息隊列服務，適合異步任務處理，但不SQS適合高吞吐量實時數據流。  數據轉換：AWS Lambda適合處理小規模事件驅動任務，但不適合處  理每分鐘5GB的高吞吐量數據轉換。  數據存儲：Amazon是物件存儲服務，適合存儲大規模數據，但不S3支持實時查詢。 結論：此選項無法滿足實時數據流處理和實時查詢需求。  使用C. Amazon Simple Notification Service （Amazon SNS）攝取  社交媒體數據，使用Amazon EMR轉換數據，將轉換後的數據存儲  在Amazon RDS中。 Amazon SNS / 攝取數據： 是消息發布 訂閱服務，適合通知和分發消 息，但不適合高吞吐量實時數據流。  數據轉換：Amazon適合處理大規模數據分析，但主要用於批處EMR理，不適合實時流數據轉換。  數據存儲：Amazon是關係型數據庫服務，支持複雜查詢，但不RDS適合高吞吐量實時數據存儲。 結論：此選項無法滿足實時數據流處理需求。  使用D. Amazon Kinesis Data Streams攝取社交媒體數據，使用 Amazon Managed Service for Apache Flink 轉換數據，將轉換後  的數據存儲在Amazon DynamoDB中。  攝取數據：Amazon Kinesis Data Streams專為高吞吐量實時數據流  設計，能夠處理每分鐘5GB的數據。 Amazon Managed Service for Apache Flink 數據轉換： 支持實時流 數據處理和轉換，適合實時分析場景。  數據存儲：Amazon是高性能DynamoDB數據庫，支持快速查NoSQL詢，適合實時分析需求。 結論：此選項完全滿足實時數據流處理和存儲需求。"
+      "A": "❌ EventBridge 適合事件驅動架構，不適合每分鐘 5GB 的高吞吐量實時數據流。AWS Glue 是批處理 ETL 工具，不適合實時流轉換。ElastiCache 不適合存儲大規模數據。",
+      "B": "❌ SQS 是消息隊列，不適合高吞吐量實時數據流。Lambda 不適合每分鐘 5GB 的高吞吐量轉換。S3 不支持實時查詢。",
+      "C": "❌ SNS 是發布/訂閱服務，不適合高吞吐量實時數據流。EMR 主要用於批處理。RDS 不適合高吞吐量實時數據存儲。",
+      "D": "✅ Kinesis Data Streams 專為高吞吐量實時數據流設計，能處理每分鐘 5GB。Apache Flink 支持實時流數據處理和轉換。DynamoDB 是高性能 NoSQL 數據庫，支持快速查詢，適合實時分析。"
     },
     "type": "single",
     "options": {
-      "A": "使用Amazon EventBridge攝取社交媒體數據。 使用AWS Glue轉換數據。 將轉換後的數據存儲在Amazon ElastiCache （Memcached）中。",
-      "B": "使用Amazon Simple Queue Service （Amazon SQS）攝取社交媒體數據。 使用AWS Lambda Amazon S3轉換數據。 將轉換後的數據存儲在中。",
-      "C": "使用Amazon Simple Notification Service （Amazon SNS）攝取社交媒體數據。 使用Amazon EMR轉換數據。 將轉換後的數據存儲在Amazon RDS中。",
-      "D": "使用Amazon Kinesis Data Streams攝取社交媒體數據。 使用Amazon Managed Service for Apache Flink轉換數據。 將轉換後的數據存儲在Amazon DynamoDB中。"
+      "A": "使用 Amazon EventBridge 攝取社交媒體數據。使用 AWS Glue 轉換數據。將轉換後的數據存儲在 Amazon ElastiCache (Memcached) 中。",
+      "B": "使用 Amazon Simple Queue Service (Amazon SQS) 攝取社交媒體數據。使用 AWS Lambda 轉換數據。將轉換後的數據存儲在 Amazon S3 中。",
+      "C": "使用 Amazon Simple Notification Service (Amazon SNS) 攝取社交媒體數據。使用 Amazon EMR 轉換數據。將轉換後的數據存儲在 Amazon RDS 中。",
+      "D": "使用 Amazon Kinesis Data Streams 攝取社交媒體數據。使用 Amazon Managed Service for Apache Flink 轉換數據。將轉換後的數據存儲在 Amazon DynamoDB 中。"
     },
     "answer": "D"
   },
