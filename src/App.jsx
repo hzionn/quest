@@ -1603,7 +1603,15 @@ function ExplanationView({ question, userAnswer }) {
 // ══════════════════════════════════════════
 // Exam Tab
 // ══════════════════════════════════════════
+const EXAM_SPECS = {
+  'MLA-C01': { name: 'AWS Machine Learning Engineer Associate', count: 65, timeLimit: 170, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序、配對' },
+  'CLF-C02': { name: 'AWS Cloud Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
+}
+
 function ExamTab({ state, dispatch, examTypes, qMap }) {
+  const selectedExam = state.examConfig.examFilter
+  const spec = EXAM_SPECS[selectedExam] || null
+
   // Config screen
   if (!state.examActive && !state.examSubmitted) {
     return (
@@ -1619,18 +1627,20 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                   <Clock size={32} className="text-orange-500" />
                 </div>
                 <h2 className="text-xl font-bold">模擬考設定</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">依據 AWS MLA-C01 真實考試規則</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{spec ? `依據 ${selectedExam} 真實考試規則` : '設定考試參數後開始挑戰'}</p>
               </div>
-              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 text-sm">
-                <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> AWS MLA-C01 考試規格</p>
-                <ul className="text-blue-600 dark:text-blue-400 space-y-1 ml-5 list-disc">
-                  <li>65 題（50 題計分 + 15 題不計分）</li>
-                  <li>170 分鐘（2 小時 50 分）</li>
-                  <li>及格分數：720 / 1000</li>
-                  <li>題型：單選、多選、排序、配對</li>
-                  <li>猜題不倒扣</li>
-                </ul>
-              </div>
+              {spec && (
+                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 text-sm">
+                  <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> {selectedExam} 考試規格</p>
+                  <ul className="text-blue-600 dark:text-blue-400 space-y-1 ml-5 list-disc">
+                    <li>{spec.questions}</li>
+                    <li>{spec.time}</li>
+                    <li>及格分數：{spec.passScore} / 1000</li>
+                    <li>題型：{spec.types}</li>
+                    <li>猜題不倒扣</li>
+                  </ul>
+                </div>
+              )}
               <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-semibold mb-1.5">題數</label>
@@ -1659,7 +1669,13 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                   <label className="block text-sm font-semibold mb-1.5">科別篩選</label>
                   <select
                     value={state.examConfig.examFilter}
-                    onChange={e => dispatch({ type: 'SET_EXAM_CONFIG', config: { examFilter: e.target.value } })}
+                    onChange={e => {
+                      const exam = e.target.value
+                      const s = EXAM_SPECS[exam]
+                      const config = { examFilter: exam }
+                      if (s) { config.count = s.count; config.timeLimit = s.timeLimit }
+                      dispatch({ type: 'SET_EXAM_CONFIG', config })
+                    }}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
                   >
                     <option value="">全部科別</option>
@@ -1686,7 +1702,8 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
     const r = state.examResults
     const pct = r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0
     const scaledScore = r.total > 0 ? Math.round(100 + (r.correct / r.total) * 900) : 100
-    const passed = scaledScore >= 720
+    const passScore = spec ? spec.passScore : 720
+    const passed = scaledScore >= passScore
     return (
       <div className="space-y-6 animate-slide-up">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
@@ -1699,10 +1716,10 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
             <div className="text-6xl font-extrabold mb-3 animate-count">
               <span className={passed ? 'gradient-text' : 'text-red-600 dark:text-red-400'}>{scaledScore}</span>
             </div>
-            <p className="text-sm text-gray-400 dark:text-gray-500 mb-1">換算分數（滿分 1000，及格 720）</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-1">換算分數（滿分 1000，及格 {passScore}）</p>
             <p className="text-gray-500 dark:text-gray-400 text-lg">{r.correct} / {r.total} 題正確（{pct}%）</p>
             <p className={`text-sm font-semibold mt-2 ${passed ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>
-              {passed ? '恭喜通過！' : '未達及格標準 720 分，繼續加油！'}
+              {passed ? '恭喜通過！' : `未達及格標準 ${passScore} 分，繼續加油！`}
             </p>
 
             {/* Type breakdown */}
