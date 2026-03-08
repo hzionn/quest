@@ -782,18 +782,19 @@
   {
     "exam": "MLA-C01",
     "id": 141,
-    "question": "一家公司有多個團隊，他們在自己的筆記本電腦上開發了獨立的預測模型。這些團隊使用Python結合scikit-learn和TensorFlow框架開發了這些模型。Amazon該公司必須重新構建這些模型，並將這些模型集成到公司使用SageMaker管理的機器學習基礎設施中。公司還必須將這些模型納入模型註冊表中。哪種解決方案能夠以最少的運營開銷滿足這些要求？",
+    "question": "一家公司有多個團隊，他們在自己的筆記本電腦上開發了獨立的預測模型。這些團隊使用 Python 結合 scikit-learn 和 TensorFlow 框架開發了這些模型。該公司必須重新構建這些模型，並將這些模型集成到公司使用 Amazon SageMaker 管理的機器學習基礎設施中。公司還必須將這些模型納入模型註冊表中。哪種解決方案能夠以最少的運營開銷滿足這些要求？",
     "explanations": {
-      "D": "將基於Python的模型導入到SageMaker中。在SageMaker中重新構建scikit-learn和TensorFlow模型。將所有模型註冊到SageMaker Model Registry中。Python SageMaker正確性分析： 此選項提到直接將 模型導入到 ，並在SageMaker中重建模型。這是最直接、最符合題目要求的方式，能夠充分利用SageMaker的內置功能，包括模型註冊和管理。“正確原因：LEAST operational此選項操作簡單，符合overhead”的要求，同時滿足題目中提到的所有需求。",
-      "B": "❌ 將模型導入到SageMaker Model Registry SageMaker中。使用運行導入的模型。正確性分析：SageMaker Model此選項直接提到將模型導入到Registry中並運行，但沒有提到如何處理模型的重建或遷移過程。SageMaker現有的模型可能需要重新構建以適配 環境。錯誤原因： 此選項忽略了模型遷移和重建的必要步驟，無法滿足題目要求。",
-      "C": "❌ 使用筆記本電腦上的代碼為模型創建容器。使用SageMaker的自(帶容器BYOC) SageMaker功能導入並使用這些模型。將模型註冊到Model Registry中。正確性分析：BYOC此選項提到使用Bring Your Own（Container）功能，這是一種靈活的方式，可以將自定義模型遷移SageMaker到 中。但創建和管理容器需要額外的開發和維護工作。錯誤原因： 雖然可以實現，但操作複雜度較高，不符合題目要求“”的LEAST operational overhead。"
+      "A": "❌ 使用 API Gateway 和 Lambda 增加了額外複雜性，不符合最少運營開銷的要求。",
+      "B": "❌ 忽略了模型遷移和重建的必要步驟，無法滿足題目中重新構建模型的要求。",
+      "C": "❌ 創建和管理自定義容器 (BYOC) 需要額外的開發和維護工作，運營開銷較高。",
+      "D": "✅ 直接將 Python 模型導入 SageMaker 並利用其內置的 scikit-learn 和 TensorFlow 框架支持重建模型，操作最簡單，運營開銷最低，同時滿足模型註冊需求。"
     },
     "type": "single",
     "options": {
-      "A": "將模型從筆記本電腦導出到Amazon S3 Amazon API存儲桶。使用和Gateway函數結合REST API AWS Lambda SageMaker端點訪問這些模型。將模型註冊到SageMaker Model Registry中。",
-      "B": "將模型導入到SageMaker Model Registry中。使用SageMaker運行導入的模型。",
-      "C": "使用筆記本電腦上的代碼為模型創建容器。使用Register the models in the SageMaker Model Registry.SageMaker的自帶容器(BYOC) SageMaker Model功能導入並使用這些模型。將模型註冊到Registry中。",
-      "D": "將基於Python的模型導入到SageMaker中。在SageMaker中重新構建scikit-learn和TensorFlow SageMaker模型。將所有模型註冊到Model Registry中。"
+      "A": "將模型從筆記本電腦導出到 Amazon S3 存儲桶。使用 Amazon API Gateway REST API 和 AWS Lambda 函數結合 SageMaker 端點訪問這些模型。將模型註冊到 SageMaker Model Registry 中。",
+      "B": "將模型導入到 SageMaker Model Registry 中。使用 SageMaker 運行導入的模型。",
+      "C": "使用筆記本電腦上的代碼為模型創建容器。使用 SageMaker 的自帶容器 (BYOC) 功能導入並使用這些模型。將模型註冊到 SageMaker Model Registry 中。",
+      "D": "將基於 Python 的模型導入到 SageMaker 中。在 SageMaker 中重新構建 scikit-learn 和 TensorFlow 模型。將所有模型註冊到 SageMaker Model Registry 中。"
     },
     "answer": "D"
   },
