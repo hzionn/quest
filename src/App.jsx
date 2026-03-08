@@ -4,15 +4,20 @@ import {
   ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
-  Github, Key, RefreshCw, Trash2, Eye, EyeOff
+  Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2
 } from 'lucide-react'
 import awsLogo from '/aws-logo.png'
+import { extractTextFromPDF, parseExamDump } from './pdfParser'
 
-// ── GitHub Config ──
+// ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
 const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
+const BASE_URL = import.meta.env.BASE_URL || '/quest/'
+
+// ── Check admin mode ──
+const isAdmin = new URLSearchParams(window.location.search).has('admin')
 
 // ── GitHub API Helpers ──
 async function githubApiFetch(path, token, options = {}) {
@@ -93,7 +98,7 @@ async function loadQuestionsFromGitHub(token) {
 // ── Initial State ──
 const initialState = {
   darkMode: false,
-  activeTab: 'upload',
+  activeTab: isAdmin ? 'upload' : 'practice',
   questions: [],
   uploadHistory: [],
 
@@ -404,23 +409,28 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
 
-  // Load questions from GitHub on startup
+  // Load questions from static manifest on startup
   useEffect(() => {
-    const token = localStorage.getItem('quest-github-token')
-    if (!token) return
     const load = async () => {
-      dispatch({ type: 'SET_GITHUB_LOADING', value: true })
-      dispatch({ type: 'SET_GITHUB_ERROR', error: null })
       try {
-        const { questions, banks } = await loadQuestionsFromGitHub(token)
-        dispatch({ type: 'SET_GITHUB_BANKS', banks })
-        if (questions.length) {
-          dispatch({ type: 'LOAD_QUESTIONS', questions, filename: 'GitHub 題庫' })
+        const manifestRes = await fetch(`${BASE_URL}data/manifest.json`)
+        if (!manifestRes.ok) throw new Error('無法載入題庫清單')
+        const manifest = await manifestRes.json()
+        const allQuestions = []
+        for (const file of manifest.files) {
+          try {
+            const res = await fetch(`${BASE_URL}data/${file}`)
+            if (!res.ok) continue
+            const data = await res.json()
+            const questions = Array.isArray(data) ? data : (data.questions || [])
+            allQuestions.push(...questions)
+          } catch { /* skip bad files */ }
+        }
+        if (allQuestions.length) {
+          dispatch({ type: 'LOAD_QUESTIONS', questions: allQuestions, filename: '靜態題庫' })
         }
       } catch (err) {
-        dispatch({ type: 'SET_GITHUB_ERROR', error: err.message })
-      } finally {
-        dispatch({ type: 'SET_GITHUB_LOADING', value: false })
+        console.error('載入題庫失敗:', err)
       }
     }
     load()
@@ -486,7 +496,7 @@ export default function App() {
               {/* Nav tabs - desktop */}
               <nav className="hidden md:flex gap-0.5 bg-white/5 rounded-xl p-1">
                 {[
-                  { key: 'upload', label: '上傳題庫', icon: Upload },
+                  ...(isAdmin ? [{ key: 'upload', label: '管理題庫', icon: Shield }] : []),
                   { key: 'practice', label: '練習模式', icon: BookOpen },
                   { key: 'exam', label: '模擬考試', icon: Clock },
                   { key: 'stats', label: '統計分析', icon: BarChart3 },
@@ -520,7 +530,7 @@ export default function App() {
           {/* Nav tabs - mobile */}
           <nav className="flex md:hidden border-t border-white/5">
             {[
-              { key: 'upload', label: '上傳', icon: Upload },
+              ...(isAdmin ? [{ key: 'upload', label: '管理', icon: Shield }] : []),
               { key: 'practice', label: '練習', icon: BookOpen },
               { key: 'exam', label: '模擬考', icon: Clock },
               { key: 'stats', label: '統計', icon: BarChart3 },
@@ -547,7 +557,7 @@ export default function App() {
         {/* Content */}
         <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="animate-fade-in" key={state.activeTab}>
-            {state.activeTab === 'upload' && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
+            {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
             {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
             {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
             {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} />}
