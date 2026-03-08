@@ -1169,42 +1169,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
 // Bilingual option text renderer
 // ══════════════════════════════════════════
 function OptionText({ label, text }) {
-  // Detect if text has substantial bilingual content (English sentences + Chinese sentences)
-  const sentences = text.split(/(?<=[。.!！?？])\s*/).filter(s => s.trim())
-  if (sentences.length < 2) {
-    return <span className="text-sm"><strong className="mr-1">{label}.</strong>{text}</span>
-  }
-
-  const enSents = []
-  const zhSents = []
-  for (const sent of sentences) {
-    const cjk = (sent.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []).length
-    const latin = (sent.match(/[A-Za-z]/g) || []).length
-    const total = cjk + latin
-    if (total === 0) continue
-    if (cjk / total > 0.4) zhSents.push(sent)
-    else enSents.push(sent)
-  }
-
-  // Only reformat if we have both languages with substantial English
-  const totalEnChars = enSents.join('').replace(/\s/g, '').length
-  if (enSents.length === 0 || zhSents.length === 0 || totalEnChars < 30) {
-    return <span className="text-sm"><strong className="mr-1">{label}.</strong>{text}</span>
-  }
-
-  const enText = enSents.join(' ').replace(/\s+/g, ' ').trim()
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z]{2,})([a-z])/g, '$1 $2')
-  const zhText = zhSents.join('').trim()
-
-  return (
-    <span className="text-sm">
-      <strong className="mr-1">{label}.</strong>
-      <span className="font-medium">{enText}</span>
-      <br />
-      <span className="text-gray-600 dark:text-gray-400">{zhText}</span>
-    </span>
-  )
+  return <span className="text-sm"><span className="font-semibold mr-1">{label}.</span>{text}</span>
 }
 
 // ══════════════════════════════════════════
