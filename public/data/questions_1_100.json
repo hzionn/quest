@@ -511,18 +511,19 @@
     "exam": "MLA-C01",
     "id": 27,
     "type": "single",
-    "question": "一家公司使用混合云环境。一个部署在本地的数据模型使用Amazon S3中的数据，为客户提供实时对话引擎。该模型正在使用敏感数据。一名ML工程师需要实施一个解决方案来识别并移除敏感数据。哪种解决方案可以以最少的运营开销满足这些需求？",
+    "question": "一家公司使用混合云环境。一个部署在本地的数据模型使用 Amazon S3 中的数据，为客户提供实时对话引擎。该模型正在使用敏感数据。一名 ML 工程师需要实施一个解决方案来识别并移除敏感数据。哪种解决方案可以以最少的运营开销满足这些需求？",
     "options": {
-      "A": "将模型部署在Amazon SageMaker上。创建一组AWS Lambda函数来识别并移除敏感数据。",
-      "B": "将模型部署在使用AWS Fargate Amazon Elastic Container Service的（Amazon ECS） 集群上。创建一个AWS Batch作业来识别并移除敏感数据。",
-      "C": "使用Amazon识别敏感数据。创建一组Macie AWS Lambda函数来移除敏感数据。",
-      "D": "使用Amazon Comprehend识别敏感数据。启动Amazon EC2实例来移除敏感数据。"
+      "A": "将模型部署在 Amazon SageMaker 上。创建一组 AWS Lambda 函数来识别并移除敏感数据。",
+      "B": "将模型部署在使用 AWS Fargate 的 Amazon Elastic Container Service (Amazon ECS) 集群上。创建一个 AWS Batch 作业来识别并移除敏感数据。",
+      "C": "使用 Amazon Macie 识别敏感数据。创建一组 AWS Lambda 函数来移除敏感数据。",
+      "D": "使用 Amazon Comprehend 识别敏感数据。启动 Amazon EC2 实例来移除敏感数据。"
     },
     "answer": "C",
     "explanations": {
-      "C": "Amazon Macie是专门设计用于识别和保护敏感数据的服务，能够自动分类和识别敏感数据，特别是处理Amazon S3中的数据。AWS Lambda使用 函数来移除检测到的敏感数据是一种轻量级的解决方案，“ ”符合 最少操作开销 的要求。结论：正确。",
-      "B": "❌ 和Amazon ECS AWS Fargate适合容器化应用的部署，但与敏感数据识别和移除无直接关联。AWS Batch用于批处理作业调度和运行，需要额外的配置和管理，增加了操作开销。“ ”此选项不符合 最少操作开销 的要求。结论：错误。",
-      "D": "❌ Amazon Comprehend是一个自然语言处理服务，适合分析文本数据，但不专门用于识别敏感数据。Amazon EC2使用 实例来移除敏感数据需要管理服务器和应用程序，增加了操作开销。“ ”此选项不符合 最少操作开销 的要求。结论：错误。"
+      "A": "❌ Amazon SageMaker 适合模型训练和部署，但本题重点是敏感数据的识别和移除。使用 Lambda 来识别和移除需要额外开发，增加操作开销。",
+      "B": "❌ Amazon ECS 和 AWS Fargate 适合容器化应用部署，与敏感数据识别无直接关联。AWS Batch 需要额外配置和管理，增加操作开销。",
+      "C": "✅ Amazon Macie 专门设计用于识别和保护 Amazon S3 中的敏感数据，能够自动分类和识别。搭配 AWS Lambda 移除敏感数据是轻量级方案，符合最少操作开销。",
+      "D": "❌ Amazon Comprehend 是自然语言处理服务，不专门用于识别敏感数据。使用 EC2 需要管理服务器，增加操作开销。"
     }
   },
   {
@@ -599,19 +600,19 @@
     "exam": "MLA-C01",
     "id": 32,
     "type": "single",
-    "question": "一家金融公司從外部提供商接收大量即時市場數據流。這些數據流每秒包含數千條JSON記錄。 該公司需要在AWS上實施一個可擴展的解決方案，以識別異常數據點。 哪種解決方案能夠以最少的運營開銷滿足這些要求？",
+    "question": "一家金融公司從外部提供商接收大量即時市場數據流。這些數據流每秒包含數千條 JSON 記錄。該公司需要在 AWS 上實施一個可擴展的解決方案，以識別異常數據點。哪種解決方案能夠以最少的運營開銷滿足這些要求？",
     "options": {
-      "A": "將即時數據導入Amazon Kinesis Amazon Managed數據流。使用中的內置Service for Apache Flink RANDOM_CUT_FOREST函數處理數據流並檢測數據異常。",
-      "B": "將即時數據導入Amazon Kinesis Amazon數據流。部署一個端點用於即時異常檢測。創建一個SageMaker AWS Lambda函數來檢測異常。使用數據流調用該Lambda函數。",
-      "C": "將即時數據導入運行在Amazon EC2實例上的Apache Kafka。部署一個端點用於即時異常檢測。創建一個Amazon SageMaker AWS Lambda函數來檢測異常。使用數據流調用該Lambda函數。",
-      "D": "Amazon Simple Queue Service （Amazon SQS） FIFO將即時數據發送到隊列。創建一個AWS Lambda函數來消費隊列消息。編寫Lambda函數以AWS Glue (ETL)啟動一個 提取、轉換和加載 作業，用於批處理和異常檢測。"
+      "A": "將即時數據導入 Amazon Kinesis 數據流。使用 Amazon Managed Service for Apache Flink 中的內置 RANDOM_CUT_FOREST 函數處理數據流並檢測數據異常。",
+      "B": "將即時數據導入 Amazon Kinesis 數據流。部署一個 Amazon SageMaker 端點用於即時異常檢測。創建一個 AWS Lambda 函數來檢測異常。使用數據流調用該 Lambda 函數。",
+      "C": "將即時數據導入運行在 Amazon EC2 實例上的 Apache Kafka。部署一個 Amazon SageMaker 端點用於即時異常檢測。創建一個 AWS Lambda 函數來檢測異常。使用數據流調用該 Lambda 函數。",
+      "D": "將即時數據發送到 Amazon Simple Queue Service (Amazon SQS) FIFO 隊列。創建一個 AWS Lambda 函數來消費隊列消息。編寫 Lambda 函數以啟動一個 AWS Glue 提取、轉換和加載 (ETL) 作業，用於批處理和異常檢測。"
     },
     "answer": "A",
     "explanations": {
-      "A": "A : 正確Amazon Kinesis Amazon Managed適合處理高吞吐量即時數據。提供內置的Service for Apache Flink RANDOM_CUT_FOREST函數，可直接用於異常檢測，無需額外開發，運營開銷最低。",
-      "B": "❌ : SageMaker Lambda錯誤 使用 端點和 函數增加了配置和管理的複雜性。",
-      "C": "❌ : EC2 Kafka錯誤 在 上運行 增加了管理負擔。",
-      "D": "❌ : 錯誤SQS不適合高吞吐量流處理，AWS Glue是批處理工具，不符合即時性要求。"
+      "A": "✅ Amazon Kinesis 適合處理高吞吐量即時數據。Amazon Managed Service for Apache Flink 提供內置的 RANDOM_CUT_FOREST 函數，可直接用於異常檢測，無需額外開發，運營開銷最低。",
+      "B": "❌ 使用 SageMaker 端點和 Lambda 函數增加了配置和管理的複雜性。",
+      "C": "❌ 在 EC2 上運行 Kafka 增加了管理負擔。",
+      "D": "❌ SQS 不適合高吞吐量流處理，AWS Glue 是批處理工具，不符合即時性要求。"
     }
   },
   {
@@ -901,17 +902,19 @@
     "exam": "MLA-C01",
     "id": 49,
     "type": "single",
-    "question": "一家信用卡公司在Amazon SageMaker端點上運行了一個欺詐檢測模型。該公司開發了該模型的新版本。公司需要使用實時數據評估新模型的性能，同時不影響生產端用户。 哪種解決方案能夠滿足這些需求？",
+    "question": "一家信用卡公司在 Amazon SageMaker 端點上運行了一個欺詐檢測模型。該公司開發了該模型的新版本。公司需要使用實時數據評估新模型的性能，同時不影響生產端用戶。哪種解決方案能夠滿足這些需求？",
     "options": {
-      "A": "設置Set up SageMaker Debugger and create a custom rule.SageMaker Debugger並創建一個自定義規則。",
-      "B": "設置藍Set up blue/green deployments with all-at-once traffic shifting./綠部署並進行一次性流量切換。",
-      "C": "設置藍Set up blue/green deployments with canary traffic shifting./綠部署並進行金絲雀流量切換。",
-      "D": "Set up shadow testing with a shadow variant of the new model.設置影子測試並使用新模型的影子變體。"
+      "A": "設置 SageMaker Debugger 並創建一個自定義規則。",
+      "B": "設置藍/綠部署並進行一次性流量切換。",
+      "C": "設置藍/綠部署並進行金絲雀流量切換。",
+      "D": "設置影子測試並使用新模型的影子變體。"
     },
     "answer": "D",
     "explanations": {
-      "D": "✅ D : (Shadow Testing)正確 影子測試 允許新模型接收與生產模型相同的實時流量進行推論，但其結果不會返回給用户，因此完全不影響生產環境，最適合用於評估性能 。B, C : /錯誤 藍 綠部署和金絲雀部署都會將部分或全部流量切換到新模型，若新模型有問題會影響用户 。",
-      "A": "❌ : Debugger錯誤 用於調試訓練過程，非推論測試 。"
+      "A": "❌ Debugger 用於調試訓練過程，非推論測試。",
+      "B": "❌ 藍/綠部署會將全部流量切換到新模型，若新模型有問題會影響用戶。",
+      "C": "❌ 金絲雀部署會將部分流量切換到新模型，仍可能影響用戶。",
+      "D": "✅ 影子測試 (Shadow Testing) 允許新模型接收與生產模型相同的實時流量進行推論，但其結果不會返回給用戶，完全不影響生產環境，最適合用於評估性能。"
     }
   },
   {
@@ -1165,18 +1168,19 @@
     "exam": "MLA-C01",
     "id": 64,
     "type": "single",
-    "question": "一家公司計劃在其主要AWS帳户中使用Amazon Redshift ML。源數據位於次要帳户的Amazon S3存儲桶中。 一名機器學習工程師需要在主要帳户中設置一個機器學習管道，以訪問次要帳户中的S3存儲桶。解決方案必須不需要公共IPv4地址。 哪種解決方案可以滿足這些要求？",
+    "question": "一家公司計劃在其主要 AWS 帳戶中使用 Amazon Redshift ML。源數據位於次要帳戶的 Amazon S3 存儲桶中。一名機器學習工程師需要在主要帳戶中設置一個機器學習管道，以訪問次要帳戶中的 S3 存儲桶。解決方案必須不需要公共 IPv4 地址。哪種解決方案可以滿足這些要求？",
     "options": {
-      "A": "在主要帳户中，在未啟用公共訪問的VPC中預置一個Redshift集群和Amazon SageMaker Studio。在帳户之間創建一個VPC對等連接。更新VPC路由表以移除到0.0.0.0/0的路由。",
-      "B": "在主要帳户中，在未啟用公共訪問的VPC中預置一個Redshift集群和。創建一個Amazon SageMaker Studio AWS Direct Connect連接和一個Transit。將兩個帳户的Gateway與VPC Transit Gateway關聯。更新VPC路由表以移除到0.0.0.0/0的路由。",
-      "C": "在主要帳户中，在VPC中預置一個Redshift Amazon集群和。在帳户之間創建一個SageMaker Studio AWS Site-to-Site VPN連接，並設置兩個加密的IPsec隧道。為Amazon S3設置接口VPC端點。",
-      "D": "在主要帳户中，在VPC中預置一個Redshift Amazon集群和。創建一個SageMaker Studio網關端點。更新S3 S3存儲桶策略以允許來自主要帳户的IAM主體。為SageMaker和Amazon Redshift設置接口VPC端點。"
+      "A": "在主要帳戶中，在未啟用公共訪問的 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。在帳戶之間創建一個 VPC 對等連接。更新 VPC 路由表以移除到 0.0.0.0/0 的路由。",
+      "B": "在主要帳戶中，在未啟用公共訪問的 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。創建一個 AWS Direct Connect 連接和一個 Transit Gateway。將兩個帳戶的 VPC 與 Transit Gateway 關聯。更新 VPC 路由表以移除到 0.0.0.0/0 的路由。",
+      "C": "在主要帳戶中，在 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。在帳戶之間創建一個 AWS Site-to-Site VPN 連接，並設置兩個加密的 IPsec 隧道。為 Amazon S3 設置接口 VPC 端點。",
+      "D": "在主要帳戶中，在 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。創建一個 S3 網關端點。更新 S3 存儲桶策略以允許來自主要帳戶的 IAM 主體。為 SageMaker 和 Amazon Redshift 設置接口 VPC 端點。"
     },
     "answer": "D",
     "explanations": {
-      "D": "D (選項Correct Answer)：最優解這是最符合AWS最佳實踐且成本效益最高的方案。S3 (網關端點S3：Gateway允許Endpoint)內的服務（如VPC Redshift）通過AWS內部網路訪問S3，無需經過公網或NAT網關，直接解決了「不需要公共IPv4」的要求。跨帳户權限設置：S3通過更新次要帳户的Bucket Policy，明確授權主要帳户的IAM（Role或Redshift SageMaker使用的角色）訪問權限，這是跨帳户資源共享的標準做法。VPC (接口Interface端點VPC：Endpoints)讓SageMaker Studio和Redshift /的控制台API請求能留在私有網路內處理，確保了整條路徑的私密性。 ( )選項A：VPC Peering錯誤原因：架構過度複雜且方向錯誤解析：VPC（對等連接）通常用於兩個Peering之間的內部VPC IP通訊。錯誤點：S3是一個全域服務（Public），並不在Service VPC內部。雖然可以使用Peering配合某些路由，但這不是訪問S3的標準做法。此外，單純移除0.0.0.0/0路由而不設置S3，會導致所有Endpoint AWS服務調用中斷。",
-      "B": "❌  (選項Direct：Connect與Transit Gateway錯誤原因：成本極高且不適)用解析：Direct是用於連接「本地數據中心」與Connect （DX） AWS的物理專線；Transit用於多Gateway VPC的大規模聯網。AWS錯誤點： 本題的情境是「兩個 帳户之間」的雲端通訊，完全不需要用(到物理專線DX)。這屬於「殺雞用牛刀」，且DX並不直接解決S3訪問的私密性問題。",
-      "C": "❌  ( )選項Site-to-Site：VPN錯誤原因：通訊路徑冗餘且不必要解析：VPN用於建立加密的隧道，通常也是用於連接本地辦公室與雲端。AWS VPN S3錯誤點： 在兩個 帳户之間建立 隧道來訪問 是非常低效且維護成本高昂的做法。雖然它提到了接口端點，但建立IPsec隧道的基礎架構要求完全偏離了「雲原生跨帳户訪問」的簡便性。"
+      "A": "❌ VPC Peering 用於兩個 VPC 之間的內部 IP 通訊，但 S3 是全域服務不在 VPC 內部。單純移除 0.0.0.0/0 路由而不設置 S3 Endpoint，會導致所有 AWS 服務調用中斷。",
+      "B": "❌ Direct Connect 是連接本地數據中心與 AWS 的物理專線，Transit Gateway 用於多 VPC 大規模聯網。本題是兩個 AWS 帳戶之間的雲端通訊，完全不需要物理專線，成本極高且不適用。",
+      "C": "❌ Site-to-Site VPN 通常用於連接本地辦公室與雲端。在兩個 AWS 帳戶之間建立 VPN 隧道來訪問 S3 非常低效且維護成本高昂，偏離了雲原生跨帳戶訪問的簡便性。",
+      "D": "✅ S3 網關端點允許 VPC 內的服務通過 AWS 內部網路訪問 S3，無需公網或 NAT 網關。更新 S3 Bucket Policy 授權主要帳戶的 IAM Role 是跨帳戶資源共享的標準做法。接口 VPC 端點讓 SageMaker 和 Redshift 的請求留在私有網路內，確保整條路徑的私密性。"
     }
   },
   {
@@ -1363,18 +1367,19 @@
     "exam": "MLA-C01",
     "id": 75,
     "type": "single",
-    "question": "一家公司希望使用來自其客户的表格數據開發一個機器學習模型。這些數據包含有意義的有序特徵，並且包含不應丟棄的敏感信息。一名機器學習工程師必須確保敏感數據在另一個團隊開始構建模型之前被屏蔽。哪種解決方案可以滿足這些要求？",
+    "question": "一家公司希望使用來自其客戶的表格數據開發一個機器學習模型。這些數據包含有意義的有序特徵，並且包含不應丟棄的敏感信息。一名機器學習工程師必須確保敏感數據在另一個團隊開始構建模型之前被屏蔽。哪種解決方案可以滿足這些要求？",
     "options": {
-      "A": "使用Use Amazon Made to categorize the sensitive data.Amazon Made來分類敏感數據。",
-      "B": "使用Prepare the data by using AWS Glue DataBrew.AWS Glue DataBrew準備數據。",
-      "C": "運行一個Run an AWS Batch job to change the sensitive data to randomvalues.AWS Batch作業，將敏感數據更改為隨機值。",
-      "D": "運行一個Run an Amazon EMR job to change the sensitive data to randomvalues.Amazon EMR作業，將敏感數據更改為隨機值。"
+      "A": "使用 Amazon Macie 來分類敏感數據。",
+      "B": "使用 AWS Glue DataBrew 準備數據。",
+      "C": "運行一個 AWS Batch 作業，將敏感數據更改為隨機值。",
+      "D": "運行一個 Amazon EMR 作業，將敏感數據更改為隨機值。"
     },
     "answer": "B",
     "explanations": {
-      "B": "正確：Prepare the data by using AWS Glue DataBrew.AWS Glue DataBrew是一種數據準備工具，支持數據清理、轉換和掩碼操作。它可以輕鬆地對敏感數據進行掩碼處理，符合題目要求。",
-      "C": "❌ 錯誤：Run an AWS Batch job to change the sensitive data torandom values.AWS Batch主要用於運行批處理作業，而不是專門設計用於數據預處理或掩碼操作。雖然可以通過自定義代碼實現數據掩碼，但這不是最佳選擇。",
-      "D": "❌ 錯誤：Run an Amazon EMR job to change the sensitive data torandom values.Amazon EMR主要用於大規模數據處理和分析，而不是專門設計用於數據掩碼操作。雖然可以通過自定義代碼實現數據掩碼，但這不是最佳選擇。"
+      "A": "❌ Amazon Macie 用於識別和保護敏感數據，但不直接提供數據掩碼功能。題目要求的是掩碼處理而非分類。",
+      "B": "✅ AWS Glue DataBrew 是數據準備工具，支持數據清理、轉換和掩碼操作，可以輕鬆對敏感數據進行掩碼處理，符合題目要求。",
+      "C": "❌ AWS Batch 主要用於運行批處理作業，不是專門設計用於數據預處理或掩碼操作。雖然可通過自定義代碼實現，但不是最佳選擇。",
+      "D": "❌ Amazon EMR 主要用於大規模數據處理和分析，不是專門設計用於數據掩碼操作。雖然可通過自定義代碼實現，但不是最佳選擇。"
     }
   },
   {
@@ -1527,12 +1532,12 @@
     "exam": "MLA-C01",
     "id": 84,
     "type": "single",
-    "question": "一家公司需要為所有公司的機器學習模型創建一個中央目錄。模型位於公司最初開發模型的AWS Amazon Elastic Container Registry帳户中。模型託管在（Amazon ECR）存儲庫中。哪種解決方案可以滿足這些需求？",
+    "question": "一家公司需要為所有公司的機器學習模型創建一個中央目錄。模型位於公司最初開發模型的AWS帳戶中。模型託管在Amazon Elastic Container Registry (Amazon ECR) 存儲庫中。哪種解決方案可以滿足這些需求？",
     "options": {
-      "A": "為每個現有的Configure存儲庫配置ECR cross-account replication for each existing ECRrepository. Ensure that each model is visible in each AWS account.ECR ECR AWS跨帳户複製。確保每個模型在每個帳户中都可見。",
-      "B": "創建一個新的Create帳户，並在其中創建一個新的a new AWS account with a new ECR repository as thecentral catalog. Configure ECR cross-account replication betweenthe initial ECR repositories and the central catalog.AWS ECR存儲庫作為中央目錄。在初始ECR存儲庫和中央目錄之間配置ECR跨帳户複製。",
-      "C": "Use the Amazon SageMaker Model Registry to create a modelgroup for models hosted in Amazon ECR. Create a new AWSaccount. In the new account, 使用use為託管在the SageMaker Model Registryas the central catalog. Attach a cross-account resource policy toeach model group in the initial AWS accounts.Amazon SageMaker Model Registry Amazon ECR中的模型創建一個模型組。創建一個新的AWS帳户。在新帳户中，將用作中央目錄。在初始SageMaker Model Registry AWS帳户中的每個模型組上附加跨帳户資源策略。",
-      "D": "使用Use存儲模型。運行an AWS Glue Data Catalog to store the models. Run an AWSGlue crawler to migrate the models from the ECR repositories to theData Catalog. Configure cross-account access to the Data Catalog.AWS Glue Data Catalog AWS Glue爬網程序將模型從ECR存儲庫遷移到Data。配置對Catalog Data Catalog的跨帳户訪問。"
+      "A": "為每個現有的ECR存儲庫配置ECR跨帳戶複製。確保每個模型在每個AWS帳戶中都可見。",
+      "B": "創建一個新的AWS帳戶，並在其中創建一個新的ECR存儲庫作為中央目錄。在初始ECR存儲庫和中央目錄之間配置ECR跨帳戶複製。",
+      "C": "使用Amazon SageMaker Model Registry為託管在Amazon ECR中的模型創建一個模型組。創建一個新的AWS帳戶。在新帳戶中，將SageMaker Model Registry用作中央目錄。在初始AWS帳戶中的每個模型組上附加跨帳戶資源策略。",
+      "D": "使用AWS Glue Data Catalog存儲模型。運行AWS Glue爬網程序將模型從ECR存儲庫遷移到Data Catalog。配置對Data Catalog的跨帳戶訪問。"
     },
     "answer": "C",
     "explanations": {
@@ -1781,18 +1786,19 @@
     "exam": "MLA-C01",
     "id": 97,
     "type": "single",
-    "question": "一家公司使用10個加速實例類型的Reserved Instances來支持當前版本的模型。 一名ML ML Amazon SageMaker工程師需要將模型的新版本部署到實時推理端點。 解決方案必須使用原來的10個實例來支持模型的兩個版本。解決方案還必須包括一個額外的Reserved Instance，可用於部署過程。 版本之間的過渡必須無停機或服務中斷。 哪種解決方案可以滿足這些要求？",
+    "question": "一家公司使用 10 個加速實例類型的 Reserved Instances 來支持當前版本的 ML 模型。一名 ML 工程師需要將模型的新版本部署到 Amazon SageMaker 實時推理端點。解決方案必須使用原來的 10 個實例來支持模型的兩個版本。解決方案還必須包括一個額外的 Reserved Instance，可用於部署過程。版本之間的過渡必須無停機或服務中斷。哪種解決方案可以滿足這些要求？",
     "options": {
-      "A": "配置一個藍Configure a blue/green deployment with all-at-once trafficshifting./綠部署，並採用全量流量切換。",
-      "B": "Configure a blue/green deployment with canary traffic shiftingand a size of 10%./ 10%配置一個藍 綠部署，並採用金絲雀流量切換，比例為 。",
-      "C": "Configure a shadow test with a traffic sampling percentage of10%.%配置一個影子測試，並採用10的流量採樣比例。",
-      "D": "配置一個滾動部署，並設置滾動批量大小為Configure a rolling deployment with a rolling batch size of 1.1。"
+      "A": "配置一個藍/綠部署，並採用全量流量切換。",
+      "B": "配置一個藍/綠部署，並採用金絲雀流量切換，比例為 10%。",
+      "C": "配置一個影子測試，並採用 10% 的流量採樣比例。",
+      "D": "配置一個滾動部署，並設置滾動批量大小為 1。"
     },
     "answer": "D",
     "explanations": {
-      "D": "✅ 配置一個滾動部署，並設置滾動批量大小為1。正確：滾動部署允許逐步替換實例上的模型版本，確保無停機時間。",
-      "B": "❌ / 10%配置一個藍 綠部署，並採用金絲雀流量切換，比例為 。錯誤：金絲雀流量切換通常用於測試新版本的模型，但題目要求使用",
-      "C": "❌ %配置一個影子測試，並採用10的流量採樣比例。錯誤：影子測試是將部分流量複製到新版本進行測試，但不會影響主“ 10流量的處理。影子測試無法滿足 使用原來的 個實例同時服務兩個”版本 的要求。"
+      "A": "❌ 全量流量切換會導致服務中斷，流量直接從舊版本切換到新版本，沒有逐步過渡，不符合無停機要求。",
+      "B": "❌ 金絲雀流量切換用於測試新版本，但藍/綠部署需要額外的完整實例集群，無法滿足僅用原來 10 個實例加 1 個額外實例的限制。",
+      "C": "❌ 影子測試是將部分流量複製到新版本進行測試，但不會實際完成版本切換，無法達成部署目標。",
+      "D": "✅ 滾動部署逐步替換實例上的模型版本，設置批量大小為 1 表示每次只替換 1 個實例（因此只需 1 個額外實例），確保服務不中斷，同時滿足使用原來 10 個實例和無停機的要求。"
     }
   },
   {

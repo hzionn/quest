@@ -220,18 +220,19 @@
   {
     "exam": "MLA-C01",
     "id": 113,
-    "question": "一家公司正在為一個電子商務應用程序構建即時數據處理管道。該應用程序生成大量點擊流數據，必須以接近即時的方式進行攝取、處理和可視化。公司需要一個支持使用SQL進行數據處理以及支持使用Jupyter notebooks進行交互式分析的解決方案。哪種解決方案可以滿足這些需求？",
+    "question": "一家公司正在為一個電子商務應用程序構建即時數據處理管道。該應用程序生成大量點擊流數據，必須以接近即時的方式進行攝取、處理和可視化。公司需要一個支持使用 SQL 進行數據處理以及支持使用 Jupyter notebooks 進行交互式分析的解決方案。哪種解決方案可以滿足這些需求？",
     "explanations": {
-      "D": "使用Amazon MSK Amazon Managed Service for攝取數據，處理數據，內置Apache Flink Flink儀表板可視化。正確：Amazon MSK適合高吞吐量的即時數據攝取。正確：Amazon Managed Service for Apache Flink支持即時數據處理，並且支持SQL查詢和Jupyter notebooks進行交互式分析。正確：內置的Flink儀表板可以用於即時數據可視化。",
-      "B": "❌ 使用Amazon Kinesis Data Streams Amazon Data攝取數據，轉換數據，Firehose Amazon Athena Amazon處理數據，QuickSight可視化。正確：Amazon Kinesis Data Streams適合即時數據攝取。錯誤：Amazon Data Firehose主要用於數據傳輸，而不是複雜的即時數據轉換。錯誤：Amazon Athena是交互式查詢服務，但不適合即時數據處理。正確：Amazon QuickSight可以用於數據可視化，但不支持即時交互式分析。",
-      "C": "❌ 使用Amazon MSK攝取數據，AWS Glue和PySpark處理數據，存儲數據，Amazon S3 Amazon QuickSight可視化。正確：Amazon MSK適合高吞吐量的即時數據攝取。錯誤：AWS Glue和PySpark適合批處理，而不是即時數據處理。正確：Amazon S3可以存儲處理後的數據。正確：Amazon QuickSight可以用於數據可視化，但不支持即時交互式分析。"
+      "A": "❌ Amazon Data Firehose 主要用於數據流傳輸和存儲，不適合即時處理。AWS Lambda 適合事件驅動但不適合高吞吐量即時數據流處理。",
+      "B": "❌ Amazon Data Firehose 不適合複雜的即時數據轉換。Amazon Athena 是交互式查詢服務，不適合即時數據處理。",
+      "C": "❌ AWS Glue 和 PySpark 適合批處理，不適合即時數據處理。",
+      "D": "✅ Amazon MSK 適合高吞吐量即時數據攝取。Amazon Managed Service for Apache Flink 支持即時數據處理，並且支持 SQL 查詢和 Jupyter notebooks 進行交互式分析。內置的 Flink 儀表板可用於即時數據可視化。"
     },
     "type": "single",
     "options": {
-      "A": "使用Amazon Data Firehose攝取數據。創建一個AWS Lambda函數來處理數據。將處理後的數據存儲在Amazon S3 Amazon中。使用QuickSight對數據進行可視化。",
-      "B": "使用Amazon Kinesis Data Streams Amazon Data攝取數據。使用轉換數據。使用Firehose Amazon Athena Amazon處理數據。使用QuickSight對數據進行可視化。",
-      "C": "Amazon Managed Streaming for Apache Kafka （Amazon使用MSK（ 攝取數據。使用AWS Glue和PySpark處理數據。將處理後的數據存儲在Amazon S3中。使用Amazon QuickSight對數據進行可視化。",
-      "D": "Amazon Managed Streaming for Apache Kafka （Amazon使用MSK（ 攝取數據。使用Amazon Managed Service for Apache Flink處理數據。使用內置的Flink儀表板對數據進行可視化。"
+      "A": "使用 Amazon Data Firehose 攝取數據。創建一個 AWS Lambda 函數來處理數據。將處理後的數據存儲在 Amazon S3 中。使用 Amazon QuickSight 對數據進行可視化。",
+      "B": "使用 Amazon Kinesis Data Streams 攝取數據。使用 Amazon Data Firehose 轉換數據。使用 Amazon Athena 處理數據。使用 Amazon QuickSight 對數據進行可視化。",
+      "C": "使用 Amazon Managed Streaming for Apache Kafka (Amazon MSK) 攝取數據。使用 AWS Glue 和 PySpark 處理數據。將處理後的數據存儲在 Amazon S3 中。使用 Amazon QuickSight 對數據進行可視化。",
+      "D": "使用 Amazon Managed Streaming for Apache Kafka (Amazon MSK) 攝取數據。使用 Amazon Managed Service for Apache Flink 處理數據。使用內置的 Flink 儀表板對數據進行可視化。"
     },
     "answer": "D"
   },
@@ -292,19 +293,19 @@
   {
     "exam": "MLA-C01",
     "id": 117,
-    "question": "一家公司需要使用Amazon SageMaker在超過300 GB的數據上訓練模型。訓練數據由大小為200 MB Amazon S3的文件組成。這些數據存儲在Standard存儲中，並為一個儀表板工具提供支持。對於此場景，哪種SageMaker訓練數據攝取機制是最具成本效益的解決方案？",
+    "question": "一家公司需要使用 Amazon SageMaker 在超過 300 GB 的數據上訓練模型。訓練數據由大小為 200 MB 的文件組成。這些數據存儲在 Amazon S3 Standard 存儲中，並為一個儀表板工具提供支持。對於此場景，哪種 SageMaker 訓練數據攝取機制是最具成本效益的解決方案？",
     "explanations": {
-      "D": "✅ 正確：Amazon S3 的快速文件模式允許高效地攝取數據，同時保持 S3 的高可靠性和可用性。不使用 S3 Express One Zone 保持了數據的高可用性，是最具成本效益的選擇。",
-      "A": "❌ 錯誤：Amazon EFS 成本較高，不適合處理大規模的機器學習訓練數據，不是最具成本效益的選擇。",
-      "B": "❌ 錯誤：Amazon FSx for Lustre 性能優異但成本較高，不符合「最具成本效益」的要求。",
-      "C": "❌ 錯誤：S3 Express One Zone 數據僅存儲在單個可用區中，可靠性較低，可能帶來數據丟失風險。"
+      "A": "❌ Amazon EFS 成本較高，不適合處理大規模機器學習訓練數據，不是最具成本效益的選擇。",
+      "B": "❌ Amazon FSx for Lustre 性能優異但成本較高，不符合最具成本效益的要求。",
+      "C": "❌ S3 Express One Zone 需要額外將數據從 S3 Standard 複製過去，增加成本。數據已存於 S3 Standard 並為儀表板服務，無需搬遷。",
+      "D": "✅ S3 快速文件模式直接從現有的 S3 Standard 存儲高效攝取數據，無需額外複製或遷移，既滿足性能需求又具有最低成本。"
     },
     "type": "single",
     "options": {
-      "A": "Amazon Elastic File System （Amazon EFS） file systemAmazon Elastic File System （Amazon EFS）文件系統",
-      "B": "Amazon FSx for Lustre file systemAmazon FSx for Lustre文件系統",
-      "C": "Amazon S3 in fast file mode while using S3 Express One ZoneAmazon S3 S3 Express One Zone快速文件模式，同時使用",
-      "D": "Amazon S3 in fast file mode without using S3 Express One ZoneAmazon S3 S3 Express One Zone快速文件模式，不使用"
+      "A": "Amazon Elastic File System (Amazon EFS) 文件系統",
+      "B": "Amazon FSx for Lustre 文件系統",
+      "C": "Amazon S3 快速文件模式，同時使用 S3 Express One Zone",
+      "D": "Amazon S3 快速文件模式，不使用 S3 Express One Zone"
     },
     "answer": "D"
   },
@@ -423,16 +424,19 @@
   {
     "exam": "MLA-C01",
     "id": 123,
-    "question": "一家公司希望構建一個使用社交媒體流數據的實時分析應用程序。 一名機器學習工程師必須實施一個解決方案，該解決方案每分鐘攝取和轉換5 GB的數據。 該解決方案還必須將數據加載到支持實時分析快速查詢的數據存儲中。哪個解決方案可以滿足這些要求？",
+    "question": "一家公司希望構建一個使用社交媒體流數據的實時分析應用程序。一名機器學習工程師必須實施一個解決方案，該解決方案每分鐘攝取和轉換 5 GB 的數據。該解決方案還必須將數據加載到支持實時分析快速查詢的數據存儲中。哪個解決方案可以滿足這些要求？",
     "explanations": {
-      "_full": "考察的知識點 實時數據流處理：如何高效地攝取、轉換和存儲大規模實時數據。  服務的選擇與組合：包括數據流攝取、數據轉換和存儲服務的最AWS佳實踐。  性能與可擴展性：處理高吞吐量數據（每分鐘5GB）的能力。 查詢效率：支持實時分析的存儲解決方案。 獨立分析每個選項  使用A. Amazon EventBridge AWS Glue攝取社交媒體數據，使用  轉換數據，將轉換後的數據存儲在Amazon ElastiCache（）Memcached中。  攝取數據：Amazon EventBridge主要用於事件驅動架構，適合處理  事件通知，但不適合高吞吐量的實時數據流（如每分鐘5GB）。  數據轉換：AWS是批處理Glue工具，適合處理大規模數據，但不ETL適合實時流數據轉換。  數據存儲：Amazon是一個內存緩存服ElastiCache （Memcached）務，適合快速查詢，但不適合存儲大規模數據或支持複雜查詢。 結論：此選項無法滿足實時數據流處理和存儲需求。  使用B. Amazon Simple Queue Service （Amazon SQS）攝取社交  媒體數據，使用AWS Lambda轉換數據，將轉換後的數據存儲在 Amazon S3 中。  攝取數據：Amazon是消息隊列服務，適合異步任務處理，但不SQS適合高吞吐量實時數據流。  數據轉換：AWS Lambda適合處理小規模事件驅動任務，但不適合處  理每分鐘5GB的高吞吐量數據轉換。  數據存儲：Amazon是物件存儲服務，適合存儲大規模數據，但不S3支持實時查詢。 結論：此選項無法滿足實時數據流處理和實時查詢需求。  使用C. Amazon Simple Notification Service （Amazon SNS）攝取  社交媒體數據，使用Amazon EMR轉換數據，將轉換後的數據存儲  在Amazon RDS中。 Amazon SNS / 攝取數據： 是消息發布 訂閱服務，適合通知和分發消 息，但不適合高吞吐量實時數據流。  數據轉換：Amazon適合處理大規模數據分析，但主要用於批處EMR理，不適合實時流數據轉換。  數據存儲：Amazon是關係型數據庫服務，支持複雜查詢，但不RDS適合高吞吐量實時數據存儲。 結論：此選項無法滿足實時數據流處理需求。  使用D. Amazon Kinesis Data Streams攝取社交媒體數據，使用 Amazon Managed Service for Apache Flink 轉換數據，將轉換後  的數據存儲在Amazon DynamoDB中。  攝取數據：Amazon Kinesis Data Streams專為高吞吐量實時數據流  設計，能夠處理每分鐘5GB的數據。 Amazon Managed Service for Apache Flink 數據轉換： 支持實時流 數據處理和轉換，適合實時分析場景。  數據存儲：Amazon是高性能DynamoDB數據庫，支持快速查NoSQL詢，適合實時分析需求。 結論：此選項完全滿足實時數據流處理和存儲需求。"
+      "A": "❌ EventBridge 適合事件驅動架構，不適合每分鐘 5GB 的高吞吐量實時數據流。AWS Glue 是批處理 ETL 工具，不適合實時流轉換。ElastiCache 不適合存儲大規模數據。",
+      "B": "❌ SQS 是消息隊列，不適合高吞吐量實時數據流。Lambda 不適合每分鐘 5GB 的高吞吐量轉換。S3 不支持實時查詢。",
+      "C": "❌ SNS 是發布/訂閱服務，不適合高吞吐量實時數據流。EMR 主要用於批處理。RDS 不適合高吞吐量實時數據存儲。",
+      "D": "✅ Kinesis Data Streams 專為高吞吐量實時數據流設計，能處理每分鐘 5GB。Apache Flink 支持實時流數據處理和轉換。DynamoDB 是高性能 NoSQL 數據庫，支持快速查詢，適合實時分析。"
     },
     "type": "single",
     "options": {
-      "A": "使用Amazon EventBridge攝取社交媒體數據。 使用AWS Glue轉換數據。 將轉換後的數據存儲在Amazon ElastiCache （Memcached）中。",
-      "B": "使用Amazon Simple Queue Service （Amazon SQS）攝取社交媒體數據。 使用AWS Lambda Amazon S3轉換數據。 將轉換後的數據存儲在中。",
-      "C": "使用Amazon Simple Notification Service （Amazon SNS）攝取社交媒體數據。 使用Amazon EMR轉換數據。 將轉換後的數據存儲在Amazon RDS中。",
-      "D": "使用Amazon Kinesis Data Streams攝取社交媒體數據。 使用Amazon Managed Service for Apache Flink轉換數據。 將轉換後的數據存儲在Amazon DynamoDB中。"
+      "A": "使用 Amazon EventBridge 攝取社交媒體數據。使用 AWS Glue 轉換數據。將轉換後的數據存儲在 Amazon ElastiCache (Memcached) 中。",
+      "B": "使用 Amazon Simple Queue Service (Amazon SQS) 攝取社交媒體數據。使用 AWS Lambda 轉換數據。將轉換後的數據存儲在 Amazon S3 中。",
+      "C": "使用 Amazon Simple Notification Service (Amazon SNS) 攝取社交媒體數據。使用 Amazon EMR 轉換數據。將轉換後的數據存儲在 Amazon RDS 中。",
+      "D": "使用 Amazon Kinesis Data Streams 攝取社交媒體數據。使用 Amazon Managed Service for Apache Flink 轉換數據。將轉換後的數據存儲在 Amazon DynamoDB 中。"
     },
     "answer": "D"
   },
@@ -457,19 +461,19 @@
   {
     "exam": "MLA-C01",
     "id": 125,
-    "question": "一家公司需要進行特徵工程、聚合和數據準備。在生成特徵後，公司必須在AWS上實施一個解決方案來處理和存儲這些特徵。哪種解決方案可以滿足這些需求？",
+    "question": "一家公司需要進行特徵工程、聚合和數據準備。在生成特徵後，公司必須在 AWS 上實施一個解決方案來處理和存儲這些特徵。哪種解決方案可以滿足這些需求？",
     "explanations": {
-      "A": "這題考察的知識點是什麼本題主要考察對AWS服務的理解，尤其是與機器學習相關的服務，包括Amazon SageMaker Feature Store Amazon SageMaker Model、、Monitor、Amazon Managed Service for Apache Flink Amazon S3、Amazon DynamoDB等。重點在於數據的特徵工程、聚合、準備，以及如何在AWS中實現特徵的處理和存儲。獨立分析每個選項使用A. Amazon SageMaker Feature Processing處理和攝取數據。使用SageMaker Feature Store管理和存儲特徵。Amazon SageMaker Feature Store是專門設計用於存儲和管理機器學習特徵的服務，支持特徵的版本控制和共享。Amazon SageMaker Feature Processing可以處理和攝取數據，直接與Feature Store集成。此選項完全符合題目要求，能夠完成特徵工程、數據處理和存儲。正確。",
-      "B": "❌ 使用Amazon SageMaker Model Monitor自動攝取和轉換數據。創建一個Amazon S3以bucket JSON格式存儲特徵。Amazon SageMaker Model Monitor的主要功能是監控模型的性能和數據漂移，而不是用於特徵工程或數據攝取。雖然Amazon S3可以存儲數據，但它不是專門設計用於存儲機器學習特徵的服務，缺乏特徵管理功能。錯誤。",
-      "C": "❌ 使用Amazon Managed Service for Apache Flink轉換數據並將數據直接攝取到Amazon SageMaker Feature Store Feature。使用Store管理和存儲特徵。Amazon Managed Service for Apache Flink是一個流處理服務，可以用於實時數據轉換和攝取。雖然它可以與Amazon SageMaker Feature Store集成，但題目並未Flink “提到需要實時處理數據，且使用 可能過於複雜，不符合題目中 實”施解決方案 的簡單性要求。錯誤。",
-      "D": "❌ 使用Amazon SageMaker batch transform job分析、轉換和攝取數據。創建一個Amazon DynamoDB表來存儲特徵。Amazon SageMaker batch transform job主要用於批量預測，而不是特徵工程或數據攝取。是一個Amazon DynamoDB NoSQL數據庫，雖然可以存儲數據，但它不是專門設計用於存儲機器學習特徵的服務，缺乏特徵管理功能。錯誤。"
+      "A": "✅ SageMaker Feature Processing 可處理和攝取數據，直接與 Feature Store 集成。SageMaker Feature Store 專門設計用於存儲和管理 ML 特徵，支持版本控制和共享，完全符合需求。",
+      "B": "❌ SageMaker Model Monitor 主要用於監控模型性能和數據漂移，不是用於特徵工程或數據攝取。S3 缺乏特徵管理功能。",
+      "C": "❌ Apache Flink 是流處理服務，題目未提到需要實時處理數據，使用 Flink 過於複雜，不符合簡單性要求。",
+      "D": "❌ SageMaker batch transform job 主要用於批量預測，不是特徵工程或數據攝取。DynamoDB 不是專門用於存儲 ML 特徵的服務。"
     },
     "type": "single",
     "options": {
-      "A": "使用Amazon SageMaker Feature Processing處理和攝取數據。使用SageMaker Feature Store管理和存儲特徵。",
-      "B": "使用Amazon SageMaker Model Monitor自動攝取和轉換數據。創建一個Amazon S3以bucket JSON格式存儲特徵。",
-      "C": "使用Amazon Managed Service for Apache Flink轉換數據並將數據直接攝取到Amazon SageMaker Feature Store。使用Feature Store管理和存儲特徵。",
-      "D": "使用Amazon SageMaker batch transform job分析、轉換和攝取數據。創建一個Amazon DynamoDB表來存儲特徵。"
+      "A": "使用 Amazon SageMaker Feature Processing 處理和攝取數據。使用 SageMaker Feature Store 管理和存儲特徵。",
+      "B": "使用 Amazon SageMaker Model Monitor 自動攝取和轉換數據。創建一個 Amazon S3 bucket 以 JSON 格式存儲特徵。",
+      "C": "使用 Amazon Managed Service for Apache Flink 轉換數據並將數據直接攝取到 Amazon SageMaker Feature Store。使用 Feature Store 管理和存儲特徵。",
+      "D": "使用 Amazon SageMaker batch transform job 分析、轉換和攝取數據。創建一個 Amazon DynamoDB 表來存儲特徵。"
     },
     "answer": "A"
   },
@@ -778,18 +782,19 @@
   {
     "exam": "MLA-C01",
     "id": 141,
-    "question": "一家公司有多個團隊，他們在自己的筆記本電腦上開發了獨立的預測模型。這些團隊使用Python結合scikit-learn和TensorFlow框架開發了這些模型。Amazon該公司必須重新構建這些模型，並將這些模型集成到公司使用SageMaker管理的機器學習基礎設施中。公司還必須將這些模型納入模型註冊表中。哪種解決方案能夠以最少的運營開銷滿足這些要求？",
+    "question": "一家公司有多個團隊，他們在自己的筆記本電腦上開發了獨立的預測模型。這些團隊使用 Python 結合 scikit-learn 和 TensorFlow 框架開發了這些模型。該公司必須重新構建這些模型，並將這些模型集成到公司使用 Amazon SageMaker 管理的機器學習基礎設施中。公司還必須將這些模型納入模型註冊表中。哪種解決方案能夠以最少的運營開銷滿足這些要求？",
     "explanations": {
-      "D": "將基於Python的模型導入到SageMaker中。在SageMaker中重新構建scikit-learn和TensorFlow模型。將所有模型註冊到SageMaker Model Registry中。Python SageMaker正確性分析： 此選項提到直接將 模型導入到 ，並在SageMaker中重建模型。這是最直接、最符合題目要求的方式，能夠充分利用SageMaker的內置功能，包括模型註冊和管理。“正確原因：LEAST operational此選項操作簡單，符合overhead”的要求，同時滿足題目中提到的所有需求。",
-      "B": "❌ 將模型導入到SageMaker Model Registry SageMaker中。使用運行導入的模型。正確性分析：SageMaker Model此選項直接提到將模型導入到Registry中並運行，但沒有提到如何處理模型的重建或遷移過程。SageMaker現有的模型可能需要重新構建以適配 環境。錯誤原因： 此選項忽略了模型遷移和重建的必要步驟，無法滿足題目要求。",
-      "C": "❌ 使用筆記本電腦上的代碼為模型創建容器。使用SageMaker的自(帶容器BYOC) SageMaker功能導入並使用這些模型。將模型註冊到Model Registry中。正確性分析：BYOC此選項提到使用Bring Your Own（Container）功能，這是一種靈活的方式，可以將自定義模型遷移SageMaker到 中。但創建和管理容器需要額外的開發和維護工作。錯誤原因： 雖然可以實現，但操作複雜度較高，不符合題目要求“”的LEAST operational overhead。"
+      "A": "❌ 使用 API Gateway 和 Lambda 增加了額外複雜性，不符合最少運營開銷的要求。",
+      "B": "❌ 忽略了模型遷移和重建的必要步驟，無法滿足題目中重新構建模型的要求。",
+      "C": "❌ 創建和管理自定義容器 (BYOC) 需要額外的開發和維護工作，運營開銷較高。",
+      "D": "✅ 直接將 Python 模型導入 SageMaker 並利用其內置的 scikit-learn 和 TensorFlow 框架支持重建模型，操作最簡單，運營開銷最低，同時滿足模型註冊需求。"
     },
     "type": "single",
     "options": {
-      "A": "將模型從筆記本電腦導出到Amazon S3 Amazon API存儲桶。使用和Gateway函數結合REST API AWS Lambda SageMaker端點訪問這些模型。將模型註冊到SageMaker Model Registry中。",
-      "B": "將模型導入到SageMaker Model Registry中。使用SageMaker運行導入的模型。",
-      "C": "使用筆記本電腦上的代碼為模型創建容器。使用Register the models in the SageMaker Model Registry.SageMaker的自帶容器(BYOC) SageMaker Model功能導入並使用這些模型。將模型註冊到Registry中。",
-      "D": "將基於Python的模型導入到SageMaker中。在SageMaker中重新構建scikit-learn和TensorFlow SageMaker模型。將所有模型註冊到Model Registry中。"
+      "A": "將模型從筆記本電腦導出到 Amazon S3 存儲桶。使用 Amazon API Gateway REST API 和 AWS Lambda 函數結合 SageMaker 端點訪問這些模型。將模型註冊到 SageMaker Model Registry 中。",
+      "B": "將模型導入到 SageMaker Model Registry 中。使用 SageMaker 運行導入的模型。",
+      "C": "使用筆記本電腦上的代碼為模型創建容器。使用 SageMaker 的自帶容器 (BYOC) 功能導入並使用這些模型。將模型註冊到 SageMaker Model Registry 中。",
+      "D": "將基於 Python 的模型導入到 SageMaker 中。在 SageMaker 中重新構建 scikit-learn 和 TensorFlow 模型。將所有模型註冊到 SageMaker Model Registry 中。"
     },
     "answer": "D"
   },
@@ -1032,18 +1037,19 @@
   {
     "exam": "MLA-C01",
     "id": 155,
-    "question": "一家公司訓練了一個機器學習模型，並將其打包在一個容器中。該公司需要將該模型整合到現有的Python應用程式中。該公司需要使用Web Kubernetes AWS在上託管該模型。該公司不希望管理控制平面，並且必須以可重複的方式配置資源。基礎架構必須使用Python進行配置。哪種解決方案能夠滿足這些要求？",
+    "question": "一家公司訓練了一個機器學習模型，並將其打包在一個容器中。該公司需要將該模型整合到現有的 Python Web 應用程式中。該公司需要使用 Kubernetes 在 AWS 上託管該模型。該公司不希望管理控制平面，並且必須以可重複的方式配置資源。基礎架構必須使用 Python 進行配置。哪種解決方案能夠滿足這些要求？",
     "explanations": {
-      "C": "✅ 使用AWS CDK來設定Amazon EKS叢集-正確分析：（（滿足管理要求：使用EKS解決了「不管理控制平面」的問題。（（ 滿足語言要求：AWS CDK支援Python。這意味著機器學習工程師可以用Python編寫類別（Classes）和物件來定義EKS Node叢集、以及Groups ECR儲存庫。（（ 滿足重複性要求：CDK是標準的IaC，版本控制友好且可重複佈署。為什麼正確：這是唯一一個同時滿足「託管K8s」、「可重複性」以及「使用Python配置」所有條件的選項。",
-      "B": "❌ AWS CLI Amazon EKS -使用 設定 叢集 錯誤分析：AWS CLI是命令列工具，適合執行單次操作。為什麼不選：（（ 重複性差：雖然可以寫Shell，但與Script工具（如IaC CDK或CloudFormation）相比，它缺乏狀態管理和宣告式配置。（（ 非Python配置：CLI Python是命令列指令，不符合題目要求「使用進行配置」的標準開發流程。",
-      "D": "❌ 使用AWS CloudFormation設定Amazon EKS叢集-錯誤分析：CloudFormation確實是可重複的IaC工具，也使用了託管的EKS。為什麼不選：CloudFormation使用的是YAML或JSON格式來撰寫範本。題目明確要求基礎架構必須使用Python進行配置，雖然可以使用一些轉換工具，但原生支援Python定義的IaC首選是AWS CDK。3.解題關鍵與總結關鍵字對應：\"Do not want to manage control plane\" = Amazon EKS。\"Configured using Python\" = AWS CDK （Python）。考試陷阱：很多人會看到CloudFormation就選，因為它是（D） AWS最權威的IaC。但CDK的出現就是為了讓開發者能用程式語言（如Python）代替繁瑣的YAML，這正是本題的「陷阱」所在。"
+      "A": "❌ 在 EC2 上自行設定 Kubernetes 需要管理控制平面，不符合要求。且 CloudFormation 使用 YAML/JSON，不是 Python。",
+      "B": "❌ AWS CLI 不具備可重複性基礎架構配置能力，不符合「可重複方式配置資源」的要求。",
+      "C": "✅ AWS CDK 支援 Python 語言進行基礎架構配置，EKS 是託管 Kubernetes 不需管理控制平面，ECR 儲存容器鏡像，完全滿足所有要求。",
+      "D": "❌ CloudFormation 使用 YAML/JSON 模板，不符合「基礎架構必須使用 Python 進行配置」的要求。"
     },
     "type": "single",
     "options": {
-      "A": "使用AWS CloudFormation在多個可用區中預置Amazon EC2執行個體。設定Kubernetes叢集。將模型容器託管在Kubernetes叢集上。",
-      "B": "使用AWS CLI Amazon Elastic Kubernetes Service （Amazon EKS）設定叢集。將鏡像儲存在Amazon Elastic Container Registry （Amazon ECR）儲存庫中。將模型容器託管在EKS叢集上。",
-      "C": "AWS (使用AWS雲端開發工具包CDK) Amazon Elastic來設定Kubernetes Service （Amazon EKS） Amazon Elastic叢集。將鏡像儲存在儲存庫中。將模型容器託管在Container Registry （Amazon ECR） EKS叢集上。",
-      "D": "使用AWS CloudFormation Amazon Elastic Kubernetes Service設定（Amazon EKS） Amazon Elastic Container Registry叢集。將鏡像儲存在（Amazon ECR） 儲存庫中。將模型容器託管在EKS叢集上。"
+      "A": "使用 AWS CloudFormation 在多個可用區中預置 Amazon EC2 執行個體。設定 Kubernetes 叢集。將模型容器託管在 Kubernetes 叢集上。",
+      "B": "使用 AWS CLI 設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。",
+      "C": "使用 AWS 雲端開發工具包 (AWS CDK) 來設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。",
+      "D": "使用 AWS CloudFormation 設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。"
     },
     "answer": "C"
   },
@@ -1772,19 +1778,19 @@
   {
     "exam": "MLA-C01",
     "id": 194,
-    "question": "一家公司在本地Kubernetes叢集上運行其機器學習工作流程。這些工作流程包含用於訓練和推理機器學習模型的機器學習服務。每個機器學習服務都運行在各自獨立的Docker映像中。該公司需要將工作流程從本地Kubernetes Amazon Elastic叢集遷移到Kubernetes Service （Amazon EKS）叢集。哪一種解決方案能夠以最小的運維開銷滿足此要求？",
+    "question": "一家公司在本地 Kubernetes 叢集上運行其機器學習工作流程。這些工作流程包含用於訓練和推理機器學習模型的機器學習服務。每個機器學習服務都運行在各自獨立的 Docker 映像中。該公司需要將工作流程從本地 Kubernetes 叢集遷移到 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。哪一種解決方案能夠以最小的運維開銷滿足此要求？",
     "explanations": {
-      "A": "❌ 務以適應 Kubeflow 的架構會帶來巨大的開發與運維成本。這不符合「最小開銷」的要求。因為該公司的服務已經封裝在 Docker 映像中，遷移到 EKS 的最快路徑就是利用鏡像的移植性。只需將鏡像推送到 Amazon ECR（AWS",
-      "B": "✅ 的受管容器註冊表），然後更新 Kubernetes 的部署清單（YAML）將其部署到 EKS 即可。這幾乎不需要更改代碼，運維開銷最小。Amazon Redshift ML 是為了讓 SQL 開發人員能直接在資料庫內建置模型。將資料遷移到",
-      "C": "❌ Redshift 並重新訓練模型是一個完全不同的技術路徑，對於已經擁有成熟 Docker 工作流的公司來說，這增加了極大的複雜度。 筆記本SageMaker主要用於開發。重新訓練模型並手動部署到 EKS 會中斷原本自動化的容器",
-      "D": "❌ 化流程，且「重新訓練」在單純的基礎設施遷移場景中通常是不必要的額外負擔。"
+      "A": "❌ 重新設計為 Kubeflow 需要額外的開發和架構變更，增加運維開銷。",
+      "B": "✅ 直接將現有 Docker 映像上傳到 ECR 並部署到 EKS，無需重新設計或重新訓練，是最直接的遷移方式，運維開銷最小。",
+      "C": "❌ 將資料移轉到 Redshift 並重新訓練模型完全偏離了簡單遷移的目標，增加大量不必要的工作。",
+      "D": "❌ 使用 SageMaker 重新訓練模型是不必要的，現有模型已經可用，只需遷移部署環境即可。"
     },
     "type": "single",
     "options": {
-      "A": "重新設計要在Kubeflow中設定的機器學習服務。將新的Kubeflow管理的機器學習服務部署到EKS叢集。",
-      "B": "Docker Amazon Elastic Container Registry （將Amazon映像上傳到ECR（ 儲存庫。配置部署管道，將鏡像部署到EKS叢集。",
-      "C": "將訓練資料移轉到Amazon Redshift叢集。使用Amazon Redshift ML從遷移後的訓練資料重新訓練模型。將重新訓練的模型部署到EKS叢集。",
-      "D": "配置Amazon SageMaker AI筆記本。使用相同的程式碼重新訓練模型。將重新訓練的模型部署到EKS叢集。"
+      "A": "重新設計要在 Kubeflow 中設定的機器學習服務。將新的 Kubeflow 管理的機器學習服務部署到 EKS 叢集。",
+      "B": "將 Docker 映像上傳到 Amazon Elastic Container Registry (Amazon ECR) 儲存庫。配置部署管道，將鏡像部署到 EKS 叢集。",
+      "C": "將訓練資料移轉到 Amazon Redshift 叢集。使用 Amazon Redshift ML 從遷移後的訓練資料重新訓練模型。將重新訓練的模型部署到 EKS 叢集。",
+      "D": "配置 Amazon SageMaker AI 筆記本。使用相同的程式碼重新訓練模型。將重新訓練的模型部署到 EKS 叢集。"
     },
     "answer": "B"
   },
