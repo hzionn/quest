@@ -1037,18 +1037,19 @@
   {
     "exam": "MLA-C01",
     "id": 155,
-    "question": "一家公司訓練了一個機器學習模型，並將其打包在一個容器中。該公司需要將該模型整合到現有的Python應用程式中。該公司需要使用Web Kubernetes AWS在上託管該模型。該公司不希望管理控制平面，並且必須以可重複的方式配置資源。基礎架構必須使用Python進行配置。哪種解決方案能夠滿足這些要求？",
+    "question": "一家公司訓練了一個機器學習模型，並將其打包在一個容器中。該公司需要將該模型整合到現有的 Python Web 應用程式中。該公司需要使用 Kubernetes 在 AWS 上託管該模型。該公司不希望管理控制平面，並且必須以可重複的方式配置資源。基礎架構必須使用 Python 進行配置。哪種解決方案能夠滿足這些要求？",
     "explanations": {
-      "C": "✅ 使用AWS CDK來設定Amazon EKS叢集-正確分析：（（滿足管理要求：使用EKS解決了「不管理控制平面」的問題。（（ 滿足語言要求：AWS CDK支援Python。這意味著機器學習工程師可以用Python編寫類別（Classes）和物件來定義EKS Node叢集、以及Groups ECR儲存庫。（（ 滿足重複性要求：CDK是標準的IaC，版本控制友好且可重複佈署。為什麼正確：這是唯一一個同時滿足「託管K8s」、「可重複性」以及「使用Python配置」所有條件的選項。",
-      "B": "❌ AWS CLI Amazon EKS -使用 設定 叢集 錯誤分析：AWS CLI是命令列工具，適合執行單次操作。為什麼不選：（（ 重複性差：雖然可以寫Shell，但與Script工具（如IaC CDK或CloudFormation）相比，它缺乏狀態管理和宣告式配置。（（ 非Python配置：CLI Python是命令列指令，不符合題目要求「使用進行配置」的標準開發流程。",
-      "D": "❌ 使用AWS CloudFormation設定Amazon EKS叢集-錯誤分析：CloudFormation確實是可重複的IaC工具，也使用了託管的EKS。為什麼不選：CloudFormation使用的是YAML或JSON格式來撰寫範本。題目明確要求基礎架構必須使用Python進行配置，雖然可以使用一些轉換工具，但原生支援Python定義的IaC首選是AWS CDK。3.解題關鍵與總結關鍵字對應：\"Do not want to manage control plane\" = Amazon EKS。\"Configured using Python\" = AWS CDK （Python）。考試陷阱：很多人會看到CloudFormation就選，因為它是（D） AWS最權威的IaC。但CDK的出現就是為了讓開發者能用程式語言（如Python）代替繁瑣的YAML，這正是本題的「陷阱」所在。"
+      "A": "❌ 在 EC2 上自行設定 Kubernetes 需要管理控制平面，不符合要求。且 CloudFormation 使用 YAML/JSON，不是 Python。",
+      "B": "❌ AWS CLI 不具備可重複性基礎架構配置能力，不符合「可重複方式配置資源」的要求。",
+      "C": "✅ AWS CDK 支援 Python 語言進行基礎架構配置，EKS 是託管 Kubernetes 不需管理控制平面，ECR 儲存容器鏡像，完全滿足所有要求。",
+      "D": "❌ CloudFormation 使用 YAML/JSON 模板，不符合「基礎架構必須使用 Python 進行配置」的要求。"
     },
     "type": "single",
     "options": {
-      "A": "使用AWS CloudFormation在多個可用區中預置Amazon EC2執行個體。設定Kubernetes叢集。將模型容器託管在Kubernetes叢集上。",
-      "B": "使用AWS CLI Amazon Elastic Kubernetes Service （Amazon EKS）設定叢集。將鏡像儲存在Amazon Elastic Container Registry （Amazon ECR）儲存庫中。將模型容器託管在EKS叢集上。",
-      "C": "AWS (使用AWS雲端開發工具包CDK) Amazon Elastic來設定Kubernetes Service （Amazon EKS） Amazon Elastic叢集。將鏡像儲存在儲存庫中。將模型容器託管在Container Registry （Amazon ECR） EKS叢集上。",
-      "D": "使用AWS CloudFormation Amazon Elastic Kubernetes Service設定（Amazon EKS） Amazon Elastic Container Registry叢集。將鏡像儲存在（Amazon ECR） 儲存庫中。將模型容器託管在EKS叢集上。"
+      "A": "使用 AWS CloudFormation 在多個可用區中預置 Amazon EC2 執行個體。設定 Kubernetes 叢集。將模型容器託管在 Kubernetes 叢集上。",
+      "B": "使用 AWS CLI 設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。",
+      "C": "使用 AWS 雲端開發工具包 (AWS CDK) 來設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。",
+      "D": "使用 AWS CloudFormation 設定 Amazon Elastic Kubernetes Service (Amazon EKS) 叢集。將鏡像儲存在 Amazon Elastic Container Registry (Amazon ECR) 儲存庫中。將模型容器託管在 EKS 叢集上。"
     },
     "answer": "C"
   },
