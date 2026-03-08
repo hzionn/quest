@@ -1168,18 +1168,19 @@
     "exam": "MLA-C01",
     "id": 64,
     "type": "single",
-    "question": "一家公司計劃在其主要AWS帳户中使用Amazon Redshift ML。源數據位於次要帳户的Amazon S3存儲桶中。 一名機器學習工程師需要在主要帳户中設置一個機器學習管道，以訪問次要帳户中的S3存儲桶。解決方案必須不需要公共IPv4地址。 哪種解決方案可以滿足這些要求？",
+    "question": "一家公司計劃在其主要 AWS 帳戶中使用 Amazon Redshift ML。源數據位於次要帳戶的 Amazon S3 存儲桶中。一名機器學習工程師需要在主要帳戶中設置一個機器學習管道，以訪問次要帳戶中的 S3 存儲桶。解決方案必須不需要公共 IPv4 地址。哪種解決方案可以滿足這些要求？",
     "options": {
-      "A": "在主要帳户中，在未啟用公共訪問的VPC中預置一個Redshift集群和Amazon SageMaker Studio。在帳户之間創建一個VPC對等連接。更新VPC路由表以移除到0.0.0.0/0的路由。",
-      "B": "在主要帳户中，在未啟用公共訪問的VPC中預置一個Redshift集群和。創建一個Amazon SageMaker Studio AWS Direct Connect連接和一個Transit。將兩個帳户的Gateway與VPC Transit Gateway關聯。更新VPC路由表以移除到0.0.0.0/0的路由。",
-      "C": "在主要帳户中，在VPC中預置一個Redshift Amazon集群和。在帳户之間創建一個SageMaker Studio AWS Site-to-Site VPN連接，並設置兩個加密的IPsec隧道。為Amazon S3設置接口VPC端點。",
-      "D": "在主要帳户中，在VPC中預置一個Redshift Amazon集群和。創建一個SageMaker Studio網關端點。更新S3 S3存儲桶策略以允許來自主要帳户的IAM主體。為SageMaker和Amazon Redshift設置接口VPC端點。"
+      "A": "在主要帳戶中，在未啟用公共訪問的 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。在帳戶之間創建一個 VPC 對等連接。更新 VPC 路由表以移除到 0.0.0.0/0 的路由。",
+      "B": "在主要帳戶中，在未啟用公共訪問的 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。創建一個 AWS Direct Connect 連接和一個 Transit Gateway。將兩個帳戶的 VPC 與 Transit Gateway 關聯。更新 VPC 路由表以移除到 0.0.0.0/0 的路由。",
+      "C": "在主要帳戶中，在 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。在帳戶之間創建一個 AWS Site-to-Site VPN 連接，並設置兩個加密的 IPsec 隧道。為 Amazon S3 設置接口 VPC 端點。",
+      "D": "在主要帳戶中，在 VPC 中預置一個 Redshift 集群和 Amazon SageMaker Studio。創建一個 S3 網關端點。更新 S3 存儲桶策略以允許來自主要帳戶的 IAM 主體。為 SageMaker 和 Amazon Redshift 設置接口 VPC 端點。"
     },
     "answer": "D",
     "explanations": {
-      "D": "D (選項Correct Answer)：最優解這是最符合AWS最佳實踐且成本效益最高的方案。S3 (網關端點S3：Gateway允許Endpoint)內的服務（如VPC Redshift）通過AWS內部網路訪問S3，無需經過公網或NAT網關，直接解決了「不需要公共IPv4」的要求。跨帳户權限設置：S3通過更新次要帳户的Bucket Policy，明確授權主要帳户的IAM（Role或Redshift SageMaker使用的角色）訪問權限，這是跨帳户資源共享的標準做法。VPC (接口Interface端點VPC：Endpoints)讓SageMaker Studio和Redshift /的控制台API請求能留在私有網路內處理，確保了整條路徑的私密性。 ( )選項A：VPC Peering錯誤原因：架構過度複雜且方向錯誤解析：VPC（對等連接）通常用於兩個Peering之間的內部VPC IP通訊。錯誤點：S3是一個全域服務（Public），並不在Service VPC內部。雖然可以使用Peering配合某些路由，但這不是訪問S3的標準做法。此外，單純移除0.0.0.0/0路由而不設置S3，會導致所有Endpoint AWS服務調用中斷。",
-      "B": "❌  (選項Direct：Connect與Transit Gateway錯誤原因：成本極高且不適)用解析：Direct是用於連接「本地數據中心」與Connect （DX） AWS的物理專線；Transit用於多Gateway VPC的大規模聯網。AWS錯誤點： 本題的情境是「兩個 帳户之間」的雲端通訊，完全不需要用(到物理專線DX)。這屬於「殺雞用牛刀」，且DX並不直接解決S3訪問的私密性問題。",
-      "C": "❌  ( )選項Site-to-Site：VPN錯誤原因：通訊路徑冗餘且不必要解析：VPN用於建立加密的隧道，通常也是用於連接本地辦公室與雲端。AWS VPN S3錯誤點： 在兩個 帳户之間建立 隧道來訪問 是非常低效且維護成本高昂的做法。雖然它提到了接口端點，但建立IPsec隧道的基礎架構要求完全偏離了「雲原生跨帳户訪問」的簡便性。"
+      "A": "❌ VPC Peering 用於兩個 VPC 之間的內部 IP 通訊，但 S3 是全域服務不在 VPC 內部。單純移除 0.0.0.0/0 路由而不設置 S3 Endpoint，會導致所有 AWS 服務調用中斷。",
+      "B": "❌ Direct Connect 是連接本地數據中心與 AWS 的物理專線，Transit Gateway 用於多 VPC 大規模聯網。本題是兩個 AWS 帳戶之間的雲端通訊，完全不需要物理專線，成本極高且不適用。",
+      "C": "❌ Site-to-Site VPN 通常用於連接本地辦公室與雲端。在兩個 AWS 帳戶之間建立 VPN 隧道來訪問 S3 非常低效且維護成本高昂，偏離了雲原生跨帳戶訪問的簡便性。",
+      "D": "✅ S3 網關端點允許 VPC 內的服務通過 AWS 內部網路訪問 S3，無需公網或 NAT 網關。更新 S3 Bucket Policy 授權主要帳戶的 IAM Role 是跨帳戶資源共享的標準做法。接口 VPC 端點讓 SageMaker 和 Redshift 的請求留在私有網路內，確保整條路徑的私密性。"
     }
   },
   {
