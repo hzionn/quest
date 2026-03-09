@@ -7,7 +7,7 @@ import {
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
   Languages, LogOut
 } from 'lucide-react'
-import awsLogo from '/aws-logo.png'
+import awsLogo from '/aws.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
 
 // ── GitHub Config (admin only) ──
@@ -200,7 +200,13 @@ function reducer(state, action) {
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
       if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
-      filtered.sort((a, b) => a.id - b.id)
+      // Exclude already practiced (submitted) questions
+      filtered = filtered.filter(q => !state.practiceSubmitted[`${q.exam}-${q.id}`])
+      // Fisher-Yates shuffle for random order
+      for (let i = filtered.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filtered[i], filtered[j]] = [filtered[j], filtered[i]]
+      }
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
@@ -541,7 +547,7 @@ export default function App() {
         <header className="glass-header bg-aws-dark/95 dark:bg-aws-darker/95 shadow-lg sticky top-0 z-50 border-b border-white/5">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2.5">
-              <img src={awsLogo} alt="AWS" className="h-8 md:h-9" />
+              <img src={awsLogo} alt="AWS" className="h-9 md:h-10" />
               <span className="hidden sm:inline text-orange-400 tracking-tight">證照考試練習器</span>
               <span className="sm:hidden text-orange-400 tracking-tight">考試練習</span>
             </h1>
