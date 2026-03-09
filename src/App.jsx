@@ -4,7 +4,8 @@ import {
   ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
-  Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2
+  Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
+  Languages, LogOut
 } from 'lucide-react'
 import awsLogo from '/aws-logo.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
@@ -130,6 +131,10 @@ const initialState = {
   // Stats
   statsHistory: {},
 
+  // Language
+  lang: 'zh',        // 'zh' | 'en'
+  questionsEn: {},    // { 'CLF-C02-1': questionObj, ... }
+
   // GitHub sync
   githubLoading: false,
   githubSyncing: false,
@@ -142,6 +147,28 @@ function reducer(state, action) {
   switch (action.type) {
     case 'TOGGLE_DARK':
       return { ...state, darkMode: !state.darkMode }
+
+    case 'SET_LANG':
+      return { ...state, lang: action.lang }
+
+    case 'LOAD_EN_QUESTIONS': {
+      const enMap = { ...state.questionsEn }
+      action.questions.forEach(q => { enMap[`${q.exam}-${q.id}`] = q })
+      return { ...state, questionsEn: enMap }
+    }
+
+    case 'EXIT_EXAM':
+      return {
+        ...state,
+        examActive: false,
+        examSubmitted: false,
+        examResults: null,
+        examQuestionIds: [],
+        examIndex: 0,
+        examAnswers: {},
+        examEndTime: null,
+        examRemaining: 0,
+      }
 
     case 'SET_TAB':
       return { ...state, activeTab: action.tab }
@@ -404,6 +431,16 @@ function reducer(state, action) {
 // ── Helper: Question type label ──
 const typeLabels = { single: '單選題', multiple: '多選題', matching: '配對題', ordering: '排序題' }
 
+// ── Helper: Get display question based on language ──
+function getDisplayQuestion(q, lang, enMap) {
+  if (!q) return q
+  if (lang === 'en') {
+    const enQ = enMap[`${q.exam}-${q.id}`]
+    if (enQ) return enQ
+  }
+  return q
+}
+
 // ── Main App ──
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -428,6 +465,22 @@ export default function App() {
         }
         if (allQuestions.length) {
           dispatch({ type: 'LOAD_QUESTIONS', questions: allQuestions, filename: '靜態題庫' })
+        }
+        // Load English question files
+        if (manifest.enFiles) {
+          const enQuestions = []
+          for (const file of manifest.enFiles) {
+            try {
+              const res = await fetch(`${BASE_URL}data/${file}`)
+              if (!res.ok) continue
+              const data = await res.json()
+              const questions = Array.isArray(data) ? data : (data.questions || [])
+              enQuestions.push(...questions)
+            } catch { /* skip bad files */ }
+          }
+          if (enQuestions.length) {
+            dispatch({ type: 'LOAD_EN_QUESTIONS', questions: enQuestions })
+          }
         }
       } catch (err) {
         console.error('載入題庫失敗:', err)
@@ -938,8 +991,10 @@ function StatCard({ label, value, icon: Icon }) {
 // ══════════════════════════════════════════
 function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const { practiceFiltered, practiceIndex, practiceAnswers, practiceSubmitted, practiceResults, bookmarked, reviewMarked } = state
-  const currentQ = practiceFiltered[practiceIndex]
-  const qKey = currentQ ? `${currentQ.exam}-${currentQ.id}` : null
+  const currentQRaw = practiceFiltered[practiceIndex]
+  const currentQ = getDisplayQuestion(currentQRaw, state.lang, state.questionsEn)
+  const qKey = currentQRaw ? `${currentQRaw.exam}-${currentQRaw.id}` : null
+  const hasEnVersion = currentQRaw && Object.keys(state.questionsEn).length > 0 && !!state.questionsEn[`${currentQRaw.exam}-${currentQRaw.id}`]
   const isSubmitted = qKey ? practiceSubmitted[qKey] : false
   const isCorrect = qKey ? practiceResults[qKey] : undefined
 
@@ -964,10 +1019,26 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     <div className="space-y-5">
       <FilterBar state={state} dispatch={dispatch} examTypes={examTypes} showStart />
 
-      {/* Progress bar */}
+      {/* Language toggle + Progress bar */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
+            {hasEnVersion && (
+              <button
+                onClick={() => dispatch({ type: 'SET_LANG', lang: state.lang === 'zh' ? 'en' : 'zh' })}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
+                  state.lang === 'en'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+                title="切換語言 / Switch Language"
+              >
+                <Languages size={12} />
+                {state.lang === 'en' ? 'EN' : '中文'}
+              </button>
+            )}
+          </div>
           <span className="text-xs font-bold text-orange-500">{answeredCount} / {practiceFiltered.length} ({progressPct}%)</span>
         </div>
         <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -1026,7 +1097,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
             ) && (
               <button
-                onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQ })}
+                onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
                 disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
                 className={`mt-5 px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
               >
@@ -1682,6 +1753,34 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                     {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
                   </select>
                 </div>
+                {/* Language toggle - only show when CLF-C02 has English version */}
+                {Object.keys(state.questionsEn).length > 0 && (
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5 flex items-center gap-1.5"><Languages size={14} />考題語言</label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => dispatch({ type: 'SET_LANG', lang: 'zh' })}
+                        className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border ${
+                          state.lang === 'zh'
+                            ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-400 dark:border-orange-600'
+                            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        中文
+                      </button>
+                      <button
+                        onClick={() => dispatch({ type: 'SET_LANG', lang: 'en' })}
+                        className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border ${
+                          state.lang === 'en'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-400 dark:border-blue-600'
+                            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        English
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <button
                   onClick={() => dispatch({ type: 'START_EXAM' })}
                   className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg text-base"
@@ -1735,7 +1834,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
             </div>
 
             <button
-              onClick={() => dispatch({ type: 'SET_EXAM_CONFIG', config: {} }) || dispatch({ type: 'SET_TAB', tab: 'exam' })}
+              onClick={() => dispatch({ type: 'EXIT_EXAM' })}
               className="mt-8 px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold inline-flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <RotateCcw size={16} /> 再考一次
@@ -1751,7 +1850,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
           </h3>
           <div className="space-y-3">
             {r.details.map((d, i) => (
-              <ExamReviewItem key={d.qKey} detail={d} index={i} examAnswers={state.examAnswers} />
+              <ExamReviewItem key={d.qKey} detail={d} index={i} examAnswers={state.examAnswers} lang={state.lang} questionsEn={state.questionsEn} />
             ))}
           </div>
         </div>
@@ -1760,8 +1859,10 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   }
 
   // Active exam
-  const examQ = qMap.get(state.examQuestionIds[state.examIndex])
+  const examQRaw = qMap.get(state.examQuestionIds[state.examIndex])
+  const examQ = getDisplayQuestion(examQRaw, state.lang, state.questionsEn)
   const examQKey = state.examQuestionIds[state.examIndex]
+  const examHasEn = Object.keys(state.questionsEn).length > 0
   const minutes = Math.floor(state.examRemaining / 60)
   const seconds = state.examRemaining % 60
 
@@ -1772,16 +1873,46 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
 
   return (
     <div className="space-y-4">
-      {/* Timer bar */}
+      {/* Timer bar + controls */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold">
-            題目 {state.examIndex + 1} / {state.examQuestionIds.length}
-            <span className="text-xs text-gray-400 ml-2">已答 {examAnsweredCount} 題</span>
-          </span>
-          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : ''}`}>
-            <Clock size={18} />
-            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold">
+              題目 {state.examIndex + 1} / {state.examQuestionIds.length}
+              <span className="text-xs text-gray-400 ml-2">已答 {examAnsweredCount} 題</span>
+            </span>
+            {examHasEn && (
+              <button
+                onClick={() => dispatch({ type: 'SET_LANG', lang: state.lang === 'zh' ? 'en' : 'zh' })}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
+                  state.lang === 'en'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+                title="切換語言 / Switch Language"
+              >
+                <Languages size={12} />
+                {state.lang === 'en' ? 'EN' : '中文'}
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-2 font-mono text-lg font-bold ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : ''}`}>
+              <Clock size={18} />
+              {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </div>
+            <button
+              onClick={() => {
+                if (confirm('確定要退出考試嗎？本次考試進度將不會保留。')) {
+                  dispatch({ type: 'EXIT_EXAM' })
+                }
+              }}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 border border-gray-300 dark:border-gray-600 transition-all duration-200"
+              title="退出考試"
+            >
+              <LogOut size={12} />
+              退出
+            </button>
           </div>
         </div>
         <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -1873,8 +2004,9 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   )
 }
 
-function ExamReviewItem({ detail, index, examAnswers }) {
+function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
   const [expanded, setExpanded] = useState(false)
+  const displayQ = getDisplayQuestion(detail.question, lang, questionsEn)
   return (
     <div className={`border-2 rounded-xl overflow-hidden transition-all duration-200 ${detail.correct ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'} ${expanded ? 'shadow-md' : ''}`}>
       <button onClick={() => setExpanded(!expanded)} className="w-full flex items-center justify-between text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
@@ -1890,14 +2022,14 @@ function ExamReviewItem({ detail, index, examAnswers }) {
       </button>
       {expanded && (
         <div className="px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-700 animate-fade-in">
-          <p className="text-sm mb-3 whitespace-pre-wrap">{detail.question.question}</p>
+          <p className="text-sm mb-3 whitespace-pre-wrap">{displayQ.question}</p>
           <QuestionInput
-            question={detail.question}
+            question={displayQ}
             answer={examAnswers[detail.qKey]}
             submitted={true}
             onAnswer={() => {}}
           />
-          <ExplanationView question={detail.question} userAnswer={examAnswers[detail.qKey]} />
+          <ExplanationView question={displayQ} userAnswer={examAnswers[detail.qKey]} />
         </div>
       )}
     </div>
