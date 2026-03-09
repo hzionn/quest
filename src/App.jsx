@@ -200,7 +200,13 @@ function reducer(state, action) {
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
       if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
-      filtered.sort((a, b) => a.id - b.id)
+      // Exclude already practiced (submitted) questions
+      filtered = filtered.filter(q => !state.practiceSubmitted[`${q.exam}-${q.id}`])
+      // Fisher-Yates shuffle for random order
+      for (let i = filtered.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filtered[i], filtered[j]] = [filtered[j], filtered[i]]
+      }
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
