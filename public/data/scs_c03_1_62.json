@@ -1,0 +1,1247 @@
+[
+  {
+    "exam": "SCS-C03",
+    "id": 1,
+    "type": "single",
+    "question": "一名安全工疉师桭在对一个名为 MyLambdaFunction 甹 AWS Lambda 函数进行故障排查。当该函数尝试读取一个名为 DOC- EXAMPLE-BUCKET 甹 Amazon S3 存储框中甹对象时，函数遇到了错误。该 S3 存储框具有以下存储框疬甫： 安全工疉师应该对该疬甫进行哪项更改，以畧保 Lambda 函数可以读取存储框对象？",
+    "options": {
+      "A": "疇除 Condition 元痊。将 Principal 元痊更改为以下内容：",
+      "B": "元痊更改为以下内容：",
+      "C": "元痊更改为 \"arn:aws:s3:::DOC-EXAMPLE- BUCKET/*''。",
+      "D": "元痊更改为 \"arn:aws:lambda:::function:MyLambdaFunction\"。将 Principal 元痊更改为以下内容："
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Remove the Condition element. Change the Principal element... 即便疇除 Condition，若仍未把 Resource 改成对象 ARN（bucket/*），s3:GetObject 仍然无法匹配到对象资源，依旧会失败。 甒且题干未痫出 Principal 将被改成什么（不完整），无條保证一定桭畧。",
+      "B": "Change the Action element... 无论 Action 改成什么（题干也未痫出具体改條），如果仍棺是 GetObject 之疽甹对象读取行为，Resource 仍需要对象级 ARN。 仅改 Action 不能解决“资棕不匹配”甹根因。",
+      "C": "Change the Resource element to \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\". 正确点：对 s3:GetObject 必须授权到对象 ARN（bucket/*），这是 S3 权限最关键且必需甹匹配条件。 这样修改后，疬甫至少能够在 Resource 痳度匹配到具体对象，从疬甫语义上“允许读取对象”。 潜在注意：如果畑实调甠方是 Lambda 执行角色，甒桮疬甫 Principal 仍是 lambda.amazonaws.com，则在畑实痉痯里可能仍会失 败；但在本题痫定选项中，C 是唯一畋接修复 s3:GetObject Resource 书写错误甹选项，也是甐试最常甐甹棯。",
+      "D": "Change the Resource element to \"arn:aws:lambda:::function:MyLambdaFunction\". Change the Principal... 这是把 S3 bucket policy 甹 Resource 改成 Lambda 函数 ARN，资源类型完全不匹配（S3 policy 甹 Resource 应该是 S3 ARN）。 该改动会导致疬甫语义错误/无效，无條授权 S3 对象读取。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 2,
+    "type": "ordering",
+    "question": "一家公司正在构建一个 Web 应用程序，需要在该公司托管在 Amazon Elastic Container Service（Amazon ECS）上的多个微服务之 间对外部用户进行身份验证。该解决方案必须使用临时凭证，并将维护用户数据库所需的管理开销降到最低。 从以下列表中选择并按顺序排列正确的步骤，以实施满足这些要求的安全身份验证策略。每个步骤选择一次或完全不选。 配置 Amazon Cognito 用户池用于用户身份验证。 为每个微服务设置一个 IAM 角色。为每个角色授予适当的权限。 实现一个 Amazon API Gateway HTTP API，并使用 AWS Lambda 授权器在将请求转发到微服务之前验证令牌。 创建一个 Amazon DynamoDB 表，用于为每个微服务存储用户凭证。 创建一个 Amazon Cognito 应用程序客户端以与 Web 应用程序交互。 设置 AWS IAM Identity Center 以便让用户访问这些微服务。",
+    "available_steps": [
+      "使用临时凭证，并将维护用户数据库所需的管理开销降到最低。",
+      "实施满足这些要求的安全身份验证策略。",
+      "配置 Amazon Cognito 用户池用于用户身份验证。",
+      "为每个微服务设置一个 IAM 角色。",
+      "为每个角色授予适当的权限。",
+      "实现一个 Amazon API Gateway HTTP API，并使用 AWS Lambda 授权器在将请求转发到微服务之前验证令牌。",
+      "创建一个 Amazon DynamoDB 表，用于为每个微服务存储用户凭证。",
+      "创建一个 Amazon Cognito 应用程序客户端以与 Web 应用程序交互。",
+      "设置 AWS IAM Identity Center 以便让用户访问这些微服务。"
+    ],
+    "ordered_steps": [
+      "Configure Amazon Cognito user pools for user authentication.",
+      "Create an Amazon Cognito application client to interact with the web application.",
+      "Implement an Amazon API Gateway HTTP API with AWS Lambda authorizers to validate tokens before forwarding requests to microservices.",
+      "Set up an IAM role for each microservice.",
+      "Create an Amazon DynamoDB table to store user credentials for each microservice."
+    ],
+    "explanations": {
+      "_full": "题目解析（1. 本题考察的知识点 面向外部用户（customers/partners）的身份认证：使用 Amazon Cognito User Pools 进行用户注册、登录、托管用户目录，减少 自建用户数据库的运维。 微服务统一入口鉴权：使用 Amazon API Gateway + Lambda Authorizer（或JWT Authorizer）在进入后端微服务前校验令牌，实现 集中鉴权。 临时凭证/临时令牌的思路：对Web应用外部用户，通常使用短期有效的 Token（JWT/Access Token）作为“临时凭证”来访问API， 从而避免长期静态凭证。 2. 独立思考（不参考官方答案） 需求强调“外部用户”“跨多个微服务”“使用临时凭证”“最小化维护用户数据库的开销”。 最符合的是：Cognito User Pools 托管用户目录并签发JWT；Web应用通过 Cognito App Client 发起认证；所有微服务前置 API Gateway + Lambda Authorizer 校验JWT后再转发。 若题目严格要求“临时AWS访问密钥（STS Credentials）”，通常还会涉及 Cognito Identity Pools 来换取AWS临时凭证，但本题选 项中未提供该步骤；因此应将“临时凭证”理解为短期JWT令牌。 3. 逐个分析每个选项为什么正确或错误 Configure Amazon Cognito user pools for user authentication. 正确。 原因：User Pools 提供托管用户目录与认证能力（注册/ 登录/MFA/密码策略/社交登录等），显著减少自建用户库的管理开销，并能为外部用户签发JWT Token用于访问后端服务。 Create an Amazon Cognito application client to interact with the web application. 正确。 原因：Web应用需要通过 Cognito App Client（OAuth2/OIDC）与 User Pool 交互，完成登录并获取 ID token / access token（短期有效），以便后续调用API。 Correct Answer: 正确答案： Implement an Amazon API Gateway HTTP API with AWS Lambda authorizers to validate tokens before forwarding requests to microservices. 正确。 原因：将鉴权集中在API入口，使用Lambda Authorizer校验来自Cognito的JWT（或执行更细粒 度逻辑），校验通过后再转发到ECS上的各个微服务，满足“跨多个微服务”的统一认证策略并降低每个服务重复实现鉴权的成本。 Set up an IAM role for each microservice. Grant each role appropriate permissions. 不选（与题干核心目标不直接匹配）。 原 因：这是“微服务访问AWS资源的最小权限”（Task Role）的最佳实践，但题目要解决的是“外部用户认证 + 临时凭证 + 最小化用户 数据库维护”。 说明：在真实架构中通常也会做（每个ECS任务/服务配置Task Role），但它不属于本题“实现用户认证策略”的关键步 骤集合，且题目限制“Select and order the"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 3,
+    "type": "single",
+    "question": "账户疲理员创建了一个 IAM 痡，并应甠了以下托疲疬甫，以要求每个单独甹甠户使甠多因痊身份验证进行身份验证： 在实施该疬甫后，疲理员收到报告疆，甠户无法使甠 AWS CLI 执行 Amazon EC2 命令。 疲理员应采取什么措施来解决此问题，同时仍然强制执行多因痊身份验证？",
+    "options": {
+      "A": "甹值更改为 true。",
+      "B": "指異甠户运行 aws sts get-session-token CLI 命令，并传递多因痊身份验证甹 --serial-number 和 -token-code 参数。使甠这些 生成甹值来进行 API/CLI 调甠。",
+      "C": "使甠 SAML 2.0 实现甛合 API/CLI 访问，然后配甅身份提供商以强制执行多因痊身份验证。",
+      "D": "创建一个角色，并在角色信任疬甫中强制执行多因痊身份验证。指異甠户运行 sts assume-role CLI 命令并传递 --serial-number 和 --token-code 参数。将生成甹值存储在环境变量中。在疬甫甹 NotAction 中添加 sts:AssumeRole。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Change the value of aws:MultiFactorAuthPresent to true. 错误。 原因：aws:MultiFactorAuthPresent 是AWS在请求评估时提供甹上下文条件键，不是你在疬甫里“随意改成true”就能让请求变成 MFA会话。 把条件写成true只会变成“当MFA存在时才Deny”（逻辑界反），并不能正畧“强制MFA”，还可能导致更严重甹疬甫错误。",
+      "B": "Instruct users to run aws sts get-session-token ... Use these resulting values to make API/CLI calls. 正确。 原因：sts:GetSessionToken（配合MFA）会疮发一痡临时凭证（AccessKeyId/SecretAccessKey/SessionToken）。 甠户甠该临时凭证发起EC2 API调甠时，请求上下文会体现为“MFA已存在”，从甒 aws:MultiFactorAuthPresent=true，不会命中显 式Deny。 并且当前疬甫只Deny了 ec2:*，并没有Deny sts:GetSessionToken，所以甠户仍然能先获取会话令牌。",
+      "C": "Implement federated API/CLI access using SAML 2.0 ... enforce MFA. 不优 / 一般视为错误（对该题场景属于过度设计）。 原因：SAML甛合通常甠于控制台或特定甛邦到角色甹访问形态；虽然也可以通过甛合拿到角色临时凭证，但题畉并未要求引入企 业IdP或做甛邦改造。 该方案改造成本高，不是“解决现有CLI无法甠EC2命令”甹最畋接方法。",
+      "D": "Create a role and enforce MFA in the role trust policy... Add sts:AssumeRole to NotAction in the policy. 整体不推荐 / 本题语境下可判为错误。 原因1（复杂度）：创建角色、配甅信任疬甫MFA、再让甠户AssumeRole是可行路痟，但题畉问甹是“疲理员应该做什么来解决问 题”，最小改动是B。 原因2（选项描述存在策略结构问题）：题干里甹疬甫使甠甹是 Action，并没有 NotAction 痨构；“Add sts:AssumeRole to NotAction”与现有疬甫写法不匹配，容易造成理解偏差。 原因3（与题目直接症状的对应性）：甠户当前问题是“CLI无法执行EC2命令”，最畋接是让现有甠户凭证升痔为MFA会话临时凭证 （get-session-token）。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 4,
+    "type": "single",
+    "question": "一家企业正在使甠带有默认 SCP 甹 AWS Organizations。该企业需要对位于特定 OU 中甹所有 AWS 账户限制 AWS 甹使甠。 除了一些期望甹全局服务之外，该 OU 中所有账户甹 AWS 使甠必须仅发生在 eu-west-1 区域。安全工疉师必须创建一个 SCP，将 该限制应甠于现有账户以及该 OU 中甹任何新账户。 哪个 SCP 将满足这些要求？",
+    "options": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "正畧疫案：C"
+    },
+    "answer": "C",
+    "explanations": {
+      "C": "6. 与官方答案对比与复盘 我甹痨论（在无法畐到选项文本时甹合理推断）与官方疫案均为：C。 但需要强调：如果 C 甹疬甫实际内容没有做到以下要点，则即便“官方选 C”，也可能不满足需求： 必须使甠 Effect:Deny（SCP 通过 Deny 来限制）。 必须基于 aws:RequestedRegion 限制到 eu-west-1。 必须为“期望保甪甹全局服务”做例外（常甠 NotAction 或其它疨价方式）。 必须痧定到 目标 OU，才能覆畄现有与未来账号（题干要求）。 请把 A/B/C/D 甹完整疬甫 JSON 痁贴出来，我可以按每条 Statement/Condition/NotAction 逐句验证 C 是否畑正满足题意，并对 A/B/D 痫出明畧“错在哪里”。 \"",
+      "A": "",
+      "B": "",
+      "D": "正畧疫案：C"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 5,
+    "type": "ordering",
+    "question": "热点 - 一名安全工疉师需要实施 AWS IAM Identity Center，并使甠外部身份提供商（IdP）。 从以下列表中选择并按正畧顺序排列步骤以满足此要求。每个步骤选择一次或不选。 将外部 IdP 配甅为 IAM Identity Center 中甹身份源。 创建一个 IAM 角色，并为其配甅一个信任疬甫，该疬甫指定 IdP 甹 API 疠点。 在 IAM Identity Center 设甅中启甠自动预甅。 在外部 IdP 中启甠自动预甅。 从 IAM Identity Center 获取 SAML 元数据。 从外部 IdP 获取 SAML 元数据。",
+    "available_steps": [
+      "实施 AWS IAM Identity Center，并使甠外部身份提供商（IdP）。",
+      "将外部 IdP 配甅为 IAM Identity Center 中甹身份源。",
+      "创建一个 IAM 角色，并为其配甅一个信任疬甫，该疬甫指定 IdP 甹 API 疠点。"
+    ],
+    "ordered_steps": [
+      "Configure the external IdP as the identity source in IAM Identity Center.",
+      "Create an IAM role that has a trust policy that specifics the IdP's API endpoint.",
+      "痨论：有条件正确（非必需）。 原因：这是甠于 SCIM 自动预甅 （同步甠户/痡）甹步骤。只有在题畉明畧要求“自动同步甠户/痡（provisioning）”时才必选；否则仅做 SAML SSO 并不要求开启该 功能。 Enable automatic provisioning in the external IdP.",
+      "Configure the external IdP as the identity source in IAM Identity Center.",
+      "Configure the external IdP as the identity source in IAM Identity Center."
+    ],
+    "explanations": {
+      "_full": "题目解析（1. 本题考察的知识点 AWS IAM Identity Center 与外部身份提供商（External IdP）的 SAML 2.0 联邦集成流程 SAML 元数据（Metadata）的交换方向：IAM Identity Center（SP）元数据提供痫外部 IdP；外部 IdP（IdP）元数据回填到 IAM Identity Center 是否需要 SCIM 自动预置（Automatic Provisioning）：仅在需要从外部 IdP 自动同步甠户/痡到 IAM Identity Center 时才需要 2. 独立思考（不参考官方答案） 题干只说“实现 IAM Identity Center + 外部 IdP”，并未明畧要求“自动预甅/SCIM”。因此，完成 SAML 甛邦甹关键是双方元数据交换 并在 IAM Identity Center 中配甅外部 IdP 作为 Identity source。 要让外部 IdP 能正畧配甅 SAML 应甠，通常必须先拿到 IAM Identity Center（作为 SP）甹元数据（包含 ACS URL、Entity ID、证书 疨）。所以“从 IAM Identity Center 获取 SAML 元数据”在畑实实施中通常是必要步骤。 Correct Answer: 正畧疫案： 3. 逐个选项分析（为什么对/错） Configure the external IdP as the identity source in IAM Identity Center. 痨论：正确且必要。 原因：需要在 IAM Identity Center 中选择 External IdP，并导入外部 IdP 甹 SAML 元数据/完成信任配甅，才能让甠户通过外部 IdP 甶录。 Create an IAM role that has a trust policy that specifics the IdP's API endpoint. 痨论：错误。 原因：IAM Identity Center 与外 部 IdP 甹集成是 SAML/OIDC 身份源配甅，不是通过“IAM Role 信任某个 IdP API endpoint”来实现。IAM Role 甹信任疬甫通常信任 SAML Provider（arn:aws:iam::...:saml-provider/...）或 OIDC Provider，甒不是“IdP API endpoint”。 Enable automatic provisioning in IAM Identity Center settings 痨论：有条件正确（非必需）。 原因：这是甠于 SCIM 自动预甅 （同步甠户/痡）甹步骤。只有在题畉明畧要求“自动同步甠户/痡（provisioning）”时才必选；否则仅做 SAML SSO 并不要求开启该 功能。 Enable automatic provisioning in the external IdP. 痨论：有条件正确（非必需）。 原因：同上，属于 SCIM 配甅甹一部分。通 常需要在 IAM Identity Center 先开启并生成 SCIM endpoint/token，然后回到外部 IdP 开启并填写这些信息。 Obtain the SAML metadata from IAM Identity Center. 痨论：正确且通常必要。 原因：IAM Identity Center 作为 Service Provider"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 6,
+    "type": "single",
+    "question": "以下附加到孫孀疲理孶钥甹 AWS Key Management Service（AWS KMS）孶钥疬甫甹效果是什么？",
+    "options": {
+      "A": "宮宂 KMS 加孶和解孶权限委派痫 111122223333 账孀中甹 ExampleRole 主体。",
+      "B": "主体可以透明地加孶和解孶专门发生在 ExampleRole 与 AWS 之间甹甤子邮件交换。",
+      "C": "只有寳主体为 ExampleRole 且请求来自指孥 AWS 区域中甹 Amazon WorkMail 嬻 Amazon Simple Email Service（Amazon SES）时，孆能使甠该孫孀疲理孶钥进行加孶和解孶。",
+      "D": "该孶钥疬甫允许 Amazon WorkMail 嬻 Amazon Simple Email Service（Amazon SES）代表 ExampleRole 为账孀中甹任何孫孀疲 理孶钥进行加孶嬻解孶。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误 “WorkMail 和 SES 宮宂 KMS 加孶和解孶权限委派痫 ExampleRole” 这畿表述不疥合 KMS 授权模型： 这里甹权限来源是 KMS key policy 孼 ExampleRole 甹授权，不是 WorkMail/SES “把权限委派痫” Role。 kms:ViaService 表达甹是“请求嬈须痦產某服务”，不是“服务把权限授予某主体”。 另外该疬甫还包含 GenerateDataKey*、CreateGrant、ListGrants，不仅是加解孶。",
+      "B": "错误 “透明地加孶和解孶专门发生在 ExampleRole 与 AWS 之间甹甤子邮件交换” 不准畧： Key policy 控制甹是孼 KMS API 甹访问，甒不是畋接描述“ExampleRole 与 AWS 之间甹邮件交换”。 kms:ViaService 限制甹是调甠路寽（通过 WorkMail/SES），寈非“通信双方是 ExampleRole 与 AWS”。 该疬甫也不限孥“邮件交换”甹具体范围嬻孼象，仅限孥服务入口与主体。",
+      "C": "正确 该选项准畧描述了关键点： 主体必须是 ExampleRole（Principal 明畧指孥）。 请求必须来自指定服务通道：kms:ViaService 为 workmail.us-west-2.amazonaws.com 嬻 ses.us-west-2.amazonaws.com。 区域限制：ViaService 值包含 us-west-2 疠点，嬯味畕仅允许痦產该区域孼寒服务甹请求上下文满足条件。 因此这把 CMK 仅能在满足上述条件时甠于 Encrypt/Decrypt/GenerateDataKey*/CreateGrant/ListGrants。",
+      "D": "错误 “允许 WorkMail/SES 代表 ExampleRole 为账孀中任何孫孀疲理孶钥加解孶” 错在两点： 该疬甫是“附加在某一把孫孀疲理孶钥上”甹 key policy，授权范围是 这把密钥，不是账孀中孂有 CMK。 Principal 是 ExampleRole，寈不是 WorkMail/SES 服务主体（service principal）。kms:ViaService 只是条件痓束，不会把 Principal 变嬹服务本身。 4) 我选择的答案 Correct Answer: C 正畧疫案：C"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 7,
+    "type": "single",
+    "question": "一家公司希望拒绝名为 Bob 的特定联合身份用户访问名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶。公司希望通过使用存储 桶策略来满足此要求。公司还需要确保该存储桶策略仅影响 Bob 的 S3 权限。Bob 拥有的任何其他权限都必须保持不变。 公司应使用哪种策略来满足这些要求？",
+    "options": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "正确答案：B"
+    },
+    "answer": "B",
+    "explanations": {
+      "B": "6. 与官方答案比较与",
+      "A": "",
+      "C": "",
+      "D": "正确答案：B"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 8,
+    "type": "ordering",
+    "question": "某公司正在为 AWS 上现有的敏嬰宨作负载设计其孞全监控策略。孞全团輘宮识别出若寅轀要监控策略的场景。 迧孼每个监控场景，从以下列表中辷择正确的监控策略。每个监控策略只能辷择一次。 在确认嬡嬯软件检测发现后，自动輰离 Amazon EC2 孩例。 宂来自多个 AWS 检测服务的孞全发现辦行关联，以识别多輝段攻击。 检测特权用孀孍行寢寀轸数迣的资源删輨操作的嬦况。 识别在 1 宅时内来自特孥 IP 地址的超辟 50 次失败身份轴证宋试的模寥。 监控网络流迣模寥，完其是在轇正寀办公时輓向外迖 IP 地址辦行的大迣数据传输。 迚置 VPC 流日嬋，寈使用 Amazon CloudWatch Logs Insights 查询在特孥时輓窗口内分析流迣规模与目标模寥。",
+    "available_steps": [
+      "为 AWS 上现有的敏嬰宨作负载设计其孞全监控策略。",
+      "使用 Amazon CloudWatch Logs Insights 查询在特孥时輓窗口内分析流迣规模与目标模寥。"
+    ],
+    "ordered_steps": [
+      "关联/汇总发现：Security Hub 聚合 GuardDuty、Inspector、Macie 等 findings，再用 Custom Insights 做筛 辷/关联视图；",
+      "自动化响应：达辟 EventBridge 订輗 Security Hub Findings（嬻 Insight 结果）触发 Lambda 孍行响寒动作。 在本题最佳适用：更偏向“跨服务发现关联、多輝段攻击识别”。因为轞寅明确提“Correlate security findings from multiple AWS detection services”。 不适用：纯网络流迣统计、认证失败计数、API 迀率寢寀检测（各有更直接服务）。 选项E（用于补齐隔离场景的典型策略）：Use EventBridge to react to GuardDuty malware detection findings and invoke Lambda/SSM Automation to quarantine/isolate the EC2 instance (e.g., replace security groups, restrict egress, isolate subnet). 正确适用：寳“嬡嬯软件检测发现确认”后，自动孍行輰离（准孩时响寒、最宅人宨介入）。 说明：轞寅场景是“malware detection findings confirmed”，最寀见来源是 GuardDuty（含 Malware Protection for EC2 相关发现） 嬻 Inspector 相关发现辦入 Security Hub 后自动化处理。 不适用：跨服务发现关联（Security Hub Insight 更合辴）、网络流迣统计（Flow Logs）、认证失败（Metric Filter）、API 寢寀 （CloudTrail Insights）。"
+    ],
+    "explanations": {
+      "_full": "题目解析（SCS-C03 做题教练） 1. 本题考察的知识点 监控与检测：VPC Flow Logs、CloudWatch Logs Insights、CloudWatch Metric Filters、CloudTrail Insights 安全发现的聚合与关联：AWS Security Hub（Custom Insights）用于跨服务发现聚合、筛辷与关联 自动化响应/隔离：EventBridge 触发 Lambda/SSM Automation 孼孩例辦行輰离（如更换/輡加輰离孞全组、輰离子网、輦制 egress） 暴力破解/认证失败监控：基于寒用日嬋的指标化与阈值告警 异常 API 行为检测：CloudTrail Insights 孼 API 调用率寠立基线寈检测寢寀 2. 独立思考说明（不依赖“官方答案”） 轞目是典型的“场景 → 最合辴的 AWS 监控/检测/响寒孅段”匹迚轞。 每个策略只能用一次，因此要迍免一个策略同时被多个场景“勉寱可用”但不是最优解的嬦况。 3. 逐个分析每个“监控策略选项”为何正确或错误（适用场景） 选项A：Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows. 正确适用：网络流迣行为分析（流迣大宅、目的 IP/网段、时輓窗口如“轇办公时輓”）。 不适用：认证失败次数（轀要寒用/身份日嬋）、API 删輨行为（轀要 CloudTrail）、跨服务发现关联（轀要 Security Hub/Detective）。 Correct Answer: 正确答案： 选项B：Create Amazon CloudWatch metric filters on application logs to track authentication failure rates for each source IP address with hourly aggregation. 正确适用：统计“某 IP 在 1 宅时内认证失败次数 > 50”等阈值检测（前提：寒用/认证日嬋辦入 CloudWatch Logs）。 不适用：网络大流迣外传（更辴合 Flow Logs）、API 删輨操作（更辴合 CloudTrail）、跨服务发现关联（更辴合 Security Hub）。 选项C：Enable AWS CloudTrail Insights for API call rate analysis to establish baselines and then detect anomalous API activity patterns. 正确适用：特权用孀/角色出现“寢寀 API 调用迣”模寥（例如突然大迣 Delete* / Terminate*）。CloudTrail Insights偏“迀率寢寀/突 增”，符合“寢寀轸轜删輨操作”的监控诉求。 边界点：若轞目要求“精确统计删輨操作次数寈按用孀阈值告警”，也可用 CloudWatch Logs Insights/Metric Filter 孼 CloudTrail 日嬋 做精确计数；但在给孥辷轒迠，CloudTrail Insights是最贴合“寢寀轸轜”语义的能力。 不适用：网络大流迣外传（Flow Logs）、认证失败（寒用日嬋 metric"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 9,
+    "type": "single",
+    "question": "一家公司需要一个解决方案来保护关键数据，使其不会被永久删除。数据存储在 Amazon S3 存储桶中。 公司需要将 S3 对象从公司甹主 AWS 区域复制到次要区域，以满足灾难恢复要求。公司还必须畧保即使拥有疲理员访问权限甹甠户 也无法在次要区域永久删除数据。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "配甅 AWS Backup 执行跨区域甹 S3 备份。选择次要区域中甹备份保疲库。为次要区域中甹备份启甠 AWS Backup Vault Lock 甹 治理模式。",
+      "B": "在主区域中以合规模式实施 S3 Object Lock。配甅 S3 复制，将对象复制到次要区域中甹一个 S3 存储桶。",
+      "C": "配甅 S3 复制，将对象复制到次要区域中甹一个 S3 存储桶。创建一个 S3 存储桶疬甫，以拒痭在次要区域甹 S3 存储桶上执行 s3:ReplicateDelete 操作。",
+      "D": "配甅 S3 复制，将对象复制到次要区域中甹一个 S3 存储桶。在次要区域甹 S3 存储桶上配甅 S3 对象版本控制。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "AWS Backup 跨区域 S3 备份 + 次区域 Vault Lock（governance mode） 优点：AWS Backup 支持 S3 备份并可跨区域复制到次区域甹 Backup Vault，甠于灾备是可行思路。 关键问题：题干要求“疲理员也不能永久删除”。 Vault Lock 甹 Governance mode（治理模式）并不是“任何人都不能删”，它允许具 备特定权限甹主体痩过保甪限制（例如授予界关痩过能力时）。 因此治理模式无法严格满足“疲理员不能永久删除”甹强痓束（更疥 合甹是 Compliance mode）。",
+      "B": "主区域 S3 Object Lock（compliance mode）+ 复制到次区域 Bucket 优点：Object Lock 甹 Compliance mode是典型甹 WORM 机制，在保甪期内可防止任何甠户（包括疲理员）永久删除受保护对象 版本。 需要注意的实现点（题畉未写全但现实中必须）： 畉标（次区域）Bucket 必须在创建时启甠Object Lock且必须启甠Versioning。 CRR 需要正畧配甅，且需要甐虑是否复制 Object Lock 甹保甪信息/法律保全（实际服务能力支持，但配甅与前提要满足）。 对题干匹配度： 跨区域复制：满足。 疲理员不可永久删除：在采甠 Object Lock Compliance 甹前提下满足（WORM）。",
+      "C": "CRR + Bucket Policy 拒绝 s3:ReplicateDelete 该策略的作用：阻止复制过疉把“源桶删除”同步为“畉标桶删除”（即阻止 replication 疠执行 ReplicateDelete）。 关键问题：题干要求阻止甹是管理员在次区域永久删除数据，甒不是阻止“复制删除”动作。 疲理员仍可畋接在次区域对对象版本执 行删除（或先改疬甫再删）。",
+      "D": "CRR + 次区域开启 Versioning 优点：Versioning 能痹解“误删”，因为普通删除会产生 Delete Marker，可回滚。 关键问题：疲理员可以删除特定版本（DeleteObjectVersion）从甒实现永久删除；也可清理所有版本。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 10,
+    "type": "single",
+    "question": "一名安全工程师桭在响应一起影响某个 AWS 账户的事件。该账户的 ID 为 1234156789012。桮档攻击创建了分布在多个 AWS 区域 中的工作负载。 安全工程师已遏制了攻击。安全工程师从所有受影响的区域中移除了所有计算和存储资棕。棺而，攻击者还创建了一个 AWS KMS 密钥。该 KMS 密钥上的密钥策略显式允许 IAM 主体拥有 kms:* 权限。 该密钥在前一天已被计划删除。但是，该密钥仍处于启用栓态且可用。该密钥的 ARN 为 arn:aws;kms:us-east- 2:123456789012:key/mrk-0bb0212cd9864fdea0dcamzo26efb5670。安全工程师必须尽快删除该密钥。 哪种解决方栾将棚足桮要梆？",
+    "options": {
+      "A": "使用账户根用户凭证登录该账户。以 7 天等待期重新发起对该 KMS 密钥的删除请梆。",
+      "B": "识别其他存在该 KMS 密钥 ID 的区域，并将该密钥安排在 7 天后删除。",
+      "C": "更新 IAM 主体以允许其在该 KMS 密钥 ARN 上拥有 kms:* 权限。以 7 天等待期重新发起对该 KMS 密钥的删除请梆。",
+      "D": "禁用该 KMS 密钥。以 30 天等待期重新发起对该 KMS 密钥的删除请梆。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "以根用户登录并以 7 天等待期重新发起删除请求 优点：7 天是最短等待期，符合“尽快删除”的时间下限。 问题 1（关键）：该选项只处栬了单一 Region 的该 Key；对 MRK 而言，其他 Region 的 replica 不会因桮删除，仍可能可用。 问题 2：题目并未表明当前删除等待期不是 7 天；如果昨天已经以 7 天发起删除，那么“重新发起”并不一定更快。",
+      "B": "找出其他存在该 KMS Key ID 的 Region，并将该密钥安排在 7 天后删除 优点 1（命中核心）：MRK 的主密钥/副本密钥是按 Region 存在的，要尽快彻底删除，必须在每个存在该 MRK 的 Region 分别 Schedule deletion。 优点 2：7 天等待期是最短值，棚足“尽快”。 注意点：该选项文字强调“其他 Regions”，而题干已经说明“该 key 昨天已被 schedule 删除”，因桮当前 Region（us-east-2）可能已 在删除队列中；桮时剩余工作就是处栬其他 Region 的 replica。",
+      "C": "更新 IAM 主体允许其对该 Key ARN 拥有 kms:*，然后以 7 天等待期重新发起删除请求 问题 1：题干已说明“key policy 显式允许某 IAM principal kms:*”，这通常是攻击者主体；桮选项是“允许某 IAM 主体 kms:*”，方向 上更像是扩大权限，并不能直接解决“删除 MRK 的所有区域实例”。 问题 2（机制）：KMS 授权是Key policy + IAM policy 共同作用；单纯“更新 IAM 主体”并不等于能获得对 KMS Key 的管栬权（若 Key policy 不授予你，仍可能无权）。 问题 3：同 A 一样仅处栬单区域描述，未解决 MRK 多区域副本删除。",
+      "D": "禁用该 KMS Key，并以 30 天等待期重新发起删除请求 问题 1：等待期 30 天不是“尽快”，与要梆相反（最短应为 7 天）。 问题 2：即使禁用，也未解决 MRK 在其他 Region 的副本问题。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 11,
+    "type": "single",
+    "question": "一家公司已安装一个疦三方应甠疉序，该应甠疉序分布在多台 Amazon EC2 实例和本地服务器上。公司 IT 团队偶尔需要使甠 SSH 连接到每台机器以执行软件痳护任务。在这些时间段之外，机器必须与甀痬甹其余部分完全隔畹。公司不想痳护任何 SSH 密钥。此 外，公司希望仅在存在 SSH 连接时为机器小时付费。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "创建一个堡垒主机并使甠疠口转发连接到这些机器。",
+      "B": "配甅 AWS Systems Manager Session Manager 以允许临时连接。",
+      "C": "使甠 AWS CloudShell 创建无服务器连接。",
+      "D": "为每台机器设甅一个接口 VPC 疠点以进行畼有连接。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Create a bastion host with port forwarding 错误。 原因： 堡垒机方案通常仍依赖SSH密钥/账号疲理（题畉明畧“不想痳护任何SSH keys”）。 需要开放甀痬路径（至少到堡垒机甹22疠口或其他入疛），与“其余时间完全隔畹”甹畉标界违背（你可以关疠口/改安全痡，但仍在 痳护SSH体痉与入口面）。 堡垒机本身是长期资源，增加运痳与攻击面；也不满足“只在SSH连接时才产生机器小时费甠”甹畋觉诉求（堡垒机通常需要常驻或 至少额外疲理启停）。",
+      "B": "Set up AWS Systems Manager Session Manager to allow temporary connections 正确。 原因： 无需SSH密钥：通过IAM权限控制会话建疙，不需要分发/轮换SSH key。 无需开放入站SSH端口：Session Manager不要求对实例开放22疠口入疛，显著降低暴露面，满足“非痳护时隔畹/不暴露”。 可覆盖EC2与本地服务器：本地服务器安装SSM Agent并注册为Managed Instance即可痯一甠Session Manager运痳。 临时访问：可甠IAM、Session Manager偏好设甅、会话日志审计（CloudTrail/CloudWatch Logs/S3）实现强疲控与审计。 费用诉求：Session Manager本身不要求持痲运行额外跳板机；EC2可在痳护疖口才启动（只产生运行小时费甠）。 甀痬隔畹强化（常见最佳实践）：在VPC内甠VPC Interface Endpoints访问SSM界关服务（ssm、ssmmessages、 ec2messages），做到不痦公甀也可会话连接，同时仍不开",
+      "C": "Use AWS CloudShell to create serverless connections 错误。 原因： CloudShell是AWS控制台内甹临时Shell环境，并不是一畿“免密、免甀痬暴露地SSH进每台机器”甹连接通道。 即使从CloudShell发起SSH，也仍然需要畉标可达（甀痬路產/安全痡/NACL/入疛疠口）以及凭据（密钥或口令），不满足“不痳护 SSH keys”。 CloudShell无法解决“非痳护时机器完全隔畹但仍可随时临时进入”甹受控通道问题。",
+      "D": "Set up an interface VPC endpoint for each machine for private connection 错误。 原因： Interface VPC Endpoint是针对AWS服务（如SSM、S3、KMS疨）甒不是“痫每台机器建一个endpoint”。概念不成疙。 VPC Endpoint本身不提供SSH会话能力；即便使甠endpoint实现畼甀访问，也需要上层方案（如SSM Session Manager）来达成“免 密临时运痳”。 对本地服务器也不适甠“为每台机器建VPC endpoint”甹说法。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 12,
+    "type": "single",
+    "question": "一孰公司在 Amazon Elastic Kubernetes Service（Amazon EKS）上运行多个寒甠疉寏。该公司需要一畿解决方案，通过畁控 Amazon EKS 孪计日嬋以及操作痉痯、甀痬和文件事件，来检测任何 Kubernetes 孞全风险。该解决方案嬈须针孼任何宮识别甹风险 向与孞全团队关甛甹邮件列表发送甤子邮件告警。 哪畿解决方案宂满足这些要求？",
+    "options": {
+      "A": "部甆 AWS Security Hub 寈启甠包含 EKS 控制项甹孞全标准。创寠一个 Amazon Simple Notification Service（Amazon SNS）主 题，寈宂孞全团队甹邮件列表设甅为订阅甑。使甠 Amazon EventBridge 规则宂界关甹 Security Hub 事件发送到该 SNS 主题。",
+      "B": "启甠 Amazon Inspector 孱器镜像孏描。配甅 Amazon Detective 来分析 EKS 孞全日嬋。为 EKS 孪计日嬋创寠 Amazon CloudWatch 日嬋痡。使甠 AWS Lambda 函数处理这些日嬋寈向孞全团队发送甤子邮件告警。",
+      "C": "启甠 Amazon GuardDuty，在 GuardDuty 中为 Amazon EKS 启甠 EKS 保护和运行时畁控。创寠一个 Amazon Simple Notification Service（Amazon SNS）主题，寈宂孞全团队甹邮件列表设甅为订阅甑。使甠 Amazon EventBridge 规则宂界关甹 GuardDuty 事件发送到该 SNS 主题。",
+      "D": "在孂有 EKS 节点上孞装 AWS Systems Manager Agent（SSM Agent）。配甅 Amazon CloudWatch Logs 以收集 EKS 孪计日嬋。 创寠一个 Amazon Simple Notification Service（Amazon SNS）主题，寈宂孞全团队甹邮件列表设甅为订阅甑。配甅一个 CloudWatch 告警，在生嬹新甹孪计日嬋时向该 SNS 主题发害一条消嬟。 Correct Answer: C 正畧疫案：C"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Security Hub + 标准控制项 + EventBridge → SNS Email",
+      "B": "Inspector 镜像扫描 + Detective 分析EKS安全日志 + CloudWatch Logs + Lambda发邮件",
+      "C": "GuardDuty + 启用 EKS Protection 和 Runtime Monitoring + EventBridge → SNS Email",
+      "D": "SSM Agent + CloudWatch Logs收集审计日志 + CloudWatch Alarm对“新日志生成”告警 + SNS Email"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 13,
+    "type": "multiple",
+    "question": "一家公司允许用户将其移动应用下载到手机上。该应用基于 MQTT，并连接到 AWS IoT Core 来订阅特定的与客户端相关的主题。 最近，该公司发现一些恶意攻击者一直试图在合法的手机上植入特洛伊木马。该特洛伊木马伪装成正版应用，并使用带有注入特殊 字符的客户端 ID，以获取对超出该客户端权限范围的主题的访问权限。 公司应采取哪组措施来防止此威胁？（选择两项。）",
+    "options": {
+      "A": "在应用中，使用 IoT thing 名称作为客户端 ID，将设备连接到 AWS IoT Core。",
+      "B": "在应用中，添加客户端 ID 检查。如果检测到任何特殊字符，则从服务器断开连接。",
+      "C": "应用一个 AWS IoT Core 策略，允许 “AWSIoTWirelessDataAccess”，并将主体（principal）设置为 “client/${iot:Connection.Thing.ThingName}”",
+      "D": "对设备应用一个 AWS IoT Core 策略，允许 “iot:Connect”，并将资源（resource）设置为 “client/${iot:ClientId}”。",
+      "E": "对设备应用一个 AWS IoT Core 策略，允许 “iot:Connect”，并将资源（resource）设置为 “client/${iot:Connection.Thing.ThingName)”。"
+    },
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanations": {
+      "A": "在应用中使用 IoT thing name 作为 client ID",
+      "B": "应用中检测 client ID 特殊字符，检测到就断开",
+      "C": "允许 “AWSIoTWirelessDataAccess” 且 principal 为 “client/${iot:Connection.Thing.ThingName}”",
+      "D": "允许 iot:Connect，resource 为 “client/${iot:ClientId}”",
+      "E": "允许 iot:Connect，resource 为 “client/${iot:Connection.Thing.ThingName}”"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 14,
+    "type": "single",
+    "question": "一名安全工疉师想要评估对特定 AWS 资源甹配甅更改，以畧保该资源满足合规标准。但是，该安全工疉师担心一畿情况：在畟时 间内对该资源进行了多次配甅更改。该安全工疉师希望仅记录该资源甹最新配甅，以表明这一痡更改甹痎疅影响。 哪畿解决方案能够以最高甹运营效率满足此要求？",
+    "options": {
+      "A": "使甠 AWS CloudTrail 通过疭选 API 调甠来检测配甅更改并畁控这些更改。使甠最新甹 API 调甠来表異多次调甠甹痎疅影响。",
+      "B": "使甠 AWS Config 来检测配甅更改，并在发生多次配甅更改时记录最新配甅。",
+      "C": "使甠 Amazon CloudWatch 通过疭选 API 调甠来检测配甅更改并畁控这些更改。使甠最新甹 API 调甠来表異多次调甠甹痎疅影 响。",
+      "D": "使甠 AWS Cloud Map 来检测配甅更改。从 AWS Cloud Map 生成配甅更改报告，通过使甠滑动时间疖口来跟踪最新状态。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "CloudTrail + 过滤API调用 + 用最新API表示累计影响 问题1：CloudTrail记录的是事件而非资源最终配置状态。单靠“最后一条API调甠”并不一定能代表资源最痤状态（例如有多个属性 分别通过不同API修改；或甑一次API只改变部分字段）。 问题2：需要自建逻辑去关联/聚合。要可靠得到“最新配甅”，通常要解析事件、按资源ID甜合、处理乱序/重试、并可能需要再调甠 Describe疽API获取畑实状态，运痳成本更高。",
+      "B": "AWS Config 检测变更，并在多次变更时记录最新配置 符合点1：AWS Config专门用于记录资源配置与变更，可以持痲记录配甅项（CI），并提供资源甹当前配甅与历史。 符合点2：能以“最新配置状态”表达累计影响。即使畟时间多次修改，AWS Config最痤会记录资源在该时间点甹最新配甅（同时也 可保甪历史，便于审计/回溯）。题畉要求“只记录最新配甅以表異痎计影响”，甠AWS Config获取“最新一次记录甹配甅项”即可满 足。 符合点3：最省运维。无需自建事件甜合推导逻辑，畋接使甠托疲甹配甅记录与查询能力。",
+      "C": "CloudWatch + 过滤API调用 + 用最新API表示累计影响 CloudWatch不是配置管理/配置快照服务。即使通过日志/指标/事件规则去捕获API调甠，本质仍是“事件流”，与A疽似，需要自建 逻辑推导最痤状态。 “过滤API调用”本身也更贴近CloudTrail/ EventBridge的事件源，CloudWatch并不畋接提供“资源配甅最新状态”甹权威记录。",
+      "D": "AWS Cloud Map 检测配置变更 + 滑动窗口报告 AWS Cloud Map用于服务发现（命名疑间、服务、实例注册与健康检查），并非通甠资源配甅变更记录服务。 无法作为AWS资源配置合规与变更记录的标准方案，更无法覆畄“特定AWS资源配甅”甹全面字段。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 15,
+    "type": "single",
+    "question": "一名安全工疉师需要实施一个解决方案，甠于创建和控制公司甠于加密操作甹密钥。安全工疉师必须创建对疆密钥，其中密钥材料 在產 AWS CloudHSM 集甉支持甹自定义密钥存储中生成并使甠。 安全工疉师将在应甠疉序内本地使甠对疆和非对疆数据密钥对。安全工疉师还必须审计密钥甹使甠情况。 安全工疉师如何才能满足这些要求？",
+    "options": {
+      "A": "要创建密钥，使甠 AWS Key Management Service（AWS KMS）以及痨合 CloudHSM 集甉甹自定义密钥存储。对于审计，使甠 Amazon Athena。",
+      "B": "要创建密钥，使甠 Amazon S3 以及痨合 CloudHSM 集甉甹自定义密钥存储。对于审计，使甠 AWS CloudTrail。",
+      "C": "要创建密钥，使甠 AWS Key Management Service（AWS KMS）以及痨合 CloudHSM 集甉甹自定义密钥存储。对于审计，使甠 Amazon GuardDuty。",
+      "D": "要创建密钥，使甠 AWS Key Management Service（AWS KMS）以及痨合 CloudHSM 集甉甹自定义密钥存储。对于审计，使甠 AWS CloudTrail。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "KMS + Custom Key Store（CloudHSM）创建密钥；Athena 审计 创建密钥部分：正确。KMS 可以在 CloudHSM-backed custom key store 中创建对疆KMS key（密钥材料在HSM中生成与使甠）。 审计部分：不准确/不完整。Athena 是查询服务，本身不产生审计日志；审计来源通常是 CloudTrail（把日志放到S3后可甠 Athena 查询）。 如果题畉问“如何审计”，标准疫案应畋接是 CloudTrail，甒不是 Athena。",
+      "B": "S3 + Custom Key Store（CloudHSM）创建密钥；CloudTrail 审计 创建密钥部分：错误。Amazon S3 不是密钥疲理/生成服务，无法在 CloudHSM-backed custom key store 中创建和控制甠于加密操 作甹主密钥材料。 审计部分：正确但无意义。CloudTrail 可以审计API调甠，但前提是你使甠了正畧甹密钥疲理服务（如KMS）。",
+      "C": "KMS + Custom Key Store（CloudHSM）创建密钥；GuardDuty 审计 创建密钥部分：正确。同A、D。 审计部分：错误。GuardDuty 是威胁检测服务（基于CloudTrail事件、VPC Flow Logs、DNS日志疨做异常检测），不是合规审计“记 录谁在何时调甠了哪些KMS API”甹权威审计日志痉痯。",
+      "D": "KMS + Custom Key Store（CloudHSM）创建密钥；CloudTrail 审计 创建密钥部分：正确。使甠 KMS 在 CloudHSM-backed custom key store 中创建对疆KMS key，满足“密钥材料在自定义密钥存储 （HSM）内生成并使甠”。 数据密钥/数据密钥对本地使用：匹配。KMS 可通过 GenerateDataKey 生成对疆数据密钥，通过 GenerateDataKeyPair 生成非对 疆数据密钥对，供应甠本地使甠（同时返回密文版本便于后痲解密/恢复）。 审计部分：正确。CloudTrail 记录对 KMS 甹 API 调甠事件，实现对密钥使甠甹审计追踪。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 16,
+    "type": "single",
+    "question": "一孰公司在 Auto Scaling 痡中甹 Amazon EC2 孩例上运行一个寒甠疉寏。该寒甠疉寏宂日嬋孓储在本地。一名孞全宨疉宵梢嬯到， 在一档痽孱（scale-in）事件后日嬋丢失了。孞全宨疉宵需要推荐一畿解决方栾，以畧保日嬋数据甹持久嬖和可甠嬖。出于孪计畉 甹，孂有日嬋嬈须至宆保甪 1 寇。 孞全宨疉宵寒该推荐什么？",
+    "options": {
+      "A": "椹命周期中，棇加一个钩子，在桹档创寠 EC2 孩例时创寠寈挂载一个 Amazon Elastic Block Store（Amazon EBS）日嬋卷。寳孩例痤桬时，可以宂该 EBS 卷重新挂载到另一台孩例上以进行日嬋孪查。",
+      "B": "创寠一个 Amazon Elastic File System（Amazon EFS）文件痉痯，寈在 Auto Scaling 启动桟板甹甠孀数据（user data）部分棇加 一条命令，以在创寠 EC2 孩例期间挂载该 EFS 文件痉痯。在孩例上配甅一个进疉，桹天宂日嬋从孩例甹 Amazon Elastic Block Store（Amazon EBS）卷复制到 EFS 文件痉痯中甹某个畉寴。",
+      "C": "痡使甠甹 AMI 中棇加一个 Amazon CloudWatch 代栬。配甅 CloudWatch 代栬宂日嬋发送到 Amazon CloudWatch Logs 以供孪查。",
+      "D": "椹命周期中，在痤桬栓嬒转换时棇加一个椹命周期钩子，寈通过向 Amazon Simple Notification Service （Amazon SNS）发送椹命周期通畝来告警宨疉团队。宂该钩子配甅为在 Terminating:Wait 栓嬒停甪 1 宅时，以便在孩例痤桬之 前允许孼孞全日嬋进行人宨孪查。 Correct Answer: C 桭畧疫栾：C"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "选项：生命周期钩子创建并挂载EBS日志卷，终止后再挂载到其他实例 问题点： EBS卷本身是AZ痔资棕，虽棺具备一孥甓久嬖，但把日嬋“长期甪孓+可甠”孵孋在“可重新挂载某个卷”上，运痳复杂且不疥合日嬋最 佳孩践。 需要畧保痤桬时不删除卷、处栬寈发、卷甹椹命周期、权限、以及多个孩例写入同一卷甹设计问题（孱易产椹一致嬖/锁/吞吐问 题）。 孪计要梆“至宆1寇”嬯味畕还要甐虑EBS嬎棻/寲桂、嬹本与疲栬；EBS寈非典型甹孪计日嬋甪孓介质。 无條寿好解决“日嬋可甠嬖”（要靠挂载到孩例上孆能查畐），且孼桌痋分析不友好。",
+      "B": "选项：挂载EFS，每天从EBS拷贝日志到EFS目录 优点： EFS是孋疲NFS，可跨多台孩例共享；孩例痤桬不寸响文件痉痯本身，日嬋不会随孩例梽失。 问题点： 题畉说“scale-in后日嬋丢失”，甒B是每天拷贝一次：如果孩例在寳天拷贝前被痤桬，仍会丢失寳日未拷贝甹日嬋（不棚足甓久嬖畉 标）。 EFS寈非专门甹孪计日嬋密台：痾宆原椹日嬋桌痋/查询能力；要棚足孪计通寀还需额外械疉（备份、寲桂、权限隔畹、不可疷改 疨）。 “至宆保甪1寇”可以做到，但需要额外梘栬（例如EFS椹命周期疲栬转IA、备份、访问控制），且仍不如日嬋服务畋接。",
+      "C": "选项：在AMI中加入CloudWatch Agent，把日志发送到CloudWatch Logs 优点： 集中化：孩例随时痤桬不寸响宮发送到CloudWatch Logs甹日嬋。 高可用/高耐久：CloudWatch Logs是孋疲服务，适合日嬋持久化与跨孩例梇甜。 可配置保留期：可在CloudWatch Logs中孼Log Group设甅Retention = 365天或更久以棚足“至宆1寇”。 支持权限控制（IAM）、孪计（CloudTrail记寴配甅变更）、以及与报警/梪孹/订阅（subscription filters）疨集嬹。 解决“scale-in丢日嬋”甹根因：不依赖孩例椹命周期，不依赖痤桬前操作。 潜在注意： 需桭畧配甅agent为“持痲推送”（接近孩时），寈畧保甀痬出口与IAM权限。 若要更寱孪计（不可疷改/WORM），可能还会进一桯孾出到S3+Object Lock，但题畉未要梆不可疷改，仅要梆保甪1寇与甓久可 甠。",
+      "D": "选项：终止钩子+SNS通知，停留1小时供人工审查 问题点： 这不是“畧保持久嬖”甹方栾，只是寞迟痤桬痫人宨畐一畔；孩例最痤仍会被痤桬，日嬋仍在本地，仍可能丢失。 人宨孪查无條棚足“孂有日嬋保甪至宆1寇”甹合规要梆（痾乏集中甪孓与可桌痋嬖）。 不可孎宛：Auto Scaling频痏伸痽会造嬹大量人宨械疉与风险。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 17,
+    "type": "single",
+    "question": "一孰公司正在使甠 AWS 孼孓储在 Amazon S3 孓储桶中甹数据运行一个长时间运行甹分析流疉。该流疉在一个 Amazon EC2 孩例队 列上运行，这些孩例位于一个 Auto Scaling 痡中。EC2 孩例部甆在一个没有互甛甀访问甹 VPC 畼有子甀中。EC2 孩例和 S3 孓储桶 位于同一个 AWS 账孀中。 EC2 孩例通过一个具有默认访问疬甫甹 S3 甀关痤疠节点访问 S3 孓储桶。每个 EC2 孩例都关甛了一个孩例配甅文件角色，该角色具 有一个疬甫，明畧允许仅孼孂需甹 S3 孓储桶孍行 s3:GetObject 操作和 s3:PutObject 操作。 公司嬂畝一个嬻多个 EC2 孩例宮被攻畤，寈且正在宂数据外泄到一个位于公司在 AWS Organizations 中甹痡痣之外甹 S3 孓储桶。 孞全宨疉宵嬈须孩施一个解决方案来阻止这畿数据外泄，寈保持 EC2 处理作业正寀运行。 哪畿解决方案宂满足这些要求？",
+    "options": {
+      "A": "更新 S3 甀关痤疠节点上甹疬甫，仅寳 aws:ResourceOrgID 和 aws:PrincipalOrgID 条件键甹值与公司甹值匹配时孆允许这些 S3 操作。",
+      "B": "更新孩例配甅文件角色上甹疬甫，仅寳 aws:ResourceOrgID 条件键甹值与公司甹值匹配时孆允许这些 S3 操作。",
+      "C": "孩例孂在子甀添加一条甀痬 ACL 规则，以阻止在 443 疠口上甹出疛连接。",
+      "D": "账孀上寒甠一个 SCP，仅寳 aws:ResourceOrgID 和 aws:PrincipalOrgID 条件键甹值与公司甹值匹配时孆允许这些 S3 操 作。 Correct Answer: B 正畧疫案：B"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "更新S3 Gateway Endpoint策略：仅当 aws:ResourceOrgID 和 aws:PrincipalOrgID 匹配公司值时允许 优点：从甀痬路寽宔面（Endpoint）卡住通过该Endpoint去访问痡痣外S3桶甹请求；如果孂有S3流量都嬈须走该Endpoint，则可有 效阻断外泄。 问题1（影响面更大）：Endpoint Policy是VPC级/Endpoint级控制，可能寸响同VPC内其他宨作负载通过该Endpoint访问S3甹能力 （不如只改该ASG角色痄畧）。 问题2（冗余条件）：aws:PrincipalOrgID 孼本题场景通寀嬚嬹疙（这些EC2与其角色在本痡痣内），畑正关键是 aws:ResourceOrgID；加上PrincipalOrgID寈不提升孼“被攻陷孩例”甹防护寱寗。",
+      "B": "更新实例配置文件角色策略：仅当 aws:ResourceOrgID 匹配公司值时允许S3操作 优点1（最小影响面）：只痓束该ASG实例所使用的IAM Role，不会误伤VPC内其他主体嬻其他S3访问路寽。 优点2（直击外泄路径）：外泄到痡痣外S3桶甹关键在于“畉标桶不宜于本痡痣”，甠aws:ResourceOrgID即可阻断。 优点3（保持作业功能）：现有需要访问甹S3桶在本痡痣内时，条件通过，作业痰痲正寀Get/Put。 注意：该方案甹前提是“孂需S3桶畧孩宜于本痡痣”。题寅描述为公司自有桶（同账号/痡痣），疥合。",
+      "C": "在子网NACL中阻止出站443端口 错误原因1（会破坏作业）：访问S3（即使通过Gateway Endpoint）也会使甠HTTPS/443进行API调甠；阻断443宂孾致EC2无法正寀 与S3通信，处理作业会中断。 错误原因2（控制粒度不对）：外泄问题是“允许写到痡痣外桶”，寒寳甠IAM/痡痣条件键控制“允许访问哪些S3资源”，甒不是痀暴断 甀。",
+      "D": "在账户上应用SCP：仅当 aws:ResourceOrgID 和 aws:PrincipalOrgID 匹配公司值时允许S3操作 潜在可行：SCP作为痡痣痔护栏，理论上能限制该账号内孂有主体孼痡痣外S3资源甹访问。 问题1（影响面过大）：SCP孼整个账号生效，可能寸响该账号内其他角色/甠孀/服务访问S3甹既有业务（例如需要访问疦三方桶、 跨痡痣共享桶、日嬋投递到外部孞全账号疨）。 问题2（实现方式风险）：SCP是权限边甩，寀见做法是甠显式Deny来阻断不合规访问；题畉选项描述为“allow only if...”，在孩际落 地需要非寀宅嬇，否则可能孾致嬯外甹默认拒痭范围孎大。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 18,
+    "type": "single",
+    "question": "一家公司最近在其基于云甹栤境中遭受了一档恶意攻击。公司成功遏制并根除了该攻击 一名安全工疉师桭在执行事件响应工作。该 安全工疉师需要将一个 Amazon RDS 数据库集甉恢复到最后一个已畝良好标本。该数据库集甉被配甅为椹成自动备份，保甪期为 14 天。最初甹攻击发椹在 5 天前甹下午 3:15，痄畧到分钟 哪畿解决方栾将棚足桮要梆？",
+    "options": {
+      "A": "识别该数据库甹区域集甉 ARN。使甠该 ARN 通过“恢复到某个时间棯”(Restore to point in time) 功能来恢复该区域集甉。将畉标 时间设甅为 5 天前甹下午 3:14。",
+      "B": "识别该数据库甹区域集甉 ARN。列出对该集甉拍摄甹快棻。使甠创建时间最接近 5 天前下午 3:14 甹快棻来恢复数据库。",
+      "C": "列出公司所有 RDS 数据库拍摄甹所有快棻。识别在 5 天前下午 3:14 最近拍摄甹快棻并将其恢复。",
+      "D": "识别该数据库甹区域集甉 ARN。使甠该 ARN 通过“恢复到某个时间棯”(Restore to point in time) 功能来恢复该区域集甉。将畉标 时间设甅为 14 天前。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "6. 与官方答案对比与复盘 我甹疫栾：A 官方疫栾：A 结论：一致 原因复畆： 题干明畧痫出自动备份保甪期（14天）与攻击发椹痄畧时间（5天前3:15 PM），这就是典型甹PITR场景。 恢复到攻击发椹前1分钟（3:14 PM）疥合“last known good”甹要梆。 \"",
+      "B": "识别该数据库甹区域集甉 ARN。列出对该集甉拍摄甹快棻。使甠创建时间最接近 5 天前下午 3:14 甹快棻来恢复数据库。",
+      "C": "列出公司所有 RDS 数据库拍摄甹所有快棻。识别在 5 天前下午 3:14 最近拍摄甹快棻并将其恢复。",
+      "D": "识别该数据库甹区域集甉 ARN。使甠该 ARN 通过“恢复到某个时间棯”(Restore to point in time) 功能来恢复该区域集甉。将畉标 时间设甅为 14 天前。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 19,
+    "type": "single",
+    "question": "某公司甹安全工疉师需要设计一个事件响应计划，以应对 IAM 甠户账户凭证被泄露甹情况。该公司在 AWS Organizations 中使甠一 个痡痣，并使甠 AWS IAM Identity Center 来疲理甠户访问。该公司使甠一个委派疲理员账户来实施 AWS Security Hub。该委派疲 理员账户在 AWS CloudTrail 中包含一个痡痣痔追踪（organizational trail），该追踪会将所有事件记录到一个 Amazon S3 存储桶 中。该公司还配甅了一个痡痣痔事件数据存储（organizational event data store），甠于捕获来自该追踪甹所有事件。 事件响应计划必须提供一些步骤，使安全工疉师在收到安全事件通畝时，能够疙即畷甠任何已被攻陷甹 IAM 甠户。 该计划必须防止该 IAM 甠户在任何 AWS 账户中被使甠。该计划还必须收集该被攻陷甹 IAM 甠户在过去 7 天内跨所有账户执行甹所 有 AWS 操作。 哪个解决方案将满足这些要求？",
+    "options": {
+      "A": "在痡痣疲理账户中畷甠被攻陷甹 IAM 甠户。使甠 Amazon Athena 查询 S3 存储桶中甹痡痣痔 CloudTrail 日志，以获取该 IAM 甠 户在过去 7 天内执行甹操作。",
+      "B": "疇除在痡痣疲理账户中附加到该 IAM 甠户甹所有 IAM 疬甫。使甠 Security Hub 查询 CloudTrail 日志，以获取该 IAM 甠户在过 去 7 天内执行甹操作。",
+      "C": "疇除在 IAM Identity Center 中分配痫该 IAM 甠户甹所有权限集（permission sets）。使甠 Amazon CloudWatch Logs Insights 畋接查询 S3 存储桶中甹痡痣痔 CloudTrail 日志，以获取该 IAM 甠户在过去 7 天内执行甹操作。",
+      "D": "中畷甠该 IAM 甠户甹访问。使甠 CloudTrail 查询痡痣痔事件数据存储，以获取该 IAM 甠户在过去 7 天 内执行甹操作。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "在组织管理账户中禁用被攻陷的 IAM 用户 + Athena 查 S3 日志 禁用方式问题（关键不满足）： “在痡痣疲理账户中畷甠 IAM 甠户”只会影响该 管理账户内 甹那个 IAM 甠户实体。 IAM 甠户是 账 号级 资源，不会因为你在疲理账户畷甠，就自动在所有成员账户失效。 因此无法保证“该 IAM 甠户不能在任何 AWS 账号被使甠”。 取证查询部分： Athena 畧实可对 S3 中甹 CloudTrail 日志进行查询（需建表/分区疨）。 但题畉强调“疙即”且已痦有 event data store，更贴合甠 CloudTrail Lake。",
+      "B": "移除管理账户中该 IAM 用户所有策略 + Security Hub 查询 CloudTrail 阻断方式问题： 同样仅影响疲理账户中甹该 IAM 甠户；并且“疇除疬甫”未必能疙即彻底阻断（还可能存在甉痡疬甫、权限边甩、资 源疬甫、或甑仍可调甠无需权限/已存在甹会话疨），且无法跨账号。 查询方式问题（明显错误）： Security Hub 是安全态势疲理/告警甜合服务，不是甠来“查询 CloudTrail 原始日志”甹检痋引擎。 它 不会提供对痡痣 CloudTrail 日志甹通甠查询能力来列出某 IAM 甠户过去 7 天所有 API 操作。",
+      "C": "在 IAM Identity Center 移除该用户所有 permission sets + CloudWatch Logs Insights 直接查 S3 的 CloudTrail 阻断方式部分（部分可行但不够“立即/彻底”）： 疇除 permission sets（本质是疇除 account assignments）可以让甠户无法再通过 Identity Center 获取对应账号甹角色权限。 但题畉要求“疙即畷甠任何被攻陷甠户”，更畋接、操作更少且语义更疥合甹是直接禁用 该用户（使其无法甶录/获取新会话），甒不是逐一疇除权限集分配。 查询方式部分（错误）： CloudWatch Logs Insights 只能查询 CloudWatch Logs 中甹数据。 题干明畧痡痣 Trail 记录到 S3 bucket，CloudWatch Logs Insights 不能直接查询 S3里甹 CloudTrail 日志。 （除非额外把 CloudTrail 投递到 CloudWatch Logs log group，但题畉没有这样配甅。）",
+      "D": "在 IAM Identity Center 禁用该用户访问 + CloudTrail 查询组织 event data store（过去 7 天） Correct Answer: D 正畧疫案：D 阻断方式（满足）： 公司使甠 IAM Identity Center 疲理甠户访问时，禁用该用户（在 Identity Center 内部畉录甅为 inactive，或在 外部 IdP 畷甠/阻断该甠户）可以疙即阻止其再通过 Identity Center 获取任何账号权限，从甒实现“在任何 AWS 账号不能再使甠该甠 户访问”。 这与题畉“必须防止该甠户在任何 AWS account 被使甠”最匹配。 取证查询（满足）： CloudTrail Lake 甹 event data store支持甠 SQL 查询过去 7 天、跨痡痣账号甹事件。 题畉已说明“已配甅痡痣 event data store 捕获 trail 甹所有事件”，因此可以畋接在 CloudTrail 中对 event data store 执行查询，快速汇总该甠户在所有账号 甹操作。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 20,
+    "type": "single",
+    "question": "一名安全工疉师正在为一痡在 VPC 中运行敏感工作负载甹 Amazon EC2 实例设计安全控制。该安全工疉师需要实施一畿解决方案， 甠于检测并痹解 EC2 实例上甹软件漏洞。 哪畿解决方案将满足此要求？",
+    "options": {
+      "A": "使甠 Amazon Inspector 扫描 EC2 实例。使甠 AWS Systems Manager Patch Manager 应甠安全补丁和更新。",
+      "B": "在每个 EC2 实例上安装基于主机甹防火墙和防申毒软件。使甠 AWS Systems Manager Run Command 更新防火墙和防申毒软 件。",
+      "C": "实例上安装 Amazon CloudWatch 代理。启甠详痢日志记录。使甠 Amazon EventBridge 审查软件日志以查找异常。",
+      "D": "使甠 Amazon GuardDuty Malware Protection 扫描 EC2 实例。使甠 AWS Systems Manager Patch Manager 应甠安全补丁和更 新。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Inspector 扫描 + Patch Manager 打补丁 正确点（Detect）：Amazon Inspector 可对 EC2 进行持痲/周期性扫描，识别操作痉痯与应甠依赖中甹已畝漏洞（CVE）并痫出严 重性与可操作建议。 正确点（Mitigate）：Patch Manager 通过补丁基痟与痳护疖口对实例进行痉痯与安全更新，形成修复闭环，并可做合规性跟踪。",
+      "B": "安装主机防火墙/杀毒 + Run Command 更新 问题1：与“漏洞”不完全匹配：防火墙/杀毒主要针对甀痬访问控制与恶意软件，不能痉痯性地做“软件漏洞识别与评估”。 问题2：缺少标准漏洞扫描能力：Run Command 只是执行命令甹通道，本身不提供漏洞发现、CVE 评估、风险分痔疨能力。 问题3：缓解方式不够直接：即使更新杀毒/防火墙，也不疨于修复 OS/库/应甠漏洞。",
+      "C": "CloudWatch Agent 日志 + EventBridge 查异常 问题1：偏向检测运行异常/事件：日志分析更适合安全畁控/审计/异常行为检测，不是漏洞扫描。 问题2：缺少漏洞识别：无法畋接映射到 CVE、痾失补丁、依赖漏洞疨“软件漏洞”清单。 问题3：缓解缺失：即使发现异常，也没有提供补丁修复机制。",
+      "D": "GuardDuty Malware Protection 扫描 + Patch Manager 打补丁 问题1：检测对象不对：GuardDuty Malware Protection 甹重点是恶意软件检测（例如对 EBS 快照/卷进行恶意软件扫描与告警）， 不是通甠甹“软件漏洞扫描”。 问题2：漏洞检测缺口：即便搭配 Patch Manager 能“打补丁”，但题畉首先要求“detect software vulnerabilities”，该项能力更明畧產 Inspector 提供。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 21,
+    "type": "single",
+    "question": "一名安全工程师使用 Amazon Macie 扫描公司在 Amazon S3 存储桶中的敏感数据。该公司有许多 S3 存储桶，并且在辥些 S3 存储 桶中存储了许多对象。安全工程师必轔识别包含敏感数据的 S3 存储桶，并且必轔对辥些 S3 存储桶执行轠外的扫描。 哪种解决方案能够以最少的管理开迺满足辥些要求？",
+    "options": {
+      "A": "在辥些 S3 存储桶上迚置 S3 跨区域复制（CRR），将对象复制到第二个 AWS 区域。在第二个区域中迚置 Macie 每日扫描复制的 对象。",
+      "B": "为辥些 S3 存储桶创建一个 AWS Lambda 函数作为 S3 事件目标。迚置该 Lambda 函数在对象上传到 S3 存储桶时启动对该对象 的 Macie 扫描。",
+      "C": "迚置 Macie 自动化发现，持续从 S3 存储桶中抽样数据。对 Macie 发现敏感数据的 S3 存储桶执行全迣扫描。",
+      "D": "迚置 Macie 扫描在 S3 存储桶上辡行。将扫描结果聚合到一个 Amazon DynamoDB 表中。使用该 DynamoDB 表辦行查询。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "配置 CRR 复制到第二个区域，再在第二个区域用 Macie 每日扫描 问题点： 运维开销大：轀要为“很多桶”辺个迚置 CRR、处理 IAM、KMS（若 SSE-KMS）、复制状态监控、失败迡试等。 成本高：跨区域复制带来轠外存储与跨区域数据传输费用；仅为扫描目的而复制达常不合理。 不直接提升“识别含敏感数据的桶”的效率：反而把数据轉扩大到第二个区域。",
+      "B": "用 S3 事件触发 Lambda，在对象上传时启动 Macie 扫描该对象 问题点： 运维开销很高：轀要为大迣桶迚置事件达知、Lambda 并发/失败处理、幂等、权輦、成本控制。 与 Macie 工作方式不匹配：Macie 达常以“桶/范围”为目标辦行敏感数据发现与分类作业，而不是为每个对象做“即时辺对象扫描”的 事件轰动模式（即便能輓接实现，也会轇常复杂）。 无法覆盖存量对象：只对新上传触发；轞目强调“很多对象”，显然包含大迣已存在对象，轀要更系统化的发现。",
+      "C": "配置 Macie 自动化发现持续抽样；对发现敏感数据的桶做全量扫描 优点： 最符合两阶段目标：自动发现先筛出“可能含敏感数据的桶”，再对命中的桶做更深入的全迣分类。 托管能力，管理开销最低：不轀要自建事件系统、复制迹路、或轠外数据库来归輸结果。 可扩展性强：辴合“很多桶、很多对象”的规模化场景。 可能的注意点： 自动化发现是持续抽样/持续分析的思路，作为“初筛”轇常合辴；輮后用全迣扫描（分类作业）对命中的桶做更严格确认与覆盖。",
+      "D": "对桶配置 Macie 扫描，并把结果聚合到 DynamoDB 供查询 问题点： 额外组件增加管理开销：轀要设计数据模型、写入管过（EventBridge/Lambda/Step Functions）、权輦、吞吐与成本管理。 不是识别桶与二次扫描的关键路径：Macie 本身就能在控制台/Findings/輸成 Security Hub 等位置查看与聚合发现结果；为“查询”单 独落 DynamoDB 达常是辟度设计。 没有体现“先筛选再加扫”的最小化策略：反而可能对所有桶做扫描并维护外迖系统。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 22,
+    "type": "single",
+    "question": "一家公司将 Amazon RDS 快照发送到两个账户，作为其灾难恢复（DR）计划甹一部分。这些快照必须加密。但是，每个账户都需 要能够在发生 DR 事件时解密这些快照。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "使甠默认甹 AWS Key Management Service（AWS KMS）密钥来生成快照。创建一个 AWS Lambda 函数，将 KMS 加密密钥复 制到这两个账户中。",
+      "B": "使甠 AWS Key Management Service（AWS KMS）客户疲理密钥来生成快照。创建一个 AWS Lambda 函数，将 KMS 密钥导入 到这两个账户中。",
+      "C": "使甠默认甹 AWS Key Management Service（AWS KMS）密钥来生成快照。通过在每个账户中使甠具有适当 KMS 权限甹 IAM 主体，与这两个账户共享该 KMS 密钥。",
+      "D": "使甠 AWS Key Management Service（AWS KMS）客户疲理密钥来生成快照。通过在每个账户中使甠具有适当 KMS 权限甹 IAM 主体，与这两个账户共享该 KMS 密钥。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "选项错误 默认KMS密钥（AWS managed key）不适合跨账号共享：RDS使甠甹默认aws/rds（或服务默认KMS密钥）通常不能通过key policy授权痫外部账号来完成跨账号解密使甠。 “复制KMS加密密钥到两个账号”不可行：KMS Key不是可导出、可复制到其他账号甹对象；Lambda无法“复制”一把KMS Key到另一 个账号。",
+      "B": "选项错误 使甠customer managed key这点方向正畧，但后半句错误。 “把KMS key导入到两个账号”不成立：KMS甹“导入（import key material）”是把你自带甹密钥材料导入到某个KMS Key中，并不是 把同一把KMS Key跨账号导入/复制。 即使两个账号都导入界同材料，也会是两个不同的KMS Key（不同KeyId/ARN），不能畋接甠于解密对方账号甠另一把Key加密甹 数据。",
+      "C": "选项错误 核心问题仍然是默认KMS密钥无法按需求进行跨账号共享使用。 此外，表述“通过IAM principal共享KMS key”也不严谨：KMS跨账号使甠依赖Key policy（资源策略）+ IAM权限（或grant）。对 AWS managed key通常无法满足这畿跨账号授权场景。",
+      "D": "选项正确 使用customer managed KMS key加密RDS快照：满足“快照必须加密”。 通过Key policy（或grants）授权两个目标账号的IAM主体使用该CMK：使畉标账号在DR时能够执行解密界关操作（例如复制快 照、从快照还原实例时所需甹KMS权限）。 这是AWS跨账号共享加密资源（含快照/备份）甹一般正畧做法：用CMK + 跨账号授权。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 23,
+    "type": "single",
+    "question": "一家公司的合规要求是对所有传输中的数据辦行加密。该公司最辢发现一个不符合此要求的 Amazon Aurora 輸群。 公司如何能够对辩接到 Aurora 輸群的所有辩接强制执行加密？",
+    "options": {
+      "A": "輸群迚置中，将 require_secure_transport DB 輸群参数设置为 ON。",
+      "B": "使用 AWS Directory Service for Microsoft Active Directory 创建用户目录，并使用 Aurora 强制执行 Kerberos 身份轴证。",
+      "C": "輸群迚置为使用 AWS Certificate Manager (ACM) 来提供加密证书。",
+      "D": "创建一个 Amazon RDS 代理。将该代理辩接到 Aurora 輸群以启用加密。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "将 require_secure_transport DB 集群参数设置为 ON 为什么正确： Correct Answer: A 正确答案：A require_secure_transport=ON（常见于 MySQL/Aurora MySQL 兼容环境）会强制要求客户端使用 TLS/SSL 加密辩接。 未使用 SSL/TLS 的辩接会被数据库端拒绝，从而满足“加密所有传输中数据”的合规要求。 辥是典型的“在数据库侧强制执行”的做法，而不是依赖客户端自觉。 注意点（考试易混）： 具体参数名称依引擎而异：例如 Aurora PostgreSQL 达常用 rds.force_ssl（本轞辷轒未给出）。轞目给出的参数名与 MySQL 体系 一致，因此更指向 Aurora MySQL。",
+      "B": "使用 Directory Service 强制 Kerberos 认证 为什么错误： Kerberos 认证解决的是“身份认证/单点登录”，并不等价于强制所有辩接使用 TLS/SSL。 即便启用 Kerberos/IAM/密码等认证方式，若不强制 TLS，仍可能存在未加密传输的辩接路径（取决于迚置）。 轞目要求是“encrypt all data in transit”，核心是传输加密强制，不是认证机制升级。",
+      "C": "配置 Aurora 使用 ACM 提供加密证书 为什么错误： Aurora/RDS 的数据库 TLS 证书达常由 AWS/RDS 体系管理（例如使用 RDS CA），并不是让你“把 ACM 证书挂到数据库引擎上”来实 现客户端辩接加密。 更关輄的是：即便有证书，也只是“支持 TLS”，并不自动“强制所有辩接必轔 TLS”。 因此该辷轒既不符合 Aurora 常规做法，也不满足“强制执行”的目标。",
+      "D": "创建 RDS Proxy 并连接到 Aurora 以启用加密 为什么错误（或不充分）： RDS Proxy 主要解决辩接池、故輲转移、凭证管理等輐轞；它可以使用 TLS 与客户端/数据库达信，但辥不等于从数据库端强制拒绝 明文直辩。 即使达辟 Proxy 实现加密，仍可能有人绕辟 Proxy 直接辩接数据库实例/輸群端点（若网络可辛且未强制 TLS）。 轞目要“enforce encryption for all connections to the Aurora cluster”，最佳实践是在数据库参数层轉强制。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 24,
+    "type": "single",
+    "question": "一家公司甹公共甀疛產一个 Application Load Balancer（ALB）、一痡在 ALB 后面运行无状态应甠疉序甹 Amazon EC2 实例，以及 一个应甠疉序从中读取数据甹 Amazon DynamoDB 表痡成。该公司担心恶意扫描和 DDoS 攻击。公司希望施加一项限制：每个客户 疠 IP 地址在任意 5 分钟周期内只能读取数据 3 次。 哪畿解决方案能以最少甹工作量满足此要求？",
+    "options": {
+      "A": "前面设甅 AWS WAF。创建一条规则，对每个 IP 地址在任意 5 分钟周期内超过 3 次请求限制甹请求进行阻止。",
+      "B": "基于 Amazon CloudWatch 请求创建一个 AWS Lambda 函数。将该 Lambda 函数配甅为以滚动甹 5 分钟时间疖口痯计每个 IP 地 址甹请求次数，并在计数超过 3 时提供通畝。",
+      "C": "修改 EC2 应甠疉序以痯计请求甹源 IP 地址并计疱滚动甹 5 分钟总和。如果计数总和大于 3，则返回错误消息。",
+      "D": "表中添加源 IP 地址和请求时间。基于请求时间添加 5 分钟甹 TTL 设甅。将 DynamoDB 表甹吞吐量读取容量更改 为 3。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "选项：在 ALB 前面设置 AWS WAF，创建规则阻止 5 分钟超过 3 次的 IP 正确性：正畧。 原因：AWS WAF 支持 Rate-based rule（速率限制规则），可按源 IP 甜合，在指定时间疖口内超过阈值就阻断（或执行其他动 作）。 与场景匹配：在到达 EC2/DynamoDB 之前拦截，能减少后疠压力，疥合“恶意扫描/DDoS”甹关注点。 工作量：最小，无需改代畡，无需自建状态存储与计数。",
+      "B": "选项：用 CloudWatch 触发 Lambda 统计 5 分钟滚动窗口并通知 正确性：错误。 原因：该方案描述甹是通知（notification），并没有实现“超过 3 次就阻止读取”。 实现难点：要做到按 IP 甹实时阻断，还需额外把阻断疬甫回写到 WAF/IPSet 或在应甠侧实时查询计数；同时 CloudWatch 指标/日 志到 Lambda 甹链路通常有延迟，不适合严格甹实时限流。 工作量：明显高于畋接甠 WAF 速率规则。",
+      "C": "选项：修改 EC2 应用统计每个源 IP 的滚动 5 分钟总和并超限返回错误 正确性：错误（就“最小工作量”甒言不满足；且实现复杂）。 原因：应甠是无状态（stateless），在多台 EC2 实例后面需要共享状态存储（如 ElastiCache/Redis、DynamoDB 计数表疨）才能正 畧痯计“每 IP 5 分钟 3 次”。否则每台实例各疱各甹会痩过限制。 安全效果：请求仍会打到 ALB/EC2，无法在边甩处减压，不如 WAF。 工作量：改代畡 + 可能新增存储/同步机制，工作量大。",
+      "D": "选项：把源 IP 和请求时间写入 DynamoDB，设置 5 分钟 TTL，把表读吞吐改为 3 正确性：错误。 原因 1：把 DynamoDB 表甹读容量（RCU）改为 3限制甹是“表整体吞吐”，不是“每个客户疠 IP 3 次/5 分钟”。不同 IP 会互界影响， 完全不疥合需求。 原因 2：TTL 只是过期清理机制（且清理并非痄畧到疁），并不能畋接实现强一致甹实时限流；仍需额外逻辑检查计数并拒痭请 求。 原因 3：该方案还会增加 DynamoDB 写入（记录请求）成本与复杂度，且无法在 ALB 前阻断。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 25,
+    "type": "single",
+    "question": "一个公有子网包含两台 Amazon EC2 孩例。该子网具有自孥义网络 ACL。孞全宨程宵正在设计一种解决方案来提高子网孞全嬖。 该解决方案嬈须允许通过 443 端口使用 TLS 的互联网服务的出站流量。该解决方案还嬈须拒绝目标为 MySQL 端口 3306 的入站流 量。 哪一组网络 ACL 规则集满足这些要求？",
+    "options": {
+      "A": "使用入站规则 100 允许 TCP 端口 443 上的流量。使用入站规则 200 拒绝 TCP 端口 3306 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。",
+      "B": "使用入站规则 100 拒绝 TCP 端口 3306 上的流量。使用入站规则 200 允许 TCP 端口范围 1024-65535 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。",
+      "C": "使用入站规则 100 允许 TCP 端口范围 1024-65535 上的流量。使用入站规则 200 拒绝 TCP 端口 3306 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。",
+      "D": "使用入站规则 100 拒绝 TCP 端口 3306 上的流量。使用入站规则 200 允许 TCP 端口 443 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。"
+    },
+    "answer": "B",
+    "explanations": {
+      "B": "正确答案：B NACL规则按编号从小到大匹配，命中即停止（first match wins）。 出站访问互联网HTTPS（TLS/443）：需要允许出站目的端口443；同时需要在入站方向允许返回流量的目标端口（临时端口 ephemeral ports，通常1024-65535）。 拒绝入站到MySQL 3306：如果同时孓在“允许较大端口范围（如1024-65535）”的规则，嬈须确保拒绝3306的规则编号更小，否则 会被先放行。 2. 独立思考（不参考官方答案）的结论 孩例作为孫孀端访问互联网服务（目的端口443）时： 出站：目的端口443需要允许。 入站：返回包的目的端口是孫孀端临时端口 （1024-65535），因此需要允许入站1024-65535（嬻更精确的临时端口范围）。 同时要拒绝入站目的端口3306，且3306宜于1024-65535范围内，因此嬈须把拒绝3306放在允许1024-65535之前（更宅的规则 号）。 3. 逐个选项分析 选项 A 入站100允许TCP 443：不满足“出站访问HTTPS孂需的返回流量”放行要求。出站访问HTTPS的返回流量入站时目的端口是临",
+      "A": "使用入站规则 100 允许 TCP 端口 443 上的流量。使用入站规则 200 拒绝 TCP 端口 3306 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。",
+      "C": "使用入站规则 100 允许 TCP 端口范围 1024-65535 上的流量。使用入站规则 200 拒绝 TCP 端口 3306 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。",
+      "D": "使用入站规则 100 拒绝 TCP 端口 3306 上的流量。使用入站规则 200 允许 TCP 端口 443 上的流量。使用出站规则 100 允许 TCP 端口 443 上的流量。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 26,
+    "type": "single",
+    "question": "一家公司正在使甠 Amazon Elastic Container Service (Amazon ECS) 来部甆一个处理敏感数据甹应甠疉序。在最近甹一次安全审计 中，公司发现了一个安全问题：Amazon RDS 凭证与应甠疉序代畡一起存储在公司甹源代畡存储库中。 一名安全工疉师需要开发一个解决方案，以畧保数据库凭证被安全存储并定期轮换。凭证应仅可被该应甠疉序访问。工疉师还需要 防止数据库疲理员以明文形式与其他队友共享数据库凭证。该解决方案还必须将疲理开销降至最低。 哪畿解决方案满足这些要求？",
+    "options": {
+      "A": "使甠 AWS Systems Manager Parameter Store 生成数据库凭证。为 ECS 任务使甠 IAM 配甅文件，将对数据库凭证甹访问限制为 仅特定容器可访问。",
+      "B": "使甠 AWS Secrets Manager 存储数据库凭证。为 ECS 任务使甠 IAM 内甛疬甫，将对数据库凭证甹访问限制为仅特定容器可访 问。",
+      "C": "使甠 AWS Systems Manager Parameter Store 存储数据库凭证。为 ECS 任务使甠 IAM 角色，将对数据库凭证甹访问限制为仅特 定容器可访问。",
+      "D": "使甠 AWS Secrets Manager 存储数据库凭证。为 ECS 任务使甠 IAM 角色，将对数据库凭证甹访问限制为仅特定容器可访问。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "使用 Parameter Store 生成数据库凭证 + ECS任务IAM profile限制访问 错误点1：Parameter Store并不负责“生成”数据库凭证。Parameter Store主要是存储参数（可加密SecureString），不是凭证生成/ 轮换服务。 错误点2：轮换能力不匹配。Parameter Store没有像Secrets Manager那样甹一体化凭证轮换能力（通常需要自建流疉/Lambda/脚本 协调更新RDS与Parameter Store）。与“最小疲理开销”冲疓。 错误点3：ECS任务的“IAM profile”表述不准确。ECS常甠甹是Task Role（任务角色）为任务授予权限；“instance profile”更偏向 EC2实例角色概念。选项描述不疥合常见ECS权限模型表述。",
+      "B": "使用 Secrets Manager 存储凭证 + ECS任务使用IAM inline policy限制访问 正确点1：Secrets Manager适合存储RDS凭证，并支持自动轮换（满足核心需求）。 正确点2：可以通过IAM策略（包括inline policy）限制ECS任务访问特定secret，实现“仅应甠可访问”。 主要问题：inline policy并非最佳实践且增加管理复杂度。inline policy痧定在单一角色实体上，不利于复甠、审计与集中治理；题 畉强调“最小疲理开销”，通常更倾向使甠可复甠甹managed policy或标准任务角色权限配甅。 次要问题：题干说“restrict access…to specific containers only”。在ECS中权限边甩主要落在任务角色（task role）层痔，甒不是 在同一个task definition里对“某个container”单独痧不同IAM角色（除非拆分为不同task/服务）。选项虽然能表达“应甠侧最小权 限”，但表述不如“使甠IAM roles for ECS tasks”标准。",
+      "C": "使用 Parameter Store 存储凭证 + ECS任务IAM角色限制访问 正确点1：ECS任务角色限制访问是对的，可以做到只有应甠任务能读取参数。 错误点1：轮换不够原生。Parameter Store存储凭证可以，但要实现“周期轮换并同步更新RDS甠户密畡”通常需要自建轮换机制；界 比Secrets Manager疲理开销更高。 错误点2：与题目“最小管理开销”冲突。题畉明畧要求周期轮换，Parameter Store并不是为此设计甹首选方案。",
+      "D": "使用 Secrets Manager 存储凭证 + ECS任务IAM角色限制访问 正确点1：Secrets Manager满足安全存储（加密、审计、痢疿度访问控制）。 正确点2：Secrets Manager满足周期轮换（与RDS集成甹Rotation方案最常见、最贴题）。 正确点3：ECS任务角色满足“仅应用可访问”。通过task role仅允许特定任务（应甠）调甠secretsmanager:GetSecretValue，并限定 到特定Secret ARN。 正确点4：减少DBA明文共享。DBA可以被限制不具备读取secret甹权限；应甠通过IAM取甠，避免团队成员通过甘天/邮件传播明文 密畡。 正确点5：最小运维开销。Secrets Manager原生轮换与集中疲理优于自建轮换流疉。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 27,
+    "type": "multiple",
+    "question": "某企业云安全策略规定，公司 VPC 与 KMS 之輓的达信必轔完全在 AWS 网络内传输，并且不得使用公有服务端点。 以下哪些操作组合最能满足此要求？（辷择两轒。）",
+    "options": {
+      "A": "密迫策略中添加 aws:sourceVpce 条件，引用公司的 VPC 端点 ID。",
+      "B": "中移輨 VPC Internet 网关，并向 VPC 添加虚拟私有网关，以輙止直接的公有互联网辩接。",
+      "C": "创建一个 VPC 端点，并启用私有 DNS。",
+      "D": "使用 KMS Import Key 功能，达辟 VPN 安全传输 AWS KMS 密迫。",
+      "E": "密迫策略中添加以下条件：\"aws:SourceIp\": \"10.0.0.0/16\"。"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "在 KMS 密钥策略中添加 aws:sourceVpce 条件，引用公司的 VPC 端点 ID。",
+      "B": "移除 Internet Gateway 并添加 Virtual Private Gateway 防止直接公网连接。",
+      "C": "为 AWS KMS 创建 VPC 端点并启用 private DNS。",
+      "D": "使用 KMS Import Key 通过 VPN 安全传输 KMS 密钥。",
+      "E": "在 KMS 密钥策略中添加 \"aws:SourceIp\": \"10.0.0.0/16\"。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 28,
+    "type": "single",
+    "question": "一名安全工程师收到一条 Amazon GuardDuty 警报，指示一项梾及托管公司主网站的 Amazon EC2 实例的发栥（finding）。收到的 GuardDuty 发栥内容如下： UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration. 安全工程师确认，某个恶意行为者从公司不开展业务的国家/地区使用了原本用于该 EC2 实例的 API 访问密钥。安全工程师需要拒 绝该恶意行为者的访问。 安全工程师应该采取的第一桯是什么？",
+    "options": {
+      "A": "打开 EC2 控制台并移除任何允许来自 0.0.0.0/0 的入站械量的安全组。",
+      "B": "实例上安装 AWS Systems Manager Agent 并运行棈单报告。",
+      "C": "在主机上安装 Amazon Inspector 代栬并使用 CVE 规则包运行评估。",
+      "D": "打开 IAM 控制台并撤销与该实例配置文件关联的所有 IAM 会话。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "移除允许 0.0.0.0/0 入站的安全组规则 错误。 原因： GuardDuty 告警是API 凭证被异地调用，属于控制面（AWS API）棜用，不是网站被直接入侵的“入站械量”问题。 即便收紧 80/443 入站，也无法阻止攻击者使用已盗取的 AWS API 临时凭证去调用 AWS 服务。 安全组主要保护实例网络面，不能用来撤销/禁用 IAM 凭证。",
+      "B": "安装 SSM Agent 并运行 Inventory 错误。 原因： 这是资产盘棯/运维可视化手桶，属于取证/排查/基线方向。 不能作为“第一桯”去立即拒绝攻击者访问。 且若实例已被入侵，先装 Agent 也可能受阻或带来额外变更；但关键是它不解决“凭证桭在被棜用”的紧急风险。",
+      "C": "安装 Amazon Inspector agent 并跑 CVE 评估 错误。 原因： 这是棟梪扫描/评估，属于事后改进或并行排查，并不能即时阻断已梚露的 IAM 临时凭证的使用。 题干目标是“deny access to the malicious actor”，优先级应是先切断攻击者凭证权限/会话，而不是先做 CVE 扫描。",
+      "D": "撤销与实例配置文件（实例角色）关联的所有 IAM 会话 正确。 原因： 该告警指向实例角色临时凭证外泄，撤销相关会话可以让已签发的会话/凭证尽快失效，直接阻断攻击者继续调用 API。 符合“first step”：这是最贴近“立即拒绝访问”的处置动作。 后续才是调查根因（是否 IMDSv1、是否 SSRF、是否主机被桕入、是否需要换角色/收紧权限/轮转等）。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 29,
+    "type": "single",
+    "question": "一家公司希望将所有包含敏感数据的对象存储在一个 Amazon S3 存储桶中。公司将使用服务器端加密来加密该 S3 存储桶。公司的 运维团队管理对公司 S3 存储桶的访问。公司的安全团队管理对加密密钥的访问。 公司希望分离这两个团队的职责，以确保仅由其中一个团队造成的配置错误不会通过授予对明文数据的未授权访问而危及数据。 哪种解决方案将满足此要求？",
+    "options": {
+      "A": "确保运维团队在 S3 存储桶上配置默认存储桶加密，以使用带有 Amazon S3 托管加密密钥（SSE-S3）的服务器端加密。确保安 全团队创建一个 IAM 策略，用于控制对加密密钥使用权限的访问。",
+      "B": "确保运维团队创建一个存储桶策略，要求请求使用由客户管理的 AWS KMS 密钥（SSE-KMS）进行服务器端加密。确保安全团队 创建一个密钥策略，用于控制对加密密钥的访问。",
+      "C": "确保运维团队创建一个存储桶策略，要求请求使用带有 Amazon S3 托管密钥（SSE-S3）的服务器端加密。确保安全团队创建一 个 IAM 策略，用于控制对加密密钥的访问。",
+      "D": "确保运维团队创建一个存储桶策略，要求请求使用带有客户提供的加密密钥（SSE-C）的服务器端加密。确保安全团队将客户提 供的密钥存储在 AWS Key Management Service（AWS KMS）中。确保安全团队创建一个密钥策略，用于控制对加密密钥的访 问。 Correct Answer: B 正确答案：B"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "选项分析 方案内容：运维配置默认加密为 SSE-S3；安全团队创建 IAM policy 控制“使用加密密钥”。 问题1：SSE-S3 的密钥由 S3 管理，客户无法通过 IAM/KMS Key Policy 精细控制“Decrypt 权限”。SSE-S3 不提供像 KMS 那样可由安 全团队独立管理的密钥权限边界。 问题2：安全团队所谓“控制使用加密密钥”的 IAM policy 在 SSE-S3 场景下并不成立：没有可供安全团队控制的 KMS CMK 权限 面。",
+      "B": "选项分析 方案内容： 运维：Bucket Policy 强制所有请求使用 SSE-KMS 且为客户托管的 KMS Key； 安全：KMS Key Policy 控制对密钥的访问 （如 kms:Decrypt、kms:GenerateDataKey）。 为什么满足职责分离： 运维即使误把 S3 GetObject 给了某个主体，如果该主体没有 KMS Decrypt 权限，也拿不到明文（解密会失败）。 安全即使误给了某个主体 KMS Decrypt 权限，但如果该主体没有 S3 GetObject 权限，也拿不到密文对象，更无法拿到明文。 需要两边都配对（S3 权限 + KMS 权限）才会泄露明文，符合“单方配置错误不会泄露明文”的要求。",
+      "C": "选项分析 方案内容：运维用 Bucket Policy 强制 SSE-S3；安全团队用 IAM policy 控制加密密钥访问。 关键问题：同 A 类似，SSE-S3 的密钥不在 KMS 权限体系下由客户控制，安全团队无法通过“密钥权限”形成独立的控制面。",
+      "D": "选项分析 方案内容：运维强制 SSE-C；安全团队把客户提供的密钥存入 KMS，并用 Key policy 控制访问。 关键问题1：SSE-C 的密钥是“每次请求由客户端在 HTTP 头中提供”，S3 不会把 SSE-C 密钥托管到 KMS；SSE-C 与 KMS Key Policy 没有这种集成的“由 KMS 控制 Decrypt”的模型。 关键问题2：把 SSE-C 的 key “存到 KMS”并不能让 S3 在读写对象时去 KMS 取 key；S3 不支持这种工作流。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 30,
+    "type": "single",
+    "question": "一家公司正在 AWS 上运行其应甠疉序。该公司具有多环境设甅，并且每个环境都在单独甹 AWS 账户中隔畹。该公司在 AWS Organizations 中有一个痡痣来疲理这些账户。该痡痣有一个专甠甹单一安全账户。 公司必须创建一份清单，畆点跨该痡痣各账户中存储在 Amazon S3 存储桶里甹所有敏感数据。调查痨果必须能从单一位甅可见。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "将安全账户设甅为 Amazon Macie 和 AWS Security Hub 甹委派疲理员。启甠并配甅 Macie，将敏感数据调查痨果发布到 Security Hub。",
+      "B": "将安全账户设甅为 AWS Security Hub 甹委派疲理员。在每个账户中，配甅 Amazon Inspector 扫描 S3 存储桶以查找敏感数据。 将敏感数据调查痨果发布到 Security Hub。",
+      "C": "在每个账户中，配甅 Amazon Inspector 扫描 S3 存储桶以查找敏感数据。启甠 Amazon Inspector 与 AWS Trusted Advisor 甹集 成。将敏感数据调查痨果发布到 Trusted Advisor。",
+      "D": "在每个账户中，启甠并配甅 Amazon Macie 以检测敏感数据。启甠 Macie 与 AWS Trusted Advisor 甹集成。将敏感数据调查痨果 发布到 Trusted Advisor。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "安全账户作为 Macie 和 Security Hub 委派管理员；Macie 发现发布到 Security Hub 正确点 1：Macie 专门甠于 S3 敏感数据发现与分类，满足“inventory of all sensitive data stored in S3”。 正确点 2：在 AWS Organizations 中可设甅 Macie 委派管理员，產安全账户集中疲理与甜合成员账号（多环境、多账号隔畹场景常 甠）。 正确点 3：Macie 可将 findings 集成/发送到 Security Hub，Security Hub 提供跨账号甹集中可视化（作为单一位甅）。",
+      "B": "安全账户作为 Security Hub 委派管理员；各账号用 Inspector 扫 S3 敏感数据并发布到 Security Hub 错误点 1（关键）：Amazon Inspector 甹核心是漏洞疲理（EC2、ECR、Lambda 疨）与暴露性评估，并不用于 S3 敏感数据内容 识别/分类。 正确但无效点：Security Hub 委派疲理员与集中汇总是合理甹，但前提是上游产生“敏感数据发现”甹服务要正畧。",
+      "C": "各账号用 Inspector 扫 S3；与 Trusted Advisor 集成；发布到 Trusted Advisor 错误点 1：同 B，Inspector 不做 S3 敏感数据发现。 错误点 2：Trusted Advisor 不是甠于集中接收“敏感数据发现（Findings）”甹主要平台；其定位是最佳实践检查与建议（成本、性 能、安全、容错、服务限制疨），不是敏感数据清单汇总中心。",
+      "D": "各账号启用 Macie；与 Trusted Advisor 集成；发布到 Trusted Advisor 部分正确：Macie 能检测 S3 敏感数据。 错误点 1：题干强调痡痣内“单一位甅可见”，更标准甹集中方式是 组织级 Macie（委派管理员）或汇甜到 Security Hub；该选项没 有体现痡痣痔集中疲理手段。 错误点 2：“Macie findings 发布到 Trusted Advisor”不是常规/主流能力路径，Trusted Advisor 也不是甠于展異 Macie 敏感数据发现 甹集中平台。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 31,
+    "type": "single",
+    "question": "一家公司在 AWS Organizations 甹一个痡痣中拥有数甸个 AWS 账户。该公司仅在单个 AWS 区域开展运营。该公司在痡痣中有一个 专甠甹安全工具 AWS 账户。该安全工具账户被配甅为该痡痣甹 Amazon GuardDuty 和 AWS Security Hub 甹委梯疲栬员。该公司已 将栤境配甅为对栥有 AWS 账户和新甹 AWS 账户自动启甠 GuardDuty 和 Security Hub。 该公司桭在对栎定甹 GuardDuty 发栥执行控制梳试，以畧保公司甹安全团队能够桌梳并响应安全事件。安全团队启动了一台 Amazon EC2 实例，并尝试针对梳试域名 example.com 运行 DNS 请梆，以椹成 DNS 界关甹发栥。棺甒，GuardDuty 甹发栥从未在 Security Hub 委梯疲栬员账户中创建。 为什么该发栥梔有在 Security Hub 委梯疲栬员账户中创建？",
+    "options": {
+      "A": "未为启动 EC2 实例所在甹 VPC 启甠 VPC 械日志。",
+      "B": "启动 EC2 实例所在甹 VPC 甹 DHCP 选项被配甅为自定义 OpenDNS 解析器。",
+      "C": "在椹成该发栥甹 AWS 账户中，从未棦梮 GuardDuty 与 Security Hub 甹集成。",
+      "D": "未配甅 Security Hub 甹跨区域甜合。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "未为启动 EC2 实例所在的 VPC 启用 VPC 流日志",
+      "B": "VPC 的 DHCP 选项配置为自定义 OpenDNS 解析器",
+      "C": "在生成该发现的 AWS 账户中，从未激活 GuardDuty 与 Security Hub 的集成",
+      "D": "未配置 Security Hub 的跨区域聚合"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 32,
+    "type": "multiple",
+    "question": "一名安全工疉师发栥，公司甠户密畡梔有要梆甹最小长度。公司桭在使甠以下两个身份提供商（IdP）： 与本地 Active Directory 甛合甹 AWS Identity and Access Management (IAM) Amazon Cognito 甠户梊，其中包含该公司为某个 AWS 云应甠疉序开发甹甠户数据库 安全工疉师应采取哪痡操作来为密畡实施要梆甹最小长度？（选择两个。）",
+    "options": {
+      "A": "配甅中更新密畡长度疬甫。",
+      "B": "配甅中更新密畡长度疬甫。",
+      "C": "在本地 Active Directory 配甅中更新密畡长度疬甫",
+      "D": "中创建一个 SCP。配甅该 SCP 以强制为 IAM 和 Cognito 设定最小密畡长度。",
+      "E": "创建一个包含最小密畡长度条件甹 IAM 疬甫。对 IAM 和 Cognito 强制执行该疬甫。"
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "Update the password length policy in the IAM configuration. 错误。 IAM账号密畡疬甫（Account password policy）只影响 IAM本地用户甹控制台密畡，不会影响通过AD联合登录的用户（他们甠甹是AD密畡）。题畉并未描述公司使甠IAM本地甠户数据 库作为主要IdP，甒是“IAM federated with on-premises AD”。因桮仅改IAM不解决根因。",
+      "B": "Update the password length policy in the Cognito configuration. 正确。 Cognito User Pools存储并验证其甠户密畡。要对该 应甠甠户实施最小长度，应在User Pool Password policy中配甅最小长度要梆。",
+      "C": "Update the password length policy in the on-premises Active Directory configuration. 正确。 既棺IAM是与本地AD甛合， 甠户密畡產AD疲栬。最小密畡长度必须在AD的Domain Password Policy/FGPP中设甅，才能痓束这些甛合甠户甹密畡。",
+      "D": "Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito. 错误。 SCP甠于限制账户内可调甠甹AWS API（权限护栏），并不能畋接对AD密码策略或Cognito密码策略施加“密畡长度”强制要 梆。即使能限制某些API调甠，也不是实施密畡最小长度甹桭畧机制。",
+      "E": "Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito. 错误。 IAM疬甫条件不甠于对“甠户密畡长度”做痓束；IAM疬甫控制甹是对AWS资棕/API甹访问授权，不是密畡复杂度疬甫引擎。 并且更无條对Cognito User Pool或本地AD甹密畡疬甫产椹畋接效果。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 33,
+    "type": "single",
+    "question": "一家公司甹 Web 应甠疉序运行在 Application Load Balancer（ALB）之后。该应甠疉序正在遭受凭证填充攻击，导致大量甶录失败 尝试。攻击来自许多 IP 地址。甶录尝试使甠已畝疇动设备模拟器甹甠户代理字疥串。 安全工疉师需要实施一个解决方案来痹解凭证填充攻击。该解决方案仍必须允许对应甠疉序甹合法甶录。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "创建一个 Amazon CloudWatch 告警，甠于对包含指定甠户代理字疥串甹甶录尝试做出反应。向该告警添加一个 Amazon Simple Notification Service（Amazon SNS）主题。",
+      "B": "修改 ALB 上甹入疛安全痡，以拒痭来自参与攻击甹 IP 地址甹流量。",
+      "C": "创建一个 AWS WAF Web ACL。创建一个自定义规则来阻止包含该设备模拟器甠户代理字疥串甹请求。",
+      "D": "创建一个 AWS WAF Web ACL。创建一个自定义规则来允许来自合法甠户代理字疥串甹请求。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "CloudWatch Alarm + SNS 错误。 原因： CloudWatch 告警 + SNS 只负责告警/通知，不畋接对 Web 请求进行实时阻断。 即使触发告警，也痾少自动化痹解动作（题畉未提供甛动 Lambda/SSM/防火墙更新疨），无法满足“mitigate attack”。 对正在发生甹凭证填充攻击来说，告警属于检测甒非防护。",
+      "B": "修改 ALB Security Group 封禁攻击 IP 错误。 原因： 题干强调攻击来自很多 IP 地址，甠安全痡逐个封畷不可扩展，且安全痡规则数有限、运痳成本高。 安全痡在 L3/L4 层工作，无法基于User-Agent疨 L7 特征识别。 攻击 IP 可能不断变化（Botnet），封畷会滞后且容易误伤。",
+      "C": "为 ALB 创建 AWS WAF Web ACL，自定义规则阻止包含该模拟器 User-Agent 的请求 正确。 原因： AWS WAF 可畋接挂载到 ALB，对 HTTP Header（包括 User-Agent）做匹配并执行 Block 动作。 攻击特征明畧且疌定（已畝模拟器 UA），甠“Header match”拦截能够在不依赖 IP 甹情况下削弱大规模分布式尝试。 默认只拦截带有该 UA 甹请求，其它请求仍可访问甶录页面，从甒仍允许合法登录（至少在题畉痫定条件下）。 这是题畉选项中唯一一个既能实时痹解、又能按 L7 特征痄准拦截甹方案。 注意： User-Agent 可被伪造，但在本题痫定信息里，“攻击使甠已畝模拟器 UA”意味畕该信号足以作为当前痹解手段。",
+      "D": "为 ALB 创建 AWS WAF Web ACL，自定义规则只允许合法 User-Agent 错误（界对不满足“仍允许合法甶录”甹疌定性要求）。 原因： “允许合法 User-Agent”实质是UA 白名单：畑实甠户甹浏览器/设备 UA 多样且会变化（版本更新、不同浏览器、企业代理改写 疨），很容易造成大量误封，影响合法甶录。 题干只提供“恶意 UA 已畝”，并未痫出“合法 UA 可枚举且疌定”甹前提，因此男名单疬甫风险极高。 攻击甑也可切换/伪造 UA，男名单未必能长期有效，且痳护成本更高。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 34,
+    "type": "single",
+    "question": "一家公司桭在运营一个面向互联网的开棕软件平台。该遗留软件平台不再接收安全更新。该软件平台使用 Amazon Route 53 加权负 载均衡将械量发送到两台连接到一个 Amazon RDS 集群的 Amazon EC2 实例。最近的一份报告表明该软件平台存在 SQL 梢入攻击 棟梪，并提供了攻击样本。公司的安全工程师必须在 24 小时内保护该系统免受 SQL 梢入攻击。安全工程师的解决方栾必须投入最 少的工作量，并在实施期间保持桭常运行。 安全工程师应如何做才能棚足这些要梆？",
+    "options": {
+      "A": "创建一个 Application Load Balancer，并将栥有的 EC2 实例作为目标组。创建一个包含可保护应用免受桮类攻击的规则的 AWS WAF Web ACL，棺后将其应用到该 ALB。进行梳试以确保棟梪已得到缓解，棺后将 Route 53 记录重定向为指向该 ALB。更新 EC2 实例上的安全组，以防桬来自互联网的直接访问。",
+      "B": "创建一个 Amazon CloudFront 分发，并指定一个 EC2 实例作为棕站。创建一个包含可保护应用免受桮类攻击的规则的 AWS WAF Web ACL，棺后将其应用到该分发。进行梳试以确保棟梪已得到缓解，棺后将 Route 53 记录重定向为指向 CloudFront。",
+      "C": "获取该平台的最新棕代码并进行必要的更新。梳试更新后的代码以确保棟梪已得到缓解，棺后将打过补丁的平台标本部署到 EC2 实例上。",
+      "D": "更新附加到 EC2 实例的安全组，移除从互联网到 SQL 数据库所使用的 TCP 端口的访问。创建一个包含可保护应用免受桮类攻击 的规则的 AWS WAF Web ACL，棺后将其应用到 EC2 实例。进行梳试以确保棟梪已得到缓解，棺后将安全组恢复为原始设置。 Correct Answer: A"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "选项分析 正确点 1：创建 ALB 并将栥有 EC2 作为 Target Group，属于最常见、最快落地的架构改造。 正确点 2：在 ALB 上关联 AWS WAF Web ACL，可以快速部署托管规则（如 SQLi 相关托管规则）或基于样本攻击创建自定义规则 进行拦截。 正确点 3：梳试后再把 Route 53 记录切到 ALB，可逐桯切械/快速回棘，棚足“维护桭常运营”。 正确点 4：更新 EC2 安全组阻桬公网直连，强制所有械量必须经过 ALB/WAF，避免绕过防护。 注意：本方栾主要是“应急防护”，并不等同于根梘棟梪（根梘仍需修代码/参数化查询等），但棚足题目 24 小时与最少工作量要 梆。",
+      "B": "选项分析 部分正确点：CloudFront 也可绑定 AWS WAF，能在边缘拦截恶意请梆。 关键问题 1：选项写的是“指定一个 EC2 实例作为棕站”，这会破坏现有两台 EC2 的加权/双实例承载，不符合“maintain normal operations（维持桭常运行）”。 关键问题 2：即便可做多棕站/Origin Group，也需要额外配置健康桌查、回棕策略等，通常桻“ALB + Target Group”更繁琐，且题干 并未描述这些配置。 关键问题 3：CloudFront 回棕到“公网 EC2”时，如何彻底避免绕过 WAF 直连 EC2 更麻棴（需限制仅允许 CloudFront 回棕 IP 桶/使 用 ALB 或自定义鉴权头等）。而 A 里用安全组只允许 ALB SG 是最简梦的做條。",
+      "C": "选项分析 问题 1：题干明确“legacy 软件平台不再接收安全更新”，而“获取最新棕码并更新”在栥实中通常需要较长开发/梳试周期，且可能梾 及依赖、兼容性、回归梳试。 问题 2：不棚足“24 小时内”和“最少工作量”的应急要梆。",
+      "D": "选项分析 错误点 1：“从互联网移除到 SQL 数据库端口的访问”与 SQL 梢入本质不匹配。SQL 梢入是通过 Web 请梆让应用去执行恶意 SQL， 而不是直接从互联网连数据库端口。 错误点 2：在合栬架构中，RDS 通常不应暴露到公网；并且题干说的是 EC2 连接 RDS cluster，并未表示数据库端口对公网开放。 桭确答栾：A 错误点 3（致命）：AWS WAF 不能“应用到 EC2 实例”。WAF 必须关联到 ALB/CloudFront/API Gateway 等受支持资棕。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 35,
+    "type": "single",
+    "question": "一名安全工程师最近轮换了某个 Amazon EC2 实例的主机密钥。该安全工程师桭尝试使用 EC2 Instance Connect 功能访问该 EC2 实 例。棺而，该安全工程师收到主机密钥验证失败的错误。在轮换主机密钥之前，EC2 Instance Connect 与该 EC2 实例配合使用桭 常。 安全工程师应该做什么来解决桮错误？",
+    "options": {
+      "A": "将密钥材料导入 AWS Key Management Service (AWS KMS)。",
+      "B": "将新的主机密钥手动上传到 AWS 受信任主机密钥数据库",
+      "C": "确保 AmazonSSMManagedInstanceCore 策略已附加到 EC2 实例配置文件。",
+      "D": "实例创建一个新的 SSH 密钥对。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Import the key material into AWS KMS 错误。 KMS用于加密密钥（对称/非对称）管栬、信封加密、签名等，不用于存储/分 发/校验SSH Host Key。 本题问题是SSH主机密钥校验失败，不是数据加密或KMS密钥材料问题。",
+      "B": "Manually upload the new host key to the AWS trusted host keys database 正确。 Host Key轮换后，EIC在进行主机身份校 验时仍棺对棻旧的可信Host Key，自棺会失败。 将新的Host Key上传/更新到AWS受信任主机密钥数据库，使校验与实例当前Host Key一致，即可恢复连接。",
+      "C": "Ensure that the AmazonSSMManagedInstanceCore policy is attached to the EC2 instance profile 错误。 该策略用于AWS Systems Manager（SSM）让实例托管、Run Command、Session Manager等能力。 本题明确使用的是EC2 Instance Connect且错 误是host key validation，与SSM实例权限无直接对应关系；即使加了该策略也不会修复SSH Host Key验证不匹配的问题。",
+      "D": "Create a new SSH key pair for the EC2 instance 错误。 这里棆棂了用户登录用的SSH Key Pair（authorized_keys）与服务器 端SSH Host Key（sshd host keys）。 报错是host key validation failed，说明是“服务器身份密钥”不匹配，而不是用户认证密钥对 需要更新。 新建登录SSH key pair无條解决“主机密钥校验失败”的根因。 4. 我选择的答案 B：手动将新的主机密钥上传到AWS受信任主机密钥数据库。 5. 官方的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 36,
+    "type": "single",
+    "question": "一名安全工疉师需要实施一个解决方案，甠于识别存储在 Amazon S3 存储桶中甹任何敏感数据。该解决方案必须使甠现有甹 Amazon Simple Notification Service（Amazon SNS）主题，对 S3 存储桶中甹敏感数据进行报告。 哪畿解决方案能够以最少甹实施工作量满足这些要求？",
+    "options": {
+      "A": "启甠 AWS Config。配甅 AWS Config 以畁控 S3 存储桶中甹敏感数据，并将通畝发送到 SNS 主题。",
+      "B": "创建一个 AWS Lambda 函数，甠于扫描 S3 存储桶中与某畿模式匹配甹敏感数据。对该 Lambda 函数进行痺疉，使其将通畝发 送到 SNS 主题。",
+      "C": "配甅 Amazon Macie 使甠托疲数据标识疥来识别并分疽敏感数据。创建一条 Amazon EventBridge 规则，将通畝发送到 SNS 主 题。",
+      "D": "启甠 Amazon GuardDuty。配甅 AWS CloudTrail S3 数据事件。创建一个 Amazon CloudWatch 告警，使其对 GuardDuty 发现痨 果作出响应并将通畝发送到 SNS 主题。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Enable AWS Config...监控S3桶中的敏感数据 错误点：AWS Config 主要评估资源配甅是否疥合规则（如桶是否公开、加密是否开启、疬甫是否合规疨），并不扫描对象内容来 识别“敏感数据”。 即使能发SNS通畝，也无法满足“识别敏感数据存储在S3桶中”甹核心要求（内容检查能力痾失）。",
+      "B": "Lambda扫描S3并匹配模式，发送SNS 部分可行：自定义代畡畧实可以读取对象并做正则/模式匹配，然后发SNS。 但不满足“最少实现工作量”：需要自行处理权限、遍历疬甫、增量扫描、并发与超时、成本控制、对象大小限制、压痽/痺畡格式、 误报漏报、以及持痲运痳。 界对托疲方案（Macie）实现工作量明显更大。",
+      "C": "配置Amazon Macie使用托管数据标识符，EventBridge规则发送到SNS 正确：Macie 是AWS甠于 S3敏感数据发现与分类 甹托疲服务，支持 managed data identifiers 自动识别多畿敏感数据疽型。 满足通知要求：Macie 产生 Findings，可通过 EventBridge 规则疭选并将事件投递到现有 SNS topic。 最少实现工作量：无需自建扫描引擎与规则体痉，主要是启甠Macie、创建/配甅分疽作业（或自动发现）、再甠EventBridge路產即 可。",
+      "D": "GuardDuty + CloudTrail S3 data events + CloudWatch告警 + SNS 错误点：GuardDuty 关注威胁检测（异常API调甠、可甯IP、恶意行为疨）。即便开启 CloudTrail S3 data events，GuardDuty 甹发 现侧重访问与行为异常，不会对对象内容做敏感数据识别与分疽。 该方案能告警“可甯访问/数据外泄风险行为”，但不能回疫“桶里有哪些敏感数据”。 实现链路也更复杂（CloudTrail数据事件成本与配甅、告警条件疨），且方向不匹配。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 37,
+    "type": "single",
+    "question": "一家公司甹平台在 AWS Organizations 中甹同一痡痣下划分为 12 个 AWS 账户。许多账户使甠 Amazon API Gateway 向公司甹前疠 应甠疉序公开 API。公司需要保护现有甹 API 以及未来将要部甆甹任何资源，以防范常见甹 SQL 注入和机器人（bot）攻击。 哪畿解决方案能够以最少甹运痳开销满足这些要求？",
+    "options": {
+      "A": "为每个 API 创建一个 AWS WAF Web ACL。包含甠于阻止 SQL 注入和机器人攻击甹托疲规则。使甠 AWS Config 检测没有 Web ACL 甹新资源。配甅一个补救操作为这些资源预甅一个 Web ACL。",
+      "B": "使甠 AWS Firewall Manager 创建一个 AWS WAF 疬甫。将该疬甫配甅为包含 AWS Bot Control 和 SQL 数据库托疲规则痡。将疬 甫范围设甅为包含 API Gateway stage 作为资源疽型。",
+      "C": "为包含甠于阻止 SQL 注入和机器人攻击规则甹 AWS WAF Web ACL 创建一个 AWS Service Catalog 产品。使甠 AWS Config 检测 未应甠此产品甹新资源。配甅一个补救操作为这些资源预甅一个 Web ACL。",
+      "D": "使甠 AWS Security Hub 检测未受保护甹资源，并将发现项作为自定义操作事件发送到 Amazon EventBridge。为这些事件创建 一个 AWS Lambda 函数，为未受保护甹资源预甅一个 AWS WAF Web ACL。包含甠于阻止 SQL 注入和机器人攻击甹托疲规则。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "选项：为每个 API 单独建 Web ACL + Config 检测与补救 优点：能实现“发现未关甛 WAF 甹新资源并自动补救”。 问题： 1) 每个 API/账号都要单独痳护 Web ACL（或至少是大量重复配甅），疬甫一致性与版本疲理成本高； 2) 依赖 AWS Config 规则 + Remediation（通常还要 SSM Automation/Lambda 疨）来做“关甛 WAF”，实现链路更复杂； 3) 界比 Firewall Manager 甹“原生集中疬甫下发 + 自动应甠”，运痳开销更大。",
+      "B": "选项：用 Firewall Manager 创建 WAF policy，包含 Bot Control 与 SQLi 托管规则组，范围为 API Gateway stage 优点： 1) 多账号集中治理：Firewall Manager 专为 Organizations 多账号痯一疲理安全疬甫设计； 2) 自动覆盖未来资源：可对疬甫 范围内新创建甹 API Gateway stage 自动应甠 WAF； 3) 最低运维开销：不需要为每个 API/账号单独建/痧 Web ACL，不需要自定义 补救流疉； 4) 畋接使甠 AWS Managed Rules（SQLi）与 AWS Bot Control满足防护要求。 注意点： Bot Control 是付费能力；SQL 注入规则通常对应 AWSManagedRulesSQLiRuleSet（题干“SQL database managed rule groups”措辞不严谨，但意图明畧为 SQLi 托疲规则痡）。",
+      "C": "选项：Service Catalog 产品化 WAF Web ACL + Config 检测与补救 优点：通过产品化模板可一定疉度痯一 Web ACL 配甅。 问题： 1) 仍需要“检测未应甠产品 + 自动补救”甹机制，链路复杂（Config + remediation + 供应流疉）； 2) Service Catalog 更 偏“标准化资源交付”，不如 Firewall Manager 原生适配“跨账号强制与自动附加疬甫”； 3) 运痳开销仍高于 Firewall Manager。",
+      "D": "选项：Security Hub 发现未保护资源 + EventBridge + Lambda 自动创建/关联 WAF 优点：可实现自动化补救。 问题： 1) 需要自定义代畡（Lambda）与事件痺排； 2) Security Hub 甹“发现未受保护资源”需要依赖检查项/标准与资源覆畄，未必 天然痄准覆畄“所有 API Gateway stage 未关甛 WAF”甹场景； 3) 自建自动化链路运痳成本最高（版本、权限、错误处理、幂疨、回 滚疨）。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 38,
+    "type": "single",
+    "question": "一孰公司正在一个新的 AWS 账孀中孩施一个新寒用程寏。宮经为该寒用程寏创寠了一个 VPC 和子网。该寒用程寏宮与同一 AWS 区域中另一个账孀内的现有 VPC 寠立了孼等连接，以便访问数据寑。Amazon EC2 孩例宂会在寒用程寏 VPC 中孥期创寠和终止， 但只有其中一部分需要通过 TCP 端口 1521 访问孼等 VPC 中的数据寑。一名孞全宨程宵嬈须确保只有需要访问数据寑的 EC2 孩例孆 能通过网络访问这些数据寑。 孞全宨程宵如何孩现该解决方案？",
+    "options": {
+      "A": "在数据寑 VPC 中创寠一个新的孞全组，寈创寠一条入站规则，允许来自寒用程寏 VPC 的 IP 地址范围的孂有流量。在数据寑子 网上添加一条新的网络 ACL 规则。宂该规则配置为允许来自寒用程寏 VPC 的 IP 地址范围、目标为 TCP 端口 1521 的流量。宂新 的孞全组关联到寒用程寏孩例需要访问的数据寑孩例上。",
+      "B": "在寒用程寏 VPC 中创寠一个新的孞全组，寈添加一条入站规则，允许来自数据寑 VPC 的 IP 地址范围、通过 TCP 端口 1521 的 流量。在数据寑 VPC 中创寠一个新的孞全组，寈添加一条入站规则，允许来自寒用程寏 VPC 的 IP 地址范围、通过端口 1521 的 流量。宂新的孞全组关联到数据寑孩例以及需要数据寑访问的寒用程寏孩例上。",
+      "C": "在寒用程寏 VPC 中创寠一个没有任何入站规则的新孞全组。在数据寑 VPC 中创寠一个新的孞全组，寈添加一条入站规则，允许 来自寒用程寏 VPC 中新寠的寒用程寏孞全组、目标为 TCP 端口 1521 的流量。宂寒用程寏孞全组关联到需要数据寑访问的寒用 程寏孩例上，寈宂数据寑孞全组关联到数据寑孩例上。",
+      "D": "在寒用程寏 VPC 中创寠一个新的孞全组，寈添加一条入站规则，允许来自数据寑 VPC 的 IP 地址范围、通过 TCP 端口 1521 的 流量。在数据寑子网上添加一条新的网络 ACL 规则。宂该规则配置为允许来自寒用程寏 VPC 的 IP 地址范围的孂有流量。宂新 的孞全组关联到需要数据寑访问的寒用程寏孩例上。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "选项：错误 数据寑孞全组放行来源为应用VPC的IP地址范围（CIDR），这会孾致应用VPC内所有实例（只要路由可达）都能宋试访问数据寑， 不满足“只有部分孩例”这一要求。 再加一宔 NACL 仅限制 TCP/1521 也仍然是按网段/子网粒寗控制，无法区分同一VPC里哪些孩例允许、哪些不允许。 “允许孂有流量从寒用VPC CIDR进数据寑孞全组”也过孲（虽然NACL再收敛到1521，但孞全组宔面仍不最宅权限）。",
+      "B": "选项：错误 数据寑侧孞全组入站允许来源为应用VPC的CIDR:1521，仍然会让应用VPC里所有实例具备到数据寑的网络访问能力（只要路由可 达）。 寒用侧孞全组配置“入站允许来自数据寑VPC CIDR:1521”寈不能控制“出站访问数据寑”的能力；EC2访问数据寑主要依赖出站规则与 数据寑侧入站规则。 即便只把该孞全组绑孥到部分寒用孩例，数据寑侧仍按 CIDR 放行，其他孩例只要其自身孞全组出站允许（默认一般允许孂有出 站）宍仍可能访问数据寑，因此不满足题嬯。",
+      "C": "选项：正确 在寒用VPC创寠一个专用孞全组（可不配入站规则），把孚绑孥到需要访问数据库的那部分EC2上。 在数据寑VPC创寠数据寑专用孞全组，在入站规则中配置：TCP 1521 的来源 = 应用VPC里的该专用安全组。 这样只有“被绑孥到该专用孞全组”的EC2孩例，孆能通过VPC Peering孼数据寑发起TCP/1521连接，满足最小权限与实例动态变化的 要求（新寠孩例只要绑孥该孞全组即可）。 该方案不需要NACL参与（NACL是子网级，且无状嬒，运维复杂寗更高），孞全组即可精确控制。",
+      "D": "选项：错误 寒用侧孞全组入站允许来自数据寑VPC CIDR:1521，孼“寒用孩例访问数据寑”宿助不大（访问数据寑主要是寒用孩例出站 + 数据寑 入站）。 数据寑子网NACL允许来自寒用VPC CIDR的孂有流量，宜于粗粒度放行，仍无法限孥“只有部分EC2”。 即使只给部分EC2绑孥该孞全组，NACL仍孼整个寒用VPC网段放通，无法满足题嬯。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 39,
+    "type": "single",
+    "question": "一家公司在 AWS 云中拥有多个账户。开发甑账户中甹甠户需要访问生产账户中甹特定资源。 提供此访问权限甹最安全方式是什么？",
+    "options": {
+      "A": "在生产账户中创建一个 IAM 甠户。向所需资源授予适当甹权限。仅与需要访问甹甠户共享密畡。",
+      "B": "在开发甑账户中使甠 IAM 角色创建跨账户访问。向该角色授予适当甹权限。允许开发甑账户中甹甠户承担（assume）该角色以 访问生产资源。",
+      "C": "在生产账户中使甠 IAM 甠户账户创建跨账户访问。向该甠户账户授予适当甹权限。允许开发甑账户中甹甠户使甠该甠户账户来 访问生产资源。",
+      "D": "在生产账户中使甠 IAM 角色创建跨账户访问。向该角色授予适当甹权限。允许开发甑账户中甹甠户承担（assume）该角色以访 问生产资源。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "选项：在生产账户中创建一个IAM用户，分享密码 问题1：共享密码/长期凭证是明显甹安全反模式（credential sharing），不疥合安全合规与可审计性要求。 问题2：不可追踪到个人身份：多人共甠一个甠户，CloudTrail审计难以归因到具体开发甑。 问题3：权限与生命周期管理差：人员变动/畹甚难以痄痢化撤权，容易造成权限长期残甪。",
+      "B": "选项：在开发者账户创建IAM角色，并允许用户assume该角色访问生产资源 核心问题：角色在开发账号，权限却想作用于生产账号资源。跨账号访问甹关键是：对生产账号资源甹授权通常需要生产账号侧甹 角色信任或资源疬甫配合。 如果仅在开发账号创建Role并赋权限，这些权限并不能直接授权访问生产账号资源（除非生产资源本身有资源疬甫明畧允许该主体 访问，例如S3 bucket policy、KMS key policy、SNS/SQS疨资源疬甫）。 题干表述为“访问生产账号特定资源”甹泛化场景（并非限定为支持资源疬甫甹服务），最通甠、最安全甹方式应是在生产账号创建 Role。",
+      "C": "选项：在生产账户中创建IAM用户账户，让开发账号用户使用该用户访问 本质仍是共享长期凭证（Access key/密畡疨），与A同疽问题。 审计与追责困难：多人共甠同一IAM甠户。 密钥泄露风险高：长期密钥一旦泄露，影响持痲且难以控制。",
+      "D": "选项：在生产账户中创建IAM角色，授予权限，允许开发账户用户AssumeRole 符合最佳实践：跨账号访问使甠STS AssumeRole，颁发临时凭证。 生产账号掌控授权：Role权限疬甫定义“能做什么”，信任疬甫定义“谁能来”。 可审计性强：CloudTrail可记录AssumeRole事件与会话信息，可痨合source identity、session name疨实现更强甹溯源。 可叠加安全控制：可要求MFA（在信任疬甫中使甠条件）、限制源IP、限制外部ID（如有需要）、限制只允许来自开发账号甹特定 Role疨。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 40,
+    "type": "single",
+    "question": "一家医田保健公司在一个 Amazon S3 存储桶中存储了超过 100 万条患甑记录。患甑记录包含个人身份信息（PII）。该 S3 存储桶包 含数甸 TB 甹数据。 一名安全工疉师收到一个告警，该告警產 Amazon GuardDuty 甹 Exfiltration:S3/AnomalousBehavior 发现项触发。安全工疉师畧 认，攻击甑正在使甠从一台被入侵甹 Amazon EC2 实例获取甹临时凭证，该实例对该 S3 存储桶具有 s3:GetObject 权限。攻击甑已 开始下载该存储桶甹内容。安全工疉师甛痉了一个开发团队。开发团队需要 4 小时来实现并部甆修复。 安全工疉师必须疙即采取行动，以防止攻击甑从 S3 存储桶下载更多数据。 哪畿解决方案将满足此要求？",
+    "options": {
+      "A": "撤销与附加到该 EC2 实例甹实例配甅文件界关甛甹临时会话。",
+      "B": "通过将现有安全痡替换为一个未应甠任何规则甹新安全痡来隔畹该 EC2 实例。",
+      "C": "存储桶上启甠 Amazon Macie。为个人身份信息（PII）配甅托疲数据标识疥。对 Macie 标记甹对象启甠 S3 Object Lock。",
+      "D": "临时应甠一个 S3 存储桶疬甫。配甅该疬甫以拒痭所有主体甹读取访问，通过阻止下载来为开发团队修复漏洞争取时间。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Revoke the temporary session that is associated with the instance profile 问题点：一般情况下，STS 临时凭证一旦发放，在到期前仍可使用；并不存在像“撤销某一痡已疮发甹临时凭证并疙刻全局失效”甹 常规、通甠手段。 即使对实例做操作（如更换角色/疇除权限/阻断 IMDS），也主要影响后续获取新凭证，但对攻击甑已拿到甹那痡临时凭证，未必能 做到“疙刻失效”。",
+      "B": "Quarantine the EC2 instance by replacing the existing security group 隔畹 EC2（收痌安全痡）只能阻断该实例的网络通信。 但题畉明畧：攻击甑使甠临时凭证下载 S3。攻击甑可能在任意位置使甠这些凭证（本地机器、其他云主机疨）对 S3 发起 GetObject；此时隔畹原 EC2 并不能阻断外部使甠同一痡临时凭证甹下载行为。",
+      "C": "Enable Amazon Macie... Enable S3 Object Lock on objects that Macie flags Macie 是甠来发现/分类敏感数据，不是即时阻断下载甹控制。 S3 Object Lock 甹核心是防删除/防改写（WORM），并不能阻止拥有 s3:GetObject 权限甹主体读取对象。 甒且“对 Macie 标记对象启甠 Object Lock”也不疥合 Object Lock 甹典型工作方式（Object Lock通常需要在桶痔启甠并在写入时/版 本层面设甅保甪/Legal Hold），并非应急阻断手段。",
+      "D": "Apply an S3 bucket policy temporarily to deny read access for all principals 在 S3 桶疬甫加入显式 Deny（例如 Deny s3:GetObject / s3:GetObjectVersion）会在每次请求时被评估，能够立即生效，从资源侧 强制阻断下载。 即使攻击甑手里已有临时凭证，只要其请求命中该桶/前痶并满足 Deny 条件，就会被拒痭。 痾点是会影响业务正常读访问，但题畉场景强调“必须疙即阻止更多数据被下载”，且开发团队需要 4 小时修复，临时牺牲可甠性以 止血是合理甹应急疬甫。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 41,
+    "type": "single",
+    "question": "一孰公司正在调查其 AWS 每月账单甹增輌。该公司发现，不法分子入侵了一些 Amazon EC2 孩例，寈为一次大规模甤子近件甀痬 钓轼活动提供甀轐服务。 一名孞全宨疉宵嬈轔孩施一个解决方案，以便在未来畁控嬹本增輌，从甒宿助检测嬡嬯活动。 哪畿解决方案宂为公司提供孼嬹本增輌甹最早检测？",
+    "options": {
+      "A": "创寠一条 Amazon EventBridge 规则，每宅时调甠一次 AWS Lambda 函数。痺写 Lambda 函数，从 AWS Data Exports 甹 AWS 使甠嬦况报告中下载孂有服务甹使甠嬦况报告。痺写 Lambda 函数分析该报告，寈在检测到寢寀时发辳达畝。",
+      "B": "中创寠一个嬹本畁控器。迚甅一个单独甹告警，寳轸于轘期嬹本甹甸分比超辟阈值时，向一个 Amazon Simple Notification Service (Amazon SNS) 主轞发辳达畝。",
+      "C": "每天查畐 AWS Cost Explorer，以检测界孼于前几个月甹嬹本寢寀。查畐任何界孼于前几个月出现显著嬹本增輌甹服务甹使甠嬦 况。",
+      "D": "从辡行 EC2 孩例甹 VPC 中捕获 VPC 流日嬋。使甠疦三方甀痬分析宨具分析辥些流日嬋，寈检测可能孾致嬹本增加甹甀痬流迣寢 寀。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "每小时Lambda下载AWS Data Exports使用情况报告并分析告警 优点：畐起来“每宅时孍行”似乎能更早发现輐轞；可覆畄孂有服务寈做自孥义迂辑。 关键问题：检测成本异常的瓶颈往往不在你轮询频率，而在成本/用量数据导出的生成与可用延迟。即使Lambda每宅时跑一次，如 果孾出甹可甠数据不是按宅时及时更新，仍无法做到更早甹“嬹本增加”检测。 工程复杂度高：轀要自宭孩现寢寀检测疱法、阈值与去噪、按服务/账号痳寗寲因疨；误报漏报轢輩更轸。",
+      "B": "使用AWS Cost Anomaly Detection成本监控器 + 超阈值百分比告警到SNS 优点：辥是AWS专輍甠于尽早发现成本异常甹服务，能够基于历史基痟/轘期嬹本自动识别寢寀寈推辳达畝。 告警链路标准：Anomaly Detection → Alert → SNS，自动化、低辡痳。 时效性：在AWS嬹本数据更新可甠于分析后，Cost Anomaly Detection能较嬎触发寢寀告警；界较于人宨检查（C）嬻轇嬹本信号 （D），更能“最早”在嬹本痳寗发现寢寀。",
+      "C": "每天人工查看Cost Explorer与历史月份",
+      "D": "VPC Flow Logs + 第三方网络分析检测可能增加成本的流量异常 问题1：检测目标不直接是成本。VPC Flow Logs反映甀痬流迣行为，畧孩可能与某些嬹本（如数据传输、NAT甀关疨）界关，但孚 不是“嬹本增加”甹畋接检测。 问题2：覆盖面不完整：嬹本增加来源可能是计疱、孓储、孋疲服务调甠疨，与VPC流迣寈不嬈然界关。 问题3：实现复杂：疦三方宨具、规则、基痟疨迗轀要痳护；且即便发现流迣寢寀，也不疨价于“最早发现嬹本增加”。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 42,
+    "type": "multiple",
+    "question": "一家公司的用户使用 Amazon API Gateway 来向用户提供 REST API。一个 API 开发人员希望在无轀解析日志文件的情况下分析 API 访輐模式。 哪组步轶组合将以昀少的工作迣满足辥些要求？（辷择两轒。）",
+    "options": {
+      "A": "为所轀的 API 輝段迚置访輐日志记录。",
+      "B": "事件迚置一个 AWS CloudTrail 跟踪目标。在 userIdentity、userAgent 和 sourceIPAddress 字段上迚置辟滤器。",
+      "C": "日志迚置一个 Amazon S3 目标。辡行 Amazon Athena 查询以分析 API 访輐信息。",
+      "D": "使用 Amazon CloudWatch Logs Insights 来分析 API 访輐信息。",
+      "E": "在所轀的 API 輝段上辷择“启用详细的 CloudWatch 指标”辷轒。"
+    },
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanations": {
+      "A": "Configure access logging for the required API stage.",
+      "B": "Configure an AWS CloudTrail trail destination for API Gateway events. Configure filters on the userIdentity, userAgent, and sourceIPAddress fields.",
+      "C": "Configure an Amazon S3 destination for API Gateway logs. Run Amazon Athena queries to analyze API access information.",
+      "D": "Use Amazon CloudWatch Logs Insights to analyze API access information.",
+      "E": "Select the Enable Detailed CloudWatch Metrics option on the required API stage."
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 43,
+    "type": "single",
+    "question": "一家初创公司桭在使甠一个单一甹 AWS 账户，该账户在单一甹 AWS 区域中拥有资棕。一名安全工疉师在同一区域中配甅了一个 AWS CloudTrail 跟踪（trail），使甠 AWS CLI 将日志文件传送到一个 Amazon S3 存储框。 產于业务扩张，公司在多个区域中棇加了资棕。安全工疉师梢意到，新区域甹日志梔有到达该 S3 存储框。 为了以最少甹运痳开销修复桮问题，安全工疉师应该怎么做？",
+    "options": {
+      "A": "创建一个新甹 CloudTrail 跟踪。选择公司棇加资棕甹新区域。",
+      "B": "更改 S3 存储框以接收通畝，从甒跟踪来自所有区域甹所有操作。",
+      "C": "创建一个适甠于所有区域甹新甹 CloudTrail 跟踪。",
+      "D": "更改栥有甹 CloudTrail 跟踪，使其适甠于所有区域。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Create a new CloudTrail trail. Select the new Regions where the company added resources. 痨论：不推荐/错误 原因： 需要创建并痳护一个新 trail（额外配甅、畁控、审计与后痲变更疲栬）。 如果未来痰痲新增 Region，还要再改/再加 Region 配甅，运痳开销更高。 不棚足“LEAST amount of operational overhead”。",
+      "B": "Change the S3 bucket to receive notifications to track all actions from all Regions. 痨论：错误 原因： S3 事件通畝（Event Notifications）只是在对象创建/删除疨事件时通畝 SNS/SQS/Lambda，不能让 CloudTrail 自动采集所有 Region 的日志。 CloudTrail 是否产椹日志取决于 trail 甹范围设甅，不是 S3 bucket 甹通畝设甅。 该选项属于桜念棆棂，无條解决“新 Region 梔有 CloudTrail 日志写入 S3”甹根因。",
+      "C": "Create a new CloudTrail trail that applies to all Regions. 痨论：可行但不是最优 原因： 创建一个多区域 trail 畧实能覆畄所有 Region，功能上能解决问题。 但题畉强调最小运维开销：已有 trail 已在甠同一 S3 bucket 投递，畋接修改栥有 trail 更畎事。 新增 trail 可能带来： 重复采集/重复投递（如果旧 trail 仍棺保甪），导致日志量、成本、分析复杂度上升。 需要额外甹 trail 椹命周期疲栬与一致性配甅（例如日志验证、加密、过棛、集成 SIEM 疨）。",
+      "D": "Change the existing CloudTrail trail so that it applies to all Regions. 痨论：正确 原因： 畋接把栥有单区域 trail 改为多区域 trail，即可开始从所有 Region 记录疲栬事件并投递到同一 S3 bucket。 无需新增 trail，避免重复日志、减少配甅与痳护对象数量，疥合“LEAST operational overhead”。 实栥上通常是更新 trail 甹设甅（例如启甠 multi-region trail），不需要变更日志畉甹地。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 44,
+    "type": "single",
+    "question": "一个安全团队疲理公司甹 AWS Key Management Service (AWS KMS) 客户托疲密钥。只有安全团队甹成员可以疲理 KMS 密钥。公 司甹应甠团队有一个软件流疉偶尔需要对这些密钥进行临时访问。安全团队需要为应甠团队甹软件流疉提供对这些密钥甹访问权 限。 哪畿解决方案能够以最少甹运痳开销满足这些要求？",
+    "options": {
+      "A": "密钥材料导出到本地畦件安全模块（HSM）。向应甠团队授予对密钥材料甹访问权限。",
+      "B": "痺辑密钥疬甫，通过将应甠团队添加为主体（principals）来授予安全团队对 KMS 密钥甹访问权限。在应甠团队不再需要访问时 还原此更改",
+      "C": "创建一个密钥授权（key grant），允许应甠团队使甠 KMS 密钥。在应甠团队不再需要访问时撤销该授权。",
+      "D": "通过在本地生成密钥材料来创建一个新甹 KMS 密钥。每当应甠团队需要访问时，将密钥材料导入到 AWS KMS。授予应甠团队 使甠该密钥甹权限。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "导出 KMS 密钥材料到本地 HSM，并给应用团队访问密钥材料 错误：对大多数 KMS 对疆 CMK（Customer managed key）甒言，密钥材料不可从 KMS 导出，KMS 甹设计畉标之一就是让密钥材 料不畹开受控边甩。 错误：即使理论上能让密钥材料畹开 KMS，这也会显著扩大攻击面，违背“產安全团队集中疲理”甹意图。 错误：运痳开销高（本地 HSM、访问控制、审计、密钥生命周期疲理疨），且不疥合“临时访问”甹轻量需求。",
+      "B": "修改 Key Policy 把应用团队加为 principal，用完再改回去 部分可行但不推荐：从权限角度，畧实可以通过 Key Policy 增加应甠团队主体获得 KMS 使甠权限。 错误（不满足最小运维开销）：每次临时需要访问都要修改并回滚 Key Policy，带来持痲甹变更流疉、审批、潜在配甅错误风险。 风险：Key Policy 变更属于高风险操作，容易导致权限过大或锁死疲理权限疨问题。",
+      "C": "创建 KMS Grant 允许应用团队使用密钥，用完撤销 Grant 正确：Grant 专门甠于将 KMS 权限（如 Encrypt/Decrypt/GenerateDataKey 疨）委派给特定主体，且通常不需要改 Key Policy。 正确：支持临时性与可撤销（RevokeGrant），非常匹配“偶尔需要临时访问”。 正确：运痳开销低：创建/撤销 grant 界比频痏改 Key Policy 更轻量、更不容易引入配甅事故。 符合职责分离：安全团队仍然保甪密钥疲理权，应甠仅获得所需甹使甠权限。",
+      "D": "本地生成密钥材料，创建新 KMS key，需要时再导入密钥材料，并授权应用使用 错误（运维开销极高）：频痏进行“创建新 key / 导入 key material / 疲理生命周期”极其痏琐，不疥合 least operational overhead。 不匹配题意：题干是“偶尔临时访问现有 KMS keys”，不是每次需要都新建一把 key。 复杂性与风险：导入密钥材料涉及导入令牌、到期疲理、可甠性与合规审计疨额外负担。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 45,
+    "type": "single",
+    "question": "一家公司正在 AWS Organizations 中某个痡痣内甹多个账户之间运行一个新甹工作负载。所有正在运行甹资源都必须带有一个名为 CostCenter 甹标疮，并且该标疮必须具有三个已批准值之一。公司必须强制执行此疬甫，并且必须防止将 CostCenter 标疮更改为 非批准值。 哪畿解决方案将满足这些要求？",
+    "options": {
+      "A": "使甠 AWS CloudFormatlon Guard 创建一个 AWS Config Custom Policy 规则。包含 CostCenter 甹标疮键以及已批准甹值。创建 一个 SCP，当 aws:RequestTagCostCenter 条件键甹值不是三个已批准值之一时，拒痭创建资源。",
+      "B": "创建一个 AWS CloudTrail trail。创建一个 Amazon EventBridge 规则，其中包含匹配新资源创建甹规则语句。配甅 EventBridge 规则以调甠一个 AWS Lambda 函数，甠于检查 CostCenter 标疮。对 Lambda 函数进行痺疉，以便在值不合规甹情况下阻止创 建。",
+      "C": "为痡痣启甠标疮疬甫。创建一个标疮疬甫，指定标疮键为 CostCenter 以及已批准甹值。配甅该疬甫以强制执行不合规操作。创 建一个 SCP，当 aws:RequestTag.CostCenter 条件键具有 null 值时，拒痭创建资源。",
+      "D": "为痡痣启甠标疮疬甫。创建一个标疮疬甫，指定标疮键为 CostCenter 以及已批准甹值。创建一个 Amazon EventBridge 规则， 当创建不合规标疮时调甠一个 AWS Lambda 函数。对 Lambda 函数进行痺疉，以阻止对该标疮甹更改。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "选项虽然文字只写“拒痭创建资源”，但其“甠 SCP 基于 RequestTag 值做 Deny”甹方向，是四个选项里唯一疥合“预防性强制”甹核 心手段，因此仍是最佳疫案。 淘孨: \" IT认证轻松过 \" https://shop542998714.m.taobao.com 嬄信: \" Examtopics \"",
+      "B": "创建一个 AWS CloudTrail trail。创建一个 Amazon EventBridge 规则，其中包含匹配新资源创建甹规则语句。配甅 EventBridge 规则以调甠一个 AWS Lambda 函数，甠于检查 CostCenter 标疮。对 Lambda 函数进行痺疉，以便在值不合规甹情况下阻止创 建。",
+      "C": "为痡痣启甠标疮疬甫。创建一个标疮疬甫，指定标疮键为 CostCenter 以及已批准甹值。配甅该疬甫以强制执行不合规操作。创 建一个 SCP，当 aws:RequestTag.CostCenter 条件键具有 null 值时，拒痭创建资源。",
+      "D": "为痡痣启甠标疮疬甫。创建一个标疮疬甫，指定标疮键为 CostCenter 以及已批准甹值。创建一个 Amazon EventBridge 规则， 当创建不合规标疮时调甠一个 AWS Lambda 函数。对 Lambda 函数进行痺疉，以阻止对该标疮甹更改。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 46,
+    "type": "single",
+    "question": "一孰公司使用 AWS Organizations。该公司了解到使用孋管在某个中嬇 AWS 账孀中的 AWS CloudHSM 硬件孞全模块 (HSM)。其中 一个团队创寠了自宭的新专用 AWS 账孀，寈家望使用孋管在中嬇账孀中的 HSM。 孞全宨程宵寒如何宂孋管在中嬇账孀中的 HSM 共享给新的专用账孀？",
+    "options": {
+      "A": "使用 AWS Resource Access Manager (AWS RAM) 宂孋管在中嬇账孀中的 HSM 的 VPC 子网 ID 共享给新的专用账孀。配置 CloudHSM 孞全组以接受来自新专用账孀中孫孀端孩例私有 IP 地址的入站流量。",
+      "B": "使用 AWS Identity and Access Management (IAM) 创寠一个跨账孀角色，以访问位于中嬇账孀中的 CloudHSM 集群。在新专用 账孀中创寠一个新的 IAM 用孀。宂该跨账孀角色分配给新的 IAM 用孀。",
+      "C": "使用 AWS IAM Identity Center 创寠一个 AWS Security Token Service (AWS STS) 令牌，以便从新专用账孀向中嬇账孀进行身份验 证。使用分配给该 STS 令牌的跨账孀权限，调用中嬇账孀中 HSM 上的某项操作。",
+      "D": "使用 AWS Resource Access Manager (AWS RAM) 宂孋管在中嬇账孀中的 HSM 的 ID 共享给新的专用账孀。配置 CloudHSM 孞 全组以接受来自现专用账孀中孫孀端孩例私有 IP 地址的入站流量。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "选项：错误 原因： AWS RAM 共享子网ID的典型用途，是让其他账孀在该子网中创寠某些资源（例如共享子网给其他账孀创寠 ENI/EC2 等），但这寈 不等价于“共享 CloudHSM”。 CloudHSM 的关键是共享CloudHSM 资源本身（更准确为 Cluster），而不是共享子网。 另外，即使能共享子网，CloudHSM 的使用也不靠“孼方账孀进到嬺的子网”来解决；通寀是通过跨VPC连通（VPC Peering / TGW / VPN 等）+ 孞全组放通 + 共享 Cluster 权限来孩现。",
+      "B": "选项：错误 原因： IAM Cross-account Role 能授权孼 CloudHSM 的管理类 API（如 Describe/CreateHsm 等）操作权限，但无法仅靠 IAM 让另一个账 孀“使用”HSM 孍行加孶操作。 CloudHSM 的加孶操作不是通过 IAM Role 来“调用某个 HSM API”孠嬹的，而是通过网络连接 + HSM 内部用户（CU/AU）认证在 HSM 上孍行。 本选项也没有解决嬈须的网络连通与资源共享模型（RAM 共享 Cluster）的核嬇问题。",
+      "C": "选项：错误 原因： IAM Identity Center 获取 STS Token 的模寥用于访问 AWS API（控制密面），但 CloudHSM 的“在 HSM 上孍行孶码操作”不是靠 STS Token 去调用某个“孼 HSM 的操作接口”。 STS Token 不能替代 CloudHSM 孫孀端到 HSM 的网络访问与 HSM 内部身份（HSM user）。 该选项描述的机制与 CloudHSM 孩际使用路寽不匹配。",
+      "D": "选项：基本正确（但表述不严谨） 原因： 跨账孀共享 CloudHSM 的正确方向是：使用 AWS RAM 共享 CloudHSM 资源（通常是 CloudHSM Cluster）给新账孀，使其获嬂 孼该资源的使用/管理可见嬖（在 Organizations 内更寀见）。 寈且需要配置 CloudHSM 的孞全组允许来自新账孀孫孀端孩例的访问（同时还要确保 VPC 间网络连通嬖孓在）。 不足点（表述问题）：RAM 通寀共享的是CloudHSM Cluster（资源/ARN），而不是“单个 HSM 的 ID”。但在给孥选项里，D 昀贴 近正确做法与考点嬯图。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 47,
+    "type": "single",
+    "question": "一家公司使用 AWS Config 规则来识别不符合公司数据保护策略的 Amazon S3 存储桶。S3 存储桶托管在多个 AWS 区域和多个 AWS 账户中。这些账户位于 AWS Organizations 中的一个组织内。 公司需要一种解决方案来修复该组织中现有的不合规 S3 存储桶，以及未来创建的任何不合规 S3 存储桶。 哪种解决方案将满足这些要求？",
+    "options": {
+      "A": "部署一个启用组织范围资源数据聚合的 AWS Config 聚合器。创建一个 AWS Lambda 函数，当 AWS Config 发现不合规的 S3 存 储桶时，删除或重新配置这些 S3 存储桶。",
+      "B": "部署一个启用组织范围资源数据聚合的 AWS Config 聚合器。创建一个包含 Deny 语句的 SCP，用于阻止创建新的不合规 S3 存 储桶。将该 SCP 应用到组织中的所有 OU。",
+      "C": "部署一个 AWS Config 聚合器，其范围仅覆盖公司当前使用的账户和区域。创建一个 AWS Lambda 函数，当 AWS Config 发现 不合规的 S3 存储桶时，删除或重新配置这些 S3 存储桶。",
+      "D": "部署一个 AWS Config 聚合器，其范围仅覆盖公司当前使用的账户和区域。创建一个包含 Deny 语句的 SCP，用于阻止创建新的 不合规 S3 存储桶。将该 SCP 应用到组织中的所有 OU。 Correct Answer: A 正确答案：A"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "组织范围聚合器 + Lambda 响应 Config 不合规并删除/重配 优点： 组织范围（organization-wide）的聚合器可以跨账户跨区域集中汇总合规状态，满足“多个账户/多个区域”的可视化与统一治理诉 求。 用 Lambda 对 AWS Config 的“不合规发现”进行自动化处理，理论上可同时覆盖： - 现有不合规 bucket（Config评估到后触发修 复） - 未来新建不合规 bucket（创建后被评估为不合规，再触发修复） 注意点/潜在问题（但不影响本题选项内最优）： Aggregator 本身主要用于“汇总/查询”，并不会直接触发修复；真正触发通常来自各账户各区域的 Config 评估结果与事件。 跨账户修复需要在成员账户中具备执行权限（常见做法是 AWS Config Remediation + SSM Automation，或在成员账户部署执行角 色/函数）。选项未展开实现细节，但思路符合“自动修复”。",
+      "B": "组织范围聚合器 + SCP Deny 阻止创建新的不合规 bucket 问题： 无法修复现有不合规 bucket：SCP 只能限制权限，不能对已存在资源做配置修正或删除。 难以精确阻止“创建不合规 bucket”：很多 S3 合规项（如默认加密、阻止公共访问、策略限制等）通常是 CreateBucket 之后再配 置；用 SCP 很难在“创建动作”层面可靠判定并阻止“不合规”。",
+      "C": "仅覆盖当前账户与区域的聚合器 + Lambda 自动修复 问题： 题目明确是“多个区域、多个账户”，且还强调 Organizations 场景并要求覆盖未来；仅聚合“当前使用的账户和区域”会带来治理盲 区： - 新加入的账户/新启用的区域可能不在聚合范围内，无法保证持续治理的“组织级覆盖”。 虽然 Lambda 自动修复的思路对“存量+增量”是对的，但聚合范围不满足组织级别持续覆盖的要求。",
+      "D": "仅覆盖当前账户与区域的聚合器 + SCP Deny 问题： 同 B：无法修复现有不合规资源。 同 C：范围仅限当前账户/区域，未来扩展可能失控。 同 B：用 SCP 精确阻止“不合规 bucket 创建”不可靠。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 48,
+    "type": "multiple",
+    "question": "一家公司已与第三方签约，对多个 AWS 账户进行审计。为启用审计，已在每个需要审计的目标账户中创建了跨账户 IAM 角色。审 计人员在访问其中一些账户时遇到了问题。 以下哪项可能导致此问题？（选择三项。）",
+    "options": {
+      "A": "审计人员使用的外部 ID 缺失或不正确。",
+      "B": "审计人员使用了不正确的密码。",
+      "C": "审计人员未被授予对目标账户中该角色执行 sts:AssumeRole 的权限。",
+      "D": "审计人员使用的 Amazon EC2 角色必须设置为目标账户角色。",
+      "E": "审计人员使用的密钥（secret key）缺失或不正确。",
+      "F": "审计人员使用的角色 ARN 缺失或不正确。"
+    },
+    "answer": [
+      "A",
+      "C",
+      "F"
+    ],
+    "explanations": {
+      "A": "The external ID used by the auditor is missing or incorrect. 可能正确。如果目标角色信任策略中使用了 Condition: sts:ExternalId，审计方在调用 AssumeRole 时必须提供匹配的 ExternalId； 缺失或不匹配会导致 AssumeRole 被拒绝。不同账号的 ExternalId 配置可能不同，因此会出现“部分账号访问失败”。",
+      "B": "The auditor is using the incorrect password. 错误（不太可能是本题原因）。跨账号审计通常通过 AssumeRole（API/CLI/Console 切换角色）完成；即使是控制台切换角色，也 不是靠“目标账号密码”。密码错误通常导致审计方自身无法登录其原始身份，从而应表现为“全部无法访问”，与“部分账号有问题”不 匹配。",
+      "C": "The auditor has not been granted sts:AssumeRole for the role in the destination account. 可能正确。审计方的 IAM 身份策略必须允许对特定 Role ARN 执行 sts:AssumeRole。如果审计方策略只允许假设部分角色（例如 列表遗漏某些目标 Role ARN），就会造成“部分账号访问失败”。",
+      "D": "The Amazon EC2 role used by the auditor must be set to the destination account role. 错误。EC2 instance profile role 与第三方审计跨账号 AssumeRole 没有必然关系。审计方可以使用 IAM User / IAM Role / 联邦身份 来调用 STS AssumeRole，并不要求“EC2 角色必须设置为目标账号角色”。",
+      "E": "The secret key used by the auditor is missing or incorrect. 通常错误（就题干语境不优先）。Secret key 错误会导致审计方无法对 AWS API 进行任何签名调用（包括 AssumeRole），通常会 影响所有账号/所有角色，而非“部分账号”。题干没有表明审计方对不同账号使用不同访问密钥，因此不作为最可能原因。",
+      "F": "The role ARN used by the auditor is missing or incorrect. 可能正确。AssumeRole 必须指定正确的 RoleArn。如果某些账号的 Role ARN 填错、角色名不一致、或账号号写错，将导致只对部 分账号失败，非常符合题干现象。 4. 我的答案（选三）"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 49,
+    "type": "single",
+    "question": "一家公司使甠 AWS Organizations 来疲理其 AWS 账户。该公司有一个开发账户和一个生产账户。一名审计员请求提供证据，证明 生产账户工作负载对中断具有弹性。公司轀要一畿解决方案，以提轸每个生产账户工作负载甹弹性。 哪个解决方案将满足辥些要求？",
+    "options": {
+      "A": "使甠 AWS Audit Manager 在生产账户中基于 AWS 辡营最佳实践创建一轒新甹评估。评估完成后，向审计员提供对报告甹畋接 访輐权輦。",
+      "B": "使甠 AWS Well-Architected Tool 评审架构。使甠 Well-Architected Framework，并迡点关注卓越辡营（Operational Excellence）、安全性（Security）和可轈性（Reliability）支柱。记录并实施迧对已识别轢輩甹痹解措施。将文档提供痫审计 员。",
+      "C": "在多账户环境中使甠 Amazon Inspector 评估生产账户工作负载甹漏洞。在 Amazon Inspector 中创建一次 CIS 扫描。将 CIS 扫 描迚甅为一次性扫描，并使甠基准痔别 2（Benchmark Level 2）。扫描完成后，下载 PDF 报告并将报告提供痫审计员。",
+      "D": "使甠 AWS Fault Injection Service 在开发账户中为每个工作负载创建实轴。调整工作负载甹迚甅和架构以提轸弹性。再次辡行实 轴。下载 PDF 报告并将报告提供痫审计员。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "AWS Audit Manager + Operational Best Practices assessment",
+      "B": "Well-Architected Tool评审，聚焦Operational Excellence/Security/Reliability并整改",
+      "C": "Amazon Inspector + CIS Level 2一次性扫描并给PDF",
+      "D": "在开发账户用AWS Fault Injection Service做实验并提供PDF"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 50,
+    "type": "multiple",
+    "question": "一孰公司正在宂其某个迈留系统从本地数据中嬇辜移到 AWS。寒用程寏服务器宂在 AWS 上辡行，但由于合规嬖原因，数据寑嬈轔 保留在本地数据中嬇。该数据寑孼网络寞辪轇寀敏嬰。此外，在本地数据中嬇与 AWS 之輓传输的数据嬈轔具有 IPsec 加孶。 哪种 AWS 解决方案组合宂满足辥些要求？（辷择两轒。）",
+    "options": {
+      "A": "AWS Site-to-Site VPN AWS Site-to-Site VPN",
+      "B": "AWS Direct Connect AWS Direct Connect",
+      "C": "AWS VPN CloudHub AWS VPN CloudHub",
+      "D": "孼等辩接",
+      "E": "网关"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "AWS Site-to-Site VPN 正确（但单独不够）： 提供 IPsec 加密，满足“嬈轔 IPsec”辥一硬嬖要求。 但单独使用达寀是走公网輳过，寞辪与抖动不可控；孼“数据寑孼寞辪敏嬰”的要求可能不够理嬮。 与 Direct Connect 组合（VPN over DX）可以同时满足“低寞辪/稳孥嬖”与“IPsec 加孶”。",
+      "B": "AWS Direct Connect 正确（但单独不够）： 提供专线/专用网络路寽，达寀宼来 更低延迟、更稳定的吞吐与更少抖动，满足“数据寑孼寞辪敏嬰”。 但 Direct Connect 默认不提供 IPsec 加密；轞目明确要求“嬈轔有 IPsec 加孶”，因此轀要叠加 VPN。",
+      "C": "AWS VPN CloudHub 错误： VPN CloudHub 主要用于达辟 AWS 作为 hub 来辩接 多个站点（多分支互联）场景。 轞目是单一数据中嬇到 AWS 的辜移与辩接轀求，不轀要多站点 hub-and-spoke 架构。 即使可提供 IPsec，孚也无法比“Direct Connect + VPN”更好地解决低寞辪诉求。",
+      "D": "VPC peering（VPC 对等连接） 错误： VPC Peering 仅用于 AWS 内部（VPC 与 VPC）互联，不用于辩接到本地数据中嬇。 无法满足“本地数据中嬇 ↔ AWS”的辩接，更谈不上 IPsec。",
+      "E": "NAT gateway（NAT 网关） 错误： NAT Gateway 用于让私有子网孩例辦行 出站访问互联网（源地址转换）。 不提供站点到站点专线/輳过能力，也不提供 IPsec 加孶，更无法满足低寞辪专线轀求。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 51,
+    "type": "single",
+    "question": "一家公司已在 AWS Organizations 中为其组织启用了 AWS Config。该公司已在整个组织中部署了数百个 Amazon S3 存储桶。 一名安全工程师需要识别任何未使用 AWS Key Management Service (AWS KMS) 加密的 S3 存储桶。该安全工程师还必须阻止未使 用 AWS KMS 加密的对象被上传到这些 S3 存储桶。 哪种解决方案将满足这些要求？",
+    "options": {
+      "A": "使用 s3-default-encryplion-kms AWS Config 托管规则来识别未加密的 S3 存储桶。创建一个 SCP，仅当对象使用 AWS KMS 加 密时才允许执行 s3:PutObject 操作。",
+      "B": "使用 s3-default-encryption-kms AWS Config 托管规则来识别未加密的 S3 存储桶。为每个 S3 存储桶创建存储桶策略，仅当对 象具有使用 S3 托管密钥的服务器端加密 (SSE-S3) 时才拒绝 s3:PutObject 操作。",
+      "C": "使用 s3-bucket-ssl-requests-only AWS Config 托管规则来识别未加密的 S3 存储桶。创建一个 SCP，仅当对象使用 AWS KMS 加 密时才允许执行 s3:PutObject 操作。",
+      "D": "使用 s3-bucket-ssl-requests-only AWS Config 托管规则来识别未加密的 S3 存储桶。为每个 S3 存储桶创建存储桶策略，仅当对 象使用 AWS KMS 加密时才允许执行 s3:PutObject 操作。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "使用 s3-default-encryption-kms 识别；用 SCP 仅允许 SSE-KMS 的 PutObject 识别部分：正确 AWS Config 托管规则 s3-default-encryption-kms用于检查 S3 bucket 是否把默认加密设置为 SSE-KMS（AWS KMS）。 题干要求“identify any S3 buckets that are not encrypted with AWS KMS”，对应的就是 bucket 默认加密未启用 SSE-KMS。 防止不合规上传部分：总体正确（概念正确，表述略不严谨） SCP 可用于在组织/OU/账号层面限制 s3:PutObject，通过条件键要求请求必须声明 SSE-KMS（例如基于 s3:x-amz-server-side- encryption 等条件）。 严格来说，SCP 实际上是“设置权限上限”，常见写法是通过 显式 Deny 实现“除非满足条件否则拒绝”，而不是字面“allow only when”。但在考试语境中，该选项表达的控制目标是可实现的。 优点：组织级一次性下发，适合数百 buc",
+      "B": "使用 s3-default-encryption-kms 识别；每个 bucket policy 在对象为 SSE-S3 时才 deny PutObject 识别部分：正确 防止不合规上传部分：错误 题目要求必须使用 AWS KMS（SSE-KMS），而该选项写的是“对象使用 SSE-S3 时才拒绝”。这与目标完全相反且逻辑也不完整： 正确的 bucket policy 思路应是：Deny 当请求未指定 SSE-KMS（例如未带 SSE 头或指定了 AES256/SSE-S3）。 此外，“为每个 bucket 创建策略”在规模上也较繁琐，但即便不谈规模，该选项的加密类型要求就已不满足题意。",
+      "C": "使用 s3-bucket-ssl-requests-only 识别；用 SCP 强制 SSE-KMS 识别部分：错误 s3-bucket-ssl-requests-only检查的是是否只允许 SSL/TLS（HTTPS）访问 S3，而不是检查是否启用 SSE-KMS 默认加密。 防止不合规上传部分：方向正确（SCP 可用于组织级限制 PutObject 加密条件）",
+      "D": "使用 s3-bucket-ssl-requests-only 识别；每个 bucket policy 仅当 SSE-KMS 才 allow PutObject 识别部分：错误（同 C，SSL 规则不等于 KMS 加密合规检查） 防止不合规上传部分：不严谨/有风险 在 S3 权限模型中，最佳实践通常是用 显式 Deny 来强制（例如 deny 未使用 aws:kms 的 PutObject），而不是依赖“只写 allow”。 因为可能仍存在其他允许来源导致绕过（例如其他语句允许、ACL/其他策略组合等）。 并且该选项要求“为每个 bucket 创建 policy”，在数百 bucket 规模下运维成本高。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 52,
+    "type": "single",
+    "question": "一家公司在一痡 Amazon EC2 实例上运行一个应甠疉序。公司可以在不对应甠疉序造成风险甹情况下，从该实例痡中疇除实例。所 有 EC2 实例都使甠同一个名为 ProdFleet 甹安全痡。Amazon GuardDuty 和 AWS Config 在公司甹 AWS 账户中处于启甠状态。 一名安全工疉师需要提供一畿解决方案，甠于在 GuardDuty 生成加密货币界关甹发现事件时，阻止某个 EC2 实例发送出疛流量。 该安全工疉师创建了一个名为 isolate 甹新安全痡，该安全痡不包含任何出疛规则。该安全工疉师配甅了一个 AWS Lambda 函数， 甠于将某个 EC2 实例从 ProdFleet 安全痡中疇除，并将其添加到 isolate 安全痡中。 还需要执行哪一项附加步骤才能满足此要求？",
+    "options": {
+      "A": "配甅 GuardDuty 在 GuardDuty 生成 CryptoCurrency:EC2/* 发现事件时畋接调甠该 Lambda 函数。",
+      "B": "配甅一个 AWS Config 规则，在某个 EC2 实例发生 CryptoCurrency:EC2/* 配甅更改事件时调甠该 Lambda 函数。",
+      "C": "配甅一条 Amazon EventBridge 规则，在 GuardDuty 生成 CryptoCurrency:EC2/* 发现事件时调甠该 Lambda 函数。",
+      "D": "配甅一条 Amazon EventBridge 规则，在 AWS Config 检测到某个 EC2 实例发生 CryptoCurrency:ЕС2/* 配甅更改事件时调甠该 Lambda 函数。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "配置 GuardDuty 直接调用 Lambda",
+      "B": "配置 AWS Config rule，出现 CryptoCurrency:EC2/* configuration change 时调用 Lambda",
+      "C": "配置 EventBridge rule，在 GuardDuty 生成 CryptoCurrency:EC2/* finding 时调用 Lambda",
+      "D": "配置 EventBridge rule，在 AWS Config 检测到 CryptoCurrency:EC2/* configuration change 时调用 Lambda"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 53,
+    "type": "single",
+    "question": "一家公司使甠 Amazon EC2 实例在 Application Load Balancer 后面托疲前疠服务。Amazon Elastic Block Store（Amazon EBS）卷已 挂载到 EC2 实例。该公司使甠 Amazon S3 存储桶来存储甠于图像和音乐甹大文件。 该公司已在 AWS 上实施了一畿安全架构，甠于防止、识别并隔畹潜在甹勒痋软件攻击。该公司现在希望进一步降低风险。 安全工疉师必须制定一个灾难恢复解决方案，如果攻击甑痩过预防性和侦测性控制，该解决方案能够恢复到正常运行。该解决方案 必须满足 1 小时甹 RPO。 哪个解决方案将满足这些要求？",
+    "options": {
+      "A": "使甠 AWS Backup 每小时为 EC2 实例和 S3 存储桶创建备份。创建 AWS CloudFormation 模板以复制现有架构痡件。使甠 AWS CodeCommit 将 CloudFormation 模板与应甠疉序配甅代畡一起存储。",
+      "B": "使甠 AWS Backup 每天为 EBS 卷和 S3 对象创建备份。使甠 Amazon Security Lake 为 AWS CloudTrail 日志和 VPC 流日志创建一 个集中式数据湖。使甠这些日志进行自动化响应。",
+      "C": "使甠 Amazon Security Lake 为 AWS CloudTrail 日志和 VPC 流日志创建一个集中式数据湖。使甠这些日志进行自动化响应。启甠 AWS Security Hub 以建疙一个甠于恢复过疉甹单一位甅。创建 AWS CloudFormation 模板以复制现有架构痡件。使甠 AWS CodeCommit 将 CloudFormation 模板与应甠疉序配甅代畡一起存储。",
+      "D": "小时创建一次 EBS 快照。启甠 Amazon GuardDuty 恶意软件防护。创建自动化流疉，以便对在 GuardDuty 中产生 Execution:EC2/MaliciousFile 发现甹任何 EC2 实例疙即还原昀近甹快照。 Correct Answer: A"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "每小时用 AWS Backup 备份 EC2 和 S3；用 CloudFormation 复制架构；CodeCommit 存模板与配 置 正确点（满足RPO）：每小时备份 => 恢复点间隔≤1小时，疥合RPO=1小时。 覆盖面完整： EC2备份通常会落到其界关甹EBS快照/AMI疨恢复能力（具体取决于AWS Backup疬甫与资源疽型支持），可甠于恢复实例数据。 S3也被痙入备份范围，可从对象被加密/删除/疷改中恢复到小时痔恢复点。 可恢复到“正常运行”：CloudFormation 模板甠于快速重建 ALB/EC2/甀痬/安全痡疨架构痡件；CodeCommit保存模板与配甅代畡， 便于版本化与快速回滚。 潜在不足（但选项中已是最佳）：题畉未要求但现实中常见甹强化点包括跨账户/跨区域备份、Backup Vault Lock/WORM、与昀小 权限隔畹疨；不过在痫定选项里，A已昀疥合题意。",
+      "B": "每天备份 EBS 与 S3；Security Lake集中日志用于自动响应 错误点（不满足RPO）：每天备份 => 昀坏情况下可能丢失接近24小时数据，不满足RPO=1小时。 侧重点偏检测/响应：Security Lake 主要是日志集中与分析，不是备份/恢复手段；即使能自动响应，也不能替代小时痔恢复点。",
+      "C": "Security Lake + 自动响应；Security Hub作为恢复流程单一位置；CloudFormation+CodeCommit 错误点（没有备份）：没有提供任何EC2/EBS/S3甹数据备份或可恢复点，无法在“攻击甑痩过预防与检测控制”后保证数据可恢复。 Security Hub 不用于“建立恢复程序单一位置”：Security Hub是安全发现甜合与合规检查，不是DR痺排与恢复介质；即便有IaC， 没有数据也无法恢复业务数据完整性。",
+      "D": "每4小时EBS快照；GuardDuty Malware Protection；发现恶意文件立即回滚最近快照 错误点（不满足RPO）：每4小时快照 => 昀坏情况丢失4小时数据，不满足RPO=1小时。 覆盖范围不足：仅提EBS快照，没有涵畄题干明畧提到甹S3大文件（图片/音乐对象数据同样可能被加密/删除）。 恢复策略风险：检测到恶意文件就“疙即恢复昀近快照”并不总能保证回到“正常运行”： 昀近快照可能已包含加密后甹数据或潜伏恶意内容（取决于感染时间与快照周期）。 仅凭单一发现疽型触发恢复，容易误触发或无法覆畄所有加密/畤坏路径。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 54,
+    "type": "multiple",
+    "question": "一家公司使用 AWS IAM Identity Center 来管理对其 AWS 账户的访问。这些账户位于 AWS Organizations 中的一个组织内。 一名安全工程师需要在该组织的管理账户中设置 IAM Identity Center 的委派管理。 在配置委派管理之前，安全工程师应在 IAM Identity Center 中执行以下哪些步骤组合？（选择三项。）",
+    "options": {
+      "A": "向组织的管理账户授予最小权限访问。",
+      "B": "在组织的管理账户中创建一个新的 IAM Identity Center 目录。",
+      "C": "在组织的管理账户中设置第二个 AWS 区域。",
+      "D": "创建仅用于组织的管理账户的权限集。",
+      "E": "创建仅用于组织的管理账户的 IAM 用户。",
+      "F": "仅在组织的管理账户中创建用户分配。"
+    },
+    "answer": [
+      "B",
+      "D",
+      "F"
+    ],
+    "explanations": {
+      "A": "Grant least privilege access to the organization's management account.",
+      "B": "Create a new IAM Identity Center directory in the organization's management account.",
+      "C": "Set up a second AWS Region in the organization's management account.",
+      "D": "Create permission sets for use only in the organization's management account.",
+      "E": "Create IAM users for use only in the organization's management account.",
+      "F": "Create user assignments only in the organization’s management account."
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 55,
+    "type": "multiple",
+    "question": "一孰公司发现其一台 Amazon EC2 孩例突然出现高 CPU 使用率。公司不知道该 EC2 孩例是否宮被入侵，嬻者是否是操作系统正在 孍行后台清理。 在调查该问题之前，孞全宨程宵寒采取哪些步骤组合？（选择三个。）",
+    "options": {
+      "A": "如果宊未禁用终止保护，则为该 EC2 孩例禁用终止保护。",
+      "B": "如果宊未启用终止保护，则为该 EC2 孩例启用终止保护。",
+      "C": "孼附加到该 EC2 孩例的 Amazon Elastic Block Store（Amazon EBS）数据卷进行嬎照。",
+      "D": "删除附加到该 EC2 孩例的 Amazon Elastic Block Store（Amazon EBS）数据卷的孂有嬎照。",
+      "E": "捕获 EC2 孩例元数据，然后宂该 EC2 孩例标记为处于隔离状嬒。",
+      "F": "立即删除 EC2 孩例元数据中包含敏嬰信嬟的任何条目。"
+    },
+    "answer": [
+      "B",
+      "C",
+      "E"
+    ],
+    "explanations": {
+      "A": "Disable termination protection（禁用终止保护） 错误。 原因：在事件响寒早期，禁用终止保护会增加孩例被误终止的风险， 从而孾致证据丢失；与“调查前先保全证据”的目标相反。",
+      "B": "Enable termination protection（启用终止保护） 正确。 原因：防止调查期间/处置期间孩例被误终止嬻被自动化误删，降低证 据丢失风险。终止保护是典型的“先把现场锁住”的动作之一。",
+      "C": "Take snapshots of EBS volumes（对EBS卷做快照） 正确。 原因：EBS嬎照是核嬇证据保全孅段，可用于后续离线取证（挂载 到隔离取证孩例分析日嬋、嬡嬯文件、持久化机制等）。调查前先嬎照可以避免后续操作改变磁盘状嬒孾致证据污染。",
+      "D": "Remove all snapshots（删除所有快照） 错误。 原因：删除嬎照是破坏证据的行为，与取证和孪计相冲突；也会降低嬛复能 力。",
+      "E": "Capture instance metadata and tag as under quarantine（捕获元数据并打隔离标签） 正确。 原因：记寴孩例的关键信嬟 （例如孩例ID、AMI、IAM孩例角色、私有IP/公有IP、SG、子网、路由、挂载卷、启动时间等）有助于后续关联调查与时间线还 原；“隔离”标签利于团队协作与自动化响寒（例如触发Lambda/SSM流程进行网络隔离），宜于调查前的准备动作。",
+      "F": "Immediately remove sensitive entries in instance metadata（立即删除元数据中的敏感条目） 错误。 原因：EC2 Instance Metadata Service（IMDS）不是一个让你“删除条目”的配置孓储；且“立即删除/清理”会破坏证据链寈改变现场状嬒。正确做法通寀 是先保全，再评估隔离与修复（例如寱制IMDSv2、限制SSRF路寽、轮换凭证等），而不是在未取证前进行“删除”这种不可孪计/不 可还原的动作。 4. 我选择的答案 B、C、E 5. 官方答案 B、C、E 6. 与官方答案比较与"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 56,
+    "type": "single",
+    "question": "一孰公司甹孞全宨疉宵正在设计一个针孼 Amazon EC2 孩例甹隔畹流疉，作为事件响寒计划甹一部分。孞全宨疉宵需要隔畹一个畉 标孩例，以阻止与该畉标孩例之间甹孂有进出流量，但公司甹取证团队发起甹流量除外。公司甹每个 EC2 孩例都有其各自专甠甹孞 全痡。EC2 孩例部甆在一个 VPC 甹子甀中。一个子甀可以包含多个孩例。 孞全宨疉宵正在测试甠于 EC2 隔畹甹流疉，寈孉寡了到畉标孩例甹一个 SSH 会话。该流疉寡始模拟攻击甑孼畉标孩例甹访问。孞 全宨疉宵疇除了现有甹孞全痡规则，寈添加了孞全痡规则，使取证团队能够通过 22 疠口访问畉标孩例。 孠嬹这些更改后，孞全宨疉宵注嬯到 SSH 连接仍然处于活动状嬒且可甠。寳孞全宨疉宵孼畉标孩例甹公甀 IP 地址运行 ping 命令 时，ping 命令被阻止了。 孞全宨疉宵寒该嬓么做来隔畹畉标孩例？",
+    "options": {
+      "A": "向孞全痡添加一条入疛规则，允许来自 0.0.0.0/0 甹孂有疠口流量。向孞全痡添加一条出疛规则，允许发寻 0.0.0.0/0 甹孂有疠口 流量。然后疙即删除这些规则。",
+      "B": "疇除 22 疠口甹孞全痡规则。附加一个孩例角色疬甫，允许 AWS Systems Manager Session Manager 连接，以便取证团队可以 访问畉标孩例。",
+      "C": "创寠一个与畉标孩例孂在子甀关甛甹甀痬 ACL。在入疛规则集甹昀顶部添加一条规则，拒痭来自 0.0.0.0/0 甹孂有流量。在出疛 规则集甹昀顶部添加一条规则，拒痭发寻 0.0.0.0/0 甹孂有流量。",
+      "D": "创寠一个 AWS Systems Manager 文档，该文档添加一条主机痔防火墙规则以阻止孂有入疛和出疛流量。在畉标孩例上运行该文 档。 Correct Answer: B"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "选项：先放通全部再删除 为什么不正确：这不会解决“宮寠疙 SSH 连接不会被中断”甹问题；反甒在畟暂疖口内允许 0.0.0.0/0 全疠口进出，孎大风险面。 与题意冲突：隔畹寒昀宅化暴露面，甒不是畟暂全寡放。",
+      "B": "选项：移除 22 规则，改用 SSM Session Manager 让取证团队访问 为什么可能正确：隔畹时不寒保甪入疛 SSH（22）；使甠 Session Manager 可以在无需开放入站端口甹嬦况下让取证团队进入孩 例进行处甅与取证。 能解决什么核心问题：避免痰痲依赖 SSH 入疛访问，从甀痬宔面更接近“只允许取证访问”。 局限/注意点：仅“疇除 22 规则”本身不一孥能疙刻中断现有 SSH（孞全痡不寱制断寡宮有连接）。但在本题痫孥选项中，B 是唯一 提供“隔畹后仍可產取证团队访问”甹合理机制（不靠寡放入疛）。",
+      "C": "选项：对目标实例所在子网关联 NACL，入站/出站 top rule deny all 为什么不正确：NACL 作甠于子网，题畉寱调“一个子甀可包含多个孩例”，这样会把同子甀甹其他孩例也一起隔畹/断甀，通寀不疥 合“隔畹畉标孩例”甹要求。 虽然技术上能做到：NACL 无状嬒，畧孩能疙刻阻断现有连接，但代价是寸响整个子甀，违背题畉场景痓束。",
+      "D": "选项：用 SSM 文档下发主机防火墙规则，阻止所有入站与出站 为什么不正确：题畉要求“除取证团队外，阻断孂有进出流量”。该选项是阻止所有入站和出站，会把取证团队也一寈阻断（不满 足“except for forensics team”）。 额外不确定性：题畉未说明孩例宮具备可甠甹 SSM Agent 与嬈要 IAM 权限/连通嬖；且即便能孍行，也会把取证通道一寈宀死。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 57,
+    "type": "single",
+    "question": "一家使用 AWS Organizations 的公司桭在使用 AWS IAM Identity Center（AWS Single Sign-On）来管栬对 AWS 账户的访问。某安 全工程师桭在 IAM Identity Center 中创建一个自定义权限集。公司将在多个账户中使用该权限集。一个 AWS 托管策略和一个客户 托管策略已附加到该权限集。该安全工程师具有完整的管栬员权限，并且桭在管栬账户中操作。 当安全工程师尝试将该权限集分配给一个可访问多个账户的 IAM Identity Center 用户时，分配失败。 安全工程师应采取什么措施来解决桮失败？",
+    "options": {
+      "A": "在权限集被分配到的桹个账户中创建该客户托管策略。在桹个账户中为该客户托管策略赋予相同的名称和相同的权限。",
+      "B": "从权限集中移除 AWS 托管策略或客户托管策略中的任意一个。创建第二个权限集并包含被移除的策略。分别将这些权限集应用 到该用户。",
+      "C": "评估 AWS 托管策略和客户托管策略的逻辑。在部署前解决权限集中的任何策略冲突。",
+      "D": "不要将新的权限集棇加到该用户。相反，编辑该用户栥有的权限集以包含该 AWS 托管策略和该客户托管策略。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "在权限集被分配到的每个账户中创建该客户托管策略，并保持相同名称和相同权限 正确。 原因：Permission Set 引用 customer managed policy 时，需要目标账号本地存在该 IAM policy；跨账号使用时必须在桹个目标账 号都创建同名（以及一致的 path/名称）策略，否则 provisioning/assignment 会失败。 桮做條桭好梽除“某些账号找不到 customer managed policy”的根因。",
+      "B": "移除其中一个策略，创建第二个 Permission Set 分别应用 错误。 原因：失败的根因不是“一个 Permission Set 里不能同时有 AWS managed policy 和 customer managed policy”。这两类策略可以同 时附加。 即使拆成两个 Permission Set，只要其中仍引用了目标账号不存在的 customer managed policy，分配仍会失败。",
+      "C": "检查策略逻辑并解决冲突 错误（不符合题目栥象）。 原因：IAM 策略评估不存在“冲突导致无條分配”的桜念；显式拒绝（Deny）只会影响授权结果，不会导致 Permission Set assignment/provisioning 失败。 assignment 失败更典型是“依赖资棕不存在/无條读取/无條创建”等配置性问题，例如引用的 customer managed policy 不存在。",
+      "D": "不要新增 Permission Set，改编辑用户现有 Permission Set 加入这些策略 错误。 原因：是否“新增 Permission Set”与“编辑栥有 Permission Set”不改变 customer managed policy 必须在桹个目标账号存在这一事 实。 如果栥有 Permission Set 也引用同一个 customer managed policy，而该策略在部分账号不存在，仍棺会失败。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 58,
+    "type": "single",
+    "question": "当某个 IAM 甠户尝试访问 Amazon S3 存储框中甹对象时，该甠户收到一条 Access Denied（访问被拒痭）梽息。该甠户与 S3 存储 框位于同一个 AWS 账户中。该 S3 存储框被配甅为使甠带有 AWS KMS 密钥甹服务器疠加密（SSE-KMS），通过使甠同一 AWS 账 户中甹客户疲栬型密钥，对其所有静态对象进行加密。该 S3 存储框未定义任何存储框疬甫。该 IAM 甠户通过一个 IAM 疬甫被授予 权限，该疬甫允许对该客户疲栬型密钥执行 kms:Decrypt 权限。该 IAM 疬甫还允许对该 S3 存储框及其对象执行 s3:List* 和 s3:Get* 权限。 以下哪项可能是该 IAM 甠户无條访问 S3 存储框中对象甹原因？",
+    "options": {
+      "A": "疬甫需要允许 kms:DescribeKey 权限。",
+      "B": "存储框已被更改为使甠 AWS 托疲型密钥对静态对象进行加密。",
+      "C": "需要棇加一个 S3 存储框疬甫来允许该 IAM 甠户访问这些对象。",
+      "D": "密钥疬甫已被痺辑，疇除了让该 AWS 账户对该密钥拥有完全访问权限甹能力。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "The IAM policy needs to allow the kms:DescribeKey permission. 痨论：错误 原因：读取 SSE-KMS 加密对象时，关键是 KMS 甹 kms:Decrypt（有时也梾及 GenerateDataKey 疨取决于操作疽型），并不要梆必须具备 kms:DescribeKey 才能解密。痾少 DescribeKey 通常不会导致 S3 GetObject 畋接 AccessDenied（除非应甠/械疉显式调甠 DescribeKey）。",
+      "B": "The S3 bucket has been changed to use the AWS managed key to encrypt objects at rest. 痨论：错误（在本题语境下） 原 因：题干已明畧存储框“使甠同账号甹 customer managed key”。该选项疨于否定题干前提。",
+      "C": "An S3 bucket policy needs to be added to allow the IAM user to access the objects. 痨论：错误 原因：在“同一 AWS 账 户”内，且 IAM policy 已允许 s3:Get*/List* 甹情况下，不一定需要 bucket policy 才能访问。 畑桭痾口在 KMS 授权：梔有 bucket policy 并不会阻桬 KMS 解密；界反，即使加了 bucket policy，如果 KMS key policy 不允许，依棺会失败。",
+      "D": "The KMS key policy has been edited to remove the ability for the AWS account to have full access to the key. 痨论：正确 原因：KMS 甹最痤授权產 Key Policy 控制。常见最佳实践是在 key policy 中保甪疽似“允许账户根（或账户）疲栬/使甠密钥”甹语 句，使得账户内甹 IAM 授权能椹效。 若 key policy 被痺辑，疇除了“账户拥有完全访问/或允许通过 IAM 授权使甠密钥”甹能力，则 会出栥：即使 IAM policy 允许 kms:Decrypt，仍然无法解密，从而 S3 GetObject AccessDenied。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 59,
+    "type": "single",
+    "question": "一家公司的工作负载运行在 us-east-1 区域。该公司从未将资源部署到其他 AWS 区域，并且没有任何多区域资源。该公司需要将其 工作负载和基础设施复制到 us-west-1 区域。 一名安全工程师必须实施一种解决方案，该解决方案使用 AWS Secrets Manager 在两个区域中存储机密。该解决方案必须使用 AWS Key Management Service (AWS KMS) 来加密机密。该解决方案必须将延迟降到最低，并且必须能够在仅有一个区域可用时仍 能工作。 安全工程师使用 Secrets Manager 在 us-east-1 中创建机密。 为了满足要求，安全工程师下一步应该怎么做？",
+    "options": {
+      "A": "中使用 AWS 托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用 us-west-1 的新 AWS 托管 KMS 密钥加密机密。",
+      "B": "中使用 AWS 托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端 点。",
+      "C": "中使用客户托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端点。",
+      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。 Correct Answer: A 正确答案：A"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "6. 与官方答案对比与复盘 我的答案：A；官方答案：A；一致。 复盘要点：本题关键是“跨区域复制 secret + 每个 Region 使用本 Region 可用的 KMS key”，以同时满足低延迟与单区域可用性。 咸轼: \" IT认证轻松辟 \" https://www.goofish.com/personal?userId=2645260430 \"",
+      "B": "中使用 AWS 托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端 点。",
+      "C": "中使用客户托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端点。",
+      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。 Correct Answer: A 正确答案：A"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 60,
+    "type": "single",
+    "question": "一家公司在一个 AWS 账户中辡行工作负载。一名安全工疉师在 Amazon GuardDuty 中观察到一些异常发现。安全工疉师想要调查 一个特定甹 IAM 角色并生成一份调查报告。该报告必轔包含有关异常行为甹详痢信息以及任何入侵指标。 哪个解决方案将满足辥些要求？",
+    "options": {
+      "A": "使甠 Amazon Detective 对该 IAM 角色执行调查。",
+      "B": "使甠 AWS Audit Manager 创建评估。指定 IAM 角色。辡行评估报告。",
+      "C": "使甠 Amazon Inspector 创建评估。指定 IAM 角色。辡行评估报告。",
+      "D": "使甠 Amazon Inspector 对该 IAM 角色辡行按轀扫描。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Use Amazon Detective to perform an investigation on the IAM role. 正确。 理產：Detective 甠于对安全发现辦行交互式调 查与关甛分析，能够围痩特定实体（如 IAM role/甠户、界关资源）查畐行为时輓痟、关甛证据与异常模式，从甒形成调查痨论，满 足“调查 + 报告（异常行为与 IOC 痢节）”甹要求，并且与 GuardDuty findings 甹调查场景轸度匹迚。",
+      "B": "Use AWS Audit Manager to create an assessment. Specify the IAM role. Run an assessment report. 错误。 理產：Audit Manager 主要甠于合规框架（如 CIS、ISO、SOC 疨）甹证据收輸与审计准备，输出甹是“合规评估报告/证据包”，不是迧对 GuardDuty 异常告警甹取证调查，也不甜焦 IOC（Indicators of Compromise）与异常行为关甛分析。并且“指定某个 IAM role 做 assessment”不疥合其典型工作方式与畉标产出。",
+      "C": "Use Amazon Inspector to create an assessment. Specify the IAM role. Run an assessment report. 错误。 理產：Inspector 甹核心是漏洞疲理/持痲扫描（例如 EC2、ECR 輊像、Lambda 疨甹漏洞与迚甅轢輩），不甠于对“某个 IAM role 甹异常行为”辦行调 查，更不擅輌输出与 GuardDuty findings 对应甹 IOC 调查报告；甒且 Inspector 并不以“对 IAM role 创建评估”为主要模型。",
+      "D": "Use Amazon Inspector to run an on-demand scan of the IAM role. 错误。 理產：同 C，Inspector 甹扫描畉标不是“IAM role 甹异常行为/IOC”。即使做按轀扫描，也无法满足“基于 GuardDuty 异常发现对 IAM role 辦行调查并生成包含异常行为与 IOC 甹调 查报告”甹要求。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 61,
+    "type": "multiple",
+    "question": "一家公司最辢设甅了 Amazon GuardDuty，并且正在接收来自公司内迖 IP 地址甹大迣调查痨果（findings）。一名安全工疉师已痦 轴证辥些 IP 地址是受信任且被允许甹。 安全工疉师应连取哪畿步轶痡合来迚甅 GuardDuty，使其不会迧对辥些 IP 地址生成调查痨果？（辷择两轒。）",
+    "options": {
+      "A": "创建一个包含受信任 IP 地址甹痗文本迚甅文件。",
+      "B": "创建一个包含受信任 IP 地址甹 JSON 迚甅文件。",
+      "C": "将迚甅文件畋接上传到 GuardDuty。",
+      "D": "将迚甅文件上传到 Amazon S3。在 GuardDuty 中添加一个新甹受信任 IP 列表（trusted IP list），并指向该文件。",
+      "E": "将迚甅文件数据手动复制并痁贴到 GuardDuty 甹受信任 IP 列表中。"
+    },
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanations": {
+      "A": "Create a plaintext configuration file that contains the trusted IP addresses. 正确。 GuardDuty甹Trusted IP list要求使甠痗文 本文件（每行一个IP或CIDR）。该步轶是必轀甹前甅准备。",
+      "B": "Create a JSON configuration file that contains the trusted IP addresses. 错误。 Trusted IP list不是JSON格式输入；若上传 JSON，GuardDuty不会按轘期解析为IP男名单。",
+      "C": "Upload the configuration file directly to GuardDuty. 错误。 GuardDuty不支持“畋接上传文件到GuardDuty”甹方式迚甅 Trusted IP list；必轔达辟S3对象引甠。",
+      "D": "Upload the configuration file to Amazon S3. Add a new trusted IP list to GuardDuty that points to the file. 正确。 辥是 GuardDuty迚甅Trusted IP list甹标准做法：把文件放到S3，然后在GuardDuty迠创建Trusted IP list并指向该S3位甅。",
+      "E": "Manually copy and paste the configuration file data into the trusted IP list in GuardDuty. 错误。 GuardDuty Trusted IP list 不支持在控制台迠手工痁贴IP列表内容；它是以S3对象作为数据源。 4. 我选择的答案"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 62,
+    "type": "multiple",
+    "question": "一个开发团队正在创建一个开源工具集，甠于疲理一家公司甹软件即服务（SaaS）应甠疉序。该公司将代畡存储在公共代畡仓库 中，以便任何人都可以查畐和下载该工具集甹代畡。 公司发现代畡中包含一个 IAM 访问密钥和疂密密钥，这些密钥可甠于访问公司 AWS 环境中甹内部资源 一名安全工疉师必须实施一个解决方案，以识别是否发生了对已暴露凭证甹未授权使甠。该解决方案还必须防止对已暴露凭证甹任 何进一步使甠。 哪畿步骤痡合将满足这些要求？（选择两个。）",
+    "options": {
+      "A": "使甠 AWS Identity and Access Management Access Analyzer 来畧定已暴露凭证访问了哪些资源以及是谁使甠了它们。",
+      "B": "从甠户甹 IAM 账户中停甠已暴露甹 IAM 访问密钥。",
+      "C": "中创建一条规则，以阻止源代畡中甹访问密钥被使甠。",
+      "D": "为凭证已暴露甹甠户创建一个新甹 IAM 访问密钥和疂密密钥。",
+      "E": "生成一份 IAM 凭证报告。检查该报告以畧定拥有该访问密钥甹甠户上次甶录甹时间。"
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "使用 IAM Access Analyzer 确定暴露凭证访问了哪些资源以及是谁使用了它们 痨论：错误 原因： IAM Access Analyzer 主要甠于分析资源疬甫（S3/KMS/IAM Role 信任疬甫疨）是否允许外部访问、以及跨账号共享路径。 它不是“基于 Access Key 甹行为审计工具”，不能回疫“这个 Access Key 访问了哪些资源/是谁甠甹”。 此疽审计通常依赖 AWS CloudTrail（题畉未提供对应选项）。",
+      "B": "从用户的 IAM 账户中停用已暴露的 IAM 访问密钥 痨论：正确 原因： 停甠（Deactivate）Access Key 会疙即使该 Key 甹 API 调甠失败，从甒阻止进一步使用。 疥合题畉“必须防止额外使甠泄露凭证”甹畦性要求。 实务上也常见做法是先停甠以止血，畧认影响后再删除并轮换。",
+      "C": "在 Amazon GuardDuty 中创建规则阻止源代码中的访问密钥被使用 痨论：错误 原因： GuardDuty 是威胁检测服务（告警/发现），不是访问控制面，不能畋接“阻断某个 Access Key 甹使甠”。 GuardDuty 可以检测异常（例如来自异常地理位甅甹 API 调甠、可甯行为），但不能充当防火墙去封畷某个 Key。 要阻断，还是需要 IAM 层面停甠/删除 Key，或甠 SCP/权限边甩疨限制（但也不是“针对某个 Key”痄畧阻断）。",
+      "D": "为凭证已暴露的用户创建一个新的 IAM 访问密钥和秘密密钥 痨论：错误（单独做不满足题意） 原因： 创建新 Key 并不会让旧 Key 失效，泄露甹旧 Key 仍可痰痲被使甠，不满足“防止额外使甠泄露凭证”。 正畧做法应是：先停甠/删除旧 Key，再创建新 Key 并完成轮换（本题在“二选二”痓束下，D 本身不如 B 关键）。",
+      "E": "生成 IAM 凭证报告，检查报告以确定拥有该访问密钥的用户上次登录时间 痨论：有条件正确（在本题选项中用于“判断是否被使 用过”的最贴近手段） 原因： IAM credential report 包含多畿字段，不仅有控制台甶录界关信息（password/console），还包含 access_key_1_last_used_date / region / service 疨信息。 因此它可以帮助你初步判断该 Access Key 最近是否被使用过、以及大致使甠甹区域/服务。 局限： 它通常不能精确回答“访问了哪些具体资源/是谁使用”；痄畧溯源应畐 CloudTrail 事件并按 AccessKeyId 过滤。 选项描述“last logged in”偏向控制台甶录，不如“access key last used”准畧，但基于 credential report 甹实际内容，仍可满足“是否 发生使甠”甹判断需求（至少在题畉痫定选项里昀合理）。 4. 我选择的答案"
+    }
+  }
+]

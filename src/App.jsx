@@ -1683,6 +1683,7 @@ function ExplanationView({ question, userAnswer }) {
 const EXAM_SPECS = {
   'MLA-C01': { name: 'AWS Machine Learning Engineer Associate', count: 65, timeLimit: 170, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序、配對' },
   'CLF-C02': { name: 'AWS Cloud Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
+  'SCS-C03': { name: 'AWS Certified Security - Specialty', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {
