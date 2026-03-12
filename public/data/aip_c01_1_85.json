@@ -71,7 +71,7 @@
     "question": "一家电商公司运营着一个全球产品推荐系统，需要根据法规、成本优化和性能要求，在 Amazon Bedrock 中的多个基础模型 (FM) 之间进行切换。公司必须基于专有业务逻辑应用自定义控制，包括动态成本阔值、特定 AWS 区域的合规规则，以及跨多个 FM 的 实时 A/B 测试。系统必须能够在不部署新代码的情况下在 FM 之间切换。系统必须根据复杂规则对用户请求进行路由，这些规则包 括用户等级、交易价值、监管区域，以及每小时变化并需要在数干个并发请求之间立即传播的实时成本指标。 哪种解决方案将满足这些要求?",
     "options": {
       "A": "部署一个 AWs Lambda 函数，使用环境变量存储路由规则和 Amazon Bedrock FM ID。当业务需求变化时，使用 Lambda 控制 台更新环境变量。配置一个 Amazon API Gateway REST API 来读取请求参数以做出路由决策。",
-      "B": "2B Amazon API Gateway REST API 请求转换模板，以基于请求属性实现路由逻辑。 将 Amazon Bedrock FM 端点存储为 REST API 阶段变量。当系统在模型之间切换时更新这些变量。",
+      "B": "部署 Amazon API Gateway REST API 请求转换模板，以基于请求属性实现路由逻辑。 将 Amazon Bedrock FM 端点存储为 REST API 阶段变量。当系统在模型之间切换时更新这些变量。",
       "C": "配置一个 AWS Lambda 函数，使其针对每个用户请求从 AWS AppConfig Agent 获取路由配置。在 Lambda 函数中运行业务罗 辑，为每个请求选择合适的 FM。通过单个 Amazon API Gateway REST API 端点暴露该 FM.",
       "D": "为Amazon API Gateway REST API 使用 AWS Lambda 授权器来评估存储在 AWS AppConfig 中的路由规则。基于业务逻辑返回 授权上下文。将请求路由到针对每个Amazon Bedrock FM 的模型专用 Lambda 函数。"
     },
@@ -126,7 +126,7 @@
     "options": {
       "A": "通过将向量相似度与关键词匹配相结合来配置混合搜索，以改进语义理解以及对精确术语和缩略词的匹配。",
       "B": "AERA REM 384 增加到 1536。使用后处理的 AWS Lambda 函数在检索后过滤掉不相关的结果。",
-      "C": "FA Amazon Kendra 替换 OpenSearch Service。在预处理期间使用查询扩展来处理医疗缩略词和术语变体。",
+      "C": "用 Amazon Kendra 替换 OpenSearch Service。在预处理期间使用查询扩展来处理医疗缩略词和术语变体。",
       "D": "实现两阶段检索架构，其中初始向量搜索结果由托管在 Amazon SageMaker AI 上的机器学习模型进行重新排序。"
     },
     "answer": "A",
@@ -161,7 +161,7 @@
       "A": "配置 Amazon Bedrock Studio 提示模板。使用Amazon CloudWatch 创建显示提示使用指标的仪表板。将内容的审批状态存储在 Amazon DynamoDB 中。使用 AWS Lambda 函数来强制执行审批。",
       "B": "使用 Amazon Bedrock Prompt Management 实现版本控制。配置 AWS CloudTrail 用于审计日志记录。使用IAM 策略来控制审 批权限。通过指定变量来创建参数化的提示模板。",
       "C": "使用 AWS Step Functions 创建审批工作流。将提示作为文档存储在 Amazon S3 中。使用标签来实现版本控制。使用Amazon EventBridge 发送通知。",
-      "D": "2B Amazon SageMaker Canvas，并使用存储在 Amazon S3 中的提示模板。使用 AWS CloudFormation 实现版本控制。使用 AWS Config 强制执行审批策略。"
+      "D": "部署 Amazon SageMaker Canvas，并使用存储在 Amazon S3 中的提示模板。使用 AWS CloudFormation 实现版本控制。使用 AWS Config 强制执行审批策略。"
     },
     "answer": "B",
     "explanations": {
@@ -382,7 +382,7 @@
     "options": {
       "A": "配置 Amazon Bedrock Guardrails，使用内容过滤器 (content filters) 来防护提示注入攻击。将内容过滤器设置为高。使用 Guardrail 配置文件 (guardrail profile) 来实现跨区域 Guardrail 推理 (cross-Region guardrail inference) 。使用 Amazon CloudWatch Logs 结合自定义指标 (custom metrics) 来捕获详细的 Guardrail 干预事件。",
       "B": "配置 Amazon Bedrock Guardrails，使用内容过滤器 (content filters) 来防护提示注入攻击。将内容过滤器设置为高。使用 AWS WAF 来阻止可疑输入。使用 AWS CloudTrail 记录 API 调用以用于审计。",
-      "C": "2B Amazon Comprehend 自定义分类 (custom classification) 来检测提示注入攻击。使用Amazon API Gateway 来验证请 求。使用Amazon CloudWatch Logs 结合自定义指标来捕获详细的干预事件。",
+      "C": "部署 Amazon Comprehend 自定义分类 (custom classification) 来检测提示注入攻击。使用Amazon API Gateway 来验证请 求。使用Amazon CloudWatch Logs 结合自定义指标来捕获详细的干预事件。",
       "D": "配置 Amazon Bedrock Guardrails，使用自定义内容过滤器 (custom content filters) 来防护有害内容。将内容过滤器设置为 高。使用词语过滤器 (word filters) 来防护已知攻击模式。配置跨区域 Guardrail 复制 (cross-Region guardrail replication) 以 提供故障转移能力。将日志存储在 AWS CloudTrail 中以用于合规审计。"
     },
     "answer": "B",
@@ -451,7 +451,7 @@
     "type": "single",
     "question": "一家金融服务公司通过 Amazon Bedrock 为其生成式 AI (GenAI) 应用使用多个基础模型 (FM) 。为遵守一项关于在敏感金融数据 上使用 GenAI 的新法规，该公司需要一种令牌管理解决方案。 该令牌管理解决方案必须在应用接近模型特定的令牌限制时主动告警。该解决方案还必须每分钟处理超过 5,000 个请求，并维护令 牌使用量指标，以便在业务部门之间分摊成本。 哪个解决方案将满足这些要求?",
     "options": {
-      "A": "4 AWS Lambda 函数中开发模型特定的分词器。将 Lambda 函数配置为在向 Amazon Bedrock 发出 发出API调用之前处理请求. 将 Lambda 函数配置为向Amazon CloudWatch 发布指标，并在请求接近阔值时触发告警。将详细的令牌使用量存储在 Amazon DynamoDB 中以报告成本。",
+      "A": "在 AWS Lambda 函数中开发模型特定的分词器。将 Lambda 函数配置为在向 Amazon Bedrock 发出 发出API调用之前处理请求. 将 Lambda 函数配置为向Amazon CloudWatch 发布指标，并在请求接近阔值时触发告警。将详细的令牌使用量存储在 Amazon DynamoDB 中以报告成本。",
       "B": "实施带有令牌配额策略的 Amazon Bedrock Guardrails。捕获被拒绝请求的指标。配置 Amazon EventBridge 规则以基于 Amazon Bedrock Guardrails 指标触发通知。使用Amazon CloudWatch 控制面板可视化跨模型的令牌使用趋势。",
       "C": "为失败的请求部署一个 Amazon SQS 死信队列。配置一个 AWS Lambda 函数来分析与令牌相关的失败。使用 Amazon CloudWatch Logs Insights 基于来自 Amazon Bedrock API 响应的错误日志生成关于令牌使用模式的报告。",
       "D": "使用Amazon API Gateway 为所有 Amazon Bedrock API 调用创建一个代理。基于带有预定义令牌配额的自定义使用计划配置请 求节流。配置 API Gateway 拒绝将会超过令牌限制的请求。"
@@ -593,9 +593,9 @@
     "type": "single",
     "question": "一家公司正在开发一个生成式 AI (GenAI) 应用程序，用于实时分析客户服务通话，并为人工客服代表生成建议回复。该应用程序 必须在高峰时段处理 500,000 路并发通话，并且每条建议的端到端延迟低于 200 毫秒。该公司使用现有架构来转录客户通话的音频 流。该应用程序不得超过预先定义的每月计算预算，并且必须保持自动扩缩容能力。 哪种解决方案将满足这些要求?",
     "options": {
-      "A": "4 Amazon Bedrock 上部署一个大型、复杂的推理模型。购买预置吞吐量并针对批处理进行优化。",
+      "A": "在 Amazon Bedrock 上部署一个大型、复杂的推理模型。购买预置吞吐量并针对批处理进行优化。",
       "B": "在Amazon Bedrock 上部署一个低延迟、针对实时优化的模型。购买预置吞吐量并设置自动扩缩容策略。",
-      "C": "4 Amazon SageMaker AI 的实时端点上部署一个大型语言模型 (LLM) ，该端点使用专用 GPU 实例。",
+      "C": "在 Amazon SageMaker AI 的实时端点上部署一个大型语言模型 (LLM) ，该端点使用专用 GPU 实例。",
       "D": "在 Amazon SageMaker AI 的无服务器端点上部署一个中等规模的语言模型，并针对批处理进行优化。"
     },
     "answer": "B",
@@ -837,7 +837,7 @@
     "options": {
       "A": "通过使用专门针对紧急新闻内容训练的领域自适应模型来增强戏入，以提升向量相似度。",
       "B": "迁移到 Amazon OpenSearch service。使用向量字段和元数据过滤器来定义结果检索的范围。",
-      "C": "4 Amazon Bedrock 知识库中启用元数据感知过滤，通过索引 S3 对象元数据。",
+      "C": "在 Amazon Bedrock 知识库中启用元数据感知过滤，通过索引 S3 对象元数据。",
       "D": "迁移到 Amazon Q Business 索引，以在检索期间执行结构化元数据过滤和文档分类。"
     },
     "answer": "C",
@@ -975,7 +975,7 @@
     "type": "single",
     "question": "一家公司正在创建一个工作流，以便在公司发送面向客户的沟通内容之前对其进行审核。该公司使用预定义的消息模板生成沟通内 容，并将沟通内容存储在 Amazon S3 存储桶中。该工作流需要从模板中捕获一个特定部分并将其发送到 Amazon Bedrock 模型。 该工作流必须将模型响应存回原始 S3 存储桶。 哪个解决方案将满足这些要求?",
     "options": {
-      "A": "4 Amazon Bedrock Flows 中创建一个流。在流的开头和结尾配置 S3 操作节点，以检索并存储沟通内容和模型响应。在流的中 间，配置一个表达式来解析每条沟通内容。配置一个代理步骤，将解析后的输入发送到模型进行审核。",
+      "A": "在 Amazon Bedrock Flows 中创建一个流。在流的开头和结尾配置 S3 操作节点，以检索并存储沟通内容和模型响应。在流的中 间，配置一个表达式来解析每条沟通内容。配置一个代理步骤，将解析后的输入发送到模型进行审核。",
       "B": "创建一个 AWS Step Functions Express 工作流状态机。使用Amazon S3 集成的 GetObject 步骤来检索原始沟通内容。使用内置 函数的 Pass 步骤来解析沟通内容，并将结果传递给 Amazon Bedrock InvokeModel 步又。配置一个 Amazon S3 集成的 PutObject 步骤，将模型响应存回 S3 存储桶。",
       "C": "创建一个带有操作组的 Amazon Bedrock 代理。配置指令以定义代理应如何解析沟通内容。配置该操作组以从 S3 存储桶检索沟 BAZ. VFR Amazon Bedrock 模型，并将模型响应存回 S3 存储桶。",
       "D": "创建一个带有单个操作组的 Amazon Bedrock 代理。在该操作组中配置三个 AWS Lambda 函数。配置这些函数以从 S3 存储桶 检索沟通内容、解析沟通内容并调用 Amazon Bedrock 模型，以及将模型响应存回 S3 存储桶。"
@@ -1105,7 +1105,7 @@
     "type": "single",
     "question": "一家金融服务公司正在开发一款客户服务 AI 助手应用程序，该应用程序在 Amazon Bedrock 中使用基础模型 (FM) 。该应用程序 必须通过记录推理过程并引用用于检索增强生成 (RAG) 的来源来提供透明的响应。该应用程序必须为所有对用户的响应捕获全面 的审计追踪记录。该应用程序必须能够为多达 10,000 名并发用户提供服务，并且必须在 2 秒内响应每个客户咨询。 哪种解决方案能够以最少的运维开销满足这些要求?",
     "options": {
-      "A": "73 Amazon Bedrock 智能体启用追踪。配置结构化提示词，以指示 FM 提供证据展示。将 Amazon Bedrock 知识库与数据源集 成以启用 RAG。配置应用程序以引用并标注权威内容。将应用程序部署为多可用区 (Multi-AZ) 架构。使用Amazon API Gateway 和 AWS Lambda 函数来扩展应用程序。使用Amazon CloudFront 提供低延迟交付。",
+      "A": "为 Amazon Bedrock 智能体启用追踪。配置结构化提示词，以指示 FM 提供证据展示。将 Amazon Bedrock 知识库与数据源集 成以启用 RAG。配置应用程序以引用并标注权威内容。将应用程序部署为多可用区 (Multi-AZ) 架构。使用Amazon API Gateway 和 AWS Lambda 函数来扩展应用程序。使用Amazon CloudFront 提供低延迟交付。",
       "B": "为Amazon Bedrock 智能体启用追踪。将自定义 RAG 流水线与 Amazon OpenSearch Service 集成以检索并引用来源。配置结构 化提示词以呈现检索到的证据。将应用程序部署在Amazon API Gateway REST API 后面。使用 AWS Lambda 函数和 Amazon CloudFront 来扩展应用程序并提供低延迟。将日志存储在 Amazon S3 中并使用 AWS CloudTrail 捕获审计追踪记录。",
       "C": "使用Amazon CloudWatch 监控延迟和错误率。将模型提示词直接嵌入应用程序后端以引用来源。将应用程序与用户的交互存储 在 Amazon RDS 中用于审计。",
       "D": "将生成的响应和支撑证据存储在 Amazon S3 存储桶中。为该存储桶启用版本控制以用于审计。使用 AWS Glue 对检索到的文档 进行编目。使用 Amazon Athena 处理检索到的文档以生成定期合规报告。"
