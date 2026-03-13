@@ -1124,14 +1124,16 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
               (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
             ) && (
-              <button
-                onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
-                disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
-                className={`mt-5 px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
-              >
-                <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
-                提交答案
-              </button>
+              <div className="flex justify-end mt-5">
+                <button
+                  onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
+                  disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
+                  className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
+                >
+                  <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
+                  提交答案
+                </button>
+              </div>
             )}
 
             {/* Result */}
