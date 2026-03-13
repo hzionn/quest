@@ -202,11 +202,8 @@ function reducer(state, action) {
       if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
       // Exclude already practiced (submitted) questions
       filtered = filtered.filter(q => !state.practiceSubmitted[`${q.exam}-${q.id}`])
-      // Fisher-Yates shuffle for random order
-      for (let i = filtered.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [filtered[i], filtered[j]] = [filtered[j], filtered[i]]
-      }
+      // Sort by ID for sequential order
+      filtered.sort((a, b) => a.id - b.id)
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
@@ -1150,33 +1147,42 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
         <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-1.5">
           <ListChecks size={14} />
-          題目導覽
+          題目導覽 ({practiceIndex + 1} / {practiceFiltered.length})
         </h4>
-        <div className="flex flex-wrap gap-1.5">
-          {practiceFiltered.map((q, i) => {
-            const k = `${q.exam}-${q.id}`
-            const submitted = practiceSubmitted[k]
-            const correct = practiceResults[k]
-            const isBookmarked = bookmarked[k]
-            const isReview = reviewMarked[k]
-            const isCurrent = i === practiceIndex
-            let bgClass = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
-            if (submitted) {
-              bgClass = correct
-                ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400'
-                : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400'
-            }
-            return (
-              <button
-                key={k}
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: i })}
-                className={`relative w-9 h-9 rounded-lg text-xs font-bold transition-all duration-200 ${bgClass} ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-gray-800 scale-110' : ''} ${isBookmarked ? 'border-2 border-yellow-400' : ''}`}
-              >
-                {q.id}
-                {isReview && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white dark:ring-gray-800" />}
-              </button>
-            )
-          })}
+        {/* Sequential navigation + random */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              const unvisited = []
+              practiceFiltered.forEach((q, i) => {
+                const k = `${q.exam}-${q.id}`
+                if (!practiceSubmitted[k] && i !== practiceIndex) unvisited.push(i)
+              })
+              if (unvisited.length > 0) {
+                const randomIdx = unvisited[Math.floor(Math.random() * unvisited.length)]
+                dispatch({ type: 'SET_PRACTICE_INDEX', index: randomIdx })
+              }
+            }}
+            disabled={practiceFiltered.every((q, i) => practiceSubmitted[`${q.exam}-${q.id}`] || i === practiceIndex)}
+            className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 transition-all duration-200"
+          >
+            <Shuffle size={14} /> 隨機練習
+          </button>
+          <div className="flex-1" />
+          <button
+            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+            disabled={practiceIndex <= 0}
+            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+          >
+            <ChevronLeft size={14} /> 上一題
+          </button>
+          <button
+            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+            disabled={practiceIndex >= practiceFiltered.length - 1}
+            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+          >
+            下一題 <ChevronRight size={14} />
+          </button>
         </div>
       </div>
     </div>
