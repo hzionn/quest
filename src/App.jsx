@@ -1687,66 +1687,90 @@ function ExplanationView({ question, userAnswer }) {
   if (!q.explanations) return null
 
   const correctKeys = Array.isArray(q.answer) ? q.answer : [q.answer]
-  const optionKeys = q.options ? Object.keys(q.options) : Object.keys(q.explanations)
-  const [expanded, setExpanded] = useState(() => {
-    const init = {}
-    optionKeys.forEach(k => { init[k] = correctKeys.includes(k) && !!q.explanations[k] })
-    return init
-  })
-  const toggle = (k) => setExpanded(prev => ({ ...prev, [k]: !prev[k] }))
+  const allOptionKeys = q.options ? Object.keys(q.options) : Object.keys(q.explanations)
+  // Default to first correct answer that has explanation, or first key with explanation
+  const defaultKey = correctKeys.find(k => q.explanations[k]) || allOptionKeys.find(k => q.explanations[k]) || allOptionKeys[0]
+  const [selectedKey, setSelectedKey] = useState(defaultKey)
 
-  const explanations = q.explanations
-  // Build all option keys from q.options, merging with explanation keys
-  const allOptionKeys = q.options ? Object.keys(q.options) : Object.keys(explanations)
-  const hasAllExplanations = allOptionKeys.every(k => explanations[k])
+  const selectedText = q.explanations[selectedKey]
 
   if (q.type === 'single' || q.type === 'multiple') {
     return (
-      <div className="space-y-1.5 mt-2">
+      <div className="space-y-2 mt-2">
         <h5 className="text-sm font-medium">解析：</h5>
-        {allOptionKeys.map((key) => {
-          const text = explanations[key]
-          const isCorrect = correctKeys.includes(key)
-          const isOpen = expanded[key]
-          return (
-            <div key={key} className={`rounded-lg border ${isCorrect ? 'border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/20' : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50'}`}>
-              <button onClick={() => text && toggle(key)} className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left ${!text ? 'cursor-default' : ''}`}>
-                <span className="flex items-center gap-1.5">
-                  <span className={`font-semibold ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>{key}.</span>
-                  {isCorrect && <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 font-medium">正確</span>}
-                  {!isCorrect && !text && <span className="text-xs text-gray-400 dark:text-gray-500">✗</span>}
-                </span>
-                {text && (isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />)}
-              </button>
-              {isOpen && text && <CollapsibleText text={text} maxHeight={hasAllExplanations ? 200 : 150} />}
-            </div>
-          )
-        })}
+        <div className="relative">
+          <select
+            value={selectedKey}
+            onChange={e => setSelectedKey(e.target.value)}
+            className="w-full px-3 py-2 pr-8 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            {allOptionKeys.map(key => {
+              const isCorrect = correctKeys.includes(key)
+              const hasExp = !!q.explanations[key]
+              return (
+                <option key={key} value={key} disabled={!hasExp}>
+                  {key}. {isCorrect ? '✓ 正確' : '✗ 錯誤'}{!hasExp ? ' (無解析)' : ''}
+                </option>
+              )
+            })}
+          </select>
+          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        </div>
+        {selectedText ? (
+          <div className={`rounded-lg border px-3 py-3 text-sm whitespace-pre-wrap leading-relaxed ${
+            correctKeys.includes(selectedKey)
+              ? 'border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/20 text-gray-700 dark:text-gray-300'
+              : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
+          }`}>
+            {selectedText}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 px-3 py-3 text-sm text-gray-400 dark:text-gray-500">
+            此選項無詳細解析
+          </div>
+        )}
       </div>
     )
   }
 
   if (q.type === 'matching' || q.type === 'ordering') {
-    return (
-      <div className="space-y-1.5 mt-2">
-        <h5 className="text-sm font-medium">解析：</h5>
-        {entries.map(([key, text]) => {
-          const isOpen = expanded[key] ?? true
-          return (
-            <div key={key} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-              <button onClick={() => toggle(key)} className="w-full flex items-center justify-between px-3 py-2 text-sm text-left">
-                <strong>{key === '_full' ? '總覽' : q.type === 'matching' ? `配對 ${key}` : key}</strong>
-                {isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
-              </button>
-              {isOpen && <CollapsibleText text={text} />}
-            </div>
-          )
-        })}
-      </div>
-    )
+    const entries = Object.entries(q.explanations)
+    const matchKeys = entries.map(([k]) => k)
+    const defaultMatchKey = matchKeys[0]
+    return <MatchingExplanationDropdown entries={entries} defaultKey={defaultMatchKey} qType={q.type} />
   }
 
   return null
+}
+
+function MatchingExplanationDropdown({ entries, defaultKey, qType }) {
+  const [selectedKey, setSelectedKey] = useState(defaultKey)
+  const selectedText = entries.find(([k]) => k === selectedKey)?.[1]
+
+  return (
+    <div className="space-y-2 mt-2">
+      <h5 className="text-sm font-medium">解析：</h5>
+      <div className="relative">
+        <select
+          value={selectedKey}
+          onChange={e => setSelectedKey(e.target.value)}
+          className="w-full px-3 py-2 pr-8 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          {entries.map(([key]) => (
+            <option key={key} value={key}>
+              {key === '_full' ? '總覽' : qType === 'matching' ? `配對 ${key}` : key}
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+      </div>
+      {selectedText && (
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 px-3 py-3 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+          {selectedText}
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ══════════════════════════════════════════
