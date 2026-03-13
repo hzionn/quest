@@ -1644,41 +1644,81 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
 // ══════════════════════════════════════════
 // Explanation View
 // ══════════════════════════════════════════
+function CollapsibleText({ text, maxHeight = 120 }) {
+  const contentRef = useRef(null)
+  const [needsTruncate, setNeedsTruncate] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setNeedsTruncate(contentRef.current.scrollHeight > maxHeight + 20)
+    }
+  }, [text, maxHeight])
+
+  return (
+    <div className="relative">
+      <div
+        ref={contentRef}
+        className="px-3 pb-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed overflow-hidden transition-all duration-200"
+        style={{ maxHeight: isExpanded ? 'none' : `${maxHeight}px` }}
+      >
+        {text}
+      </div>
+      {needsTruncate && !isExpanded && (
+        <div className="px-3 pt-1 pb-1 bg-gradient-to-t from-white dark:from-gray-900 to-transparent" style={{ marginTop: '-24px', paddingTop: '24px', position: 'relative' }}>
+          <button onClick={() => setIsExpanded(true)} className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 font-medium">
+            展開更多 ▼
+          </button>
+        </div>
+      )}
+      {needsTruncate && isExpanded && (
+        <div className="px-3 pb-1">
+          <button onClick={() => setIsExpanded(false)} className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 font-medium">
+            收起 ▲
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ExplanationView({ question, userAnswer }) {
   const q = question
   if (!q.explanations) return null
 
   const correctKeys = Array.isArray(q.answer) ? q.answer : [q.answer]
+  const optionKeys = q.options ? Object.keys(q.options) : Object.keys(q.explanations)
   const [expanded, setExpanded] = useState(() => {
     const init = {}
-    Object.keys(q.explanations).forEach(k => { init[k] = correctKeys.includes(k) })
+    optionKeys.forEach(k => { init[k] = correctKeys.includes(k) && !!q.explanations[k] })
     return init
   })
   const toggle = (k) => setExpanded(prev => ({ ...prev, [k]: !prev[k] }))
 
-  const entries = Object.entries(q.explanations)
+  const explanations = q.explanations
+  // Build all option keys from q.options, merging with explanation keys
+  const allOptionKeys = q.options ? Object.keys(q.options) : Object.keys(explanations)
+  const hasAllExplanations = allOptionKeys.every(k => explanations[k])
 
   if (q.type === 'single' || q.type === 'multiple') {
     return (
       <div className="space-y-1.5 mt-2">
         <h5 className="text-sm font-medium">解析：</h5>
-        {entries.map(([key, text]) => {
+        {allOptionKeys.map((key) => {
+          const text = explanations[key]
           const isCorrect = correctKeys.includes(key)
           const isOpen = expanded[key]
           return (
             <div key={key} className={`rounded-lg border ${isCorrect ? 'border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/20' : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50'}`}>
-              <button onClick={() => toggle(key)} className="w-full flex items-center justify-between px-3 py-2 text-sm text-left">
+              <button onClick={() => text && toggle(key)} className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left ${!text ? 'cursor-default' : ''}`}>
                 <span className="flex items-center gap-1.5">
                   <span className={`font-semibold ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>{key}.</span>
                   {isCorrect && <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 font-medium">正確</span>}
+                  {!isCorrect && !text && <span className="text-xs text-gray-400 dark:text-gray-500">✗</span>}
                 </span>
-                {isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                {text && (isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />)}
               </button>
-              {isOpen && (
-                <div className="px-3 pb-2.5 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-                  {text}
-                </div>
-              )}
+              {isOpen && text && <CollapsibleText text={text} maxHeight={hasAllExplanations ? 200 : 150} />}
             </div>
           )
         })}
@@ -1698,11 +1738,7 @@ function ExplanationView({ question, userAnswer }) {
                 <strong>{key === '_full' ? '總覽' : q.type === 'matching' ? `配對 ${key}` : key}</strong>
                 {isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
               </button>
-              {isOpen && (
-                <div className="px-3 pb-2.5 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-                  {text}
-                </div>
-              )}
+              {isOpen && <CollapsibleText text={text} />}
             </div>
           )
         })}
