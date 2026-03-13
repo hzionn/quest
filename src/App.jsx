@@ -199,7 +199,16 @@ function reducer(state, action) {
       let filtered = [...state.questions]
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
       if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
-      if (state.filterSearch) filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
+      if (state.filterSearch) {
+        const rangeMatch = state.filterSearch.trim().match(/^(\d+)\s*[-~～]\s*(\d+)$/)
+        if (rangeMatch) {
+          const from = parseInt(rangeMatch[1], 10)
+          const to = parseInt(rangeMatch[2], 10)
+          filtered = filtered.filter(q => q.id >= from && q.id <= to)
+        } else {
+          filtered = filtered.filter(q => String(q.id).includes(state.filterSearch))
+        }
+      }
       // Exclude already practiced (submitted) questions
       filtered = filtered.filter(q => !state.practiceSubmitted[`${q.exam}-${q.id}`])
       // Sort by ID for sequential order
@@ -1145,12 +1154,11 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Navigation bar */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
-        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-1.5">
-          <ListChecks size={14} />
-          題目導覽 ({practiceIndex + 1} / {practiceFiltered.length})
-        </h4>
-        {/* Sequential navigation + random */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+            <ListChecks size={14} />
+            題目導覽
+          </h4>
           <button
             onClick={() => {
               const unvisited = []
@@ -1164,25 +1172,36 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               }
             }}
             disabled={practiceFiltered.every((q, i) => practiceSubmitted[`${q.exam}-${q.id}`] || i === practiceIndex)}
-            className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 transition-all duration-200"
+            className="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-all duration-200"
           >
-            <Shuffle size={14} /> 隨機練習
+            <Shuffle size={12} /> 隨機練習
           </button>
-          <div className="flex-1" />
-          <button
-            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
-            disabled={practiceIndex <= 0}
-            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-          >
-            <ChevronLeft size={14} /> 上一題
-          </button>
-          <button
-            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
-            disabled={practiceIndex >= practiceFiltered.length - 1}
-            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-          >
-            下一題 <ChevronRight size={14} />
-          </button>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {practiceFiltered.map((q, i) => {
+            const k = `${q.exam}-${q.id}`
+            const submitted = practiceSubmitted[k]
+            const correct = practiceResults[k]
+            const isBookmarked = bookmarked[k]
+            const isReview = reviewMarked[k]
+            const isCurrent = i === practiceIndex
+            let bgClass = 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+            if (submitted) {
+              bgClass = correct
+                ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400'
+                : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400'
+            }
+            return (
+              <button
+                key={k}
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: i })}
+                className={`relative w-9 h-9 rounded-lg text-xs font-bold transition-all duration-200 ${bgClass} ${isCurrent ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-gray-800 scale-110' : ''} ${isBookmarked ? 'border-2 border-yellow-400' : ''}`}
+              >
+                {q.id}
+                {isReview && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white dark:ring-gray-800" />}
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -1225,13 +1244,13 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
         </div>
         <div className="flex-1 min-w-[120px]">
           <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
-            <Search size={12} />題號
+            <Search size={12} />練習區間
           </label>
           <input
             type="text"
             value={state.filterSearch}
             onChange={e => dispatch({ type: 'SET_FILTER', key: 'filterSearch', value: e.target.value })}
-            placeholder="搜尋題號..."
+            placeholder="例: 1-10"
             className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           />
         </div>
