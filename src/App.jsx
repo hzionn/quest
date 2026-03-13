@@ -111,6 +111,7 @@ const initialState = {
   practiceResults: {},
   bookmarked: {},
   reviewMarked: {},
+  showAnswers: false,
 
   // Filters
   filterExam: '',
@@ -150,6 +151,9 @@ function reducer(state, action) {
 
     case 'SET_LANG':
       return { ...state, lang: action.lang }
+
+    case 'TOGGLE_SHOW_ANSWERS':
+      return { ...state, showAnswers: !state.showAnswers }
 
     case 'LOAD_EN_QUESTIONS': {
       const enMap = { ...state.questionsEn }
@@ -1007,8 +1011,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const currentQ = getDisplayQuestion(currentQRaw, state.lang, state.questionsEn)
   const qKey = currentQRaw ? `${currentQRaw.exam}-${currentQRaw.id}` : null
   const hasEnVersion = currentQRaw && Object.keys(state.questionsEn).length > 0 && !!state.questionsEn[`${currentQRaw.exam}-${currentQRaw.id}`]
-  const isSubmitted = qKey ? practiceSubmitted[qKey] : false
-  const isCorrect = qKey ? practiceResults[qKey] : undefined
+  const isSubmitted = qKey ? (practiceSubmitted[qKey] || state.showAnswers) : false
+  const isCorrect = qKey ? (practiceSubmitted[qKey] ? practiceResults[qKey] : undefined) : undefined
 
   if (state.questions.length === 0) {
     return <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
@@ -1050,6 +1054,18 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 {state.lang === 'en' ? 'EN' : '中文'}
               </button>
             )}
+            <button
+              onClick={() => dispatch({ type: 'TOGGLE_SHOW_ANSWERS' })}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
+                state.showAnswers
+                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+              title="顯示/隱藏答案"
+            >
+              {state.showAnswers ? <Eye size={12} /> : <EyeOff size={12} />}
+              {state.showAnswers ? '顯示答案' : '隱藏答案'}
+            </button>
           </div>
           <span className="text-xs font-bold text-orange-500">{answeredCount} / {practiceFiltered.length} ({progressPct}%)</span>
         </div>
@@ -1119,13 +1135,25 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             )}
 
             {/* Result */}
-            {isSubmitted && (
+            {practiceSubmitted[qKey] && (
               <div className={`mt-5 p-5 rounded-xl animate-scale-in ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
                 <div className="flex items-center gap-2 mb-3">
                   {isCorrect
                     ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
                     : <><XCircle size={22} className="text-red-600 dark:text-red-400" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
                   }
+                </div>
+                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
+              </div>
+            )}
+            {/* Show answer mode (not submitted yet) */}
+            {state.showAnswers && !practiceSubmitted[qKey] && (
+              <div className="mt-5 p-5 rounded-xl animate-scale-in bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Eye size={18} className="text-purple-600 dark:text-purple-400" />
+                  <span className="font-bold text-purple-700 dark:text-purple-400 text-sm">
+                    正確答案：{Array.isArray(currentQ.answer) ? currentQ.answer.join(', ') : currentQ.answer}
+                  </span>
                 </div>
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
               </div>
