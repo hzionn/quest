@@ -1,7 +1,7 @@
 import { useState, useReducer, useEffect, useMemo, useRef } from 'react'
 import {
   Upload, FileJson, CheckCircle, XCircle, Sun, Moon, Star, Flag,
-  ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Play, Square,
+  ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Play, Square,
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
@@ -1648,28 +1648,64 @@ function ExplanationView({ question, userAnswer }) {
   const q = question
   if (!q.explanations) return null
 
+  const correctKeys = Array.isArray(q.answer) ? q.answer : [q.answer]
+  const [expanded, setExpanded] = useState(() => {
+    const init = {}
+    Object.keys(q.explanations).forEach(k => { init[k] = correctKeys.includes(k) })
+    return init
+  })
+  const toggle = (k) => setExpanded(prev => ({ ...prev, [k]: !prev[k] }))
+
+  const entries = Object.entries(q.explanations)
+
   if (q.type === 'single' || q.type === 'multiple') {
     return (
-      <div className="space-y-2 mt-2">
+      <div className="space-y-1.5 mt-2">
         <h5 className="text-sm font-medium">解析：</h5>
-        {Object.entries(q.explanations).map(([key, text]) => (
-          <div key={key} className="text-sm pl-2 border-l-2 border-gray-300 dark:border-gray-600 ml-1">
-            <strong>{key}.</strong> {text}
-          </div>
-        ))}
+        {entries.map(([key, text]) => {
+          const isCorrect = correctKeys.includes(key)
+          const isOpen = expanded[key]
+          return (
+            <div key={key} className={`rounded-lg border ${isCorrect ? 'border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/20' : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50'}`}>
+              <button onClick={() => toggle(key)} className="w-full flex items-center justify-between px-3 py-2 text-sm text-left">
+                <span className="flex items-center gap-1.5">
+                  <span className={`font-semibold ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>{key}.</span>
+                  {isCorrect && <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 font-medium">正確</span>}
+                </span>
+                {isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+              </button>
+              {isOpen && (
+                <div className="px-3 pb-2.5 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  {text}
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     )
   }
 
   if (q.type === 'matching' || q.type === 'ordering') {
     return (
-      <div className="space-y-2 mt-2">
+      <div className="space-y-1.5 mt-2">
         <h5 className="text-sm font-medium">解析：</h5>
-        {Object.entries(q.explanations).map(([key, text]) => (
-          <div key={key} className="text-sm pl-2 border-l-2 border-gray-300 dark:border-gray-600 ml-1 whitespace-pre-wrap">
-            {key === '_full' ? text : <><strong>{q.type === 'matching' ? `配對 ${key}` : key}：</strong> {text}</>}
-          </div>
-        ))}
+        {entries.map(([key, text]) => {
+          const isOpen = expanded[key] ?? true
+          return (
+            <div key={key} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+              <button onClick={() => toggle(key)} className="w-full flex items-center justify-between px-3 py-2 text-sm text-left">
+                <strong>{key === '_full' ? '總覽' : q.type === 'matching' ? `配對 ${key}` : key}</strong>
+                {isOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+              </button>
+              {isOpen && (
+                <div className="px-3 pb-2.5 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  {text}
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     )
   }
