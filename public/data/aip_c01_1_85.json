@@ -1165,11 +1165,12 @@
     "exam": "AIP-C01",
     "id": 60,
     "type": "single",
-    "question": "一家公司的生成式 AI (GenAI) 应用程序使用Amazon Bedrock API 来处理复杂的客户咨询。在使用高峰期，该应用程序会出现间 SRHEAY API 超时，从而导致响应分块中断和数据交付延迟等问题。该应用程序在处理长度各异的复杂客户咨询时，难以确保提示始 终保持在令牌限制内。用户已报告输入被截断以及响应不完整。公司还观察到基础模型 (FM) 调用失败。 公司需要一种重试策略，能够自动处理瞬时服务错误，并在使用高峰期防止 Amazon Bedrock 被过载。该策略还必须能够适应不断 变化的服务可用性，并支持响应流式传输以及具备令牌感知的请求处理。 哪种解决方案将满足这些要求? 实现一种标准重试策略，对所有错误在每次尝试之间使用 1 秒固定延迟，并且最多重试 3 次。通过重启流来处理流式响应超 时。为每个会话限制令牌使用量。",
+    "question": "一家公司的生成式 AI (GenAI) 应用程序使用Amazon Bedrock API 来处理复杂的客户咨询。在使用高峰期，该应用程序会出现间歇性 API 超时，从而导致响应分块中断和数据交付延迟等问题。该应用程序在处理长度各异的复杂客户咨询时，难以确保提示始终保持在令牌限制内。用户已报告输入被截断以及响应不完整。公司还观察到基础模型 (FM) 调用失败。\n公司需要一种重试策略，能够自动处理瞬时服务错误，并在使用高峰期防止 Amazon Bedrock 被过载。该策略还必须能够适应不断变化的服务可用性，并支持响应流式传输以及具备令牌感知的请求处理。\n哪种解决方案将满足这些要求?",
     "options": {
-      "B": "SOLARA, AREA) (jitter) 的指数退避，并采用断路器 (circuit breaker) 模式: Sige BE 时，暂时禁用重试。实现一个流式响应处理程序，用于监控分块交付超时。将处理程序配置为缓冲已成功接收的分块，并在连 接重新建立时从上一次接收的分块起智能地恢复流式传输。",
+      "B": "实现一种自适应重试策略，使用带抖动 (jitter) 的指数退避，并采用断路器 (circuit breaker) 模式，在错误率超过预定义阈值时暂时禁用重试。实现一个流式响应处理程序，用于监控分块交付超时。将处理程序配置为缓冲已成功接收的分块，并在连接重新建立时从上一次接收的分块起智能地恢复流式传输。",
       "C": "使用 AWS SDK 在标准模式下配置重试策略。将 Amazon Bedrock API 调用封装在 try-catch 块中以处理超时异常。对失败的流式 请求返回缓存的补全结果。对所有用户强制实施全局令牌限制。为每个请求添加基于持动的重试逻辑和轻量级令牌裁剪。从失 败点开始，仅请求缺失的分块以恢复中断的流。维护一个包含最近分块的小型内存缓冲区，以最大限度减少元余数据传输。",
-      "D": "Set Amazon Bedrock client request timeouts to 30 seconds. Implement client-side load shedding. Buffer partial results and\nstop new requests when the application performance begins to degrade. Set static token usage caps for all requests. Configure"
+      "D": "Set Amazon Bedrock client request timeouts to 30 seconds. Implement client-side load shedding. Buffer partial results and\nstop new requests when the application performance begins to degrade. Set static token usage caps for all requests. Configure",
+      "A": "实现一种标准重试策略，对所有错误在每次尝试之间使用 1 秒固定延迟，并且最多重试 3 次。通过重启流来处理流式响应超时。为每个会话限制令牌使用量。"
     },
     "answer": "B",
     "explanations": {
