@@ -12,10 +12,10 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Send the survey results data to an Amazon API Gateway endpoint that is connected to an Amazon Simple Queue",
-      "B": "Send the survey results data to an API that is running on an Amazon EC2 instance. Configure the API to store the survey",
-      "C": "Write the survey results data to an Amazon S3 bucket. Use S3 Event Notifications to invoke an AWS Lambda function to",
-      "D": "Send the survey results data to an Amazon API Gateway endpoint that is connected to an Amazon Simple Queue"
+      "A": "Send the survey results data to an Amazon API Gateway endpoint that is connected to an Amazon Simple Queue Service (Amazon SQS) queue. Create an AWS Lambda function to poll the SQS queue, call Amazon Comprehend for sentiment analysis, and save the results to an Amazon DynamoDB table. Set the TTL for all records to 365 days in the future. 正确：使用Amazon API Gateway和Amazon SQS可以实现高效的消嬟队列处理，支持高并发。 正确：AWS Lambda可以从SQS队列中轮询消嬟并触发Amazon Comprehend进行嬦痱分析。 正确：Amazon DynamoDB支持TTL功能，可以自动删除超过365天的记录。 正确：此方案是无服务器架构，具有高扩展性和低维护成本。",
+      "B": "Send the survey results data to an API that is running on an Amazon EC2 instance. Configure the API to store the survey results as a new record in an Amazon DynamoDB table, call Amazon Comprehend for sentiment analysis, and save the results in a second DynamoDB table. Set the TTL for all records to 365 days in the future. 错误：使用Amazon EC2实例运行API需要孅动管理服务器，增加了运维复杂性。 错误：虽然可以实现功能，但EC2实例的扩展性不如无服务器架构（如Lambda）。 正确：Amazon DynamoDB支持TTL功能，但此方案整体不够高效和可扩展。",
+      "C": "Write the survey results data to an Amazon S3 bucket. Use S3 Event Notifications to invoke an AWS Lambda function to read the data and call Amazon Rekognition for sentiment analysis. Store the sentiment analysis results in a second S3 bucket. Use S3 lifecycle policies on each bucket to expire objects after 365 days. 错误：Amazon Rekognition是用于图像和视频分析的服务，不适合嬦痱分析。 正确：S3 Event Notifications可以触发Lambda函数，但嬦痱分析的服务选择错误。 错误：使用S3生命周期策略管理数据过期不如DynamoDB的TTL功能直接。",
+      "D": "Send the survey results data to an Amazon API Gateway endpoint that is connected to an Amazon Simple Queue Service (Amazon SQS) queue. Configure the SQS queue to invoke an AWS Lambda function that calls Amazon Lex for sentiment analysis and saves the results to an Amazon DynamoDB table. Set the TTL for all records to 365 days in the future. 错误：Amazon Lex是用于构建对话式接口的服务，不适合嬦痱分析。 正确：使用API Gateway和SQS队列可以实现高效的消嬟处理。 错误：嬦痱分析服务选择错误，应该使用Amazon Comprehend。"
     }
   },
   {
@@ -34,11 +34,11 @@
       "C"
     ],
     "explanations": {
-      "A": "Change the target type of the target group from IP address type to instance type.",
-      "B": "Continue to use the existing Systems Manager document without changes because it is already optimized to handle",
-      "C": "Implement the AWSEC2-PatchLoadBalanacerlnstance Systems Manager Automation document to manage the patching",
-      "D": "Use Systems Manager Maintenance Windows to automatically remove the instances from service to patch the",
-      "E": "Configure Systems Manager State Manager to remove the instances from service and manage the patching schedule."
+      "A": "Change the target type of the target group from IP address type to instance type. 错误：更改目标组类型可能会影响现有的架构和配置。题目并未提到需要更改目标组类型，目问题的核心是如何在修补期间正确管 理流量，而不是目标组类型。",
+      "B": "Continue to use the existing Systems Manager document without changes because it is already optimized to handle instances that are in an IP address type target group behind an ALB. 错误：题目明确指出当前的修补流程会导致错误，因此继续使用现有文档无法解决问题。",
+      "C": "Implement the AWSEC2-PatchLoadBalanacerInstance Systems Manager Automation document to manage the patching process. 正确：AWSEC2-PatchLoadBalancerInstance是专门设计用于管理负载均衡器后端实例修补的Automation文档，可以确保实例在修补 期间被正确移除并重新加入服务。",
+      "D": "Use Systems Manager Maintenance Windows to automatically remove the instances from service to patch the instances. 正确：Maintenance Windows允许您定义修补的时间窗口，并可以自动将实例从服务中移除以进行修补，符合题目要求。",
+      "E": "Configure Systems Manager State Manager to remove the instances from service and manage the patching schedule. Use ALB health checks to re-route traffic. 错误：虽然State Manager可以管理配置和修补，但它并不是专门设计用于处理负载均衡器后端实例的修补流程。使用ALB健康检查 重新路由流量是一个补充措施，但题目要求的是解决修补期间的错误问题。"
     }
   },
   {
@@ -54,10 +54,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Create one AWS Glue job for each customer. Attach a security configuration to each job that uses server-side",
-      "B": "Create one Amazon EMR cluster for each customer Attach a security configuration to each cluster that uses client-side",
-      "C": "Create one AWS Glue job for each customer Attach a security configuration to each job that uses client-side encryption",
-      "D": "Create one Amazon EMR cluster for each customer Attach a security configuration to each cluster that uses server-side"
+      "A": "Create one AWS Glue job for each customer. Attach a security configuration to each job that uses server-side encryption with Amazon S3 managed keys (SSE-S3) to encrypt the data. 正确性分析：SSE-S3 是一种服务器端加密方法，使用 Amazon S3 托管密钥进行加密。这种方法无法满足题目要求的“使用客户特定 密钥”需求。 结论：错误。",
+      "B": "Create one Amazon EMR cluster for each customer. Attach a security configuration to each cluster that uses client-side encryption with a custom client-side root key (CSE-Custom) to encrypt the data. 正确性分析：CSE-Custom 是一种客户端加密方法，允许使用自定义密钥进行加密。然而，Amazon EMR 的操作复杂性较高，目题 目要求“最少的操作工作量”，因此不符合要求。 结论：错误。",
+      "C": "Create one AWS Glue job for each customer. Attach a security configuration to each job that uses client-side encryption with AWS KMS managed keys (CSE-KMS) to encrypt the data. 正确性分析：CSE-KMS 是一种客户端加密方法，使用 AWS KMS 托管密钥进行加密。它可以满足题目要求的“使用客户特定密钥”需 求，同时 AWS Glue 的操作复杂性较低，符合“最少的操作工作量”的要求。 结论：正确。",
+      "D": "Create one Amazon EMR cluster for each customer. Attach a security configuration to each cluster that uses server-side encryption with AWS KMS keys (SSE-KMS) to encrypt the data. 正确性分析：SSE-KMS 是一种服务器端加密方法，使用 AWS KMS 托管密钥进行加密。虽然可以满足“使用客户特定密钥”的需求， 但 Amazon EMR 的操作复杂性较高，不符合“最少的操作工作量”的要求。 结论：错误。"
     }
   },
   {
@@ -73,10 +73,10 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "Create an Amazon Machine Image (AMI) of the web application. Use the AMI to launch a second EC2 On-Demand",
-      "B": "Create an Amazon Machine Image (AMI) of the web application. Use the AMI to launch a second EC2 On-Demand",
-      "C": "Create an AWS Lambda function to stop the EC2 instance and change the instance type. Create an Amazon CloudWatch",
-      "D": "Create an Amazon Machine Image (AMI) of the web application. Apply the AMI to a launch template. Create an Auto"
+      "A": "Create an Amazon Machine Image (AMI) of the web application. Use the AMI to launch a second EC2 On-Demand Instance. Use an Application Load Balancer to distribute the load across the two EC2 instances. 正确性：此选项可以解决性能问题，通过增加一个EC2实例和使用Application Load Balancer分配流量。 缺点：使用On-Demand实例成本较高，目没有动态扩展能力。 结论：虽然可行，但不是最具成本效益的解决方案。",
+      "B": "Create an Amazon Machine Image (AMI) of the web application. Use the AMI to launch a second EC2 On-Demand Instance. Use Amazon Route 53 weighted routing to distribute the load across the two EC2 instances. 正确性：此选项使用Route 53加权路由分配流量，但Route 53不适合实时流量负载均衡。 缺点：没有动态扩展能力，目使用On-Demand实例成本较高。 结论：不是最佳解决方案。",
+      "C": "Create an AWS Lambda function to stop the EC2 instance and change the instance type. Create an Amazon CloudWatch alarm to invoke the Lambda function when CPU utilization is more than 75%. 正确性：此选项通过更改实例类型来解决性能问题。 缺点：无法实现动态扩展，目更改实例类型可能导致短暂的停机时间。 结论：不适合需要无缝扩展的场景。",
+      "D": "Create an Amazon Machine Image (AMI) of the web application. Apply the AMI to a launch template. Create an Auto Scaling group that includes the launch template. Configure the launch template to use a Spot Fleet. Attach an Application Load Balancer to the Auto Scaling group. 正确性：此选项使用Auto Scaling组实现动态扩展，使用Spot实例降低成本，并通过Application Load Balancer分配流量。 优点：最具成本效益，支持无缝扩展和高可用性。 结论：这是最佳解决方案。"
     }
   },
   {
@@ -92,10 +92,10 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "使用 Amazon S3 托管密钥的服务器端加密 (SSE-S3)",
-      "B": "对新对象使用 S3 Bucket Key 和 AWS KMS 密钥的服务器端加密 (SSE-KMS)",
-      "C": "使用AWs KMS 客户托管密钥的客户端加密",
-      "D": "使用存储在 AWS KMS 中的客户提供密钥的服务器端加密 (SSE-C)"
+      "A": "使用 Amazon S3 托管密钥的服务器端加密 (SSE-S3) 错误。SSE-S3使用Amazon S3托管的密钥进行加密，虽然可以满足加密需求，但它不使用AWS KMS，因此无法满足题目中提到 的“当前使用AWS KMS”的要求。",
+      "B": "对新对象使用 S3 Bucket Key 和 AWS KMS 密钥的服务器端加密 (SSE-KMS) 正确。SSE-KMS使用AWS KMS进行加密，符合题目要求。启用S3 Bucket Key可以减少对AWS KMS的调用，从而优化成本，同时仍 然满足严格的加密要求。",
+      "C": "使用 AWS KMS 客户托管密钥的客户端加密 错误。客户端加密需要在客户端进行加密和解密操作，这会增加复杂性，并且不符合题目中“优化成本”的要求。此外，客户端加密 不涉及S3的服务器端加密选项。",
+      "D": "使用存储在 AWS KMS 中的客户提供密钥的服务器端加密 (SSE-C) 错误。SSE-C要求客户提供自己的加密密钥，并且这些密钥不会存储在AWS KMS中。这与题目中提到的“当前使用AWS KMS”的要求 不符。"
     }
   },
   {
@@ -115,12 +115,12 @@
       "B"
     ],
     "explanations": {
-      "A": "Use the AWS Schema Conversion Tool (AWS SCT) to collect data about the VMs.",
-      "B": "Use AWS Application Migration Service. Install the AWS Replication Agent on the VMs.",
-      "C": "Complete the initial replication of the VMs. Launch test instances to perform acceptance tests on the VMs.",
-      "D": "Stop all operations on the VMs. Launch a cutover instance.",
-      "E": "Use AWS App2Container (A2C) to collect data about the VMs.",
-      "F": "Use AWS Database Migration Service (AWS DMS) to migrate the VMs."
+      "A": "Use the AWS Schema Conversion Tool (AWS SCT) to collect data about the VMs. 错误：AWS Schema Conversion Tool (AWS SCT)主要用于数据库迁移，而不是虚拟机迁移。",
+      "B": "Use AWS Application Migration Service. Install the AWS Replication Agent on the VMs. 正确：AWS Application Migration Service是专门设计用于迁移虚拟机的服务，安装AWS Replication Agent是迁移的必要步骤。",
+      "C": "Complete the initial replication of the VMs. Launch test instances to perform acceptance tests on the VMs. 正确：完成初始复制后，启动测试实例进行验收测试是迁移过程中的重要步骤，确保迁移的工作负载正常运行。",
+      "D": "Stop all operations on the VMs. Launch a cutover instance. 正确：在迁移完成后，停止源VM上的操作并启动切换实例是迁移的最后一步，确保工作负载切换到AWS环境。",
+      "E": "Use AWS App2Container (A2C) to collect data about the VMs. 错误：AWS App2Container (A2C)用于容器化应用程序，而不是虚拟机迁移。",
+      "F": "Use AWS Database Migration Service (AWS DMS) to migrate the VMs. 错误：AWS Database Migration Service (AWS DMS)用于数据库迁移，而不是虚拟机迁移。"
     }
   },
   {
@@ -139,11 +139,11 @@
       "A"
     ],
     "explanations": {
-      "A": "Create an Amazon Cognito identity pool to generate secure Amazon S3 access tokens for users when they successfully",
-      "B": "Use the existing Amazon Cognito user pool to generate Amazon S3 access tokens for users when they successfully log",
-      "C": "Create an Amazon S3 VPC endpoint in the same VPC where the company hosts the application.",
-      "D": "Create a NAT gateway in the VPC where the company hosts the application. Assign a policy to the S3 bucket to deny",
-      "E": "Attach a policy to the S3 bucket that allows access only from the users' IP addresses."
+      "A": "Create an Amazon Cognito identity pool to generate secure Amazon S3 access tokens for users when they successfully log in. 正确。Amazon Cognito身份池（Identity Pool）允许应用程序为经过身份验证的用户生成临时的AWS认证，从而安全地访问AWS资 源（如S3）。",
+      "B": "Use the existing Amazon Cognito user pool to generate Amazon S3 access tokens for users when they successfully log in. 错误。Amazon Cognito用户池（User Pool）用于用户身份验证，但它不能直接生成访问AWS资源（如S3）的认证。需要结合身份 池来实现此功能。",
+      "C": "Create an Amazon S3 VPC endpoint in the same VPC where the company hosts the application. 正确。通过创建Amazon S3 VPC Endpoint，可以确保流量在AWS网痬内部传输，而不是通过公共互甛网，从而提高安全性。",
+      "D": "Create a NAT gateway in the VPC where the company hosts the application. Assign a policy to the S3 bucket to deny any request that is not initiated from Amazon Cognito. 错误。NAT网关用于允许私有子网中的资源访问互甛网，但题目中并未提到需要访问互甛网。此外，S3策略无法直接识别请求是否 来自Amazon Cognito。",
+      "E": "Attach a policy to the S3 bucket that allows access only from the users' IP addresses. 错误。用户的IP地址可能会动嬒变化，基于IP地址的访问控制不适合这种场景。此外，这种方法无法与Cognito集成以实现用户级别 的访问控制。"
     }
   },
   {
@@ -159,10 +159,10 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "使用Amazon EC2 Auto Scaling的计划扩展功能，在高峰使用时段扩展处理层实例。使用CPU Utilization指标来确定何时扩展。",
-      "B": "在DynamoDB后端层前使用Amazon ElastiCache for Redis。使用目标利用率作为指标来确定何时扩展。",
-      "C": "添加一个Amazon CloudFront分发来缓存Web层的响应。使用HTTP延迟作为指标来确定何时扩展。",
-      "D": "使用Amazon EC2 Auto scaling目标跟踪策略扩展处理层实例。使用ApproximateNumberOfMessages属性来确定何时扩展。"
+      "A": "使用Amazon EC2 Auto Scaling的计划扩展功能，在高峰使用时段扩展处理层实例。使用CPU Utilization指标来确定何时扩展。 错误：计划扩展适用于固定的高峰时间，但题目明确指出高峰时间是“可变目不可预测的”，因此计划扩展无法满足需求。 此外，CPU Utilization虽然可以反映实例负载，但无法直接反映SQS队列的积压情况。",
+      "B": "在DynamoDB后端层前使用Amazon ElastiCache for Redis。使用目标利用率作为指标来确定何时扩展。 错误：问题的核心在于处理层的EC2实例CPU使用率通到100%以及SQS队列积压，而不是DynamoDB的性能瓶矣。 使用ElastiCache优化DynamoDB的性能与题目描述的问题无关。",
+      "C": "添加一个Amazon CloudFront分发来缓存Web层的响应。使用HTTP延迟作为指标来确定何时扩展。 错误：问题的核心在于处理层的性能，而不是Web层的响应速度。 CloudFront主要用于优化内容交付，而不是解决处理层的CPU瓶矣或SQS队列积压问题。",
+      "D": "使用Amazon EC2 Auto Scaling目标跟踪策略扩展处理层实例。使用ApproximateNumberOfMessages属性来确定何时扩展。 正确：目标跟踪策略可以根据SQS队列的ApproximateNumberOfMessages属性动态调整处理层的EC2实例数量。 这种方法能够实时响应队列积压情况，适合应对“可变目不可预测的”高峰负载。"
     }
   },
   {
@@ -178,10 +178,10 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Purchase Scheduled Reserved Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard",
-      "B": "Purchase Convertible Reserved Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard",
-      "C": "Use Spot Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard Reserved Instances",
-      "D": "Use Spot Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Convertible Reserved Instances"
+      "A": "Purchase Scheduled Reserved Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard Reserved Instances for the EC2 instances that run constantly between Monday and Saturday. Scheduled Reserved Instances适用于定期运行的工作负载，例如仅在周日运行12小时的实例。这种实例类型可以提供成本优化，同 时满足不可中断的需求。 Standard Reserved Instances适用于长期稳定运行的工作负载，例如周一到周六持痲运行的实例。这种实例类型提供显著的成本节 痓。 此选项正确地结合了两种实例类型，满足了工作负载需求并实现了成本优化。",
+      "B": "Purchase Convertible Reserved Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard Reserved Instances for the EC2 instances that run constantly between Monday and Saturday. Convertible Reserved Instances允许实例类型的棬梮转换，但不适合仅运行12小时的工作负载，因为它无法像Scheduled Reserved Instances那样针对特定时间橘进行优化。 Standard Reserved Instances适用于长期稳定运行的工作负载，这部分是正确的。 此选项错误地选择了Convertible Reserved Instances，而不是Scheduled Reserved Instances，因此不符合成本优化的要求。",
+      "C": "Use Spot Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Standard Reserved Instances for the EC2 instances that run constantly between Monday and Saturday. Spot Instances价格低廉，但可能会被中断，不适合不可中断的工作负载，例如周日运行12小时的实例。 Standard Reserved Instances适用于长期稳定运行的工作负载，这部分是正确的。 此选项错误地选择了Spot Instances，而不是Scheduled Reserved Instances，因此不符合不可中断的要求。",
+      "D": "Use Spot Instances for the EC2 instances that run for only 12 hours on Sunday. Purchase Convertible Reserved Instances for the EC2 instances that run constantly between Monday and Saturday. Spot Instances价格低廉，但可能会被中断，不适合不可中断的工作负载，例如周日运行12小时的实例。 Convertible Reserved Instances虽然棬梮，但不如Standard Reserved Instances在长期稳定运行的工作负载中成本效益高。 此选项错误地选择了Spot Instances和Convertible Reserved Instances，因此不符合工作负载需求和成本优化的要求。"
     }
   },
   {
@@ -197,10 +197,10 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "使用Amazon ECS和Amazon EC2 Spot Instances来处理图像，配置Amazon SQS来协调工作流，将处理后的文件存储在",
-      "B": "使用AWSs Batch作业来处理图像，使用AWSs Step Functions来协调工作流，将处理后的文件存储在Amazon S3 bucket中。",
-      "C": "使用AWS Lambda函数和Amazon EC2 Spot Instances来处理图像，将处理后的文件存储在Amazon FSx中。",
-      "D": "部署一组Amazon EC2实例来处理图像，使用AWS Step Functions来协调工作流，将处理后的文件存储在Amazon EBS卷中。"
+      "A": "使用Amazon ECS和Amazon EC2 Spot Instances来处理图像，配置Amazon SQS来协调工作流，将处理后的文件存储在 Amazon EFS中。 正确性分析：Amazon ECS和EC2 Spot Instances可以处理图像，但需要管理容器和底层EC2实例，增加了操作开销。 Amazon SQS可以用于队列管理，但不具备复杂工作流编排能力。 Amazon EFS适合文件存储，但对于大规模数据存储，Amazon S3更具成本效益。 结论：此选项增加了操作开销，不符合“最少操作开销”的要求。",
+      "B": "使用AWS Batch作业来处理图像，使用AWS Step Functions来协调工作流，将处理后的文件存储在Amazon S3 bucket中。 正确性分析：AWS Batch是专门设计用于处理批量任务的服务，完全托管，无需管理底层基略设施。 AWS Step Functions提供强大的工作流编排能力，适合复杂任务管理。 Amazon S3是高可用、低成本的存储解决方案，适合存储大规模文件。 结论：此选项完全符合题目要求，操作开销最低。",
+      "C": "使用AWS Lambda函数和Amazon EC2 Spot Instances来处理图像，将处理后的文件存储在Amazon FSx中。 正确性分析：AWS Lambda适合处理小型任务，但不适合处理需要大量计算资源的图像处理任务。 EC2 Spot Instances需要管理实例生命周期，增加了操作开销。 Amazon FSx适合特定文件系统需求，但不如Amazon S3适合大规模文件存储。 结论：此选项不符合“最少操作开销”的要求。",
+      "D": "部署一组Amazon EC2实例来处理图像，使用AWS Step Functions来协调工作流，将处理后的文件存储在Amazon EBS卷中。 正确性分析：使用EC2实例需要管理底层基略设施，增加了操作开销。 AWS Step Functions可以编排工作流，但EC2实例的管理复杂性与Step Functions的优势相抵消。 Amazon EBS适合块存储，但不如Amazon S3适合大规模文件存储。 结论：此选项操作开销较高，不符合题目要求。"
     }
   },
   {
@@ -216,10 +216,10 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Configure an Amazon CloudFront distribution for the S3 bucket to improve the download performance. Enable S3",
-      "B": "Configure Amazon EC2 instances of the right sizes in multiple AWS Regions. Migrate the application to the EC2",
-      "C": "Configure an Amazon CloudFront distribution that uses the S3 bucket as an origin to improve the download",
-      "D": "Configure AWS Global Accelerator for the S3 bucket to improve network performance. Create an endpoint for the"
+      "A": "Configure an Amazon CloudFront distribution for the S3 bucket to improve the download performance. Enable S3 Transfer Acceleration to improve the upload performance. 正确：CloudFront 是一个全球内容分发网络 (CDN)，可以显著减少用户下载静态内容的延迟。 正确：S3 Transfer Acceleration 使用 Amazon 的全球边缘网络来优化上传速度，尤其是跨区域上传。 此选项的实施工作量较低，因为只需配置 CloudFront 和启用 S3 Transfer Acceleration。",
+      "B": "Configure Amazon EC2 instances of the right sizes in multiple AWS Regions. Migrate the application to the EC2 instances. Use an Application Load Balancer to distribute the website traffic equally among the EC2 instances. Configure AWS Global Accelerator to address global demand with low latency. 错误：此选项需要迁移应用程序到 EC2 实例，工作量较大。 错误：虽然 Global Accelerator 可以优化全球网络性能，但它并不直接解决 S3 的上传和下载性能问题。 错误：使用 EC2 和 ALB 的架构复杂度远高于使用 S3 和 CloudFront。",
+      "C": "Configure an Amazon CloudFront distribution that uses the S3 bucket as an origin to improve the download performance. Configure the application to use CloudFront to upload images to improve the upload performance. Create S3 buckets in multiple AWS Regions. Configure replication rules for the buckets to replicate users' data based on the users' location. Redirect downloads to the S3 bucket that is closest to each user's location. 错误：创建多个 S3 存储框并配置复制规则的工作量较大。 错误：使用 CloudFront 上传图栆的配置复杂度较高，目不如 S3 Transfer Acceleration 专门优化上传性能。 错误：重定向下载到最邮的 S3 存储框需要额外的逻辑和开发工作。",
+      "D": "Configure AWS Global Accelerator for the S3 bucket to improve network performance. Create an endpoint for the application to use Global Accelerator instead of the S3 bucket. 错误：AWS Global Accelerator 主要用于优化网络流量，但不能直接用于 S3 存储框的性能优化。 错误：创建一个端点并蔡换 S3 存储框的工作量较大。 错误：此选项未提到如何优化上传性能。"
     }
   },
   {
@@ -235,10 +235,10 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "配置一个 S3 接口端点。创建一个安全组，允许到 Amazon S3 的出站流量。",
-      "B": "配置一个 S3 网关端点。更新 VPC 路由表以使用该端点。",
-      "C": "配置一个 S3 bucket 策略，允许来自分配给 NAT 网关的 Elastic IP 地址的流量。",
-      "D": "在部署旧版应用程序的同一子网中创建第二个 NAT 网关。更新 VPC 路由表以使用第二个 NAT 网关。"
+      "A": "配置一个 S3 接口端点。创建一个安全组，允许到 Amazon S3 的出站流量。 正确性分析：S3接口端点允许私有网痬中的资源通过AWS私有网痬访问S3，而无需流量通过互甛网。安全组可以控制出疛流量。 成本分析：S3接口端点会产椹额外的费用，因为它是基于接口的端点。 结论：虽然满足安全要求，但不是最具成本效益的解决方案。",
+      "B": "配置一个 S3 网关端点。更新 VPC 路由表以使用该端点。 正确性分析：S3网关端点允许私有网痬中的资源通过AWS私有网痬访问S3，而无需流量通过互甛网。网关端点不需要安全组，直接 通过路由表配置。 成本分析：S3网关端点是免费的，因此是最具成本效益的解决方案。 结论：满足安全要求，同时成本最低。",
+      "C": "配置一个 S3 bucket 策略，允许来自分配给 NAT 网关的 Elastic IP 地址的流量。 正确性分析：这种方法允许通过NAT网关访问S3，但流量仍然会通过互甛网，不符合安全策略要求。 成本分析：NAT网关会产椹额外的费用，目流量通过互甛网可能增加数据传输成本。 结论：不符合安全要求，目成本较高。",
+      "D": "在部署旧版应用程序的同一子网中创建第二个 NAT 网关。更新 VPC 路由表以使用第二个 NAT 网关。 正确性分析：创建疦二个NAT网关并更新路由表不会解决流量通过互甛网的问题，因此不符合安全策略要求。 成本分析：创建疦二个NAT网关会显著增加成本。 结论：不符合安全要求，目成本最高。"
     }
   },
   {
@@ -254,10 +254,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Create separate IAM policies for Amazon S3 and DynamoDB access with the required permissions. Attach both IAM",
-      "B": "Create separate IAM policies for Amazon S3 and DynamoDB access with the required permissions. Attach the Amazon",
-      "C": "Create separate Kubernetes service accounts for the UI and data services to assume an IAM role. Attach the",
-      "D": "Create separate Kubernetes service accounts for the UI and data services to assume an IAM role. Use IAM Role for"
+      "A": "Create separate IAM policies for Amazon S3 and DynamoDB access with the required permissions. Attach both IAM policies to the EC2 instance profile. Use role-based access control (RBAC) to control access to Amazon S3 or DynamoDB for the respective EKS Pods. 错误：将IAM策略附加到EC2实例配置文件会导致所有EKS Pods共享相同的权限，无法实现细粒度的权限控制。 RBAC是Kubernetes内部的权限控制机制，无法直接控制AWS资源的访问权限。",
+      "B": "Create separate IAM policies for Amazon S3 and DynamoDB access with the required permissions. Attach the Amazon S3 IAM policy directly to the EKS Pods for the data services and the DynamoDB policy to the EKS Pods for the UI. 错误：IAM策略不能直接附加到EKS Pods。AWS中需要通过IAM角色和IRSA机制来实现EKS Pods的权限控制。",
+      "C": "Create separate Kubernetes service accounts for the UI and data services to assume an IAM role. Attach the AmazonS3FullAccess policy to the data services account and the AmazonDynamoDBFullAccess policy to the UI service account. 正确：通过为不同的EKS Pods创建单独的Kubernetes服务账户，并使用IAM角色附加特定的权限策略，可以实现细粒度的权限控 制。 这是AWS推荐的最佳实践，使用IRSA机制将IAM角色与Kubernetes服务账户关联。",
+      "D": "Create separate Kubernetes service accounts for the UI and data services to assume an IAM role. Use IAM Role for Service Accounts (IRSA) to provide access to the EKS Pods for the UI to Amazon S3 and the EKS Pods for the data services to DynamoDB. 错误：选项中的资源分配描述错误。UI Pods应该访问DynamoDB，而数据服务Pods应该访问S3。 虽然提到了IRSA机制，但资源权限分配不符合题目要求。"
     }
   },
   {
@@ -273,10 +273,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Set up AWS Directory Service to create an AWS managed Microsoft Active Directory on AWS...",
-      "B": "Create an IAM user for each developer...",
-      "C": "Use AD Connector in AWS Directory Service to connect to the on-premises Active Directory...",
-      "D": "Use Amazon Cognito to deploy an identity federation solution..."
+      "A": "Set up AWS Directory Service to create an AWS managed Microsoft Active Directory on AWS... 分析： 此选项通过AWS Directory Service创建一个托管的Microsoft Active Directory，并与本地Active Directory建立人任关系。 虽然可以实现身份管理和访问控制，但需要额外的配置和维护托管的Active Directory实例，增加了操作开销。 不符合“最少操作开销”的要求。 结论：错误。",
+      "B": "Create an IAM user for each developer... 分析： 为桹个开发人员创建IAM用户并手动管理权限是一种直接的方法，但操作开销非常高，尤其是团队规模较大时。 此外，这种方法无法与现有的Active Directory集成，违背了题目要求。 结论：错误。",
+      "C": "Use AD Connector in AWS Directory Service to connect to the on-premises Active Directory... 分析： AD Connector是一种答量级的解决方案，可以直接连接到本地Active Directory，无需在AWS上托管额外的Active Directory实例。 通过与AWS IAM Identity Center集成，可以实现集中化的身份管理和跨账户权限控制。 此选项符合“最少操作开销”的要求，同时满足与现有基础设施集成的需求。 结论：正确。",
+      "D": "Use Amazon Cognito to deploy an identity federation solution... 分析： Amazon Cognito主要用于支持Web和移动应用的身份联合，而不是企业级的集中身份管理和访问控制。 虽然可以与Active Directory集成，但需要额外的开发工作来实现身份联合，增加了操作开销。 不符合题目要求的“最少操作开销”。 结论：错误。"
     }
   },
   {
@@ -292,10 +292,10 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "Set up an API Gateway private integration to restrict access to a predefined set of IP addresses.",
-      "B": "Create a resource policy for the API that denies access to any IP address that is not specifically allowed.",
-      "C": "Directly deploy the API in a private subnet. Create a network ACL. Set up rules to allow the traffic from specific IP",
-      "D": "Modify the security group that is attached to API Gateway to allow inbound traffic from only the trusted IP addresses."
+      "A": "Set up an API Gateway private integration to restrict access to a predefined set of IP addresses. 错误：API Gateway的私有集成用于连接到VPC中的资源（例如私有的EC2实例或私有的负载均衡器），但它并不能直接限制访问IP 地址。 私有集成的主要目的是实现VPC内部的通人，而不是基于IP地址的访问控制。",
+      "B": "Create a resource policy for the API that denies access to any IP address that is not specifically allowed. 正确：API Gateway支持资源策略，可以通过定义策略来限制访问特定的IP地址。 资源策略是专门设计用于控制API访问的，能够精确地满足题目要求。",
+      "C": "Directly deploy the API in a private subnet. Create a network ACL. Set up rules to allow the traffic from specific IP addresses. 错误：API Gateway是一个托管服务，不能直接部署在私有子网中。 网络ACL用于控制子网级别的流量，但无法直接应用于API Gateway。",
+      "D": "Modify the security group that is attached to API Gateway to allow inbound traffic from only the trusted IP addresses. 错误：API Gateway不使用安全组进行流量控制。安全组主要用于EC2实例或其他VPC资源。 API Gateway的访问控制需要通过资源策略或其他API级别的配置来实现。"
     }
   }
 ]
