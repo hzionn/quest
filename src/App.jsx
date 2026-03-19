@@ -1836,6 +1836,7 @@ const EXAM_SPECS = {
   'CLF-C02': { name: 'AWS Cloud Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
   'SCS-C03': { name: 'AWS Certified Security - Specialty', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
   'AIP-C01': { name: 'AWS Certified AI Practitioner', count: 65, timeLimit: 90, passScore: 750, questions: '75 題（65 題計分 + 10 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選、排序、配對' },
+  'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {
