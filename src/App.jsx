@@ -2376,6 +2376,21 @@ function StatsTab({ state, dispatch, examTypes }) {
 
 function QuestionList({ items, dispatch }) {
   const allQuestions = items.map(item => item.question)
+
+  // Group by exam
+  const grouped = useMemo(() => {
+    const map = {}
+    items.forEach(item => {
+      if (!map[item.exam]) map[item.exam] = []
+      map[item.exam].push(item)
+    })
+    return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]))
+  }, [items])
+
+  const hasMultipleExams = grouped.length > 1
+  const [collapsedExams, setCollapsedExams] = useState({})
+  const toggleExam = (exam) => setCollapsedExams(prev => ({ ...prev, [exam]: !prev[exam] }))
+
   return (
     <div className="space-y-2.5">
       {items.length > 1 && (
@@ -2386,7 +2401,52 @@ function QuestionList({ items, dispatch }) {
           <Play size={14} /> 全部練習 ({items.length} 題)
         </button>
       )}
-      {items.map((item, idx) => (
+      {hasMultipleExams ? grouped.map(([exam, examItems]) => {
+        const collapsed = collapsedExams[exam]
+        const examQuestions = examItems.map(item => item.question)
+        return (
+          <div key={exam} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+            <button
+              onClick={() => toggleExam(exam)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors duration-200"
+            >
+              <div className="flex items-center gap-2">
+                {collapsed ? <ChevronRight size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
+                <span className="text-sm font-semibold">{exam}</span>
+                <span className="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg font-medium">{examItems.length} 題</span>
+              </div>
+              <span
+                role="button"
+                onClick={(e) => { e.stopPropagation(); dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: examQuestions[0], questions: examQuestions, startIndex: 0 }) }}
+                className="px-3 py-1 text-xs bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 shadow-sm"
+              >
+                <Play size={12} /> 練習此科
+              </span>
+            </button>
+            {!collapsed && (
+              <div className="divide-y divide-gray-100 dark:divide-gray-700/50">
+                {examItems.map(item => {
+                  const globalIdx = items.indexOf(item)
+                  return (
+                    <div key={item.key} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors duration-200">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm font-semibold">#{item.id}</span>
+                        <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium">{typeLabels[item.type]}</span>
+                      </div>
+                      <button
+                        onClick={() => dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: item.question, questions: allQuestions, startIndex: globalIdx })}
+                        className="px-3.5 py-1.5 text-xs bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 shadow-sm"
+                      >
+                        <RotateCcw size={12} /> 重做
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )
+      }) : items.map((item, idx) => (
         <div key={item.key} className="flex items-center justify-between p-3.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-700 transition-all duration-200 group">
           <div className="flex items-center gap-2.5">
             <span className="text-sm font-semibold">{item.exam} #{item.id}</span>
