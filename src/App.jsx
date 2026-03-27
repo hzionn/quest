@@ -1124,7 +1124,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             </div>
 
             {/* Question text */}
-            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{currentQ.question}</p>
+            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{currentQ.question}</p>
 
             {/* Answer area */}
             <QuestionInput
@@ -1317,7 +1317,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
 // Bilingual option text renderer
 // ══════════════════════════════════════════
 function OptionText({ label, text }) {
-  return <span className="text-sm"><span className="font-semibold mr-1">{label}.</span>{text}</span>
+  return <span className="text-sm" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}><span className="font-semibold mr-1">{label}.</span>{text}</span>
 }
 
 // ══════════════════════════════════════════
@@ -2110,7 +2110,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
             </div>
-            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap">{examQ.question}</p>
+            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>
 
             <QuestionInput
               question={examQ}
@@ -2202,7 +2202,7 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
       </button>
       {expanded && (
         <div className="px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-700 animate-fade-in">
-          <p className="text-sm mb-3 whitespace-pre-wrap">{displayQ.question}</p>
+          <p className="text-sm mb-3 whitespace-pre-wrap break-words">{displayQ.question}</p>
           <QuestionInput
             question={displayQ}
             answer={examAnswers[detail.qKey]}
