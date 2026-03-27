@@ -1035,7 +1035,7 @@
     "question": "一家公司想要为其客户创建一项年度奖励计划。客户获得的奖励会根据不同的参数而变化，例如所订购商品的类别以及客户的购买 历史。 公司需要一个生成式 AI (GenAI) 解决方案，使用三个 Amazon Bedrock Agent 来在客户在线浏览商品目录时提供帮助。这些 Agent 必须使用知识库和动作组来处理搜索、推荐和下单模块。这些模块必须按顺序运行。必须使用一个 AWS Lambda 函数为每个 推荐商品计算预估奖励。该解决方案必须在服务中断期间提供优雅降级。 哪种解决方案能够以最高的运维效率满足这些要求?",
     "options": {
       "A": "在每个 Agent 后面定义一个 Amazon API Gateway REST API。创建第二个 Lambda 函数来编排对各个 Agent 和奖励 Lambda 函 数的调用。为第二个 Lambda 函数配置重试/回退机制。",
-      "B": "创建一个 AWS Step Functions 状态机，包含四个任务来运行这些 Agent 和奖励 Lambda 函数。为每个任务步骤设置重试和捕获",
+      "B": "创建一个 AWS Step Functions 状态机，包含四个任务来运行这些 Agent 和奖励 Lambda 函数。为每个任务步骤设置重试和捕获 (catch) 分支。",
       "C": "为每个 Agent 配置单独的重试/回退机制。创建第二个 Lambda 函数来编排对各个 Agent 和奖励 Lambda 函数的调用。在第二 个Lambda 函数后面定义一个Amazon API Gateway REST API,",
       "D": "创建第二个 Lambda 函数来编排对各个 Agent 和奖励 Lambda 函数的调用。创建一个 AWS Step Functions 状态机，包含一个运 行第二个 Lambda 函数的任务。为该任务步骤设置重坛和捕获 (catch) 分支。"
     },
