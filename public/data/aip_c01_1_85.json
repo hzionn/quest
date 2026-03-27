@@ -13,7 +13,7 @@
     "answer": "C",
     "explanations": {
       "A": "选项 A 为什么可能正确: 可以通过 Lambda 对模型响应做后处理，自己定义公平性指标并发布到 CloudWatch，再用告警实现15%阈值提 醒; 也能做两种Prompt方案对比。 为什么不满足“最少自定义开发”: 公平性评估需要: 分群 (demographic group) 识别、指标定义 (如差异率、均等机会等) 、统计检验、窗口聚合、A/B (两种 prompt) 归因等，全部需要自研。 自定义指标+事件驱动分析管道复杂，维护成本高。 结论: 可实现，但自定义开发量明显最大，不符合\"LEAST custom development effort’",
-      "B": "选项 B 为什么可能看起来正确: Prompt Management + Flows 能做两种prompt变体与流量分配 (类似A/B) ; CloudWatch 告警也能做阔 值提醒。 为什么错误/不合适: Guardrails 的 content filters主要用于安全策略 (如暴力、仇恨、色情、Pll等) 过滤与拦截，不是用于计算\"不同人口统计群体间推 荐公平性差异\"的统计指标。 InvocationsIntervened通常指被护栏拦截/干预的调用数量; 与“推荐偏差超过15%\"没有直接对应关系。 无法自然表达“跨人口统计群体差异15%\"“这种公平性度量与对比报表。 结论: 把“公平性评估\"错误地映射为\"护栏拦截指标\"，不满足题意。",
+      "B": "选项 B 为什么可能看起来正确: Prompt Management + Flows 能做两种prompt变体与流量分配 (类似A/B) ; CloudWatch 告警也能做阔 值提醒。 为什么错误/不合适: Guardrails 的 content filters主要用于安全策略 (如暴力、仇恨、色情、PII等) 过滤与拦截，不是用于计算\"不同人口统计群体间推 荐公平性差异\"的统计指标。 InvocationsIntervened通常指被护栏拦截/干预的调用数量; 与“推荐偏差超过15%\"没有直接对应关系。 无法自然表达“跨人口统计群体差异15%\"“这种公平性度量与对比报表。 结论: 把“公平性评估\"错误地映射为\"护栏拦截指标\"，不满足题意。",
       "C": "选项 C 为什么正确: SageMaker Clarify是AWS中专门用于偏差/公平性分析与指标产出的托管能力，适合“跨多个群体检测并量化差异\"。 将公平性指标发布到 CloudWatch后，可用 CloudWatch Alarms 做超过15%的阈值告警，并在仪表盘进行 (Of) 实时监控。 每周报告: Clarify 的分析输出天然适合形成报告/对比结果; 配合按周期运行分析任务 (例如每周) SCH prompts ss’ AXLE 报告 (按prompt标签/维度拆分) 。 相较于自建Lambda后处理，Clarify 显著减少自定义公平性算法与统计汇总的开发工作。 需要注意的点 (不影响本题最优选择) : Clarify 更常见是批处理/定期作业形态; 若题目\"real time'严格到秒级，任何方案都需要自建流式计算。但在给定选项里，C 最接 近“近实时监控 + BD BOR\". 选项里提到“复合告警将 Clarify 偏差指标与 Bedrock 延迟指标组合\"，延迟指标对“公平性\"本身不是必须，但不影响其满足公平性监 控与报表的主要诉求。 结论: 最贴合公平性评估托管能力，并能与 CloudWatch 告警/报表结合，且自定义开发最少。",
       "D": "选项 D  ”为什么可能看起来正确: Bedrock model evaluation job 可用于对比不同prompt变体的效果。 为什么错误/不合适: 模型评估作业更偏离线评测 (例如基准集评估) ，不天然满足\"实时监控与告警\"。 同样把 InvocationsIntervened当作公平性指标来源不合理; 该指标与人口统计群体之间推荐差异15%\"“没有直接映射。 “为每个人口统计群体设置一个维度\"的描述也不符合 InvocationsIntervened 的典型维度设计与用途。 Sit: 离线评估+错误指标来源，无法满足题意的实时公平性监控与告警。"
     }
@@ -125,10 +125,10 @@
     "exam": "AIP-C01",
     "id": 7,
     "type": "single",
-    "question": "一家医疗公司正在构建一个使用 RAG 的生成式 AI (GenAI) 应用程序，以提供基于证据的医疗信息。该应用程序使用Amazon OpenSearch Service 来检索向量戏入。用户报告称，搜索经常遗漏包含精确医疗术语和缩略词的结果，并返回过多语义相似但不相 关的文档。公司需要在文档集合增长到数百万份文档时，仍能提升检索质量并保持较低的终端用户延迟。 哪种解决方案能以最少的运维开销满足这些要求?",
+    "question": "一家医疗公司正在构建一个使用 RAG 的生成式 AI (GenAI) 应用程序，以提供基于证据的医疗信息。该应用程序使用Amazon OpenSearch Service 来检索向量嵌入。用户报告称，搜索经常遗漏包含精确医疗术语和缩略词的结果，并返回过多语义相似但不相 关的文档。公司需要在文档集合增长到数百万份文档时，仍能提升检索质量并保持较低的终端用户延迟。 哪种解决方案能以最少的运维开销满足这些要求?",
     "options": {
       "A": "通过将向量相似度与关键词匹配相结合来配置混合搜索，以改进语义理解以及对精确术语和缩略词的匹配。",
-      "B": "AERA REM 384 增加到 1536。使用后处理的 AWS Lambda 函数在检索后过滤掉不相关的结果。",
+      "B": "将嵌入维度从 384 增加到 1536。使用后处理的 AWS Lambda 函数在检索后过滤掉不相关的结果。",
       "C": "用 Amazon Kendra 替换 OpenSearch Service。在预处理期间使用查询扩展来处理医疗缩略词和术语变体。",
       "D": "实现两阶段检索架构，其中初始向量搜索结果由托管在 Amazon SageMaker AI 上的机器学习模型进行重新排序。"
     },
@@ -205,7 +205,7 @@
     "options": {
       "A": "使用 Amazon Bedrock Prompt Management 将必需输入指定为变量。选择一个 Amazon Nova Pro FM。为响应指定输出格式。 将该提示添加到 Flow 的 prompts 节点。",
       "B": "创建一个应用仇恨内容过滤器的 Amazon Bedrock Guardrail。将过滤器响应设置为阻止。将该 Guardrail 添加到 Flow 的 prompts 节点。",
-      "C": "创建一个Amazon Bedrock 提示路由器。指定一个 Amazon Nova Pro FM。将必需输入作为变量添加到 Flow AY input 节点。将 提示路由器添加到 prompts 节点。将输出格式添加到 output 节点。",
+      "C": "创建一个Amazon Bedrock 提示路由器。指定一个 Amazon Nova Pro FM。将必需输入作为变量添加到 Flow 的 input 节点。将 提示路由器添加到 prompts 节点。将输出格式添加到 output 节点。",
       "D": "创建一个应用侮辱内容过滤器的 Amazon Bedrock Guardrail。将过滤器响应设置为检测。将该 Guardrail 添加到 Flow 的 prompts 节点。",
       "E": "创建一个Amazon Bedrock 应用推理配置文件，用于指定一个 Amazon Nova Pro FM。在描述中为响应指定输出格式。为每个输 入变量包含一个标签。将该配置文件添加到 Flow 的 prompts 节点。"
     },
@@ -258,10 +258,10 @@
     ],
     "explanations": {
       "A": "A. 向 GenAI 开发人员 IAM 角色添加 AdministratorAccess 策略。 错误。原因 : SCP 的 Explicit Deny 优先于任何 IAM Allow，即使是 AdministratorAccess 也无法绕过。 不满足\"保留现有治理控制和和“精确访问控制\"的要求 (权限过大) 。",
-      "B": "B. 扩展现有的 SCP 以为eu.amazon.nova-pro-v1:0 推理配置文件启用 CRI, IE. RA: 报错明确为 SCP 显式拒绝，必须在 SCP 层修复，否则任何 IAM 变更无效。 按'特定 inference profile (eu.amazon.nova-pro-v1:0) “放行，符合“精确访问控制“。 可保持现有\"仅 EU、仪特定入口区域\"的治理策略，同时允许 Bedrock 以 CRI 方式在 EU 内部跨区承载。",
-      "C": "C. 在 eu-west-3 区域为Amazon Nova Pro 启用 Amazon Bedrock 模型访问。 错误。原因 : 题目要求\"开发者只能通过 CRI BRE eu-central-1 使用\"。在 eu-west-3 直接启用模型访问，会增加“可在 eu-west-3 直接调用\"的可 能性，不够符合治理目标。 当前失败的根因是 SCP Deny，即使启用模型访问，仍可能继续被 SCP 拒绝。",
-      "D": "D. 验证 GenAI 开发人员 IAM 角色是否具有在所有可提供该模型的欧盟 AWS 区域中，通过 eu.amazon.nova-pro.v1:0 推理配置文 件调用 Amazon Nova Pro 的权限。 正确。原因: 昌然入口区域要求是 eu-central-1，但 CRI 的实际承载区域可能是 eu-west-3 等欧盟区域。 从报错看，权限评估落在了 eu-west-3 的 foundation-model ARN 上; 因此需要确保 IAM 权限链路覆盖 CRI 可能涉及的欧盟承载区 域/资源。 配合 SCP AY OHS inference profile 放行\"，可以在不放开任意跨区的情况下，满足 CRI 的工作方式。",
-      "E": "E. RA: 报错明确为 SCP 显式拒绝，必须在 SCP 层修复，否则任何 IAM 变更无效。 按'特定 inference profile (eu.amazon.nova-pro-v1:0) “放行，符合“精确访问控制“。 可保持现有\"仅 EU、仪特定入口区域\"的治理策略，同时允许 Bedrock 以 CRI 方式在 EU 内部跨区承载。"
+      "B": "B. 扩展现有的 SCP 以为eu.amazon.nova-pro-v1:0 推理配置文件启用 CRI。正确。原因：报错明确为 SCP 显式拒绝，必须在 SCP 层修复，否则任何 IAM 变更无效。 按'特定 inference profile (eu.amazon.nova-pro-v1:0) “放行，符合“精确访问控制“。 可保持现有\"仅 EU、仅特定入口区域\"的治理策略，同时允许 Bedrock 以 CRI 方式在 EU 内部跨区承载。",
+      "C": "C. 在 eu-west-3 区域为Amazon Nova Pro 启用 Amazon Bedrock 模型访问。 错误。原因 : 题目要求\"开发者只能通过 CRI 且仅在 eu-central-1 使用\"。在 eu-west-3 直接启用模型访问，会增加“可在 eu-west-3 直接调用\"的可 能性，不够符合治理目标。 当前失败的根因是 SCP Deny，即使启用模型访问，仍可能继续被 SCP 拒绝。",
+      "D": "D. 验证 GenAI 开发人员 IAM 角色是否具有在所有可提供该模型的欧盟 AWS 区域中，通过 eu.amazon.nova-pro.v1:0 推理配置文 件调用 Amazon Nova Pro 的权限。 正确。原因: 虽然入口区域要求是 eu-central-1，但 CRI 的实际承载区域可能是 eu-west-3 等欧盟区域。 从报错看，权限评估落在了 eu-west-3 的 foundation-model ARN 上; 因此需要确保 IAM 权限链路覆盖 CRI 可能涉及的欧盟承载区 域/资源。 配合 SCP 针对特定 inference profile 放行\"，可以在不放开任意跨区的情况下，满足 CRI 的工作方式。",
+      "E": "E. RA: 报错明确为 SCP 显式拒绝，必须在 SCP 层修复，否则任何 IAM 变更无效。 按'特定 inference profile (eu.amazon.nova-pro-v1:0) “放行，符合“精确访问控制“。 可保持现有\"仅 EU、仅特定入口区域\"的治理策略，同时允许 Bedrock 以 CRI 方式在 EU 内部跨区承载。"
     }
   },
   {
@@ -271,7 +271,7 @@
     "question": "一家金融服务公司正在使用Amazon Bedrock 开发一款客户服务 AI 助手。该 AI 助手不得与用户讨论投资建议。该 AI 助手必须阻止 有害内容，遮蔽个人身份信息 (P帆，并维护用于合规报告的审计跟踪。该 AI 助手必须基于内容敏感性，对用户输入和模型响应都应 用内容过滤。 公司需要一个 Amazon Bedrock 护栏 (guardrail) 配置，能够以最少的误报有效地执行策略。该解决方案必须为多种类型的敏感内 容提供多种处理策略。 哪种解决方案将满足这些要求?",
     "options": {
       "A": "配置一个单一护栏，并将所有类别的内容过滤器都设置为高。为投资建议设置拒绝主题，并包含用于阻止的示例短语。设置敏 感信息过滤器，对所有 PII 实体应用阻止 (block) 操作。将该护栏应用于所有模型推理调用。",
-      "B": "使用分层策略配置多个护栏。创建一个护栏并将内容过滤器设置为高。将该护栏配置为在公共交互中阻止 Pll。配置第二个护栏 并将内容过滤器设置为中。将第二个护栏配置为在内部使用时遮蔽 Pl。配置多个特定主题护栏以阻止投资建议，并设置上下文 基础 (contextual grounding) 检查。",
+      "B": "使用分层策略配置多个护栏。创建一个护栏并将内容过滤器设置为高。将该护栏配置为在公共交互中阻止 PII。配置第二个护栏 并将内容过滤器设置为中。将第二个护栏配置为在内部使用时遮蔽 Pl。配置多个特定主题护栏以阻止投资建议，并设置上下文 基础 (contextual grounding) 检查。",
       "C": "配置一个护栏，并将有害内容的内容过滤器设置为中。为投资建议设置拒绝主题，并包含清晰的定义和用于阻止的示例短语。 配置敏感信息过滤器以在响应中遮蔽 PIl，并在输入中阻止金融信息。启用输入和输出评估，并使用自定义的阻止消息用于审 计。",
       "D": "为每个使用场景创建一个单独的护栏。创建一个应用有害内容过滤器的护栏。创建一个应用投资建议主题过滤器的护栏。创建"
     },
@@ -296,7 +296,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "A. Increase grounding within Amazon Bedrock Guardrails... Enable Automated Reasoning... provisioned throughput 为什么 可能有用: Provisioned throughput 可能降低排队/抖动，改善延迟。 Guardrails 的\"grounding/事实依据\"相关能力在某些场景可用于减少无依据输出。 为什么不足/不正确: 题干问题的根因是模型没有被强制基于“商品目录\"这一权威数据源生成。仪靠 Guardrails 的\"增加 grounding \"并不能等价于'“接入并 检索商品目录来生成\"。 Automated Reasoning 更偏向策略/逻辑一致性等检查 (并不能自动让模型只输出目录内商品) 。 即便延迟改善，也不能系统性解决“推荐目录外商品/不相关\"的主要矛盾。 结论: 不满足\"必须解决推荐目录外商品“的核心要求，整体不选。",
+      "A": "A. Increase grounding within Amazon Bedrock Guardrails... Enable Automated Reasoning... provisioned throughput 为什么 可能有用: Provisioned throughput 可能降低排队/抖动，改善延迟。 Guardrails 的\"grounding/事实依据\"相关能力在某些场景可用于减少无依据输出。 为什么不足/不正确: 题干问题的根因是模型没有被强制基于“商品目录\"这一权威数据源生成。仅靠 Guardrails 的\"增加 grounding \"并不能等价于'“接入并 检索商品目录来生成\"。 Automated Reasoning 更偏向策略/逻辑一致性等检查 (并不能自动让模型只输出目录内商品) 。 即便延迟改善，也不能系统性解决“推荐目录外商品/不相关\"的主要矛盾。 结论: 不满足\"必须解决推荐目录外商品“的核心要求，整体不选。",
       "B": "B. Prompt engineering... + streaming (InvokeModelWithResponseStream) 为什么可能有用 : Streaming 可以降低感知延迟 〈先返回部分 token) 。 提示词工程可在一定程度上约束输出格式与范围。 为什么不足/不正确: 仅靠提示词无法可靠阻止模型\"编造\"目录外商品; 这属于提示词不具备强约束/可验证数据注入的典型问题。 Streaming 只解决“看起来更快，但不一定减少真实推理时间; 且与“目录外推荐\"无直接治理关系。 结论: 不能从根本上解决真实性与相关性问题，不选。",
       "C": "C. Create an Amazon Bedrock knowledge base. Implement RAG. Set PerformanceConfigLatency to optimized. 为什么正 确: 用 Bedrock Knowledge Bases + RAG: 将公司商品目录作为可检索知识源，让模型在生成推荐时基于检索到的目录内容，从机制 上减少\"目录外商品”的幻觉。 RAG 还能提升相关性: 通过对客户意图/偏好进行检索匹配，返回更贴近的目录商品信息。 PerformanceConfigLatency = optimized: 以低延迟为目标的性能配置，有助于改善生成耗时长的问题 (在不改变业务逻辑的情 况下做推理侧优化) 。 可能的注意点 (但不影响本题结论) : 仍需确保知识库数据同步、检索质量 (chunk、embedding、过滤条件、元数据约束等) 设置合理。 结论: 同时履盖“真实性/相关性 + 延迟优化\"，最符合题意，选。",
       "D": "D. Store product catalog in OpenSearch... Validate recommendations... DynamoDB response caching 为什么可能有用: OpenSearch 可做检索;“校验推荐是否在目录中\"可过滤掉明显错误项。 缓存在高重复问答场景可显著降延迟。 为什么不足/不正确: 题干指出大多数交互是唯一的，使用 DynamoDB 做响应缓存命中率会很低，性价比差，难以解决\"长时间生成\"的主要痛点。 \"Validate recommendations“是事后过滤/校验: 它可能把目录外商品剔除，但不能保证模型生成的剩余内容就相关，也可能导致结 该方案没有明确“用检索结果来引导生成”(即 RAG 编排) ，而只是”验证*，对减少幻觉的系统性不如 RAG。 结论: 部分缓解但不如 RAG 直接且缓存不契合\"交互唯一\"，不选。 4"
@@ -492,7 +492,7 @@
     "answer": "A",
     "explanations": {
       "A": "A. 在 Lambda 中开发模型特定 tokenizer; 调用前估算 token; CloudWatch 指标+告警; DynamoDB 存明细 正确点: 主动性满足: 在请求发往 Bedrock 前估算 token，可在\"接近模型上限\"时告警或采取动作 (例如拒绝、降级、截断、改用大窗口模 型等) 。 模型特定满足: 可针对不同 FM 使用不同 tokenizer/规则，符合“model-specific token limits”, 高吞吐可扩展: Lambda 水平扩展可支撑 5,.000+/分钟〈需注意并发配额与冷启动，但总体是可扩展路径) 。 成本分挫满足: CloudWatch 可做趋势/告警; DynamoDB 可按 BU、模型、应用、时间维度记录明细 token 用量，用于内部计费 (showback/chargeback) 。 潜在代价/注意点 (不影响其成为最佳答案) : 实现与维护 tokenizer 成本高; 不同模型的 token 规则可能变化，需要版本管理。 仅“估算\"可能与最终计费 token 有偏差; 但题目强调\"接近限制与“主动告警\"'，估算是合理手段。 Sit: 满足题目所有硬性要求，方案完整。",
-      "B": "B. 使用 Bedrock Guardrails + token quota policies; 基于 Guardrails 指标触发通知; CloudWatch dashboard 展示 错误点: Bedrock Guardrails 的主要能力是内容安全与策略控制 (如有害内容、主题限制、Pll 等) ，并非面向\"token 配额/模型 token 上限 管理“的原生机制。 即便能拿到“被拒绝请求\"的指标，也更偏事后 (rejected 后才知道) ，不符合\"接近上限就主动告警\"的精确诉求。 该选项没有提供按 BU 维度沉淀明细 token 用量的存储设计，成本分推不完整。 结论: 不满足核心的\"token 管理/配额/接近上限预警 + 成本分推明细\"要求。",
+      "B": "B. 使用 Bedrock Guardrails + token quota policies; 基于 Guardrails 指标触发通知; CloudWatch dashboard 展示 错误点: Bedrock Guardrails 的主要能力是内容安全与策略控制 (如有害内容、主题限制、PII 等) ，并非面向\"token 配额/模型 token 上限 管理“的原生机制。 即便能拿到“被拒绝请求\"的指标，也更偏事后 (rejected 后才知道) ，不符合\"接近上限就主动告警\"的精确诉求。 该选项没有提供按 BU 维度沉淀明细 token 用量的存储设计，成本分推不完整。 结论: 不满足核心的\"token 管理/配额/接近上限预警 + 成本分推明细\"要求。",
       "C": "C. SQS 死信队列 + Lambda 分析 token 相关失败 + Logs Insights 基于错误日志做报告 错误点: RED: 依赖'失败请求/错误日志'再分析，是典型的事后处理，无法在\"接近限制前“预警。 覆盖面不足: 只有失败/进入 DLQ 的才会被分析，无法形成完整 token 使用计量。 成本分摊不可靠: 用错误日志推导 token 使用趋势，既不完整也不精确，且难以按 BU 做稳健记账。 结论: 不满足\"主动告警\"和\"完整 token 指标/明细“要求。",
       "D": "D. API Gateway 代理所有 Bedrock 调用; 用 usage plan 做 token 配额; 超限则拒绝 错误点: API Gateway usage plan/限流主要基于请求速率/配额 (request count) ，不是基于“token 数\"这种需要解析并分词计算的单位。 API Gateway 本身无法在不实现自定义计算逻辑的情况下判断请求会消耗多少 token，更无法做到“model-specific token limits“的精 确判断。 题干要求\"接近上限主动告警 + 维护 token 用量指标用于成本分挫*，该方案只谈拒绝与节流，缺少 token 计量与明细沉淀设计。  结论: 不满足 token 维度的管理与计量要求。 4"
     }
@@ -542,9 +542,9 @@
     "question": "一家公司提供一项服务，帮助来自世界各地的用户发现新的餐厅。该服务拥有 5,000 万月活跃用户。该公司希望在一个包含 2.000 万家餐厅和 2 亿条评论的数据库上实现语义搜索解决方案。该公司当前将数据存储在 PostgresQL 数据库中。 该解决方案必须支持复杂的自然语言查询，并且至少 95% 的查询在 500 ms 内返回结果。该解决方案必须保持餐厅详情数据的新鲜 度，餐厅详情每小时更新一次。该解决方案还必须在使用高峰期以具成本效益的方式进行扩展。 哪种解决方案能够以最少的开发工作量满足这些要求?",
     "options": {
       "A": "将餐厅数据迁移到 Amazon OpenSearch Service。实现基于关键字的搜索规则，使用自定义分析器和相关性调优，根据菜系类 型、特色和位置等属性查找餐厅。创建 Amazon API Gateway HTTP API 端点，将用户查询转换为结构化的搜索参数。",
-      "B": "将餐厅数据迁移到 Amazon OpenSearch Service, {%F3 Amazon Bedrock 中的基础模型 (FM) 从餐厅描述、评论和菜单项生成 向量谋入。当用户提交自然语言查询时，使用相同的 FM 将查询转换为戏入向量。执行k近邻 (k-NN) 搜索以找到语义相似的 结果。",
-      "C": "将餐厅数据保留在 PostgresQL 中并实现 pgvector Hf. (FA Amazon Bedrock 中的基础模型 (FM) M487 SEER lea 入。将向量伐入直接存储在 PostgreSQL 中。创建一个 AWS Lambda 函数，使用相同的 FM 将自然语言查询转换为向量表示。 配置该 Lambda 函数在数据库内执行相似度搜索。",
-      "D": "通过自定义摄取管道将餐厅数据迁移到 Amazon Bedrock 知识库中。将知识库配置为自动从餐厅信息生成谋入向量。使用 Amazon Bedrock Retrieve API 及其内置向量搜索能力，直接通过自然语言输入查询该知识库。"
+      "B": "将餐厅数据迁移到 Amazon OpenSearch Service, 使用 Amazon Bedrock 中的基础模型 (FM) 从餐厅描述、评论和菜单项生成 向量嵌入。当用户提交自然语言查询时，使用相同的 FM 将查询转换为嵌入向量。执行k近邻 (k-NN) 搜索以找到语义相似的 结果。",
+      "C": "将餐厅数据保留在 PostgreSQL 中并实现 pgvector 扩展。使用 Amazon Bedrock 中的基础模型 (FM) 生成向量嵌入。将向量嵌入直接存储在 PostgreSQL 中。创建一个 AWS Lambda 函数，使用相同的 FM 将自然语言查询转换为向量表示。 配置该 Lambda 函数在数据库内执行相似度搜索。",
+      "D": "通过自定义摄取管道将餐厅数据迁移到 Amazon Bedrock 知识库中。将知识库配置为自动从餐厅信息生成嵌入向量。使用 Amazon Bedrock Retrieve API 及其内置向量搜索能力，直接通过自然语言输入查询该知识库。"
     },
     "answer": "B",
     "explanations": {
@@ -592,7 +592,7 @@
     "explanations": {
       "A": "A. Zero-shot CoT + 显式事实核查 结论: 不选。 原因 : CoT会增加输出token与推理时间，更难稳定满足3秒/篇 (尤其长文档摘要) 。 “让模型自我事实核查“并不等于真正核查: 若没有外部证据源/检索，模型仍可能在“核查步骤\"里继续编造。 在生产中通常更推荐: RAG/grounding + (必要时) 外部校验，而非依赖模型自证。",
       "B": "B. 使用RAG + Bedrock knowledge base + 语义分块 + 调优嵌入 结论: 选。 原因 : 通过语义分块把长文档拆成可检索、信息密度更高的片段，减少'整篇塞入导致注意力分散\"。 通过向量检索将与摘要相关的片段注入上下文，使输出grounded in source content，显著降低幻觉与编造细节。 可满足性能: 向量检索低延迟 (毫秒级到百毫秒级常见) ，再加一次生成调用，整体更容易控制在3秒/篇; 吞吐上也可并发扩展。 “tuned embeddings“有助于提升召回与相关性，进一步提升事实一致性与摘要质量。",
-      "C": "C. 配置Bedrock guardrails: 阻止匹配“幻觉模式“的输出 结论: 倾向选 (作为与B组合的第二个手段) 。 原因: Guardrails可以作为输出侧的约束与风险控制: 当输出包含不符合策略/要求的内容时，能够拦截或要求改写，从而降低\"明显不合 规/不应出现”的内容风险。 昌然选项表述为\"匹配幻觉模式的pattern“比较理想化 (现实里幻觉不易用简单pattern覆盖) ，但在考试语境中，Guardrails常被视 为减少不当输出/提升可靠性的一环。 性能方面: Guardrails通常属于轻量策略检查/过滤链路，相比乡轮推理与自我核查，更可能满足3秒/篇 (具体取决于实现与链 路) 。 与8互补: B负责“让模型有材料可依\"“，C负责“对输出进行约束/拦截\"，组合更贴近“降低幻觉+达成事实准确目标“。",
+      "C": "C. 配置Bedrock guardrails: 阻止匹配“幻觉模式“的输出 结论: 倾向选 (作为与B组合的第二个手段) 。 原因: Guardrails可以作为输出侧的约束与风险控制: 当输出包含不符合策略/要求的内容时，能够拦截或要求改写，从而降低\"明显不合 规/不应出现”的内容风险。 虽然选项表述为\"匹配幻觉模式的pattern“比较理想化 (现实里幻觉不易用简单pattern覆盖) ，但在考试语境中，Guardrails常被视 为减少不当输出/提升可靠性的一环。 性能方面: Guardrails通常属于轻量策略检查/过滤链路，相比乡轮推理与自我核查，更可能满足3秒/篇 (具体取决于实现与链 路) 。 与8互补: B负责“让模型有材料可依\"“，C负责“对输出进行约束/拦截\"，组合更贴近“降低幻觉+达成事实准确目标“。",
       "D": "D. 提高temperature 结论: Fie, IRA: temperature越高随机性越强，通常会增加发散与编造风险，不利于事实准确与一致性。",
       "E": "E. 一次性总结整篇文档 (one pass) 结论: 不选。 原因: 这基本就是题干现状 (full document in a single input) ，已导致幻觉激增; 继续这么做无法解决根因。 长文档单次灌入会带来上下文稀释、截断风险、关键信息不聚焦，从而增加幻觉。 4"
     }
@@ -603,9 +603,9 @@
     "type": "single",
     "question": "一家公司的推荐系统正在运行。该系统的应用程序运行在 Amazon EC2 实例上。应用程序会对 Amazon Bedrock 基础模型 (FM ) 发起 API 调用，以分析客户行为并生成个性化产品推荐。 系统正在经历间歇性问题。一些推荐结果与客户偏好不匹配。公司需要一个可观测性解决方案来监控运莒指标，并检测与既定基线 相比的运营性能下降模式。当 FM 的行为偏离预期模式时，该解决方案还必须在 10 分钟内生成包含关联数据的告警。 哪种解决方案将满足这些要求?",
     "options": {
-      "A": "为应用程序基础设施配置 Amazon CloudWatch Container Insights, AZEIREMEIES CloudWatch 告警。通过使用 CloudWatch 嵌入式指标格式添加按令牌数量统计的自定义指标。创建 CloudWatch 控制面板以可视化数据。",
+      "A": "为应用程序基础设施配置 Amazon CloudWatch Container Insights, 并配置 CloudWatch 告警。通过使用 CloudWatch 嵌入式指标格式添加按令牌数量统计的自定义指标。创建 CloudWatch 控制面板以可视化数据。",
       "B": "实施 AWS X-Ray 以跟踪请求在应用程序组件中的流转。启用 CloudWatch Logs Insights 进行错误模式检测。设置 AWS CloudTrail 来监控对 Amazon Bedrock 的所有 API 调用。在 Amazon QuickSight 中创建自定义控制面板。",
-      "C": "为应用程序资源启用 Amazon CloudWatch Application Insights。通过使用带有请求类型和用户细分维度的 CloudWatch #RAZt 指标格式，为推荐质量、令牌使用量和响应延迟创建自定义指标。在模型指标上配置 CloudWatch 异常检测。使用 CloudWatch Logs Insights 建立日志模式分析。",
+      "C": "为应用程序资源启用 Amazon CloudWatch Application Insights。通过使用带有请求类型和用户细分维度的 CloudWatch 嵌入式指标格式，为推荐质量、令牌使用量和响应延迟创建自定义指标。在模型指标上配置 CloudWatch 异常检测。使用 CloudWatch Logs Insights 建立日志模式分析。",
       "D": "使用带有 Observability 插件的 Amazon OpenSearch Service。通过使用 Amazon Kinesis 摄取模型指标和日志。创建自定义的 Piped Processing Language (PPL) 查询以分析模型行为模式。建立运营控制面板以实时可视化异常。"
     },
     "answer": "C",
@@ -663,7 +663,7 @@
       "A": "将数据集导入到一个 Amazon S3 存储桶中。提供适当的 IAM 权限和跨源资源共享 (CORs) 权限，以便评估作业能够访问这些 数据集。",
       "B": "将数据集导入到一个 Amazon S3 存储桶中。提供适当的 IAM 权限和 VPC 端点配置，以便评估作业能够访问这些数据集。",
       "C": "配置一个 AWS Lambda 函数，以在 Amazon Bedrock 控制台中按计划创建模型评估作业。提供包含数据集的 S3 存储桶的 URI 作为输入。将评估作业配置为针对文本生成衡量真实世界知识 (RWK) 分数，并针对摘要衡量 BERT Score。再配置第二个 Lambda 函数来检查作业状态并将自定义日志发布到 Amazon CloudWatch。创建一个自定义的 Amazon CloudWatch Logs Insights 仪表板。",
-      "D": "FRiTKISEFA Amazon SageMaker Clarify 创建模型评估作业。使用开源框架创建并运行标准化评估。将结果发布到 Amazon CloudWatch 命名空间。使用词错误率分数作为文本生成的准确性指标，并使用毒性 (toxicity) 作为摘要的准确性指标。配置一 4S AWS Lambda 函数来检查作业状态并将自定义日志发布到 CloudWatch。创建一个自定义的 Amazon CloudWatch Logs Insights 仪表板。",
+      "D": "使用 Amazon SageMaker Clarify 创建模型评估作业。使用开源框架创建并运行标准化评估。将结果发布到 Amazon CloudWatch 命名空间。使用词错误率分数作为文本生成的准确性指标，并使用毒性 (toxicity) 作为摘要的准确性指标。配置一个 AWS Lambda 函数来检查作业状态并将自定义日志发布到 CloudWatch。创建一个自定义的 Amazon CloudWatch Logs Insights 仪表板。",
       "E": "Run an Amazon SageMaker AI notebook job on a schedule by using the fmevals or ragas framework to run evaluations that\nuse the datasets in the S3 bucket. Write Python code in the notebook that makes direct InvokeModel API calls to the FMs and\nprocesses their responses for evaluation. Publish job status and results to Amazon CloudWatch Logs to measure the real world"
     },
     "answer": [
@@ -704,7 +704,7 @@
     "question": "一家银行正在构建一个生成式 AI (GenAI) 应用程序，该应用程序使用 Amazon Bedrock 通过扫描的财务文档来评估贷款申请。该 应用程序必须从文档中提取结构化数据。该应用程序必须在推理之前对个人身份信息 (Pil) 进行脱敏处理。该应用程序必须使用基 础模型 (FM) 来生成审批结果。该应用程序必须将低置信度的文档提取结果路由给与贷款申请人位于同一 AWS 区域内的人工审核 人员。 公司必须确保该应用程序符合严格的区域数据驻留和可审计性要求。该应用程序必须能够扩展以每天处理 25,000 份申请，并提供 99.9% 的可用性。 以下哪种解决方案组合将满足这些要求?” (选择三个。 )",
     "options": {
       "A": "在同一区域内部署 Amazon Textract 和 Amazon Augmented AI (Amazon A2I) ，以从扫描文档中提取相关数据。将低置信度页 面路由给人工审核人员。",
-      "B": "(EFA AWS Lambda 函数在推理之前检测并对已提交文档中的 Pll 进行脱敏处理。应用 Amazon Bedrock 防护栏 (guardrails) 以 防止模型输出中出现不适当或未授权的内容。配置特定区域的 IAM 角色以强制执行数据驻留要求，并控制对已提取数据的访 问。",
+      "B": "使用 AWS Lambda 函数在推理之前检测并对已提交文档中的 PII 进行脱敏处理。应用 Amazon Bedrock 防护栏 (guardrails) 以 防止模型输出中出现不适当或未授权的内容。配置特定区域的 IAM 角色以强制执行数据驻留要求，并控制对已提取数据的访 问。",
       "C": "使用 Amazon Kendra 和 Amazon OpenSearch Service 在推理之前从上传的文档中以语义方式提取字段级别的值。",
       "D": "将上传的文档存储在 Amazon S3 中并应用对象元数据。配置 IAM 策略以将原始文档存储在与每位申请人相同的区域内。启用对 象标记以用于未来审计。",
       "E": "Use AWS Glue Data Quality to validate the structured document data. Use AWS Step Functions to orchestrate a review\nworkflow that includes a prompt engineering step that transforms validated data into optimized prompts before invoking\nAmazon Bedrock to assess loan applications.",
@@ -730,15 +730,15 @@
     "type": "single",
     "question": "一家软件公司正在使用 Amazon Q Business 构建一个 AI 助手，使员工能够通过自然语言提示访问公司信息和个人信息。该公司将 这些信息存储在一个 Amazon S3 存储桶中。 公司中的每个部门在 S3 存储桶中都有一个专用前缀。每个对象名称都包含其所属部门的 S3 前缀。每个部门只能属于 AWS IAM Identity Center 中的一个组。每个员工只属于一个部门。 该公司将 Amazon Q Business 配置为访问存储在 S3 存储桶中的数据作为数据源。公司需要确保 AI 助手根据用户的 IAM Identity Center 组成员身份来遵循访问控制。 哪种解决方案能以最少的运维开销满足此要求?",
     "options": {
-      "A": "在每个部门文件夹中创建一个名为 acljson 的 JSON 文件。在每个文件中，创建访问控制条目，用于指定应有权访问该部门数据 AY IAM Identity Center 组。在数据源设置的 Access Control 部分指明该 JSON 文件的位置。",
-      "B": "在 S3 存储桶的顶层创建一个名为 acljson 的单一JSON 文件。添加访问控制条目，将每个部门的 S3 前缀映射到其对应的 IAM Identity Center 组。在数据源设置的 Access Control 部分指明该 JSON 文件的位置。",
+      "A": "在每个部门文件夹中创建一个名为 acl.json 的 JSON 文件。在每个文件中，创建访问控制条目，用于指定应有权访问该部门数据的 IAM Identity Center 组。在数据源设置的 Access Control 部分指明该 JSON 文件的位置。",
+      "B": "在 S3 存储桶的顶层创建一个名为 acl.json 的单一JSON 文件。添加访问控制条目，将每个部门的 S3 前缀映射到其对应的 IAM Identity Center 组。在数据源设置的 Access Control 部分指明该 JSON 文件的位置。",
       "C": "为每个 IAM Identity Center 组创建一个单独的权限集，用于拒绝访问 S3 存储桶中的所有前缀。为每个组在权限集中添加一个 StringNotEquals 条件键，用于指定每个组所关联的部门。将这些权限集附加到 Identity Center 组。",
       "D": "在 S3 存储桶的顶层创建一个名为 metadata json 的元数据文件。在文件中添加一个 AccessControllist 对象，用于指定每个部门 前缀的 S3 路径。指定应有权访问每个部门前缀的 IAM Identity Center 组。在数据源元数据设置中引用该文件位置。"
     },
     "answer": "B",
     "explanations": {
-      "A": "选项 A. 每个部门文件夹各放一个 acljson，并在数据源 Access Control 指定该 ISON 文件位置 正确性: 思路接近“用 ACL 文件控制访问“，在方向上是对的。 fg: 每个部门一个文件意味着: 1) 文件数量随部门数增长; 2) 新增/变更部门时要新增/修改对应文件; 3) 运维分散，容易漏配 或格式不一致。 结论: 能满足需求，但不是最小运维开销。 B. 在 S3 顶层放一个 acljson，写入“部门前缀 — 对应 Identity Center 组“的映射，并在数据源 Access Control 指定该文件 正确性: 符合 Q Business 对 S3 数据源进行文档级访问控制的常见做法: 用单一 ACL 文件集中管理授权规则。 满足题目所有约束: 1) 每个部门一个前缀; 2) 每个部门对应唯一一个 Identity Center 组; 3) 员工属于单一部门 〈单组匹配逻辑简 单) ; 4) Q Business 在检索时按组过滤文档。 运维开销最低: 只维护一个文件即可完成所有部门映射，变更集中、可审计。 结论: Tei, BES “LEAST operational overhead”, C. 给每个 Identity Center 48% permissions set, FA IAM 策略拒绝除本部门前缀外所有前缀 核心问题: 这是在做\"用户到 S3 的 IAM 授权“，而题目要解决的是“Q Business AI 助手回答时的访问控制“。 为什么不匹配: 1) Q Business 索引/检索通常是通过数据源连接角色访问 S3，而不是让最终用户用各自权限去读 S3; 2) 即使你把 用户的 S3 权限限制住，Q Business 仍可能在索引侧读到数据; 若没有 Q Business 层的 ACL 过滤，仍无法保证回答时按",
-      "B": "B. 在 S3 顶层放一个 acljson，写入“部门前缀 — 对应 Identity Center 组“的映射，并在数据源 Access Control 指定该文件 正确性: 符合 Q Business 对 S3 数据源进行文档级访问控制的常见做法: 用单一 ACL 文件集中管理授权规则。 满足题目所有约束: 1) 每个部门一个前缀; 2) 每个部门对应唯一一个 Identity Center 组; 3) 员工属于单一部门 〈单组匹配逻辑简 单) ; 4) Q Business 在检索时按组过滤文档。 运维开销最低: 只维护一个文件即可完成所有部门映射，变更集中、可审计。 结论: Tei, BES “LEAST operational overhead",
+      "A": "选项 A. 每个部门文件夹各放一个 acl.json，并在数据源 Access Control 指定该 ISON 文件位置 正确性: 思路接近“用 ACL 文件控制访问“，在方向上是对的。 fg: 每个部门一个文件意味着: 1) 文件数量随部门数增长; 2) 新增/变更部门时要新增/修改对应文件; 3) 运维分散，容易漏配 或格式不一致。 结论: 能满足需求，但不是最小运维开销。 B. 在 S3 顶层放一个 acl.json，写入“部门前缀 — 对应 Identity Center 组“的映射，并在数据源 Access Control 指定该文件 正确性: 符合 Q Business 对 S3 数据源进行文档级访问控制的常见做法: 用单一 ACL 文件集中管理授权规则。 满足题目所有约束: 1) 每个部门一个前缀; 2) 每个部门对应唯一一个 Identity Center 组; 3) 员工属于单一部门 〈单组匹配逻辑简 单) ; 4) Q Business 在检索时按组过滤文档。 运维开销最低: 只维护一个文件即可完成所有部门映射，变更集中、可审计。 结论: Tei, BES “LEAST operational overhead”, C. 给每个 Identity Center 48% permissions set, FA IAM 策略拒绝除本部门前缀外所有前缀 核心问题: 这是在做\"用户到 S3 的 IAM 授权“，而题目要解决的是“Q Business AI 助手回答时的访问控制“。 为什么不匹配: 1) Q Business 索引/检索通常是通过数据源连接角色访问 S3，而不是让最终用户用各自权限去读 S3; 2) 即使你把 用户的 S3 权限限制住，Q Business 仍可能在索引侧读到数据; 若没有 Q Business 层的 ACL 过滤，仍无法保证回答时按",
+      "B": "B. 在 S3 顶层放一个 acl.json，写入“部门前缀 — 对应 Identity Center 组“的映射，并在数据源 Access Control 指定该文件 正确性: 符合 Q Business 对 S3 数据源进行文档级访问控制的常见做法: 用单一 ACL 文件集中管理授权规则。 满足题目所有约束: 1) 每个部门一个前缀; 2) 每个部门对应唯一一个 Identity Center 组; 3) 员工属于单一部门 〈单组匹配逻辑简 单) ; 4) Q Business 在检索时按组过滤文档。 运维开销最低: 只维护一个文件即可完成所有部门映射，变更集中、可审计。 结论: Tei, BES “LEAST operational overhead",
       "C": "C. 给每个 Identity Center 48% permissions set, FA IAM 策略拒绝除本部门前缀外所有前缀 核心问题: 这是在做\"用户到 S3 的 IAM 授权“，而题目要解决的是“Q Business AI 助手回答时的访问控制“。 为什么不匹配: 1) Q Business 索引/检索通常是通过数据源连接角色访问 S3，而不是让最终用户用各自权限去读 S3; 2) 即使你把 用户的 S3 权限限制住，Q Business 仍可能在索引侧读到数据; 若没有 Q Business 层的 ACL 过滤，仍无法保证回答时按组隔离; 3) 为每个组维护权限集与条件策略，运维负担大、复杂度高，且容易策略出错。 结论: 不满足题意/不推荐，且运维开销不低。",
       "D": "D. 顶层 metadata.json ，里面放 AccessControlList 对象，走“数据源元数据设置\"引用 疑点: 该选项描述的是\"元数据文件 + AccessControlList 对象 + metadata settings\"。对 Q Business 而言，S3 数据源的访问控制通 常是在Access Control (访问控制) 配置中引用 ACL 文件，而不是用“metadata settings“去承载访问控制逻辑。 风险: 1) 该描述更像把访问控制混入“元数据导入“机制，可能不被 S3 数据源的访问控制功能按预期解析; 2) 即使存在元数据机 制，也不如直接使用 Access Control 部分引用 ACL 文件来得标准和确定。 结论: 不如 B 直接、明确，且可能不符合实际支持的配置路径。  4"
     }
@@ -787,7 +787,7 @@
     "type": "single",
     "question": "一家媒体公司正在推出一个平台，该平台允许每小时有数干名用户上传图像和文本内容。该平台使用 Amazon Bedrock 来处理上传 的内容，以生成创意作品。 该公司需要一个解决方案，以确保平台不会处理或生成不适当的内容。平台必须不能在作品中暴露个人身份信息 (PI)。该解决方案 必须与公司现有的 Amazon S3 存储工作流集成。 哪种解决方案能够以最少的基础设施管理开销满足这些要求?",
     "options": {
-      "A": "来对数据进行预处理。创建一个 CloudWatch 告警来监控 Amazon Comprehend Pll 检测事件。创建一个包含Amazon Rekognition 图像审核步骤的 AWS Step Functions 工作流。",
+      "A": "来对数据进行预处理。创建一个 CloudWatch 告警来监控 Amazon Comprehend PII 检测事件。创建一个包含Amazon Rekognition 图像审核步骤的 AWS Step Functions 工作流。",
       "B": "使用带有请求验证模板的 Amazon API Gateway HTTP API，在将上传内容存储到 Amazon S3 之前对内容进行筛查。使用 Amazon SageMaker AI 构建自定义内容审核模型，在将处理后的内容发送到 Amazon Bedrock 之前对内容进行处理。",
       "C": "创建一个使用预身份验证 AWS Lambda 函数运行内容审核检查的 Amazon Cognito 用户池。在多许用户将内容上传到平台之 前，使用Amazon Textract 过滤文本内容，并使用 Amazon Rekognition 过滤图像内容。",
       "D": "创建一个使用内置 Amazon Bedrock guardrails 来过滤内容的 AWS Step Functions 工作流。使用 Amazon Comprehend PII 检测 对内容进行预处理。使用Amazon Rekognition 图像审核。"
@@ -846,7 +846,7 @@
     "options": {
       "A": "在不更改现有分块或预处理策略的情况下，将嵌入向量维度从 768 提高到 4,096.",
       "B": "用存储在 Amazon S3 中的静态预写摘要蔡换动态检索。使用 Amazon CloudFront 分发这些摘要，以减少计算需求并提高可预测 性。",
-      "C": "更新分块策略，使用语义边界 (例如完整的法律论证、条款或章节) ，而不是固定 token 限制。重新生成向量谋入，以与新的 分块结构对齐。",
+      "C": "更新分块策略，使用语义边界 (例如完整的法律论证、条款或章节) ，而不是固定 token 限制。重新生成向量嵌入，以与新的 分块结构对齐。",
       "D": "从 OpenSearch Service 迁移到 Amazon DynamoDB。实现基于关键词的索引，以便对法律概念进行更快的查找。"
     },
     "answer": "C",
@@ -901,7 +901,7 @@
     "type": "single",
     "question": "一家公司使用 Amazon Bedrock 构建一个检索增强生成 (RAG) 系统。该 RAG 系统使用一个 Amazon Bedrock 知识库，该知识库以 一个Amazon S3 存储桶作为紧急新闻视频内容的数据源。系统从该 S3 存储桶中检索转录文本、归档报告以及相关文档。 该 RAG 系统使用最先进的庶入模型和高性能的检索配置。然而，用户反馈响应缓慢目结果不相关，导致用户满意度下降。公司注意 到，向量搜索正在跨过多内容类型并在过长时间跨度内评估过多文档。 公司判定底层模型不会从额外的微调中获益。公司必须通过应用更智能的约束来提高检索准确性。公司希望一个对现有架构改动最 小的解决方案。 哪种解决方案能满足这些要求?",
     "options": {
-      "A": "通过使用专门针对紧急新闻内容训练的领域自适应模型来增强戏入，以提升向量相似度。",
+      "A": "通过使用专门针对紧急新闻内容训练的领域自适应模型来增强嵌入，以提升向量相似度。",
       "B": "迁移到 Amazon OpenSearch service。使用向量字段和元数据过滤器来定义结果检索的范围。",
       "C": "在 Amazon Bedrock 知识库中启用元数据感知过滤，通过索引 S3 对象元数据。",
       "D": "迁移到 Amazon Q Business 索引，以在检索期间执行结构化元数据过滤和文档分类。"
@@ -937,19 +937,19 @@
     "exam": "AIP-C01",
     "id": 48,
     "type": "single",
-    "question": "一名 GenAI 开发人员正在构建一个基于检索增强生成 (RAG) 的客户支持应用程序，该应用程序使用Amazon Bedrock 基础模型 (FM) 。该应用程序需要处理 50 GB 的历史客户对话，这些对话以JSON 文件形式存储在 Amazon S3 存储桶中。该应用程序必须 将处理后的数据用作其检索语料库。应用程序的数据处理工作流必须从客户支持文档中提取相关数据、移除客户个人身份信息 (Pll) ，并生成用于向量存储的嵌入。该处理工作流必须具有成本效益，并且必须在 4 小时内完成。 哪种解决方案能够以最低的运维开销满足这些要求?",
+    "question": "一名 GenAI 开发人员正在构建一个基于检索增强生成 (RAG) 的客户支持应用程序，该应用程序使用Amazon Bedrock 基础模型 (FM) 。该应用程序需要处理 50 GB 的历史客户对话，这些对话以JSON 文件形式存储在 Amazon S3 存储桶中。该应用程序必须 将处理后的数据用作其检索语料库。应用程序的数据处理工作流必须从客户支持文档中提取相关数据、移除客户个人身份信息 (PII) ，并生成用于向量存储的嵌入。该处理工作流必须具有成本效益，并且必须在 4 小时内完成。 哪种解决方案能够以最低的运维开销满足这些要求?",
     "options": {
       "A": "使用 AWS Lambda 和 Amazon Comprehend 并行处理文件、移除 PlI，并调用Amazon Bedrock API 生成向量。配置 Lambda 并 发限制和内存设置以优化吞吐量。",
-      "B": "创建一个 AWS Glue ETL 作业，在数据上运行 Pll 检测脚本。使用Amazon SageMaker Processing 运行 HuggingFaceProcessor，通过预训练模型生成戏入。将伐入存储在 Amazon OpenSearch Service 中。",
-      "C": "部署一个运行 Apache Spark 的 Amazon EMR 集群，并使用调用 Amazon Comprehend 来检测 Pll 的用户自定义函数 (UDF) 。 使用Amazon Bedrock API 生成向量。将输出存储在启用了 pgvector 扩展的 Amazon Aurora PostgreSQL 中。",
-      "D": "实现一个数据处理管道，使用 AWS Step Functions 编排一个工作负载，该工作负载使用Amazon Comprehend 检测 Pll, FFE FA Amazon Bedrock 生成戏入。将工作流直接与 Amazon OpenSearch Serverless 集成，以存储向量并提供相似性搜索能力。"
+      "B": "创建一个 AWS Glue ETL 作业，在数据上运行 PII 检测脚本。使用Amazon SageMaker Processing 运行 HuggingFaceProcessor，通过预训练模型生成嵌入。将嵌入存储在 Amazon OpenSearch Service 中。",
+      "C": "部署一个运行 Apache Spark 的 Amazon EMR 集群，并使用调用 Amazon Comprehend 来检测 PII 的用户自定义函数 (UDF) 。 使用Amazon Bedrock API 生成向量。将输出存储在启用了 pgvector 扩展的 Amazon Aurora PostgreSQL 中。",
+      "D": "实现一个数据处理管道，使用 AWS Step Functions 编排一个工作负载，该工作负载使用Amazon Comprehend 检测 PII，并使用 Amazon Bedrock 生成嵌入。将工作流直接与 Amazon OpenSearch Serverless 集成，以存储向量并提供相似性搜索能力。"
     },
     "answer": "D",
     "explanations": {
       "A": "A. Lambda + Comprehend 并行处理 + Bedrock RAS (未说明向量库) 优点: Serverless; 可并行; 与 Comprehend/Bedrock API 集成自然;成本按调用计费，空闲成本低。 主要问题: 缺关键环节: 选项没有说明将embeddings 写入哪种\"向量存储/检索系统\"。题目要求\"作为 retrieval corpus\"“，通常意味着需要可检 索的向量库 (如 OpenSearch/pgvector 等) 。 批量 50GB 的工程复杂度: Lambda 需要自行处理分片、错误重试、居等、吞吐调优 (并发/内存/超时/队列) ，运维与工程实现细 节不少。 时限风险点: 是否能在 4 小时内完成取决于文件数量、单文件大小、Comprehend/Bedrock TPS 配额、Lambda 并发与背压控制; 虽然可行但需要更多调参与架构补齐。 结论: 不完整目整体运维/工程开销不一定最小，因此不优。",
-      "B": "B. Glue ETL 做 Pll + SageMaker Processing (HuggingFaceProcessor) 做embeddings + OpenSearch 优点: 适合批处理; OpenSearch 作为向量库清晰; 可在 Processing 中控制资源规模以满足 4 小时窗口。 主要问题: 运维开销较高: Glue 作业 (脚本、依赖、DPU/Worker 配置、调度、重试) + SageMaker Processing (镜像/依赖/实例规格/网络权 限) + OpenSearch (域或无服务器集合) 组件较多。 偏离 Bedrock 托管优势: 用自管/自跑的预训练模型生成 embeddings (HuggingFaceProcessor) 通常不如直接用 Bedrock 托管 embeddings 简洁省心 (也更符合“使用Amazon Bedrock FMs'“的背景) 。 成本不确定: SageMaker Processing 跑模型推理通常需要较多计算资源，成本可能高于直接调用 Bedrock embeddings (视规模而 定) 。 结论: 能做，但不符合\"最小运维开销\"。",
+      "B": "B. Glue ETL 做 PII + SageMaker Processing (HuggingFaceProcessor) 做embeddings + OpenSearch 优点: 适合批处理; OpenSearch 作为向量库清晰; 可在 Processing 中控制资源规模以满足 4 小时窗口。 主要问题: 运维开销较高: Glue 作业 (脚本、依赖、DPU/Worker 配置、调度、重试) + SageMaker Processing (镜像/依赖/实例规格/网络权 限) + OpenSearch (域或无服务器集合) 组件较多。 偏离 Bedrock 托管优势: 用自管/自跑的预训练模型生成 embeddings (HuggingFaceProcessor) 通常不如直接用 Bedrock 托管 embeddings 简洁省心 (也更符合“使用Amazon Bedrock FMs'“的背景) 。 成本不确定: SageMaker Processing 跑模型推理通常需要较多计算资源，成本可能高于直接调用 Bedrock embeddings (视规模而 定) 。 结论: 能做，但不符合\"最小运维开销\"。",
       "C": "C. EMR Spark + UDF 调 Comprehend PII + Bedrock embeddings + Aurora pgvector 优点: EMR/Spark 适合大规模批处理; Aurora pgvector 可做向量检索 (一定规模下可行) 。 主要问题: 运维开销最大: EMR 集群 (容量规划、什缩、故障节点、作业调优、依赖管理) 明显高于 Serverless 方案。 外部 API 调用模式不理想: 在 Spark UDF 中对 Comprehend/Bedrock 做大量外部同步调用，容易遇到吞吐/限流/重试风暴/任务拖 慢等工程问题。 成本与复杂度: 为 50GB 数据短时任务起 EMR 集群通常不如 Serverless 经济省心 (除非还有大量复杂 ETL 需求) 。 结论: 不符合\"最小运维开销\"。",
-      "D": "D. Step Functions 编排: Comprehend Pll + Bedrock embeddings + 直接集成 OpenSearch Serverless 优点: 运维开销低: Step Functions 负责编排、并行、重试、可视化; OpenSearch Serverless 减少集群运维; BENG fig Serverless。 流程完整: Pll 检测/清洗 ~ embeddings -~ 向量写入并提供相似度检索能力 (retrieval corpus) 。 满足 4 小时窗口的手段明确: 可用 Step Functions 的并行 (例如 Map/Distributed Map 思路) 对 S3 文档分片处理，并结合服务端 重试/限流控制，提升吞吐并控制失败恢复。  ”成本有效: 按使用计费 (编排/调用/Serverless 检索) ，避免长期集群成本。 可能的疑点: Step Functions 本身是编排服务，仍需要“任务执行者”(常见是 Lambda/ECs/Batch 等) 。但选项表述为\"编排一个工作负载\"，在考 试语境中通常默认底层任务由可集成的计算或服务 API 承担。 结论: 在给定选项中，最符合完整 + Serverless + 最小运维开销\"。 4"
+      "D": "D. Step Functions 编排: Comprehend PII + Bedrock embeddings + 直接集成 OpenSearch Serverless 优点: 运维开销低: Step Functions 负责编排、并行、重试、可视化; OpenSearch Serverless 减少集群运维; BENG fig Serverless。 流程完整: PII 检测/清洗 ~ embeddings -~ 向量写入并提供相似度检索能力 (retrieval corpus) 。 满足 4 小时窗口的手段明确: 可用 Step Functions 的并行 (例如 Map/Distributed Map 思路) 对 S3 文档分片处理，并结合服务端 重试/限流控制，提升吞吐并控制失败恢复。  ”成本有效: 按使用计费 (编排/调用/Serverless 检索) ，避免长期集群成本。 可能的疑点: Step Functions 本身是编排服务，仍需要“任务执行者”(常见是 Lambda/ECs/Batch 等) 。但选项表述为\"编排一个工作负载\"，在考 试语境中通常默认底层任务由可集成的计算或服务 API 承担。 结论: 在给定选项中，最符合完整 + Serverless + 最小运维开销\"。 4"
     }
   },
   {
@@ -997,7 +997,7 @@
     "question": "一家公司使用 Amazon Bedrock 来开发一个 AI 助手以提供客户支持。分析显示，409% 的客户查询会使用不同的措辞或用词来询问 相同的问题。 该公司想要一种解决方案来减少九余的模型调用。该解决方案必须确保语义等价的问题获得一致的答案。该解决方案必须确保低延 迟。 哪种解决方案将满足这些要求?",
     "options": {
       "A": "部署一个Amazon DynamoDB Accelerator (DAX) 集群作为内存缓存。将查询文本指定为分区键，将模型响应文本指定为排序 键。使用带有 LIKE 运算符的筛选表达式查询缓存。",
-      "B": "使用Amazon Bedrock 从客户查询中生成谋入向量。使用 Amazon MemoryDB for Valkey 来存储向量谋入和模型响应的哈希集 合。使用 RANGE 查询来查找相似的查询及其响应。",
+      "B": "使用Amazon Bedrock 从客户查询中生成嵌入向量。使用 Amazon MemoryDB for Valkey 来存储向量嵌入和模型响应的哈希集 合。使用 RANGE 查询来查找相似的查询及其响应。",
       "C": "ABBAS k 最近邻 (k-NN) 功能的 Amazon OpenSearch Service 来存储查询-响应文本对。使用近似 k-NN 技术来查找相似的 查询及其响应。",
       "D": "通过使用 Amazon DynamoDB 创建一个基于规范化查询文本的全局二级索引来创建缓存解决方案。对传入查询应用词干提取。 查询已缓存客户查询的索引。"
     },
@@ -1184,12 +1184,12 @@
     "exam": "AIP-C01",
     "id": 61,
     "type": "single",
-    "question": "一家银行正在开发一个由生成式 AI (GenAI) 驱动的 AI 助手，该助手使用 Amazon Bedrock 来帮助银行网站用户进行账户查询和提 供财务指导。该银行必须确保 AI 助手在与客户互动时不会泄露任何个人身份信息 (PI) 。 AI 助手不得在发送给 GenAI 模型的提示 (prompt) 中包含 Pll。AI 助手不得响应客户提供投资建议的请求。银行必须收集所有客户 交互的审计日志，包括在客户交互期间传输的任何图像或文档。 哪种解决方案能以最少的运维工作量满足这些要求?",
+    "question": "一家银行正在开发一个由生成式 AI (GenAI) 驱动的 AI 助手，该助手使用 Amazon Bedrock 来帮助银行网站用户进行账户查询和提 供财务指导。该银行必须确保 AI 助手在与客户互动时不会泄露任何个人身份信息 (PI) 。 AI 助手不得在发送给 GenAI 模型的提示 (prompt) 中包含 PII。AI 助手不得响应客户提供投资建议的请求。银行必须收集所有客户 交互的审计日志，包括在客户交互期间传输的任何图像或文档。 哪种解决方案能以最少的运维工作量满足这些要求?",
     "options": {
       "A": "使用 Amazon Macie 检测并脱敏用户输入和模型响应中的 PII。应用提示词工程技术以强制模型避开投资建议主题。使用 AWS CloudTrail 捕获对话日志。",
-      "B": "使用 AWS Lambda 函数和 Amazon Comprehend 检测并脱敏 Pll。使用Amazon Comprehend 主题建模来防止 AI 助手讨论投资 建议主题。在 Amazon CloudWatch 中设置自定义指标以捕获客户对话。",
-      "C": "配置 Amazon Bedrock 防护栏 (guardrails) ，应用敏感信息策略来检测并过滤 Pll。设置主题策略以确保 AI 助手避开投资建议 主题。使用 Converse API 记录模型调用。启用投递日志和图像日志到 Amazon S3。",
-      "D": "使用正则表达式 (regex) 控制来匹配 Pll 的模式。应用提示词工程技术以避免向客户返回 Pll 或投资建议主题。启用模型调用日 志、投递日志和图像日志到 Amazon S3。"
+      "B": "使用 AWS Lambda 函数和 Amazon Comprehend 检测并脱敏 PII。使用Amazon Comprehend 主题建模来防止 AI 助手讨论投资 建议主题。在 Amazon CloudWatch 中设置自定义指标以捕获客户对话。",
+      "C": "配置 Amazon Bedrock 防护栏 (guardrails) ，应用敏感信息策略来检测并过滤 PII。设置主题策略以确保 AI 助手避开投资建议 主题。使用 Converse API 记录模型调用。启用投递日志和图像日志到 Amazon S3。",
+      "D": "使用正则表达式 (regex) 控制来匹配 PII 的模式。应用提示词工程技术以避免向客户返回 PII 或投资建议主题。启用模型调用日 志、投递日志和图像日志到 Amazon S3。"
     },
     "answer": "C",
     "explanations": {
@@ -1225,7 +1225,7 @@
     "question": "一家医疗保健公司正在开发一个文档管理系统，该系统将医学研究论文存储在一个 Amazon S3 存储桶中。公司需要构建一个全面 的元数据框架，以提高用于分析研究论文的生成式 AI (GenAI) 应用程序的搜索精度。该元数据框架必须包括文档时间戳、作者信 息以及研究领域分类。 该解决方案必须在所有上传的文档中保持一致的元数据结构。该解决方案必须使基础模型 (FM) 能够在不访问完整内容的情况下理 哪个解决方案将满足这些要求?",
     "options": {
       "A": "将文档时间戳存储在 Amazon S3 系统元数据中。使用 S3 对象标签来实现领域分类。实现自定义用户定义元数据以存储作者信 息。",
-      "B": "设置带有法务保留 (legal holds) AY S3 Object Lock FRERSCATIEIEL. (EFA S3 对象标签来存储作者信息。实现 S3 RAR (access points) 用于领域分类。",
+      "B": "设置带有法务保留 (legal holds) 的 S3 Object Lock 实现不可变存储。使用 S3 对象标签来存储作者信息。实现 S3 接入点 (access points) 用于领域分类。",
       "C": "使用 S3 Inventory 报告来跟踪文档时间戳。创建 S3 接入点来实现领域分类。在 S3 Storage Lens 仪表板中存储作者信息。",
       "D": "使用自定义用户定义元数据来存储作者信息。使用 S3 Object Lock 保留期限来跟踪文档时间戳。使用 S3 事件通知 (Event Notifications) 来实现领域分类。"
     },
@@ -1488,9 +1488,9 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "选项 A. 固定 1 秒延迟的自定义重试 + CloudWatch 告警 优点: CloudWatch 告警能监控错误率/延迟，有重试思路。 问题 1 (重试策略不佳) : 固定 1 秒延迟缺少指数退避与抖动，峰值流量下容易形成\"同步重试\"，放大拥塞与限流，容易造成级联 故障。 问题 2 (缺少分布式追踪) : CloudWatch 指标/告警无法提供跨服务边界的调用链与端到端延迟拆解，难以定位具体延迟贡献者。 问题 3 (难以关联 FM 特征) : 仅靠 CloudWatch 通用指标不足以把问题与特定 modelld/推理参数关联 (除非额外自定义维度与追 踪体系，但该选项未提供) 。 结论：不满足关键要求。",
+      "A": "选项 A. 固定 1 秒延迟的自定义重试 + CloudWatch 告警 优点: CloudWatch 告警能监控错误率/延迟，有重试思路。 问题 1 (重试策略不佳) : 固定 1 秒延迟缺少指数退避与抖动，峰值流量下容易形成\"同步重试\"，放大拥塞与限流，容易造成级联 故障。 问题 2 (缺少分布式追踪) : CloudWatch 指标/告警无法提供跨服务边界的调用链与端到端延迟拆解，难以定位具体延迟贡献者。 问题 3 (难以关联 FM 特征) : 仅靠 CloudWatch 通用指标不足以把问题与特定 modelId/推理参数关联 (除非额外自定义维度与追 踪体系，但该选项未提供) 。 结论：不满足关键要求。",
       “B”: “B. AWS SDK standard retry + 指数退避(含 jitter) + AWS X-Ray annotations 满足瞬时错误处理：standard retry 模式配合指数退避 + jitter 是 AWS 推荐的抗瞬时故障/限流手段之一，可显著降低重试风暴风险。 降低级联故障风险：指数退避与抖动能在 throttling 期间分散重试，减少同步重试导致的雪崩；虽不如 adaptive retry 那样动态限速，但在选项中这是较合理且明确写到 jitter 的方案。 分布式追踪：AWS X-Ray 提供跨服务边界的 trace，可定位链路中各段 latency（应用、下游服务、外部调用等）。 关联 FM 特征：X-Ray annotations 可将如 modelId、provider、inference parameters（temperature/maxTokens/topP）、请求大小等写入 trace，便于过滤与聚合分析，从而把性能问题与特定 FM 特征关联。 结论：满足题目全部核心要求。”,
-      "C": "C. 客户端缓存所有 FM 响应 + 自定义日志记录耗时 问题 1 (不现实/不正确) :“缓存所有 FM 响应\"在实时问答场景通常不可行: 输入高度多样、个性化、时效性强; 缓存命中率不可 控，且可能引入一致性与隐私风险。 问题 2 (不解决 throttling 的级联故障) : 缓存不能系统性解决峰值期间的限流与瞬时错误) 更不等同于合理重试/退避策略。 问题 3 (可观测性不足) : 仪靠自定义日志无法提供跨服务边界的分布式追踪与调用链拆解; 排障成本高，关联分析弱。 结论: 不满足要求。",
+      "C": "C. 客户端缓存所有 FM 响应 + 自定义日志记录耗时 问题 1 (不现实/不正确) :“缓存所有 FM 响应\"在实时问答场景通常不可行: 输入高度多样、个性化、时效性强; 缓存命中率不可 控，且可能引入一致性与隐私风险。 问题 2 (不解决 throttling 的级联故障) : 缓存不能系统性解决峰值期间的限流与瞬时错误) 更不等同于合理重试/退避策略。 问题 3 (可观测性不足) : 仅靠自定义日志无法提供跨服务边界的分布式追踪与调用链拆解; 排障成本高，关联分析弱。 结论: 不满足要求。",
       "D": "D. AWS SDK adaptive retry + CloudTrail 分布式追踪 优点(可靠性更强) : adaptive retry 模式会基于服务端反馈动态调整客户端请求速率，更有利于在限流时避免级联故障。 致命问题 1 (CloudTrail 不是分布式追踪) : CloudTrail 用于记录 AWS API 调用审计事件 〈谁在何时调用了什么) ，并不提供端到 端的分布式追踪与延迟分解能力，无法满足“distributed tracing across service boundaries”, 致命问题 2 (难以做延迟贡献者分析) : CloudTrail 不能像 X-Ray 那样展示服务调用链段耗时，无法有效定位 latency contributors。 结论: 可靠性部分强，但可观测性 (分布式追踪) 不满足题意。 4"
     }
   },
@@ -1559,7 +1559,7 @@
     "options": {
       "A": "将原始视频摄取到 Amazon Rekognition 中以检测动物姿势和表情。使用Amazon Data Firehose 将传感器和 GPS 数据流式传输 到 Amazon S3 数据湖。通过存储在 AWS Systems Manager Parameter Store 中的基础模板来提示 Amazon Bedrock 基础模型 (FM) 。使用IAM 策略控制访问。使用 AWS CloudTrail 进行审计日志记录。",
       "B": "使用Amazon SageMaker Processing 和 Amazon Transcribe 对多模态数据进行预处理。将摘要摄取到 Amazon Bedrock 检索增 强生成 (RAG) 知识库中。应用 Amazon Bedrock 防护栏以限制推测性输出。使用 AWS AppConfig 管理提示词模板。使用 AWS CloudTrail 记录研究活动以用于审计。",
-      "C": "使用Amazon OpenSearch Serverless ATA AAEM 42172851, (FA Amazon Comprehend 提取实体。使用Amazon Bedrock 构建一个用于回答问题的层。将研究摘要诸入到 OpenSearch Serverless 文档中。使用 IAM 控制访问。使用 AWS CloudTrail 记录用户与 AI 助手的交互。",
+      "C": "使用Amazon OpenSearch Serverless 索引行为日志和遥测事件。使用 Amazon Comprehend 提取实体。使用Amazon Bedrock 构建一个用于回答问题的层。将研究摘要嵌入到 OpenSearch Serverless 文档中。使用 IAM 控制访问。使用 AWS CloudTrail 记录用户与 AI 助手的交互。",
       "D": "配置 Amazon Q Business 以在 Amazon S3, Amazon Kinesis 和 Amazon SageMaker Feature Store 之间联邦化数据。配置 Amazon EventBridge 以调用数据摄取作业。使用自定义 AWS Lambda 函数在将结果返回给用户之前过滤大语言模型 (LLM) 输 出以符合伦理要求。"
     },
     "answer": "B",
@@ -1598,12 +1598,12 @@
     "exam": "AIP-C01",
     "id": 82,
     "type": "single",
-    "question": "一家公司正在为一个生成式 AI (GenAI) AUFREERRIRIt—‘* API, TAMFRRERRSEFE— MB Et SR IRS LAS (FM) 。该 API 必须以流式方式返回响应以降低延迟，强制执行令牌限制以管理计算资源使用，并实现重试逻辑以处理模型超时和 部分响应。 哪种解决方案能以最低的运维开销满足这些要求?",
+    "question": "一家公司正在为一个生成式 AI (GenAI) 应用程序设计一个 API，该应用程序使用托管在托管模型服务上的基础模型 (FM)。该 API 必须以流式方式返回响应以降低延迟，强制执行令牌限制以管理计算资源使用，并实现重试逻辑以处理模型超时和部分响应。 哪种解决方案能以最低的运维开销满足这些要求?",
     "options": {
       "A": "将 Amazon API Gateway HTTP API 与 AWS Lambda 函数集成以调用 Amazon Bedrock，使用 Lambda 响应流式传输来流式返回响应。在 Lambda 函数内强制执行令牌限制。通过使用 Lambda 和 API Gateway 的超时配置来为模型超时实现重试逻辑。",
       "B": "将 Amazon API Gateway HTTP API 直接连接到 Amazon Bedrock。通过使用客户端轮询来模拟流式传输。在前端强制执行令牌 限制。通过使用 API Gateway 集成设置来配置重试行为。",
       "C": "将 Amazon API Gateway WebSocket API 连接到托管容器化推理服务器的 Amazon ECS 服务。通过 WebSocket 协议流式传输响 应。在 Amazon ECS 内强制执行令牌限制。通过 ECS 任务生命周期钩子和重启策略来处理模型超时。",
-      "D": "将 Amazon API Gateway REST API 与调用Amazon Bedrock 的 AWS Lambda 函数集成。使用 Lambda 响应流式传输来流式返回 响应。在 Lambda 函数内强制执行令牌限制。通过使用 Lambda 和 API Gateway AYER ACE SCL SAS."
+      "D": "将 Amazon API Gateway REST API 与调用Amazon Bedrock 的 AWS Lambda 函数集成。使用 Lambda 响应流式传输来流式返回 响应。在 Lambda 函数内强制执行令牌限制。通过使用 Lambda 和 API Gateway 的超时配置来实现重试逻辑。"
     },
     "answer": "A",
     "explanations": {
