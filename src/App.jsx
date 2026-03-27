@@ -136,6 +136,9 @@ const initialState = {
   lang: 'zh',        // 'zh' | 'en'
   questionsEn: {},    // { 'CLF-C02-1': questionObj, ... }
 
+  // Loading
+  questionsLoading: true,
+
   // GitHub sync
   githubLoading: false,
   githubSyncing: false,
@@ -177,6 +180,9 @@ function reducer(state, action) {
     case 'SET_TAB':
       return { ...state, activeTab: action.tab }
 
+    case 'SET_QUESTIONS_LOADING':
+      return { ...state, questionsLoading: action.value }
+
     case 'LOAD_QUESTIONS': {
       const newQs = action.questions
       const map = new Map()
@@ -188,6 +194,7 @@ function reducer(state, action) {
         questions: merged,
         practiceFiltered: merged,
         practiceIndex: 0,
+        questionsLoading: false,
         uploadHistory: [...state.uploadHistory, {
           filename: action.filename,
           count: newQs.length,
@@ -481,6 +488,8 @@ export default function App() {
         }
         if (allQuestions.length) {
           dispatch({ type: 'LOAD_QUESTIONS', questions: allQuestions, filename: '靜態題庫' })
+        } else {
+          dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
         }
         // Load English question files
         if (manifest.enFiles) {
@@ -500,6 +509,7 @@ export default function App() {
         }
       } catch (err) {
         console.error('載入題庫失敗:', err)
+        dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
       }
     }
     load()
@@ -1015,7 +1025,13 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const isCorrect = qKey ? (practiceSubmitted[qKey] ? practiceResults[qKey] : undefined) : undefined
 
   if (state.questions.length === 0) {
-    return <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
+    if (state.questionsLoading) {
+      return <EmptyState message="題庫載入中..." icon={Loader2} />
+    }
+    if (isAdmin) {
+      return <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
+    }
+    return <EmptyState message="題庫載入失敗，請重新整理頁面" icon={AlertCircle} />
   }
 
   if (practiceFiltered.length === 0) {
@@ -1848,7 +1864,11 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
     return (
       <div className="space-y-6">
         {state.questions.length === 0 ? (
-          <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
+          state.questionsLoading
+            ? <EmptyState message="題庫載入中..." icon={Loader2} />
+            : isAdmin
+              ? <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
+              : <EmptyState message="題庫載入失敗，請重新整理頁面" icon={AlertCircle} />
         ) : (
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden max-w-lg mx-auto animate-slide-up">
             <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500" />
