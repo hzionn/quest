@@ -1851,7 +1851,7 @@ const EXAM_SPECS = {
   'MLA-C01': { name: 'AWS Machine Learning Engineer Associate', count: 65, timeLimit: 170, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序、配對' },
   'CLF-C02': { name: 'AWS Cloud Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
   'SCS-C03': { name: 'AWS Certified Security - Specialty', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
-  'AIP-C01': { name: 'AWS Certified AI Practitioner', count: 65, timeLimit: 90, passScore: 750, questions: '75 題（65 題計分 + 10 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選、排序、配對' },
+  'AIP-C01': { name: 'AWS Certified Generative AI Developer - Professional', count: 85, timeLimit: 205, passScore: 750, questions: '85 題，複選題及多個答案', time: '205 分鐘（3 小時 25 分）', types: '單選、多選' },
   'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
 }
 
