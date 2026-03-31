@@ -24,8 +24,6 @@
     "type": "ordering",
     "question": "一家公司正在构建一个 Web 应用程序，需要在该公司托管在 Amazon Elastic Container Service（Amazon ECS）上的多个微服务之 间对外部用户进行身份验证。该解决方案必须使用临时凭证，并将维护用户数据库所需的管理开销降到最低。 从以下列表中选择并按顺序排列正确的步骤，以实施满足这些要求的安全身份验证策略。每个步骤选择一次或完全不选。 配置 Amazon Cognito 用户池用于用户身份验证。 为每个微服务设置一个 IAM 角色。为每个角色授予适当的权限。 实现一个 Amazon API Gateway HTTP API，并使用 AWS Lambda 授权器在将请求转发到微服务之前验证令牌。 创建一个 Amazon DynamoDB 表，用于为每个微服务存储用户凭证。 创建一个 Amazon Cognito 应用程序客户端以与 Web 应用程序交互。 设置 AWS IAM Identity Center 以便让用户访问这些微服务。",
     "available_steps": [
-      "使用临时凭证，并将维护用户数据库所需的管理开销降到最低。",
-      "实施满足这些要求的安全身份验证策略。",
       "配置 Amazon Cognito 用户池用于用户身份验证。",
       "为每个微服务设置一个 IAM 角色。",
       "为每个角色授予适当的权限。",
@@ -35,11 +33,11 @@
       "设置 AWS IAM Identity Center 以便让用户访问这些微服务。"
     ],
     "ordered_steps": [
-      "Configure Amazon Cognito user pools for user authentication.",
-      "Create an Amazon Cognito application client to interact with the web application.",
-      "Implement an Amazon API Gateway HTTP API with AWS Lambda authorizers to validate tokens before forwarding requests to microservices.",
-      "Set up an IAM role for each microservice.",
-      "Create an Amazon DynamoDB table to store user credentials for each microservice."
+      "配置 Amazon Cognito 用户池用于用户身份验证。",
+      "创建一个 Amazon Cognito 应用程序客户端以与 Web 应用程序交互。",
+      "实现一个 Amazon API Gateway HTTP API，并使用 AWS Lambda 授权器在将请求转发到微服务之前验证令牌。",
+      "为每个微服务设置一个 IAM 角色。",
+      "创建一个 Amazon DynamoDB 表，用于为每个微服务存储用户凭证。"
     ],
     "explanations": {
       "_full": "题目解析（1. 本题考察的知识点 面向外部用户（customers/partners）的身份认证：使用 Amazon Cognito User Pools 进行用户注册、登录、托管用户目录，减少 自建用户数据库的运维。 微服务统一入口鉴权：使用 Amazon API Gateway + Lambda Authorizer（或JWT Authorizer）在进入后端微服务前校验令牌，实现 集中鉴权。 临时凭证/临时令牌的思路：对Web应用外部用户，通常使用短期有效的 Token（JWT/Access Token）作为“临时凭证”来访问API， 从而避免长期静态凭证。 2. 独立思考（不参考官方答案） 需求强调“外部用户”“跨多个微服务”“使用临时凭证”“最小化维护用户数据库的开销”。 最符合的是：Cognito User Pools 托管用户目录并签发JWT；Web应用通过 Cognito App Client 发起认证；所有微服务前置 API Gateway + Lambda Authorizer 校验JWT后再转发。 若题目严格要求“临时AWS访问密钥（STS Credentials）”，通常还会涉及 Cognito Identity Pools 来换取AWS临时凭证，但本题选 项中未提供该步骤；因此应将“临时凭证”理解为短期JWT令牌。 3. 逐个分析每个选项为什么正确或错误 Configure Amazon Cognito user pools for user authentication. 正确。 原因：User Pools 提供托管用户目录与认证能力（注册/ 登录/MFA/密码策略/社交登录等），显著减少自建用户库的管理开销，并能为外部用户签发JWT Token用于访问后端服务。 Create an Amazon Cognito application client to interact with the web application. 正确。 原因：Web应用需要通过 Cognito App Client（OAuth2/OIDC）与 User Pool 交互，完成登录并获取 ID token / access token（短期有效），以便后续调用API。 Correct Answer: 正确答案： Implement an Amazon API Gateway HTTP API with AWS Lambda authorizers to validate tokens before forwarding requests to microservices. 正确。 原因：将鉴权集中在API入口，使用Lambda Authorizer校验来自Cognito的JWT（或执行更细粒 度逻辑），校验通过后再转发到ECS上的各个微服务，满足“跨多个微服务”的统一认证策略并降低每个服务重复实现鉴权的成本。 Set up an IAM role for each microservice. Grant each role appropriate permissions. 不选（与题干核心目标不直接匹配）。 原 因：这是“微服务访问AWS资源的最小权限”（Task Role）的最佳实践，但题目要解决的是“外部用户认证 + 临时凭证 + 最小化用户 数据库维护”。 说明：在真实架构中通常也会做（每个ECS任务/服务配置Task Role），但它不属于本题“实现用户认证策略”的关键步 骤集合，且题目限制“Select and order the"
@@ -247,7 +245,7 @@
       "A": "部署 AWS Security Hub 并启用包含 EKS 控制项的安全标准。创建一个 Amazon Simple Notification Service（Amazon SNS）主 题，并将安全团队的邮件列表设置为订阅者。使用 Amazon EventBridge 规则将界关的 Security Hub 事件发送到该 SNS 主题。",
       "B": "启用 Amazon Inspector 缩器镜像扫描。配置 Amazon Detective 来分析 EKS 安全日志。为 EKS 审计日志创建 Amazon CloudWatch 日志组。使用 AWS Lambda 函数处理这些日志并向安全团队发送电子邮件告警。",
       "C": "启用 Amazon GuardDuty，在 GuardDuty 中为 Amazon EKS 启用 EKS 保护和运行时监控。创建一个 Amazon Simple Notification Service（Amazon SNS）主题，并将安全团队的邮件列表设置为订阅者。使用 Amazon EventBridge 规则将界关的 GuardDuty 事件发送到该 SNS 主题。",
-      "D": "在所有 EKS 节点上安装 AWS Systems Manager Agent（SSM Agent）。配置 Amazon CloudWatch Logs 以收集 EKS 审计日志。 创建一个 Amazon Simple Notification Service（Amazon SNS）主题，并将安全团队的邮件列表设置为订阅者。配置一个 CloudWatch 告警，在生成新的审计日志时向该 SNS 主题发送一条消息。 Correct Answer: C 正确答案：C"
+      "D": "在所有 EKS 节点上安装 AWS Systems Manager Agent（SSM Agent）。配置 Amazon CloudWatch Logs 以收集 EKS 审计日志。 创建一个 Amazon Simple Notification Service（Amazon SNS）主题，并将安全团队的邮件列表设置为订阅者。配置一个 CloudWatch 告警，在生成新的审计日志时向该 SNS 主题发送一条消息。"
     },
     "answer": "C",
     "explanations": {
@@ -328,7 +326,7 @@
       "A": "生命周期中，添加一个钩子，在每档创建 EC2 实例时创建并挂载一个 Amazon Elastic Block Store（Amazon EBS）日志卷。当实例终止时，可以将该 EBS 卷重新挂载到另一台实例上以进行日志审查。",
       "B": "创建一个 Amazon Elastic File System（Amazon EFS）文件系统，并在 Auto Scaling 启动模板的用户数据（user data）部分添加 一条命令，以在创建 EC2 实例期间挂载该 EFS 文件系统。在实例上配置一个进程，每天将日志从实例的 Amazon Elastic Block Store（Amazon EBS）卷复制到 EFS 文件系统中的某个目录。",
       "C": "组使用的 AMI 中添加一个 Amazon CloudWatch 代理。配置 CloudWatch 代理将日志发送到 Amazon CloudWatch Logs 以供审查。",
-      "D": "生命周期中，在终止状态转换时添加一个生命周期钩子，并通过向 Amazon Simple Notification Service （Amazon SNS）发送生命周期通知来告警工程团队。将该钩子配置为在 Terminating:Wait 状态停留 1 小时，以便在实例终止之 前允许对安全日志进行人工审查。 Correct Answer: C 正确答案：C"
+      "D": "生命周期中，在终止状态转换时添加一个生命周期钩子，并通过向 Amazon Simple Notification Service （Amazon SNS）发送生命周期通知来告警工程团队。将该钩子配置为在 Terminating:Wait 状态停留 1 小时，以便在实例终止之 前允许对安全日志进行人工审查。"
     },
     "answer": "C",
     "explanations": {
@@ -347,7 +345,7 @@
       "A": "更新 S3 网关终端节点上的策略，仅当 aws:ResourceOrgID 和 aws:PrincipalOrgID 条件键的值与公司的值匹配时才允许这些 S3 操作。",
       "B": "更新实例配置文件角色上的策略，仅当 aws:ResourceOrgID 条件键的值与公司的值匹配时才允许这些 S3 操作。",
       "C": "实例所在子网添加一条网络 ACL 规则，以阻止在 443 端口上的出站连接。",
-      "D": "账户上应用一个 SCP，仅当 aws:ResourceOrgID 和 aws:PrincipalOrgID 条件键的值与公司的值匹配时才允许这些 S3 操 作。 Correct Answer: B 正确答案：B"
+      "D": "账户上应用一个 SCP，仅当 aws:ResourceOrgID 和 aws:PrincipalOrgID 条件键的值与公司的值匹配时才允许这些 S3 操 作。"
     },
     "answer": "B",
     "explanations": {
@@ -580,7 +578,7 @@
       "A": "确保运维团队在 S3 存储桶上配置默认存储桶加密，以使用带有 Amazon S3 托管加密密钥（SSE-S3）的服务器端加密。确保安 全团队创建一个 IAM 策略，用于控制对加密密钥使用权限的访问。",
       "B": "确保运维团队创建一个存储桶策略，要求请求使用由客户管理的 AWS KMS 密钥（SSE-KMS）进行服务器端加密。确保安全团队 创建一个密钥策略，用于控制对加密密钥的访问。",
       "C": "确保运维团队创建一个存储桶策略，要求请求使用带有 Amazon S3 托管密钥（SSE-S3）的服务器端加密。确保安全团队创建一 个 IAM 策略，用于控制对加密密钥的访问。",
-      "D": "确保运维团队创建一个存储桶策略，要求请求使用带有客户提供的加密密钥（SSE-C）的服务器端加密。确保安全团队将客户提 供的密钥存储在 AWS Key Management Service（AWS KMS）中。确保安全团队创建一个密钥策略，用于控制对加密密钥的访 问。 Correct Answer: B 正确答案：B"
+      "D": "确保运维团队创建一个存储桶策略，要求请求使用带有客户提供的加密密钥（SSE-C）的服务器端加密。确保安全团队将客户提 供的密钥存储在 AWS Key Management Service（AWS KMS）中。确保安全团队创建一个密钥策略，用于控制对加密密钥的访 问。"
     },
     "answer": "B",
     "explanations": {
@@ -680,14 +678,14 @@
       "A": "创建一个 Application Load Balancer，并将现有的 EC2 实例作为目标组。创建一个包含可保护应用免受此类攻击的规则的 AWS WAF Web ACL，然后将其应用到该 ALB。进行测试以确保漏洞已得到缓解，然后将 Route 53 记录重定向为指向该 ALB。更新 EC2 实例上的安全组，以防止来自互联网的直接访问。",
       "B": "创建一个 Amazon CloudFront 分发，并指定一个 EC2 实例作为源站。创建一个包含可保护应用免受此类攻击的规则的 AWS WAF Web ACL，然后将其应用到该分发。进行测试以确保漏洞已得到缓解，然后将 Route 53 记录重定向为指向 CloudFront。",
       "C": "获取该平台的最新源代码并进行必要的更新。测试更新后的代码以确保漏洞已得到缓解，然后将打过补丁的平台标本部署到 EC2 实例上。",
-      "D": "更新附加到 EC2 实例的安全组，移除从互联网到 SQL 数据库所使用的 TCP 端口的访问。创建一个包含可保护应用免受此类攻击 的规则的 AWS WAF Web ACL，然后将其应用到 EC2 实例。进行测试以确保漏洞已得到缓解，然后将安全组恢复为原始设置。 Correct Answer: A"
+      "D": "更新附加到 EC2 实例的安全组，移除从互联网到 SQL 数据库所使用的 TCP 端口的访问。创建一个包含可保护应用免受此类攻击 的规则的 AWS WAF Web ACL，然后将其应用到 EC2 实例。进行测试以确保漏洞已得到缓解，然后将安全组恢复为原始设置。"
     },
     "answer": "A",
     "explanations": {
       "A": "选项分析 正确点 1：创建 ALB 并将现有 EC2 作为 Target Group，属于最常见、最快落地的架构改造。 正确点 2：在 ALB 上关联 AWS WAF Web ACL，可以快速部署托管规则（如 SQLi 相关托管规则）或基于样本攻击创建自定义规则 进行拦截。 正确点 3：测试后再把 Route 53 记录切到 ALB，可逐步切械/快速回滚，满足“维护正常运营”。 正确点 4：更新 EC2 安全组阻止公网直连，强制所有械量必须经过 ALB/WAF，避免绕过防护。 注意：本方案主要是“应急防护”，并不等同于根梘漏洞（根梘仍需修代码/参数化查询等），但满足题目 24 小时与最少工作量要 求。",
       "B": "选项分析 部分正确点：CloudFront 也可绑定 AWS WAF，能在边缘拦截恶意请求。 关键问题 1：选项写的是“指定一个 EC2 实例作为源站”，这会破坏现有两台 EC2 的加权/双实例承载，不符合“maintain normal operations（维持正常运行）”。 关键问题 2：即便可做多源站/Origin Group，也需要额外配置健康检查、回源策略等，通常比“ALB + Target Group”更繁琐，且题干 并未描述这些配置。 关键问题 3：CloudFront 回源到“公网 EC2”时，如何彻底避免绕过 WAF 直连 EC2 更麻烦（需限制仅允许 CloudFront 回源 IP 段/使 用 ALB 或自定义鉴权头等）。而 A 里用安全组只允许 ALB SG 是最简洁的做法。",
       "C": "选项分析 问题 1：题干明确“legacy 软件平台不再接收安全更新”，而“获取最新源码并更新”在现实中通常需要较长开发/测试周期，且可能涉 及依赖、兼容性、回归测试。 问题 2：不满足“24 小时内”和“最少工作量”的应急要求。",
-      "D": "选项分析 错误点 1：“从互联网移除到 SQL 数据库端口的访问”与 SQL 注入本质不匹配。SQL 注入是通过 Web 请求让应用去执行恶意 SQL， 而不是直接从互联网连数据库端口。 错误点 2：在合理架构中，RDS 通常不应暴露到公网；并且题干说的是 EC2 连接 RDS cluster，并未表示数据库端口对公网开放。 正确答案：A 错误点 3（致命）：AWS WAF 不能“应用到 EC2 实例”。WAF 必须关联到 ALB/CloudFront/API Gateway 等受支持资源。"
+      "D": "选项分析 错误点 1：“从互联网移除到 SQL 数据库端口的访问”与 SQL 注入本质不匹配。SQL 注入是通过 Web 请求让应用去执行恶意 SQL， 而不是直接从互联网连数据库端口。 错误点 2：在合理架构中，RDS 通常不应暴露到公网；并且题干说的是 EC2 连接 RDS cluster，并未表示数据库端口对公网开放。"
     }
   },
   {
@@ -932,7 +930,7 @@
       "A": "部署一个启用组织范围资源数据聚合的 AWS Config 聚合器。创建一个 AWS Lambda 函数，当 AWS Config 发现不合规的 S3 存 储段时，删除或重新配置这些 S3 存储桶。",
       "B": "部署一个启用组织范围资源数据聚合的 AWS Config 聚合器。创建一个包含 Deny 语句的 SCP，用于阻止创建新的不合规 S3 存 储段。将该 SCP 应用到组织中的所有 OU。",
       "C": "部署一个 AWS Config 聚合器，其范围仅覆盖公司当前使用的账户和区域。创建一个 AWS Lambda 函数，当 AWS Config 发现 不合规的 S3 存储桶时，删除或重新配置这些 S3 存储桶。",
-      "D": "部署一个 AWS Config 聚合器，其范围仅覆盖公司当前使用的账户和区域。创建一个包含 Deny 语句的 SCP，用于阻止创建新的 不合规 S3 存储桶。将该 SCP 应用到组织中的所有 OU。 Correct Answer: A 正确答案：A"
+      "D": "部署一个 AWS Config 聚合器，其范围仅覆盖公司当前使用的账户和区域。创建一个包含 Deny 语句的 SCP，用于阻止创建新的 不合规 S3 存储桶。将该 SCP 应用到组织中的所有 OU。"
     },
     "answer": "A",
     "explanations": {
@@ -1059,7 +1057,7 @@
       "A": "使用 AWS Backup 每小时为 EC2 实例和 S3 存储桶创建备份。创建 AWS CloudFormation 模板以复制现有架构组件。使用 AWS CodeCommit 将 CloudFormation 模板与应用程序配置代码一起存储。",
       "B": "使用 AWS Backup 每天为 EBS 卷和 S3 对象创建备份。使用 Amazon Security Lake 为 AWS CloudTrail 日志和 VPC 流日志创建一 个集中式数据湖。使用这些日志进行自动化响应。",
       "C": "使用 Amazon Security Lake 为 AWS CloudTrail 日志和 VPC 流日志创建一个集中式数据湖。使用这些日志进行自动化响应。启用 AWS Security Hub 以建立一个用于恢复过程的单一位置。创建 AWS CloudFormation 模板以复制现有架构组件。使用 AWS CodeCommit 将 CloudFormation 模板与应用程序配置代码一起存储。",
-      "D": "小时创建一次 EBS 快照。启用 Amazon GuardDuty 恶意软件防护。创建自动化流程，以便对在 GuardDuty 中产生 Execution:EC2/MaliciousFile 发现的任何 EC2 实例立即还原昀邮的快照。 Correct Answer: A"
+      "D": "小时创建一次 EBS 快照。启用 Amazon GuardDuty 恶意软件防护。创建自动化流程，以便对在 GuardDuty 中产生 Execution:EC2/MaliciousFile 发现的任何 EC2 实例立即还原昀邮的快照。"
     },
     "answer": "A",
     "explanations": {
@@ -1132,7 +1130,7 @@
       "A": "向安全组添加一条入站规则，允许来自 0.0.0.0/0 的所有端口流量。向安全组添加一条出站规则，允许发往 0.0.0.0/0 的所有端口 流量。然后立即删除这些规则。",
       "B": "移除 22 端口的安全组规则。附加一个实例角色策略，允许 AWS Systems Manager Session Manager 连接，以便取证团队可以 访问目标实例。",
       "C": "创建一个与目标实例所在子网关联的网络 ACL。在入站规则集的昀顶部添加一条规则，拒绝来自 0.0.0.0/0 的所有流量。在出站 规则集的昀顶部添加一条规则，拒绝发往 0.0.0.0/0 的所有流量。",
-      "D": "创建一个 AWS Systems Manager 文档，该文档添加一条主机级防火墙规则以阻止所有入站和出站流量。在目标实例上运行该文 档。 Correct Answer: B"
+      "D": "创建一个 AWS Systems Manager 文档，该文档添加一条主机级防火墙规则以阻止所有入站和出站流量。在目标实例上运行该文 档。"
     },
     "answer": "B",
     "explanations": {
@@ -1189,14 +1187,14 @@
       "A": "中使用 AWS 托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用 us-west-1 的新 AWS 托管 KMS 密钥加密机密。",
       "B": "中使用 AWS 托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端 点。",
       "C": "中使用客户托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端点。",
-      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。 Correct Answer: A 正确答案：A"
+      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。"
     },
     "answer": "A",
     "explanations": {
       "A": "6. 与官方答案对比与复盘 我的答案：A；官方答案：A；一致。 复盘要点：本题关键是“跨区域复制 secret + 每个 Region 使用本 Region 可用的 KMS key”，以同时满足低延迟与单区域可用性。 咸诈: \" IT认证轻松过 \" https://www.goofish.com/personal?userId=2645260430 \"",
       "B": "中使用 AWS 托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端 点。",
       "C": "中使用客户托管的 KMS 密钥加密机密。将 us-west-1 中的资源配置为调用 us-east-1 中的 Secrets Manager 端点。",
-      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。 Correct Answer: A 正确答案：A"
+      "D": "中使用客户托管的 KMS 密钥加密机密。将机密复制到 us-west-1。在 us-west-1 中使用来自 us-east-1 的客户托管 KMS 密钥加密机密。"
     }
   },
   {
