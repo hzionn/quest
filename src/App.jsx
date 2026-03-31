@@ -1317,7 +1317,15 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
 // Bilingual option text renderer
 // ══════════════════════════════════════════
 function OptionText({ label, text }) {
-  return <span className="text-sm" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}><span className="font-semibold mr-1">{label}.</span>{text}</span>
+  const isCode = text && text.includes('\n')
+  return (
+    <span className="text-sm" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+      <span className="font-semibold mr-1">{label}.</span>
+      {isCode
+        ? <pre style={{ display: 'inline-block', whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '0.8em', margin: 0, verticalAlign: 'top' }}>{text}</pre>
+        : text}
+    </span>
+  )
 }
 
 // ══════════════════════════════════════════

@@ -70,17 +70,17 @@
     "type": "single",
     "question": "一家企业正在使用带有默认 SCP 的 AWS Organizations。该企业需要对位于特定 OU 中的所有 AWS 账户限制 AWS 的使用。 除了一些期望的全局服务之外，该 OU 中所有账户的 AWS 使用必须仅发生在 eu-west-1 区域。安全工程师必须创建一个 SCP，将 该限制应用于现有账户以及该 OU 中的任何新账户。 哪个 SCP 将满足这些要求？",
     "options": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "正确答案：C"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"Action\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}"
     },
     "answer": "C",
     "explanations": {
-      "C": "6. 与官方答案对比与复盘 我的结论（在无法找到选项文本时的合理推断）与官方答案均为：C。 但需要强调：如果 C 的策略实际内容没有做到以下要点，则即便“官方选 C”，也可能不满足需求： 必须使用 Effect:Deny（SCP 通过 Deny 来限制）。 必须基于 aws:RequestedRegion 限制到 eu-west-1。 必须为“期望保留的全局服务”做例外（常用 NotAction 或其它等价方式）。 必须绑定到 目标 OU，才能覆盖现有与未来账号（题干要求）。 请把 A/B/C/D 的完整策略 JSON 粘贴出来，我可以按每条 Statement/Condition/NotAction 逐句验证 C 是否真正满足题意，并对 A/B/D 给出明确“错在哪里”。 \"",
-      "A": "",
-      "B": "",
-      "D": "正确答案：C"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"Action\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}"
     }
   },
   {
@@ -89,19 +89,20 @@
     "type": "ordering",
     "question": "热点 - 一名安全工程师需要实施 AWS IAM Identity Center，并使用外部身份提供商（IdP）。 从以下列表中选择并按正确顺序排列步骤以满足此要求。每个步骤选择一次或不选。 将外部 IdP 配置为 IAM Identity Center 中的身份源。 创建一个 IAM 角色，并为其配置一个信任策略，该策略指定 IdP 的 API 端点。 在 IAM Identity Center 设置中启用自动预置。 在外部 IdP 中启用自动预置。 从 IAM Identity Center 获取 SAML 元数据。 从外部 IdP 获取 SAML 元数据。",
     "available_steps": [
-      "实施 AWS IAM Identity Center，并使用外部身份提供商（IdP）。",
       "将外部 IdP 配置为 IAM Identity Center 中的身份源。",
-      "创建一个 IAM 角色，并为其配置一个信任策略，该策略指定 IdP 的 API 端点。"
+      "创建一个 IAM 角色，并为其配置一个信任策略，该策略指定 IdP 的 API 端点。",
+      "在 IAM Identity Center 设置中启用自动预置。",
+      "在外部 IdP 中启用自动预置。",
+      "从 IAM Identity Center 获取 SAML 元数据。",
+      "从外部 IdP 获取 SAML 元数据。"
     ],
     "ordered_steps": [
-      "Configure the external IdP as the identity source in IAM Identity Center.",
-      "Create an IAM role that has a trust policy that specifics the IdP's API endpoint.",
-      "结论：有条件正确（非必需）。 原因：这是用于 SCIM 自动预置 （同步用户/组）的步骤。只有在题目明确要求“自动同步用户/组（provisioning）”时才必选；否则仅做 SAML SSO 并不要求开启该 功能。 Enable automatic provisioning in the external IdP.",
-      "Configure the external IdP as the identity source in IAM Identity Center.",
-      "Configure the external IdP as the identity source in IAM Identity Center."
+      "从外部 IdP 获取 SAML 元数据。",
+      "将外部 IdP 配置为 IAM Identity Center 中的身份源。",
+      "在 IAM Identity Center 设置中启用自动预置。"
     ],
     "explanations": {
-      "_full": "题目解析（1. 本题考察的知识点 AWS IAM Identity Center 与外部身份提供商（External IdP）的 SAML 2.0 联邦集成流程 SAML 元数据（Metadata）的交换方向：IAM Identity Center（SP）元数据提供给外部 IdP；外部 IdP（IdP）元数据回填到 IAM Identity Center 是否需要 SCIM 自动预置（Automatic Provisioning）：仅在需要从外部 IdP 自动同步用户/组到 IAM Identity Center 时才需要 2. 独立思考（不参考官方答案） 题干只说“实现 IAM Identity Center + 外部 IdP”，并未明确要求“自动预置/SCIM”。因此，完成 SAML 联邦的关键是双方元数据交换 并在 IAM Identity Center 中配置外部 IdP 作为 Identity source。 要让外部 IdP 能正确配置 SAML 应用，通常必须先拿到 IAM Identity Center（作为 SP）的元数据（包含 ACS URL、Entity ID、证书 等）。所以“从 IAM Identity Center 获取 SAML 元数据”在真实实施中通常是必要步骤。 Correct Answer: 正确答案： 3. 逐个选项分析（为什么对/错） Configure the external IdP as the identity source in IAM Identity Center. 结论：正确且必要。 原因：需要在 IAM Identity Center 中选择 External IdP，并导入外部 IdP 的 SAML 元数据/完成信任配置，才能让用户通过外部 IdP 登录。 Create an IAM role that has a trust policy that specifics the IdP's API endpoint. 结论：错误。 原因：IAM Identity Center 与外 部 IdP 的集成是 SAML/OIDC 身份源配置，不是通过“IAM Role 信任某个 IdP API endpoint”来实现。IAM Role 的信任策略通常信任 SAML Provider（arn:aws:iam::...:saml-provider/...）或 OIDC Provider，而不是“IdP API endpoint”。 Enable automatic provisioning in IAM Identity Center settings 结论：有条件正确（非必需）。 原因：这是用于 SCIM 自动预置 （同步用户/组）的步骤。只有在题目明确要求“自动同步用户/组（provisioning）”时才必选；否则仅做 SAML SSO 并不要求开启该 功能。 Enable automatic provisioning in the external IdP. 结论：有条件正确（非必需）。 原因：同上，属于 SCIM 配置的一部分。通 常需要在 IAM Identity Center 先开启并生成 SCIM endpoint/token，然后回到外部 IdP 开启并填写这些信息。 Obtain the SAML metadata from IAM Identity Center. 结论：正确且通常必要。 原因：IAM Identity Center 作为 Service Provider"
+      "_full": ""
     }
   },
   {
@@ -129,35 +130,56 @@
     "type": "single",
     "question": "一家公司希望拒绝名为 Bob 的特定联合身份用户访问名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶。公司希望通过使用存储 段策略来满足此要求。公司还需要确保该存储桶策略仅影响 Bob 的 S3 权限。Bob 拥有的任何其他权限都必须保持不变。 公司应使用哪种策略来满足这些要求？",
     "options": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "正确答案：B"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Allow\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}"
     },
     "answer": "B",
     "explanations": {
-      "B": "6. 与官方答案比较与",
-      "A": "",
-      "C": "",
-      "D": "正确答案：B"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Allow\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}"
     }
   },
   {
     "exam": "SCS-C03",
     "id": 8,
-    "type": "ordering",
+    "type": "matching",
     "question": "某公司正在为 AWS 上现有的敏感工作负载设计其安全监控策略。安全团队已识别出若干重要监控策略的场景。 迧对每个监控场景，从以下列表中选择正确的监控策略。每个监控策略只能选择一次。 在确认恶意软件检测发现后，自动隔离 Amazon EC2 实例。 将来自多个 AWS 检测服务的安全发现进行关联，以识别多阶段攻击。 检测特权用户执行异常高数量的资源删除操作的情况。 识别在 1 小时内来自特定 IP 地址的超过 50 次失败身份验证尝试的模式。 监控网络流量模式，完其是在非正常办公时间向外部 IP 地址进行的大量数据传输。 设置 VPC 流日志，并使用 Amazon CloudWatch Logs Insights 查询在特定时间窗口内分析流量规模与目标模式。",
-    "available_steps": [
-      "为 AWS 上现有的敏感工作负载设计其安全监控策略。",
-      "使用 Amazon CloudWatch Logs Insights 查询在特定时间窗口内分析流量规模与目标模式。"
-    ],
-    "ordered_steps": [
-      "关联/汇总发现：Security Hub 聚合 GuardDuty、Inspector、Macie 等 findings，再用 Custom Insights 做筛 选/关联视图；",
-      "自动化响应：通过 EventBridge 订阅 Security Hub Findings（和 Insight 结果）触发 Lambda 执行响应动作。 在本题最佳适用：更偏向“跨服务发现关联、多阶段攻击识别”。因为题干明确提“Correlate security findings from multiple AWS detection services”。 不适用：纯网络流量统计、认证失败计数、API 速率异常检测（各有更直接服务）。 选项E（用于补齐隔离场景的典型策略）：Use EventBridge to react to GuardDuty malware detection findings and invoke Lambda/SSM Automation to quarantine/isolate the EC2 instance (e.g., replace security groups, restrict egress, isolate subnet). 正确适用：当“恶意软件检测发现确认”后，自动执行隔离（准实时响应、最小人工介入）。 说明：题干场景是“malware detection findings confirmed”，最常见来源是 GuardDuty（含 Malware Protection for EC2 相关发现） 和 Inspector 相关发现进入 Security Hub 后自动化处理。 不适用：跨服务发现关联（Security Hub Insight 更合适）、网络流量统计（Flow Logs）、认证失败（Metric Filter）、API 异常 （CloudTrail Insights）。"
-    ],
     "explanations": {
-      "_full": "题目解析（SCS-C03 做题教练） 1. 本题考察的知识点 监控与检测：VPC Flow Logs、CloudWatch Logs Insights、CloudWatch Metric Filters、CloudTrail Insights 安全发现的聚合与关联：AWS Security Hub（Custom Insights）用于跨服务发现聚合、筛选与关联 自动化响应/隔离：EventBridge 触发 Lambda/SSM Automation 对实例进行隔离（如更换/附加隔离安全组、隔离子网、限制 egress） 暴力破解/认证失败监控：基于应用日志的指标化与阈值告警 异常 API 行为检测：CloudTrail Insights 对 API 调用率建立基线并检测异常 2. 独立思考说明（不依赖“官方答案”） 题目是典型的“场景 → 最合适的 AWS 监控/检测/响应手段”匹设轞。 每个策略只能用一次，因此要避免一个策略同时被多个场景“勉限可用”但不是最优解的情况。 3. 逐个分析每个“监控策略选项”为何正确或错误（适用场景） 选项A：Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows. 正确适用：网络流量行为分析（流量大小、目的 IP/网段、时间窗口如“非办公时间”）。 不适用：认证失败次数（重要应用/身份日志）、API 删除行为（重要 CloudTrail）、跨服务发现关联（重要 Security Hub/Detective）。 Correct Answer: 正确答案： 选项B：Create Amazon CloudWatch metric filters on application logs to track authentication failure rates for each source IP address with hourly aggregation. 正确适用：统计“某 IP 在 1 小时内认证失败次数 > 50”等阈值检测（前提：应用/认证日志进入 CloudWatch Logs）。 不适用：网络大流量外传（更适合 Flow Logs）、API 删除操作（更适合 CloudTrail）、跨服务发现关联（更适合 Security Hub）。 选项C：Enable AWS CloudTrail Insights for API call rate analysis to establish baselines and then detect anomalous API activity patterns. 正确适用：特权用户/角色出现“异常 API 调用量”模式（例如突然大量 Delete* / Terminate*）。CloudTrail Insights偏“速率异常/突 增”，符合“异常高频删除操作”的监控诉求。 边界点：若题目要求“精确统计删除操作次数并按用户阈值告警”，也可用 CloudWatch Logs Insights/Metric Filter 对 CloudTrail 日志 做精确计数；但在给定选项里，CloudTrail Insights是最贴合“异常高频”语义的能力。 不适用：网络大流量外传（Flow Logs）、认证失败（应用日志 metric"
-    }
+      "_full": ""
+    },
+    "available_options": [
+      "配置 VPC Flow Logs 并使用 Amazon CloudWatch Logs Insights 查询，分析特定时间窗口内的流量规模和目标模式。",
+      "在应用程序日志上创建 Amazon CloudWatch 指标筛选器，按来源 IP 地址以小时为单位跟踪身份验证失败率。",
+      "启用 AWS CloudTrail Insights 进行 API 调用速率分析，建立基线并检测异常 API 活动模式。",
+      "使用 Amazon EventBridge 规则实施 AWS Security Hub 自定义见解，调用自动化 AWS Lambda 函数进行协调的事件响应。",
+      "使用 Amazon GuardDuty 恶意软件检测结果配合 Amazon EventBridge 规则，调用 AWS Lambda 函数自动隔离受影响的 Amazon EC2 实例。"
+    ],
+    "matches": [
+      {
+        "use_case": "在确认恶意软件检测发现后，自动隔离 Amazon EC2 实例。",
+        "correct_answer": "使用 Amazon GuardDuty 恶意软件检测结果配合 Amazon EventBridge 规则，调用 AWS Lambda 函数自动隔离受影响的 Amazon EC2 实例。"
+      },
+      {
+        "use_case": "将来自多个 AWS 检测服务的安全发现进行关联，以识别多阶段攻击。",
+        "correct_answer": "使用 Amazon EventBridge 规则实施 AWS Security Hub 自定义见解，调用自动化 AWS Lambda 函数进行协调的事件响应。"
+      },
+      {
+        "use_case": "检测特权用户执行异常高数量的资源删除操作的情况。",
+        "correct_answer": "启用 AWS CloudTrail Insights 进行 API 调用速率分析，建立基线并检测异常 API 活动模式。"
+      },
+      {
+        "use_case": "识别在 1 小时内来自特定 IP 地址的超过 50 次失败身份验证尝试的模式。",
+        "correct_answer": "在应用程序日志上创建 Amazon CloudWatch 指标筛选器，按来源 IP 地址以小时为单位跟踪身份验证失败率。"
+      },
+      {
+        "use_case": "监控网络流量模式，尤其是在非正常办公时间向外部 IP 地址进行的大量数据传输。",
+        "correct_answer": "配置 VPC Flow Logs 并使用 Amazon CloudWatch Logs Insights 查询，分析特定时间窗口内的流量规模和目标模式。"
+      }
+    ]
   },
   {
     "exam": "SCS-C03",
@@ -1245,6 +1267,3 @@
     }
   }
 ]
-
-
-
