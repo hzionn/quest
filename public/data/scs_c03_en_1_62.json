@@ -67,17 +67,17 @@
     "type": "single",
     "question": "A company is using AWS Organizations with the default SCP. The company needs to restrict AWS usage for all AWS accounts that are in a specific OU. Except for some desired global services, the AWS usage must occur only in the eu-west-1 Region for all accounts in the OU. A security engineer must create an SCP that applies the restriction to existing accounts and any new accounts in the OU. Which SCP will meet these requirements?",
     "options": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "Correct Answer: C"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"Action\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}"
     },
     "answer": "C",
     "explanations": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "Correct Answer: C"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"Action\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Deny\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Sid\": \"DenyNonDefaultRegions\",\n    \"Effect\": \"Allow\",\n    \"NotAction\": [\"<Desired Global Services>\"],\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": [\"eu-west-1\"]\n      }\n    }\n  }]\n}"
     }
   },
   {
@@ -88,14 +88,15 @@
     "available_steps": [
       "Configure the external IdP as the identity source in IAM Identity Center.",
       "Create an IAM role that has a trust policy that specifics the IdP's API endpoint.",
-      "Enable automatic provisioning in IAM Identity Center settings Enable automatic provisioning in the external IdP."
+      "Enable automatic provisioning in IAM Identity Center settings",
+      "Enable automatic provisioning in the external IdP.",
+      "Obtain the SAML metadata from IAM Identity Center.",
+      "Obtain the SAML metadata from the external IdP."
     ],
     "ordered_steps": [
+      "Obtain the SAML metadata from the external IdP.",
       "Configure the external IdP as the identity source in IAM Identity Center.",
-      "Create an IAM role that has a trust policy that specifics the IdP's API endpoint.",
-      "Enable automatic provisioning in IAM Identity Center settings",
-      "Configure the external IdP as the identity source in IAM Identity Center.",
-      "Configure the external IdP as the identity source in IAM Identity Center."
+      "Enable automatic provisioning in IAM Identity Center settings"
     ],
     "explanations": {
       "_full": ""
@@ -126,31 +127,56 @@
     "type": "single",
     "question": "A company wants to deny a specific federated user named Bob access to an Amazon S3 bucket named DOC-EXAMPLE-BUCKET. The company wants to meet this requirement by using a bucket policy. The company also needs to ensure that this bucket policy affects Bob's S3 permissions only. Any other permissions that Bob has must remain intact. Which policy should the company use to meet these requirements?",
     "options": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "Correct Answer: B"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Allow\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}"
     },
     "answer": "B",
     "explanations": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "Correct Answer: B"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Allow\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"},\n    \"Effect\": \"Deny\",\n    \"Action\": \"s3:*\",\n    \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\"\n  }]\n}"
     }
   },
   {
     "exam": "SCS-C03",
     "id": 8,
-    "type": "ordering",
+    "type": "matching",
     "question": "A company is designing its security monitoring strategy for an existing sensitive workload on AWS. The security team has identified several scenarios that require monitoring strategies. Select the correct monitoring strategy from the following list for each monitoring scenario. Select each monitoring strategy one time. Automatically isolate Amazon EC2 distances when malware detection findings are confirmed. Correlate security findings from multiple AWS detection services to identify multi-stage attacks. Detect when privileged users perform an unusually high volume of resource deletion operations. Identify patterns of more than 50 failed authentication attempts from specific IP addresses in 1 hour. Monitor network traffic patterns especially large data transfers to external IP addresses outside normal office hours. Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows.",
-    "available_steps": [
-      "Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows."
-    ],
-    "ordered_steps": [],
     "explanations": {
       "_full": ""
-    }
+    },
+    "available_options": [
+      "Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows.",
+      "Create Amazon CloudWatch metric filters on application logs to track authentication failure rates for each source IP address with hourly aggregation.",
+      "Enable AWS CloudTrail Insights for API call rate analysis to establish baselines and then detect anomalous API activity patterns.",
+      "Implement AWS Security Hub custom insights with Amazon EventBridge rules to invoke automated AWS Lambda functions for coordinated incident response.",
+      "Use Amazon GuardDuty malware detection findings with Amazon EventBridge rules to invoke AWS Lambda functions that automatically isolate affected Amazon EC2 instances."
+    ],
+    "matches": [
+      {
+        "use_case": "Automatically isolate Amazon EC2 instances when malware detection findings are confirmed.",
+        "correct_answer": "Use Amazon GuardDuty malware detection findings with Amazon EventBridge rules to invoke AWS Lambda functions that automatically isolate affected Amazon EC2 instances."
+      },
+      {
+        "use_case": "Correlate security findings from multiple AWS detection services to identify multi-stage attacks.",
+        "correct_answer": "Implement AWS Security Hub custom insights with Amazon EventBridge rules to invoke automated AWS Lambda functions for coordinated incident response."
+      },
+      {
+        "use_case": "Detect when privileged users perform an unusually high volume of resource deletion operations.",
+        "correct_answer": "Enable AWS CloudTrail Insights for API call rate analysis to establish baselines and then detect anomalous API activity patterns."
+      },
+      {
+        "use_case": "Identify patterns of more than 50 failed authentication attempts from specific IP addresses in 1 hour.",
+        "correct_answer": "Create Amazon CloudWatch metric filters on application logs to track authentication failure rates for each source IP address with hourly aggregation."
+      },
+      {
+        "use_case": "Monitor network traffic patterns especially large data transfers to external IP addresses outside normal office hours.",
+        "correct_answer": "Configure VPC Flow Logs with Amazon CloudWatch Logs Insights queries to analyze traffic volume and destination patterns during specific time windows."
+      }
+    ]
   },
   {
     "exam": "SCS-C03",
