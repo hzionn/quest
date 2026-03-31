@@ -1152,6 +1152,24 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               </div>
             )}
 
+            {/* Navigation */}
+            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+                disabled={practiceIndex === 0}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <ChevronLeft size={16} /> 上一題
+              </button>
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+                disabled={practiceIndex >= practiceFiltered.length - 1}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                下一題 <ChevronRight size={16} />
+              </button>
+            </div>
+
             {/* Result */}
             {practiceSubmitted[qKey] && (
               <div className={`mt-5 p-5 rounded-xl animate-scale-in ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
@@ -1176,24 +1194,6 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
               </div>
             )}
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
-                disabled={practiceIndex === 0}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                <ChevronLeft size={16} /> 上一題
-              </button>
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
-                disabled={practiceIndex >= practiceFiltered.length - 1}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                下一題 <ChevronRight size={16} />
-              </button>
-            </div>
           </div>
         </div>
       )}
