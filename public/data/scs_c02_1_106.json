@@ -1090,6 +1090,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 54,
+    "type": "single",
+    "question": "一家公司在 AWS 上运行多个工作负载。员工需要使用本机 ADFS 和 SSO 进行身份验证才能存取 AWS 管理控制台。开发人员将现有的旧版 Web 应用程式移转到了 Amazon EC2 执行个体。员工需要从互联网上的任何地方访问此应用程序，但目前该应用程式尚未内建身份验证系统。安全工程师应如何在不更改应用程式的情况下实现仅限员工存取此系统的权限？",
+    "options": {
+      "A": "将应用程式置于应用程式负载平衡器 (ALB) 之后。使用 Amazon Cognito 作为 ALB 的身份验证。定义基于 SAML 的 Amazon Cognito 使用者池并将其连接到 ADFS。",
+      "B": "在管理帐户中实作 AWS IAM Identity Center（AWS Single Sign-On），并将其作为身分提供者连结到 ADFS。将 EC2 执行个体定义为託管资源，然后在该资源上套用 IAM 策略。",
+      "C": "定义一个 Amazon Cognito 身分池，然后在 Active Directory 伺服器上安装连接器。使用应用程式实例上的 Amazon Cognito SDK，透过 Active Directory 使用者名称和密码对员工进行身份验证。",
+      "D": "建立 AWS Lambda 自订授权器作为 Amazon EC2 上反向代理程式的身份验证器。确保 Amazon EC2 上的安全性群组仅允许来自 Lambda 函数的存取。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。ALB 支持身份验证功能，可以通过 Amazon Cognito 集成 SAML 身份提供者（如 ADFS）。这种方法无需修改应用程序代码，只需配置 ALB 和 Cognito 即可实现员工身份验证。员工可以通过 ADFS 进行身份验证，并通过 ALB 访问应用程序。",
+      "B": "错误。AWS IAM Identity Center（AWS SSO）主要用于管理 AWS 账户和服务的访问权限，而不是直接用于保护 EC2 实例上的应用程序。IAM 策略无法直接控制 EC2 实例上的应用程序访问权限。",
+      "C": "错误。此选项需要修改应用程序代码以集成 Amazon Cognito SDK，这与题目要求的「不改变应用程序」相矛盾。此外，题目中并未提到需要使用 Amazon Cognito 身份池，而是更适合使用用户池与 SAML 集成。",
+      "D": "错误。此选项需要开发自定义 Lambda 函数和反向代理，增加了复杂性，并且需要修改应用程序的访问架构。题目要求的是一种简单的解决方案，而不是复杂的自定义实现。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 55,
     "type": "single",
     "question": "一家公司正在使用 AWS 对储存在 Amazon S3 储存桶中的资料运行 ⻓ 期运行的分析流程。此流程在 Auto Scaling 群组中的一组 Amazon EC2 执行个体上执行。这些 EC2 执行个体部署在无法存取 Internet 的 VPC 的私有子网路中。 EC2 执行个体和 S3 储存桶位于同一个 AWS 帐户。 EC2 执行个体透过具有预设存取策略的 S3 闸道终端节点存取 S3 储存桶。每个 EC2 执行个体都与一个执行个体设定档角色关联,该角色的策略明确允许仅对所需的 S3 储存桶执行 s3 GetObject 操作和 s3 PutObject 操作。该公司发现一个或多个 EC2 执行个体遭到入侵,并且正在将资料外洩到 AWS Organizations 中公司组织外部的 S3 储存桶中。安全工程师必须实施解决方案来阻止这种资料洩露,并确保 EC2 处理作业正常运作。哪种解决方案能够满足这些要求?",

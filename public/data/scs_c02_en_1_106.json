@@ -1088,6 +1088,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 54,
+    "type": "single",
+    "question": "A company runs multiple workloads on AWS. Employees need to authenticate using on-premises ADFS and SSO to access the AWS Management Console. Developers have migrated an existing legacy web application to Amazon EC2 instances. Employees need to access this application from anywhere on the internet, but the application does not currently have a built-in authentication system. How should the security engineer implement employee-only access to this system without changing the application?",
+    "options": {
+      "A": "Place the application behind an Application Load Balancer (ALB). Use Amazon Cognito as the authentication for the ALB. Define a SAML-based Amazon Cognito user pool and connect it to ADFS.",
+      "B": "Implement AWS IAM Identity Center (AWS Single Sign-On) in the management account and connect it to ADFS as an identity provider. Define the EC2 instance as a managed resource and apply IAM policies to the resource.",
+      "C": "Define an Amazon Cognito identity pool and install a connector on the Active Directory server. Use the Amazon Cognito SDK on the application instance to authenticate employees with Active Directory usernames and passwords.",
+      "D": "Create an AWS Lambda custom authorizer as the authenticator for a reverse proxy on Amazon EC2. Ensure that the security group on Amazon EC2 only allows access from the Lambda function."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. ALB supports authentication features and can integrate SAML identity providers (such as ADFS) through Amazon Cognito. This approach requires no modification to the application code — only ALB and Cognito configuration is needed to implement employee authentication. Employees can authenticate through ADFS and access the application via the ALB.",
+      "B": "Incorrect. AWS IAM Identity Center (AWS SSO) is primarily used for managing access to AWS accounts and services, not for directly protecting applications on EC2 instances. IAM policies cannot directly control application-level access on EC2 instances.",
+      "C": "Incorrect. This option requires modifying the application code to integrate the Amazon Cognito SDK, which contradicts the requirement of not changing the application. Additionally, the question does not call for an Amazon Cognito identity pool — a user pool with SAML integration would be more appropriate.",
+      "D": "Incorrect. This option requires developing a custom Lambda function and reverse proxy, adding complexity and requiring changes to the application's access architecture. The question calls for a simple solution, not a complex custom implementation."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 55,
     "type": "single",
     "question": "A company is using AWS to run a long-running analysis process on data that is stored in Amazon S3 buckets. The process runs on a fleet of Amazon EC2 instances that are in an Auto Scaling group. The EC2 instances are deployed in a private subnet of a VPC that does not have internet access. The EC2 instances and the S3 buckets are in the same AWS account. The EC2 instances access the S3 buckets through an S3 gateway endpoint that has the default access policy. Each EC2 instance is associated with an instance profile role that has a policy that explicitly allows the s3 GetObject action and the s3 PutObject action for only the required S3 buckets. The company learns that one or more of the EC2 instances are compromised and are exfiltrating data to an S3 bucket that is outside the company's organization in AWS Organizations. A security engineer must implement a solution to stop this exfiltration of data and to keep the EC2 processing job functional. Which solution will meet these requirements?",
