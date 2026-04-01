@@ -772,6 +772,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 145,
+    "type": "single",
+    "question": "开发运维团队使用 AWS Identity and Access Management (IAM) 来管理用户权限。团队创建了一个 Amazon EC2 实例配置文件角色，该角色使用 AWS 托管的 ReadOnlyAccess 策略。当运行在 Amazon EC2 上的应用程序尝试从加密的 Amazon S3 存储桶读取文件时，应用程序收到 AccessDenied 错误。\n\n团队管理员已验证 S3 存储桶策略允许账户中的所有人访问 S3 存储桶。文件没有附加对象 ACL。\n\n管理员应该怎么做来解决 IAM 访问问题？",
+    "options": {
+      "A": "编辑 ReadOnlyAccess 策略以添加 kms:Decrypt 操作。",
+      "B": "将 EC2 IAM 角色作为授权主体添加到 S3 存储桶策略。",
+      "C": "为 IAM 角色附加一个包含 kms:Decrypt 权限的内联策略。",
+      "D": "为 IAM 角色附加一个包含 S3:* 权限的内联策略。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误。AWS 托管策略（如 ReadOnlyAccess）无法直接编辑。托管策略是由 AWS 管理的，用户无法修改。",
+      "B": "错误。题目中已经明确指出 S3 存储桶策略允许账户中的所有用户访问存储桶，因此问题不在于存储桶策略。",
+      "C": "正确。加密的 S3 文件需要 KMS 解密权限。当前 IAM 角色使用的是 ReadOnlyAccess 策略，该策略不包含 kms:Decrypt 权限，因此需要为 IAM 角色附加一个内联策略以授予 kms:Decrypt 权限。",
+      "D": "错误。虽然 S3:* 权限可以解决 S3 访问问题，但这是过度授权，违反了最小权限原则。而且真正的问题是缺少 KMS 解密权限，而非 S3 权限不足。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 146,
     "type": "single",
     "question": "一家公司使用 AWS Organizations ,并在多个 AWS 账户中拥有 Amazon Elastic Kubernetes Service Amazon EKS 集群。一位安全工程师将 Amazon EKS 与 AWS CloudTrail 集成。 CloudTrail 日志存储在每个账户的 Amazon S3 桶中, 用于监控 API 调用。安全工程师发现 CloudTrail 日志未显示 Kubernetes pod 创建事件。安全工程师应该怎么做才能从 Amazon CloudWatch 中查看 Kubernetes 事件?",

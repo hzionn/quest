@@ -770,6 +770,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 145,
+    "type": "single",
+    "question": "A DevOps team uses AWS Identity and Access Management (IAM) to manage user permissions. The team creates an Amazon EC2 instance profile role that uses the AWS managed ReadOnlyAccess policy. When an application running on Amazon EC2 tries to read files from an encrypted Amazon S3 bucket, the application receives an AccessDenied error.\n\nThe team administrator has verified that the S3 bucket policy allows access to the S3 bucket for everyone in the account. The files do not have object ACLs attached.\n\nWhat should the administrator do to resolve the IAM access issue?",
+    "options": {
+      "A": "Edit the ReadOnlyAccess policy to add kms:Decrypt actions.",
+      "B": "Add the EC2 IAM role as the authorized Principal to the S3 bucket policy.",
+      "C": "Attach an inline policy with kms:Decrypt permissions to the IAM role.",
+      "D": "Attach an inline policy with S3:* permissions to the IAM role."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. AWS managed policies (such as ReadOnlyAccess) cannot be directly edited. Managed policies are managed by AWS and cannot be modified by users.",
+      "B": "Incorrect. The question explicitly states that the S3 bucket policy allows access to the S3 bucket for everyone in the account, so the issue is not with the bucket policy.",
+      "C": "Correct. Encrypted S3 files require KMS decrypt permissions. The current IAM role uses the ReadOnlyAccess policy, which does not include kms:Decrypt permissions. Therefore, an inline policy needs to be attached to the IAM role to grant kms:Decrypt permissions.",
+      "D": "Incorrect. While S3:* permissions could resolve S3 access issues, this is over-permissioning and violates the principle of least privilege. The actual issue is the lack of KMS decrypt permissions, not insufficient S3 permissions."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 146,
     "type": "single",
     "question": "A company uses AWS Organizations and has Amazon Elastic Kubernetes Service Amazon EKS) clusters in many AWS accounts. A security engineer integrates Amazon EKS with AWS CloudTrail. The CloudTrail trails are stored in an Amazon S3 bucket in each account to monitor API calls. The security engineer observes that CloudTrail logs are not displaying Kubernetes pod creation events. What should the security engineer do to view the Kubernetes events from Amazon CloudWatch?",
