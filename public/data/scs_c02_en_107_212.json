@@ -1255,19 +1255,19 @@
     "exam": "SCS-C02",
     "id": 170,
     "type": "single",
-    "question": "A machine learning engineer at a company is creating a classification model. While browsing the dataset, the engineer notices a field named day_of_week. The data in this column contains the following values: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, and Sunday. Which technique should the engineer use to convert the data in this column to binary values?",
+    "question": "A company uses AWS Organizations and has many AWS accounts. The company has a new requirement to use server-side encryption with customer-provided keys (SSE-C) on all new objects uploaded to Amazon S3 buckets. A security engineer is creating an SCP that includes a Deny effect for the s3:PutObject action. Which condition must the security engineer add to the SCP to enforce the new SSE-C requirement?",
     "options": {
-      "A": "Binary encoding",
-      "B": "Label encoding",
-      "C": "One-hot encoding",
-      "D": "Tokenization"
+      "A": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"true\" } }",
+      "B": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption\": \"aws:kms\" } }",
+      "C": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"AES256\" } }",
+      "D": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption\": \"true\" } }"
     },
-    "answer": "C",
+    "answer": "A",
     "explanations": {
-      "A": "Binary Encoding converts categories to numerical values (e.g., 1, 2, 3), then to binary codes (e.g., 01, 10, 11). While it produces fewer feature dimensions than one-hot encoding, it is less intuitive and less commonly used for data with only 7 categories like days of the week.",
-      "B": "Label Encoding assigns integers to categories (0, 1, 2...). This causes the model to incorrectly assume an ordinal relationship between values (e.g., Sunday=6 is more important than Monday=0), which negatively impacts most classification models (e.g., linear regression, SVM).",
-      "C": "Correct. One-Hot Encoding creates a new dummy variable for each category with values of 0 or 1. For example, \"Monday\" becomes [1, 0, 0, 0, 0, 0, 0]. This is the most standard technique for handling unordered categorical data and prevents the model from misinterpreting numerical magnitude.",
-      "D": "Tokenization is a Natural Language Processing (NLP) technique used to split long sentences into individual words or tokens. It is a preliminary step for text processing, not an encoding technique for converting categorical fields to binary values."
+      "A": "Correct. This condition uses the Null condition operator to check if the s3:x-amz-server-side-encryption-customer-algorithm header is null (not provided). When the header is null (\"true\"), it means the request is not using SSE-C, so the request is denied. This ensures all PutObject requests must include the SSE-C encryption header.",
+      "B": "Incorrect. s3:x-amz-server-side-encryption is the condition key for SSE-S3 or SSE-KMS, not SSE-C. Checking if this value is not equal to \"aws:kms\" is unrelated to enforcing SSE-C.",
+      "C": "Incorrect. While s3:x-amz-server-side-encryption-customer-algorithm is the correct SSE-C condition key, using StringNotEquals to check for \"AES256\" would deny requests using non-AES256 algorithms but would not deny requests that completely omit the SSE-C header. Requests without the header would not trigger the StringNotEquals condition.",
+      "D": "Incorrect. s3:x-amz-server-side-encryption is the condition key for SSE-S3 or SSE-KMS, not SSE-C. Even though the correct Null condition operator is used, the wrong condition key is being checked, so it cannot enforce SSE-C."
     }
   },
   {

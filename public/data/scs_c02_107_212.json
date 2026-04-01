@@ -1259,19 +1259,19 @@
     "exam": "SCS-C02",
     "id": 170,
     "type": "single",
-    "question": "一家公司的机器学习工程师正在创建一个分类模型。该工程师在浏览数据集时注意到有一个名为 day_of_week 的字段。该列的数据包含以下值:星期一、星期二、星期三、星期四、星期五、星期六和星期日。该工程师应该使用哪种技术将该列的数据转换为二进制值?",
+    "question": "一家公司使用 AWS Organizations 并拥有许多 AWS 账户。该公司有一个新的要求，即在所有上传到 Amazon S3 存储桶的新对象上使用客户提供的密钥进行服务器端加密 (SSE-C)。一名安全工程师正在创建一个 SCP，其中包括对 s3:PutObject 操作的 Deny 效果。安全工程师必须在 SCP 中添加哪个条件以强制执行新的 SSE-C 要求？",
     "options": {
-      "A": "二进制编码",
-      "B": "标签编码",
-      "C": "独热编码",
-      "D": "分词"
+      "A": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"true\" } }",
+      "B": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption\": \"aws:kms\" } }",
+      "C": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"AES256\" } }",
+      "D": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption\": \"true\" } }"
     },
-    "answer": "C",
+    "answer": "A",
     "explanations": {
-      "A": "二进制编码(Binary Encoding)会先将类别转换为数值(如 1, 2, 3),再转换为二进制码(如 01, 10, 11)。虽然它产生的特征维度比独热编码少,但在处理「星期」这种只有 7 个类别的数据时,不如独热编码直观且常用。",
-      "B": "标签编码(Label Encoding)会将类别分配为整数(0, 1, 2...)。这会导致模型错误地认为数据之间存在「大小顺序」(例如星期日=6 比星期一=0 更重要),这对于大多数分类模型(如线性回归、SVM)会产生负面影响。",
-      "C": "正确。独热编码(One-Hot Encoding)会为每个类别创建一个新的「虚拟变量」(Dummy Variable),值为 0 或 1。例如「星期一」会变成 [1, 0, 0, 0, 0, 0, 0]。这是处理无序类别数据最标准、最能防止模型误解数值大小意义的技术。",
-      "D": "分词(Tokenization)是自然语言处理(NLP)中的技术,用于将长句子拆分为单个单词或标记。这是用于文本处理的初步步骤,并非将类别字段转换为二进制数值的编码技术。"
+      "A": "正确。此条件使用 Null 条件运算符检查 s3:x-amz-server-side-encryption-customer-algorithm 标头是否为空（即未提供）。当该标头为 null（\"true\"）时，表示请求未使用 SSE-C，因此拒绝该请求。这确保所有 PutObject 请求都必须包含 SSE-C 加密标头。",
+      "B": "错误。s3:x-amz-server-side-encryption 是用于 SSE-S3 或 SSE-KMS 的条件键，而非 SSE-C。检查该值是否不等于 \"aws:kms\" 与强制要求 SSE-C 无关。",
+      "C": "错误。虽然 s3:x-amz-server-side-encryption-customer-algorithm 是正确的 SSE-C 条件键，但使用 StringNotEquals 检查 \"AES256\" 会拒绝使用非 AES256 算法的请求，而不会拒绝完全未提供 SSE-C 标头的请求。未提供标头的请求不会触发 StringNotEquals 条件。",
+      "D": "错误。s3:x-amz-server-side-encryption 是用于 SSE-S3 或 SSE-KMS 的条件键，不是 SSE-C。即使使用了正确的 Null 条件运算符，检查的条件键不对，无法强制要求 SSE-C。"
     }
   },
   {
