@@ -900,6 +900,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 258,
+    "type": "single",
+    "question": "一家公司正在使用 AWS Organizations 并启用了默认的 SCP。该公司需要限制特定 OU 中所有 AWS 账户的 AWS 使用权限。除了某些所需的全球服务外，所有 OU 中的账户必须仅在 eu-west-1 区域内使用 AWS 服务。一名安全工程师必须创建一个 SCP，以将此限制应用于现有账户以及 OU 中的任何新账户。哪个 SCP 能够满足这些要求？",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Deny\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Allow\", \"Action\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Deny\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringNotEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Allow\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringNotEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误。此 SCP 使用 Deny + NotAction + StringEquals 条件。StringEquals 条件表示「当请求区域等于 eu-west-1 时」触发 Deny。这意味着会拒绝在 eu-west-1 区域的操作（除全球服务外），效果与预期完全相反——应该是拒绝非 eu-west-1 的操作。",
+      "B": "错误。此 SCP 使用 Allow 效果，而 SCP 中的 Allow 只是表示「不阻止」，不能主动授予权限。此外，它使用 Action（而非 NotAction）仅针对全球服务，并且 StringEquals 条件限制在 eu-west-1，逻辑上无法实现限制非 eu-west-1 区域使用的目标。",
+      "C": "正确。此 SCP 使用 Deny + NotAction + StringNotEquals 条件。逻辑为：当请求区域不等于 eu-west-1（StringNotEquals）时，拒绝除全球服务以外（NotAction）的所有操作。这确保了：1) eu-west-1 区域的操作不受影响；2) 全球服务（如 IAM、STS、CloudFront）不受区域限制；3) 其他区域的非全球服务操作被拒绝。",
+      "D": "错误。此 SCP 使用 Allow 效果。在 SCP 中，Allow 表示「不阻止」，但已有默认的 FullAWSAccess SCP 允许所有操作。添加另一个 Allow SCP 不会产生任何限制效果，无法实现区域限制的目标。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 259,
     "type": "multiple",
     "question": "一家公司计划将其应用程序迁移到单一的 AWS 区域。公司的应用程序将使用 Amazon EC2 实例、 Elastic Load Balancing ELB 负载均衡器和 Amazon S3 存储桶的组合。公司希望尽快完成迁移。所有应用程序必须满足以下要求: • 数据必须在静态状态下加密。 • 数据必须在传输过程中加密。 • 必须监控端点是否存在异常的网络流量。安全工程师应该采取哪些步骤,以最少的努力满足这些要求?(选择三项)",
