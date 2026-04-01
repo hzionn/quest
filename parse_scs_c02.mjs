@@ -29,6 +29,13 @@ function stripNulls(text) {
   return text.replace(/\0/g, '');
 }
 
+// Convert full-width A-F (Ａ-Ｆ) to half-width
+function normalizeFullWidth(text) {
+  return text.replace(/[\uFF21-\uFF26]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) - 0xFF21 + 0x41)
+  );
+}
+
 function findOptions(rawText) {
   // Strip null chars that appear in the PDF between option letters and text
   const text = stripNulls(rawText);
@@ -96,7 +103,9 @@ function parseQuestionBlock(blockText, qId) {
   block = block.replace(/\d+~\d+\s+\d+/g, ' ').trim();
 
   // Remove leading ID and 英文 (with optional colon)
-  block = block.replace(/^\d+\s+英\s*[⽂文]\s*[:：]?\s*/, '').trim();
+  // Handles: "1 英文", "86 201~307 167 英文:", "1~100 1 英文"
+  block = block.replace(/^\d+\s+(?:\d+~\d+\s+\d+\s*\n?\s*)?英\s*[⽂文]\s*[:：]?\s*/, '').trim();
+  block = block.replace(/^(?:\d+~\d+\s+)?\d+\s+英\s*[⽂文]\s*[:：]?\s*/, '').trim();
 
   // Split at 中文 (with optional colon)
   const zhIdx = block.search(/中\s*[⽂文]\s*[:：]?/);
@@ -133,17 +142,22 @@ function parseQuestionBlock(blockText, qId) {
     zhQuestion = cleanText(zhSection);
   }
 
-  // Extract answer letters
+  // Extract answer letters (normalize full-width Ａ-Ｆ first)
   let answerLetters = null;
+  const normAnalysis = normalizeFullWidth(analysisSection);
+  const normBlock = normalizeFullWidth(block);
+
   const answerPatterns = [
     /解\s*答\s+([A-F](?:\s*[A-F])*)/,
     /答\s*案\s*[:：]?\s*(?:\d+~\d+\s+\d+\s*)?([A-F](?:\s*[A-F])*)/,
+    // Answer after "答案 :" with analysis text in between (e.g., "答案 :  1.   考察的知识点  BC")
+    /答\s*案\s*[:：]?\s*[\s\S]{0,50}?([A-F]{2,})\s/,
     /官\s*[⽅方]\s*答\s*案\s*[:：]?\s*([A-F](?:\s*[A-F])*)/,
     /正确答案\s*[:：]?\s*([A-F](?:\s*[A-F])*)/,
     /Correct\s+Answer\s*[:：]\s*([A-F](?:\s*[,、&]\s*[A-F])*)/i,
   ];
 
-  for (const source of [analysisSection, block]) {
+  for (const source of [normAnalysis, normBlock]) {
     if (answerLetters) break;
     for (const pat of answerPatterns) {
       const m = source.match(pat);
@@ -212,14 +226,33 @@ function parseQuestionBlock(blockText, qId) {
 }
 
 function splitIntoQuestionBlocks(allText, offset, maxLocal) {
-  const pattern = /(?:(?:\d+~\d+)\s+)?(\d+)\s+英\s*[⽂文]\s*[:：]?/g;
   const splits = [];
   let m;
-  while ((m = pattern.exec(allText)) !== null) {
+
+  // Pattern 1 (original): optional {range} then {id} 英文
+  // e.g., "1~100  1  英 ⽂" or "2  英 ⽂"
+  const pat1 = /(?:(?:\d+~\d+)\s+)?(\d+)\s+英\s*[⽂文]\s*[:：]?/g;
+  while ((m = pat1.exec(allText)) !== null) {
     const localId = parseInt(m[1]);
-    if (localId > maxLocal || localId < 1) continue;
-    splits.push({ id: localId + offset, localId, index: m.index });
+    if (localId >= 1 && localId <= maxLocal) {
+      splits.push({ localId, index: m.index });
+    }
   }
+
+  // Pattern 2: {id} {range} {page} 英文 — e.g., "86 201~307 167\n英 ⽂ :"
+  // The local question ID comes BEFORE the range marker
+  const pat2 = /(\d+)\s+\d+~\d+\s+\d+\s*\n?\s*英\s*[⽂文]\s*[:：]?/g;
+  while ((m = pat2.exec(allText)) !== null) {
+    const localId = parseInt(m[1]);
+    if (localId >= 1 && localId <= maxLocal) {
+      if (!splits.some(s => s.localId === localId && Math.abs(s.index - m.index) < 100)) {
+        splits.push({ localId, index: m.index });
+      }
+    }
+  }
+
+  // Sort by index
+  splits.sort((a, b) => a.index - b.index);
 
   // Deduplicate: keep first occurrence of each local ID
   const seen = new Set();
@@ -235,7 +268,7 @@ function splitIntoQuestionBlocks(allText, offset, maxLocal) {
   for (let i = 0; i < unique.length; i++) {
     const start = unique[i].index;
     const end = i + 1 < unique.length ? unique[i + 1].index : allText.length;
-    blocks.push({ id: unique[i].id, text: allText.substring(start, end).trim() });
+    blocks.push({ id: unique[i].localId + offset, text: allText.substring(start, end).trim() });
   }
 
   return blocks;
