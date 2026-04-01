@@ -22,19 +22,19 @@
     "exam": "SCS-C02",
     "id": 108,
     "type": "single",
-    "question": "一家公司通过 VPN 共享 Amazon SageMaker Studio 笔记本。公司必须实施访问控制,以防止恶意行为者利用预签名 URL 访问笔记本。哪种解决方案能够满足这些要求?",
+    "question": "一名安全工程师需要创建一个 Amazon S3 bucket 策略，以授予名为 User1、User2 和 User3 的 IAM 用户账户最小权限的读取访问权限。这些 IAM 用户账户是 AuthorizedPeople IAM 组的成员。安全工程师起草了以下 S3 bucket 策略：\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Id\": \"AuthorizedPeoplePolicy\",\n  \"Statement\": [\n    {\n      \"Sid\": \"Actions-Authorized-People\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"s3:GetObject\"\n      ],\n      \"Resource\": \"arn:aws:s3:::authorized-people-bucket/*\"\n    }\n  ]\n}\n\n当安全工程师尝试将策略添加到 S3 bucket 时，出现以下错误消息：\"缺少必需字段 Principal。\"\n\n安全工程师正在向策略中添加一个 Principal 元素。添加的内容必须仅为 User1、User2 和 User3 提供读取访问权限。哪种解决方案满足这些要求？",
     "options": {
-      "A": "使用 aws:sourceIp IAM 策略条件设置 Studio 客户端 IP 验证。",
-      "B": "使用 aws:sourceVpc IAM 策略条件设置 Studio 客户端 VPC 验证。",
-      "C": "使用 aws:PrimaryTag IAM 策略条件设置 Studio 客户端角色端点验证。",
-      "D": "使用 aws:PrincipalTag IAM 策略条件设置 Studio 客户端用户端点验证。"
+      "A": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:user/User1\", \"arn:aws:iam::1234567890:user/User2\", \"arn:aws:iam::1234567890:user/User3\" ] }",
+      "B": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:root\" ] }",
+      "C": "\"Principal\": { \"AWS\": [ \"*\" ] }",
+      "D": "\"Principal\": { \"AWS\": \"arn:aws:iam::1234567890:group/AuthorizedPeople\" }"
     },
     "answer": "A",
     "explanations": {
-      "A": "正确。使用 aws:sourceIp IAM 策略条件可以限制访问者的 IP 地址,从而确保只有通过 VPN 的合法 IP 地址可以访问 SageMaker Studio 笔记本。这直接限制了恶意用户通过预签名 URL 访问资源的可能性。",
-      "B": "aws:sourceVpc IAM 策略条件用于限制来自特定 VPC 的访问,但题目中并未提到需要基于 VPC 的限制。虽然 VPC 验证可以提供一定的安全性,但它并不能直接解决预签名 URL 的安全问题。",
-      "C": "aws:PrimaryTag IAM 策略条件用于基于资源的标签进行访问控制,与题目中提到的预签名 URL 和 IP 地址限制无关。此选项与题目要求不匹配。",
-      "D": "aws:PrincipalTag IAM 策略条件用于基于用户标签进行访问控制,与题目中提到的预签名 URL 和 IP 地址限制无关。此选项与题目要求不匹配。"
+      "A": "正确。此选项正确地添加了 Principal 字段，并将其设置为三个用户的 ARN。这样可以确保只有 User1、User2 和 User3 能够访问 S3 资源，符合最小权限原则。",
+      "B": "错误。此选项将 Principal 设置为 root 账户，这会授予整个 AWS 账户的所有用户访问权限，违反了最小权限原则。",
+      "C": "错误。此选项将 Principal 设置为 \"*\"，表示允许所有人访问，完全违反了最小权限原则。",
+      "D": "错误。虽然 AuthorizedPeople 组包含这三个用户，但 S3 bucket 策略的 Principal 不支持 IAM 组的 ARN。IAM 组不能作为 Principal 使用。"
     }
   },
   {
