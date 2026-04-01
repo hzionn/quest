@@ -696,6 +696,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 34,
+    "type": "single",
+    "question": "一家公司使用身分联合来对身分识别帐户 (987654321987) 中的使用者进行身分验证，其中使用者承担名为 IdentityRole 的 IAM 角色。然后，使用者在目标 AWS 帐户 (123456789123) 中承担名为 JobFunctionRole 的 IAM 角色来执行其工作职能。\n\n使用者无法承担目标帐户中的 IAM 角色。身分帐户中角色所附加的策略是：\n\n{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::*:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }\n\n应该怎麽做才能使用户在目标帐户中承担适当的角色？",
+    "options": {
+      "A": "将身分帐户中附加到角色的 IAM 策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::123456789123:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }",
+      "B": "将目标帐号中角色的信任策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:role/IdentityRole\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "C": "将身分帐户中角色的信任策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:root\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "D": "将附加到目标帐户中角色的 IAM 策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"Stmt1502946463000\", \"Effect\": \"Allow\", \"Action\": \"sts:AssumeRole\", \"Resource\": \"arn:aws:iam::123456789123:role/JobFunctionRole\" } ] }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误。身份账户中的 IAM 策略已经允许用户调用 sts:AssumeRole 操作，并且资源指定为 arn:aws:iam::*:role/JobFunctionRole，这已经正确配置了权限。将通配符 * 更改为具体账户 ID 不会解决问题，因为问题不在于身份账户的 IAM 策略，而在于目标账户的信任策略。",
+      "B": "正确。目标账户中的 JobFunctionRole 需要信任身份账户中的 IdentityRole，以便允许身份账户的用户通过 sts:AssumeRole 来访问目标账户的资源。信任策略中将 Principal 设置为 arn:aws:iam::987654321987:role/IdentityRole，确保只有承担了 IdentityRole 的用户才能跨账户承担 JobFunctionRole。",
+      "C": "错误。身份账户中的 IdentityRole 的信任策略与问题无关，因为问题发生在目标账户的角色信任策略配置上。修改身份账户角色的信任策略不能解决跨账户访问的问题。",
+      "D": "错误。目标账户中的 IAM 策略控制的是角色的权限（角色可以执行哪些操作），而不是信任关系（谁可以承担此角色）。问题的核心是信任策略，而不是 IAM 权限策略。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 35,
     "type": "single",
     "question": "一家公司正在使用 AWS Organizations 管理其人力资源、财务、软体开发和生产部 ⻔ 的多个 AWS 帐户。该公司的所有开发人员都属于软体开发 AWS 帐户。该公司发现,开发人员启动的 Amazon EC2 执行个体预先配置了该公司尚未批准使用的软体。该公司希望实施一项解决方案,以确保开发人员只能在软体开发 AWS 帐户中启动已批准的软体应用程式的 EC2 执行个体。哪种解决方案能够满足这些要求?",

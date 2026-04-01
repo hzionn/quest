@@ -694,6 +694,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 34,
+    "type": "single",
+    "question": "A company uses identity federation to authenticate users in an identity account (987654321987), where users assume an IAM role named IdentityRole. Users then assume an IAM role named JobFunctionRole in a target AWS account (123456789123) to perform their job functions.\n\nUsers are unable to assume the IAM role in the target account. The policy attached to the role in the identity account is:\n\n{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::*:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }\n\nWhat should be done to enable users to assume the appropriate role in the target account?",
+    "options": {
+      "A": "Update the IAM policy attached to the role in the identity account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::123456789123:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }",
+      "B": "Update the trust policy on the role in the target account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:role/IdentityRole\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "C": "Update the trust policy on the role in the identity account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:root\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "D": "Update the IAM policy attached to the role in the target account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"Stmt1502946463000\", \"Effect\": \"Allow\", \"Action\": \"sts:AssumeRole\", \"Resource\": \"arn:aws:iam::123456789123:role/JobFunctionRole\" } ] }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. The IAM policy in the identity account already allows users to call sts:AssumeRole with the resource specified as arn:aws:iam::*:role/JobFunctionRole, which is already correctly configured. Changing the wildcard * to a specific account ID would not solve the problem, as the issue is not with the identity account's IAM policy but with the target account's trust policy.",
+      "B": "Correct. The JobFunctionRole in the target account needs to trust the IdentityRole in the identity account to allow users from the identity account to access resources in the target account via sts:AssumeRole. Setting the Principal to arn:aws:iam::987654321987:role/IdentityRole in the trust policy ensures only users who have assumed the IdentityRole can cross-account assume the JobFunctionRole.",
+      "C": "Incorrect. The trust policy of the IdentityRole in the identity account is unrelated to the problem, as the issue is with the trust policy configuration on the target account's role. Modifying the identity account role's trust policy cannot resolve the cross-account access issue.",
+      "D": "Incorrect. The IAM policy in the target account controls the role's permissions (what actions the role can perform), not the trust relationship (who can assume the role). The core issue is the trust policy, not the IAM permissions policy."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 35,
     "type": "single",
     "question": "A company is using AWS Organizations to manage multiple AWS accounts for its human resources, finance, software development, and production departments. All the company's developers are part of the software development AWS account. The company discovers that developers have launched Amazon EC2 instances that were preconfigured with software that the company has not approved for use. The company wants to implement a solution to ensure that developers can launch EC2 instances with only approved software applications and only in the software development AWS account. Which solution will meet these requirements?",
