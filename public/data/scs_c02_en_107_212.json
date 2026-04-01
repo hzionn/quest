@@ -1274,19 +1274,19 @@
     "exam": "SCS-C02",
     "id": 171,
     "type": "single",
-    "question": "A machine learning engineer wants to use Amazon SageMaker AI to prepare training data. During exploratory data analysis, the engineer discovers that some categorical features have missing values. How can the engineer use SageMaker AI to resolve this issue?",
+    "question": "A company wants to deny a specific federated user named Bob access to an Amazon S3 bucket named DOC-EXAMPLE-BUCKET. The company wants to meet this requirement by using a bucket policy. The company also needs to ensure that the bucket policy affects only Bob's S3 permissions. Any other permissions that Bob has must remain unchanged. Which policy should the company use to meet these requirements?",
     "options": {
-      "A": "Use SageMaker Clarify to impute categorical features based on mean values.",
-      "B": "Use SageMaker Clarify to infer categorical features using mode values.",
-      "C": "Use SageMaker Data Wrangler to impute categorical features using mean values.",
-      "D": "Use SageMaker Data Wrangler to impute categorical features using mode values."
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Allow\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }"
     },
-    "answer": "D",
+    "answer": "B",
     "explanations": {
-      "A": "SageMaker Clarify is primarily used for detecting data bias and providing model explainability, not as a general-purpose data preprocessing tool. Additionally, mean values are not applicable to categorical data.",
-      "B": "Clarify is not the primary tool for performing data imputation. While mode is appropriate for categorical data, the tool choice is incorrect.",
-      "C": "SageMaker Data Wrangler is the correct tool (designed for data preparation and feature engineering), but mean values can only be used for numerical data (e.g., height, weight) and cannot compute the mean of categories (e.g., colors, cities).",
-      "D": "Correct. SageMaker Data Wrangler provides built-in transformation capabilities to handle missing values. For categorical features, the most common and reasonable imputation method is using the mode, which is the most frequently occurring value in that column."
+      "A": "Incorrect. This policy uses the Allow effect, which grants Bob all S3 permissions on the bucket rather than denying access. This is the opposite of what the question requires.",
+      "B": "Correct. This policy correctly uses the Deny effect, and the Principal uses arn:aws:sts::account-id:federated-user/Bob, which is the correct ARN format for a federated user. This ensures only Bob's access to DOC-EXAMPLE-BUCKET is denied for all S3 operations, without affecting other users or Bob's other permissions.",
+      "C": "Incorrect. This policy uses arn:aws:iam::account-id:user/Bob, which is the ARN format for an IAM user, not a federated user. The question explicitly states Bob is a federated user, so this ARN would not match Bob's identity.",
+      "D": "Incorrect. This policy uses arn:aws:sts::account-id:assumed-role/Bob/role-session-name, which is the ARN format for an assumed role, not a federated user. The question requires targeting federated user Bob, so this ARN does not match."
     }
   },
   {

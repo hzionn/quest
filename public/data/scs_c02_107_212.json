@@ -1278,19 +1278,19 @@
     "exam": "SCS-C02",
     "id": 171,
     "type": "single",
-    "question": "一位機器學習工程師想使用 Amazon SageMaker AI 來準備訓練資料。在探索性資料分析過程中，該工程師發現一些分類特徵存在缺失值。該工程師如何使用 SageMaker AI 來解決這個問題？",
+    "question": "一家公司希望拒绝一个名为 Bob 的特定联合用户访问名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶。该公司希望通过使用存储桶策略来满足这一要求。公司还需要确保此存储桶策略仅影响 Bob 的 S3 权限。Bob 拥有的任何其他权限必须保持不变。公司应该使用哪项策略来满足这些要求？",
     "options": {
-      "A": "使用 SageMaker Clarify 以平均值為基準來填入分類特徵。",
-      "B": "使用 SageMaker Clarify 以眾數值推斷分類特徵。",
-      "C": "使用 SageMaker Data Wrangler 以平均值來填入分類特徵。",
-      "D": "使用 SageMaker Data Wrangler 以眾數值填入分類特徵。"
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Allow\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }"
     },
-    "answer": "D",
+    "answer": "B",
     "explanations": {
-      "A": "SageMaker Clarify 主要用於偵測資料偏誤（Bias）和提供模型解釋性（Explainability），而非通用的資料預處理工具。此外，「平均值」不適用於分類數據。",
-      "B": "Clarify 並非用於執行資料填補（Imputation）的主要工具。雖然「眾數」適合分類數據，但工具選擇不當。",
-      "C": "SageMaker Data Wrangler 是正確的工具（專為資料準備和特徵工程設計），但「平均值（Mean）」僅能用於數值型數據（例如身高、體重），無法計算類別（例如顏色、城市）的平均值。",
-      "D": "正確。SageMaker Data Wrangler 提供了內建的轉換功能來處理缺失值（Handle missing values）。對於分類特徵，最常見且合理的填補方式就是使用「眾數（Mode）」，即該欄位中出現頻率最高的值。"
+      "A": "错误。此策略使用了 Allow 效果，会授予 Bob 对该存储桶的所有 S3 权限，而非拒绝访问。这与题目要求的「拒绝访问」完全相反。",
+      "B": "正确。此策略正确地使用了 Deny 效果，并且 Principal 使用了 arn:aws:sts::account-id:federated-user/Bob，这是联合用户（federated user）的正确 ARN 格式。这确保仅拒绝 Bob 对 DOC-EXAMPLE-BUCKET 的所有 S3 操作，不影响其他用户或 Bob 的其他权限。",
+      "C": "错误。此策略使用了 arn:aws:iam::account-id:user/Bob，这是 IAM 用户的 ARN 格式，而非联合用户的 ARN 格式。题目明确指出 Bob 是联合用户（federated user），因此此 ARN 无法匹配 Bob 的身份。",
+      "D": "错误。此策略使用了 arn:aws:sts::account-id:assumed-role/Bob/role-session-name，这是假定角色（assumed role）的 ARN 格式，而非联合用户的 ARN 格式。题目要求针对联合用户 Bob，此 ARN 不匹配。"
     }
   },
   {
