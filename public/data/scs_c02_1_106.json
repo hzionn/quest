@@ -1332,6 +1332,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 69,
+    "type": "single",
+    "question": "安全工程师需要配置 Amazon S3 存储桶策略来限制对名为 DOC-EXAMPLE-BUCKET 的 S3 存储桶的访问。此策略必须仅允许从端点 vpce-1a2b3c4d 访问 DOC-EXAMPLE-BUCKET。如果未使用指定的端点,则策略必须拒绝对 DOC-EXAMPLE-BUCKET 的所有访问。哪个存储桶策略声明满足这些要求?",
+    "options": {
+      "A": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Allow + StringNotEquals 表示:当来源不是 vpce-1a2b3c4d 时,允许访问。这与题目要求相反——题目要求拒绝非指定端点的访问,而非允许。",
+      "B": "正确。Deny + StringNotEquals aws:sourceVpce: vpce-1a2b3c4d 表示:当来源 VPC Endpoint 不是 vpce-1a2b3c4d 时,拒绝所有 s3:* 操作。显式拒绝优先于任何允许,确保只有通过指定 VPCE 的请求才能访问存储桶。",
+      "C": "Deny + StringEquals 表示:当来源是 vpce-1a2b3c4d 时,拒绝访问。这与题目要求完全相反,会拒绝来自正确端点的访问而允许其他所有来源。",
+      "D": "Allow + StringEquals 表示:当来源是 vpce-1a2b3c4d 时,允许访问所有资源(Resource: *)。但此选项没有拒绝其他来源的规则,其他访问路径仍可能被允许。且 Resource: * 范围过大。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 70,
     "type": "multiple",
     "question": "一家公司在 VPC 的单一私人子网路中拥有一组 Amazon EC2 实例,且未连接任何网路闸道。一位安全工程师在该子网路中的所有执行个体上安装了 Amazon CloudWatch 代理, 用于撷取特定应用程式的日誌。为了确保日誌安全传输,该公司的网路团队创建了用于 CloudWatch 监控和 CloudWatch 日誌的 VPC 终端节点。网路团队已将这些终端节点连接到 VPC 。应用程式正在产生日誌,但是, 当安全工程师查询 CloudWatch 时, 日誌并未显示。安全工程师应该採取哪些步骤组合来排查此问题? (选三个。)",

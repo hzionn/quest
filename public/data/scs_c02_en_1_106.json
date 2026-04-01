@@ -1330,6 +1330,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 69,
+    "type": "single",
+    "question": "A security engineer needs to configure an Amazon S3 bucket policy to restrict access to an S3 bucket named DOC-EXAMPLE-BUCKET. The policy must allow access to DOC-EXAMPLE-BUCKET only from the endpoint vpce-1a2b3c4d. If the specified endpoint is not used, the policy must deny all access to DOC-EXAMPLE-BUCKET. Which bucket policy statement meets these requirements?",
+    "options": {
+      "A": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Allow + StringNotEquals means: allow access when the source is NOT vpce-1a2b3c4d. This is the opposite of the requirement — the policy should deny non-specified endpoint access, not allow it.",
+      "B": "Correct. Deny + StringNotEquals aws:sourceVpce: vpce-1a2b3c4d means: deny all s3:* actions when the source VPC Endpoint is not vpce-1a2b3c4d. Explicit Deny always overrides Allow, ensuring only requests through the specified VPCE can access the bucket.",
+      "C": "Deny + StringEquals means: deny access when the source IS vpce-1a2b3c4d. This is completely backwards — it denies access from the correct endpoint and allows all other sources.",
+      "D": "Allow + StringEquals means: allow access when the source is vpce-1a2b3c4d, but there is no rule denying other sources. Other access paths may still be permitted. Also, Resource: * is overly broad."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 70,
     "type": "multiple",
     "question": "A company has a group of Amazon EC2 instances in a single private subnet of a VPC with no internet gateway attached. A security engineer has installed the Amazon CloudWatch agent on all instances in that subnet to capture logs from a specific application. To ensure that the logs flow securely, the company's networking team has created VPC endpoints for CloudWatch monitoring and CloudWatch logs. The networking team has attached the endpoints to the VPC. The application is generating logs However, when the security engineer queries CloudWatch, the logs do not appear. Which combination of steps should the security engineer take to troubleshoot this issue? Choose three.)",
