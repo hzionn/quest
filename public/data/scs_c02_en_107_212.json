@@ -20,6 +20,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 108,
+    "type": "single",
+    "question": "A company shares Amazon SageMaker Studio notebooks through a VPN. The company must implement access controls to prevent malicious actors from using presigned URLs to access the notebooks. Which solution will meet these requirements?",
+    "options": {
+      "A": "Set up Studio client IP validation using the aws:sourceIp IAM policy condition.",
+      "B": "Set up Studio client VPC validation using the aws:sourceVpc IAM policy condition.",
+      "C": "Set up Studio client role endpoint validation using the aws:PrimaryTag IAM policy condition.",
+      "D": "Set up Studio client user endpoint validation using the aws:PrincipalTag IAM policy condition."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Using the aws:sourceIp IAM policy condition restricts access by IP address, ensuring only legitimate IP addresses through the VPN can access the SageMaker Studio notebooks. This directly prevents malicious users from accessing resources via presigned URLs.",
+      "B": "The aws:sourceVpc IAM policy condition restricts access from a specific VPC, but the question does not require VPC-based restrictions. While VPC validation provides some security, it does not directly address the presigned URL security concern.",
+      "C": "The aws:PrimaryTag IAM policy condition is used for tag-based access control on resources, which is unrelated to the presigned URL and IP restriction mentioned in the question.",
+      "D": "The aws:PrincipalTag IAM policy condition is used for tag-based access control on users, which is unrelated to the presigned URL and IP restriction mentioned in the question."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 109,
     "type": "single",
     "question": "A security engineer recently rotated all IAM access keys in an AWS account. The security engineer then configured AWS Config and enabled the following AWS Config managed rules: mfa-enabled-for-iam-console-access, iam-user- mfa-enabled, access-keys- rotated, and iam-user-unused-credentials-check. The security engineer notices that all resources are displaying as noncompliant after the IAM GenerateCredentialReport API operation is invoked. What could be the reason for the noncompliant status?",

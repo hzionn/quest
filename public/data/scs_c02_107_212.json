@@ -20,6 +20,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 108,
+    "type": "single",
+    "question": "一家公司通过 VPN 共享 Amazon SageMaker Studio 笔记本。公司必须实施访问控制,以防止恶意行为者利用预签名 URL 访问笔记本。哪种解决方案能够满足这些要求?",
+    "options": {
+      "A": "使用 aws:sourceIp IAM 策略条件设置 Studio 客户端 IP 验证。",
+      "B": "使用 aws:sourceVpc IAM 策略条件设置 Studio 客户端 VPC 验证。",
+      "C": "使用 aws:PrimaryTag IAM 策略条件设置 Studio 客户端角色端点验证。",
+      "D": "使用 aws:PrincipalTag IAM 策略条件设置 Studio 客户端用户端点验证。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。使用 aws:sourceIp IAM 策略条件可以限制访问者的 IP 地址,从而确保只有通过 VPN 的合法 IP 地址可以访问 SageMaker Studio 笔记本。这直接限制了恶意用户通过预签名 URL 访问资源的可能性。",
+      "B": "aws:sourceVpc IAM 策略条件用于限制来自特定 VPC 的访问,但题目中并未提到需要基于 VPC 的限制。虽然 VPC 验证可以提供一定的安全性,但它并不能直接解决预签名 URL 的安全问题。",
+      "C": "aws:PrimaryTag IAM 策略条件用于基于资源的标签进行访问控制,与题目中提到的预签名 URL 和 IP 地址限制无关。此选项与题目要求不匹配。",
+      "D": "aws:PrincipalTag IAM 策略条件用于基于用户标签进行访问控制,与题目中提到的预签名 URL 和 IP 地址限制无关。此选项与题目要求不匹配。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 109,
     "type": "single",
     "question": "一名安全工程师最近轮换了 AWS 账户中的所有 IAM 访问密钥。随后,该安全工程师配置了 AWS Config ,并启用了以下 AWS Config 托管规则 :mfa-enabled-for-iam- console-access 、 iam-user-mfa-enabled 、 access-keys-rotated 和 iam-user- unused-credentials-check 。安全工程师注意到,在调用 IAM GenerateCredentialReport API 操作后,所有资源都显示为不合规状态。导致不合规状态的原因可能是什么 ?",
