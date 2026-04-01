@@ -230,6 +230,15 @@ function reducer(state, action) {
     case 'SET_PRACTICE_INDEX':
       return { ...state, practiceIndex: action.index }
 
+    case 'SHUFFLE_PRACTICE': {
+      const shuffled = [...state.practiceFiltered]
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
+      return { ...state, practiceFiltered: shuffled, practiceIndex: 0 }
+    }
+
     case 'SET_ANSWER': {
       return { ...state, practiceAnswers: { ...state.practiceAnswers, [action.qKey]: action.answer } }
     }
@@ -1132,6 +1141,14 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               {state.showAnswers ? <Eye size={12} /> : <EyeOff size={12} />}
               {state.showAnswers ? '顯示答案' : '隱藏答案'}
             </button>
+            <button
+              onClick={() => dispatch({ type: 'SHUFFLE_PRACTICE' })}
+              disabled={practiceFiltered.length === 0}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700 hover:bg-orange-200 dark:hover:bg-orange-800/40 disabled:opacity-40 disabled:cursor-not-allowed"
+              title="隨機打亂題目順序"
+            >
+              <Shuffle size={12} /> 隨機練習
+            </button>
           </div>
           <span className="text-xs font-bold text-orange-500">{answeredCount} / {practiceFiltered.length} ({progressPct}%)</span>
         </div>
@@ -1190,23 +1207,6 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 <ChevronLeft size={16} /> 上一題
               </button>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    const unvisited = []
-                    practiceFiltered.forEach((q, i) => {
-                      const k = `${q.exam}-${q.id}`
-                      if (!practiceSubmitted[k] && i !== practiceIndex) unvisited.push(i)
-                    })
-                    if (unvisited.length > 0) {
-                      const randomIdx = unvisited[Math.floor(Math.random() * unvisited.length)]
-                      dispatch({ type: 'SET_PRACTICE_INDEX', index: randomIdx })
-                    }
-                  }}
-                  disabled={practiceFiltered.every((q, i) => practiceSubmitted[`${q.exam}-${q.id}`] || i === practiceIndex)}
-                  className="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-all duration-200"
-                >
-                  <Shuffle size={12} /> 隨機練習
-                </button>
                 {!isSubmitted && (
                   (currentQ.options && Object.keys(currentQ.options).length > 0) ||
                   (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
