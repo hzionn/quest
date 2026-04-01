@@ -36,6 +36,27 @@ function normalizeFullWidth(text) {
   );
 }
 
+// Fix CJK text: normalize radicals and remove extra spaces between CJK chars
+function fixCJK(text) {
+  // 1. NFKC normalization: converts CJK radicals (⼀→一, ⽤→用, ⼤→大, etc.)
+  let result = text.normalize('NFKC');
+
+  // 2. Remove spaces between CJK characters/punctuation
+  // CJK Unified Ideographs: \u4e00-\u9fff
+  // CJK punctuation: \u3000-\u303f, \uff00-\uffef
+  // CJK Compatibility: \u3400-\u4dbf, \u{20000}-\u{2a6df}
+  const cjk = '\\u4e00-\\u9fff\\u3400-\\u4dbf\\u3000-\\u303f\\uff01-\\uff60';
+  const cjkPunc = '\uff0c\u3002\u3001\uff1b\uff1a\uff01\uff1f\uff08\uff09\u300c\u300d\u300e\u300f\u3010\u3011\u300a\u300b\u201c\u201d\u2018\u2019\u2026\u2014';
+
+  // Remove space between two CJK characters
+  result = result.replace(new RegExp(`([${cjk}${cjkPunc}])\\s+([${cjk}${cjkPunc}])`, 'g'), '$1$2');
+  // May need multiple passes since replacement is non-overlapping
+  result = result.replace(new RegExp(`([${cjk}${cjkPunc}])\\s+([${cjk}${cjkPunc}])`, 'g'), '$1$2');
+  result = result.replace(new RegExp(`([${cjk}${cjkPunc}])\\s+([${cjk}${cjkPunc}])`, 'g'), '$1$2');
+
+  return result;
+}
+
 function findOptions(rawText) {
   // Strip null chars that appear in the PDF between option letters and text
   const text = stripNulls(rawText);
@@ -207,13 +228,24 @@ function parseQuestionBlock(blockText, qId) {
 
   const finalZhOptions = Object.keys(zhOptions).length >= Object.keys(enOptions).length ? zhOptions : enOptions;
 
+  // Apply CJK fixes to all Chinese text
+  const fixedZhQuestion = fixCJK(zhQuestion);
+  const fixedZhOptions = {};
+  for (const [k, v] of Object.entries(finalZhOptions)) {
+    fixedZhOptions[k] = fixCJK(v);
+  }
+  const fixedZhExplanations = {};
+  for (const [k, v] of Object.entries(zhExplanations)) {
+    fixedZhExplanations[k] = fixCJK(v);
+  }
+
   return {
     zh: {
       exam: 'SCS-C02', id: qId, type,
-      question: zhQuestion,
-      options: finalZhOptions,
+      question: fixedZhQuestion,
+      options: fixedZhOptions,
       answer: isMultiple ? answerLetters : answerLetters[0],
-      explanations: zhExplanations,
+      explanations: fixedZhExplanations,
     },
     en: {
       exam: 'SCS-C02', id: qId, type,
