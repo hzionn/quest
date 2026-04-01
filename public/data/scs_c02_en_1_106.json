@@ -1976,6 +1976,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 100,
+    "type": "single",
+    "question": "A company has a guideline that mandates the encryption of all Amazon S3 bucket data in transit. A security engineer must implement an S3 bucket policy that denies any S3 operations if data is not encrypted. Which S3 bucket policy will meet this requirement?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"true\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"false\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": \"AES256\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": true\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "This policy uses Deny + Bool aws:SecureTransport: true, meaning it denies requests when HTTPS IS used. This is the opposite of the requirement — it would deny encrypted transport and allow unencrypted transport.",
+      "B": "Correct. Deny + Bool aws:SecureTransport: false means: deny all s3:* actions when HTTPS is NOT used (SecureTransport is false). This ensures only HTTPS encrypted transport can access the bucket, meeting the in-transit encryption requirement.",
+      "C": "This policy uses StringNotEquals s3:x-amz-server-side-encryption: AES256, which checks server-side encryption (encryption at rest), not in-transit encryption. The requirement is for encryption in transit (HTTPS), which requires the aws:SecureTransport condition key.",
+      "D": "Similar to option C, this checks server-side encryption rather than transport encryption. Additionally, the condition value uses boolean true instead of a string — s3:x-amz-server-side-encryption expects string values like \"AES256\" or \"aws:kms\", making the syntax incorrect."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 101,
     "type": "single",
     "question": "英 ⽂ : A security engineer wants to use Amazon Simple Notification Service Amazon SNS) to send email alerts to a company's security team for Amazon GuardDuty findings that have a High severity level. The security engineer also wants to deliver these findings to a visualization tool for further examination. Which solution will meet these requirements?",

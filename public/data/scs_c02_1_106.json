@@ -1978,6 +1978,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 100,
+    "type": "single",
+    "question": "一家公司有一项指南,要求对所有 Amazon S3 存储桶数据在传输过程中进行加密。一名安全工程师必须实施一个 S3 存储桶策略,拒绝任何未加密数据的 S3 操作。哪个 S3 存储桶策略可以满足此要求?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"true\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"false\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": \"AES256\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": true\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "此策略使用 Deny + Bool aws:SecureTransport: true,表示当使用 HTTPS(安全传输)时拒绝请求。这与题目要求相反——会拒绝加密传输而允许未加密传输。",
+      "B": "正确。Deny + Bool aws:SecureTransport: false 表示:当未使用 HTTPS(即 SecureTransport 为 false)时,拒绝所有 s3:* 操作。这确保只有通过 HTTPS 的加密传输才能访问存储桶,满足传输中加密的要求。",
+      "C": "此策略使用 StringNotEquals s3:x-amz-server-side-encryption: AES256,检查的是服务器端加密(静态加密),而非传输中加密。题目要求的是传输过程中的加密(HTTPS),应使用 aws:SecureTransport 条件键。",
+      "D": "与选项 C 类似,此策略检查的是服务器端加密而非传输加密。此外,条件值使用了布尔值 true 而非字符串,s3:x-amz-server-side-encryption 条件键期望的是字符串值(如 \"AES256\" 或 \"aws:kms\"),语法不正确。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 101,
     "type": "single",
     "question": "一位安全工程师希望使用 Amazon Simple Notification Service Amazon SNS 向公司安全团队发送电子邮件警报,内容为 Amazon GuardDuty 的高严重性级别发现。安全工程师还希望将这些发现传递到一个可视化工具以进行进一步检查。哪种解决方案可以满足这些需求?",
