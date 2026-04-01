@@ -465,7 +465,51 @@ function getDisplayQuestion(q, lang, enMap) {
 }
 
 // ── Main App ──
+// ── Password Gate ──
+const SITE_PASSWORD = 'julia'
+const PASSWORD_HINT = '提示：什麼福利是雲力橘子有，其他公司沒有的？'
+const AUTH_KEY = 'quest_authenticated'
+
+function PasswordGate({ onAuth }) {
+  const [pw, setPw] = useState('')
+  const [error, setError] = useState(false)
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (pw.trim().toLowerCase() === SITE_PASSWORD) {
+      sessionStorage.setItem(AUTH_KEY, '1')
+      onAuth()
+    } else {
+      setError(true)
+      setPw('')
+    }
+  }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700">
+        <div className="flex justify-center mb-4">
+          <Shield className="w-12 h-12 text-orange-400" />
+        </div>
+        <h2 className="text-xl font-bold text-white mb-2">AWS 證照考試練習器</h2>
+        <p className="text-gray-400 text-sm mb-4">{PASSWORD_HINT}</p>
+        <input
+          type="password"
+          value={pw}
+          onChange={e => { setPw(e.target.value); setError(false) }}
+          placeholder="請輸入密碼"
+          className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-orange-400 focus:outline-none mb-3 text-center"
+          autoFocus
+        />
+        {error && <p className="text-red-400 text-sm mb-3">密碼錯誤，請重試</p>}
+        <button type="submit" className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
+          進入練習
+        </button>
+      </form>
+    </div>
+  )
+}
+
 export default function App() {
+  const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
 
@@ -559,6 +603,10 @@ export default function App() {
   }, [state.questions])
 
   const rootClass = state.darkMode ? 'dark' : ''
+
+  if (!authenticated) {
+    return <PasswordGate onAuth={() => setAuthenticated(true)} />
+  }
 
   return (
     <div className={rootClass}>
