@@ -1174,6 +1174,57 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               </div>
             </div>
 
+            {/* Top navigation: prev, random, submit, next */}
+            <div className="flex items-center justify-between mb-5">
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+                disabled={practiceIndex === 0}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <ChevronLeft size={16} /> 上一題
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const unvisited = []
+                    practiceFiltered.forEach((q, i) => {
+                      const k = `${q.exam}-${q.id}`
+                      if (!practiceSubmitted[k] && i !== practiceIndex) unvisited.push(i)
+                    })
+                    if (unvisited.length > 0) {
+                      const randomIdx = unvisited[Math.floor(Math.random() * unvisited.length)]
+                      dispatch({ type: 'SET_PRACTICE_INDEX', index: randomIdx })
+                    }
+                  }}
+                  disabled={practiceFiltered.every((q, i) => practiceSubmitted[`${q.exam}-${q.id}`] || i === practiceIndex)}
+                  className="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-all duration-200"
+                >
+                  <Shuffle size={12} /> 隨機練習
+                </button>
+                {!isSubmitted && (
+                  (currentQ.options && Object.keys(currentQ.options).length > 0) ||
+                  (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
+                  (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
+                ) && (
+                  <button
+                    onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
+                    disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
+                    className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
+                  >
+                    <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
+                    提交答案
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+                disabled={practiceIndex >= practiceFiltered.length - 1}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+              >
+                下一題 <ChevronRight size={16} />
+              </button>
+            </div>
+
             {/* Question text */}
             <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{currentQ.question}</p>
 
@@ -1184,42 +1235,6 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               submitted={isSubmitted}
               onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
             />
-
-            {/* Submit button - show for questions with options, or matching/ordering with proper data */}
-            {!isSubmitted && (
-              (currentQ.options && Object.keys(currentQ.options).length > 0) ||
-              (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
-              (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
-            ) && (
-              <div className="flex justify-end mt-5">
-                <button
-                  onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
-                  disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
-                  className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
-                >
-                  <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
-                  提交答案
-                </button>
-              </div>
-            )}
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
-                disabled={practiceIndex === 0}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                <ChevronLeft size={16} /> 上一題
-              </button>
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
-                disabled={practiceIndex >= practiceFiltered.length - 1}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                下一題 <ChevronRight size={16} />
-              </button>
-            </div>
 
             {/* Result */}
             {practiceSubmitted[qKey] && (
@@ -1256,23 +1271,6 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             <ListChecks size={14} />
             題目導覽
           </h4>
-          <button
-            onClick={() => {
-              const unvisited = []
-              practiceFiltered.forEach((q, i) => {
-                const k = `${q.exam}-${q.id}`
-                if (!practiceSubmitted[k] && i !== practiceIndex) unvisited.push(i)
-              })
-              if (unvisited.length > 0) {
-                const randomIdx = unvisited[Math.floor(Math.random() * unvisited.length)]
-                dispatch({ type: 'SET_PRACTICE_INDEX', index: randomIdx })
-              }
-            }}
-            disabled={practiceFiltered.every((q, i) => practiceSubmitted[`${q.exam}-${q.id}`] || i === practiceIndex)}
-            className="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition-all duration-200"
-          >
-            <Shuffle size={12} /> 隨機練習
-          </button>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {practiceFiltered.map((q, i) => {
