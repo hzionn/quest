@@ -146,19 +146,19 @@
     "exam": "SCS-C02",
     "id": 114,
     "type": "single",
-    "question": "A healthcare company needs to store clinical data. The data includes personally identifiable information (PII) and protected health information (PHI). A machine learning engineer needs to implement a solution to ensure that PII and PHI are not used for training machine learning models. Which solution will meet these requirements?",
+    "question": "A company has deployed a set of standard IAM roles in its AWS accounts. The IAM roles are based on the job functions within the company. To balance operational efficiency and security, a security engineer has implemented AWS Organizations SCPs to restrict access to critical security services in all company accounts. All accounts and OUs in AWS Organizations have the default FullAWSAccess SCP attached. The security engineer needs to ensure that no one can disable Amazon GuardDuty and AWS Security Hub. The security engineer must also ensure that the other permissions granted by IAM policies in the accounts are not overridden. Which SCP should the security engineer attach to the root of the organization to meet these requirements?",
     "options": {
-      "A": "Store the clinical data in Amazon S3 buckets. Use AWS Glue DataBrew to mask the PII and PHI before the data is used for model training.",
-      "B": "Upload the clinical data to an Amazon Redshift database. Use built-in SQL stored procedures to automatically classify and mask the PII and PHI before the data is used for model training.",
-      "C": "Use Amazon Comprehend to detect and mask the PII before the data is used for model training. Use Amazon Comprehend Medical to detect and mask the PHI before the data is used for model training.",
-      "D": "Create an AWS Lambda function to encrypt the PII and PHI. Program the Lambda function to save the encrypted data to an Amazon S3 bucket for model training."
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Deny\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }"
     },
-    "answer": "C",
+    "answer": "A",
     "explanations": {
-      "A": "AWS Glue DataBrew can be used for data cleansing and masking sensitive information, but it is not specifically designed for detecting and masking PII and PHI. Additional configuration and rules would be required.",
-      "B": "Amazon Redshift SQL stored procedures can process data, but they do not have built-in functionality specifically for detecting and masking PII and PHI. Additional development work would be required.",
-      "C": "Correct. Amazon Comprehend can detect and mask PII, while Amazon Comprehend Medical is specifically designed for processing PHI in medical data. Using these two services together directly meets the requirements.",
-      "D": "Encrypting data and saving it to S3 does not mask PII and PHI. Encrypted data still cannot be directly used for model training. This option does not meet the requirements."
+      "A": "Correct. This SCP explicitly denies the disable operations for GuardDuty and Security Hub (DeleteDetector, UpdateDetector, DisableSecurityHub) without affecting any other permissions. Since the default FullAWSAccess SCP already grants all permissions, this additional Deny SCP only blocks specific dangerous actions without overriding other IAM policy permissions.",
+      "B": "Incorrect. This option first denies all actions (Deny *), then attempts to restore permissions using Allow + NotAction. However, in SCPs, explicit Deny takes precedence over Allow, so the first statement denies all actions and the second Allow statement cannot override the Deny, resulting in all actions being denied.",
+      "C": "Incorrect. This option first allows all actions, then uses Deny + NotAction to deny all actions except the GuardDuty/Security Hub operations. NotAction means 'actions not in the list', so this would deny everything except these three actions — the exact opposite of the intended effect.",
+      "D": "Incorrect. This option uses Allow + NotAction, meaning it allows all actions except the GuardDuty/Security Hub operations. If this SCP replaces FullAWSAccess, these three actions would not be allowed by any SCP and would be implicitly denied. However, this also means only this SCP grants permissions, which could complicate permission management."
     }
   },
   {
