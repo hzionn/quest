@@ -1097,10 +1097,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Allow + StringEquals aws:RequestedRegion 只允许 us-east-1 的请求,但没有明确拒绝其他区域的请求。如果其他策略授予了权限,用户仍可在其他区域操作。",
-      "B": "ec2:Region 不是有效的 IAM 条件键。正确的全局条件键是 aws:RequestedRegion。",
-      "C": "正确。Deny + StringNotEquals aws:RequestedRegion: us-east-1 表示:当请求的区域不是 us-east-1 时,拒绝所有操作。这是限制区域使用的标准做法,显式拒绝优先于任何允许。",
-      "D": "NotAction 与 Deny 配合使用时,表示拒绝除 NotAction 指定外的所有操作。但此处 NotAction: \"*\" 意味着没有任何操作被排除,逻辑上等于不拒绝任何操作。且条件使用 StringEquals 而非 StringNotEquals,逻辑方向错误。"
+      "A": "此策略使用 Allow + StringEquals aws:RequestedRegion,只允许 us-east-1 的请求,但没有明确拒绝其他区域的请求。如果其他策略授予了权限,用户仍可在其他区域操作。IAM 策略评估中,没有显式拒绝意味着其他策略的允许仍然生效。",
+      "B": "此策略使用了 ec2:Region 作为条件键,这不是有效的 IAM 全局条件键。正确的全局条件键是 aws:RequestedRegion,用于限制所有 AWS 服务的区域访问。ec2:Region 无法实现跨服务的区域限制。",
+      "C": "正确。此策略使用 Deny + StringNotEquals aws:RequestedRegion: us-east-1,表示当请求的区域不是 us-east-1 时,拒绝所有操作。这是限制区域使用的标准做法,显式拒绝(Deny)优先于任何允许(Allow),确保无论其他策略如何授权,非 us-east-1 区域的操作都会被拒绝。",
+      "D": "此策略使用了 NotAction 与 Deny 的组合,但 NotAction: \"*\" 意味着没有任何操作被排除在拒绝范围之外,逻辑上等于不拒绝任何操作。此外,条件使用 StringEquals 而非 StringNotEquals,逻辑方向错误——会拒绝 us-east-1 区域的请求而非其他区域。"
     }
   },
   {

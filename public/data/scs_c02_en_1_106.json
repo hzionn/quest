@@ -1095,10 +1095,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Allow + StringEquals aws:RequestedRegion only allows requests to us-east-1 but does not explicitly deny requests to other regions. If other policies grant permissions, users can still operate in other regions.",
-      "B": "ec2:Region is not a valid IAM condition key. The correct global condition key is aws:RequestedRegion.",
-      "C": "Correct. Deny + StringNotEquals aws:RequestedRegion: us-east-1 means: deny all actions when the requested region is not us-east-1. This is the standard approach to restrict region usage, as explicit deny overrides any allow.",
-      "D": "NotAction with Deny means deny all actions except those specified in NotAction. But NotAction: \"*\" means no actions are excluded, which logically means nothing is denied. Also, the condition uses StringEquals instead of StringNotEquals, which is the wrong direction."
+      "A": "This policy uses Allow + StringEquals aws:RequestedRegion, which only allows requests to us-east-1 but does not explicitly deny requests to other regions. Without an explicit deny, other policies that grant permissions can still allow users to operate in other regions.",
+      "B": "This policy uses ec2:Region as the condition key, which is not a valid IAM global condition key. The correct global condition key is aws:RequestedRegion for restricting region access across all AWS services.",
+      "C": "Correct. This policy uses Deny + StringNotEquals aws:RequestedRegion: us-east-1, meaning all actions are denied when the requested region is not us-east-1. This is the standard approach to restrict region usage. Explicit Deny always overrides any Allow, ensuring operations outside us-east-1 are blocked regardless of other policies.",
+      "D": "This policy uses NotAction with Deny, but NotAction: \"*\" means no actions are excluded from denial, which logically means nothing is denied. Additionally, the condition uses StringEquals instead of StringNotEquals, which reverses the logic — it would deny requests TO us-east-1 rather than to other regions."
     }
   },
   {
