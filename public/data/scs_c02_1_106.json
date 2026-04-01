@@ -1086,6 +1086,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 57,
+    "type": "single",
+    "question": "为了满足监管要求,安全工程师需要实施 IAM 策略,将 AWS 服务的使用限制在 us-east-1 区域。工程师应该实施什么策略?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"ec2:Region\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"NotAction\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Allow + StringEquals aws:RequestedRegion 只允许 us-east-1 的请求,但没有明确拒绝其他区域的请求。如果其他策略授予了权限,用户仍可在其他区域操作。",
+      "B": "ec2:Region 不是有效的 IAM 条件键。正确的全局条件键是 aws:RequestedRegion。",
+      "C": "正确。Deny + StringNotEquals aws:RequestedRegion: us-east-1 表示:当请求的区域不是 us-east-1 时,拒绝所有操作。这是限制区域使用的标准做法,显式拒绝优先于任何允许。",
+      "D": "NotAction 与 Deny 配合使用时,表示拒绝除 NotAction 指定外的所有操作。但此处 NotAction: \"*\" 意味着没有任何操作被排除,逻辑上等于不拒绝任何操作。且条件使用 StringEquals 而非 StringNotEquals,逻辑方向错误。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 58,
     "type": "single",
     "question": "一家公司在 AWS 云端中拥有一台 Web 伺服器。该公司将 Web 伺服器的内容储存在 Amazon S3 储存桶中。一位安全工程师必须使用 Amazon CloudFront 发行版来加快内容的交付速度。所有文件都无法从 S3 储存桶直接公开存取。哪种解决方案可以满足这些要求?",
