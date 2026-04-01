@@ -1,6 +1,25 @@
 [
   {
     "exam": "SCS-C02",
+    "id": 107,
+    "type": "single",
+    "question": "A systems engineer is troubleshooting the connectivity of a test environment that includes a virtual security appliance deployed inline. In addition to using the virtual security appliance, the development team wants to use security groups and network ACLs to accomplish various security requirements in the environment. What configuration is necessary to allow the virtual security appliance to route the traffic?",
+    "options": {
+      "A": "Disable network ACLs.",
+      "B": "Configure the security appliance's elastic network interface for promiscuous mode.",
+      "C": "Disable the Network Source/Destination check on the security appliance's elastic network interface.",
+      "D": "Place the security appliance in the public subnet with the internet gateway."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Disable network ACLs. 禁 ⽤ ⽹ 络 ACL 。 错误。 ⽹ 络 ACL 是 ⽤ 于控制 ⼦ ⽹ 级别的 ⼊ 站和出站流量的 ⼯ 具，禁 ⽤ 它不会解决虚拟 安全设备的路由问题。 ⽹ 络 ACL 的存在与否不会影响虚拟安全设备的流量处理能 ⼒ 。",
+      "B": "将安全设备的弹性 ⽹ 络接 ⼝ 配置为混杂模式。 错误。 AWS 的弹性 ⽹ 络接 ⼝ (ENI) 不 ⽀ 持混杂模式。混杂模式通常 ⽤ 于捕获 ⽹ 络流量， 但与路由流量 ⽆ 关。 此选项在 AWS 环境中不可 ⾏ 。",
+      "C": "在安全设备的弹性 ⽹ 络接 ⼝ 上禁 ⽤ ⽹ 络源 / ⽬ 标检查。 正确。默认情况下， AWS 会启 ⽤ “ 源 / ⽬ 标检查 ” ，以确保流量的源和 ⽬ 标地址与实例的 ⽹ 络接 ⼝ 匹配。 对于虚拟安全设备 ( 如防 ⽕ 墙或路由器 ) ，需要禁 ⽤ 此检查，以允许设备处理和转发流 量， ⽽ 不是仅仅接收或发送与 ⾃ ⾝ 相关的流量。",
+      "D": "将安全设备放置在带有互联 ⽹ ⽹ 关的公共 ⼦ ⽹ 中。 错误。将安全设备放置在公共 ⼦ ⽹ 中并不会解决路由问题。此选项与流量的源 / ⽬ 标检 查 ⽆ 关。 虽然公共 ⼦ ⽹ 可以提供互联 ⽹ 访问，但这不是解决虚拟安全设备路由问题的正确 ⽅ 法。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 109,
     "type": "single",
     "question": "A security engineer recently rotated all IAM access keys in an AWS account. The security engineer then configured AWS Config and enabled the following AWS Config managed rules: mfa-enabled-for-iam-console-access, iam-user- mfa-enabled, access-keys- rotated, and iam-user-unused-credentials-check. The security engineer notices that all resources are displaying as noncompliant after the IAM GenerateCredentialReport API operation is invoked. What could be the reason for the noncompliant status?",
@@ -372,6 +391,25 @@
       "B": "Use AWS Shield Advanced to view vulnerability identifiers for missing patches on the instances. Use AWS Systems Manager Patch Manager to automate the patching process. 错误： AWS Shield Advanced 主要 ⽤ 于保护应 ⽤ 免受 DDoS 攻击， ⽽ 不是 ⽤ 于查 看漏洞标识符或管理补丁。 虽然提到使 ⽤ Patch Manager ⾃ 动化补丁过程是正确的，但 Shield Advanced 与 漏洞标识符 ⽆ 关。",
       "C": "Use Amazon GuardDuty to view vulnerability identifiers for missing patches on the instances. Use Amazon Inspector to automate the patching process. 错误： Amazon GuardDuty 是威胁检测服务， ⽤ 于识别恶意活动和异常 ⾏ 为，但 它不负责查看漏洞标识符或管理补丁。 Amazon Inspector 可以 ⽤ 于漏洞扫描，但它不能直接 ⾃ 动化补丁过程。",
       "D": "Advanced to view vulnerability identifiers for missing patches on the instances. Use AWS Systems Manager Patch Manager to automate the patching process. 错误： AWS Shield Advanced 主要 ⽤ 于保护应 ⽤ 免受 DDoS 攻击， ⽽ 不是 ⽤ 于查 看漏洞标识符或管理补丁。 虽然提到使 ⽤ Patch Manager ⾃ 动化补丁过程是正确的，但 Shield Advanced 与 漏洞标识符 ⽆ 关。 C. Use Amazon GuardDuty to view vulnerability identifiers for missing patches on the instances. Use Amazon Inspector to automate the patching process. 错误： Amazon GuardDuty 是威胁检测服务， ⽤ 于识别恶意活动和异常 ⾏ 为，但 它不负责查看漏洞标识符或管理补丁。 Amazon Inspector 可以 ⽤ 于漏洞扫描，但它不能直接 ⾃ 动化补丁过程。 D. Use Amazon Inspector to view vulnerability identifiers for missing patches on the instances. Use Amazon Inspector also to automate the patching process. 部分正确： Amazon Inspector 可以扫描实例以识别漏洞标识符，但它不能直接 ⾃ 动化补丁过程。 错误： Amazon Inspector 的功能不包括补丁 ⾃ 动化，补丁管理需要使 ⽤ AWS Systems Manager Patch Manager 。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 128,
+    "type": "single",
+    "question": "A company hosts an application on Amazon EC2 that is subject to specific rules for regulatory compliance. One rule states that traffic to and from the workload must be inspected for network-level attacks. This involves inspecting the whole packet. To comply with this regulatory rule, a security engineer must install intrusion detection software on a c5n.4xlarge EC2 instance. The engineer must then configure the software to monitor traffic to and from the application instances. What should the security engineer do next?",
+    "options": {
+      "A": "Place the network interface in promiscuous mode to capture the traffic",
+      "B": "Configure VPC Flow Logs to send traffic to the monitoring EC2 instance using a Network Load Balancer.",
+      "C": "Configure VPC traffic mirroring to send traffic to the monitoring EC2 instance using a Network Load Balancer.",
+      "D": "Use Amazon Inspector to detect network-level attacks and trigger an AWS Lambda function to send the suspicious packets to the EC2 instance."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Place the network interface in promiscuous mode to capture the traffic 错误 :AWS EC2 实例的 ⽹ 络接 ⼝ 不 ⽀ 持直接设置为混杂模式。混杂模式通常 ⽤ 于传统 ⽹ 络设备或虚拟化环境，但在 AWS 中，流量捕获需要通过 VPC 流量镜像或其他 ⼯ 具。",
+      "B": "Configure VPC Flow Logs to send traffic to the monitoring EC2 instance using a Network Load Balancer 错误 :VPC Flow Logs 仅记录元数据 ( 例如源 IP 、 ⽬ 标 IP 、端 ⼝ 号等 ) ， ⽽ 不是捕获完整 的数据包。题 ⽬ 要求对整个数 据包进 ⾏ 检测，因此 VPC Flow Logs ⽆ 法满 ⾜ 需求。",
+      "C": "错误 :AWS EC2 实例的 ⽹ 络接 ⼝ 不 ⽀ 持直接设置为混杂模式。混杂模式通常 ⽤ 于传统 ⽹ 络设备或虚拟化环境，但在 AWS 中，流量捕获需要通过 VPC 流量镜像或其他 ⼯ 具。 B. Configure VPC Flow Logs to send traffic to the monitoring EC2 instance using a Network Load Balancer 错误 :VPC Flow Logs 仅记录元数据 ( 例如源 IP 、 ⽬ 标 IP 、端 ⼝ 号等 ) ， ⽽ 不是捕获完整 的数据包。题 ⽬ 要求对整个数 据包进 ⾏ 检测，因此 VPC Flow Logs ⽆ 法满 ⾜ 需求。 C. Configure VPC traffic mirroring to send traffic to the monitoring EC2 instance using a Network Load Balancer 正确 :VPC 流量镜像允许捕获 ⽹ 络流量的完整数据包，并将其发送到 ⽬ 标实例进 ⾏ 分 析。此功能完全符合题 ⽬ 要求的深度包检测。",
+      "D": "traffic to the monitoring EC2 instance using a Network Load Balancer 错误 :VPC Flow Logs 仅记录元数据 ( 例如源 IP 、 ⽬ 标 IP 、端 ⼝ 号等 ) ， ⽽ 不是捕获完整 的数据包。题 ⽬ 要求对整个数 据包进 ⾏ 检测，因此 VPC Flow Logs ⽆ 法满 ⾜ 需求。 C. Configure VPC traffic mirroring to send traffic to the monitoring EC2 instance using a Network Load Balancer 正确 :VPC 流量镜像允许捕获 ⽹ 络流量的完整数据包，并将其发送到 ⽬ 标实例进 ⾏ 分 析。此功能完全符合题 ⽬ 要求的深度包检测。 D. Use Amazon Inspector to detect network-level attacks and trigger an AWS Lambda function to send the suspicious packets to the EC2 instance 错误 :Amazon Inspector 主要 ⽤ 于评估 EC2 实例的安全漏洞和合规性， ⽽ 不是实时捕获 和分析 ⽹ 络流量。它 ⽆ 法满 ⾜ 题 ⽬ 中对 ⽹ 络级攻击检测的要求。"
     }
   },
   {
@@ -1196,6 +1234,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 173,
+    "type": "single",
+    "question": "A company suspects that an attacker has exploited an overly permissive role to export credentials from Amazon EC2 instance metadata. The company uses Amazon GuardDuty and AWS Audit Manager. The company has enabled AWS CloudTrail logging and Amazon CloudWatch logging for all of its AWS accounts. A security engineer must determine if the credentials were used to access the company's resources from an external account.Which solution will provide this information?",
+    "options": {
+      "A": "Review GuardDuty findings to find InstanceCredentialExfiltration events.",
+      "B": "Review assessment reports in the Audit Manager console to find InstanceCredentialExfiltration events.",
+      "C": "Review CloudTrail logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company.",
+      "D": "Review CloudWatch logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Review GuardDuty findings to find InstanceCredentialExfiltration events. 正确 :Amazon GuardDuty 是专 ⻔ 设计 ⽤ 于检测安全威胁的服务，包括凭证泄露事件 (InstanceCredentialExfiltration) 。 它可以 ⾃ 动分析数据并 ⽣ 成相关的安全发现。 InstanceCredentialExfiltration 事件是 GuardDuty 的 ⼀ 个特定功能 ， ⽤ 于检测凭证被 导出并可能被外部账户使 ⽤ 的情况。",
+      "B": "Review assessment reports in the Audit Manager console to find InstanceCredentialExfiltration events. 错误 :AWS Audit Manager 主要 ⽤ 于合规性评估和报告， ⽽ 不是实时检测安全事件。它 ⽆ 法直接检测或报告 InstanceCredentialExfiltration 事件。",
+      "C": "Review CloudTrail logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 : 虽然 CloudTrail 可以记录 API 调 ⽤ ，但 ⼿ 动分析 ⽇ 志以检测凭证泄露事件 ⾮ 常耗时 且容易遗漏。它 ⽆ 法像 GuardDuty ⼀ 样提供 ⾃ 动化的安全发现。",
+      "D": "InstanceCredentialExfiltration events. 正确 :Amazon GuardDuty 是专 ⻔ 设计 ⽤ 于检测安全威胁的服务，包括凭证泄露事件 (InstanceCredentialExfiltration) 。 它可以 ⾃ 动分析数据并 ⽣ 成相关的安全发现。 InstanceCredentialExfiltration 事件是 GuardDuty 的 ⼀ 个特定功能 ， ⽤ 于检测凭证被 导出并可能被外部账户使 ⽤ 的情况。 B. Review assessment reports in the Audit Manager console to find InstanceCredentialExfiltration events. 错误 :AWS Audit Manager 主要 ⽤ 于合规性评估和报告， ⽽ 不是实时检测安全事件。它 ⽆ 法直接检测或报告 InstanceCredentialExfiltration 事件。 C. Review CloudTrail logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 : 虽然 CloudTrail 可以记录 API 调 ⽤ ，但 ⼿ 动分析 ⽇ 志以检测凭证泄露事件 ⾮ 常耗时 且容易遗漏。它 ⽆ 法像 GuardDuty ⼀ 样提供 ⾃ 动化的安全发现。 D. Review CloudWatch logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志分析，但它并不具备 ⾃ 动检测凭证泄露事件的 能 ⼒ 。与 CloudTrail 类似， ⼿ 动分 析 ⽇ 志效率低下。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 174,
     "type": "single",
     "question": "A security engineer needs to run an AWS CloudFormation script. The CloudFormation script builds AWS infrastructure to support a stack that includes web servers and a MySQL database. The stack has been deployed in pre-production environments and is ready for production. The production script must comply with the principle of least privilege. Additionally, separation of duties must exist between the security engineer ʼ s IAM account and CloudFormation. Which solution will meet these requirements?",
@@ -1456,7 +1513,26 @@
       "A": "启 ⽤ AWS Security Hu",
       "B": "并将 GuardDuty 发现结果发送到 Security Hub: 错误 : 虽然 Security Hub 可以整合 GuardDuty 的发现结果，但题 ⽬ 要求的是集中管理 GuardDuty 本 ⾝ ， ⽽ 不是通过 Security Hub 查看 GuardDuty 的发现结果。 错误 : 此选项没有提到如何 ⾃ 动启 ⽤ GuardDuty 或集中管理 GuardDuty 的配置。 B. 创建 ⼀ 个新的 AWS 账户并将其设置为 GuardDuty 的委派管理员账户 : 正确 : 此选项符合题 ⽬ 要求，可以通过委派管理员账户集中管理 GuardDuty 发现结果。 正确 : 通过 GuardDuty 的 ⾃ 动成员账户添加功能，可以确保新账户 ⾃ 动启 ⽤ GuardDuty 。",
       "C": "创建 ⼀ 个新的 AWS 账户并启 ⽤ GuardDuty 和 Security Hub: 错误 : 虽然启 ⽤ 了 GuardDuty ，但没有提到如何集中管理 GuardDuty 发现结果。 错误 : 启 ⽤ Security Hub 并不能满 ⾜ 题 ⽬ 要求的 GuardDuty 集中管理功能。",
-      "D": "启 ⽤ AWS Security Hub 并将管理账户设置为 Security Hub 的委派管理员账户 : 错误 : 此选项主要关注 Security Hub ， ⽽ 题 ⽬ 要求的是 GuardDuty 的集中管理。 错误 : 将 Security Hub 发现结果发送到 GuardDuty 账户并不符合题 ⽬ 要求。 87 英 ⽂ : A company wants to remove all SSH keys permanently from a specific subset of its Amazon Linux 2 Amazon EC2 instances that are using the same IAM instance profile. However, three individuals who have IAM user accounts will need to access these instances by using an SSH session to perform critical duties. How can a security engineer provide the access to meet these requirements? A. Assign an IAM policy to the instance profile to allow the EC2 instances to be managed by AWS Systems Manager. Provide the IAM user accounts with permission to use Systems Manager. Remove the SSH keys from the EC2 instances. Use Systems Manager Inventory to select the EC2 instance and connect. B. Assign an IAM policy to the IAM user accounts to provide permission to use AWS Systems Manager Run Command. Remove the SSH keys from the EC2 instances. Use Run Command to open an SSH connection to the EC2 instance. C. Assign an IAM policy to the instance profile to allow the EC2 instances to be managed by AWS Systems Manager. Provide the IAM user accounts with permission to use Systems Manager. Remove the SSH keys from the EC2 instances. Use Systems Manager Session Manager to select the EC2 instance and connect. D.Assign an IAM policy to the IAM user accounts to provide permission to use the EC2 service in the AWS Management Console. Remove the SSH keys from the EC2 instances. Connect to the EC2 instance as the ec2-user through the AWS Management Console ʼ s EC2 SSH client method. 中 ⽂ : ⼀ 家公司希望永久移除特定 ⼦ 集的 Amazon Linux 2 Amazon EC2 实例上的所有 SSH 密钥，这些实例使 ⽤ 相同的 IAM 实例 配置 ⽂ 件。然 ⽽ ，有三位拥有 IAM ⽤ 户账户的 个 ⼈ 需要通过 SSH 会话访问这些实例以执 ⾏ 关键任务。 安全 ⼯ 程师如何提供访问权限 以满 ⾜ 这些要求 ? A. 为实例配置 ⽂ 件分配 ⼀ 个 IAM 策略，允许 EC2 实例由 AWS Systems Manager 管 理。为 IAM ⽤ 户账户提供使 ⽤ Systems Manager 的权限。移除 EC2 实例上的 SSH 密钥。使 ⽤ Systems Manager Inventory 选择 EC2 实例并连接。 B. 为 IAM ⽤ 户账户分配 ⼀ 个 IAM 策略，提供使 ⽤ AWS Systems Manager Run Command 的权限。移除 EC2 实例上的 SSH 密钥。使 ⽤ Run Command 打开与 EC2 实例的 SSH 连接。 C. 为实例配置 ⽂ 件分配 ⼀ 个 IAM 策略，允许 EC2 实例由 AWS Systems Manager 管 理。为 IAM ⽤ 户账户提供使 ⽤ Systems Manager 的权限。移除 EC2 实例上的 SSH 密钥。使 ⽤ Systems Manager Session Manager 选择 EC2 实例并连接。 D. 为 IAM ⽤ 户账户分配 ⼀ 个 IAM 策略，提供在 AWS Management Console 中使 ⽤ EC2 服务的权限。移除 EC2 实例上的 SSH 密钥。通过 AWS Management Console 的 EC2 SSH 客户端 ⽅ 法以 ec2-user ⾝ 份连接到 EC2 实例。 答案 : C 1. 考察的知识点 本题主要考察 AWS Systems Manager 的功能，尤其是 Session Manager 的使 ⽤ 。 涉及 IAM 策略的配置以及如何安全地管理 EC2 实例的访问权限。 重点在于移除 SSH 密钥后如何通过 AWS ⼯ 具实现安全的远程连接。 2. 选项分析 A. 错误 :Systems Manager Inventory 是 ⽤ 于收集实例信息的 ⼯ 具，不能 ⽤ 于连接到实 例。 虽然移除了 SSH 密钥并配置了 IAM 策略，但 Inventory ⽆ 法满 ⾜ 连接需求。 B. 错误 :AWS Systems Manager Run Command ⽤ 于执 ⾏ 命令， ⽽ 不是 ⽤ 于建 ⽴ SSH 连 接。 Run Command ⽆ 法提供交互式会话功能，因此不符合题 ⽬ 要求。 C. 正确 :Session Manager 是 AWS Systems Manager 的 ⼀ 部分， ⽀ 持 ⽆ SSH 密钥的安全 远程连接。 通过配置 IAM 策略， ⽤ 户可以使 ⽤ Session Manager 连接到 EC2 实例，满 ⾜ 题 ⽬ 要 求。 D. 错误 :AWS Management Console 没有提供直接的 EC2 SSH 客户端连接功能。 此选项描述的功能不存在，因此不正确。"
+      "D": "启 ⽤ AWS Security Hub 并将管理账户设置为 Security Hub 的委派管理员账户 : 错误 : 此选项主要关注 Security Hub ， ⽽ 题 ⽬ 要求的是 GuardDuty 的集中管理。 错误 : 将 Security Hub 发现结果发送到 GuardDuty 账户并不符合题 ⽬ 要求。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 187,
+    "type": "single",
+    "question": "A company wants to remove all SSH keys permanently from a specific subset of its Amazon Linux 2 Amazon EC2 instances that are using the same IAM instance profile. However, three individuals who have IAM user accounts will need to access these instances by using an SSH session to perform critical duties. How can a security engineer provide the access to meet these requirements?",
+    "options": {
+      "A": "Assign an IAM policy to the instance profile to allow the EC2 instances to be managed by AWS Systems Manager. Provide the IAM user accounts with permission to use Systems Manager. Remove the SSH keys from the EC2 instances. Use Systems Manager Inventory to select the EC2 instance and connect.",
+      "B": "Assign an IAM policy to the IAM user accounts to provide permission to use AWS Systems Manager Run Command. Remove the SSH keys from the EC2 instances. Use Run Command to open an SSH connection to the EC2 instance.",
+      "C": "Assign an IAM policy to the instance profile to allow the EC2 instances to be managed by AWS Systems Manager. Provide the IAM user accounts with permission to use Systems Manager. Remove the SSH keys from the EC2 instances. Use Systems Manager Session Manager to select the EC2 instance and connect.",
+      "D": "Assign an IAM policy to the IAM user accounts to provide permission to use the EC2 service in the AWS Management Console. Remove the SSH keys from the EC2 instances. Connect to the EC2 instance as the ec2-user through the AWS Management Console ʼ s EC2 SSH client method."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误 :Systems Manager Inventory 是 ⽤ 于收集实例信息的 ⼯ 具，不能 ⽤ 于连接到实 例。 虽然移除了 SSH 密钥并配置了 IAM 策略，但 Inventory ⽆ 法满 ⾜ 连接需求。",
+      "B": "错误 :AWS Systems Manager Run Command ⽤ 于执 ⾏ 命令， ⽽ 不是 ⽤ 于建 ⽴ SSH 连 接。 Run Command ⽆ 法提供交互式会话功能，因此不符合题 ⽬ 要求。",
+      "C": "正确 :Session Manager 是 AWS Systems Manager 的 ⼀ 部分， ⽀ 持 ⽆ SSH 密钥的安全 远程连接。 通过配置 IAM 策略， ⽤ 户可以使 ⽤ Session Manager 连接到 EC2 实例，满 ⾜ 题 ⽬ 要 求。",
+      "D": "⽤ 于执 ⾏ 命令， ⽽ 不是 ⽤ 于建 ⽴ SSH 连 接。 Run Command ⽆ 法提供交互式会话功能，因此不符合题 ⽬ 要求。 C. 正确 :Session Manager 是 AWS Systems Manager 的 ⼀ 部分， ⽀ 持 ⽆ SSH 密钥的安全 远程连接。 通过配置 IAM 策略， ⽤ 户可以使 ⽤ Session Manager 连接到 EC2 实例，满 ⾜ 题 ⽬ 要 求。 D. 错误 :AWS Management Console 没有提供直接的 EC2 SSH 客户端连接功能。 此选项描述的功能不存在，因此不正确。"
     }
   },
   {
@@ -1576,6 +1652,25 @@
       "B": "创建 ⼀ 个 Amazon CloudWatch 警报，使 ⽤ DaysToExpiry 指标。 分析 : 正确性 :AWS Certificate Manager 提供 DaysToExpiry 指标，但仅适 ⽤ 于 ACM 管理 的证书，不 ⽀ 持导 ⼊ 的证书。 效率 : ⽆ 法覆盖所有证书 ( 包括导 ⼊ 的证书 ) ，因此不满 ⾜ 题 ⽬ 要求。 结论 : 此选项错误。",
       "C": "设置 AWS Security Hub 并启 ⽤ AWS Foundational Security Best Practices 标 准。 分析 : 正确性 :AWS Security Hub 可以提供安全发现，但其主要 ⽬ 标是安全合规性， ⽽ 不是 专 ⻔ 针对证书到期的监控。 效率 : 需要额外配置和集成，复杂度较 ⾼ ，且不直接针对证书到期问题。 结论 : 此选项错误。",
       "D": "100% A. 创建 ⼀ 个 AWS Lambda 函数，列出所有证书并通过 AWS SDK 遍历每个证书以描 述证书。 分析 : 正确性 : 可以实现 ⽬ 标，但需要 ⼿ 动编写代码来处理证书列表和过滤逻辑。 效率 : 不够 ⾼ 效，因为需要定期运 ⾏ Lambda 函数并 ⼿ 动管理逻辑，增加了运维复杂 性。 结论 : 此选项正确但不是最优解。 B. 创建 ⼀ 个 Amazon CloudWatch 警报，使 ⽤ DaysToExpiry 指标。 分析 : 正确性 :AWS Certificate Manager 提供 DaysToExpiry 指标，但仅适 ⽤ 于 ACM 管理 的证书，不 ⽀ 持导 ⼊ 的证书。 效率 : ⽆ 法覆盖所有证书 ( 包括导 ⼊ 的证书 ) ，因此不满 ⾜ 题 ⽬ 要求。 结论 : 此选项错误。 C. 设置 AWS Security Hub 并启 ⽤ AWS Foundational Security Best Practices 标 准。 分析 : 正确性 :AWS Security Hub 可以提供安全发现，但其主要 ⽬ 标是安全合规性， ⽽ 不是 专 ⻔ 针对证书到期的监控。 效率 : 需要额外配置和集成，复杂度较 ⾼ ，且不直接针对证书到期问题。 结论 : 此选项错误。 D. 创建 ⼀ 个 Amazon EventBridge 规则，使 ⽤ ACM 的预定义模式。 分析 : 正确性 :Amazon EventBridge 提供 ACM Certificate Approaching Expiration 事件， 可以直接监控证书到期情况。 效率 : ⽆ 需 ⼿ 动编写代码或复杂配置，直接使 ⽤ 预定义事件模式，最为 ⾼ 效。 结论 : 此选项正确且是最优解。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 194,
+    "type": "single",
+    "question": "A security team is responsible for reviewing AWS API call activity in the cloud environment for security violations. These events must be recorded and retained in a centralized location for both current and future AWS regions. What is the SIMPLEST way to meet these requirements?",
+    "options": {
+      "A": "Enable AWS Trusted Advisor security checks in the AWS Console, and report all security incidents for all regions.",
+      "B": "Enable AWS CloudTrail by creating individual trails for each region, and specify a single Amazon S3 bucket to receive log files for later analysis.",
+      "C": "Enable AWS CloudTrail by creating a new trail and applying the trail to all regions. Specify a single Amazon S3 bucket as the storage location.",
+      "D": "Enable Amazon CloudWatch logging for all AWS services across all regions, and aggregate them to a single Amazon S3 bucket for later analysis."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "启 ⽤ AWS Trusted Advisor 安全检查，并报告所有区域的所有安全事件。 错误 :AWS Trusted Advisor 主要 ⽤ 于提供优化建议 ( 如成本、性能、安全性等 ) ， ⽽ 不 是记录 API 调 ⽤ 活动。它 ⽆ 法满 ⾜ 记录和集中存储 API 调 ⽤ ⽇ 志的需求。",
+      "B": "为每个区域创建单独的 AWS CloudTrail trails ，并指定 ⼀ 个 Amazon S3 bucket 来 接收 ⽇ 志 ⽂ 件以供后续分析。 错误 : 虽然可以为每个区域创建单独的 CloudTrail trails ，但这种 ⽅ 法复杂且不必要。 CloudTrail ⽀ 持跨区域的单 ⼀ trail 配 置，可以简化管理。",
+      "C": "创建 ⼀ 个新的 AWS CloudTrail trail 并将该 trail 应 ⽤ 于所有区域，指定 ⼀ 个 Amazon S3 bucket 作为存储位置。 正确 : 这是最简单且符合要求的解决 ⽅ 案。 CloudTrail ⽀ 持跨区域 trail ，可以记录所有区 域的 API 调 ⽤ 活动，并集中存储到 ⼀ 个 S3 bucket 中。",
+      "D": "Advisor 安全检查，并报告所有区域的所有安全事件。 错误 :AWS Trusted Advisor 主要 ⽤ 于提供优化建议 ( 如成本、性能、安全性等 ) ， ⽽ 不 是记录 API 调 ⽤ 活动。它 ⽆ 法满 ⾜ 记录和集中存储 API 调 ⽤ ⽇ 志的需求。 B. 为每个区域创建单独的 AWS CloudTrail trails ，并指定 ⼀ 个 Amazon S3 bucket 来 接收 ⽇ 志 ⽂ 件以供后续分析。 错误 : 虽然可以为每个区域创建单独的 CloudTrail trails ，但这种 ⽅ 法复杂且不必要。 CloudTrail ⽀ 持跨区域的单 ⼀ trail 配 置，可以简化管理。 C. 创建 ⼀ 个新的 AWS CloudTrail trail 并将该 trail 应 ⽤ 于所有区域，指定 ⼀ 个 Amazon S3 bucket 作为存储位置。 正确 : 这是最简单且符合要求的解决 ⽅ 案。 CloudTrail ⽀ 持跨区域 trail ，可以记录所有区 域的 API 调 ⽤ 活动，并集中存储到 ⼀ 个 S3 bucket 中。 D. 为所有区域的所有 AWS 服务启 ⽤ Amazon CloudWatch ⽇ 志记录，并将它们汇总到 ⼀ 个 Amazon S3 bucket 以供后续分析。 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志记录服务运 ⾏ 状态， ⽽ 不是专 ⻔ 记录 API 调 ⽤ 活 动。使 ⽤ CloudTrail 是更合适的解 决 ⽅ 案。"
     }
   },
   {
@@ -1899,7 +1994,7 @@
       "A": "创建 ⼀ 个 NACL 以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将该 NACL 关联到 NLB 和 EC2 实例。 错误原因： ⽹ 络 ACL （ NACL ）是 ⽆ 状态的， ⽆ 法区分流量的 ⽅ 向，且管 理 1,500 个 CIDR 块范围的规则会 ⾮ 常复杂且难以 维护。此外， NACL ⽆ 法直接关联到 NLB 。",
       "B": "和 EC2 实例。 错误原因： ⽹ 络 ACL （ NACL ）是 ⽆ 状态的， ⽆ 法区分流量的 ⽅ 向，且管 理 1,500 个 CIDR 块范围的规则会 ⾮ 常复杂且难以 维护。此外， NACL ⽆ 法直接关联到 NLB 。 B. 创建 ⼀ 个 AWS 安全组以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将安全组关联到 NLB 。为 EC2 实 例创建第 ⼆ 个安全组，允许来 ⾃ NLB 安全组的 TCP 端 ⼝ 443 访问。 错误原因：虽然安全组是有状态的，但管理 1,500 个 CIDR 块范围的规则仍 然 ⾮ 常复杂且难以维护。此外，安全组 ⽆ 法直 接限制跨账户的访问。",
       "C": "在 ⺟ 公司账户中创建 ⼀ 个附加到 NLB 的 AWS PrivateLink 端点服务。为 实例创建 ⼀ 个 AWS 安全组，允许来 ⾃ AWS PrivateLink 端点的 TCP 端 ⼝ 443 访问。在 1,500 个 ⼦ 公司 AWS 账户中使 ⽤ AWS PrivateLink 接 ⼝ 端点 连接到数据处理应 ⽤ 程序。 正确原因：使 ⽤ AWS PrivateLink 可以实现跨账户的安全访问，同时避免 暴露服务到公共互联 ⽹ 。通过 PrivateLink ， ⼦ 公 司账户可以通过接 ⼝ 端点安全地连接到 ⺟ 公司账户的服务。安全组可以进 ⼀ 步限制来 ⾃ PrivateLink 端点的访问。",
-      "D": "创建 ⼀ 个 AWS 安全组以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将安全组关联到 EC2 实例。 错误原因：虽然安全组可以限制访问，但它 ⽆ 法解决跨账户的访问问题。 此外，管理 1,500 个 CIDR 块范围的规则仍然 ⾮ 常复杂且难以维护。 11"
+      "D": "创建 ⼀ 个 AWS 安全组以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将安全组关联到 EC2 实例。 错误原因：虽然安全组可以限制访问，但它 ⽆ 法解决跨账户的访问问题。 此外，管理 1,500 个 CIDR 块范围的规则仍然 ⾮ 常复杂且难以维护。"
     }
   },
   {
@@ -1919,106 +2014,6 @@
       "B": "配置 Amazon EventBridge 事件规则，由 AWS Config 的合规性更改事件 触发 : 正确 :AWS Config 可以直接与 Amazon EventBridge 集成， EventBridge 可以 实时捕获合规性变化事件。 正确 :EventBridge 规则可以直接将事件发送到 SNS 主题，实现近实时通知。",
       "C": "配置 AWS Config 推送通知到 CloudWatch Logs ，并使 ⽤ 指标过滤器和 警报 : 错误 : 虽然可以通过 CloudWatch Logs 实现通知，但这种 ⽅ 法需要额外的配置 ( ⽇ 志过滤器和警报 ) ，复杂度较 ⾼ 。 错误 : 这种 ⽅ 法的通知延迟可能较 ⾼ ， ⽆ 法保证 “ 近实时通知 ” 。",
       "D": "在 CloudWatch 指标上配置警报 : 错误 :AWS Config 的托管规则并不会直接 ⽣ 成 CloudWatch 指标，因此 ⽆ 法直 接在 CloudWatch 指标上配置警报。 错误 : 此选项与 AWS Config 的 ⼯ 作机制不匹配。"
-    }
-  },
-  {
-    "exam": "SCS-C02",
-    "id": 213,
-    "type": "multiple",
-    "question": "A security engineer discovers that a company ʼ s user passwords have no required minimum length. The company is using the following two identity providers IdPs • AWS Identity and Access Management IAM) federated with on- premises Active Directory • Amazon Cognito user pools that contain the user database for an AWS Cloud application that the company developed Which combination of actions should the security engineer take to implement a required minimum length for the passwords? Choose two.)",
-    "options": {
-      "A": "Update the password length policy in the IAM configuration.",
-      "B": "Update the password length policy in the Cognito configuration.",
-      "C": "Update the password length policy in the on-premises Active Directory configuration",
-      "D": "Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito.",
-      "E": "Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito."
-    },
-    "answer": [
-      "B",
-      "C"
-    ],
-    "explanations": {
-      "A": "Update the password length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。",
-      "B": "Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。",
-      "C": "Update the password length policy in the on-premises Active Directory configuration. 分析 :Active Directory 是公司内部的 ⾝ 份提供者，密码策略需要在 Active Directory 中配置以满 ⾜ 安全要求。这是正确的操作之 ⼀ ，因此此选项正确。",
-      "D": "length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。 B. Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。 C. Update the password length policy in the on-premises Activ",
-      "E": "Directory 的密码策略设置。 2. 选项分析 A. Update the password length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。 B. Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。 C. Update the password length policy in the on-premises Active Directory configuration. 分析 :Active Directory 是公司内部的 ⾝ 份提供者，密码策略需要在 Active Directory 中配置以满 ⾜ 安全要求。这是正确的操作之 ⼀ ，因此此选项正确。 D. Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito. 分析 :SCP Service Control Policy) ⽤ 于限制 AWS 账户或组织中的服务操作， 但 ⽆ 法直接 ⽤ 于设置密码策略。因此此选项错误。 E. Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito. 分析 :IAM 策略 ⽆ 法直接 ⽤ 于设置密码 ⻓ 度条件，密码策略是通过账户级别的 密码策略或 Cognito 的配置来管理的。因此此选项错误。"
-    }
-  },
-  {
-    "exam": "SCS-C02",
-    "id": 214,
-    "type": "single",
-    "question": "A company uses AWS Key Management Service AWS KMS . During an attempt to attach an encrypted Amazon Elastic Block Store Amazon EBS) volume to an Amazon EC2 instance, the attachment fails. The company discovers that a customer managed key has become unusable because the key material for the key was deleted. The company needs the data that is on the EBS volume. A security engineer must recommend a solution to decrypt the EBS volume ʼ s encrypted data key. The solution must also attach the volume to the EC2 instance. Which solution will meet these requirements?",
-    "options": {
-      "A": "Import new key material into the key. Attach the EBS volume.",
-      "B": "Restore the EBS volume from a snapshot that was taken before the deletion of the key material.",
-      "C": "Reimport the same key material that originally was imported into the key. Attach the EBS volume.",
-      "D": "Create a new key. Import new key material. Attach the EBS volume."
-    },
-    "answer": "C",
-    "explanations": {
-      "A": "Import new key material into the key. Attach the EBS volume. 错误 : 导 ⼊ 新的密钥材料不会恢复原始密钥的功能，因为新的密钥材料与原始 密钥材料不同， ⽆ 法解密原始数据。 即使导 ⼊ 新的密钥材料， EBS 卷仍然 ⽆ 法解密原始数据。",
-      "B": "Restore the EBS volume from a snapshot that was taken before the deletion of the key material. 错误 : 如果快照本 ⾝ 也是使 ⽤ 同 ⼀ 个密钥加密的，那么快照也 ⽆ 法解密，因为 密钥材料已被删除。 此选项仅在快照未加密或使 ⽤ 不同的密钥加密时有效，但题 ⽬ 未提到这种情 况。",
-      "C": "Reimport the same key material that originally was imported into the key. Attach the EBS volume. 正确 : 重新导 ⼊ 原始密钥材料可以恢复密钥的功能，因为原始密钥材料与加密 数据匹配。 ⼀ 旦密钥恢复， EBS 卷可以成功解密并附加到 EC2 实例。",
-      "D": "into the key. Attach the EBS volume. 正确 : 重新导 ⼊ 原始密钥材料可以恢复密钥的功能，因为原始密钥材料与加密 数据匹配。 ⼀ 旦密钥恢复， EBS 卷可以成功解密并附加到 EC2 实例。 D. Create a new key. Import new key material. Attach the EBS volume. 错误 : 创建新密钥并导 ⼊ 新的密钥材料不会恢复原始密钥的功能。 新密钥与原始密钥 ⽆ 关， ⽆ 法解密原始数据。"
-    }
-  },
-  {
-    "exam": "SCS-C02",
-    "id": 215,
-    "type": "single",
-    "question": "A company needs to analyze access logs for an Application Load Balancer ALB . The ALB directs traffic to the company ʼ s online login portal. The company needs to use visualizations to identify login attempts by bots from a list of known IP sources. Which solution will meet these requirements?",
-    "options": {
-      "A": "Configure the ALB to send logs directly to Amazon CloudWatch Logs. Analyze and visualize the logs by using CloudWatch Logs Insights.",
-      "B": "Configure the ALB to send logs directly to Amazon Redshift. Analyze the logs by using SQL queries. Visualize the logs by using custom reports.",
-      "C": "Configure the ALB to send logs directly to Amazon OpenSearch Service. Analyze the logs by using OpenSearch dashboards. Visualize the logs by using custom OpenSearch dashboards.",
-      "D": "Configure the ALB to send logs directly to an Amazon S3 bucket. Analyze the logs by using Amazon Athena. Visualize the logs by using Amazon QuickSight."
-    },
-    "answer": "D",
-    "explanations": {
-      "A": "和 Amazon QuickSight 。 如何处理和分析 ⼤ 规模数据 ( 如访问 ⽇ 志 ) 。 2. 选项分析 A. 错误原因 : 虽然 CloudWatch Logs Insights 可以分析 ⽇ 志，但它不适合处理 ⼤ 规模 ⽇ 志数据的复杂查询和可视化需求。 CloudWatch Logs Insights 的可 视化功能有限， ⽆ 法满 ⾜ 复杂的图表和报告需求。",
-      "B": "⽇ 志的收集与分析。 使 ⽤ AWS 服务进 ⾏ ⽇ 志分析和可视化，包括 Amazon Athena 和 Amazon QuickSight 。 如何处理和分析 ⼤ 规模数据 ( 如访问 ⽇ 志 ) 。 2. 选项分析 A. 错误原因 : 虽然 CloudWatch Logs Insights 可以分析 ⽇ 志，但它不适合处理 ⼤ 规模 ⽇ 志数据的复杂查询和可视化需求。 CloudWatch Logs Insights 的可 视化功能有限， ⽆ 法满 ⾜ 复杂的图表和报告需求。 B. 错误原因 :Amazon Redshift 是 ⼀ 个数据仓库服务，适合处理结构化数据，但 ALB ⽇ 志是 ⾮ 结构化数据，直接发送到 Redshift 需要额外的 ETL 提取、转 换、加载 ) 步骤，增加了复杂性。此外， Redshift 本 ⾝ 不提供可视化功能，需 要额外 ⼯ 具。",
-      "C": "错误原因 :Amazon OpenSearch Service 适合实时 ⽇ 志分析和搜索，但题 ⽬ 要求的是从已知 IP 列表中识别登录尝试，这更适合使 ⽤ Athena 的 SQL 查询 功能。此外， OpenSearch 的可视化功能虽然强 ⼤ ， 但与 QuickSight 的 ⾼ 级 图表和报告功能相 ⽐ 有所不 ⾜ 。",
-      "D": "正确原因 :Amazon S3 是存储 ALB 访问 ⽇ 志的最佳选择， Athena 可以直接查 询存储在 S3 中的 ⽇ 志数据， ⽀ 持复杂的 SQL 查询。 QuickSight 是 AWS 的 ⾼ 级可视化 ⼯ 具，可以 ⽣ 成丰富的图表和报告，满 ⾜ 题 ⽬ 要求。"
-    }
-  },
-  {
-    "exam": "SCS-C02",
-    "id": 216,
-    "type": "single",
-    "question": "⼀ 家公司在预定义的时间表上，在 Amazon EC2 实例上运 ⾏ ⼀ 个 cron 作 业。该 cron 作业调 ⽤ ⼀ 个 bash 脚本来加密 ⼀ 个 2 KB 的 ⽂ 件。 ⼀ 名安全 ⼯ 程师使 ⽤ AWS Key Management Service AWS KMS 创建了 ⼀ 个客户管理密钥，并配置了密钥策略。密钥策略和 EC2 实例 ⾓ ⾊ 已为此作业配置了必要的权限。 bash 脚本应该使 ⽤ 哪种流程来加密 ⽂ 件 ?",
-    "options": {
-      "A": "Use the aws kms encrypt command to encrypt the file by using the existing KMS key.",
-      "B": "Use the aws kms create-grant command to generate a grant for the existing KMS key.",
-      "C": "Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file.",
-      "D": "Use the aws kms generate-data-key command to generate a data key. Use the encrypted data key to encrypt the file."
-    },
-    "answer": "A",
-    "explanations": {
-      "A": "Use the aws kms encrypt command to encrypt the file by using the existing KMS key. 正确 : 此选项直接使 ⽤ AWS KMS 的加密命令来加密 ⽂ 件，符合题 ⽬ 要求。 AWS KMS ⽀ 持直接使 ⽤ 密钥对 ⼩ ⽂ 件 ( 如 2KB ⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。",
-      "B": "⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。 B. Use the aws kms create-grant command to generate a grant for the existing KMS key. 错误 :create-grant 命令 ⽤ 于创建权限授权 (grant) ， ⽽ 不是 ⽤ 于加密 ⽂ 件。 此选项与题 ⽬ 要求的加密操作 ⽆ 关。",
-      "C": "Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file. 错误 :aws kms encrypt 命令 ⽤ 于加密数据， ⽽ 不是 ⽣ 成数据密钥。 ⽣ 成数据密钥通常使 ⽤ 的是 generate-data-key 命令， ⽽ 不是 encrypt 命令。",
-      "D": "to encrypt the file by using the existing KMS key. 正确 : 此选项直接使 ⽤ AWS KMS 的加密命令来加密 ⽂ 件，符合题 ⽬ 要求。 AWS KMS ⽀ 持直接使 ⽤ 密钥对 ⼩ ⽂ 件 ( 如 2KB ⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。 B. Use the aws kms create-grant command to generate a grant for the existing KMS key. 错误 :create-grant 命令 ⽤ 于创建权限授权 (grant) ， ⽽ 不是 ⽤ 于加密 ⽂ 件。 此选项与题 ⽬ 要求的加密操作 ⽆ 关。 C. Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file. 错误 :aws kms encrypt 命令 ⽤ 于加密数据， ⽽ 不是 ⽣ 成数据密钥。 ⽣ 成数据密钥通常使 ⽤ 的是 generate-data-key 命令， ⽽ 不是 encrypt 命令。 D. Use the aws kms generate-data-key command to generate a data key. Use the encrypted data key to encrypt the file. 错误 :generate-data-key 命令 ⽣ 成的是数据密钥 ( 明 ⽂ 和加密形式 ) ，但加密 ⽂ 件需要使 ⽤ 明 ⽂ 数据密钥， ⽽ 不是加密 数据密钥。 此选项的描述不符合实际加密流程。"
-    }
-  },
-  {
-    "exam": "SCS-C02",
-    "id": 217,
-    "type": "single",
-    "question": "A security engineer needs to analyze Apache web server access logs that are stored in an Amazon S3 bucket. Amazon EC2 instance web servers generated the logs. The EC2 instances have the Amazon CloudWatch agent installed and configured to report their access logs. The security engineer needs to use a query in Amazon Athena to analyze the logs. The query must identify IP addresses that have attempted and failed to access restricted web server content held at the /admin URL path. The query also must identify the URLs that the IP addresses attempted to access. Which query will meet these requirements?",
-    "options": {
-      "A": "SELECT client_ip, client_request FROM logs WHERE client_request LIKE '%/admin%! ʼ AND server_status = '403 ʼ",
-      "B": "SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip",
-      "C": "SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000",
-      "D": "SELECT DISTINCT (client_ip), client_request FROM logs WHERE user_id <> ‘admin ʼ AND server_status = ‘401! ʼ"
-    },
-    "answer": "A",
-    "explanations": {
-      "A": "的查询语法和功能。 ⽇ 志分析的基本概念，包括 HTTP 状态码的含义 ( 如 403 和 401 。 如何使 ⽤ SQL 查询来筛选和分析 ⽇ 志数据。 2. 选项分析 A. SELECT client_ip, client_request FROM logs WHERE client_request LIKE '%/admin%! ʼ AND server_status = '403 ʼ 正确 : 此查询使 ⽤ 了 SQL 的 LIKE 操作符来匹配包含 “/admin” 的 URL 路径，并筛 选出 HTTP 状态码为 403 的记录。状态码 403 表 ⽰ “ 禁 ⽌ 访问 ” ，符合题 ⽬ 要 求。 正确 : 返回了两个字段 :client_ip(IP 地址 ) 和 client_request( 尝试访问的 URL ， 完全满 ⾜ 题 ⽬ 要求。",
-      "B": "SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip 错误 :CONTAINS 不是 Amazon Athena ⽀ 持的标准 SQL 操作符，应该使 ⽤ LIKE 。 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :GROUP BY 的使 ⽤ 没有意义，因为题 ⽬ 没有要求对 IP 地址进 ⾏ 分组。",
-      "C": "SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000 错误 : 虽然状态码 403 是正确的，但查询中包含了 client_id 字段， ⽽ 题 ⽬ 没有要 求返回该字段。 错误 : LIMIT 1000 限制了返回的记录数量，题 ⽬ 没有提到需要限制记录数量。 错误 : 语法中 “server status” 有拼写错误，应该是 “server_status” 。",
-      "D": "server_status = '403 ʼ 正确 : 此查询使 ⽤ 了 SQL 的 LIKE 操作符来匹配包含 “/admin” 的 URL 路径，并筛 选出 HTTP 状态码为 403 的记录。状态码 403 表 ⽰ “ 禁 ⽌ 访问 ” ，符合题 ⽬ 要 求。 正确 : 返回了两个字段 :client_ip(IP 地址 ) 和 client_request( 尝试访问的 URL ， 完全满 ⾜ 题 ⽬ 要求。 B. SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip 错误 :CONTAINS 不是 Amazon Athena ⽀ 持的标准 SQL 操作符，应该使 ⽤ LIKE 。 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :GROUP BY 的使 ⽤ 没有意义，因为题 ⽬ 没有要求对 IP 地址进 ⾏ 分组。 C. SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000 错误 : 虽然状态码 403 是正确的，但查询中包含了 client_id 字段， ⽽ 题 ⽬ 没有要 求返回该字段。 错误 : LIMIT 1000 限制了返回的记录数量，题 ⽬ 没有提到需要限制记录数量。 错误 : 语法中 “server status” 有拼写错误，应该是 “server_status” 。 D. SELECT DISTINCT (client_ip), client_request FROM logs WHERE user_id <> ‘admin ʼ AND server_status = ‘401! ʼ 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :user_id 字段与题 ⽬ ⽆ 关，题 ⽬ 没有提到需要筛选 user_id 。 错误 : 语法中 “server_status = ‘401! ʼ ” 有问题，状态码不应该包含感叹号。 18 英 ⽂ : A company uses Amazon Cognito as an OAuth 2.0 identity platform for its web and mobile applications. The company needs to capture successful and unsuccessful login attempts. The company also needs to query the data about the login attempts. Which solution will meet these requirements? A. Configure Cognito to send logs of user activity to Amazon CloudWatch. Configure Amazon EventBridge to invoke an AWS Lambda function to export the logs to an Amazon S3 bucket. Use Amazon Athena to query the logs for event names of SignUp with event sources of cognito-idp.amazonaws.com. B. Enable AWS CloudTrail to deliver logs to an Amazon S3 bucket. Use Amazon Athena to query the logs for event names of InitiateAuth with event sources of cognito-idp.amazonaws.com. C. Configure AWS CloudTrail to send Cognito CloudTrail events to Amazon CloudWatch for monitoring. Query the event logs for event names of SignUp with event sources of cognito-idp.amazonaws.com. D. Configure Amazon CloudWatch metrics to monitor and report Cognito events. Create a CloudWatch dashboard for the provided metrics. Display the Cognito user pools for event names of InitiateAuth with event sources of cognito-idp.amazonaws.com. 中 ⽂ : ⼀ 家公司使 ⽤ Amazon Cognito 作为其 ⽹ ⻚ 和移动应 ⽤ 程序的 OAuth 2.0 ⾝ 份平台。该公司需要捕获成功和失败的登录尝试。公司还需要 查询有关登录尝 试的数据。 哪种解决 ⽅ 案可以满 ⾜ 这些要求 ? A. 配置 Cognito 将 ⽤ 户活动 ⽇ 志发送到 Amazon CloudWatch 。配置 Amazon EventBridge 调 ⽤ AWS Lambda 函数以将 ⽇ 志导出到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 B. 启 ⽤ AWS CloudTrail 将 ⽇ 志传递到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 InitiateAuth 且事件来源为 cognito- idp.amazonaws.com 的 ⽇ 志。 C. 配置 AWS CloudTrail 将 Cognito 的 CloudTrail 事件发送到 Amazon CloudWatch 进 ⾏ 监控。查询事件 ⽇ 志，事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 。 D. 配置 Amazon CloudWatch 指标以监控和报告 Cognito 事件。为提供的指 标创建 ⼀ 个 CloudWatch 仪表板。显 ⽰ Cognito ⽤ 户池，事件名称为 InitiateAuth 且事件来源为 cognito-idp.amazonaws.com 。 答案 : Ｂ 1. 考察的知识点 Amazon Cognito 的 ⾝ 份验证 ⽇ 志记录功能。 AWS CloudTrail 的 ⽇ 志记录和查询能 ⼒ 。 Amazon Athena 的 ⽇ 志查询功能。 如何捕获和分析 ⽤ 户登录事件 ( 成功和失败 ) 。 2. 选项分析 A. 配置 Cognito 将 ⽤ 户活动 ⽇ 志发送到 Amazon CloudWatch 。配置 Amazon EventBridge 调 ⽤ AWS Lambda 函数以将 ⽇ 志导出到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 分析 : Cognito 本 ⾝ ⽆ 法直接将 ⽤ 户活动 ⽇ 志发送到 CloudWatch 。需要通过 CloudTrail 来捕获 Cognito 的事件。 虽然可以使 ⽤ EventBridge 和 Lambda 将 ⽇ 志导出到 S3 ，但这增加了复杂 性，并不是最佳实践。 事件名称 SignUp 仅与 ⽤ 户注册相关， ⽽ 题 ⽬ 要求捕获登录事件 ( 成功和失 败 ) ，因此不符合题 ⽬ 要求。 结论 : 错误。 B. 启 ⽤ AWS CloudTrail 将 ⽇ 志传递到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 InitiateAuth 且事件 来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 分析 : CloudTrail 是捕获 Cognito 登录事件的正确 ⼯ 具。它可以记录 InitiateAuth 事件 ( 登录尝试，包括成功和失败 ) 。 将 CloudTrail ⽇ 志存储到 S3 是标准做法， ⽅ 便后续查询。 使 ⽤ Amazon Athena 查询 S3 中的 ⽇ 志是 ⾼ 效的解决 ⽅ 案，符合题 ⽬ 要求。 结论 : 正确。 C. 配置 AWS CloudTrail 将 Cognito 的 CloudTrail 事件发送到 Amazon CloudWatch 进 ⾏ 监控。查询事件 ⽇ 志，事件名 称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 。 分析 : CloudTrail 可以捕获 Cognito 的事件，但直接发送到 CloudWatch 进 ⾏ 监控 并不适合查询历史数据。 事件名称 SignUp 与 ⽤ 户注册相关， ⽽ 题 ⽬ 要求捕获登录事件 ( 成功和失败 ) ， 因此不符合题 ⽬ 要求。 结论 : 错误。 D. 配置 Amazon CloudWatch 指标以监控和报告 Cognito 事件。为提供的指 标创建 ⼀ 个 CloudWatch 仪表板。显 ⽰ Cognito ⽤ 户池，事件名称为 InitiateAuth 且事件来源为 cognito- idp.amazonaws.com 。 分析 : CloudWatch 主要 ⽤ 于监控指标， ⽽ 不是存储和查询详细的事件 ⽇ 志。 题 ⽬ 要求查询登录事件的详细数据， ⽽ 不是创建仪表板监控指标。 结论 : 错误。"
     }
   }
 ]

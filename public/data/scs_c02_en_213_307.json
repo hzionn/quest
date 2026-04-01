@@ -1,6 +1,106 @@
 [
   {
     "exam": "SCS-C02",
+    "id": 213,
+    "type": "multiple",
+    "question": "A security engineer discovers that a company ʼ s user passwords have no required minimum length. The company is using the following two identity providers IdPs • AWS Identity and Access Management IAM) federated with on- premises Active Directory • Amazon Cognito user pools that contain the user database for an AWS Cloud application that the company developed Which combination of actions should the security engineer take to implement a required minimum length for the passwords? Choose two.)",
+    "options": {
+      "A": "Update the password length policy in the IAM configuration.",
+      "B": "Update the password length policy in the Cognito configuration.",
+      "C": "Update the password length policy in the on-premises Active Directory configuration",
+      "D": "Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito.",
+      "E": "Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito."
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "Update the password length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。",
+      "B": "Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。",
+      "C": "Update the password length policy in the on-premises Active Directory configuration. 分析 :Active Directory 是公司内部的 ⾝ 份提供者，密码策略需要在 Active Directory 中配置以满 ⾜ 安全要求。这是正确的操作之 ⼀ ，因此此选项正确。",
+      "D": "length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。 B. Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。 C. Update the password length policy in the on-premises Activ",
+      "E": "Directory 的密码策略设置。 2. 选项分析 A. Update the password length policy in the IAM configuration. 分析 :IAM 本 ⾝ 不 ⽀ 持直接设置密码 ⻓ 度策略，因为 IAM ⽤ 户的密码策略是通过 账户级别的密码策略来管理的， ⽽ 不是单独配置的。因此此选项错误。 B. Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito ⽀ 持直接配置密码策略，包括设置密码的最 ⼩ ⻓ 度。 这是正确的操作之 ⼀ ，因此此选项正确。 C. Update the password length policy in the on-premises Active Directory configuration. 分析 :Active Directory 是公司内部的 ⾝ 份提供者，密码策略需要在 Active Directory 中配置以满 ⾜ 安全要求。这是正确的操作之 ⼀ ，因此此选项正确。 D. Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito. 分析 :SCP Service Control Policy) ⽤ 于限制 AWS 账户或组织中的服务操作， 但 ⽆ 法直接 ⽤ 于设置密码策略。因此此选项错误。 E. Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito. 分析 :IAM 策略 ⽆ 法直接 ⽤ 于设置密码 ⻓ 度条件，密码策略是通过账户级别的 密码策略或 Cognito 的配置来管理的。因此此选项错误。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 214,
+    "type": "single",
+    "question": "A company uses AWS Key Management Service AWS KMS . During an attempt to attach an encrypted Amazon Elastic Block Store Amazon EBS) volume to an Amazon EC2 instance, the attachment fails. The company discovers that a customer managed key has become unusable because the key material for the key was deleted. The company needs the data that is on the EBS volume. A security engineer must recommend a solution to decrypt the EBS volume ʼ s encrypted data key. The solution must also attach the volume to the EC2 instance. Which solution will meet these requirements?",
+    "options": {
+      "A": "Import new key material into the key. Attach the EBS volume.",
+      "B": "Restore the EBS volume from a snapshot that was taken before the deletion of the key material.",
+      "C": "Reimport the same key material that originally was imported into the key. Attach the EBS volume.",
+      "D": "Create a new key. Import new key material. Attach the EBS volume."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Import new key material into the key. Attach the EBS volume. 错误 : 导 ⼊ 新的密钥材料不会恢复原始密钥的功能，因为新的密钥材料与原始 密钥材料不同， ⽆ 法解密原始数据。 即使导 ⼊ 新的密钥材料， EBS 卷仍然 ⽆ 法解密原始数据。",
+      "B": "Restore the EBS volume from a snapshot that was taken before the deletion of the key material. 错误 : 如果快照本 ⾝ 也是使 ⽤ 同 ⼀ 个密钥加密的，那么快照也 ⽆ 法解密，因为 密钥材料已被删除。 此选项仅在快照未加密或使 ⽤ 不同的密钥加密时有效，但题 ⽬ 未提到这种情 况。",
+      "C": "Reimport the same key material that originally was imported into the key. Attach the EBS volume. 正确 : 重新导 ⼊ 原始密钥材料可以恢复密钥的功能，因为原始密钥材料与加密 数据匹配。 ⼀ 旦密钥恢复， EBS 卷可以成功解密并附加到 EC2 实例。",
+      "D": "into the key. Attach the EBS volume. 正确 : 重新导 ⼊ 原始密钥材料可以恢复密钥的功能，因为原始密钥材料与加密 数据匹配。 ⼀ 旦密钥恢复， EBS 卷可以成功解密并附加到 EC2 实例。 D. Create a new key. Import new key material. Attach the EBS volume. 错误 : 创建新密钥并导 ⼊ 新的密钥材料不会恢复原始密钥的功能。 新密钥与原始密钥 ⽆ 关， ⽆ 法解密原始数据。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 215,
+    "type": "single",
+    "question": "A company needs to analyze access logs for an Application Load Balancer ALB . The ALB directs traffic to the company ʼ s online login portal. The company needs to use visualizations to identify login attempts by bots from a list of known IP sources. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure the ALB to send logs directly to Amazon CloudWatch Logs. Analyze and visualize the logs by using CloudWatch Logs Insights.",
+      "B": "Configure the ALB to send logs directly to Amazon Redshift. Analyze the logs by using SQL queries. Visualize the logs by using custom reports.",
+      "C": "Configure the ALB to send logs directly to Amazon OpenSearch Service. Analyze the logs by using OpenSearch dashboards. Visualize the logs by using custom OpenSearch dashboards.",
+      "D": "Configure the ALB to send logs directly to an Amazon S3 bucket. Analyze the logs by using Amazon Athena. Visualize the logs by using Amazon QuickSight."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "和 Amazon QuickSight 。 如何处理和分析 ⼤ 规模数据 ( 如访问 ⽇ 志 ) 。 2. 选项分析 A. 错误原因 : 虽然 CloudWatch Logs Insights 可以分析 ⽇ 志，但它不适合处理 ⼤ 规模 ⽇ 志数据的复杂查询和可视化需求。 CloudWatch Logs Insights 的可 视化功能有限， ⽆ 法满 ⾜ 复杂的图表和报告需求。",
+      "B": "⽇ 志的收集与分析。 使 ⽤ AWS 服务进 ⾏ ⽇ 志分析和可视化，包括 Amazon Athena 和 Amazon QuickSight 。 如何处理和分析 ⼤ 规模数据 ( 如访问 ⽇ 志 ) 。 2. 选项分析 A. 错误原因 : 虽然 CloudWatch Logs Insights 可以分析 ⽇ 志，但它不适合处理 ⼤ 规模 ⽇ 志数据的复杂查询和可视化需求。 CloudWatch Logs Insights 的可 视化功能有限， ⽆ 法满 ⾜ 复杂的图表和报告需求。 B. 错误原因 :Amazon Redshift 是 ⼀ 个数据仓库服务，适合处理结构化数据，但 ALB ⽇ 志是 ⾮ 结构化数据，直接发送到 Redshift 需要额外的 ETL 提取、转 换、加载 ) 步骤，增加了复杂性。此外， Redshift 本 ⾝ 不提供可视化功能，需 要额外 ⼯ 具。",
+      "C": "错误原因 :Amazon OpenSearch Service 适合实时 ⽇ 志分析和搜索，但题 ⽬ 要求的是从已知 IP 列表中识别登录尝试，这更适合使 ⽤ Athena 的 SQL 查询 功能。此外， OpenSearch 的可视化功能虽然强 ⼤ ， 但与 QuickSight 的 ⾼ 级 图表和报告功能相 ⽐ 有所不 ⾜ 。",
+      "D": "正确原因 :Amazon S3 是存储 ALB 访问 ⽇ 志的最佳选择， Athena 可以直接查 询存储在 S3 中的 ⽇ 志数据， ⽀ 持复杂的 SQL 查询。 QuickSight 是 AWS 的 ⾼ 级可视化 ⼯ 具，可以 ⽣ 成丰富的图表和报告，满 ⾜ 题 ⽬ 要求。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 216,
+    "type": "single",
+    "question": "⼀ 家公司在预定义的时间表上，在 Amazon EC2 实例上运 ⾏ ⼀ 个 cron 作 业。该 cron 作业调 ⽤ ⼀ 个 bash 脚本来加密 ⼀ 个 2 KB 的 ⽂ 件。 ⼀ 名安全 ⼯ 程师使 ⽤ AWS Key Management Service AWS KMS 创建了 ⼀ 个客户管理密钥，并配置了密钥策略。密钥策略和 EC2 实例 ⾓ ⾊ 已为此作业配置了必要的权限。 bash 脚本应该使 ⽤ 哪种流程来加密 ⽂ 件 ?",
+    "options": {
+      "A": "Use the aws kms encrypt command to encrypt the file by using the existing KMS key.",
+      "B": "Use the aws kms create-grant command to generate a grant for the existing KMS key.",
+      "C": "Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file.",
+      "D": "Use the aws kms generate-data-key command to generate a data key. Use the encrypted data key to encrypt the file."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Use the aws kms encrypt command to encrypt the file by using the existing KMS key. 正确 : 此选项直接使 ⽤ AWS KMS 的加密命令来加密 ⽂ 件，符合题 ⽬ 要求。 AWS KMS ⽀ 持直接使 ⽤ 密钥对 ⼩ ⽂ 件 ( 如 2KB ⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。",
+      "B": "⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。 B. Use the aws kms create-grant command to generate a grant for the existing KMS key. 错误 :create-grant 命令 ⽤ 于创建权限授权 (grant) ， ⽽ 不是 ⽤ 于加密 ⽂ 件。 此选项与题 ⽬ 要求的加密操作 ⽆ 关。",
+      "C": "Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file. 错误 :aws kms encrypt 命令 ⽤ 于加密数据， ⽽ 不是 ⽣ 成数据密钥。 ⽣ 成数据密钥通常使 ⽤ 的是 generate-data-key 命令， ⽽ 不是 encrypt 命令。",
+      "D": "to encrypt the file by using the existing KMS key. 正确 : 此选项直接使 ⽤ AWS KMS 的加密命令来加密 ⽂ 件，符合题 ⽬ 要求。 AWS KMS ⽀ 持直接使 ⽤ 密钥对 ⼩ ⽂ 件 ( 如 2KB ⽂ 件 ) 进 ⾏ 加密。 适合 ⼩ ⽂ 件加密，因为 ⽂ 件 ⼤ ⼩ 在 KMS 加密的限制范围内。 B. Use the aws kms create-grant command to generate a grant for the existing KMS key. 错误 :create-grant 命令 ⽤ 于创建权限授权 (grant) ， ⽽ 不是 ⽤ 于加密 ⽂ 件。 此选项与题 ⽬ 要求的加密操作 ⽆ 关。 C. Use the aws kms encrypt command to generate a data key. Use the plaintext data key to encrypt the file. 错误 :aws kms encrypt 命令 ⽤ 于加密数据， ⽽ 不是 ⽣ 成数据密钥。 ⽣ 成数据密钥通常使 ⽤ 的是 generate-data-key 命令， ⽽ 不是 encrypt 命令。 D. Use the aws kms generate-data-key command to generate a data key. Use the encrypted data key to encrypt the file. 错误 :generate-data-key 命令 ⽣ 成的是数据密钥 ( 明 ⽂ 和加密形式 ) ，但加密 ⽂ 件需要使 ⽤ 明 ⽂ 数据密钥， ⽽ 不是加密 数据密钥。 此选项的描述不符合实际加密流程。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 217,
+    "type": "single",
+    "question": "A security engineer needs to analyze Apache web server access logs that are stored in an Amazon S3 bucket. Amazon EC2 instance web servers generated the logs. The EC2 instances have the Amazon CloudWatch agent installed and configured to report their access logs. The security engineer needs to use a query in Amazon Athena to analyze the logs. The query must identify IP addresses that have attempted and failed to access restricted web server content held at the /admin URL path. The query also must identify the URLs that the IP addresses attempted to access. Which query will meet these requirements?",
+    "options": {
+      "A": "SELECT client_ip, client_request FROM logs WHERE client_request LIKE '%/admin%! ʼ AND server_status = '403 ʼ",
+      "B": "SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip",
+      "C": "SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000",
+      "D": "SELECT DISTINCT (client_ip), client_request FROM logs WHERE user_id <> ‘admin ʼ AND server_status = ‘401! ʼ"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "的查询语法和功能。 ⽇ 志分析的基本概念，包括 HTTP 状态码的含义 ( 如 403 和 401 。 如何使 ⽤ SQL 查询来筛选和分析 ⽇ 志数据。 2. 选项分析 A. SELECT client_ip, client_request FROM logs WHERE client_request LIKE '%/admin%! ʼ AND server_status = '403 ʼ 正确 : 此查询使 ⽤ 了 SQL 的 LIKE 操作符来匹配包含 “/admin” 的 URL 路径，并筛 选出 HTTP 状态码为 403 的记录。状态码 403 表 ⽰ “ 禁 ⽌ 访问 ” ，符合题 ⽬ 要 求。 正确 : 返回了两个字段 :client_ip(IP 地址 ) 和 client_request( 尝试访问的 URL ， 完全满 ⾜ 题 ⽬ 要求。",
+      "B": "SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip 错误 :CONTAINS 不是 Amazon Athena ⽀ 持的标准 SQL 操作符，应该使 ⽤ LIKE 。 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :GROUP BY 的使 ⽤ 没有意义，因为题 ⽬ 没有要求对 IP 地址进 ⾏ 分组。",
+      "C": "SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000 错误 : 虽然状态码 403 是正确的，但查询中包含了 client_id 字段， ⽽ 题 ⽬ 没有要 求返回该字段。 错误 : LIMIT 1000 限制了返回的记录数量，题 ⽬ 没有提到需要限制记录数量。 错误 : 语法中 “server status” 有拼写错误，应该是 “server_status” 。",
+      "D": "server_status = '403 ʼ 正确 : 此查询使 ⽤ 了 SQL 的 LIKE 操作符来匹配包含 “/admin” 的 URL 路径，并筛 选出 HTTP 状态码为 403 的记录。状态码 403 表 ⽰ “ 禁 ⽌ 访问 ” ，符合题 ⽬ 要 求。 正确 : 返回了两个字段 :client_ip(IP 地址 ) 和 client_request( 尝试访问的 URL ， 完全满 ⾜ 题 ⽬ 要求。 B. SELECT client_ip FROM logs WHERE client_request CONTAINS '%/admin% ʼ AND server_status = '401' GROUP BY client_ip 错误 :CONTAINS 不是 Amazon Athena ⽀ 持的标准 SQL 操作符，应该使 ⽤ LIKE 。 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :GROUP BY 的使 ⽤ 没有意义，因为题 ⽬ 没有要求对 IP 地址进 ⾏ 分组。 C. SELECT DISTINCT (client_ip), client_request, client_id FROM logs WHERE server status = ‘403 ʼ LIMIT 1000 错误 : 虽然状态码 403 是正确的，但查询中包含了 client_id 字段， ⽽ 题 ⽬ 没有要 求返回该字段。 错误 : LIMIT 1000 限制了返回的记录数量，题 ⽬ 没有提到需要限制记录数量。 错误 : 语法中 “server status” 有拼写错误，应该是 “server_status” 。 D. SELECT DISTINCT (client_ip), client_request FROM logs WHERE user_id <> ‘admin ʼ AND server_status = ‘401! ʼ 错误 : 状态码 401 表 ⽰ “ 未授权 ” ， ⽽ 题 ⽬ 要求的是状态码 403 禁 ⽌ 访问 ) 。 错误 :user_id 字段与题 ⽬ ⽆ 关，题 ⽬ 没有提到需要筛选 user_id 。 错误 : 语法中 “server_status = ‘401! ʼ ” 有问题，状态码不应该包含感叹号。 18 英 ⽂ : A company uses Amazon Cognito as an OAuth 2.0 identity platform for its web and mobile applications. The company needs to capture successful and unsuccessful login attempts. The company also needs to query the data about the login attempts. Which solution will meet these requirements? A. Configure Cognito to send logs of user activity to Amazon CloudWatch. Configure Amazon EventBridge to invoke an AWS Lambda function to export the logs to an Amazon S3 bucket. Use Amazon Athena to query the logs for event names of SignUp with event sources of cognito-idp.amazonaws.com. B. Enable AWS CloudTrail to deliver logs to an Amazon S3 bucket. Use Amazon Athena to query the logs for event names of InitiateAuth with event sources of cognito-idp.amazonaws.com. C. Configure AWS CloudTrail to send Cognito CloudTrail events to Amazon CloudWatch for monitoring. Query the event logs for event names of SignUp with event sources of cognito-idp.amazonaws.com. D. Configure Amazon CloudWatch metrics to monitor and report Cognito events. Create a CloudWatch dashboard for the provided metrics. Display the Cognito user pools for event names of InitiateAuth with event sources of cognito-idp.amazonaws.com. 中 ⽂ : ⼀ 家公司使 ⽤ Amazon Cognito 作为其 ⽹ ⻚ 和移动应 ⽤ 程序的 OAuth 2.0 ⾝ 份平台。该公司需要捕获成功和失败的登录尝试。公司还需要 查询有关登录尝 试的数据。 哪种解决 ⽅ 案可以满 ⾜ 这些要求 ? A. 配置 Cognito 将 ⽤ 户活动 ⽇ 志发送到 Amazon CloudWatch 。配置 Amazon EventBridge 调 ⽤ AWS Lambda 函数以将 ⽇ 志导出到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 B. 启 ⽤ AWS CloudTrail 将 ⽇ 志传递到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 InitiateAuth 且事件来源为 cognito- idp.amazonaws.com 的 ⽇ 志。 C. 配置 AWS CloudTrail 将 Cognito 的 CloudTrail 事件发送到 Amazon CloudWatch 进 ⾏ 监控。查询事件 ⽇ 志，事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 。 D. 配置 Amazon CloudWatch 指标以监控和报告 Cognito 事件。为提供的指 标创建 ⼀ 个 CloudWatch 仪表板。显 ⽰ Cognito ⽤ 户池，事件名称为 InitiateAuth 且事件来源为 cognito-idp.amazonaws.com 。 答案 : Ｂ 1. 考察的知识点 Amazon Cognito 的 ⾝ 份验证 ⽇ 志记录功能。 AWS CloudTrail 的 ⽇ 志记录和查询能 ⼒ 。 Amazon Athena 的 ⽇ 志查询功能。 如何捕获和分析 ⽤ 户登录事件 ( 成功和失败 ) 。 2. 选项分析 A. 配置 Cognito 将 ⽤ 户活动 ⽇ 志发送到 Amazon CloudWatch 。配置 Amazon EventBridge 调 ⽤ AWS Lambda 函数以将 ⽇ 志导出到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 分析 : Cognito 本 ⾝ ⽆ 法直接将 ⽤ 户活动 ⽇ 志发送到 CloudWatch 。需要通过 CloudTrail 来捕获 Cognito 的事件。 虽然可以使 ⽤ EventBridge 和 Lambda 将 ⽇ 志导出到 S3 ，但这增加了复杂 性，并不是最佳实践。 事件名称 SignUp 仅与 ⽤ 户注册相关， ⽽ 题 ⽬ 要求捕获登录事件 ( 成功和失 败 ) ，因此不符合题 ⽬ 要求。 结论 : 错误。 B. 启 ⽤ AWS CloudTrail 将 ⽇ 志传递到 Amazon S3 存储桶。使 ⽤ Amazon Athena 查询事件名称为 InitiateAuth 且事件 来源为 cognito-idp.amazonaws.com 的 ⽇ 志。 分析 : CloudTrail 是捕获 Cognito 登录事件的正确 ⼯ 具。它可以记录 InitiateAuth 事件 ( 登录尝试，包括成功和失败 ) 。 将 CloudTrail ⽇ 志存储到 S3 是标准做法， ⽅ 便后续查询。 使 ⽤ Amazon Athena 查询 S3 中的 ⽇ 志是 ⾼ 效的解决 ⽅ 案，符合题 ⽬ 要求。 结论 : 正确。 C. 配置 AWS CloudTrail 将 Cognito 的 CloudTrail 事件发送到 Amazon CloudWatch 进 ⾏ 监控。查询事件 ⽇ 志，事件名 称为 SignUp 且事件来源为 cognito-idp.amazonaws.com 。 分析 : CloudTrail 可以捕获 Cognito 的事件，但直接发送到 CloudWatch 进 ⾏ 监控 并不适合查询历史数据。 事件名称 SignUp 与 ⽤ 户注册相关， ⽽ 题 ⽬ 要求捕获登录事件 ( 成功和失败 ) ， 因此不符合题 ⽬ 要求。 结论 : 错误。 D. 配置 Amazon CloudWatch 指标以监控和报告 Cognito 事件。为提供的指 标创建 ⼀ 个 CloudWatch 仪表板。显 ⽰ Cognito ⽤ 户池，事件名称为 InitiateAuth 且事件来源为 cognito- idp.amazonaws.com 。 分析 : CloudWatch 主要 ⽤ 于监控指标， ⽽ 不是存储和查询详细的事件 ⽇ 志。 题 ⽬ 要求查询登录事件的详细数据， ⽽ 不是创建仪表板监控指标。 结论 : 错误。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 218,
     "type": "single",
     "question": "英 ⽂ : A company runs workloads on Amazon EC2 instances. The company needs to continually scan the EC2 instances for software vulnerabilities and unintended network exposure. Which solution will meet these requirements?",
@@ -1324,7 +1424,26 @@
       "A": "⼊ 站规则 100 允许 TCP 端 ⼝ 443 上的流量：错误，因为 ⼊ 站流量不需要 允许 443 端 ⼝ ， TLS 流量是出站流量。 ⼊ 站规则 200 拒绝 TCP 端 ⼝ 3306 上的流量：正确，符合要求。 出站规则 100 允许 TCP 端 ⼝ 443 上的流量：正确，符合要求。 整体错误： ⼊ 站规则 100 不需要允许 443 端 ⼝ 。",
       "B": "⼊ 站规则 100 拒绝 TCP 端 ⼝ 3306 上的流量：正确，符合要求。 ⼊ 站规则 200 允许 TCP 端 ⼝ 范围 1024 65535 上的流量：正确，允许 响应流量（例如 TLS 的返回流量） 。 出站规则 100 允许 TCP 端 ⼝ 443 上的流量：正确，符合要求。 整体正确：所有规则均符合要求。",
       "C": "⼊ 站规则 100 允许 TCP 端 ⼝ 范围 1024 65535 上的流量：错误，因为 ⼊ 站规则优先级不正确，应该先拒绝 3306 。 ⼊ 站规则 200 拒绝 TCP 端 ⼝ 3306 上的流量：正确，但优先级错误。 出站规则 100 允许 TCP 端 ⼝ 443 上的流量：正确，符合要求。 整体错误： ⼊ 站规则优先级配置不正确。",
-      "D": "⼊ 站规则 100 拒绝 TCP 端 ⼝ 3306 上的流量：正确，符合要求。 ⼊ 站规则 200 允许 TCP 端 ⼝ 443 上的流量：错误，因为 ⼊ 站流量不需 要允许 443 端 ⼝ 。 出站规则 100 允许 TCP 端 ⼝ 443 上的流量：正确，符合要求。 整体错误： ⼊ 站规则 200 不需要允许 443 端 ⼝ 。 86 英 ⽂ : A company is investigating actions that an IAM role performed. The company must find out when the role last accessed AWS Security Hub and when the role last used the DeleteInsight action in Security Hub. Which solution will provide this information? A. Use the checks for the security category in AWS Trusted Advisor. Search for the role and examine the actions taken. B. Use the Access Advisor tab in AWS Identity and Access Management IAM . Search for Security Hub and the actions taken. C. Use AWS Identity and Access Management IAM) to generate a credential report. Search the report for Security Hub activity. D. Create an analyzer in AWS Identity and Access Management Access Analyzer. Examine the findings for the role ʼ s actions in Security Hub. 中 ⽂ : ⼀ 家公司正在调查 ⼀ 个 IAM ⾓ ⾊ 执 ⾏ 的操作。该公司必须 找出该 ⾓ ⾊ 上次访问 AWS Security Hub 的时间，以及该 ⾓ ⾊ 上次在 Security Hub 中使 ⽤ DeleteInsight 操作的时间。 哪种解决 ⽅ 案可以提供此信息？ A. 使 ⽤ AWS Trusted Advisor 中的安全类别检查。搜索该 ⾓ ⾊ 并检查执 ⾏ 的操 作。 B. 使 ⽤ AWS Identity and Access Management IAM 中的 Access Advisor 标签。搜索 Security Hub 和执 ⾏ 的操作。 C. 使 ⽤ AWS Identity and Access Management IAM ⽣ 成凭证报告。在报 告中搜索 Security Hub 活动。 D. 在 AWS Identity and Access Management Access Analyzer 中创建 ⼀ 个 分析器。检查该 ⾓ ⾊ 在 Security Hub 中的操作发现。 答案 : B 考察的知识点 本题考察的是 AWS Identity and Access Management IAM 的功能，特 别是如何追踪 IAM ⾓ ⾊ 的访问活动。 涉及的服务包括 IAM Access Advisor 、 IAM Credential Report 、 AWS Trusted Advisor 和 IAM Access Analyzer 。 选项分析 A. 使 ⽤ AWS Trusted Advisor 中的安全类别检查。搜索该 ⾓ ⾊ 并检查执 ⾏ 的操作。 错误： AWS Trusted Advisor 主要 ⽤ 于提供账户安全、成本优化、性能和 服务限制的建议，但它不提供关于 IAM ⾓ ⾊ 具体操作的详细历史记录。 B. 使 ⽤ AWS Identity and Access Management IAM 中的 Access Advisor 标签。搜索 Security Hub 和执 ⾏ 的操作。 正确： IAM Access Advisor 可以显 ⽰ 某个 ⾓ ⾊ 最近访问的服务及其时间 戳。这正是题 ⽬ 要求的功能。 C. 使 ⽤ AWS Identity and Access Management IAM ⽣ 成凭证报告。 在报告中搜索 Security Hub 活动。 错误： IAM Credential Report 主要 ⽤ 于列出账户和 IAM ⽤ 户的凭证状态 （例如密码是否启 ⽤ 、访问密钥是否活动） ， ⽽ 不 是追踪 ⾓ ⾊ 的具体操作。 D. 在 AWS Identity and Access Management Access Analyzer 中创建 ⼀ 个分析器。检查该 ⾓ ⾊ 在 Security Hub 中的操作发 现。 错误： IAM Access Analyzer ⽤ 于分析资源策略以确定资源是否可以被外 部实体访问，它不提供关于 ⾓ ⾊ 操作的时间戳或 历史记录。"
+      "D": "⼊ 站规则 100 拒绝 TCP 端 ⼝ 3306 上的流量：正确，符合要求。 ⼊ 站规则 200 允许 TCP 端 ⼝ 443 上的流量：错误，因为 ⼊ 站流量不需 要允许 443 端 ⼝ 。 出站规则 100 允许 TCP 端 ⼝ 443 上的流量：正确，符合要求。 整体错误： ⼊ 站规则 200 不需要允许 443 端 ⼝ 。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 286,
+    "type": "single",
+    "question": "A company is investigating actions that an IAM role performed. The company must find out when the role last accessed AWS Security Hub and when the role last used the DeleteInsight action in Security Hub. Which solution will provide this information?",
+    "options": {
+      "A": "Use the checks for the security category in AWS Trusted Advisor. Search for the role and examine the actions taken.",
+      "B": "Use the Access Advisor tab in AWS Identity and Access Management IAM . Search for Security Hub and the actions taken.",
+      "C": "Use AWS Identity and Access Management IAM) to generate a credential report. Search the report for Security Hub activity.",
+      "D": "Create an analyzer in AWS Identity and Access Management Access Analyzer. Examine the findings for the role ʼ s actions in Security Hub."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "使 ⽤ AWS Trusted Advisor 中的安全类别检查。搜索该 ⾓ ⾊ 并检查执 ⾏ 的操作。 错误： AWS Trusted Advisor 主要 ⽤ 于提供账户安全、成本优化、性能和 服务限制的建议，但它不提供关于 IAM ⾓ ⾊ 具体操作的详细历史记录。",
+      "B": "使 ⽤ AWS Identity and Access Management IAM 中的 Access Advisor 标签。搜索 Security Hub 和执 ⾏ 的操作。 正确： IAM Access Advisor 可以显 ⽰ 某个 ⾓ ⾊ 最近访问的服务及其时间 戳。这正是题 ⽬ 要求的功能。",
+      "C": "使 ⽤ AWS Identity and Access Management IAM ⽣ 成凭证报告。 在报告中搜索 Security Hub 活动。 错误： IAM Credential Report 主要 ⽤ 于列出账户和 IAM ⽤ 户的凭证状态 （例如密码是否启 ⽤ 、访问密钥是否活动） ， ⽽ 不 是追踪 ⾓ ⾊ 的具体操作。",
+      "D": "Access Management IAM 的功能，特 别是如何追踪 IAM ⾓ ⾊ 的访问活动。 涉及的服务包括 IAM Access Advisor 、 IAM Credential Report 、 AWS Trusted Advisor 和 IAM Access Analyzer 。 选项分析 A. 使 ⽤ AWS Trusted Advisor 中的安全类别检查。搜索该 ⾓ ⾊ 并检查执 ⾏ 的操作。 错误： AWS Trusted Advisor 主要 ⽤ 于提供账户安全、成本优化、性能和 服务限制的建议，但它不提供关于 IAM ⾓ ⾊ 具体操作的详细历史记录。 B. 使 ⽤ AWS Identity and Access Management IAM 中的 Access Advisor 标签。搜索 Security Hub 和执 ⾏ 的操作。 正确： IAM Access Advisor 可以显 ⽰ 某个 ⾓ ⾊ 最近访问的服务及其时间 戳。这正是题 ⽬ 要求的功能。 C. 使 ⽤ AWS Identity and Access Management IAM ⽣ 成凭证报告。 在报告中搜索 Security Hub 活动。 错误： IAM Credential Report 主要 ⽤ 于列出账户和 IAM ⽤ 户的凭证状态 （例如密码是否启 ⽤ 、访问密钥是否活动） ， ⽽ 不 是追踪 ⾓ ⾊ 的具体操作。 D. 在 AWS Identity and Access Management Access Analyzer 中创建 ⼀ 个分析器。检查该 ⾓ ⾊ 在 Security Hub 中的操作发 现。 错误： IAM Access Analyzer ⽤ 于分析资源策略以确定资源是否可以被外 部实体访问，它不提供关于 ⾓ ⾊ 操作的时间戳或 历史记录。"
     }
   },
   {
@@ -1457,7 +1576,26 @@
       "A": "函数 URL 的配置，以确保 ⽣ 产环境的 安全性。 涉及的知识点包括： SCP 的条件键使 ⽤ 、 AWS Lambda 函数 URL 的认证 类型配置、以及如何通过 AWS Organizations 实现集中化的安全控制。 选项分析 A. 要求开发 ⼈ 员在函数从不同域调 ⽤ 时配置所有函数 URL 以 ⽀ 持跨域资 源共享 (CORS) 。 错误： CORS 是 ⽤ 于跨域资源共享的机制，与限制未经 ⾝ 份验证的函数 URL ⽆ 关。此选项 ⽆ 法满 ⾜ 题 ⽬ 要求的 “ 防 ⽌ 未经 ⾝ 份验证的函数部署 ” 的 ⽬ 标。",
       "B": "使 ⽤ AWS WAF 委派管理员账户查看并基于使 ⽤ 函数的账户 OU 阻 ⽌ 对 ⽣ 产账户中函数 URL 的未经 ⾝ 份验证的 访问。 错误： AWS WAF 主要 ⽤ 于保护 Web 应 ⽤ 程序免受恶意流量攻击， ⽽ 不是 直接管理 Lambda 函数 URL 的认证配置。此选项 ⽆ 法直接解决题 ⽬ 要求的限制未经 ⾝ 份验证的函数 URL 的问题。",
       "C": "使 ⽤ SCPs 允许所有具有 lambda:FunctionUrlAuthType 条件键值为 AWS_IAM 的 lambda:CreateFunctionUrlConfig 和 lambda:UpdateFunctionUrlConfig 操作。 错误：此选项试图通过允许特定条件的操作来解决问题，但它没有明确禁 ⽌ 未经 ⾝ 份验证的函数 URL （即 AuthType 为 NONE 的情况） 。因此， ⽆ 法完全满 ⾜ 题 ⽬ 要求。",
-      "D": "使 ⽤ SCPs 拒绝所有具有 lambda:FunctionUrlAuthType 条件键值为 NONE 的 lambda:CreateFunctionUrlConfig 和 lambda:UpdateFunctionUrlConfig 操作。 正确：此选项通过 SCP 明确拒绝未经 ⾝ 份验证的函数 URL （ AuthType 为 NONE ） ，完全符合题 ⽬ 要求。它确保 ⽣ 产环境中 ⽆ 法部署未经 ⾝ 份验证 的函数 URL ，同时不会增加开发 ⼈ 员的额外 ⼯ 作。 94 英 ⽂ : A company is implementing new compliance requirements to meet customer needs. According to the new requirements, the company must not use any Amazon RDS DB instances or DB clusters that lack encryption of the underlying storage. The company needs a solution that will generate an email alert when an unencrypted DB instance or DB cluster is created. The solution also must terminate the unencrypted DB instance or DB cluster. Which solution will meet these requirements in the MOST operationally efficient manner? A. Create an AWS Config managed rule to detect unencrypted RDS storage. Configure an automatic remediation action to publish messages to an Amazon Simple Notification Service Amazon SNS) topic that includes an AWS Lambda function and an email delivery target as subscribers. Configure the Lambda function to delete the unencrypted resource B. Create an AWS Config managed rule to detect unencrypted RDS storage. Configure a manual remediation action to invoke an AWS Lambda function. Configure the Lambda function to publish messages to an Amazon Simple Notification Service Amazon SNS) topicand to delete the unencrypted resource. C. Create an Amazon EventBridge rule that evaluates RDS event patterns and is initiated by the creation of DB instances or DB clusters. Configure the rule to publish messages to an Amazon Simple Notification Service Amazon SNS) topic that includes an AWS Lambda function and an email delivery target as subscribers. Configure the Lambda function to delete the unencrypted resource. D. Create an Amazon EventBridge rule that evaluates RDS event patterns and is initiated by the creation of DB instances or DB clusters. Configure the rule to invoke an AWS Lambda function. Configure the Lambda function to publish messages to an Amazon Simple Notification Service Amazon SNS) topicand to delete the unencrypted resource. 中 ⽂ : ⼀ 家公司正在实施新的合规要求以满 ⾜ 客户需求。根据新的要求，公司不得使 ⽤ 任何未加密底层存储的 Amazon RDS DB 实例或 DB 集群。公司需要 ⼀ 个 解决 ⽅ 案，当创建未加密的 DB 实例或 DB 集群时，该解决 ⽅ 案能够 ⽣ 成电 ⼦ 邮件警报。解决 ⽅ 案还必须 终 ⽌ 未加密的 DB 实例或 DB 集群。 哪个解决 ⽅ 案能够以最 ⾼ 的运营效率满 ⾜ 这些要求？ A. 创建 ⼀ 个 AWS Config 托管规则以检测未加密的 RDS 存储。配置 ⼀ 个 ⾃ 动 修复操作，将消息发布到 ⼀ 个 Amazon Simple Notification Service Amazon SNS 主题，其中包括 ⼀ 个 AWS Lambda 函数和 ⼀ 个电 ⼦ 邮件发送 ⽬ 标作为订阅者。配置 Lambda 函数以删除未加密的资源。 B. 创建 ⼀ 个 AWS Config 托管规则以检测未加密的 RDS 存储。配置 ⼀ 个 ⼿ 动 修复操作以调 ⽤ ⼀ 个 AWS Lambda 函数。 配置 Lambda 函数将消息发布到 ⼀ 个 Amazon Simple Notification Service Amazon SNS 主题，并删除未加密的资源。 C. 创建 ⼀ 个 Amazon EventBridge 规则，该规则评估 RDS 事件模式并由创建 DB 实例或 DB 集群触发。配置该规则将消息发布到 ⼀ 个 Amazon Simple Notification Service Amazon SNS 主题，其中包括 ⼀ 个 AWS Lambda 函 数和 ⼀ 个电 ⼦ 邮件发送 ⽬ 标作为订阅者。配置 Lambda 函数以删除未加密的 资源 D. 创建 ⼀ 个 Amazon EventBridge 规则，该规则评估 RDS 事件模式并由创建 DB 实例或 DB 集群触发。配置该规则调 ⽤ ⼀ 个 AWS Lambda 函数。配置 Lambda 函数将消息发布到 ⼀ 个 Amazon Simple Notification Service Amazon SNS 主题，并删除未加密的资源。 答案 : A 考察的知识点 AWS Config 的托管规则及 ⾃ 动修复功能。 Amazon SNS ⽤ 于通知机制。 AWS Lambda 的 ⾃ 动化操作能 ⼒ 。 Amazon RDS 加密存储的合规性要求。 选项分析 A. Create an AWS Config managed rule to detect unencrypted RDS storage... 正确性分析： AWS Config 托管规则可以 ⾃ 动检测未加密的 RDS 存储，并 ⽀ 持 ⾃ 动修复操作。通过 SNS 发布消息，结合 Lambda 函数可以实现通知 和删除未加密资源的功能。这种 ⽅ 式是最 ⾃ 动化和 ⾼ 效的解决 ⽅ 案。 结论：正确。 B. Create an AWS Config managed rule to detect unencrypted RDS storage... 正确性分析：虽然 AWS Config 可以检测未加密的 RDS 存储，但 ⼿ 动修复 操作需要 ⼈ ⼯ ⼲ 预，降低了操作效率，不符合题 ⽬ 要求的 “ 最操作 ⾼ 效 ” 的解决 ⽅ 案。 结论：错误。 C. Create an Amazon EventBridge rule that evaluates RDS event patterns... 正确性分析： EventBridge 可以捕获 RDS 事件并触发后续操作，但它 ⽆ 法 直接检测资源的加密状态。相 ⽐ AWS Config ， EventBridge 的实现复杂度更 ⾼ ，且不如 Config 托管规则直接针 对加密状态的检测。 结论：错误。 D. Create an Amazon EventBridge rule that evaluates RDS event patterns... 正确性分析：与选项 C 类似， EventBridge ⽆ 法直接检测加密状态，且需 要额外的逻辑来实现加密状态的检查。相 ⽐ AWS Config ，操作效率较低。 结论：错误。"
+      "D": "使 ⽤ SCPs 拒绝所有具有 lambda:FunctionUrlAuthType 条件键值为 NONE 的 lambda:CreateFunctionUrlConfig 和 lambda:UpdateFunctionUrlConfig 操作。 正确：此选项通过 SCP 明确拒绝未经 ⾝ 份验证的函数 URL （ AuthType 为 NONE ） ，完全符合题 ⽬ 要求。它确保 ⽣ 产环境中 ⽆ 法部署未经 ⾝ 份验证 的函数 URL ，同时不会增加开发 ⼈ 员的额外 ⼯ 作。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 294,
+    "type": "single",
+    "question": "A company is implementing new compliance requirements to meet customer needs. According to the new requirements, the company must not use any Amazon RDS DB instances or DB clusters that lack encryption of the underlying storage. The company needs a solution that will generate an email alert when an unencrypted DB instance or DB cluster is created. The solution also must terminate the unencrypted DB instance or DB cluster. Which solution will meet these requirements in the MOST operationally efficient manner?",
+    "options": {
+      "A": "Create an AWS Config managed rule to detect unencrypted RDS storage. Configure an automatic remediation action to publish messages to an Amazon Simple Notification Service Amazon SNS) topic that includes an AWS Lambda function and an email delivery target as subscribers. Configure the Lambda function to delete the unencrypted resource",
+      "B": "Create an AWS Config managed rule to detect unencrypted RDS storage. Configure a manual remediation action to invoke an AWS Lambda function. Configure the Lambda function to publish messages to an Amazon Simple Notification Service Amazon SNS) topicand to delete the unencrypted resource.",
+      "C": "Create an Amazon EventBridge rule that evaluates RDS event patterns and is initiated by the creation of DB instances or DB clusters. Configure the rule to publish messages to an Amazon Simple Notification Service Amazon SNS) topic that includes an AWS Lambda function and an email delivery target as subscribers. Configure the Lambda function to delete the unencrypted resource.",
+      "D": "Create an Amazon EventBridge rule that evaluates RDS event patterns and is initiated by the creation of DB instances or DB clusters. Configure the rule to invoke an AWS Lambda function. Configure the Lambda function to publish messages to an Amazon Simple Notification Service Amazon SNS) topicand to delete the unencrypted resource."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "的 ⾃ 动化操作能 ⼒ 。 Amazon RDS 加密存储的合规性要求。 选项分析 A. Create an AWS Config managed rule to detect unencrypted RDS storage... 正确性分析： AWS Config 托管规则可以 ⾃ 动检测未加密的 RDS 存储，并 ⽀ 持 ⾃ 动修复操作。通过 SNS 发布消息，结合 Lambda 函数可以实现通知 和删除未加密资源的功能。这种 ⽅ 式是最 ⾃ 动化和 ⾼ 效的解决 ⽅ 案。 结论：正确。",
+      "B": "Create an AWS Config managed rule to detect unencrypted RDS storage... 正确性分析：虽然 AWS Config 可以检测未加密的 RDS 存储，但 ⼿ 动修复 操作需要 ⼈ ⼯ ⼲ 预，降低了操作效率，不符合题 ⽬ 要求的 “ 最操作 ⾼ 效 ” 的解决 ⽅ 案。 结论：错误。",
+      "C": "Create an Amazon EventBridge rule that evaluates RDS event patterns... 正确性分析： EventBridge 可以捕获 RDS 事件并触发后续操作，但它 ⽆ 法 直接检测资源的加密状态。相 ⽐ AWS Config ， EventBridge 的实现复杂度更 ⾼ ，且不如 Config 托管规则直接针 对加密状态的检测。 结论：错误。",
+      "D": "rule to detect unencrypted RDS storage... 正确性分析： AWS Config 托管规则可以 ⾃ 动检测未加密的 RDS 存储，并 ⽀ 持 ⾃ 动修复操作。通过 SNS 发布消息，结合 Lambda 函数可以实现通知 和删除未加密资源的功能。这种 ⽅ 式是最 ⾃ 动化和 ⾼ 效的解决 ⽅ 案。 结论：正确。 B. Create an AWS Config managed rule to detect unencrypted RDS storage... 正确性分析：虽然 AWS Config 可以检测未加密的 RDS 存储，但 ⼿ 动修复 操作需要 ⼈ ⼯ ⼲ 预，降低了操作效率，不符合题 ⽬ 要求的 “ 最操作 ⾼ 效 ” 的解决 ⽅ 案。 结论：错误。 C. Create an Amazon EventBridge rule that evaluates RDS event patterns... 正确性分析： EventBridge 可以捕获 RDS 事件并触发后续操作，但它 ⽆ 法 直接检测资源的加密状态。相 ⽐ AWS Config ， EventBridge 的实现复杂度更 ⾼ ，且不如 Config 托管规则直接针 对加密状态的检测。 结论：错误。 D. Create an Amazon EventBridge rule that evaluates RDS event patterns... 正确性分析：与选项 C 类似， EventBridge ⽆ 法直接检测加密状态，且需 要额外的逻辑来实现加密状态的检查。相 ⽐ AWS Config ，操作效率较低。 结论：错误。"
     }
   },
   {
@@ -1657,6 +1795,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 305,
+    "type": "single",
+    "question": "A company has an application that needs to read objects from an Amazon S3 bucket. The company configures an IAM policy and attaches the policy to an IAM role that the application uses. When the application tries to read objects from the S3 bucket, the application receives AccessDenied errors. A security engineer must resolve this problem without decreasing the security of the S3 bucket or the application. Which solution will meet these requirements?",
+    "options": {
+      "A": "Attach a resource policy to the S3 bucket to grant read access to the role.",
+      "B": "Launch a new deployment of the application in a different AWS Region. Attach the role to the application.",
+      "C": "Review the IAM policy by using AWS Identity and Access Management Access Analyzer to ensure that the policy grants the right permissions. Validate that the application is assuming the role correctly.",
+      "D": "Ensure that the S3 Block Public Access feature is disabled on the S3 bucket. Review AWS CloudTrail logs to validate that the application is assuming the role correctly."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Attach a resource policy to the S3 bucket to grant read access to the role. 分析 : 虽然可以通过资源策略授予访问权限，但题 ⽬ 要求不降低 S3 bucket 的安 全性。直接修改资源策略可能会导致过 度权限暴露，违背最 ⼩ 权限原则。 结论 : 错误。",
+      "B": "Launch a new deployment of the application in a different AWS Region. Attach the role to the application. 分析 : 问题与 Region ⽆ 关，重新部署应 ⽤ 程序不会解决权限问题。此选项与题 ⽬ 要求 ⽆ 关。 结论 : 错误。",
+      "C": "Review the IAM policy by using AWS Identity and Access Management Access Analyzer to ensure that the policy grants the right permissions. Validate that the application is assuming the role correctly. 分析 : 使 ⽤ Access Analyzer 可以检查 IAM 策略是否正确配置，同时验证应 ⽤ 程 序是否正确地假设了 ⾓ ⾊ 。这是解决权限问题的正确 ⽅ 法。 结论 : 正确。",
+      "D": "access to the role. 分析 : 虽然可以通过资源策略授予访问权限，但题 ⽬ 要求不降低 S3 bucket 的安 全性。直接修改资源策略可能会导致过 度权限暴露，违背最 ⼩ 权限原则。 结论 : 错误。 B. Launch a new deployment of the application in a different AWS Region. Attach the role to the application. 分析 : 问题与 Region ⽆ 关，重新部署应 ⽤ 程序不会解决权限问题。此选项与题 ⽬ 要求 ⽆ 关。 结论 : 错误。 C. Review the IAM policy by using AWS Identity and Access Management Access Analyzer to ensure that the policy grants the right permissions. Validate that the application is assuming the role correctly. 分析 : 使 ⽤ Access Analyzer 可以检查 IAM 策略是否正确配置，同时验证应 ⽤ 程 序是否正确地假设了 ⾓ ⾊ 。这是解决权限问题的正确 ⽅ 法。 结论 : 正确。 D. Ensure that the S3 Block Public Access feature is disabled on the S3 bucket. Review AWS CloudTrail logs to validate that the application is assuming the role correctly. 分析 :S3 Block Public Access 功能与 IAM ⾓ ⾊ 权限问题 ⽆ 关。虽然 CloudTrail ⽇ 志可以帮助验证 ⾓ ⾊ 假设，但禁 ⽤ Block Public Access 可能会降低 S3 bucket 的安全性。 结论 : 错误。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 306,
     "type": "single",
     "question": "A security engineer is designing a solution that will provide end-to-end encryption between clients and Docker containers running in Amazon Elastic Container Service Amazon ECS . This solution will also handle volatile traffic patterns. Which solution would have the MOST scalability and LOWEST latency?",
@@ -1670,7 +1827,30 @@
     "explanations": {
       "A": "Configure a Network Load Balancer to terminate the TLS traffic and then re-encrypt the traffic to the containers. 错误 : 虽然 Network Load Balancer NL",
       "B": "可以处理 ⾼ 吞吐量和低延迟，但终 ⽌ TLS 流量会增加额外的加解密开销，从 ⽽ 增加延迟。 此外，重新加密流量到容器会进 ⼀ 步增加复杂性和延迟。 B. Configure an Application Load Balancer to terminate the TLS traffi",
-      "D": "Balancer to terminate the TLS traffic and then re-encrypt the traffic to the containers. 错误 : 虽然 Network Load Balancer NLB 可以处理 ⾼ 吞吐量和低延迟，但终 ⽌ TLS 流量会增加额外的加解密开销，从 ⽽ 增加延迟。 此外，重新加密流量到容器会进 ⼀ 步增加复杂性和延迟。 B. Configure an Application Load Balancer to terminate the TLS traffic and then re-encrypt the traffic to the containers. 错误 :Application Load Balancer ALB 主要 ⽤ 于 HTTP/HTTPS 流量，适合应 ⽤ 层的负载均衡。 终 ⽌ TLS 流量并重新加密会增加延迟，且 ALB 的性能在处理 ⾼ 吞吐量和低延迟 场景时不如 NLB 。 C. Configure a Network Load Balancer with a TCP listener to pass through TLS traffic to the containers. 正确 :NLB 具有 ⾼ 吞吐量和低延迟的特点，使 ⽤ TCP 监听器可以直接将 TLS 流 量传递到容器， ⽽ ⽆ 需终 ⽌ TLS 。 这种 ⽅ 式避免了额外的加解密开销，确保了端到端加密，同时提供了最佳的性 能和可扩展性。 D. Configure Amazon Route 53 to use multivalue answer routing to send traffic to the containers. 错误 :Amazon Route 53 的多值答案路由主要 ⽤ 于 DNS 级别的流量分发， ⽆ 法 处理 TLS 终端或提供负载均衡功能。 它不适合处理复杂的流量模式或提供低延迟的解决 ⽅ 案。 107 英 ⽂ : A company has a large fleet of Amazon Linux 2 Amazon EC2 instances that run an application. The application processes sensitive data and has the following compliance requirements: No remote access management ports to the EC2 instances can be exposed internally or externally. • All remote session activity must be recorded in an audit log. • All remote access to the EC2 instances must be authenticated and authorized by AWS IAM Identity Center. The company ʼ s DevOps team occasionally needs to connect to one of the EC2 instances to troubleshoot issues. Which solution will provide remote access to the EC2 instances while meeting the compliance requirements? A. Grant access to the EC2 serial console at the account level. Create an IAM policy that allows an IAM role of the DevOps team to access the EC2 serial console. B. Enable EC2 instance Connect on the AMI of the EC2 instances. Configure the appropriate security group rules. Grant EC2 console access to the DevOps team for access to EC2 instance Connect. C. Assign an EC2 instance role that allows access to AWS Systems Manager. Create an IAM policy that grants access to Systems Manager Session Manager. Assign the policy to an IAM role of the DevOps team. D. Use AWS Systems Manager Automation runbooks to open remote access ports to the EC2 instances. Attach a role to the EC2 instances to allow the runbooks to run. 中 ⽂ : ⼀ 家公司拥有 ⼤ 量运 ⾏ 应 ⽤ 程序的 Amazon Linux 2 Amazon EC2 实例。该 应 ⽤ 程序处理敏感数据，并具有以下合规性要求 : 不能对 EC2 实例的远程访问管理端 ⼝ 进 ⾏ 内部或外部暴露。 • 所有远程会话活动必须记录在审计 ⽇ 志中。 • 所有对 EC2 实例的远程访问必须通过 AWS IAM Identity Center 进 ⾏ ⾝ 份验证和授权。 该公司的 DevOps 团队偶尔需要连接到其中 ⼀ 个 EC2 实例以排除故障。 哪种解决 ⽅ 案能够在 满 ⾜ 合规性要求的同时提供对 EC2 实例的远程访问 ? A. 在账户级别授予对 EC2 串 ⾏ 控制台的访问权限。创建 ⼀ 个 IAM 策略，允 许 DevOps 团队的 IAM ⾓ ⾊ 访问 EC2 串 ⾏ 控制台。 B. 在 EC2 实例的 AMI 上启 ⽤ EC2 instance Connect 。配置适当的安全组规 则。授予 DevOps 团队 EC2 控制台访问权限以使 ⽤ EC2 instance Connect 。 C. 分配允许访问 AWS Systems Manager 的 EC2 实例 ⾓ ⾊ 。创建 ⼀ 个 IAM 策略，授予对 Systems Manager Session Manager 的访问权限。将该策略 分配给 DevOps 团队的 IAM ⾓ ⾊ 。 D. 使 ⽤ AWS Systems Manager Automation runbooks 打开对 EC2 实例的 远程访问端 ⼝ 。为 EC2 实例附加 ⼀ 个 ⾓ ⾊ 以允许运 ⾏ runbooks 。 答案 : C EC2 实例的安全访问 ⽅ 法。 AWS Systems Manager Session Manager 的功能与使 ⽤ 。 IAM 权限管理与授权。 如何满 ⾜ 合规性要求 ( ⽆ 远程管理端 ⼝ 暴露、记录所有远程会话活动、通过 IAM 进 ⾏ 认证和授权 ) 。 2. 选项分析 A. Grant access to the EC2 serial console at the account level... 分析 :EC2 串 ⾏ 控制台可以提供对实例的访问，但它不满 ⾜ “ 记录所有远程会话 活动 ” 的要求。此外，串 ⾏ 控制台的使 ⽤ 需要额外的配置，并不直接 ⽀ 持 IAM Identity Center 的认证和授权。 结论 : 错误。 B. Enable EC2 instance Connect on the AMI... 分析 :EC2 Instance Connect 允许通过 SSH 访问实例，但需要开放端 ⼝ ( 如 22 端 ⼝ ) ，这违反了 “ 不暴露远程管理端 ⼝ ” 的 合规要求。此外，它不 ⽀ 持记录所有远程会话活动。 结论 : 错误。 C. Assign an EC2 instance role that allows access to AWS Systems Manager... 分析 :AWS Systems Manager Session Manager 提供 ⽆ 代理、 ⽆ 端 ⼝ 的远程 访问，并且会记录所有会话活动到 CloudTrail 或 S3 ，完全符合合规要求。此 外，它可以通过 IAM Identity Center 进 ⾏ 认证和授权。结论 : 正确。 D. Use AWS Systems Manager Automation runbooks... 分析 : 使 ⽤ Automation runbooks 打开远程访问端 ⼝ 会违反 “ 不暴露远程管理端 ⼝ ” 的合规要求。此外， runbooks 的主要 ⽤ 途是 ⾃ 动化任务， ⽽ 不是提供交互式远程访问。 结论 : 错误。"
+      "D": "Balancer to terminate the TLS traffic and then re-encrypt the traffic to the containers. 错误 : 虽然 Network Load Balancer NLB 可以处理 ⾼ 吞吐量和低延迟，但终 ⽌ TLS 流量会增加额外的加解密开销，从 ⽽ 增加延迟。 此外，重新加密流量到容器会进 ⼀ 步增加复杂性和延迟。 B. Configure an Application Load Balancer to terminate the TLS traffic and then re-encrypt the traffic to the containers. 错误 :Application Load Balancer ALB 主要 ⽤ 于 HTTP/HTTPS 流量，适合应 ⽤ 层的负载均衡。 终 ⽌ TLS 流量并重新加密会增加延迟，且 ALB 的性能在处理 ⾼ 吞吐量和低延迟 场景时不如 NLB 。 C. Configure a Network Load Balancer with a TCP listener to pass through TLS traffic to the containers. 正确 :NLB 具有 ⾼ 吞吐量和低延迟的特点，使 ⽤ TCP 监听器可以直接将 TLS 流 量传递到容器， ⽽ ⽆ 需终 ⽌ TLS 。 这种 ⽅ 式避免了额外的加解密开销，确保了端到端加密，同时提供了最佳的性 能和可扩展性。 D. Configure Amazon Route 53 to use multivalue answer routing to send traffic to the containers. 错误 :Amazon Route 53 的多值答案路由主要 ⽤ 于 DNS 级别的流量分发， ⽆ 法 处理 TLS 终端或提供负载均衡功能。 它不适合处理复杂的流量模式或提供低延迟的解决 ⽅ 案。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 307,
+    "type": "multiple",
+    "question": "A company has a large fleet of Amazon Linux 2 Amazon EC2 instances that run an application. The application processes sensitive data and has the following compliance requirements: No remote access management ports to the EC2 instances can be exposed internally or externally. • All remote session activity must be recorded in an audit log. • All remote access to the EC2 instances must be authenticated and authorized by AWS IAM Identity Center. The company ʼ s DevOps team occasionally needs to connect to one of the EC2 instances to troubleshoot issues. Which solution will provide remote access to the EC2 instances while meeting the compliance requirements?",
+    "options": {
+      "A": "Grant access to the EC2 serial console at the account level. Create an IAM policy that allows an IAM role of the DevOps team to access the EC2 serial console.",
+      "B": "Enable EC2 instance Connect on the AMI of the EC2 instances. Configure the appropriate security group rules. Grant EC2 console access to the DevOps team for access to EC2 instance Connect.",
+      "C": "Assign an EC2 instance role that allows access to AWS Systems Manager. Create an IAM policy that grants access to Systems Manager Session Manager. Assign the policy to an IAM role of the DevOps team.",
+      "D": "Use AWS Systems Manager Automation runbooks to open remote access ports to the EC2 instances. Attach a role to the EC2 instances to allow the runbooks to run."
+    },
+    "answer": [
+      "C",
+      "E",
+      "C"
+    ],
+    "explanations": {
+      "A": "Grant access to the EC2 serial console at the account level... 分析 :EC2 串 ⾏ 控制台可以提供对实例的访问，但它不满 ⾜ “ 记录所有远程会话 活动 ” 的要求。此外，串 ⾏ 控制台的使 ⽤ 需要额外的配置，并不直接 ⽀ 持 IAM Identity Center 的认证和授权。 结论 : 错误。",
+      "B": "Enable EC2 instance Connect on the AMI... 分析 :EC2 Instance Connect 允许通过 SSH 访问实例，但需要开放端 ⼝ ( 如 22 端 ⼝ ) ，这违反了 “ 不暴露远程管理端 ⼝ ” 的 合规要求。此外，它不 ⽀ 持记录所有远程会话活动。 结论 : 错误。",
+      "C": "Assign an EC2 instance role that allows access to AWS Systems Manager... 分析 :AWS Systems Manager Session Manager 提供 ⽆ 代理、 ⽆ 端 ⼝ 的远程 访问，并且会记录所有会话活动到 CloudTrail 或 S3 ，完全符合合规要求。此 外，它可以通过 IAM Identity Center 进 ⾏ 认证和授权。结论 : 正确。",
+      "D": "Use AWS Systems Manager Automation runbooks... 分析 : 使 ⽤ Automation runbooks 打开远程访问端 ⼝ 会违反 “ 不暴露远程管理端 ⼝ ” 的合规要求。此外， runbooks 的主要 ⽤ 途是 ⾃ 动化任务， ⽽ 不是提供交互式远程访问。 结论 : 错误。"
     }
   }
 ]
