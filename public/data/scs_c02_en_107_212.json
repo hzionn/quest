@@ -20,6 +20,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 108,
+    "type": "single",
+    "question": "A security engineer needs to create an Amazon S3 bucket policy to grant read access with least privilege to IAM user accounts named User1, User2, and User3. These IAM user accounts are members of the AuthorizedPeople IAM group. The security engineer has drafted the following S3 bucket policy:\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Id\": \"AuthorizedPeoplePolicy\",\n  \"Statement\": [\n    {\n      \"Sid\": \"Actions-Authorized-People\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"s3:GetObject\"\n      ],\n      \"Resource\": \"arn:aws:s3:::authorized-people-bucket/*\"\n    }\n  ]\n}\n\nWhen the security engineer tries to add the policy to the S3 bucket, the following error message appears: \"Missing required field Principal.\"\n\nThe security engineer is adding a Principal element to the policy. The addition must provide read access to only User1, User2, and User3. Which solution meets these requirements?",
+    "options": {
+      "A": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:user/User1\", \"arn:aws:iam::1234567890:user/User2\", \"arn:aws:iam::1234567890:user/User3\" ] }",
+      "B": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:root\" ] }",
+      "C": "\"Principal\": { \"AWS\": [ \"*\" ] }",
+      "D": "\"Principal\": { \"AWS\": \"arn:aws:iam::1234567890:group/AuthorizedPeople\" }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option correctly adds the Principal field with the ARNs of the three specific users. This ensures only User1, User2, and User3 can access the S3 resources, following the principle of least privilege.",
+      "B": "Incorrect. This option sets the Principal to the root account, which grants access to all users in the entire AWS account, violating the principle of least privilege.",
+      "C": "Incorrect. This option sets the Principal to \"*\", meaning it allows everyone access, completely violating the principle of least privilege.",
+      "D": "Incorrect. Although the AuthorizedPeople group contains these three users, S3 bucket policies do not support IAM group ARNs as Principal. IAM groups cannot be used as a Principal."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 109,
     "type": "single",
     "question": "A security engineer recently rotated all IAM access keys in an AWS account. The security engineer then configured AWS Config and enabled the following AWS Config managed rules: mfa-enabled-for-iam-console-access, iam-user- mfa-enabled, access-keys- rotated, and iam-user-unused-credentials-check. The security engineer notices that all resources are displaying as noncompliant after the IAM GenerateCredentialReport API operation is invoked. What could be the reason for the noncompliant status?",
@@ -121,6 +140,25 @@
       "B": "确保附加到 Lambda 函数的安全组允许到 EC2 实例的出站连接。确保附加到 EC2 实例的安全组允许来 ⾃ 附加到 Lambda 函数的安全组的 ⼊ 站连接。 正确原因 : 根据错误 ⽇ 志 “setSecret: Unable to log into database” ，问题可能是 Lambda 函数 ⽆ 法连接到数据库。确保安全组配置正确，允许 Lambda 函数与 EC2 实例 之间的通信，可以解决此问题。",
       "C": "使 ⽤ AWS CLI 中的 Secrets Manager list-secrets 命令列出 secret 。识别数据库 凭证。使 ⽤ AWS CLI 中的 Secrets Manager rotate-secret 命令强制 ⽴ 即轮换该 secret 。 错误原因 : 强制轮换密钥并不能解决 ⽹ 络连接问题。问题的根本原因是 Lambda 函数 ⽆ 法登录到数据库， ⽽ 不是 Secrets Manager 的轮换机制。",
       "D": "向 VPC 添加 ⼀ 个 internet gateway 。在公共 ⼦ ⽹ 中创建 ⼀ 个 NAT gateway 。更新 VPC 路由表，以便 Lambda 函数的流量和 EC2 实例的流量可以访问 Secrets Manager 的公共 endpoint 。 错误原因 : 题 ⽬ 中明确提到 VPC 已经配置了 Secrets Manager 的 VPC endpoint ，因此 不需要通过公共 endpoint 访问 Secrets Manager 。添加 NAT ⽹ 关和 Internet Gateway 是多余的。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 114,
+    "type": "single",
+    "question": "A company has deployed a set of standard IAM roles in its AWS accounts. The IAM roles are based on the job functions within the company. To balance operational efficiency and security, a security engineer has implemented AWS Organizations SCPs to restrict access to critical security services in all company accounts. All accounts and OUs in AWS Organizations have the default FullAWSAccess SCP attached. The security engineer needs to ensure that no one can disable Amazon GuardDuty and AWS Security Hub. The security engineer must also ensure that the other permissions granted by IAM policies in the accounts are not overridden. Which SCP should the security engineer attach to the root of the organization to meet these requirements?",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Deny\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This SCP explicitly denies the disable operations for GuardDuty and Security Hub (DeleteDetector, UpdateDetector, DisableSecurityHub) without affecting any other permissions. Since the default FullAWSAccess SCP already grants all permissions, this additional Deny SCP only blocks specific dangerous actions without overriding other IAM policy permissions.",
+      "B": "Incorrect. This option first denies all actions (Deny *), then attempts to restore permissions using Allow + NotAction. However, in SCPs, explicit Deny takes precedence over Allow, so the first statement denies all actions and the second Allow statement cannot override the Deny, resulting in all actions being denied.",
+      "C": "Incorrect. This option first allows all actions, then uses Deny + NotAction to deny all actions except the GuardDuty/Security Hub operations. NotAction means 'actions not in the list', so this would deny everything except these three actions — the exact opposite of the intended effect.",
+      "D": "Incorrect. This option uses Allow + NotAction, meaning it allows all actions except the GuardDuty/Security Hub operations. If this SCP replaces FullAWSAccess, these three actions would not be allowed by any SCP and would be implicitly denied. However, this also means only this SCP grants permissions, which could complicate permission management."
     }
   },
   {
@@ -732,6 +770,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 145,
+    "type": "single",
+    "question": "A DevOps team uses AWS Identity and Access Management (IAM) to manage user permissions. The team creates an Amazon EC2 instance profile role that uses the AWS managed ReadOnlyAccess policy. When an application running on Amazon EC2 tries to read files from an encrypted Amazon S3 bucket, the application receives an AccessDenied error.\n\nThe team administrator has verified that the S3 bucket policy allows access to the S3 bucket for everyone in the account. The files do not have object ACLs attached.\n\nWhat should the administrator do to resolve the IAM access issue?",
+    "options": {
+      "A": "Edit the ReadOnlyAccess policy to add kms:Decrypt actions.",
+      "B": "Add the EC2 IAM role as the authorized Principal to the S3 bucket policy.",
+      "C": "Attach an inline policy with kms:Decrypt permissions to the IAM role.",
+      "D": "Attach an inline policy with S3:* permissions to the IAM role."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. AWS managed policies (such as ReadOnlyAccess) cannot be directly edited. Managed policies are managed by AWS and cannot be modified by users.",
+      "B": "Incorrect. The question explicitly states that the S3 bucket policy allows access to the S3 bucket for everyone in the account, so the issue is not with the bucket policy.",
+      "C": "Correct. Encrypted S3 files require KMS decrypt permissions. The current IAM role uses the ReadOnlyAccess policy, which does not include kms:Decrypt permissions. Therefore, an inline policy needs to be attached to the IAM role to grant kms:Decrypt permissions.",
+      "D": "Incorrect. While S3:* permissions could resolve S3 access issues, this is over-permissioning and violates the principle of least privilege. The actual issue is the lack of KMS decrypt permissions, not insufficient S3 permissions."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 146,
     "type": "single",
     "question": "A company uses AWS Organizations and has Amazon Elastic Kubernetes Service Amazon EKS) clusters in many AWS accounts. A security engineer integrates Amazon EKS with AWS CloudTrail. The CloudTrail trails are stored in an Amazon S3 bucket in each account to monitor API calls. The security engineer observes that CloudTrail logs are not displaying Kubernetes pod creation events. What should the security engineer do to view the Kubernetes events from Amazon CloudWatch?",
@@ -1211,6 +1268,44 @@
       "B": "错误原因：虽然可以通过 STDOUT 将 ⽇ 志传递到 CloudWatch Logs ，但这需要修 改应 ⽤ 程序代码，且 ⽆ 法直接获取内存转储 ⽂ 件， ⽆ 法满 ⾜ 题 ⽬ 要求。",
       "C": "功能的使 ⽤ 。 如何以最 ⼩ 的操作成本实现容器的检查和调试。 选项分析 A. 错误原因：将应 ⽤ 程序迁移到 EC2 启动类型需要额外的操作成本，包括重新配置集 群、管理 EC2 实例以及设置远程访问。这与题 ⽬ 要求的 “ 最 ⼩ 操作成本 ” 不符。 B. 错误原因：虽然可以通过 STDOUT 将 ⽇ 志传递到 CloudWatch Logs ，但这需要修 改应 ⽤ 程序代码，且 ⽆ 法直接获取内存转储 ⽂ 件， ⽆ 法满 ⾜ 题 ⽬ 要求。 C. 错误原因： CloudWatch Container Insights 主要 ⽤ 于监控容器性能指标， ⽽ 不是 直接 ⽤ 于 ⽇ 志和内存转储的检查。此 外，使 ⽤ OpenTelemetry 需要额外的配置，增加了操作成本。",
       "D": "正确原因：使 ⽤ ECS Exec 功能可以直接登录到运 ⾏ 中的容器进 ⾏ 检查， ⽆ 需修改 应 ⽤ 程序代码或迁移到其他启动类 型。只需更新任务 ⾓ ⾊ 权限并启 ⽤ ECS Exec 功能，操作成本最低。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 170,
+    "type": "single",
+    "question": "A company uses AWS Organizations and has many AWS accounts. The company has a new requirement to use server-side encryption with customer-provided keys (SSE-C) on all new objects uploaded to Amazon S3 buckets. A security engineer is creating an SCP that includes a Deny effect for the s3:PutObject action. Which condition must the security engineer add to the SCP to enforce the new SSE-C requirement?",
+    "options": {
+      "A": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"true\" } }",
+      "B": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption\": \"aws:kms\" } }",
+      "C": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"AES256\" } }",
+      "D": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption\": \"true\" } }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This condition uses the Null condition operator to check if the s3:x-amz-server-side-encryption-customer-algorithm header is null (not provided). When the header is null (\"true\"), it means the request is not using SSE-C, so the request is denied. This ensures all PutObject requests must include the SSE-C encryption header.",
+      "B": "Incorrect. s3:x-amz-server-side-encryption is the condition key for SSE-S3 or SSE-KMS, not SSE-C. Checking if this value is not equal to \"aws:kms\" is unrelated to enforcing SSE-C.",
+      "C": "Incorrect. While s3:x-amz-server-side-encryption-customer-algorithm is the correct SSE-C condition key, using StringNotEquals to check for \"AES256\" would deny requests using non-AES256 algorithms but would not deny requests that completely omit the SSE-C header. Requests without the header would not trigger the StringNotEquals condition.",
+      "D": "Incorrect. s3:x-amz-server-side-encryption is the condition key for SSE-S3 or SSE-KMS, not SSE-C. Even though the correct Null condition operator is used, the wrong condition key is being checked, so it cannot enforce SSE-C."
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 171,
+    "type": "single",
+    "question": "A company wants to deny a specific federated user named Bob access to an Amazon S3 bucket named DOC-EXAMPLE-BUCKET. The company wants to meet this requirement by using a bucket policy. The company also needs to ensure that the bucket policy affects only Bob's S3 permissions. Any other permissions that Bob has must remain unchanged. Which policy should the company use to meet these requirements?",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Allow\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This policy uses the Allow effect, which grants Bob all S3 permissions on the bucket rather than denying access. This is the opposite of what the question requires.",
+      "B": "Correct. This policy correctly uses the Deny effect, and the Principal uses arn:aws:sts::account-id:federated-user/Bob, which is the correct ARN format for a federated user. This ensures only Bob's access to DOC-EXAMPLE-BUCKET is denied for all S3 operations, without affecting other users or Bob's other permissions.",
+      "C": "Incorrect. This policy uses arn:aws:iam::account-id:user/Bob, which is the ARN format for an IAM user, not a federated user. The question explicitly states Bob is a federated user, so this ARN would not match Bob's identity.",
+      "D": "Incorrect. This policy uses arn:aws:sts::account-id:assumed-role/Bob/role-session-name, which is the ARN format for an assumed role, not a federated user. The question requires targeting federated user Bob, so this ARN does not match."
     }
   },
   {
@@ -1995,6 +2090,25 @@
       "B": "和 EC2 实例。 错误原因： ⽹ 络 ACL （ NACL ）是 ⽆ 状态的， ⽆ 法区分流量的 ⽅ 向，且管 理 1,500 个 CIDR 块范围的规则会 ⾮ 常复杂且难以 维护。此外， NACL ⽆ 法直接关联到 NLB 。 B. 创建 ⼀ 个 AWS 安全组以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将安全组关联到 NLB 。为 EC2 实 例创建第 ⼆ 个安全组，允许来 ⾃ NLB 安全组的 TCP 端 ⼝ 443 访问。 错误原因：虽然安全组是有状态的，但管理 1,500 个 CIDR 块范围的规则仍 然 ⾮ 常复杂且难以维护。此外，安全组 ⽆ 法直 接限制跨账户的访问。",
       "C": "在 ⺟ 公司账户中创建 ⼀ 个附加到 NLB 的 AWS PrivateLink 端点服务。为 实例创建 ⼀ 个 AWS 安全组，允许来 ⾃ AWS PrivateLink 端点的 TCP 端 ⼝ 443 访问。在 1,500 个 ⼦ 公司 AWS 账户中使 ⽤ AWS PrivateLink 接 ⼝ 端点 连接到数据处理应 ⽤ 程序。 正确原因：使 ⽤ AWS PrivateLink 可以实现跨账户的安全访问，同时避免 暴露服务到公共互联 ⽹ 。通过 PrivateLink ， ⼦ 公 司账户可以通过接 ⼝ 端点安全地连接到 ⺟ 公司账户的服务。安全组可以进 ⼀ 步限制来 ⾃ PrivateLink 端点的访问。",
       "D": "创建 ⼀ 个 AWS 安全组以允许来 ⾃ 1,500 个 ⼦ 公司 CIDR 块范围的 TCP 端 ⼝ 443 访问。将安全组关联到 EC2 实例。 错误原因：虽然安全组可以限制访问，但它 ⽆ 法解决跨账户的访问问题。 此外，管理 1,500 个 CIDR 块范围的规则仍然 ⾮ 常复杂且难以维护。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 211,
+    "type": "single",
+    "question": "A company runs workloads on Amazon EC2 instances. The company needs to continuously scan the EC2 instances for software vulnerabilities and unintended network exposure. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use Amazon Inspector. Set the scan mode to hybrid scanning.",
+      "B": "Use Amazon GuardDuty. Enable the Malware Protection feature.",
+      "C": "Use Amazon Inspector. Enable the Malware Protection feature.",
+      "D": "Use Amazon GuardDuty. Enable the Runtime Monitoring feature."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Amazon Inspector is specifically designed for continuously scanning EC2 instances to detect software vulnerabilities and network exposure. Hybrid scanning mode combines agent-based and agentless scanning approaches to comprehensively cover vulnerability detection needs.",
+      "B": "Incorrect. Amazon GuardDuty is primarily used for threat detection, such as malicious activity and anomalous behavior, not specifically for vulnerability scanning. Malware Protection is a GuardDuty feature focused on detecting malware, not scanning for software vulnerabilities or network exposure.",
+      "C": "Incorrect. While Amazon Inspector is the correct service choice, Malware Protection is not a feature of Amazon Inspector. Inspector's primary functions are vulnerability scanning and network exposure detection.",
+      "D": "Incorrect. Amazon GuardDuty's primary function is threat detection, not vulnerability scanning or network exposure detection. Runtime Monitoring is used to monitor threats in running container and EC2 workloads, not for software vulnerability scanning."
     }
   },
   {

@@ -20,6 +20,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 108,
+    "type": "single",
+    "question": "一名安全工程师需要创建一个 Amazon S3 bucket 策略，以授予名为 User1、User2 和 User3 的 IAM 用户账户最小权限的读取访问权限。这些 IAM 用户账户是 AuthorizedPeople IAM 组的成员。安全工程师起草了以下 S3 bucket 策略：\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Id\": \"AuthorizedPeoplePolicy\",\n  \"Statement\": [\n    {\n      \"Sid\": \"Actions-Authorized-People\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"s3:GetObject\"\n      ],\n      \"Resource\": \"arn:aws:s3:::authorized-people-bucket/*\"\n    }\n  ]\n}\n\n当安全工程师尝试将策略添加到 S3 bucket 时，出现以下错误消息：\"缺少必需字段 Principal。\"\n\n安全工程师正在向策略中添加一个 Principal 元素。添加的内容必须仅为 User1、User2 和 User3 提供读取访问权限。哪种解决方案满足这些要求？",
+    "options": {
+      "A": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:user/User1\", \"arn:aws:iam::1234567890:user/User2\", \"arn:aws:iam::1234567890:user/User3\" ] }",
+      "B": "\"Principal\": { \"AWS\": [ \"arn:aws:iam::1234567890:root\" ] }",
+      "C": "\"Principal\": { \"AWS\": [ \"*\" ] }",
+      "D": "\"Principal\": { \"AWS\": \"arn:aws:iam::1234567890:group/AuthorizedPeople\" }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。此选项正确地添加了 Principal 字段，并将其设置为三个用户的 ARN。这样可以确保只有 User1、User2 和 User3 能够访问 S3 资源，符合最小权限原则。",
+      "B": "错误。此选项将 Principal 设置为 root 账户，这会授予整个 AWS 账户的所有用户访问权限，违反了最小权限原则。",
+      "C": "错误。此选项将 Principal 设置为 \"*\"，表示允许所有人访问，完全违反了最小权限原则。",
+      "D": "错误。虽然 AuthorizedPeople 组包含这三个用户，但 S3 bucket 策略的 Principal 不支持 IAM 组的 ARN。IAM 组不能作为 Principal 使用。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 109,
     "type": "single",
     "question": "一名安全工程师最近轮换了 AWS 账户中的所有 IAM 访问密钥。随后,该安全工程师配置了 AWS Config ,并启用了以下 AWS Config 托管规则 :mfa-enabled-for-iam- console-access 、 iam-user-mfa-enabled 、 access-keys-rotated 和 iam-user- unused-credentials-check 。安全工程师注意到,在调用 IAM GenerateCredentialReport API 操作后,所有资源都显示为不合规状态。导致不合规状态的原因可能是什么 ?",
@@ -121,6 +140,25 @@
       "B": "确保附加到 Lambda 函数的安全组允许到 EC2 实例的出站连接。确保附加到 EC2 实例的安全组允许来自附加到 Lambda 函数的安全组的入站连接。正确原因 : 根据错误日志“setSecret: Unable to log into database” ,问题可能是 Lambda 函数无法连接到数据库。确保安全组配置正确,允许 Lambda 函数与 EC2 实例之间的通信,可以解决此问题。",
       "C": "使用 AWS CLI 中的 Secrets Manager list-secrets 命令列出 secret 。识别数据库凭证。使用 AWS CLI 中的 Secrets Manager rotate-secret 命令强制立即轮换该 secret 。错误原因 : 强制轮换密钥并不能解决网络连接问题。问题的根本原因是 Lambda 函数无法登录到数据库, 而不是 Secrets Manager 的轮换机制。",
       "D": "向 VPC 添加一个 internet gateway 。在公共子网中创建一个 NAT gateway 。更新 VPC 路由表,以便 Lambda 函数的流量和 EC2 实例的流量可以访问 Secrets Manager 的公共 endpoint 。错误原因 : 题目中明确提到 VPC 已经配置了 Secrets Manager 的 VPC endpoint ,因此不需要通过公共 endpoint 访问 Secrets Manager 。添加 NAT 网关和 Internet Gateway 是多余的。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 114,
+    "type": "single",
+    "question": "一家公司在其 AWS 账户中部署了一组标准 IAM 角色。这些 IAM 角色基于公司内部的工作职能。为了平衡运营效率和安全性，一位安全工程师实施了 AWS Organizations SCPs，以限制对所有公司账户中关键安全服务的访问。公司所有的账户和 AWS Organizations 中的 OU 都附加了默认的 FullAWSAccess SCP。安全工程师需要确保没有人可以禁用 Amazon GuardDuty 和 AWS Security Hub。安全工程师还必须确保不会覆盖账户中由 IAM 策略授予的其他权限。安全工程师应该将哪个 SCP 附加到组织的根目录以满足这些要求？",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Deny\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\" }, { \"Effect\": \"Deny\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"NotAction\": [ \"guardduty:DeleteDetector\", \"guardduty:UpdateDetector\", \"securityhub:DisableSecurityHub\" ], \"Resource\": [ \"*\" ] } ] }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。此 SCP 明确拒绝（Deny）对 GuardDuty 和 Security Hub 的禁用操作（DeleteDetector、UpdateDetector、DisableSecurityHub），同时不影响其他任何权限。由于已有默认的 FullAWSAccess SCP 授予所有权限，这个额外的 Deny SCP 只会阻止特定的危险操作，不会覆盖其他 IAM 策略授予的权限。",
+      "B": "错误。此选项先拒绝所有操作（Deny *），然后尝试用 Allow + NotAction 来恢复权限。但在 SCP 中，显式 Deny 优先于 Allow，所以第一个语句会拒绝所有操作，第二个 Allow 语句无法覆盖 Deny，导致所有操作都被拒绝。",
+      "C": "错误。此选项先允许所有操作，然后用 Deny + NotAction 拒绝除 GuardDuty/Security Hub 操作以外的所有操作。NotAction 表示「不在列表中的操作」，所以这会拒绝除了这三个操作以外的所有操作，效果与预期完全相反。",
+      "D": "错误。此选项使用 Allow + NotAction，表示允许除 GuardDuty/Security Hub 操作以外的所有操作。如果用此 SCP 替换 FullAWSAccess，则这三个操作将不被任何 SCP 允许，从而被隐式拒绝。但这也意味着只有这个 SCP 授予权限，可能导致权限管理复杂化。"
     }
   },
   {
@@ -734,6 +772,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 145,
+    "type": "single",
+    "question": "开发运维团队使用 AWS Identity and Access Management (IAM) 来管理用户权限。团队创建了一个 Amazon EC2 实例配置文件角色，该角色使用 AWS 托管的 ReadOnlyAccess 策略。当运行在 Amazon EC2 上的应用程序尝试从加密的 Amazon S3 存储桶读取文件时，应用程序收到 AccessDenied 错误。\n\n团队管理员已验证 S3 存储桶策略允许账户中的所有人访问 S3 存储桶。文件没有附加对象 ACL。\n\n管理员应该怎么做来解决 IAM 访问问题？",
+    "options": {
+      "A": "编辑 ReadOnlyAccess 策略以添加 kms:Decrypt 操作。",
+      "B": "将 EC2 IAM 角色作为授权主体添加到 S3 存储桶策略。",
+      "C": "为 IAM 角色附加一个包含 kms:Decrypt 权限的内联策略。",
+      "D": "为 IAM 角色附加一个包含 S3:* 权限的内联策略。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误。AWS 托管策略（如 ReadOnlyAccess）无法直接编辑。托管策略是由 AWS 管理的，用户无法修改。",
+      "B": "错误。题目中已经明确指出 S3 存储桶策略允许账户中的所有用户访问存储桶，因此问题不在于存储桶策略。",
+      "C": "正确。加密的 S3 文件需要 KMS 解密权限。当前 IAM 角色使用的是 ReadOnlyAccess 策略，该策略不包含 kms:Decrypt 权限，因此需要为 IAM 角色附加一个内联策略以授予 kms:Decrypt 权限。",
+      "D": "错误。虽然 S3:* 权限可以解决 S3 访问问题，但这是过度授权，违反了最小权限原则。而且真正的问题是缺少 KMS 解密权限，而非 S3 权限不足。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 146,
     "type": "single",
     "question": "一家公司使用 AWS Organizations ,并在多个 AWS 账户中拥有 Amazon Elastic Kubernetes Service Amazon EKS 集群。一位安全工程师将 Amazon EKS 与 AWS CloudTrail 集成。 CloudTrail 日志存储在每个账户的 Amazon S3 桶中, 用于监控 API 调用。安全工程师发现 CloudTrail 日志未显示 Kubernetes pod 创建事件。安全工程师应该怎么做才能从 Amazon CloudWatch 中查看 Kubernetes 事件?",
@@ -1215,6 +1272,44 @@
       "B": "错误原因:虽然可以通过 STDOUT 将日志传递到 CloudWatch Logs ,但这需要修改应用程序代码,且无法直接获取内存转储文件, 无法满足题目要求。",
       "C": "功能的使用。如何以最小的操作成本实现容器的检查和调试。选项分析 A. 错误原因:将应用程序迁移到 EC2 启动类型需要额外的操作成本,包括重新配置集群、管理 EC2 实例以及设置远程访问。这与题目要求的“最小操作成本”不符。 B. 错误原因:虽然可以通过 STDOUT 将日志传递到 CloudWatch Logs ,但这需要修改应用程序代码,且无法直接获取内存转储文件, 无法满足题目要求。 C. 错误原因: CloudWatch Container Insights 主要用于监控容器性能指标, 而不是直接用于日志和内存转储的检查。此外,使用 OpenTelemetry 需要额外的配置,增加了操作成本。",
       "D": "正确原因:使用 ECS Exec 功能可以直接登录到运行中的容器进行检查, 无需修改应用程序代码或迁移到其他启动类型。只需更新任务角色权限并启用 ECS Exec 功能,操作成本最低。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 170,
+    "type": "single",
+    "question": "一家公司使用 AWS Organizations 并拥有许多 AWS 账户。该公司有一个新的要求，即在所有上传到 Amazon S3 存储桶的新对象上使用客户提供的密钥进行服务器端加密 (SSE-C)。一名安全工程师正在创建一个 SCP，其中包括对 s3:PutObject 操作的 Deny 效果。安全工程师必须在 SCP 中添加哪个条件以强制执行新的 SSE-C 要求？",
+    "options": {
+      "A": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"true\" } }",
+      "B": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption\": \"aws:kms\" } }",
+      "C": "\"Condition\": { \"StringNotEquals\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"AES256\" } }",
+      "D": "\"Condition\": { \"Null\": { \"s3:x-amz-server-side-encryption\": \"true\" } }"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。此条件使用 Null 条件运算符检查 s3:x-amz-server-side-encryption-customer-algorithm 标头是否为空（即未提供）。当该标头为 null（\"true\"）时，表示请求未使用 SSE-C，因此拒绝该请求。这确保所有 PutObject 请求都必须包含 SSE-C 加密标头。",
+      "B": "错误。s3:x-amz-server-side-encryption 是用于 SSE-S3 或 SSE-KMS 的条件键，而非 SSE-C。检查该值是否不等于 \"aws:kms\" 与强制要求 SSE-C 无关。",
+      "C": "错误。虽然 s3:x-amz-server-side-encryption-customer-algorithm 是正确的 SSE-C 条件键，但使用 StringNotEquals 检查 \"AES256\" 会拒绝使用非 AES256 算法的请求，而不会拒绝完全未提供 SSE-C 标头的请求。未提供标头的请求不会触发 StringNotEquals 条件。",
+      "D": "错误。s3:x-amz-server-side-encryption 是用于 SSE-S3 或 SSE-KMS 的条件键，不是 SSE-C。即使使用了正确的 Null 条件运算符，检查的条件键不对，无法强制要求 SSE-C。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 171,
+    "type": "single",
+    "question": "一家公司希望拒绝一个名为 Bob 的特定联合用户访问名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶。该公司希望通过使用存储桶策略来满足这一要求。公司还需要确保此存储桶策略仅影响 Bob 的 S3 权限。Bob 拥有的任何其他权限必须保持不变。公司应该使用哪项策略来满足这些要求？",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Allow\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:federated-user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:iam::account-id:user/Bob\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Principal\": {\"AWS\": \"arn:aws:sts::account-id:assumed-role/Bob/role-session-name\"}, \"Effect\": \"Deny\", \"Action\": \"s3:*\", \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\" } }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误。此策略使用了 Allow 效果，会授予 Bob 对该存储桶的所有 S3 权限，而非拒绝访问。这与题目要求的「拒绝访问」完全相反。",
+      "B": "正确。此策略正确地使用了 Deny 效果，并且 Principal 使用了 arn:aws:sts::account-id:federated-user/Bob，这是联合用户（federated user）的正确 ARN 格式。这确保仅拒绝 Bob 对 DOC-EXAMPLE-BUCKET 的所有 S3 操作，不影响其他用户或 Bob 的其他权限。",
+      "C": "错误。此策略使用了 arn:aws:iam::account-id:user/Bob，这是 IAM 用户的 ARN 格式，而非联合用户的 ARN 格式。题目明确指出 Bob 是联合用户（federated user），因此此 ARN 无法匹配 Bob 的身份。",
+      "D": "错误。此策略使用了 arn:aws:sts::account-id:assumed-role/Bob/role-session-name，这是假定角色（assumed role）的 ARN 格式，而非联合用户的 ARN 格式。题目要求针对联合用户 Bob，此 ARN 不匹配。"
     }
   },
   {
@@ -1999,6 +2094,25 @@
       "B": "和 EC2 实例。错误原因: 网络 ACL ( NACL )是无状态的, 无法区分流量的方向,且管理 1,500 个 CIDR 块范围的规则会非常复杂且难以维护。此外, NACL 无法直接关联到 NLB 。 B. 创建一个 AWS 安全组以允许来自 1,500 个子公司 CIDR 块范围的 TCP 端口 443 访问。将安全组关联到 NLB 。为 EC2 实例创建第二个安全组,允许来自 NLB 安全组的 TCP 端口 443 访问。错误原因:虽然安全组是有状态的,但管理 1,500 个 CIDR 块范围的规则仍然非常复杂且难以维护。此外,安全组无法直接限制跨账户的访问。",
       "C": "在母公司账户中创建一个附加到 NLB 的 AWS PrivateLink 端点服务。为实例创建一个 AWS 安全组,允许来自 AWS PrivateLink 端点的 TCP 端口 443 访问。在 1,500 个子公司 AWS 账户中使用 AWS PrivateLink 接口端点连接到数据处理应用程序。正确原因:使用 AWS PrivateLink 可以实现跨账户的安全访问,同时避免暴露服务到公共互联网。通过 PrivateLink , 子公司账户可以通过接口端点安全地连接到母公司账户的服务。安全组可以进一步限制来自 PrivateLink 端点的访问。",
       "D": "创建一个 AWS 安全组以允许来自 1,500 个子公司 CIDR 块范围的 TCP 端口 443 访问。将安全组关联到 EC2 实例。错误原因:虽然安全组可以限制访问,但它无法解决跨账户的访问问题。此外,管理 1,500 个 CIDR 块范围的规则仍然非常复杂且难以维护。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 211,
+    "type": "single",
+    "question": "一家公司在 Amazon EC2 实例上运行工作负载。该公司需要持续扫描 EC2 实例以检测软件漏洞和意外的网络暴露。哪种解决方案可以满足这些需求？",
+    "options": {
+      "A": "使用 Amazon Inspector。将扫描模式设置为混合扫描。",
+      "B": "使用 Amazon GuardDuty。启用 Malware Protection 功能。",
+      "C": "使用 Amazon Inspector。启用 Malware Protection 功能。",
+      "D": "使用 Amazon GuardDuty。启用 Runtime Monitoring 功能。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。Amazon Inspector 是专门设计用于持续扫描 EC2 实例的工具，可以检测软件漏洞和网络暴露。混合扫描模式结合了基于代理和无代理的扫描方式，能够全面覆盖漏洞检测需求。",
+      "B": "错误。Amazon GuardDuty 主要用于威胁检测，例如恶意活动和异常行为，而不是专门用于漏洞扫描。Malware Protection 是 GuardDuty 的一项功能，重点是检测恶意软件，而不是扫描软件漏洞或网络暴露。",
+      "C": "错误。虽然 Amazon Inspector 是正确的服务选择，但 Malware Protection 并不是 Amazon Inspector 的功能。Inspector 的主要功能是漏洞扫描和网络暴露检测。",
+      "D": "错误。Amazon GuardDuty 的主要功能是威胁检测，而不是漏洞扫描或网络暴露检测。Runtime Monitoring 用于监控运行时的容器和 EC2 工作负载中的威胁，而非软件漏洞扫描。"
     }
   },
   {

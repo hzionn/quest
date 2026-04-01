@@ -900,6 +900,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 258,
+    "type": "single",
+    "question": "A company is using AWS Organizations with the default SCPs enabled. The company needs to restrict the AWS usage for all AWS accounts in a specific OU. All accounts in the OU must use AWS services only in the eu-west-1 Region, except for certain required global services. A security engineer must create an SCP to apply this restriction to existing accounts and any new accounts in the OU. Which SCP will meet these requirements?",
+    "options": {
+      "A": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Deny\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "B": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Allow\", \"Action\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "C": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Deny\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringNotEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }",
+      "D": "{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"DenyNonDefaultRegions\", \"Effect\": \"Allow\", \"NotAction\": [ \"<Desired Global Services>\" ], \"Resource\": \"*\", \"Condition\": { \"StringNotEquals\": { \"aws:RequestedRegion\": [ \"eu-west-1\" ] } } } ] }"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This SCP uses Deny + NotAction + StringEquals condition. The StringEquals condition means it triggers Deny 'when the requested region equals eu-west-1'. This would deny operations in eu-west-1 (except global services), which is the opposite of the intended effect — it should deny operations outside eu-west-1.",
+      "B": "Incorrect. This SCP uses the Allow effect. In SCPs, Allow only means 'do not block', it cannot actively grant permissions. Additionally, it uses Action (not NotAction) targeting only global services, and the StringEquals condition limits to eu-west-1, which logically cannot achieve the goal of restricting usage outside eu-west-1.",
+      "C": "Correct. This SCP uses Deny + NotAction + StringNotEquals condition. The logic is: when the requested region is not equal to eu-west-1 (StringNotEquals), deny all actions except global services (NotAction). This ensures: 1) Operations in eu-west-1 are unaffected; 2) Global services (such as IAM, STS, CloudFront) are not restricted by region; 3) Non-global service operations in other regions are denied.",
+      "D": "Incorrect. This SCP uses the Allow effect. In SCPs, Allow means 'do not block', but the default FullAWSAccess SCP already allows all actions. Adding another Allow SCP would not produce any restrictive effect and cannot achieve the region restriction goal."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 259,
     "type": "multiple",
     "question": "A company is planning to migrate its applications to AWS in a single AWS Region. The company ʼ s applications will use a combination of Amazon EC2 instances, Elastic Load Balancing ELB) load balancers, and Amazon S3 buckets. The company wants to complete the migration as quickly as possible. All the applications must meet the following requirements: • Data must be encrypted at rest. • Data must be encrypted in transit. • Endpoints must be monitored for anomalous network traffic. Which combination of steps should a security engineer take to meet these requirements with the LEAST effort? Choose three.)",

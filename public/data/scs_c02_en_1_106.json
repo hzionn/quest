@@ -694,6 +694,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 34,
+    "type": "single",
+    "question": "A company uses identity federation to authenticate users in an identity account (987654321987), where users assume an IAM role named IdentityRole. Users then assume an IAM role named JobFunctionRole in a target AWS account (123456789123) to perform their job functions.\n\nUsers are unable to assume the IAM role in the target account. The policy attached to the role in the identity account is:\n\n{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::*:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }\n\nWhat should be done to enable users to assume the appropriate role in the target account?",
+    "options": {
+      "A": "Update the IAM policy attached to the role in the identity account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::123456789123:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }",
+      "B": "Update the trust policy on the role in the target account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:role/IdentityRole\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "C": "Update the trust policy on the role in the identity account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:root\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "D": "Update the IAM policy attached to the role in the target account to be: { \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"Stmt1502946463000\", \"Effect\": \"Allow\", \"Action\": \"sts:AssumeRole\", \"Resource\": \"arn:aws:iam::123456789123:role/JobFunctionRole\" } ] }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. The IAM policy in the identity account already allows users to call sts:AssumeRole with the resource specified as arn:aws:iam::*:role/JobFunctionRole, which is already correctly configured. Changing the wildcard * to a specific account ID would not solve the problem, as the issue is not with the identity account's IAM policy but with the target account's trust policy.",
+      "B": "Correct. The JobFunctionRole in the target account needs to trust the IdentityRole in the identity account to allow users from the identity account to access resources in the target account via sts:AssumeRole. Setting the Principal to arn:aws:iam::987654321987:role/IdentityRole in the trust policy ensures only users who have assumed the IdentityRole can cross-account assume the JobFunctionRole.",
+      "C": "Incorrect. The trust policy of the IdentityRole in the identity account is unrelated to the problem, as the issue is with the trust policy configuration on the target account's role. Modifying the identity account role's trust policy cannot resolve the cross-account access issue.",
+      "D": "Incorrect. The IAM policy in the target account controls the role's permissions (what actions the role can perform), not the trust relationship (who can assume the role). The core issue is the trust policy, not the IAM permissions policy."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 35,
     "type": "single",
     "question": "A company is using AWS Organizations to manage multiple AWS accounts for its human resources, finance, software development, and production departments. All the company's developers are part of the software development AWS account. The company discovers that developers have launched Amazon EC2 instances that were preconfigured with software that the company has not approved for use. The company wants to implement a solution to ensure that developers can launch EC2 instances with only approved software applications and only in the software development AWS account. Which solution will meet these requirements?",
@@ -1008,6 +1027,29 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 51,
+    "type": "multiple",
+    "question": "A company's AWS CloudTrail logs are all centrally stored in an Amazon S3 bucket. The security team controls the company's AWS accounts. The security team must prevent unauthorized access and tampering of the CloudTrail logs. Which combination of steps should the security team take? (Choose three.)",
+    "options": {
+      "A": "Configure server-side encryption with AWS KMS managed encryption keys (SSE-KMS).",
+      "B": "Compress log files with secure gzip.",
+      "C": "Create an Amazon EventBridge rule to notify the security team of any modifications on CloudTrail log files.",
+      "D": "Implement least privilege access to the S3 bucket by configuring a bucket policy.",
+      "E": "Configure CloudTrail log file integrity validation.",
+      "F": "Configure Access Analyzer for S3."
+    },
+    "answer": "ADE",
+    "explanations": {
+      "A": "Correct. Using SSE-KMS ensures that log files are encrypted at rest, preventing unauthorized access. This is an important measure for protecting data at rest.",
+      "B": "Incorrect. While compressing log files can save storage space, it is unrelated to preventing unauthorized access and tampering, and is not a core requirement for CloudTrail log security.",
+      "C": "Incorrect. While notification mechanisms can help monitor log file modifications, they cannot directly prevent unauthorized access or tampering. This option is not part of best practices for this scenario.",
+      "D": "Correct. By configuring a bucket policy and implementing the principle of least privilege, access to log files can be restricted, preventing unauthorized access.",
+      "E": "Correct. CloudTrail log file integrity validation can detect whether log files have been tampered with, and is an important step in ensuring log file security.",
+      "F": "Incorrect. Access Analyzer for S3 is primarily used to analyze bucket access permissions, but it cannot directly prevent log file tampering or unauthorized access."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 52,
     "type": "single",
     "question": "A company has several petabytes of data. The company must preserve this data for 7 years to comply with regulatory requirements. The company's compliance team asks a security officer to develop a strategy that wi l prevent anyone from changing or deleting the data. Which solution wi l meet this requirement MOST cost-effectively?",
@@ -1046,6 +1088,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 54,
+    "type": "single",
+    "question": "A company runs multiple workloads on AWS. Employees need to authenticate using on-premises ADFS and SSO to access the AWS Management Console. Developers have migrated an existing legacy web application to Amazon EC2 instances. Employees need to access this application from anywhere on the internet, but the application does not currently have a built-in authentication system. How should the security engineer implement employee-only access to this system without changing the application?",
+    "options": {
+      "A": "Place the application behind an Application Load Balancer (ALB). Use Amazon Cognito as the authentication for the ALB. Define a SAML-based Amazon Cognito user pool and connect it to ADFS.",
+      "B": "Implement AWS IAM Identity Center (AWS Single Sign-On) in the management account and connect it to ADFS as an identity provider. Define the EC2 instance as a managed resource and apply IAM policies to the resource.",
+      "C": "Define an Amazon Cognito identity pool and install a connector on the Active Directory server. Use the Amazon Cognito SDK on the application instance to authenticate employees with Active Directory usernames and passwords.",
+      "D": "Create an AWS Lambda custom authorizer as the authenticator for a reverse proxy on Amazon EC2. Ensure that the security group on Amazon EC2 only allows access from the Lambda function."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. ALB supports authentication features and can integrate SAML identity providers (such as ADFS) through Amazon Cognito. This approach requires no modification to the application code — only ALB and Cognito configuration is needed to implement employee authentication. Employees can authenticate through ADFS and access the application via the ALB.",
+      "B": "Incorrect. AWS IAM Identity Center (AWS SSO) is primarily used for managing access to AWS accounts and services, not for directly protecting applications on EC2 instances. IAM policies cannot directly control application-level access on EC2 instances.",
+      "C": "Incorrect. This option requires modifying the application code to integrate the Amazon Cognito SDK, which contradicts the requirement of not changing the application. Additionally, the question does not call for an Amazon Cognito identity pool — a user pool with SAML integration would be more appropriate.",
+      "D": "Incorrect. This option requires developing a custom Lambda function and reverse proxy, adding complexity and requiring changes to the application's access architecture. The question calls for a simple solution, not a complex custom implementation."
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 55,
     "type": "single",
     "question": "A company is using AWS to run a long-running analysis process on data that is stored in Amazon S3 buckets. The process runs on a fleet of Amazon EC2 instances that are in an Auto Scaling group. The EC2 instances are deployed in a private subnet of a VPC that does not have internet access. The EC2 instances and the S3 buckets are in the same AWS account. The EC2 instances access the S3 buckets through an S3 gateway endpoint that has the default access policy. Each EC2 instance is associated with an instance profile role that has a policy that explicitly allows the s3 GetObject action and the s3 PutObject action for only the required S3 buckets. The company learns that one or more of the EC2 instances are compromised and are exfiltrating data to an S3 bucket that is outside the company's organization in AWS Organizations. A security engineer must implement a solution to stop this exfiltration of data and to keep the EC2 processing job functional. Which solution will meet these requirements?",
@@ -1080,6 +1141,25 @@
       "B": "Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误： AWS Config 主要 ⽤ 于资源配置的合规性检查， ⽽ 不是 ⽣ 成合规性报告。虽然可以使 ⽤ 合规包 （ Conformance Pack ）来检查资源是否符合标准，但它 ⽆ 法处理 ⼿ 动证据，也 ⽆ 法 ⽣ 成综合的合规性报告。",
       "C": "Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误： AWS Security Hub 主要 ⽤ 于集中管理和查看安全警报，并评估资源的安全性。它不 ⽀ 持上传 ⼿ 动证据，也 ⽆ 法 ⽣ 成合规性报告。",
       "D": "manual evidence from the on-premises workloads. Add the evidence to the assessment. Generate an assessment report after Audit Manager collects the necessary evidence from the AWS resources. 正确：此选项准确描述了 AWS Audit Manager 的功能。 Audit Manager 允许 ⽤ 户创建评估，上传 ⼿ 动 证据（例如来 ⾃ 本地 ⼯ 作负载的证据） ，并结合 AWS 资源的 ⾃ 动收集证据 ⽣ 成合规性报告。这完全符合题 ⽬ 要求。 B. Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误： AWS Config 主要 ⽤ 于资源配置的合规性检查， ⽽ 不是 ⽣ 成合规性报告。虽然可以使 ⽤ 合规包 （ Conformance Pack ）来检查资源是否符合标准，但它 ⽆ 法处理 ⼿ 动证据，也 ⽆ 法 ⽣ 成综合的合规性报告。 C. Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误： AWS Security Hub 主要 ⽤ 于集中管理和查看安全警报，并评估资源的安全性。它不 ⽀ 持上传 ⼿ 动证据，也 ⽆ 法 ⽣ 成合规性报告。 D. Install the Amazon CloudWatch agent on the on-premises workloads. Create a CloudWatch dashboard to monitor the onpremises workloads and the AWS resources. Run a query on the workloads and resources. Download the results. 错误： Amazon CloudWatch 主要 ⽤ 于监控和 ⽇ 志管理， ⽽ 不是 ⽤ 于合规性报告。虽然可以通过仪表 板查看资源状态，但 它 ⽆ 法处理 ⼿ 动证据，也 ⽆ 法 ⽣ 成合规性报告。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 57,
+    "type": "single",
+    "question": "To meet regulatory requirements, a security engineer needs to implement an IAM policy that restricts the use of AWS services to the us-east-1 Region. What policy should the engineer implement?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"ec2:Region\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"NotAction\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "This policy uses Allow + StringEquals aws:RequestedRegion, which only allows requests to us-east-1 but does not explicitly deny requests to other regions. Without an explicit deny, other policies that grant permissions can still allow users to operate in other regions.",
+      "B": "This policy uses ec2:Region as the condition key, which is not a valid IAM global condition key. The correct global condition key is aws:RequestedRegion for restricting region access across all AWS services.",
+      "C": "Correct. This policy uses Deny + StringNotEquals aws:RequestedRegion: us-east-1, meaning all actions are denied when the requested region is not us-east-1. This is the standard approach to restrict region usage. Explicit Deny always overrides any Allow, ensuring operations outside us-east-1 are blocked regardless of other policies.",
+      "D": "This policy uses NotAction with Deny, but NotAction: \"*\" means no actions are excluded from denial, which logically means nothing is denied. Additionally, the condition uses StringEquals instead of StringNotEquals, which reverses the logic — it would deny requests TO us-east-1 rather than to other regions."
     }
   },
   {
@@ -1307,6 +1387,25 @@
       "D": "的使 ⽤ 。 权限策略中对 sts:AssumeRole 的授权。 ⾓ ⾊ ARN 的正确性及其在跨账户访问中的重要性。 选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常 ⽤ 的安全机制。如果外部 ID 缺失或不正确，审计员将 ⽆ 法成功假设 ⾓ ⾊ 。 B. The auditor is using the incorrect password. 错误。 IAM ⾓ ⾊ 的假设不涉及密码， ⽽ 是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果 ⽬ 标账户中的 IAM ⾓ ⾊ 未授予审计员 sts:AssumeRole 权限，审计员将 ⽆ 法假设该 ⾓ ⾊ 。 D. The Amazon EC2 role used by the auditor must be set to the destination account rol",
       "E": "的授权。 ⾓ ⾊ ARN 的正确性及其在跨账户访问中的重要性。 选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常 ⽤ 的安全机制。如果外部 ID 缺失或不正确，审计员将 ⽆ 法成功假设 ⾓ ⾊ 。 B. The auditor is using the incorrect password. 错误。 IAM ⾓ ⾊ 的假设不涉及密码， ⽽ 是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果 ⽬ 标账户中的 IAM ⾓ ⾊ 未授予审计员 sts:AssumeRole 权限，审计员将 ⽆ 法假设该 ⾓ ⾊ 。 D. The Amazon EC2 role used by the auditor must be set to the destination account role. 错误。 EC2 ⾓ ⾊ 与跨账户访问 ⽆ 关，审计员假设 ⾓ ⾊ 时不需要使 ⽤ EC2 ⾓ ⾊ 。 E. The secret key used by the auditor is missing or incorrect. 错误。 IAM ⾓ ⾊ 的假设不直接依赖于访问密钥， ⽽ 是基于临时凭证和权限策略。",
       "F": "The role ARN used by the auditor is missing or incorrect. 正确。如果审计员使 ⽤ 的 ⾓ ⾊ ARN 缺失或不正确，审计员将 ⽆ 法定位 ⽬ 标 ⾓ ⾊ 并假设它。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 69,
+    "type": "single",
+    "question": "A security engineer needs to configure an Amazon S3 bucket policy to restrict access to an S3 bucket named DOC-EXAMPLE-BUCKET. The policy must allow access to DOC-EXAMPLE-BUCKET only from the endpoint vpce-1a2b3c4d. If the specified endpoint is not used, the policy must deny all access to DOC-EXAMPLE-BUCKET. Which bucket policy statement meets these requirements?",
+    "options": {
+      "A": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Allow + StringNotEquals means: allow access when the source is NOT vpce-1a2b3c4d. This is the opposite of the requirement — the policy should deny non-specified endpoint access, not allow it.",
+      "B": "Correct. Deny + StringNotEquals aws:sourceVpce: vpce-1a2b3c4d means: deny all s3:* actions when the source VPC Endpoint is not vpce-1a2b3c4d. Explicit Deny always overrides Allow, ensuring only requests through the specified VPCE can access the bucket.",
+      "C": "Deny + StringEquals means: deny access when the source IS vpce-1a2b3c4d. This is completely backwards — it denies access from the correct endpoint and allows all other sources.",
+      "D": "Allow + StringEquals means: allow access when the source is vpce-1a2b3c4d, but there is no rule denying other sources. Other access paths may still be permitted. Also, Resource: * is overly broad."
     }
   },
   {
@@ -1934,6 +2033,25 @@
       "B": "The S3 bucket has been changed to use the AWS managed key to encrypt objects at rest. 错误：题 ⽬ 明确说明 S3 存储桶使 ⽤ 的是客户管理密钥（ Customer Managed Key ） ， ⽽ 不是 AWS 管理 密钥（ AWS Managed Key ） 。此选项与题 ⽬ 描述不符。",
       "C": "An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误：题 ⽬ 明确说明 S3 存储桶没有定义存储桶策略，但 IAM ⽤ 户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限，因此不 需要额外的存储桶策略。",
       "D": "to use the AWS managed key to encrypt objects at rest. 错误：题 ⽬ 明确说明 S3 存储桶使 ⽤ 的是客户管理密钥（ Customer Managed Key ） ， ⽽ 不是 AWS 管理 密钥（ AWS Managed Key ） 。此选项与题 ⽬ 描述不符。 C. An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误：题 ⽬ 明确说明 S3 存储桶没有定义存储桶策略，但 IAM ⽤ 户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限，因此不 需要额外的存储桶策略。 D. The KMS key policy has been edited to remove the ability for the AWS account to have full access to the key. 正确： KMS 密钥策略是控制密钥访问的核 ⼼ 机制。如果密钥策略被编辑并移除了 AWS 账户对密钥的完 全访问权限，即使 IAM 策略允许 kms:Decrypt 权限， ⽤ 户仍然 ⽆ 法解密对象。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 100,
+    "type": "single",
+    "question": "A company has a guideline that mandates the encryption of all Amazon S3 bucket data in transit. A security engineer must implement an S3 bucket policy that denies any S3 operations if data is not encrypted. Which S3 bucket policy will meet this requirement?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"true\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"false\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": \"AES256\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": true\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "This policy uses Deny + Bool aws:SecureTransport: true, meaning it denies requests when HTTPS IS used. This is the opposite of the requirement — it would deny encrypted transport and allow unencrypted transport.",
+      "B": "Correct. Deny + Bool aws:SecureTransport: false means: deny all s3:* actions when HTTPS is NOT used (SecureTransport is false). This ensures only HTTPS encrypted transport can access the bucket, meeting the in-transit encryption requirement.",
+      "C": "This policy uses StringNotEquals s3:x-amz-server-side-encryption: AES256, which checks server-side encryption (encryption at rest), not in-transit encryption. The requirement is for encryption in transit (HTTPS), which requires the aws:SecureTransport condition key.",
+      "D": "Similar to option C, this checks server-side encryption rather than transport encryption. Additionally, the condition value uses boolean true instead of a string — s3:x-amz-server-side-encryption expects string values like \"AES256\" or \"aws:kms\", making the syntax incorrect."
     }
   },
   {

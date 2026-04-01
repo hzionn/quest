@@ -696,6 +696,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 34,
+    "type": "single",
+    "question": "一家公司使用身分联合来对身分识别帐户 (987654321987) 中的使用者进行身分验证，其中使用者承担名为 IdentityRole 的 IAM 角色。然后，使用者在目标 AWS 帐户 (123456789123) 中承担名为 JobFunctionRole 的 IAM 角色来执行其工作职能。\n\n使用者无法承担目标帐户中的 IAM 角色。身分帐户中角色所附加的策略是：\n\n{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::*:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }\n\n应该怎麽做才能使用户在目标帐户中承担适当的角色？",
+    "options": {
+      "A": "将身分帐户中附加到角色的 IAM 策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Action\": [ \"sts:AssumeRole\" ], \"Resource\": [ \"arn:aws:iam::123456789123:role/JobFunctionRole\" ], \"Effect\": \"Allow\" } ] }",
+      "B": "将目标帐号中角色的信任策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:role/IdentityRole\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "C": "将身分帐户中角色的信任策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::987654321987:root\" }, \"Action\": \"sts:AssumeRole\" } ] }",
+      "D": "将附加到目标帐户中角色的 IAM 策略更新为：{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Sid\": \"Stmt1502946463000\", \"Effect\": \"Allow\", \"Action\": \"sts:AssumeRole\", \"Resource\": \"arn:aws:iam::123456789123:role/JobFunctionRole\" } ] }"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误。身份账户中的 IAM 策略已经允许用户调用 sts:AssumeRole 操作，并且资源指定为 arn:aws:iam::*:role/JobFunctionRole，这已经正确配置了权限。将通配符 * 更改为具体账户 ID 不会解决问题，因为问题不在于身份账户的 IAM 策略，而在于目标账户的信任策略。",
+      "B": "正确。目标账户中的 JobFunctionRole 需要信任身份账户中的 IdentityRole，以便允许身份账户的用户通过 sts:AssumeRole 来访问目标账户的资源。信任策略中将 Principal 设置为 arn:aws:iam::987654321987:role/IdentityRole，确保只有承担了 IdentityRole 的用户才能跨账户承担 JobFunctionRole。",
+      "C": "错误。身份账户中的 IdentityRole 的信任策略与问题无关，因为问题发生在目标账户的角色信任策略配置上。修改身份账户角色的信任策略不能解决跨账户访问的问题。",
+      "D": "错误。目标账户中的 IAM 策略控制的是角色的权限（角色可以执行哪些操作），而不是信任关系（谁可以承担此角色）。问题的核心是信任策略，而不是 IAM 权限策略。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 35,
     "type": "single",
     "question": "一家公司正在使用 AWS Organizations 管理其人力资源、财务、软体开发和生产部 ⻔ 的多个 AWS 帐户。该公司的所有开发人员都属于软体开发 AWS 帐户。该公司发现,开发人员启动的 Amazon EC2 执行个体预先配置了该公司尚未批准使用的软体。该公司希望实施一项解决方案,以确保开发人员只能在软体开发 AWS 帐户中启动已批准的软体应用程式的 EC2 执行个体。哪种解决方案能够满足这些要求?",
@@ -1010,6 +1029,29 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 51,
+    "type": "multiple",
+    "question": "一家公司的 AWS CloudTrail 日誌全部集中储存在 Amazon S3 储存桶中。安全团队负责控制该公司的 AWS 帐户。安全团队必须防止未经授权的存取和篡改 CloudTrail 日誌。安全团队应该採取哪些措施组合？（选择三项。）",
+    "options": {
+      "A": "使用 AWS KMS 託管加密金钥 (SSE-KMS) 设定伺服器端加密。",
+      "B": "使用安全 gzip 压缩日誌档。",
+      "C": "建立 Amazon EventBridge 规则以通知安全团队 CloudTrail 日誌档案的任何修改。",
+      "D": "透过配置储存桶策略实现对 S3 储存桶的最小权限存取。",
+      "E": "配置 CloudTrail 日誌档案完整性验证。",
+      "F": "为 S3 配置存取分析器。"
+    },
+    "answer": "ADE",
+    "explanations": {
+      "A": "正确。使用 SSE-KMS 可以确保日志文件在存储时被加密，从而防止未经授权的访问。这是保护静态数据的一项重要措施。",
+      "B": "错误。虽然压缩日志文件可以节省存储空间，但它与防止未经授权的访问和篡改无关，也不是 CloudTrail 日志安全性的核心要求。",
+      "C": "错误。虽然通知机制可以帮助监控日志文件的修改，但它无法直接防止未经授权的访问或篡改。此选项不是最佳实践的一部分。",
+      "D": "正确。通过配置存储桶策略并实施最小权限原则，可以限制对日志文件的访问，从而防止未经授权的访问。",
+      "E": "正确。CloudTrail 日志文件完整性验证可以检测日志文件是否被篡改，是确保日志文件安全性的重要步骤。",
+      "F": "错误。Access Analyzer for S3 主要用于分析存储桶的访问权限，但它无法直接防止日志文件的篡改或未经授权的访问。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 52,
     "type": "single",
     "question": "一家公司拥有数 PB 的数据。为了符合监管要求,该公司必须将这些数据保存 7 年。该公司的合规团队要求安全官员制定一项策略,以防止任何人更改或删除这些资料。哪一种解决方案能够以最具成本效益的方式满足这项要求?",
@@ -1048,6 +1090,25 @@
   },
   {
     "exam": "SCS-C02",
+    "id": 54,
+    "type": "single",
+    "question": "一家公司在 AWS 上运行多个工作负载。员工需要使用本机 ADFS 和 SSO 进行身份验证才能存取 AWS 管理控制台。开发人员将现有的旧版 Web 应用程式移转到了 Amazon EC2 执行个体。员工需要从互联网上的任何地方访问此应用程序，但目前该应用程式尚未内建身份验证系统。安全工程师应如何在不更改应用程式的情况下实现仅限员工存取此系统的权限？",
+    "options": {
+      "A": "将应用程式置于应用程式负载平衡器 (ALB) 之后。使用 Amazon Cognito 作为 ALB 的身份验证。定义基于 SAML 的 Amazon Cognito 使用者池并将其连接到 ADFS。",
+      "B": "在管理帐户中实作 AWS IAM Identity Center（AWS Single Sign-On），并将其作为身分提供者连结到 ADFS。将 EC2 执行个体定义为託管资源，然后在该资源上套用 IAM 策略。",
+      "C": "定义一个 Amazon Cognito 身分池，然后在 Active Directory 伺服器上安装连接器。使用应用程式实例上的 Amazon Cognito SDK，透过 Active Directory 使用者名称和密码对员工进行身份验证。",
+      "D": "建立 AWS Lambda 自订授权器作为 Amazon EC2 上反向代理程式的身份验证器。确保 Amazon EC2 上的安全性群组仅允许来自 Lambda 函数的存取。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。ALB 支持身份验证功能，可以通过 Amazon Cognito 集成 SAML 身份提供者（如 ADFS）。这种方法无需修改应用程序代码，只需配置 ALB 和 Cognito 即可实现员工身份验证。员工可以通过 ADFS 进行身份验证，并通过 ALB 访问应用程序。",
+      "B": "错误。AWS IAM Identity Center（AWS SSO）主要用于管理 AWS 账户和服务的访问权限，而不是直接用于保护 EC2 实例上的应用程序。IAM 策略无法直接控制 EC2 实例上的应用程序访问权限。",
+      "C": "错误。此选项需要修改应用程序代码以集成 Amazon Cognito SDK，这与题目要求的「不改变应用程序」相矛盾。此外，题目中并未提到需要使用 Amazon Cognito 身份池，而是更适合使用用户池与 SAML 集成。",
+      "D": "错误。此选项需要开发自定义 Lambda 函数和反向代理，增加了复杂性，并且需要修改应用程序的访问架构。题目要求的是一种简单的解决方案，而不是复杂的自定义实现。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
     "id": 55,
     "type": "single",
     "question": "一家公司正在使用 AWS 对储存在 Amazon S3 储存桶中的资料运行 ⻓ 期运行的分析流程。此流程在 Auto Scaling 群组中的一组 Amazon EC2 执行个体上执行。这些 EC2 执行个体部署在无法存取 Internet 的 VPC 的私有子网路中。 EC2 执行个体和 S3 储存桶位于同一个 AWS 帐户。 EC2 执行个体透过具有预设存取策略的 S3 闸道终端节点存取 S3 储存桶。每个 EC2 执行个体都与一个执行个体设定档角色关联,该角色的策略明确允许仅对所需的 S3 储存桶执行 s3 GetObject 操作和 s3 PutObject 操作。该公司发现一个或多个 EC2 执行个体遭到入侵,并且正在将资料外洩到 AWS Organizations 中公司组织外部的 S3 储存桶中。安全工程师必须实施解决方案来阻止这种资料洩露,并确保 EC2 处理作业正常运作。哪种解决方案能够满足这些要求?",
@@ -1082,6 +1143,25 @@
       "B": "Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误: AWS Config 主要用于资源配置的合规性检查, 而不是生成合规性报告。虽然可以使用合规包 ( Conformance Pack )来检查资源是否符合标准,但它无法处理手动证据,也无法生成综合的合规性报告。",
       "C": "Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误: AWS Security Hub 主要用于集中管理和查看安全警报,并评估资源的安全性。它不支持上传手动证据,也无法生成合规性报告。",
       "D": "manual evidence from the on-premises workloads. Add the evidence to the assessment. Generate an assessment report after Audit Manager collects the necessary evidence from the AWS resources. 正确:此选项准确描述了 AWS Audit Manager 的功能。 Audit Manager 允许用户创建评估,上传手动证据(例如来自本地工作负载的证据) ,并结合 AWS 资源的自动收集证据生成合规性报告。这完全符合题目要求。 B. Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误: AWS Config 主要用于资源配置的合规性检查, 而不是生成合规性报告。虽然可以使用合规包 ( Conformance Pack )来检查资源是否符合标准,但它无法处理手动证据,也无法生成综合的合规性报告。 C. Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误: AWS Security Hub 主要用于集中管理和查看安全警报,并评估资源的安全性。它不支持上传手动证据,也无法生成合规性报告。 D. Install the Amazon CloudWatch agent on the on-premises workloads. Create a CloudWatch dashboard to monitor the onpremises workloads and the AWS resources. Run a query on the workloads and resources. Download the results. 错误: Amazon CloudWatch 主要用于监控和日志管理, 而不是用于合规性报告。虽然可以通过仪表板查看资源状态,但它无法处理手动证据,也无法生成合规性报告。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 57,
+    "type": "single",
+    "question": "为了满足监管要求,安全工程师需要实施 IAM 策略,将 AWS 服务的使用限制在 us-east-1 区域。工程师应该实施什么策略?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"ec2:Region\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringNotEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"NotAction\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": {\n      \"StringEquals\": {\n        \"aws:RequestedRegion\": \"us-east-1\"\n      }\n    }\n  }]\n}"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "此策略使用 Allow + StringEquals aws:RequestedRegion,只允许 us-east-1 的请求,但没有明确拒绝其他区域的请求。如果其他策略授予了权限,用户仍可在其他区域操作。IAM 策略评估中,没有显式拒绝意味着其他策略的允许仍然生效。",
+      "B": "此策略使用了 ec2:Region 作为条件键,这不是有效的 IAM 全局条件键。正确的全局条件键是 aws:RequestedRegion,用于限制所有 AWS 服务的区域访问。ec2:Region 无法实现跨服务的区域限制。",
+      "C": "正确。此策略使用 Deny + StringNotEquals aws:RequestedRegion: us-east-1,表示当请求的区域不是 us-east-1 时,拒绝所有操作。这是限制区域使用的标准做法,显式拒绝(Deny)优先于任何允许(Allow),确保无论其他策略如何授权,非 us-east-1 区域的操作都会被拒绝。",
+      "D": "此策略使用了 NotAction 与 Deny 的组合,但 NotAction: \"*\" 意味着没有任何操作被排除在拒绝范围之外,逻辑上等于不拒绝任何操作。此外,条件使用 StringEquals 而非 StringNotEquals,逻辑方向错误——会拒绝 us-east-1 区域的请求而非其他区域。"
     }
   },
   {
@@ -1309,6 +1389,25 @@
       "D": "的使用。权限策略中对 sts:AssumeRole 的授权。角色 ARN 的正确性及其在跨账户访问中的重要性。选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常用的安全机制。如果外部 ID 缺失或不正确,审计员将无法成功假设角色。 B. The auditor is using the incorrect password. 错误。 IAM 角色的假设不涉及密码, 而是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果目标账户中的 IAM 角色未授予审计员 sts:AssumeRole 权限,审计员将无法假设该角色。 D. The Amazon EC2 role used by the auditor must be set to the destination account rol",
       "E": "的授权。角色 ARN 的正确性及其在跨账户访问中的重要性。选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常用的安全机制。如果外部 ID 缺失或不正确,审计员将无法成功假设角色。 B. The auditor is using the incorrect password. 错误。 IAM 角色的假设不涉及密码, 而是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果目标账户中的 IAM 角色未授予审计员 sts:AssumeRole 权限,审计员将无法假设该角色。 D. The Amazon EC2 role used by the auditor must be set to the destination account role. 错误。 EC2 角色与跨账户访问无关,审计员假设角色时不需要使用 EC2 角色。 E. The secret key used by the auditor is missing or incorrect. 错误。 IAM 角色的假设不直接依赖于访问密钥, 而是基于临时凭证和权限策略。",
       "F": "The role ARN used by the auditor is missing or incorrect. 正确。如果审计员使用的角色 ARN 缺失或不正确,审计员将无法定位目标角色并假设它。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 69,
+    "type": "single",
+    "question": "安全工程师需要配置 Amazon S3 存储桶策略来限制对名为 DOC-EXAMPLE-BUCKET 的 S3 存储桶的访问。此策略必须仅允许从端点 vpce-1a2b3c4d 访问 DOC-EXAMPLE-BUCKET。如果未使用指定的端点,则策略必须拒绝对 DOC-EXAMPLE-BUCKET 的所有访问。哪个存储桶策略声明满足这些要求?",
+    "options": {
+      "A": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Statement\": [\n    {\n      \"Sid\": \"Access-to-specific-VPCE-only\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Allow\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:sourceVpce\": \"vpce-1a2b3c4d\"\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Allow + StringNotEquals 表示:当来源不是 vpce-1a2b3c4d 时,允许访问。这与题目要求相反——题目要求拒绝非指定端点的访问,而非允许。",
+      "B": "正确。Deny + StringNotEquals aws:sourceVpce: vpce-1a2b3c4d 表示:当来源 VPC Endpoint 不是 vpce-1a2b3c4d 时,拒绝所有 s3:* 操作。显式拒绝优先于任何允许,确保只有通过指定 VPCE 的请求才能访问存储桶。",
+      "C": "Deny + StringEquals 表示:当来源是 vpce-1a2b3c4d 时,拒绝访问。这与题目要求完全相反,会拒绝来自正确端点的访问而允许其他所有来源。",
+      "D": "Allow + StringEquals 表示:当来源是 vpce-1a2b3c4d 时,允许访问所有资源(Resource: *)。但此选项没有拒绝其他来源的规则,其他访问路径仍可能被允许。且 Resource: * 范围过大。"
     }
   },
   {
@@ -1936,6 +2035,25 @@
       "B": "The S3 bucket has been changed to use the AWS managed key to encrypt objects at rest. 错误:题目明确说明 S3 存储桶使用的是客户管理密钥( Customer Managed Key ) , 而不是 AWS 管理密钥( AWS Managed Key ) 。此选项与题目描述不符。",
       "C": "An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误:题目明确说明 S3 存储桶没有定义存储桶策略,但 IAM 用户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限,因此不需要额外的存储桶策略。",
       "D": "to use the AWS managed key to encrypt objects at rest. 错误:题目明确说明 S3 存储桶使用的是客户管理密钥( Customer Managed Key ) , 而不是 AWS 管理密钥( AWS Managed Key ) 。此选项与题目描述不符。 C. An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误:题目明确说明 S3 存储桶没有定义存储桶策略,但 IAM 用户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限,因此不需要额外的存储桶策略。 D. The KMS key policy has been edited to remove the ability for the AWS account to have full access to the key. 正确: KMS 密钥策略是控制密钥访问的核心机制。如果密钥策略被编辑并移除了 AWS 账户对密钥的完全访问权限,即使 IAM 策略允许 kms:Decrypt 权限, 用户仍然无法解密对象。"
+    }
+  },
+  {
+    "exam": "SCS-C02",
+    "id": 100,
+    "type": "single",
+    "question": "一家公司有一项指南,要求对所有 Amazon S3 存储桶数据在传输过程中进行加密。一名安全工程师必须实施一个 S3 存储桶策略,拒绝任何未加密数据的 S3 操作。哪个 S3 存储桶策略可以满足此要求?",
+    "options": {
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"true\"\n        }\n      }\n    }\n  ]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"aws:SecureTransport\": \"false\"\n        }\n      }\n    }\n  ]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": \"AES256\"\n        }\n      }\n    }\n  ]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowSSLRequestsOnly\",\n      \"Action\": \"s3:*\",\n      \"Effect\": \"Deny\",\n      \"Resource\": [\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n        \"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"\n      ],\n      \"Principal\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption\": true\n        }\n      }\n    }\n  ]\n}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "此策略使用 Deny + Bool aws:SecureTransport: true,表示当使用 HTTPS(安全传输)时拒绝请求。这与题目要求相反——会拒绝加密传输而允许未加密传输。",
+      "B": "正确。Deny + Bool aws:SecureTransport: false 表示:当未使用 HTTPS(即 SecureTransport 为 false)时,拒绝所有 s3:* 操作。这确保只有通过 HTTPS 的加密传输才能访问存储桶,满足传输中加密的要求。",
+      "C": "此策略使用 StringNotEquals s3:x-amz-server-side-encryption: AES256,检查的是服务器端加密(静态加密),而非传输中加密。题目要求的是传输过程中的加密(HTTPS),应使用 aws:SecureTransport 条件键。",
+      "D": "与选项 C 类似,此策略检查的是服务器端加密而非传输加密。此外,条件值使用了布尔值 true 而非字符串,s3:x-amz-server-side-encryption 条件键期望的是字符串值(如 \"AES256\" 或 \"aws:kms\"),语法不正确。"
     }
   },
   {
