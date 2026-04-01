@@ -487,7 +487,7 @@ function PasswordGate({ onAuth }) {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
       <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700">
         <div className="flex justify-center mb-4">
-          <Shield className="w-12 h-12 text-orange-400" />
+          <img src={awsLogo} alt="AWS" className="h-16" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">AWS 證照考試練習器</h2>
         <p className="text-gray-400 text-sm mb-4">{PASSWORD_HINT}</p>
