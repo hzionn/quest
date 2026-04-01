@@ -1094,6 +1094,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   // Calculate progress
   const answeredCount = practiceFiltered.filter((q) => practiceSubmitted[`${q.exam}-${q.id}`]).length
   const progressPct = practiceFiltered.length > 0 ? Math.round((answeredCount / practiceFiltered.length) * 100) : 0
+  const correctCount = practiceFiltered.filter((q) => practiceResults[`${q.exam}-${q.id}`] === true).length
+  const accuracyPct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0
 
   return (
     <div className="space-y-5">
@@ -1135,6 +1137,13 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
         </div>
         <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div className="progress-bar h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${progressPct}%` }} />
+        </div>
+        <div className="flex items-center justify-between mt-2 mb-1">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">答對率</span>
+          <span className="text-xs font-bold text-green-500">{correctCount} / {answeredCount} ({accuracyPct}%)</span>
+        </div>
+        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="progress-bar h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full" style={{ width: `${accuracyPct}%` }} />
         </div>
       </div>
 
