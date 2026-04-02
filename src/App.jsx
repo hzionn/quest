@@ -1197,7 +1197,10 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               </div>
             </div>
 
-            {/* Top navigation: prev, random, submit, next */}
+            {/* Question text */}
+            <p className="text-base leading-relaxed mb-5 whitespace-pre-wrap break-words">{currentQ.question}</p>
+
+            {/* Navigation: prev, submit, next */}
             <div className="flex items-center justify-between mb-5">
               <button
                 onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
@@ -1230,9 +1233,6 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 下一題 <ChevronRight size={16} />
               </button>
             </div>
-
-            {/* Question text */}
-            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{currentQ.question}</p>
 
             {/* Answer area */}
             <QuestionInput
