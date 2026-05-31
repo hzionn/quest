@@ -383,7 +383,7 @@
     "explanations": {
       "A": "Set the value of the aws:SourceOrgID condition key to be the organization ID. 错误 :aws:SourceOrgID 条件键用于验证请求的来源是否属于指定的组织 ID , 但题目要求限制的是生产 OU 的账户, 而不是整个组织的账户。此条件键无法精确到特定的 OU ,因此不符合题目要求。",
       "B": "Set the value of the aws:SourceOrgPaths condition key to be the Organizations entity path of the production OU. 正确 :aws:SourceOrgPaths 条件键可以精确到特定的 OU 路径,允许我们限制只有生产 OU 的账户可以执行 s3 PutObject 操作。此选项完全符合题目要求。",
-      "C": "Set the value of the aws:ResourceOrgID condition key to be the organization I",
+      "C": "将 aws:ResourceOrgID 条件键的值设置为生产 OU。错误：aws:ResourceOrgID 用于检查资源所属的组织 ID，但题目要求限制的是用户所属的账户/OU，而不是限制资源所在的账户。此条件键与本题要求无关。",
       "D": "Set the value of the aws:ResourceOrgPaths condition key to be the Organizations entity path of the production OU. 错误 :aws:ResourceOrgPaths 条件键用于验证资源路径, 而不是请求来源的账户路径。此条件键与题目要求无关。"
     }
   },
@@ -815,7 +815,7 @@
       "D"
     ],
     "explanations": {
-      "A": "Verify that the 0.0.0.0/0 route in the route table for the we",
+      "A": "验证 0.0.0.0/0 路由是否指向 web 服务器路由表中虚拟安全设备的弹性网络接口 (ENI)。正确：要让流入流量先经过虚拟安全设备过滤，再到达 Web 服务器，必须在 Web 子网路由表中将 0.0.0.0/0 指向虚拟安全设备的 ENI。",
       "B": "Verify which security group is applied to the particular web server ʼ s elastic network interface ENI . 错误: 题目已经明确指出安全组的规则集是正确的,因此检查安全组不会解决问题。",
       "C": "Verify that the 0.0.0.0/0 route in the route table for the web server subnet points to the virtual security appliance. 正确: 题目要求流量必须通过虚拟安全设备,因此需要验证路由表是否正确指向虚拟安全设备。",
       "D": "Verify the registered targets in the ALB. 正确: 如果目标实例未正确注册到 ALB ,流量将无法分发到该实例,因此需要验证 ALB 的注册目标。",
@@ -978,7 +978,7 @@
     "explanations": {
       "A": "Create an AWS WAF web ACL. Configure a custom response to block traffic that does not align with the defined device posture. 错误: AWS WAF 主要用于防护 Web 应用免受常 ⻅ 的攻击(如 SQL 注入、跨站脚本攻击等) ,但它无法直接检查设备状态或定义设备姿态。虽然可以通过自定义规则阻止某些流量,但无法满足题目中“定义设备姿态”的要求。",
       "B": "ACL. Configure a custom response to block traffic that does not align with the defined device posture. 错误: AWS WAF 主要用于防护 Web 应用免受常 ⻅ 的攻击(如 SQL 注入、跨站脚本攻击等) ,但它无法直接检查设备状态或定义设备姿态。虽然可以通过自定义规则阻止某些流量,但无法满足题目中“定义设备姿态”的要求。 B. Configure AWS Verified Access. Add the application by creating an endpoint for the ALB. 正确: AWS Verified Access 是专 ⻔ 设计用于提供基于设备状态和用户身份的安全访问控制的服务。它允许用户在不使用 VPN 的情况下安全访问应用程序,并支持设备姿态检查。通过为 ALB 创建一个端点,可以将应用程序集成到 Verified Access 中, 从而满足题目要求。",
-      "C": "Configure Amazon Verified Permissions. Use a policy-base",
+      "C": "配置 Amazon Verified Permissions。使用基于策略的访问控制 (PBAC) 进行授权。错误：Amazon Verified Permissions 是一个用于管理应用程序的细粒度授权的服务，但它不支持设备安全态势检查（题干要求阻止不符合安全态势的设备访问），与设备安全态势检查不符。",
       "D": "Configure Amazon Verified Permissions. Add the application by creating an endpoint for the ALB. 错误:与选项 C 类似, Amazon Verified Permissions 不支持设备姿态检查。创建 ALB 端点并不能解决题目中关于设备状态的要求。"
     }
   },
@@ -1016,7 +1016,7 @@
     "explanations": {
       "A": "Deny the S3 action with a Condition element that comprises an operator of StringNotEquals, a key of aws:ResourceOrgID, and a value of S{aws PrincipalOrgID . 此选项通过 SCP 拒绝所有 S3 操作 (S3 ) ,并使用条件元素检查资源的组织 ID (aws:ResourceOrgID 是否与主体的组织 ID (aws:PrincipalOrgID 不匹配。这种方式确保只有属于同一 AWS Organizations 的 IAM 身份可以访问 S3 对象,符合题目要求。此选项是正确的。",
       "B": "Deny the S3 PutAccountPublicAccessBlock action with a Condition element that comprises an operator of StringLike, a key of aws:PrincipalArn, and the values of the external IAM principals. 此选项试图通过拒绝 S3 PutAccountPublicAccessBlock 操作来限制外部 IAM 身份,但这与题目要求无关。题目要求限制 S3 对象的访问, 而不是限制公共访问块的设置。此选项是错误的。",
-      "C": "Allow the S3 action with a Condition element that comprises an operator of StringNotEquals, a key of aws:PrincipalOrgID, and a value of S{aws:PrincipalOrgI",
+      "C": "允许 S3 操作并附加一个条件元素，其使用 StringNotEquals 作为运算符，并将 aws:PrincipalOrgID 作为外部 IAM 主体的键。错误：StringNotEquals 与 PrincipalOrgID 配合会反过来要求“不属于该组织的访问”，与题意（限制 S3 PutObject 只能来自本组织 IAM 主体）相反。",
       "D": "Deny the S3 action with a Condition element that comprises an operator of StringLike, a key of aws:PrincipalArn, and the values of the external IAM principals. 此选项试图通过 SCP 拒绝所有 S3 操作 (S3 ) ,并使用条件元素检查主体 ARN (aws:PrincipalArn) 是否匹配外部 IAM 身份。虽然可以限制外部 IAM 身份,但这种方式需要明确列出所有外部 IAM 身份 ARN ,管理起来非常复杂且不符合题目要求。此选项是错误的。"
     }
   },
@@ -1153,7 +1153,7 @@
     "answer": "C",
     "explanations": {
       "A": "Monitor CloudTrail logs for API calls to non-standard time servers. CloudTrail 主要用于记录 API 调用和管理操作, 而不是直接监控网络流量。 EC2 实例使用 NTP 服务器时不会通过 API 调用 ,因此无法通过 CloudTrail 日志检测到此行为。此选项错误。",
-      "B": "Monitor CloudTrail logs for API calls to the Amazon Time Syn",
+      "B": "监控 CloudTrail 日志中对 Amazon Time Sync Service 的 API 调用。错误：Amazon Time Sync Service 的标准时间服务由 AWS 基础设施提供，不会出现在 CloudTrail 数据/管理事件日志中；且监控对 Time Sync Service 的调用并不能识别 EC2 实例是否绕道使用非标准时间服务器。",
       "C": "Monitor VPC flow logs for traffic to non-standard time servers. VPC Flow Logs 可以记录网络流量,包括 EC2 实例与外部 NTP 服务器的通信。通过分析 VPC Flow Logs , 可以识别出 EC2 实例是否尝试连接非标准时间服务器。此选项正确。",
       "D": "Monitor VPC flow logs for traffic to the Amazon Time Sync Service. Amazon Time Sync Service 是 AWS 提供的标准时间服务器,符合公司的安全策略。监控与 Amazon Time Sync Service 的流量没有意义,因为目标是识别非标准时间服务器的使用。此选项错误。"
     }
@@ -1309,7 +1309,7 @@
     "explanations": {
       "A": "Ensure that the S3 bucket policy allows access to the service provider ʼ s role to decrypt objects. 错误: S3 bucket policy 仅控制对 S3 对象的访问权限,但无法授予对 KMS 密钥的解密权限。即使 S3 bucket policy 允许服务提供商的角色访问对象,服务提供商仍然需要 KMS 密钥的解密权限才能读取加密的日志。",
       "B": "Add a statement to the key policy to allow the service provider ʼ s role the kms:Decrypt action for the key. 正确: KMS 密钥策略控制对密钥的访问权限。服务提供商的角色需要被显式授予 kms:Decrypt 权限才能解密使用该密钥加密的日志。这是解决问题的正确方法,因为问题的核心是服务提供商无法解密日志, 而不是无法访问 S3 对象。",
-      "C": "Add the AWSKeyManagementServicePowerUser AWS manage",
+      "C": "添加 AWSKeyManagementServicePowerUser 这一 AWS 托管策略到服务提供商的角色。错误：AWSKeyManagementServicePowerUser 是一个广泛的 KMS 权限，授予了过多 KMS 权限；本题需求是给服务提供商的角色仅授予对该 S3 对象的 kms:Decrypt 权限，按最小权限原则不应使用该宽泛的托管策略。",
       "D": "Migrate the key to AWS Certificate Manager ACM) to create a shared endpoint for access to the key. 错误: ACM 用于管理 SSL/TLS 证书, 而不是管理 KMS 密钥。将 KMS 密钥迁移到 ACM 是不可行的,因为两者的用途和功能完全不同。"
     }
   },
@@ -1326,7 +1326,7 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Enable Amazon Inspector. Set the scan mode to hybrid scanning. Enable the integration for Amazon Inspector in Security Hu",
+      "A": "启用 Amazon Inspector。将扫描模式设置为混合扫描。启用 AWS Security Hub 中的 Amazon Inspector 集成。错误：Inspector 是一种自动化的漏洞扫描服务，可以与 Security Hub 集成。但是题目要求是输出符合 AWS Foundational Security Best Practices 的发现，需要由 AWS Security Hub 生成，而非由 Inspector 本身满足。",
       "B": "Use Security Hub to enable the AWS Foundational Security Best Practices standard. Wait for Security Hub to generate the findings. AWS Foundational Security Best Practices 标准是 Security Hub 的一部分, 用于检查 AWS 资源的安全配置。它不直接扫描 EC2 实例的软件漏洞,因此不符合题目要求。此选项错误。",
       "C": "Enable Amazon GuardDuty. Initiate on-demand malware scans by using GuardDuty Malware Protection. Enable the integration for GuardDuty in Security Hub. Amazon GuardDuty 是一种威胁检测服务,主要用于检测恶意活动和异常行为。 GuardDuty Malware Protection 可以扫描 EC2 实例的恶意软件,但它不是专 ⻔ 用于检测软件漏洞。此选项不符合题目要求,因此错误。",
       "D": "Use AWS Config managed rules to detect EC2 software vulnerabilities. Ensure that Security Hub has the AWS Config integration enabled. AWS Config 主要用于检查资源的配置是否符合预定义规则。它不直接检测 EC2 实例的软件漏洞,因此不符合题目要求。此选项错误。"
