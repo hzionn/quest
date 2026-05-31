@@ -282,9 +282,10 @@ function reducer(state, action) {
         }
       }
       const prevEntry = state.statsHistory[qKey]
-      const prevStreak = prevEntry?.correctStreak ?? 0
-      const correctStreak = correct ? prevStreak + 1 : 0
-      // 一旦答錯過就視為錯題；連續答對 MASTERY_THRESHOLD 次後才算學會並移出清單
+      const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
+      // 累計答對次數：答對 +1，答錯不歸零
+      const correctCount = prevCount + (correct ? 1 : 0)
+      // 一旦答錯過就視為錯題；累計答對 MASTERY_THRESHOLD 次後才算學會並移出清單
       const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !correct
       return {
         ...state,
@@ -292,7 +293,7 @@ function reducer(state, action) {
         practiceResults: { ...state.practiceResults, [qKey]: correct },
         statsHistory: {
           ...state.statsHistory,
-          [qKey]: { correct, correctStreak, everWrong, exam: q.exam, type: q.type, id: q.id, question: q }
+          [qKey]: { correct, correctCount, everWrong, exam: q.exam, type: q.type, id: q.id, question: q }
         }
       }
     }
@@ -396,10 +397,10 @@ function reducer(state, action) {
       const newHistory = { ...state.statsHistory }
       details.forEach(d => {
         const prevEntry = state.statsHistory[d.qKey]
-        const prevStreak = prevEntry?.correctStreak ?? 0
-        const correctStreak = d.correct ? prevStreak + 1 : 0
+        const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
+        const correctCount = prevCount + (d.correct ? 1 : 0)
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
-        newHistory[d.qKey] = { correct: d.correct, correctStreak, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question }
+        newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question }
       })
       return {
         ...state,
@@ -471,7 +472,7 @@ function reducer(state, action) {
 
 // ── Helper: Question type label ──
 const typeLabels = { single: '單選題', multiple: '多選題', matching: '配對題', ordering: '排序題' }
-// 錯題清單：需連續答對這麼多次才算「學會」並移出清單（答錯會重新計算）
+// 錯題清單：需累計答對這麼多次才算「學會」並移出清單（答錯不會歸零）
 const MASTERY_THRESHOLD = 3
 
 // ── Helper: Get display question based on language ──
@@ -2317,12 +2318,12 @@ function StatsTab({ state, dispatch, examTypes }) {
     return map
   }, [entries])
 
-  // Wrong questions: 答錯過且尚未連續答對 MASTERY_THRESHOLD 次（學會）的題目
+  // Wrong questions: 答錯過且累計答對未達 MASTERY_THRESHOLD 次（尚未學會）的題目
   const wrongQuestions = entries
-    .filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctStreak ?? 0) < MASTERY_THRESHOLD)
+    .filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) < MASTERY_THRESHOLD)
     .map(([k, v]) => ({ key: k, ...v }))
-  // 已學會（曾答錯，後來連續答對達標）的題目數，用於提示
-  const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
+  // 已學會（曾答錯，後來累計答對達標）的題目數，用於提示
+  const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
 
   // Bookmarked
   const bookmarkedList = Object.entries(state.bookmarked).filter(([, v]) => v).map(([k]) => {
@@ -2423,7 +2424,7 @@ function StatsTab({ state, dispatch, examTypes }) {
           <div>
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><XCircle size={18} className="text-red-500" />錯題清單</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-              連續答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯會重新計算。
+              累計答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯不會歸零。
               {masteredCount > 0 && <span className="text-green-600 dark:text-green-400 font-medium"> 已學會 {masteredCount} 題。</span>}
             </p>
             {wrongQuestions.length === 0 ? (
@@ -2463,17 +2464,17 @@ function StatsTab({ state, dispatch, examTypes }) {
 function QuestionList({ items, dispatch, showMastery = false }) {
   const allQuestions = items.map(item => item.question)
 
-  // 錯題清單的「學會進度」徽章：答對 n/MASTERY_THRESHOLD
+  // 錯題清單的「學會進度」徽章：累計答對 n/MASTERY_THRESHOLD
   const MasteryBadge = ({ item }) => {
     if (!showMastery) return null
-    const streak = item.correctStreak ?? 0
+    const count = item.correctCount ?? item.correctStreak ?? 0
     return (
       <span className={`text-xs px-2 py-0.5 rounded-lg font-medium ${
-        streak > 0
+        count > 0
           ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
           : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
       }`}>
-        答對 {streak}/{MASTERY_THRESHOLD}
+        答對 {count}/{MASTERY_THRESHOLD}
       </span>
     )
   }
