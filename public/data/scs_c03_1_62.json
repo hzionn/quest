@@ -3,7 +3,7 @@
     "exam": "SCS-C03",
     "id": 1,
     "type": "single",
-    "question": "一名安全工程师正在对一个名为 MyLambdaFunction 的 AWS Lambda 函数进行故障排查。当该函数尝试读取一个名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶中的对象时，函数遇到了错误。该 S3 存储桶具有以下存储桶策略： 安全工程师应该对该策略进行哪项更改，以确保 Lambda 函数可以读取存储桶对象？",
+    "question": "一名安全工程师正在对一个名为 MyLambdaFunction 的 AWS Lambda 函数进行故障排查。当该函数尝试读取一个名为 DOC-EXAMPLE-BUCKET 的 Amazon S3 存储桶中的对象时，函数遇到了错误。该 S3 存储桶具有以下存储桶策略：\n\n{\n  \"Effect\": \"Allow\",\n  \"Principal\": {\n    \"Service\": \"lambda.amazonaws.com\"\n  },\n  \"Action\": \"s3:GetObject\",\n  \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n  \"Condition\": {\n    \"ArnLike\": {\n      \"aws:SourceArn\": \"arn:aws:lambda:::function:MyLambdaFunction\"\n    }\n  }\n}\n\n安全工程师应该对该策略进行哪项更改，以确保 Lambda 函数可以读取存储桶对象？",
     "options": {
       "A": "移除 Condition 元素。将 Principal 元素更改为以下内容：{ \"AWS\": \"arn:aws:lambda:::function:MyLambdaFunction\" }",
       "B": "将 Action 元素更改为以下内容：[ \"s3:GetObject*\", \"s3:GetBucket*\" ]",
@@ -47,9 +47,9 @@
     "exam": "SCS-C03",
     "id": 3,
     "type": "single",
-    "question": "账户管理员创建了一个 IAM 组，并应用了以下托管策略，以要求每个单独的用户使用多因素身份验证进行身份验证： 在实施该策略后，管理员收到报告称，用户无法使用 AWS CLI 执行 Amazon EC2 命令。 管理员应采取什么措施来解决此问题，同时仍然强制执行多因素身份验证？",
+    "question": "账户管理员创建了一个 IAM 组，并应用了以下托管策略，以要求每个单独的用户使用多因素身份验证进行身份验证：\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"ec2:*\",\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"BlockAnyAccessUnlessSignedInWithMFA\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:*\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"BoolIfExists\": {\n          \"aws:MultiFactorAuthPresent\": false\n        }\n      }\n    }\n  ]\n}\n\n在实施该策略后，管理员收到报告称，用户无法使用 AWS CLI 执行 Amazon EC2 命令。 管理员应采取什么措施来解决此问题，同时仍然强制执行多因素身份验证？",
     "options": {
-      "A": "的值更改为 true。",
+      "A": "将 aws:MultiFactorAuthPresent 的值更改为 true。",
       "B": "指示用户运行 aws sts get-session-token CLI 命令，并传递多因素身份验证的 --serial-number 和 -token-code 参数。使用这些 生成的值来进行 API/CLI 调用。",
       "C": "使用 SAML 2.0 实现联合 API/CLI 访问，然后配置身份提供商以强制执行多因素身份验证。",
       "D": "创建一个角色，并在角色信任策略中强制执行多因素身份验证。指示用户运行 sts assume-role CLI 命令并传递 --serial-number 和 --token-code 参数。将生成的值存储在环境变量中。在策略的 NotAction 中添加 sts:AssumeRole。"
@@ -107,7 +107,7 @@
     "exam": "SCS-C03",
     "id": 6,
     "type": "single",
-    "question": "以下附加到客户管理密钥的 AWS Key Management Service（AWS KMS）密钥策略的效果是什么？",
+    "question": "以下附加到客户管理密钥的 AWS Key Management Service（AWS KMS）密钥策略的效果是什么？\n\n{\n  \"Effect\": \"Allow\",\n  \"Principal\": {\n    \"AWS\": \"arn:aws:iam::111122223333:role/ExampleRole\"\n  },\n  \"Action\": [\n    \"kms:Encrypt\",\n    \"kms:Decrypt\",\n    \"kms:GenerateDataKey*\",\n    \"kms:CreateGrant\",\n    \"kms:ListGrants\"\n  ],\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringEquals\": {\n      \"kms:ViaService\": [\n        \"workmail.us-west-2.amazonaws.com\",\n        \"ses.us-west-2.amazonaws.com\"\n      ]\n    }\n  }\n}",
     "options": {
       "A": "已将 KMS 加密和解密权限委派给 111122223333 账户中的 ExampleRole 主体。",
       "B": "主体可以透明地加密和解密专门发生在 ExampleRole 与 AWS 之间的电子邮件交换。",
