@@ -2509,7 +2509,7 @@ function StatsTab({ state, dispatch, examTypes }) {
             {wrongQuestions.length === 0 ? (
               <p className="text-gray-500 dark:text-gray-400 text-sm">太棒了！目前沒有錯題</p>
             ) : (
-              <QuestionList items={wrongQuestions} dispatch={dispatch} showMastery />
+              <QuestionList items={wrongQuestions} dispatch={dispatch} showMastery defaultCollapsed />
             )}
           </div>
         )}
@@ -2540,7 +2540,7 @@ function StatsTab({ state, dispatch, examTypes }) {
   )
 }
 
-function QuestionList({ items, dispatch, showMastery = false }) {
+function QuestionList({ items, dispatch, showMastery = false, defaultCollapsed = false }) {
   const allQuestions = items.map(item => item.question)
 
   // 錯題清單的「學會進度」徽章：累計答對 n/MASTERY_THRESHOLD
@@ -2570,7 +2570,8 @@ function QuestionList({ items, dispatch, showMastery = false }) {
 
   const hasMultipleExams = grouped.length > 1
   const [collapsedExams, setCollapsedExams] = useState({})
-  const toggleExam = (exam) => setCollapsedExams(prev => ({ ...prev, [exam]: !prev[exam] }))
+  const isCollapsed = (exam) => (exam in collapsedExams ? collapsedExams[exam] : defaultCollapsed)
+  const toggleExam = (exam) => setCollapsedExams(prev => ({ ...prev, [exam]: !(exam in prev ? prev[exam] : defaultCollapsed) }))
 
   return (
     <div className="space-y-2.5">
@@ -2583,7 +2584,7 @@ function QuestionList({ items, dispatch, showMastery = false }) {
         </button>
       )}
       {hasMultipleExams ? grouped.map(([exam, examItems]) => {
-        const collapsed = collapsedExams[exam]
+        const collapsed = isCollapsed(exam)
         const examQuestions = examItems.map(item => item.question)
         return (
           <div key={exam} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
