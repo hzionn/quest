@@ -3,12 +3,12 @@
     "exam": "SCS-C03",
     "id": 1,
     "type": "single",
-    "question": "A security engineer is troubleshooting an AWS Lambda function that is named MyLambdaFunction. The function is encountering an error when the function attempts to read the objects in an Amazon S3 bucket that is named DOC-EXAMPLE-BUCKET. The S3 bucket has the following bucket policy: Which change should the security engineer make to the policy to ensure that the Lambda function can read the bucket objects?",
+    "question": "A security engineer is troubleshooting an AWS Lambda function that is named MyLambdaFunction. The function is encountering an error when the function attempts to read the objects in an Amazon S3 bucket that is named DOC-EXAMPLE-BUCKET. The S3 bucket has the following bucket policy:\n\n{\n  \"Effect\": \"Allow\",\n  \"Principal\": {\n    \"Service\": \"lambda.amazonaws.com\"\n  },\n  \"Action\": \"s3:GetObject\",\n  \"Resource\": \"arn:aws:s3:::DOC-EXAMPLE-BUCKET\",\n  \"Condition\": {\n    \"ArnLike\": {\n      \"aws:SourceArn\": \"arn:aws:lambda:::function:MyLambdaFunction\"\n    }\n  }\n}\n Which change should the security engineer make to the policy to ensure that the Lambda function can read the bucket objects?",
     "options": {
-      "A": "Remove the Condition element. Change the Principal element to the following:",
-      "B": "Change the Action element to the following:",
+      "A": "Remove the Condition element. Change the Principal element to the following:\n{ \"AWS\": \"arn:aws:lambda:::function:MyLambdaFunction\" }",
+      "B": "Change the Action element to the following:\n[ \"s3:GetObject*\", \"s3:GetBucket*\" ]",
       "C": "Change the Resource element to \"arn:aws:s3:::DOC-EXAMPLE- BUCKET/*''.",
-      "D": "Change the Resource element to \"arn:aws:lambda:::function:MyLambdaFunction\". Change the Principal element to the following:"
+      "D": "Change the Resource element to \"arn:aws:lambda:::function:MyLambdaFunction\". Change the Principal element to the following:\n{ \"Service\": \"s3.amazonaws.com\" }"
     },
     "answer": "C",
     "explanations": {
@@ -46,7 +46,7 @@
     "exam": "SCS-C03",
     "id": 3,
     "type": "single",
-    "question": "An AWS account administrator created an IAM group and applied the following managed policy to require that each individual user authenticate using multi-factor authentication: After implementing the policy, the administrator receives reports that users are unable to perform Amazon EC2 commands using the AWS CLI. What should the administrator do to resolve this problem while still enforcing multi-factor authentication? AWS",
+    "question": "An AWS account administrator created an IAM group and applied the following managed policy to require that each individual user authenticate using multi-factor authentication:\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"ec2:*\",\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"BlockAnyAccessUnlessSignedInWithMFA\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:*\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"BoolIfExists\": {\n          \"aws:MultiFactorAuthPresent\": false\n        }\n      }\n    }\n  ]\n}\n\nAfter implementing the policy, the administrator receives reports that users are unable to perform Amazon EC2 commands using the AWS CLI. What should the administrator do to resolve this problem while still enforcing multi-factor authentication? AWS",
     "options": {
       "A": "Change the value of aws:MultiFactorAuthPresent to true.",
       "B": "Instruct users to run the aws sts get-session-token CLI command and pass the multi-factor authentication --serial-number and -token-code parameters. Use these resulting values to make API/CLI calls.",
@@ -106,7 +106,7 @@
     "exam": "SCS-C03",
     "id": 6,
     "type": "single",
-    "question": "What is the effect of the following AWS Key Management Service (AWS KMS} key policy that is attached to a customer managed key?",
+    "question": "What is the effect of the following AWS Key Management Service (AWS KMS} key policy that is attached to a customer managed key?\n\n{\n  \"Effect\": \"Allow\",\n  \"Principal\": {\n    \"AWS\": \"arn:aws:iam::111122223333:role/ExampleRole\"\n  },\n  \"Action\": [\n    \"kms:Encrypt\",\n    \"kms:Decrypt\",\n    \"kms:GenerateDataKey*\",\n    \"kms:CreateGrant\",\n    \"kms:ListGrants\"\n  ],\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringEquals\": {\n      \"kms:ViaService\": [\n        \"workmail.us-west-2.amazonaws.com\",\n        \"ses.us-west-2.amazonaws.com\"\n      ]\n    }\n  }\n}",
     "options": {
       "A": "Amazon WorkMail and Amazon Simple Email Service (Amazon SES) have delegated KMS encrypt and decrypt permissions to the ExampleRole principal in the 111122223333 account. Amazon WorkMail",
       "B": "The ExampleRole principal can transparently encrypt and decrypt email exchanges specifically between ExampleRole and AWS. ExampleRole",
@@ -888,14 +888,14 @@
     "type": "single",
     "question": "A company is running a new workload across accounts that are in an organization in AWS Organizations. All running resources must have a tag of CostCenter, and the tag must have one of three approved values. The company must enforce this policy and must prevent any changes of the CostCenter tag to a non-approved value. Which solution will meet these requirements?",
     "options": {
-      "A": "Create an AWS Config Custom Policy rule by using AWS CloudFormatlon Guard. Include the tag key of CostCenter and the approved values. Create an SCP that denies the creation of resources when the value of the aws:RequestTagCostCenter condition key is not one of the three approved values.",
+      "A": "Create an AWS Config Custom Policy rule by using AWS CloudFormation Guard. Include the tag key of CostCenter and the approved values. Create an SCP that denies the creation of resources when the value of the aws:RequestTagCostCenter condition key is not one of the three approved values.",
       "B": "Create an AWS CloudTrail trail. Create an Amazon EventBridge rule that includes a rule statement that matches the creation of new resources. Configure the EventBridge rule to invoke an AWS Lambda function that checks for the CostCenter tag. Program the Lambda function to block creation in case of a noncompliant value.",
       "C": "Enable tag policies for the organization. Create a tag policy that specifies a tag key of CostCenter and the approved values. Configure the policy to enforce noncompliant operations. Create an SCP that denies the creation of resources when the aws:RequestTag.CostCenter condition key has a null value.",
       "D": "Enable tag policies for the organization. Create a tag policy that specifies a tag key of CostCenter and the approved values. Create an Amazon EventBridge rule that invokes an AWS Lambda function when a noncompliant tag is created. Program the Lambda function to block changes to the tag."
     },
     "answer": "A",
     "explanations": {
-      "A": "Create an AWS Config Custom Policy rule by using AWS CloudFormatlon Guard. Include the tag key of CostCenter and the approved values. Create an SCP that denies the creation of resources when the value of the aws:RequestTagCostCenter condition key is not one of the three approved values.",
+      "A": "Create an AWS Config Custom Policy rule by using AWS CloudFormation Guard. Include the tag key of CostCenter and the approved values. Create an SCP that denies the creation of resources when the value of the aws:RequestTagCostCenter condition key is not one of the three approved values.",
       "B": "Create an AWS CloudTrail trail. Create an Amazon EventBridge rule that includes a rule statement that matches the creation of new resources. Configure the EventBridge rule to invoke an AWS Lambda function that checks for the CostCenter tag. Program the Lambda function to block creation in case of a noncompliant value.",
       "C": "Enable tag policies for the organization. Create a tag policy that specifies a tag key of CostCenter and the approved values. Configure the policy to enforce noncompliant operations. Create an SCP that denies the creation of resources when the aws:RequestTag.CostCenter condition key has a null value.",
       "D": "Enable tag policies for the organization. Create a tag policy that specifies a tag key of CostCenter and the approved values. Create an Amazon EventBridge rule that invokes an AWS Lambda function when a noncompliant tag is created. Program the Lambda function to block changes to the tag."
@@ -1037,14 +1037,14 @@
       "A": "Configure GuardDuty to directly invoke the Lambda function if GuardDuty generates a CryptoCurrency:EC2/* finding event.",
       "B": "Configure an AWS Config rule that invokes the Lambda function if a CryptoCurroncy:EC2/* configuration change event occurs for an EC2 instance.",
       "C": "Configure an Amazon EventBridge rule that invokes the Lambda function if GuardDuty generates a CryptoCurrency:EC2/* finding event.",
-      "D": "Configure an Amazon EventBridge rule that invokes the Lambda function if AWS Config detects a CryptoCurrency:ЕС2/* configuration change event for an EC2 instance."
+      "D": "Configure an Amazon EventBridge rule that invokes the Lambda function if AWS Config detects a CryptoCurrency:EC2/* configuration change event for an EC2 instance."
     },
     "answer": "C",
     "explanations": {
       "A": "Configure GuardDuty to directly invoke the Lambda function if GuardDuty generates a CryptoCurrency:EC2/* finding event.",
       "B": "Configure an AWS Config rule that invokes the Lambda function if a CryptoCurroncy:EC2/* configuration change event occurs for an EC2 instance.",
       "C": "Configure an Amazon EventBridge rule that invokes the Lambda function if GuardDuty generates a CryptoCurrency:EC2/* finding event.",
-      "D": "Configure an Amazon EventBridge rule that invokes the Lambda function if AWS Config detects a CryptoCurrency:ЕС2/* configuration change event for an EC2 instance."
+      "D": "Configure an Amazon EventBridge rule that invokes the Lambda function if AWS Config detects a CryptoCurrency:EC2/* configuration change event for an EC2 instance."
     }
   },
   {

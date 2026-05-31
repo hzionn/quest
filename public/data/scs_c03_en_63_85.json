@@ -1,0 +1,501 @@
+[
+  {
+    "exam": "SCS-C03",
+    "id": 63,
+    "type": "single",
+    "question": "A company runs an application on an Amazon EC2 instance. The application generates invoices and stores them in an Amazon S3 bucket. The instance profile that is attached to the instance has appropriate access to the S3 bucket. The company needs to share each invoice with multiple clients that do not have AWS credentials. Each client must be able to download only the client's own invoices. Clients must download their invoices within 1 hour of invoice creation. Clients must use only temporary credentials to access the company's AWS resources. A security engineer creates a script that runs on the EC2 instance. The script uses the instance profile to generate an S3 presigned URL for the clients. Each presigned URL expires after 1 hour. Which additional step will meet these requirements?",
+    "options": {
+      "A": "Update the S3 bucket policy to ensure that clients that use presigned URLs have the S3:Get* permission and the S3:List* permission to access S3 objects in the bucket.",
+      "B": "Add a StringEquals condition to the IAM role policy for the EC2 instance profile. Configure the policy condition to restrict access based on the s3:ResourceTag/ClientId tag of each invoice. Tag each generated invoice with the ID of its corresponding client.",
+      "C": "Update the script to use AWS Security Token Service (AWS STS) to obtain new credentials each time the script runs by assuming a new role that has S3 GetObject permissions. Use the credentials to generate the presigned URLs.",
+      "D": "Generate an access key and a secret key for an IAM user that has S3:GetObject permissions on the S3 bucket. Embed the keys into the script. Use the keys to generate the presigned URLs."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：预签名 URL 的权限由生成 URL 时所用的凭证决定，而非客户后续请求时的权限；客户无需在桶策略中获得额外权限。此选项混淆了预签名 URL 的权限模型。",
+      "B": "错误：基于标签的访问控制只限制了 EC2 角色的访问范围，并未解决“客户必须使用临时凭证”的核心需求，也没有改变预签名 URL 的签名者身份。",
+      "C": "正确：通过 AWS STS AssumeRole 获取一个仅具备 S3:GetObject 权限的最小权限角色的短期临时凭证，再用其签名生成预签名 URL，既满足“客户使用临时凭证”，也符合最小权限原则。",
+      "D": "错误：IAM 用户的访问密钥/秘密密钥是长期静态凭证，与“仅使用临时凭证”的要求相悖，且将密钥嵌入脚本存在泄露风险。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 64,
+    "type": "single",
+    "question": "A company is using Amazon Macie, AWS Firewall Manager, Amazon Inspector, and AWS Shield Advanced in its AWS account. The company wants to receive alerts if a DDoS attack occurs against the account. Which solution will meet this requirement?",
+    "options": {
+      "A": "Use Macie to detect an active DDoS event. Create Amazon CloudWatch alarms that respond to Macie findings.",
+      "B": "Use Amazon Inspector to review resources and to invoke Amazon CloudWatch alarms for any resources that are vulnerable to DDoS attacks.",
+      "C": "Create an Amazon CloudWatch alarm that monitors Firewall Manager metrics for an active DDoS event.",
+      "D": "Create an Amazon CloudWatch alarm that monitors Shield Advanced metrics for an active DDoS event."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：Macie 用于发现和保护 S3 中的敏感数据，不具备 DDoS 检测能力。",
+      "B": "错误：Inspector 评估软件漏洞和暴露面，无法实时检测正在发生的 DDoS 攻击。",
+      "C": "错误：Firewall Manager 用于集中管理 WAF/Shield/安全组策略，本身不提供实时 DDoS 检测指标。",
+      "D": "正确：Shield Advanced 专门提供 DDoS 检测与可见性，会向 CloudWatch 发布 DDoSDetected 等指标，针对这些指标创建 CloudWatch 告警是接收 DDoS 告警的标准方式。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 65,
+    "type": "single",
+    "question": "A company runs critical workloads in an on-premises data center. The company wants to implement an AWS based disaster recovery (DR) solution that will achieve an RTO of less than 1 hour. The company needs to continuously replicate physical and virtual servers. The company must optimize costs for data storage and bandwidth usage. The DR solution must be automated. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use AWS Backup to directly replicate the on-premises servers to AWS. Enable cross-Region backup copying and data vaulting. Configure recovery points to match the defined RTO. Use AWS Step Functions to automate recovery steps.",
+      "B": "Configure an AWS Storage Gateway Volume Gateway to use Amazon Elastic Block Store (Amazon EBS) snapshots for recovery. Configure AWS Backup to manage the snapshots. Create automated recovery procedures.",
+      "C": "Enable AWS Elastic Disaster Recovery. Configure replication agents to continuously replicate each on-premises server. Enable the default staging area subnet configuration.",
+      "D": "Create an AWS Direct Connect connection between the on-premises data center and AWS. Configure Amazon EventBridge to monitor for failures and to invoke AWS Lambda functions that launch preconfigured Amazon EC2 instances from AMIs in the event of an incident."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：AWS Backup 基于备份点恢复，无法对服务器做持续的块级复制，难以实现 1 小时以内的 RTO。",
+      "B": "错误：卷网关 + 快照面向本地卷存储与备份，不是面向服务器持续复制的 DR 方案，RTO 与自动化程度不足。",
+      "C": "正确：AWS Elastic Disaster Recovery (DRS) 通过复制代理对物理和虚拟服务器进行持续的块级复制，使用低成本暂存区优化存储/带宽，并支持自动化恢复，可实现小于 1 小时的 RTO。",
+      "D": "错误：仅靠 Direct Connect + 从 AMI 启动实例无法持续复制服务器数据，AMI 不会实时反映最新数据。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 66,
+    "type": "multiple",
+    "question": "A company in France uses Amazon Cognito with the Cognito Hosted UI as an identity broker for sign-in and sign-up processes. The company is marketing an application and expects that all the application's users will come from France. When the company launches the application, the company's security team observes fraudulent sign-ups for the application. Most of the fraudulent registrations are from users outside of France. The security team needs a solution to perform custom validation at sign-up. Based on the results of the validation, the solution must accept or deny the registration request. Which combination of steps will meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Create a pre sign-up AWS Lambda trigger. Associate the Lambda function with the Amazon Cognito user pool.",
+      "B": "Use a geographic match rule statement to configure an AWS WAF web ACL. Associate the web ACL with the Amazon Cognito user pool.",
+      "C": "Configure an app client for the application's Amazon Cognito user pool. Use the app client ID to validate the requests in the hosted UI.",
+      "D": "Update the application's Amazon Cognito user pool to configure a geographic restriction setting.",
+      "E": "Use Amazon Cognito to configure a social identity provider (IdP) to validate the requests on the hosted UI."
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "正确：pre sign-up Lambda 触发器可在注册时执行自定义验证逻辑，并根据结果接受或拒绝注册请求。",
+      "B": "正确：将带地理匹配规则的 AWS WAF web ACL 关联到 Cognito 用户池，可阻止来自法国境外的请求，从源头减少欺诈注册。",
+      "C": "错误：应用客户端 ID 用于标识应用与用户池交互，并不能对注册请求做地理或自定义校验。",
+      "D": "错误：Cognito 用户池本身没有“地理限制”这一原生配置项，需借助 WAF 实现。",
+      "E": "错误：配置社交 IdP 只是增加登录方式，无法在注册时按地理位置进行验证或拒绝。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 67,
+    "type": "single",
+    "question": "A company uses an organization in AWS Organizations to manage multiple AWS accounts. The company wants to centrally give users the ability to access Amazon Q Developer. Which solution will meet this requirement?",
+    "options": {
+      "A": "Enable AWS IAM Identity Center and set up Amazon Q Developer as an AWS managed application.",
+      "B": "Enable Amazon Cognito and create a new identity pool for Amazon Q Developer.",
+      "C": "Enable Amazon Cognito and set up Amazon Q Developer as an AWS managed application.",
+      "D": "Enable AWS IAM Identity Center and create a new identity pool for Amazon Q Developer."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：Amazon Q Developer 与 IAM Identity Center 集成，作为 AWS 托管应用程序接入后，可在 Organizations 范围内集中地为用户分配访问权限。",
+      "B": "错误：Cognito 面向应用程序的终端用户身份，身份池用于换取 AWS 临时凭证，并非集中管理 Q Developer 访问的方式。",
+      "C": "错误：Amazon Q Developer 不通过 Cognito 作为托管应用接入。",
+      "D": "错误：IAM Identity Center 通过权限集/应用分配访问，并不使用“身份池”这一概念。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 68,
+    "type": "multiple",
+    "question": "An ecommerce website was down for 1 hour following a DDoS attack. Users were unable to connect to the website during the attack period. The ecommerce company's security team is worried about future potential attacks and wants to prepare for such events. The company needs to minimize downtime in its response to similar attacks in the future. Which steps would help achieve this? (Choose two.)",
+    "options": {
+      "A": "Enable Amazon GuardDuty to automatically monitor for malicious activity and block unauthorized access.",
+      "B": "Subscribe to AWS Shield Advanced and reach out to AWS Support in the event of an attack.",
+      "C": "Use VPC Flow Logs to monitor network traffic and an AWS Lambda function to automatically block an attacker's IP using security groups.",
+      "D": "Set up an Amazon EventBridge rule to monitor the AWS CloudTrail events in real time, use AWS Config rules to audit the configuration, and use AWS Systems Manager for remediation.",
+      "E": "Use AWS WAF to create rules to respond to such attacks."
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "错误：GuardDuty 是威胁检测服务，不能缓解 DDoS 攻击或减少其造成的停机。",
+      "B": "正确：AWS Shield Advanced 提供增强的 DDoS 防护与 DDoS 响应团队 (DRT) 支持，可在攻击时快速缓解、减少停机。",
+      "C": "错误：依靠 Flow Logs + Lambda 手动封禁 IP 反应滞后，难以应对大规模分布式攻击。",
+      "D": "错误：CloudTrail/Config/SSM 面向 API 审计与配置管理，与缓解 DDoS、减少停机无关。",
+      "E": "正确：AWS WAF 规则可拦截应用层 (L7) 攻击流量，配合 Shield 有效减少攻击造成的停机。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 69,
+    "type": "single",
+    "question": "A company has two AWS accounts: Account A and Account B. Each account has a VPC. An application that runs in the VPC in Account A needs to write to an Amazon S3 bucket in Account B. The application in Account A already has permission to write to the S3 bucket in Account B. The application and the S3 bucket are in the same AWS Region. The company cannot send network traffic over the public internet. Which solution will meet these requirements?",
+    "options": {
+      "A": "In both accounts, create a transit gateway and VPC attachments in a subnet in each Availability Zone. Update the VPC route tables.",
+      "B": "Deploy a software VPN appliance in Account A. Create a VPN connection between the software VPN appliance and a virtual private gateway in Account B.",
+      "C": "Create a VPC peering connection between the VPC in Account A and the VPC in Account B. Update the VPC route tables, network ACLs, and security groups to allow network traffic between the peered IP ranges.",
+      "D": "In Account A, create a gateway VPC endpoint for Amazon S3. Update the VPC route table in Account A."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：Transit Gateway 用于互联 VPC，但 S3 是区域级服务而非 VPC 内资源，互联 VPC 无法私有访问 S3，且成本/复杂度高。",
+      "B": "错误：软件 VPN 设备增加运维负担，并非访问同区域 S3 的合适私有连接方式。",
+      "C": "错误：S3 在 VPC 之外，VPC 对等只连通两个 VPC，无法让流量私有地到达 S3。",
+      "D": "正确：S3 网关 VPC 终端节点让 VPC 内流量经 AWS 私有网络访问 S3，无需经过公共互联网；权限已具备，只需在账户 A 创建网关终端节点并更新路由表即可。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 70,
+    "type": "single",
+    "question": "A security engineer needs to build a solution to turn AWS CloudTrail back on in multiple AWS Regions in case it is ever turned off. What is the MOST efficient way to implement this solution?",
+    "options": {
+      "A": "Use AWS Config with a managed rule to initiate the AWS-EnableCloudTrail remediation.",
+      "B": "Create an Amazon EventBridge event with a cloudtrail.amazonaws.com event source and a StartLogging event name to invoke an AWS Lambda function to call the StartLogging API.",
+      "C": "Create an Amazon CloudWatch alarm with a cloudtrail.amazonaws.com event source and a StopLogging event name to invoke an AWS Lambda function to call the StartLogging API.",
+      "D": "Monitor AWS Trusted Advisor to ensure CloudTrail logging is enabled."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：AWS Config 托管规则可检测 CloudTrail 是否启用，并通过内置的 AWS-EnableCloudTrail 自动修复动作直接重新开启，无需自建 Lambda，最为高效。",
+      "B": "错误：StartLogging 事件表示日志已被开启，监控它无法在“被关闭”时触发；且需自建 Lambda，较繁琐。",
+      "C": "错误：CloudWatch 告警基于指标而非事件源/事件名，此配置不成立。",
+      "D": "错误：Trusted Advisor 仅提供检查/提示，不能自动重新启用 CloudTrail。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 71,
+    "type": "single",
+    "question": "A company maintains both on-premises legacy systems and resources in AWS. The AWS resources include an Amazon DynamoDB table and an Amazon S3 bucket. The on-premises legacy systems need to connect to DynamoDB and Amazon S3 on a regular basis. The company currently uses a bastion host in a public subnet in a VPC. The company connects to the bastion host by using an SSH private key that the company stores on-premises. The instance profile that is assigned to the bastion host has full access to Amazon S3 and DynamoDB. A security team issues a new internal policy that requires all bastion hosts to be removed. The policy requires all systems to authenticate by using certificate-based authentication. Which solution will meet these requirements?",
+    "options": {
+      "A": "Set up an AWS Direct Connect connection and create a VPN connection to a VPC that has access to VPC endpoints for the required services.",
+      "B": "Set up the on-premises systems to use AWS IAM Roles Anywhere to authenticate.",
+      "C": "Use AWS Private Certificate Authority to issue SSL certificates to give on-premises systems access to resources on AWS.",
+      "D": "Create an IAM user that has permission to temporarily assume an IAM role and to use temporarily assumed role credentials to access the required resources."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：Direct Connect/VPN 解决的是网络连通性，并不提供基于证书的身份验证，也无法移除对长期凭证的依赖。",
+      "B": "正确：IAM Roles Anywhere 允许本地（非 AWS）工作负载使用 X.509 证书获取临时 AWS 凭证，正好满足“基于证书的身份验证”且无需堡垒主机。",
+      "C": "错误：Private CA 仅负责签发证书，本身不提供本地系统获取 AWS 访问权限的机制。",
+      "D": "错误：仍需创建 IAM 用户（长期凭证），且未使用基于证书的身份验证。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 72,
+    "type": "single",
+    "question": "A company uses an organization in AWS Organizations to manage multiple AWS accounts. Users access AWS accounts by using IAM users and secret access keys. A security team requires all access to accounts to use temporary security credentials that expire after 60 minutes. Users must use a SAML-based identity provider (IdP) to access the accounts. Which solution will meet these requirements?",
+    "options": {
+      "A": "Enable access to the AWS Security Token Service (AWS STS). Ensure that users run the get-session-token AWS CLI command with an appropriate duration. Require users to use STS temporary credentials to access AWS accounts.",
+      "B": "Set up AWS IAM Identity Center and configure an external IdP. Configure permission sets that allow the access that the users require. Configure a session duration limit. Require the users to retrieve SSO credentials by using the AWS CLI. Remove the IAM users from the AWS accounts.",
+      "C": "Set up AWS Secrets Manager and Amazon Cognito in each AWS account. Configure a Cognito identity pool to use an external IdP and connect to Secrets Manager. Enable managed secret rotation in Secrets Manager. Ensure that the users run the get-secret-value AWS CLI command to access the AWS accounts.",
+      "D": "Enable AWS IAM Roles Anywhere in the organization management account. Ensure that users install the credential helper tool. Configure IAM roles within the management account with an appropriate session duration. Ensure that the users retrieve temporary credentials from the credential helper tool to access the AWS accounts."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：get-session-token 不涉及 SAML 联合，且仍基于现有 IAM 用户的长期密钥，不满足 SAML IdP 要求。",
+      "B": "正确：IAM Identity Center 对接外部 SAML IdP，通过权限集授予访问并可设置会话有效期（如 60 分钟），用户经 SSO 获取临时凭证，同时移除 IAM 用户，完全满足要求。",
+      "C": "错误：Cognito/Secrets Manager 不是多账户 SAML 单点登录方案，get-secret-value 取到的是静态密钥。",
+      "D": "错误：IAM Roles Anywhere 面向使用 X.509 证书的本地工作负载，而非基于 SAML 的用户登录。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 73,
+    "type": "ordering",
+    "question": "A company is developing an incident response process to quarantine Amazon EC2 hosts that become infected by malware. The company uses an organization in AWS Organizations to manage multiple AWS accounts. The company configures AWS Security Hub in the organization to receive findings from multiple accounts that run across multiple AWS Regions. A security engineer develops an AWS Lambda function to remove all the rules from all security groups for any EC2 instance the company suspects might be infected by malware. Select and order the correct steps from the following list to deploy and use the Lambda function as a custom action in Security Hub. Select each step one time or not at all. (Select and order THREE.)",
+    "available_steps": [
+      "Create a custom action that uses the Lambda function in Security Hub.",
+      "Create and apply a filter set to the Amazon EventBridge rule in Security Hub.",
+      "Define a rule in Amazon EventBridge.",
+      "Select the custom action in Security Hub for EC2 host findings.",
+      "Select the custom action in Security Hub for security group findings."
+    ],
+    "ordered_steps": [
+      "Create a custom action that uses the Lambda function in Security Hub.",
+      "Define a rule in Amazon EventBridge.",
+      "Select the custom action in Security Hub for EC2 host findings."
+    ],
+    "explanations": {
+      "_full": "在 Security Hub 中将 Lambda 作为自定义操作使用的正确流程：① 在 Security Hub 中创建一个调用该 Lambda 函数的自定义操作（生成自定义操作 ARN）；② 在 Amazon EventBridge 中定义一条规则，匹配该自定义操作并以该 Lambda 函数为目标；③ 在 Security Hub 中针对 EC2 主机发现结果选择该自定义操作以触发隔离。其余选项（为 EventBridge 规则创建筛选器集、为安全组发现结果选择自定义操作）与本场景无关，不使用。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 74,
+    "type": "single",
+    "question": "A company begins to use AWS WAF after experiencing an increase in traffic to the company's public web applications. A security engineer needs to determine if the increase in traffic is because of application-layer attacks. The security engineer needs a solution to analyze AWS WAF traffic. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure AWS WAF to send logs to a trail in AWS CloudTrail. Create an Amazon Data Firehose delivery stream to send the logs to Amazon OpenSearch Service. Use OpenSearch Dashboards and an Amazon Athena connector to query the logs.",
+      "B": "Configure AWS WAF to send logs to an Amazon S3 bucket. Configure an OpenSearch table with a partition projection of the S3 bucket. Use OpenSearch to query the data in the S3 bucket.",
+      "C": "Configure AWS WAF to send logs to an Amazon S3 bucket. Configure an Amazon Athena table with a partition projection of the S3 bucket. Use Athena to query the data in the S3 bucket.",
+      "D": "Configure AWS WAF to send logs to a trail in AWS CloudTrail. Create an Amazon Data Firehose delivery stream to send the logs to an Amazon S3 bucket. Use Amazon Athena to query the data in the S3 bucket."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：AWS WAF 日志不发送到 CloudTrail（CloudTrail 记录 API 调用，而非 WAF 流量日志）。",
+      "B": "错误：分区投影是 Amazon Athena 的特性，OpenSearch 没有“带分区投影的表”这一概念。",
+      "C": "正确：AWS WAF 可直接将日志投递到 S3，再用带分区投影的 Athena 表对日志进行 SQL 查询分析，是分析 WAF 流量的标准、低运维方案。",
+      "D": "错误：同样错误地让 WAF 日志经由 CloudTrail，路径不正确且冗余。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 75,
+    "type": "single",
+    "question": "A company with 50 AWS accounts managed through AWS Organizations needs to set up a centralized threat detection solution. The solution must identify suspicious and potentially malicious activity across all accounts in the organization. The company uses AWS Control Tower and wants to centralize security findings into an audit account. A security team must receive email alerts within 5 minutes of any new security findings. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure Amazon GuardDuty with a delegated administrator in the audit account. Enable GuardDuty across all member accounts through the delegated administrator account. Create an Amazon EventBridge rule to send GuardDuty findings to an Amazon SNS topic that delivers email notifications to the security team.",
+      "B": "Set up Amazon GuardDuty in each member account, and create IAM roles to allow cross-account access from the audit account. Configure Amazon CloudWatch alarms in each account to monitor for security findings and to send notifications to an Amazon Simple Notification Service (Amazon SNS) topic in the audit account.",
+      "C": "Enable AWS Config in the audit account and create custom rules to detect security issues across the organization. Use AWS Systems Manager to collect security findings from all member accounts and to store the findings in a centralized Amazon S3 bucket. Create an AWS Lambda function to monitor the S3 bucket and to send email notifications to the security team when new findings are detected.",
+      "D": "Deploy Amazon Inspector agents across all Amazon EC2 instances in the organization. Configure the Amazon Inspector agents to report to a central Amazon Inspector console in the audit account. Create Amazon EventBridge rules in each member account to forward findings to an Amazon Simple Notification Service (Amazon SNS) topic in the audit account."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：GuardDuty 通过委派管理员实现组织级集中威胁检测并将发现汇聚到审计账户；EventBridge + SNS 可在发现产生后近实时（远小于 5 分钟）发送邮件告警，运维最少。",
+      "B": "错误：逐账户用 CloudWatch 告警监控既分散又难以保证时效，GuardDuty 发现应经 EventBridge 而非 CloudWatch 指标。",
+      "C": "错误：AWS Config 面向配置合规而非威胁检测；SSM+S3+Lambda 链路复杂且难以保证 5 分钟时效。",
+      "D": "错误：Inspector 面向漏洞评估而非可疑活动威胁检测，不符合需求。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 76,
+    "type": "single",
+    "question": "A security engineer needs to protect a public web application that runs in a VPC. The VPC hosts the origin for an Amazon CloudFront distribution. The application has experienced multiple layer 7 DDoS attacks. An AWS WAF web ACL is associated with the CloudFront distribution. The web ACL contains one AWS managed rule to protect against known IP addresses that have bad reputations. The security engineer must configure an automated solution that detects and mitigates layer 7 DDoS attacks in real time with no manual effort. Which solution will meet these requirements?",
+    "options": {
+      "A": "Enable AWS Shield Advanced on the CloudFront distribution. Configure alerts in Amazon CloudWatch for DDoS indicators.",
+      "B": "Enable AWS Shield Advanced and configure proactive engagement with the AWS DDoS Response Team.",
+      "C": "Deploy AWS Network Firewall in the VPC. Create security policies that detect DDoS indicators. Create an AWS Lambda function to automatically update the web ACL rules during an attack.",
+      "D": "Add a rate-based rule to the web ACL. Enable AWS Shield Advanced. Enable automatic application layer DDoS mitigation on the CloudFront distribution."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：仅启用 Shield Advanced 并配置告警只能通知，不能自动缓解第 7 层攻击。",
+      "B": "错误：主动互动是人工响应机制，不满足“无需人工干预的实时自动缓解”。",
+      "C": "错误：Network Firewall 工作在网络/传输层，难以应对第 7 层（应用层）攻击，且自建 Lambda 维护复杂。",
+      "D": "正确：基于速率的规则 + Shield Advanced 的“自动应用层 DDoS 缓解”可让 Shield 自动生成并部署 WAF 规则，实时、无需人工地缓解 L7 DDoS 攻击。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 77,
+    "type": "single",
+    "question": "A company uses AWS Organizations with all features enabled. The company has enabled AWS Security Hub in all member accounts and in all AWS Regions. The company has created a VPC in the eu-central-1 Region in a member AWS account. A security engineer has verified that no security group rules in the VPC allow inbound traffic from all IP addresses on TCP port 22. The security engineer needs an automated system. The system must prevent the creation of security group rules in the VPC that allow traffic from all IP addresses on TCP port 22. Which solution will meet these requirements?",
+    "options": {
+      "A": "Enable an AWS CloudTrail organization trail that logs to an Amazon CloudWatch Logs log group. Create a CloudWatch alarm based on a log group metric filter. Configure the alarm to publish to an Amazon SNS topic when a security group rule is added that allows inbound traffic from all IP addresses. Subscribe the security engineer's email address to the SNS topic.",
+      "B": "Create an Amazon EventBridge rule that filters for Security Hub findings about security group rules that allow inbound traffic from all IP addresses on TCP port 22. Configure the EventBridge rule to target an AWS Lambda function that removes the unwanted security group rule.",
+      "C": "Create an SCP that prevents the creation or modification of security group rules that allow inbound traffic from all IP addresses on TCP port 22.",
+      "D": "Deploy AWS Network Firewall with a rule that inspects all inbound traffic and prevents incoming traffic on TCP port 22."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：CloudTrail + 告警只能在规则创建后事后通知，无法“阻止”创建。",
+      "B": "错误：基于 Security Hub 发现的 Lambda 是事后检测并删除，规则会先被成功创建，属于补救而非预防。",
+      "C": "正确：SCP 是预防性控制，可在组织/账户层面直接拒绝创建或修改此类危险安全组规则，从源头阻止，满足“阻止创建”的要求。",
+      "D": "错误：Network Firewall 过滤网络流量，并不能阻止安全组规则的创建。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 78,
+    "type": "single",
+    "question": "A company runs an application on a fleet of Amazon EC2 instances. The application is accessible to users around the world. The company associates an AWS WAF web ACL with an Application Load Balancer (ALB) that routes traffic to the EC2 instances. A security engineer is investigating a sudden increase in traffic to the application. The security engineer discovers a significant amount of potentially malicious requests coming from hundreds of IP addresses in two countries. The security engineer wants to quickly limit the potentially malicious requests. The security engineer does not want to prevent legitimate users from accessing the application. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use AWS WAF to implement a rate-based rule for all incoming requests.",
+      "B": "Use AWS WAF to implement a geographical match rule to block all incoming traffic from the two countries.",
+      "C": "Edit the ALB security group to include a geographical match rule to block all incoming traffic from the two countries.",
+      "D": "Add deny rules to the ALB security group that prohibit incoming requests from the IP addresses."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：基于速率的规则只在请求速率超过阈值时限制来源，可快速抑制高频恶意请求，同时不会误伤正常速率的合法用户。",
+      "B": "错误：按国家整体封锁会连同该国的合法用户一起拦截，违背“不阻止合法用户”的要求。",
+      "C": "错误：安全组不支持地理匹配规则，无法实现按国家过滤。",
+      "D": "错误：恶意 IP 多达数百且会变化，逐一在安全组中拒绝既不现实也难以维护。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 79,
+    "type": "matching",
+    "question": "A security engineer needs to prepare for a security audit of an AWS account. Select the correct AWS resource from the following list to meet each requirement. Select each resource one time or not at all.",
+    "available_options": [
+      "AWS Artifact reports",
+      "AWS Audit Manager controls",
+      "AWS Config conformance packs",
+      "AWS Config rules",
+      "Amazon Detective investigations",
+      "AWS Identity and Access Management Access Analyzer internal access analyzers"
+    ],
+    "matches": [
+      {
+        "use_case": "Automatically collect evidence from AWS CloudTrail, AWS Config, and AWS Security Hub for an assessment report.",
+        "correct_answer": "AWS Audit Manager controls"
+      },
+      {
+        "use_case": "Determine which IAM principals within the AWS account have access to a specified resource.",
+        "correct_answer": "AWS Identity and Access Management Access Analyzer internal access analyzers"
+      },
+      {
+        "use_case": "Download AWS security and compliance documents on demand.",
+        "correct_answer": "AWS Artifact reports"
+      }
+    ],
+    "explanations": {
+      "_full": "① 自动从 CloudTrail/Config/Security Hub 收集证据生成评估报告 → AWS Audit Manager（自动、持续地收集合规证据）。② 确定哪些 IAM 主体可访问指定资源 → IAM Access Analyzer 内部访问分析器（分析资源的可访问主体）。③ 按需下载安全与合规文档 → AWS Artifact（提供 AWS 合规报告与协议下载）。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 80,
+    "type": "single",
+    "question": "A company uses AWS Organizations to manage an organization that consists of three workload OUs: Production, Development, and Testing. The company uses AWS CloudFormation templates to define and deploy workload infrastructure in AWS accounts that are associated with the OUs. Different SCPs are attached to each workload OU. The company successfully deployed a CloudFormation stack update to workloads in the Development OU and the Testing OU. When the company uses the same CloudFormation template to deploy the stack update in an account in the Production OU, the update fails. The error message reports insufficient IAM permissions. What is the FIRST step that a security engineer should take to troubleshoot this issue?",
+    "options": {
+      "A": "Review the AWS CloudTrail logs in the account in the Production OU. Search for any failed API calls from CloudFormation during the deployment attempt.",
+      "B": "Remove all the SCPs that are attached to the Production OU. Rerun the CloudFormation stack update to determine if the SCPs were preventing the CloudFormation API calls.",
+      "C": "Confirm that the role used by CloudFormation has sufficient permissions to create, update, and delete the resources that are referenced in the CloudFormation template.",
+      "D": "Make all the SCPs that are attached to the Production OU the same as the SCPs that are attached to the Testing OU."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：排查权限问题的第一步应是查看 CloudTrail 日志，定位部署期间具体哪些 API 调用被拒绝（是 SCP 还是 IAM 角色权限），据此再做针对性修复，风险最低。",
+      "B": "错误：直接移除生产 OU 的所有 SCP 会削弱安全护栏，属于高风险操作，不应作为第一步。",
+      "C": "错误：核对角色权限是后续步骤；在未通过日志定位失败调用前就假设是角色权限，可能方向错误。",
+      "D": "错误：盲目让生产 OU 与测试 OU 的 SCP 一致会破坏生产环境的安全控制，不可取。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 81,
+    "type": "matching",
+    "question": "A company uses an organization in AWS Organizations to manage multiple AWS accounts. A security engineer needs to monitor the security compliance of AWS resources across the organization. The security engineer wants to receive notifications when any AWS resources does not comply with the company's security policies. Select the correct AWS Config based solution from the following list to meet each requirement. Select each AWS Config based solution one time.",
+    "available_options": [
+      "AWS Config aggregator",
+      "AWS Config conformance packs",
+      "AWS Config with AWS Systems Manager",
+      "AWS Config rules",
+      "AWS Config with AWS User Notifications"
+    ],
+    "matches": [
+      {
+        "use_case": "Provide a collection of compliance rules that can be deployed across the organization.",
+        "correct_answer": "AWS Config conformance packs"
+      },
+      {
+        "use_case": "Centralize compliance data from multiple accounts and AWS Regions into a single account for unified visibility.",
+        "correct_answer": "AWS Config aggregator"
+      },
+      {
+        "use_case": "Evaluate the configuration settings of AWS resources against desired settings.",
+        "correct_answer": "AWS Config rules"
+      },
+      {
+        "use_case": "Automatically take corrective measures when resources are noncompliant.",
+        "correct_answer": "AWS Config with AWS Systems Manager"
+      },
+      {
+        "use_case": "Deliver notifications when configuration changes or compliance violations are detected.",
+        "correct_answer": "AWS Config with AWS User Notifications"
+      }
+    ],
+    "explanations": {
+      "_full": "合规包 = 一组可跨组织部署的规则集合；聚合器 = 跨账户/区域集中合规数据；规则 = 按期望设置评估资源配置；与 Systems Manager 结合 = 对不合规资源自动修复；与 AWS User Notifications 结合 = 在配置更改/违规时发送通知。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 82,
+    "type": "matching",
+    "question": "A security engineer is using the AWS Well-Architected Tool to evaluate a multi-tier web application that a company hosts on AWS. During the assessment, the security engineer identifies several resources that violate design principles of the Well-Architected Framework security pillar. Select the security pillar design principle from the following list that each assessment finding primarily violates. Select each security pillar design principle one time.",
+    "available_options": [
+      "Configure service and application logging",
+      "Reduce manual management and interactive access.",
+      "Deploy software programmatically.",
+      "Control traffic flow within your network layers.",
+      "Protecting data in transit."
+    ],
+    "matches": [
+      {
+        "use_case": "Application servers require manual software patching through direct administrator access, which bypasses automated deployment pipelines.",
+        "correct_answer": "Deploy software programmatically."
+      },
+      {
+        "use_case": "Production database instances allow interactive developer sessions for troubleshooting and data analysis.",
+        "correct_answer": "Reduce manual management and interactive access."
+      },
+      {
+        "use_case": "Security groups allow access on ports 0-65535 from 0.0.0.0/0. A NAT is configured with default rules.",
+        "correct_answer": "Control traffic flow within your network layers."
+      },
+      {
+        "use_case": "Communication between the database and application workload tiers uses HTTP.",
+        "correct_answer": "Protecting data in transit."
+      },
+      {
+        "use_case": "Security events are detected only through weekly manual reviews of raw AWS CloudTrail logs that do not provide automated alerts.",
+        "correct_answer": "Configure service and application logging"
+      }
+    ],
+    "explanations": {
+      "_full": "① 手动打补丁、绕过自动化管道 → 以编程方式部署软件；② 交互式数据库开发会话 → 减少手动管理和交互式访问；③ 安全组 0.0.0.0/0 全端口开放 → 控制网络各层之间的流量；④ 应用与数据库间使用 HTTP（明文）→ 保护传输中的数据；⑤ 仅靠每周人工审查日志、无自动告警 → 配置服务与应用程序日志记录。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 83,
+    "type": "single",
+    "question": "A security engineer needs to implement a logging solution that captures detailed information about objects in an Amazon S3 bucket. The solution must include details such as the IAM identity that makes the request and the time the object was accessed. The data must be structured and available in near real time. Which solution meets these requirements?",
+    "options": {
+      "A": "Enable Amazon S3 server access logging on the S3 bucket. Create a new S3 bucket to store the logs. Analyze the logs from the logging S3 bucket.",
+      "B": "Enable AWS CloudTrail data event logging. Create a new S3 bucket to store the logs. Analyze the logs from the logging S3 bucket.",
+      "C": "Configure AWS Config rules to log access to the objects stored in the S3 bucket.",
+      "D": "Enable Amazon Macie to log access to the objects stored in the S3 bucket."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：S3 服务器访问日志为尽力而为投递、可能有数小时延迟且为非结构化文本，不满足结构化与近实时要求。",
+      "B": "正确：CloudTrail S3 数据事件以结构化 JSON 近实时记录对象级访问，包含发起请求的 IAM 身份、时间、操作等，完全满足要求。",
+      "C": "错误：AWS Config 记录资源配置变更，不记录对象级数据访问。",
+      "D": "错误：Macie 用于发现敏感数据，不提供对象访问的审计日志。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 84,
+    "type": "single",
+    "question": "A company needs to develop a code-signing application that will use a certificate authority (CA) to sign a code-signing certificate. The solution must use an AWS Key Management Service (AWS KMS) asymmetric key. The solution needs to collect and store immutable evidence about the creation, origin, and use of the KMS key for compliance purposes. This information must be made available to internal auditors. Which solution meets these requirements?",
+    "options": {
+      "A": "Create an Amazon S3 bucket with S3 Object Lock enabled. Create an AWS CloudTrail trail with an event selector and log file validation enabled for all kms.amazonaws.com CreateKey events. Configure the event selector to send the CreateKey events to the S3 bucket. Create the KMS key. Update the event selector to filter for API calls that reference the KMS key ARN. Provide the auditors with access to the S3 bucket.",
+      "B": "Implement logging for application operations that reference the KMS key. Ensure that the logs contain all associated metadata. Store the logs in an Amazon CloudWatch Logs log group. Configure an automated export of the log group. Send the export to the auditors.",
+      "C": "Create an Amazon DynamoDB table that the auditors can access. Create an AWS Lambda function that an Amazon EventBridge rule invokes. Configure the EventBridge rule to monitor KMS API calls. Configure the EventBridge rule to filter for all API calls that reference the KMS key ARN. Configure the Lambda function to store the contents of the API calls in the DynamoDB table.",
+      "D": "Set up Amazon CloudWatch Logs Insights with a custom metric to track KMS key usage. Visualize the metrics by using a CloudWatch dashboard with real-time monitoring. Configure CloudWatch alarms. Use a subscription filter to replicate the data to a separate account for the auditors to review."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：CloudTrail 记录 KMS 密钥的创建与使用 API（来源、时间、调用者），开启日志文件验证保证完整性，再配合启用对象锁的 S3 存储桶实现不可变 (WORM) 存储，完全满足“不可变证据”和审计访问的要求。",
+      "B": "错误：CloudWatch Logs 默认可被修改/删除，不提供不可变存储，不满足合规对不可篡改证据的要求。",
+      "C": "错误：DynamoDB 中的记录可被更改，不是不可变存储，且方案复杂。",
+      "D": "错误：指标/控制面板是监控用途，无法作为不可变的合规证据留存。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 85,
+    "type": "single",
+    "question": "A company is planning to deploy a new log analysis environment. The company needs to implement a solution to analyze logs from multiple AWS services in near real time. The solution must provide the ability to search the logs. The solution also must send alerts to an existing Amazon Simple Notification Service (Amazon SNS) topic when specific logs match detection rules. Which solution will meet these requirements?",
+    "options": {
+      "A": "Analyze the logs by using Amazon OpenSearch Service. Search the logs from the OpenSearch API. Use OpenSearch Service Security Analytics to match logs with detection rules and to send alerts to the SNS topic.",
+      "B": "Analyze the logs by using AWS Security Hub. Search the logs from the Findings page in Security Hub. Create custom actions to match logs with detection rules and to send alerts to the SNS topic.",
+      "C": "Analyze the logs by using Amazon CloudWatch Logs. Use a subscription filter to match logs with detection rules and to send alerts to the SNS topic. Search the logs manually by using CloudWatch Logs Insights.",
+      "D": "Analyze the logs by using Amazon QuickSight. Search the logs by listing the query results in a dashboard. Run queries to match logs with detection rules and to send alerts to the SNS topic."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：OpenSearch Service 可近实时摄取并搜索多服务日志，其 Security Analytics 内置检测规则可匹配日志并触发告警（经 SNS 通知），完整满足搜索 + 规则检测 + 告警的需求。",
+      "B": "错误：Security Hub 聚合安全发现，并非通用日志搜索/分析与自定义检测规则平台。",
+      "C": "错误：CloudWatch Logs 订阅筛选器是简单模式匹配，缺乏成熟的检测规则与全文搜索体验。",
+      "D": "错误：QuickSight 是 BI 可视化工具，不适合近实时日志检测与告警。"
+    }
+  }
+]

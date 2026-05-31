@@ -1,0 +1,501 @@
+[
+  {
+    "exam": "SCS-C03",
+    "id": 63,
+    "type": "single",
+    "question": "某公司在 Amazon EC2 实例上运行一个应用程序。该应用程序生成发票并将其存储在 Amazon S3 存储桶中。附加到该实例的实例配置文件对该 S3 存储桶具有适当的访问权限。公司需要与多个没有 AWS 凭证的客户共享每张发票，每个客户只能下载属于自己的发票，且必须在发票创建后 1 小时内下载。客户只能使用临时凭证来访问公司的 AWS 资源。一名安全工程师创建了一个在该 EC2 实例上运行的脚本，该脚本使用实例配置文件为客户生成 S3 预签名 URL，每个预签名 URL 在 1 小时后过期。哪项额外步骤可以满足这些要求？",
+    "options": {
+      "A": "更新 S3 存储桶策略，确保使用预签名 URL 的客户拥有 S3:Get* 和 S3:List* 权限以访问存储桶中的 S3 对象。",
+      "B": "为 EC2 实例配置文件的 IAM 角色策略添加一个 StringEquals 条件，基于每张发票的 s3:ResourceTag/ClientId 标签来限制访问。为每张生成的发票打上其对应客户 ID 的标签。",
+      "C": "更新脚本，使用 AWS Security Token Service (AWS STS)，在每次脚本运行时通过担任一个具有 S3 GetObject 权限的新角色来获取新凭证。使用这些凭证来生成预签名 URL。",
+      "D": "为一个对该 S3 存储桶具有 S3:GetObject 权限的 IAM 用户生成访问密钥和秘密密钥，将密钥嵌入脚本中，使用这些密钥来生成预签名 URL。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：预签名 URL 的权限由生成 URL 时所用的凭证决定，而非客户后续请求时的权限；客户无需在桶策略中获得额外权限。此选项混淆了预签名 URL 的权限模型。",
+      "B": "错误：基于标签的访问控制只限制了 EC2 角色的访问范围，并未解决“客户必须使用临时凭证”的核心需求，也没有改变预签名 URL 的签名者身份。",
+      "C": "正确：通过 AWS STS AssumeRole 获取一个仅具备 S3:GetObject 权限的最小权限角色的短期临时凭证，再用其签名生成预签名 URL，既满足“客户使用临时凭证”，也符合最小权限原则。",
+      "D": "错误：IAM 用户的访问密钥/秘密密钥是长期静态凭证，与“仅使用临时凭证”的要求相悖，且将密钥嵌入脚本存在泄露风险。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 64,
+    "type": "single",
+    "question": "某公司在其 AWS 账户中使用 Amazon Macie、AWS Firewall Manager、Amazon Inspector 和 AWS Shield Advanced。公司希望在账户遭受 DDoS 攻击时收到告警。哪种解决方案可以满足此要求？",
+    "options": {
+      "A": "使用 Macie 检测活跃的 DDoS 事件。创建响应 Macie 发现结果的 Amazon CloudWatch 告警。",
+      "B": "使用 Amazon Inspector 审查资源，并为任何易受 DDoS 攻击的资源调用 Amazon CloudWatch 告警。",
+      "C": "创建一个监控 Firewall Manager 指标中活跃 DDoS 事件的 Amazon CloudWatch 告警。",
+      "D": "创建一个监控 Shield Advanced 指标中活跃 DDoS 事件的 Amazon CloudWatch 告警。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：Macie 用于发现和保护 S3 中的敏感数据，不具备 DDoS 检测能力。",
+      "B": "错误：Inspector 评估软件漏洞和暴露面，无法实时检测正在发生的 DDoS 攻击。",
+      "C": "错误：Firewall Manager 用于集中管理 WAF/Shield/安全组策略，本身不提供实时 DDoS 检测指标。",
+      "D": "正确：Shield Advanced 专门提供 DDoS 检测与可见性，会向 CloudWatch 发布 DDoSDetected 等指标，针对这些指标创建 CloudWatch 告警是接收 DDoS 告警的标准方式。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 65,
+    "type": "single",
+    "question": "某公司在本地数据中心运行关键工作负载。公司希望实施一个基于 AWS 的灾难恢复 (DR) 解决方案，将 RTO 控制在 1 小时以内。公司需要持续复制物理服务器和虚拟服务器，并且必须优化数据存储和带宽使用成本。该 DR 解决方案必须是自动化的。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "使用 AWS Backup 将本地服务器直接复制到 AWS。启用跨区域备份复制和数据保管库。配置恢复点以匹配定义的 RTO。使用 AWS Step Functions 自动执行恢复步骤。",
+      "B": "配置 AWS Storage Gateway 卷网关 (Volume Gateway) 使用 Amazon Elastic Block Store (Amazon EBS) 快照进行恢复。配置 AWS Backup 管理这些快照。创建自动化恢复流程。",
+      "C": "启用 AWS Elastic Disaster Recovery。配置复制代理以持续复制每台本地服务器。启用默认的暂存区子网配置。",
+      "D": "在本地数据中心与 AWS 之间创建 AWS Direct Connect 连接。配置 Amazon EventBridge 监控故障，并在发生事件时调用 AWS Lambda 函数从 AMI 启动预配置的 Amazon EC2 实例。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：AWS Backup 基于备份点恢复，无法对服务器做持续的块级复制，难以实现 1 小时以内的 RTO。",
+      "B": "错误：卷网关 + 快照面向本地卷存储与备份，不是面向服务器持续复制的 DR 方案，RTO 与自动化程度不足。",
+      "C": "正确：AWS Elastic Disaster Recovery (DRS) 通过复制代理对物理和虚拟服务器进行持续的块级复制，使用低成本暂存区优化存储/带宽，并支持自动化恢复，可实现小于 1 小时的 RTO。",
+      "D": "错误：仅靠 Direct Connect + 从 AMI 启动实例无法持续复制服务器数据，AMI 不会实时反映最新数据。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 66,
+    "type": "multiple",
+    "question": "法国的一家公司使用 Amazon Cognito 及 Cognito 托管 UI (Hosted UI) 作为登录和注册流程的身份代理。该公司正在推广一个应用程序，并预计其所有用户都来自法国。应用程序上线后，公司的安全团队发现了针对该应用的欺诈性注册，且大部分欺诈注册来自法国境外的用户。安全团队需要一个能在注册时执行自定义验证的解决方案，并根据验证结果接受或拒绝注册请求。哪些步骤组合可以满足这些要求？（选择两项。）",
+    "options": {
+      "A": "创建一个预注册 (pre sign-up) AWS Lambda 触发器。将该 Lambda 函数与 Amazon Cognito 用户池关联。",
+      "B": "使用地理匹配规则语句 (geographic match rule statement) 配置一个 AWS WAF web ACL。将该 web ACL 与 Amazon Cognito 用户池关联。",
+      "C": "为应用程序的 Amazon Cognito 用户池配置一个应用客户端 (app client)。使用该应用客户端 ID 在托管 UI 中验证请求。",
+      "D": "更新应用程序的 Amazon Cognito 用户池，配置地理限制 (geographic restriction) 设置。",
+      "E": "使用 Amazon Cognito 配置一个社交身份提供商 (IdP) 来在托管 UI 上验证请求。"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "正确：pre sign-up Lambda 触发器可在注册时执行自定义验证逻辑，并根据结果接受或拒绝注册请求。",
+      "B": "正确：将带地理匹配规则的 AWS WAF web ACL 关联到 Cognito 用户池，可阻止来自法国境外的请求，从源头减少欺诈注册。",
+      "C": "错误：应用客户端 ID 用于标识应用与用户池交互，并不能对注册请求做地理或自定义校验。",
+      "D": "错误：Cognito 用户池本身没有“地理限制”这一原生配置项，需借助 WAF 实现。",
+      "E": "错误：配置社交 IdP 只是增加登录方式，无法在注册时按地理位置进行验证或拒绝。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 67,
+    "type": "single",
+    "question": "某公司使用 AWS Organizations 中的组织来管理多个 AWS 账户。公司希望集中地为用户授予访问 Amazon Q Developer 的能力。哪种解决方案可以满足此要求？",
+    "options": {
+      "A": "启用 AWS IAM Identity Center，并将 Amazon Q Developer 设置为一个 AWS 托管应用程序 (AWS managed application)。",
+      "B": "启用 Amazon Cognito，并为 Amazon Q Developer 创建一个新的身份池 (identity pool)。",
+      "C": "启用 Amazon Cognito，并将 Amazon Q Developer 设置为一个 AWS 托管应用程序。",
+      "D": "启用 AWS IAM Identity Center，并为 Amazon Q Developer 创建一个新的身份池。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：Amazon Q Developer 与 IAM Identity Center 集成，作为 AWS 托管应用程序接入后，可在 Organizations 范围内集中地为用户分配访问权限。",
+      "B": "错误：Cognito 面向应用程序的终端用户身份，身份池用于换取 AWS 临时凭证，并非集中管理 Q Developer 访问的方式。",
+      "C": "错误：Amazon Q Developer 不通过 Cognito 作为托管应用接入。",
+      "D": "错误：IAM Identity Center 通过权限集/应用分配访问，并不使用“身份池”这一概念。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 68,
+    "type": "multiple",
+    "question": "一个电子商务网站在遭受 DDoS 攻击后宕机了 1 小时，攻击期间用户无法连接到网站。该电商公司的安全团队担心未来可能再次遭受攻击，希望为此类事件做好准备。公司需要在未来应对类似攻击时尽量减少停机时间。哪些步骤有助于实现这一目标？（选择两项。）",
+    "options": {
+      "A": "启用 Amazon GuardDuty 自动监控恶意活动并阻止未授权访问。",
+      "B": "订阅 AWS Shield Advanced，并在发生攻击时联系 AWS Support。",
+      "C": "使用 VPC Flow Logs 监控网络流量，并用一个 AWS Lambda 函数通过安全组自动阻止攻击者的 IP。",
+      "D": "设置一条 Amazon EventBridge 规则实时监控 AWS CloudTrail 事件，使用 AWS Config 规则审计配置，并使用 AWS Systems Manager 进行修复。",
+      "E": "使用 AWS WAF 创建规则来响应此类攻击。"
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "错误：GuardDuty 是威胁检测服务，不能缓解 DDoS 攻击或减少其造成的停机。",
+      "B": "正确：AWS Shield Advanced 提供增强的 DDoS 防护与 DDoS 响应团队 (DRT) 支持，可在攻击时快速缓解、减少停机。",
+      "C": "错误：依靠 Flow Logs + Lambda 手动封禁 IP 反应滞后，难以应对大规模分布式攻击。",
+      "D": "错误：CloudTrail/Config/SSM 面向 API 审计与配置管理，与缓解 DDoS、减少停机无关。",
+      "E": "正确：AWS WAF 规则可拦截应用层 (L7) 攻击流量，配合 Shield 有效减少攻击造成的停机。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 69,
+    "type": "single",
+    "question": "某公司有两个 AWS 账户：账户 A 和账户 B，每个账户都有一个 VPC。运行在账户 A 的 VPC 中的应用程序需要写入账户 B 中的一个 Amazon S3 存储桶。账户 A 中的应用程序已拥有写入账户 B 中该 S3 存储桶的权限。应用程序与该 S3 存储桶位于同一个 AWS 区域。公司不能通过公共互联网发送网络流量。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "在两个账户中分别创建中转网关 (transit gateway) 和各可用区子网中的 VPC 连接 (attachment)。更新 VPC 路由表。",
+      "B": "在账户 A 中部署一个软件 VPN 设备。在该软件 VPN 设备与账户 B 中的虚拟私有网关之间创建 VPN 连接。",
+      "C": "在账户 A 的 VPC 与账户 B 的 VPC 之间创建 VPC 对等连接 (peering)。更新 VPC 路由表、网络 ACL 和安全组，以允许对等 IP 范围之间的网络流量。",
+      "D": "在账户 A 中为 Amazon S3 创建一个网关 VPC 终端节点 (gateway VPC endpoint)。更新账户 A 中的 VPC 路由表。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：Transit Gateway 用于互联 VPC，但 S3 是区域级服务而非 VPC 内资源，互联 VPC 无法私有访问 S3，且成本/复杂度高。",
+      "B": "错误：软件 VPN 设备增加运维负担，并非访问同区域 S3 的合适私有连接方式。",
+      "C": "错误：S3 在 VPC 之外，VPC 对等只连通两个 VPC，无法让流量私有地到达 S3。",
+      "D": "正确：S3 网关 VPC 终端节点让 VPC 内流量经 AWS 私有网络访问 S3，无需经过公共互联网；权限已具备，只需在账户 A 创建网关终端节点并更新路由表即可。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 70,
+    "type": "single",
+    "question": "一名安全工程师需要构建一个解决方案，以便在 AWS CloudTrail 被关闭时，能在多个 AWS 区域重新将其开启。实现该解决方案最高效的方式是什么？",
+    "options": {
+      "A": "使用 AWS Config 配合一条托管规则来触发 AWS-EnableCloudTrail 修复 (remediation)。",
+      "B": "创建一个事件源为 cloudtrail.amazonaws.com、事件名为 StartLogging 的 Amazon EventBridge 事件，以调用一个 AWS Lambda 函数来调用 StartLogging API。",
+      "C": "创建一个事件源为 cloudtrail.amazonaws.com、事件名为 StopLogging 的 Amazon CloudWatch 告警，以调用一个 AWS Lambda 函数来调用 StartLogging API。",
+      "D": "监控 AWS Trusted Advisor 以确保 CloudTrail 日志记录处于启用状态。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：AWS Config 托管规则可检测 CloudTrail 是否启用，并通过内置的 AWS-EnableCloudTrail 自动修复动作直接重新开启，无需自建 Lambda，最为高效。",
+      "B": "错误：StartLogging 事件表示日志已被开启，监控它无法在“被关闭”时触发；且需自建 Lambda，较繁琐。",
+      "C": "错误：CloudWatch 告警基于指标而非事件源/事件名，此配置不成立。",
+      "D": "错误：Trusted Advisor 仅提供检查/提示，不能自动重新启用 CloudTrail。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 71,
+    "type": "single",
+    "question": "某公司同时维护本地遗留系统和 AWS 中的资源。AWS 资源包括一个 Amazon DynamoDB 表和一个 Amazon S3 存储桶。本地遗留系统需要定期连接到 DynamoDB 和 Amazon S3。公司目前在 VPC 的公有子网中使用一台堡垒主机 (bastion host)，并通过存储在本地的 SSH 私钥连接该堡垒主机。分配给堡垒主机的实例配置文件对 Amazon S3 和 DynamoDB 具有完全访问权限。安全团队发布了一项新的内部策略，要求移除所有堡垒主机，并要求所有系统使用基于证书的身份验证。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "建立 AWS Direct Connect 连接，并创建到一个可访问所需服务 VPC 终端节点的 VPC 的 VPN 连接。",
+      "B": "设置本地系统使用 AWS IAM Roles Anywhere 进行身份验证。",
+      "C": "使用 AWS Private Certificate Authority 颁发 SSL 证书，让本地系统访问 AWS 上的资源。",
+      "D": "创建一个具有临时担任某 IAM 角色权限的 IAM 用户，并使用临时担任的角色凭证来访问所需资源。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：Direct Connect/VPN 解决的是网络连通性，并不提供基于证书的身份验证，也无法移除对长期凭证的依赖。",
+      "B": "正确：IAM Roles Anywhere 允许本地（非 AWS）工作负载使用 X.509 证书获取临时 AWS 凭证，正好满足“基于证书的身份验证”且无需堡垒主机。",
+      "C": "错误：Private CA 仅负责签发证书，本身不提供本地系统获取 AWS 访问权限的机制。",
+      "D": "错误：仍需创建 IAM 用户（长期凭证），且未使用基于证书的身份验证。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 72,
+    "type": "single",
+    "question": "某公司使用 AWS Organizations 中的组织来管理多个 AWS 账户。用户当前通过 IAM 用户和秘密访问密钥访问 AWS 账户。安全团队要求所有对账户的访问都使用 60 分钟后过期的临时安全凭证，并且用户必须使用基于 SAML 的身份提供商 (IdP) 来访问账户。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "启用 AWS Security Token Service (AWS STS)。确保用户使用适当的有效期运行 get-session-token AWS CLI 命令。要求用户使用 STS 临时凭证访问 AWS 账户。",
+      "B": "设置 AWS IAM Identity Center 并配置一个外部 IdP。配置允许用户所需访问的权限集。配置会话有效期限制。要求用户通过 AWS CLI 获取 SSO 凭证。从 AWS 账户中移除这些 IAM 用户。",
+      "C": "在每个 AWS 账户中设置 AWS Secrets Manager 和 Amazon Cognito。配置 Cognito 身份池使用外部 IdP 并连接到 Secrets Manager。在 Secrets Manager 中启用托管密钥轮换。确保用户运行 get-secret-value AWS CLI 命令以访问 AWS 账户。",
+      "D": "在组织管理账户中启用 AWS IAM Roles Anywhere。确保用户安装凭证助手工具。在管理账户中配置具有适当会话有效期的 IAM 角色。确保用户从凭证助手工具获取临时凭证以访问 AWS 账户。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：get-session-token 不涉及 SAML 联合，且仍基于现有 IAM 用户的长期密钥，不满足 SAML IdP 要求。",
+      "B": "正确：IAM Identity Center 对接外部 SAML IdP，通过权限集授予访问并可设置会话有效期（如 60 分钟），用户经 SSO 获取临时凭证，同时移除 IAM 用户，完全满足要求。",
+      "C": "错误：Cognito/Secrets Manager 不是多账户 SAML 单点登录方案，get-secret-value 取到的是静态密钥。",
+      "D": "错误：IAM Roles Anywhere 面向使用 X.509 证书的本地工作负载，而非基于 SAML 的用户登录。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 73,
+    "type": "ordering",
+    "question": "一家公司正在开发一个事件响应流程，以隔离被恶意软件感染的 Amazon EC2 主机。该公司在 AWS Organizations 中使用组织来管理多个 AWS 账户。该公司将 AWS Security Hub 配置为在组织中接收来自多个 AWS 区域中多个账户的发现结果。一名安全工程师开发了一个 AWS Lambda 函数，用于移除公司怀疑可能被恶意软件感染的任何 EC2 实例上的所有安全组规则。从以下列表中选择并排序正确的步骤，以在 Security Hub 中将该 Lambda 函数作为自定义操作进行部署和使用。每一步仅选择一次或不选。（选择并排序 3 项。）",
+    "available_steps": [
+      "在 Security Hub 中创建使用该 Lambda 函数的自定义操作。",
+      "在 Security Hub 中为 Amazon EventBridge 规则创建并应用筛选器集。",
+      "在 Amazon EventBridge 中定义规则。",
+      "在 Security Hub 中为 EC2 主机发现结果选择自定义操作。",
+      "在 Security Hub 中为安全组发现结果选择自定义操作。"
+    ],
+    "ordered_steps": [
+      "在 Security Hub 中创建使用该 Lambda 函数的自定义操作。",
+      "在 Amazon EventBridge 中定义规则。",
+      "在 Security Hub 中为 EC2 主机发现结果选择自定义操作。"
+    ],
+    "explanations": {
+      "_full": "在 Security Hub 中将 Lambda 作为自定义操作使用的正确流程：① 在 Security Hub 中创建一个调用该 Lambda 函数的自定义操作（生成自定义操作 ARN）；② 在 Amazon EventBridge 中定义一条规则，匹配该自定义操作并以该 Lambda 函数为目标；③ 在 Security Hub 中针对 EC2 主机发现结果选择该自定义操作以触发隔离。其余选项（为 EventBridge 规则创建筛选器集、为安全组发现结果选择自定义操作）与本场景无关，不使用。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 74,
+    "type": "single",
+    "question": "某公司在其面向公众的 Web 应用流量增加后开始使用 AWS WAF。一名安全工程师需要确定流量增加是否由应用层攻击引起，因此需要一个分析 AWS WAF 流量的解决方案。哪种解决方案可以满足此要求？",
+    "options": {
+      "A": "配置 AWS WAF 将日志发送到 AWS CloudTrail 中的跟踪。创建一个 Amazon Data Firehose 传输流将日志发送到 Amazon OpenSearch Service。使用 OpenSearch Dashboards 和 Amazon Athena 连接器查询日志。",
+      "B": "配置 AWS WAF 将日志发送到 Amazon S3 存储桶。为该 S3 存储桶配置一个带分区投影 (partition projection) 的 OpenSearch 表。使用 OpenSearch 查询 S3 存储桶中的数据。",
+      "C": "配置 AWS WAF 将日志发送到 Amazon S3 存储桶。为该 S3 存储桶配置一个带分区投影的 Amazon Athena 表。使用 Athena 查询 S3 存储桶中的数据。",
+      "D": "配置 AWS WAF 将日志发送到 AWS CloudTrail 中的跟踪。创建一个 Amazon Data Firehose 传输流将日志发送到 Amazon S3 存储桶。使用 Amazon Athena 查询 S3 存储桶中的数据。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：AWS WAF 日志不发送到 CloudTrail（CloudTrail 记录 API 调用，而非 WAF 流量日志）。",
+      "B": "错误：分区投影是 Amazon Athena 的特性，OpenSearch 没有“带分区投影的表”这一概念。",
+      "C": "正确：AWS WAF 可直接将日志投递到 S3，再用带分区投影的 Athena 表对日志进行 SQL 查询分析，是分析 WAF 流量的标准、低运维方案。",
+      "D": "错误：同样错误地让 WAF 日志经由 CloudTrail，路径不正确且冗余。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 75,
+    "type": "single",
+    "question": "某公司通过 AWS Organizations 管理 50 个 AWS 账户，需要建立一个集中式威胁检测解决方案，以识别组织内所有账户中的可疑及潜在恶意活动。公司使用 AWS Control Tower，并希望将安全发现集中到一个审计 (audit) 账户中。安全团队必须在任何新安全发现产生后 5 分钟内收到电子邮件告警。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "在审计账户中将 Amazon GuardDuty 配置为委派管理员。通过委派管理员账户在所有成员账户中启用 GuardDuty。创建一条 Amazon EventBridge 规则，将 GuardDuty 发现结果发送到一个向安全团队投递电子邮件通知的 Amazon SNS 主题。",
+      "B": "在每个成员账户中设置 Amazon GuardDuty，并创建 IAM 角色以允许从审计账户进行跨账户访问。在每个账户中配置 Amazon CloudWatch 告警来监控安全发现，并向审计账户中的 Amazon SNS 主题发送通知。",
+      "C": "在审计账户中启用 AWS Config 并创建自定义规则来检测组织内的安全问题。使用 AWS Systems Manager 从所有成员账户收集安全发现并存储到集中的 Amazon S3 存储桶。创建一个 AWS Lambda 函数监控该 S3 存储桶，在检测到新发现时向安全团队发送电子邮件通知。",
+      "D": "在组织内所有 Amazon EC2 实例上部署 Amazon Inspector 代理。配置这些代理向审计账户中的中央 Amazon Inspector 控制台报告。在每个成员账户中创建 Amazon EventBridge 规则，将发现转发到审计账户中的 Amazon SNS 主题。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：GuardDuty 通过委派管理员实现组织级集中威胁检测并将发现汇聚到审计账户；EventBridge + SNS 可在发现产生后近实时（远小于 5 分钟）发送邮件告警，运维最少。",
+      "B": "错误：逐账户用 CloudWatch 告警监控既分散又难以保证时效，GuardDuty 发现应经 EventBridge 而非 CloudWatch 指标。",
+      "C": "错误：AWS Config 面向配置合规而非威胁检测；SSM+S3+Lambda 链路复杂且难以保证 5 分钟时效。",
+      "D": "错误：Inspector 面向漏洞评估而非可疑活动威胁检测，不符合需求。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 76,
+    "type": "single",
+    "question": "一名安全工程师需要保护一个运行在 VPC 中的公共 Web 应用程序。该 VPC 托管着某个 Amazon CloudFront 分配的源站。该应用程序经历了多次第 7 层 (layer 7) DDoS 攻击。一个 AWS WAF web ACL 已与该 CloudFront 分配关联，其中包含一条用于防范已知不良信誉 IP 地址的 AWS 托管规则。安全工程师必须配置一个自动化解决方案，能够实时检测并缓解第 7 层 DDoS 攻击，且无需人工干预。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "在该 CloudFront 分配上启用 AWS Shield Advanced。在 Amazon CloudWatch 中为 DDoS 指标配置告警。",
+      "B": "启用 AWS Shield Advanced 并配置与 AWS DDoS 响应团队的主动互动 (proactive engagement)。",
+      "C": "在 VPC 中部署 AWS Network Firewall。创建检测 DDoS 指标的安全策略。创建一个 AWS Lambda 函数在攻击期间自动更新 web ACL 规则。",
+      "D": "向 web ACL 添加一条基于速率的规则 (rate-based rule)。启用 AWS Shield Advanced。在该 CloudFront 分配上启用自动应用层 DDoS 缓解 (automatic application layer DDoS mitigation)。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：仅启用 Shield Advanced 并配置告警只能通知，不能自动缓解第 7 层攻击。",
+      "B": "错误：主动互动是人工响应机制，不满足“无需人工干预的实时自动缓解”。",
+      "C": "错误：Network Firewall 工作在网络/传输层，难以应对第 7 层（应用层）攻击，且自建 Lambda 维护复杂。",
+      "D": "正确：基于速率的规则 + Shield Advanced 的“自动应用层 DDoS 缓解”可让 Shield 自动生成并部署 WAF 规则，实时、无需人工地缓解 L7 DDoS 攻击。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 77,
+    "type": "single",
+    "question": "某公司使用启用了所有功能的 AWS Organizations，并在所有成员账户和所有 AWS 区域中启用了 AWS Security Hub。公司在某个成员账户的 eu-central-1 区域创建了一个 VPC。一名安全工程师已确认该 VPC 中没有任何安全组规则允许来自所有 IP 地址的 TCP 22 端口入站流量。该工程师需要一个自动化系统，以阻止在该 VPC 中创建允许来自所有 IP 地址的 TCP 22 端口流量的安全组规则。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "启用一个记录到 Amazon CloudWatch Logs 日志组的 AWS CloudTrail 组织跟踪。基于日志组指标筛选器创建 CloudWatch 告警。配置该告警在添加允许来自所有 IP 地址入站流量的安全组规则时发布到 Amazon SNS 主题。将安全工程师的电子邮件订阅到该 SNS 主题。",
+      "B": "创建一条 Amazon EventBridge 规则，筛选关于允许来自所有 IP 地址的 TCP 22 端口入站流量的安全组规则的 Security Hub 发现。配置该 EventBridge 规则以一个移除不需要的安全组规则的 AWS Lambda 函数为目标。",
+      "C": "创建一个 SCP，阻止创建或修改允许来自所有 IP 地址的 TCP 22 端口入站流量的安全组规则。",
+      "D": "部署 AWS Network Firewall，配置一条检查所有入站流量并阻止 TCP 22 端口传入流量的规则。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：CloudTrail + 告警只能在规则创建后事后通知，无法“阻止”创建。",
+      "B": "错误：基于 Security Hub 发现的 Lambda 是事后检测并删除，规则会先被成功创建，属于补救而非预防。",
+      "C": "正确：SCP 是预防性控制，可在组织/账户层面直接拒绝创建或修改此类危险安全组规则，从源头阻止，满足“阻止创建”的要求。",
+      "D": "错误：Network Firewall 过滤网络流量，并不能阻止安全组规则的创建。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 78,
+    "type": "single",
+    "question": "某公司在一组 Amazon EC2 实例上运行一个面向全球用户的应用程序。公司将一个 AWS WAF web ACL 与一个将流量路由到这些 EC2 实例的应用程序负载均衡器 (ALB) 关联。一名安全工程师正在调查应用流量的突然增长，发现大量可能是恶意的请求来自两个国家/地区的数百个 IP 地址。工程师希望快速限制这些可能的恶意请求，同时不希望阻止合法用户访问应用程序。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "使用 AWS WAF 对所有传入请求实施一条基于速率的规则 (rate-based rule)。",
+      "B": "使用 AWS WAF 实施一条地理匹配规则，阻止来自这两个国家/地区的所有传入流量。",
+      "C": "编辑 ALB 安全组，加入一条地理匹配规则以阻止来自这两个国家/地区的所有传入流量。",
+      "D": "向 ALB 安全组添加拒绝规则，禁止来自这些 IP 地址的传入请求。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：基于速率的规则只在请求速率超过阈值时限制来源，可快速抑制高频恶意请求，同时不会误伤正常速率的合法用户。",
+      "B": "错误：按国家整体封锁会连同该国的合法用户一起拦截，违背“不阻止合法用户”的要求。",
+      "C": "错误：安全组不支持地理匹配规则，无法实现按国家过滤。",
+      "D": "错误：恶意 IP 多达数百且会变化，逐一在安全组中拒绝既不现实也难以维护。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 79,
+    "type": "matching",
+    "question": "一名安全工程师需要为一个 AWS 账户的安全审计做准备。从以下列表中为每项要求选择正确的 AWS 资源。每个资源仅选择一次或不选择。",
+    "available_options": [
+      "AWS Artifact 报告",
+      "AWS Audit Manager 控制项",
+      "AWS Config 合规包",
+      "AWS Config 规则",
+      "Amazon Detective 调查",
+      "AWS Identity and Access Management Access Analyzer 内部访问分析器"
+    ],
+    "matches": [
+      {
+        "use_case": "自动从 AWS CloudTrail、AWS Config 和 AWS Security Hub 收集证据以生成评估报告。",
+        "correct_answer": "AWS Audit Manager 控制项"
+      },
+      {
+        "use_case": "确定 AWS 账户内哪些 IAM 主体有权访问某个指定资源。",
+        "correct_answer": "AWS Identity and Access Management Access Analyzer 内部访问分析器"
+      },
+      {
+        "use_case": "按需下载 AWS 安全与合规文档。",
+        "correct_answer": "AWS Artifact 报告"
+      }
+    ],
+    "explanations": {
+      "_full": "① 自动从 CloudTrail/Config/Security Hub 收集证据生成评估报告 → AWS Audit Manager（自动、持续地收集合规证据）。② 确定哪些 IAM 主体可访问指定资源 → IAM Access Analyzer 内部访问分析器（分析资源的可访问主体）。③ 按需下载安全与合规文档 → AWS Artifact（提供 AWS 合规报告与协议下载）。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 80,
+    "type": "single",
+    "question": "某公司使用 AWS Organizations 管理一个由三个工作负载 OU 组成的组织：生产 (Production)、开发 (Development) 和测试 (Testing)。公司使用 AWS CloudFormation 模板在与这些 OU 关联的 AWS 账户中定义和部署工作负载基础设施。每个工作负载 OU 附加了不同的 SCP。公司已成功将一次 CloudFormation 堆栈更新部署到开发 OU 和测试 OU 的工作负载。当公司使用相同的 CloudFormation 模板在生产 OU 的某个账户中部署该堆栈更新时，更新失败，错误信息报告 IAM 权限不足。安全工程师排查此问题应采取的第一步是什么？",
+    "options": {
+      "A": "查看生产 OU 中该账户的 AWS CloudTrail 日志，搜索部署尝试期间 CloudFormation 发出的任何失败的 API 调用。",
+      "B": "移除附加到生产 OU 的所有 SCP。重新运行 CloudFormation 堆栈更新，以确定是否是 SCP 阻止了 CloudFormation API 调用。",
+      "C": "确认 CloudFormation 所用的角色具有创建、更新和删除模板中引用资源的足够权限。",
+      "D": "将附加到生产 OU 的所有 SCP 改为与附加到测试 OU 的 SCP 相同。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：排查权限问题的第一步应是查看 CloudTrail 日志，定位部署期间具体哪些 API 调用被拒绝（是 SCP 还是 IAM 角色权限），据此再做针对性修复，风险最低。",
+      "B": "错误：直接移除生产 OU 的所有 SCP 会削弱安全护栏，属于高风险操作，不应作为第一步。",
+      "C": "错误：核对角色权限是后续步骤；在未通过日志定位失败调用前就假设是角色权限，可能方向错误。",
+      "D": "错误：盲目让生产 OU 与测试 OU 的 SCP 一致会破坏生产环境的安全控制，不可取。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 81,
+    "type": "matching",
+    "question": "某公司使用 AWS Organizations 中的组织来管理多个 AWS 账户。一名安全工程师需要监控整个组织中 AWS 资源的安全合规性，并希望在任何 AWS 资源不符合公司安全策略时收到通知。从以下列表中为每项要求选择正确的、基于 AWS Config 的解决方案。每个解决方案仅选择一次。",
+    "available_options": [
+      "AWS Config 聚合器",
+      "AWS Config 合规包",
+      "AWS Config 与 AWS Systems Manager",
+      "AWS Config 规则",
+      "AWS Config 与 AWS User Notifications"
+    ],
+    "matches": [
+      {
+        "use_case": "提供一组可在整个组织中部署的合规规则。",
+        "correct_answer": "AWS Config 合规包"
+      },
+      {
+        "use_case": "将来自多个账户和 AWS 区域的合规数据集中到单个账户以实现统一可见性。",
+        "correct_answer": "AWS Config 聚合器"
+      },
+      {
+        "use_case": "根据期望的设置评估 AWS 资源的配置设置。",
+        "correct_answer": "AWS Config 规则"
+      },
+      {
+        "use_case": "在资源不合规时自动采取纠正措施。",
+        "correct_answer": "AWS Config 与 AWS Systems Manager"
+      },
+      {
+        "use_case": "在检测到配置更改或合规违规时发送通知。",
+        "correct_answer": "AWS Config 与 AWS User Notifications"
+      }
+    ],
+    "explanations": {
+      "_full": "合规包 = 一组可跨组织部署的规则集合；聚合器 = 跨账户/区域集中合规数据；规则 = 按期望设置评估资源配置；与 Systems Manager 结合 = 对不合规资源自动修复；与 AWS User Notifications 结合 = 在配置更改/违规时发送通知。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 82,
+    "type": "matching",
+    "question": "一名安全工程师正在使用 AWS Well-Architected Tool 评估某公司托管在 AWS 上的一个多层 Web 应用程序。在评估过程中，工程师发现了若干违反 Well-Architected Framework 安全支柱设计原则的资源。从以下列表中为每项评估发现选择其主要违反的安全支柱设计原则。每个设计原则仅选择一次。",
+    "available_options": [
+      "配置服务与应用程序日志记录",
+      "减少手动管理和交互式访问",
+      "以编程方式部署软件",
+      "控制网络各层之间的流量",
+      "保护传输中的数据"
+    ],
+    "matches": [
+      {
+        "use_case": "应用服务器需要通过直接的管理员访问手动打补丁，从而绕过了自动化部署管道。",
+        "correct_answer": "以编程方式部署软件"
+      },
+      {
+        "use_case": "生产数据库实例允许交互式开发人员会话以进行故障排查和数据分析。",
+        "correct_answer": "减少手动管理和交互式访问"
+      },
+      {
+        "use_case": "安全组允许来自 0.0.0.0/0 的 0-65535 端口访问，且 NAT 配置了默认规则。",
+        "correct_answer": "控制网络各层之间的流量"
+      },
+      {
+        "use_case": "数据库层与应用程序工作负载层之间的通信使用 HTTP。",
+        "correct_answer": "保护传输中的数据"
+      },
+      {
+        "use_case": "仅通过每周人工审查原始 AWS CloudTrail 日志来检测安全事件，无法提供自动告警。",
+        "correct_answer": "配置服务与应用程序日志记录"
+      }
+    ],
+    "explanations": {
+      "_full": "① 手动打补丁、绕过自动化管道 → 以编程方式部署软件；② 交互式数据库开发会话 → 减少手动管理和交互式访问；③ 安全组 0.0.0.0/0 全端口开放 → 控制网络各层之间的流量；④ 应用与数据库间使用 HTTP（明文）→ 保护传输中的数据；⑤ 仅靠每周人工审查日志、无自动告警 → 配置服务与应用程序日志记录。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 83,
+    "type": "single",
+    "question": "一名安全工程师需要实施一个日志解决方案，以捕获关于 Amazon S3 存储桶中对象的详细信息。该方案必须包含诸如发起请求的 IAM 身份以及对象被访问的时间等细节。数据必须是结构化的，并能近乎实时地获得。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "在该 S3 存储桶上启用 Amazon S3 服务器访问日志记录 (server access logging)。创建一个新的 S3 存储桶来存储日志。分析该日志存储桶中的日志。",
+      "B": "启用 AWS CloudTrail 数据事件 (data event) 日志记录。创建一个新的 S3 存储桶来存储日志。分析该日志存储桶中的日志。",
+      "C": "配置 AWS Config 规则来记录对存储在 S3 存储桶中对象的访问。",
+      "D": "启用 Amazon Macie 来记录对存储在 S3 存储桶中对象的访问。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：S3 服务器访问日志为尽力而为投递、可能有数小时延迟且为非结构化文本，不满足结构化与近实时要求。",
+      "B": "正确：CloudTrail S3 数据事件以结构化 JSON 近实时记录对象级访问，包含发起请求的 IAM 身份、时间、操作等，完全满足要求。",
+      "C": "错误：AWS Config 记录资源配置变更，不记录对象级数据访问。",
+      "D": "错误：Macie 用于发现敏感数据，不提供对象访问的审计日志。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 84,
+    "type": "single",
+    "question": "某公司需要开发一个代码签名应用程序，使用证书颁发机构 (CA) 来签署代码签名证书。该解决方案必须使用 AWS Key Management Service (AWS KMS) 非对称密钥，并且需要为合规目的收集和存储关于该 KMS 密钥的创建、来源和使用的不可变证据。这些信息必须提供给内部审计员。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "创建一个启用了 S3 对象锁 (Object Lock) 的 Amazon S3 存储桶。创建一个 AWS CloudTrail 跟踪，为所有 kms.amazonaws.com 的 CreateKey 事件启用事件选择器和日志文件验证。配置事件选择器将 CreateKey 事件发送到该 S3 存储桶。创建该 KMS 密钥。更新事件选择器以筛选引用该 KMS 密钥 ARN 的 API 调用。向审计员提供对该 S3 存储桶的访问权限。",
+      "B": "为引用该 KMS 密钥的应用程序操作实施日志记录。确保日志包含所有相关元数据。将日志存储在 Amazon CloudWatch Logs 日志组中。配置该日志组的自动导出，并将导出发送给审计员。",
+      "C": "创建一个审计员可访问的 Amazon DynamoDB 表。创建一个由 Amazon EventBridge 规则调用的 AWS Lambda 函数。配置该 EventBridge 规则监控 KMS API 调用，并筛选所有引用该 KMS 密钥 ARN 的 API 调用。配置该 Lambda 函数将 API 调用内容存储到 DynamoDB 表中。",
+      "D": "设置 Amazon CloudWatch Logs Insights，使用自定义指标跟踪 KMS 密钥使用情况。使用具有实时监控的 CloudWatch 控制面板可视化指标。配置 CloudWatch 告警。使用订阅筛选器将数据复制到一个供审计员审查的独立账户。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：CloudTrail 记录 KMS 密钥的创建与使用 API（来源、时间、调用者），开启日志文件验证保证完整性，再配合启用对象锁的 S3 存储桶实现不可变 (WORM) 存储，完全满足“不可变证据”和审计访问的要求。",
+      "B": "错误：CloudWatch Logs 默认可被修改/删除，不提供不可变存储，不满足合规对不可篡改证据的要求。",
+      "C": "错误：DynamoDB 中的记录可被更改，不是不可变存储，且方案复杂。",
+      "D": "错误：指标/控制面板是监控用途，无法作为不可变的合规证据留存。"
+    }
+  },
+  {
+    "exam": "SCS-C03",
+    "id": 85,
+    "type": "single",
+    "question": "某公司计划部署一个新的日志分析环境，需要实施一个能近乎实时地分析来自多个 AWS 服务日志的解决方案。该方案必须提供搜索日志的能力，并且在特定日志匹配检测规则时向一个现有的 Amazon SNS 主题发送告警。哪种解决方案可以满足这些要求？",
+    "options": {
+      "A": "使用 Amazon OpenSearch Service 分析日志。通过 OpenSearch API 搜索日志。使用 OpenSearch Service 的安全分析 (Security Analytics) 功能将日志与检测规则匹配，并向该 SNS 主题发送告警。",
+      "B": "使用 AWS Security Hub 分析日志。在 Security Hub 的发现页面搜索日志。创建自定义操作将日志与检测规则匹配并向该 SNS 主题发送告警。",
+      "C": "使用 Amazon CloudWatch Logs 分析日志。使用订阅筛选器将日志与检测规则匹配并向该 SNS 主题发送告警。使用 CloudWatch Logs Insights 手动搜索日志。",
+      "D": "使用 Amazon QuickSight 分析日志。通过在控制面板中列出查询结果来搜索日志。运行查询将日志与检测规则匹配并向该 SNS 主题发送告警。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：OpenSearch Service 可近实时摄取并搜索多服务日志，其 Security Analytics 内置检测规则可匹配日志并触发告警（经 SNS 通知），完整满足搜索 + 规则检测 + 告警的需求。",
+      "B": "错误：Security Hub 聚合安全发现，并非通用日志搜索/分析与自定义检测规则平台。",
+      "C": "错误：CloudWatch Logs 订阅筛选器是简单模式匹配，缺乏成熟的检测规则与全文搜索体验。",
+      "D": "错误：QuickSight 是 BI 可视化工具，不适合近实时日志检测与告警。"
+    }
+  }
+]
