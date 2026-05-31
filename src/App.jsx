@@ -146,6 +146,34 @@ const initialState = {
   githubError: null,
 }
 
+// ── Helper: 判斷一題作答是否正確（練習與自動跳題共用） ──
+function computeCorrect(q, userAns) {
+  if (!q) return false
+  const matchSet = (a, b) => Array.isArray(a) && a.length === b.length &&
+    [...a].sort().join(',') === [...b].sort().join(',')
+  if (q.type === 'single') {
+    return userAns === q.answer
+  } else if (q.type === 'multiple') {
+    return Array.isArray(userAns) && Array.isArray(q.answer) && matchSet(userAns, q.answer)
+  } else if (q.type === 'matching') {
+    if (q.matches?.length > 0) {
+      return q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
+    } else if (q.options && q.answer) {
+      return matchSet(userAns, Array.isArray(q.answer) ? q.answer : [q.answer])
+    }
+    return userAns === 'self-assessed-correct'
+  } else if (q.type === 'ordering') {
+    if (q.ordered_steps?.length > 0) {
+      return Array.isArray(userAns) && userAns.length === q.ordered_steps.length &&
+        userAns.every((s, i) => s === q.ordered_steps[i])
+    } else if (q.options && q.answer) {
+      return matchSet(userAns, Array.isArray(q.answer) ? q.answer : [q.answer])
+    }
+    return userAns === 'self-assessed-correct'
+  }
+  return false
+}
+
 // ── Reducer ──
 function reducer(state, action) {
   switch (action.type) {
@@ -263,40 +291,7 @@ function reducer(state, action) {
       const q = action.question
       const qKey = `${q.exam}-${q.id}`
       const userAns = state.practiceAnswers[qKey]
-      let correct = false
-      if (q.type === 'single') {
-        correct = userAns === q.answer
-      } else if (q.type === 'multiple') {
-        correct = Array.isArray(userAns) && Array.isArray(q.answer) &&
-          userAns.length === q.answer.length &&
-          [...userAns].sort().join(',') === [...q.answer].sort().join(',')
-      } else if (q.type === 'matching') {
-        if (q.matches?.length > 0) {
-          correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
-        } else if (q.options && q.answer) {
-          const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
-          correct = Array.isArray(userAns) &&
-            userAns.length === correctAnswers.length &&
-            [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
-        } else {
-          // Self-assessment mode
-          correct = userAns === 'self-assessed-correct'
-        }
-      } else if (q.type === 'ordering') {
-        if (q.ordered_steps?.length > 0) {
-          correct = Array.isArray(userAns) &&
-            userAns.length === q.ordered_steps.length &&
-            userAns.every((s, i) => s === q.ordered_steps[i])
-        } else if (q.options && q.answer) {
-          const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
-          correct = Array.isArray(userAns) &&
-            userAns.length === correctAnswers.length &&
-            [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
-        } else {
-          // Self-assessment mode
-          correct = userAns === 'self-assessed-correct'
-        }
-      }
+      const correct = computeCorrect(q, userAns)
       const prevEntry = state.statsHistory[qKey]
       const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
       // 累計答對次數：答對 +1，答錯不歸零
@@ -1314,7 +1309,13 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                   (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
                 ) && (
                   <button
-                    onClick={() => dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })}
+                    onClick={() => {
+                      dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
+                      // 答對自動進入下一題（答錯則停留以便查看解析）
+                      if (computeCorrect(currentQRaw, practiceAnswers[qKey]) && practiceIndex < practiceFiltered.length - 1) {
+                        setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
+                      }
+                    }}
                     disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
                     className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
                   >
