@@ -227,6 +227,22 @@ function reducer(state, action) {
       return { ...state, practiceFiltered: filtered, practiceIndex: 0, activeTab: 'practice' }
     }
 
+    case 'SELECT_SUBJECT': {
+      // 登入後先選科別：依所選科別載入對應題目並進入練習模式
+      const exam = action.exam || ''
+      const filtered = (exam ? state.questions.filter(q => q.exam === exam) : [...state.questions])
+        .sort((a, b) => a.id - b.id)
+      return {
+        ...state,
+        filterExam: exam,
+        filterType: '',
+        filterSearch: '',
+        practiceFiltered: filtered,
+        practiceIndex: 0,
+        activeTab: 'practice',
+      }
+    }
+
     case 'SET_PRACTICE_INDEX':
       return { ...state, practiceIndex: action.index }
 
@@ -529,8 +545,56 @@ function PasswordGate({ onAuth }) {
   )
 }
 
+// 登入後的科別選擇畫面：先選練習科別，再進入對應題目
+function SubjectSelect({ examTypes, questions, loading, onSelect }) {
+  const counts = useMemo(() => {
+    const m = {}
+    questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
+    return m
+  }, [questions])
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
+      <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-gray-700">
+        <div className="flex justify-center mb-4">
+          <img src={awsLogo} alt="AWS" className="h-14" />
+        </div>
+        <h2 className="text-xl font-bold text-white text-center mb-1">請選擇練習科別</h2>
+        <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
+        {loading ? (
+          <div className="flex flex-col items-center gap-3 py-10 text-gray-400">
+            <Loader2 size={32} className="animate-spin" />
+            <span className="text-sm">題庫載入中...</span>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {examTypes.map(exam => (
+                <button
+                  key={exam}
+                  onClick={() => onSelect(exam)}
+                  className="flex items-center justify-between px-4 py-4 rounded-xl bg-gray-700/60 hover:bg-orange-500/20 border border-gray-600 hover:border-orange-400 text-left transition-all duration-200 group"
+                >
+                  <span className="font-semibold text-white group-hover:text-orange-300">{exam}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-lg bg-gray-600 text-gray-300 group-hover:bg-orange-500/30 group-hover:text-orange-200">{counts[exam] || 0} 題</span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => onSelect('')}
+              className="w-full mt-4 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white text-sm font-medium transition-colors"
+            >
+              全部科別（{questions.length} 題）
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
+  const [subjectChosen, setSubjectChosen] = useState(false)
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
 
@@ -627,6 +691,21 @@ export default function App() {
 
   if (!authenticated) {
     return <PasswordGate onAuth={() => setAuthenticated(true)} />
+  }
+
+  // 登入後（非管理員）先選擇練習科別，再進入對應題目
+  if (!subjectChosen && !isAdmin) {
+    return (
+      <SubjectSelect
+        examTypes={examTypes}
+        questions={state.questions}
+        loading={state.questionsLoading}
+        onSelect={(exam) => {
+          dispatch({ type: 'SELECT_SUBJECT', exam })
+          setSubjectChosen(true)
+        }}
+      />
+    )
   }
 
   return (
