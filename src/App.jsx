@@ -521,8 +521,8 @@ function PasswordGate({ onAuth }) {
     }
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
-      <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700">
+    <div className="min-h-screen auth-bg flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit} className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700/80">
         <div className="flex justify-center mb-4">
           <img src={awsLogo} alt="AWS" className="h-16" />
         </div>
@@ -553,8 +553,8 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
     return m
   }, [questions])
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
-      <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-gray-700">
+    <div className="min-h-screen auth-bg flex items-center justify-center p-4">
+      <div className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-gray-700/80">
         <div className="flex justify-center mb-4">
           <img src={awsLogo} alt="AWS" className="h-14" />
         </div>
@@ -710,7 +710,7 @@ export default function App() {
 
   return (
     <div className={rootClass}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100">
+      <div className="min-h-screen app-bg text-gray-900 dark:text-gray-100">
         {/* Header - Glassmorphism */}
         <header className="glass-header bg-aws-dark/95 dark:bg-aws-darker/95 shadow-lg sticky top-0 z-50 border-b border-white/5">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -919,7 +919,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
   return (
     <div className="space-y-6">
       {/* GitHub Token Config */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 card-hover">
+      <div className="surface-card p-6 card-hover">
         <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
             <Github size={18} className="text-gray-700 dark:text-gray-300" />
@@ -995,7 +995,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* GitHub stored banks */}
       {tokenSaved && state.githubBanks.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 card-hover">
+        <div className="surface-card p-6 card-hover">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-orange-50 dark:bg-orange-900/30">
               <Database size={18} className="text-orange-500" />
@@ -1064,7 +1064,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* Stats */}
       {state.questions.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+        <div className="surface-card p-6">
           <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-green-50 dark:bg-green-900/30">
               <CheckCircle size={18} className="text-green-500" />
@@ -1126,7 +1126,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
       {/* Upload history */}
       {state.uploadHistory.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+        <div className="surface-card p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
               <Clock size={18} className="text-gray-500" />
@@ -1155,8 +1155,12 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
 
 function StatCard({ label, value, icon: Icon }) {
   return (
-    <div className="stat-card bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-600/50">
-      {Icon && <Icon size={16} className="mx-auto mb-1.5 text-gray-400 dark:text-gray-500" />}
+    <div className="stat-card bg-white dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200/60 dark:border-gray-700/60 shadow-sm">
+      {Icon && (
+        <div className="w-9 h-9 mx-auto mb-2 rounded-xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center ring-1 ring-orange-100 dark:ring-orange-500/20">
+          <Icon size={18} className="text-orange-500 dark:text-orange-400" />
+        </div>
+      )}
       <div className="text-2xl font-bold gradient-text animate-count">{value}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</div>
     </div>
@@ -1205,7 +1209,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
       <FilterBar state={state} dispatch={dispatch} examTypes={examTypes} showStart />
 
       {/* Language toggle + Progress bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
+      <div className="surface-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
@@ -1260,7 +1264,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Question card */}
       {currentQ && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden animate-fade-in" key={qKey}>
+        <div className="surface-card overflow-hidden animate-fade-in" key={qKey}>
           {/* Color accent bar based on exam type */}
           <div className="h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
 
@@ -1365,7 +1369,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
       )}
 
       {/* Navigation bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
+      <div className="surface-card p-5">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
             <ListChecks size={14} />
@@ -1408,7 +1412,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 // ══════════════════════════════════════════
 function FilterBar({ state, dispatch, examTypes, showStart }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
+    <div className="surface-card p-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-[140px]">
           <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 flex items-center gap-1">
@@ -1452,7 +1456,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
         {showStart && (
           <button
             onClick={() => dispatch({ type: 'START_PRACTICE' })}
-            className="px-5 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow"
+            className="px-5 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-1.5 btn-glow"
           >
             <Play size={14} /> 開始練習
           </button>
@@ -2028,7 +2032,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               ? <EmptyState message="請先上傳題庫" icon={Upload} action={() => dispatch({ type: 'SET_TAB', tab: 'upload' })} actionLabel="前往上傳" />
               : <EmptyState message="題庫載入失敗，請重新整理頁面" icon={AlertCircle} />
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden max-w-lg mx-auto animate-slide-up">
+          <div className="surface-card overflow-hidden max-w-lg mx-auto animate-slide-up">
             <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500" />
             <div className="p-8">
               <div className="text-center mb-8">
@@ -2121,7 +2125,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                 )}
                 <button
                   onClick={() => dispatch({ type: 'START_EXAM' })}
-                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg text-base"
+                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 btn-glow text-base"
                 >
                   <Play size={20} />
                   開始考試
@@ -2143,7 +2147,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
     const passed = scaledScore >= passScore
     return (
       <div className="space-y-6 animate-slide-up">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className={`h-1.5 ${passed ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-red-400 to-red-500'}`} />
           <div className="p-8 text-center">
             <div className={`w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center ${passed ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-100 dark:bg-gray-700'}`}>
@@ -2181,7 +2185,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
         </div>
 
         {/* Detail review */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+        <div className="surface-card p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <ListChecks size={18} />
             逐題檢視
@@ -2212,7 +2216,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   return (
     <div className="space-y-4">
       {/* Timer bar + controls */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-4">
+      <div className="surface-card p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold">
@@ -2260,7 +2264,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Question */}
       {examQ && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-5">
@@ -2310,7 +2314,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
       )}
 
       {/* Exam navigation bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-5">
+      <div className="surface-card p-5">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
           <span className="text-xs font-bold text-orange-500">{examProgressPct}%</span>
@@ -2431,7 +2435,7 @@ function StatsTab({ state, dispatch, examTypes }) {
       </div>
 
       {/* Overall accuracy visual */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6">
+      <div className="surface-card p-6">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">整體正確率</span>
           <span className={`text-2xl font-extrabold ${overallAccuracy >= 70 ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{overallAccuracy}%</span>
@@ -2470,7 +2474,7 @@ function StatsTab({ state, dispatch, examTypes }) {
       </div>
 
       {/* Section content */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-6 animate-fade-in" key={activeSection}>
+      <div className="surface-card p-6 animate-fade-in" key={activeSection}>
         {activeSection === 'overview' && (
           <div>
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
@@ -2653,7 +2657,7 @@ function QuestionList({ items, dispatch, showMastery = false, defaultCollapsed =
 // ══════════════════════════════════════════
 function EmptyState({ message, icon: Icon, action, actionLabel }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200/60 dark:border-gray-700/60 p-16 text-center animate-fade-in">
+    <div className="surface-card p-16 text-center animate-fade-in">
       <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-5">
         <Icon size={36} className="text-gray-300 dark:text-gray-500" />
       </div>
