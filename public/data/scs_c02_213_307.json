@@ -19,7 +19,7 @@
       "A": "Update the password length policy in the IAM configuration. 分析 :IAM 本身不支持直接设置密码 ⻓ 度策略,因为 IAM 用户的密码策略是通过账户级别的密码策略来管理的, 而不是单独配置的。因此此选项错误。",
       "B": "Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito 支持直接配置密码策略,包括设置密码的最小 ⻓ 度。这是正确的操作之一 ,因此此选项正确。",
       "C": "Update the password length policy in the on-premises Active Directory configuration. 分析 :Active Directory 是公司内部的身份提供者,密码策略需要在 Active Directory 中配置以满足安全要求。这是正确的操作之一 ,因此此选项正确。",
-      "D": "length policy in the IAM configuration. 分析 :IAM 本身不支持直接设置密码 ⻓ 度策略,因为 IAM 用户的密码策略是通过账户级别的密码策略来管理的, 而不是单独配置的。因此此选项错误。 B. Update the password length policy in the Cognito configuration. 分析 :Amazon Cognito 支持直接配置密码策略,包括设置密码的最小 ⻓ 度。这是正确的操作之一 ,因此此选项正确。 C. Update the password length policy in the on-premises Activ",
+      "D": "Create an SCP in AWS Organizations. Configure the SCP to enforce a minimum password length for IAM and Cognito. 错误：SCP（Service Control Policy）用于限制 AWS 账户或组织内的服务操作，但无法直接用于设置密码策略。因此此选项错误。",
       "E": "Create an IAM policy that includes a condition for minimum password length. Enforce the policy for IAM and Cognito. 分析 :IAM 策略无法直接用于设置密码 ⻓ 度条件,密码策略是通过账户级别的密码策略或 Cognito 的配置来管理的。因此此选项错误。"
     }
   },
@@ -269,7 +269,7 @@
     "explanations": {
       "A": "使用包含来自用户代理的 IoT 设备 IP 地址的 IP set match 规则声明。错误 :DDoS 攻击通常来自大量分布式的 IP 地址,攻击者可能会动态更改 IP 地址,因此基于 IP 地址的匹配规则无法有效阻止攻击。此外,题目中并未提到具体的 IP 地址列表,因此无法实现针对性阻止。",
       "B": "使用 geographic match 规则声明。将声明配置为阻止 IoT 设备所在国家 / 地区。错误 : 地理位置匹配规则会阻止整个国家或地区的流量,这可能会误伤正常用户,尤其是全球性网站。题目要求不影响客户访问,因此地理位置匹配不符合要求。",
-      "C": "match 规则声明。将声明配置为阻止 IoT 设备所在国家 / 地区。错误 : 地理位置匹配规则会阻止整个国家或地区的流量,这可能会误伤正常用户,尤其是全球性网站。题目要求不影响客户访问,因此地理位置匹配不符合要求。 C. 使用 rate-base",
+      "C": "使用 rate-based 规则声明，设置一个基于来自 IoT 设备请求数量的速率限制。正确：Rate-based 规则限制请求速率，可在某个时间窗口内只允许特定 IP 范围下数量上限的请求，能在不影响正常用户访问的情况下减少滥用流量的影响。",
       "D": "规则声明。设置一个等于来自 IoT 设备请求数量的速率限制。错误 :Rate-based 规则限制请求速率,但无法区分正常用户和恶意 IoT 设备的请求。题目要求基于用户代理信息来识别攻击, 而不是基于请求速率。 D. 使用包含来自用户代理的 IoT 设备品牌详细信息的 string match 规则声明。正确 : 用户代理 (User Agent) 是攻击的关键特征,使用 string match 规则可以精确匹配 IoT 设备的品牌信息。这种方法可以有效阻止恶意请求,同时不会影响正常用户的访问。"
     }
   },
@@ -325,7 +325,7 @@
     "answer": "A",
     "explanations": {
       "A": "正确 :CloudWatch Logs 支持账户范围的数据保护策略,可以自动应用于所有日志组,包括未来创建的日志组。正确 : 通过指定数据标识符,可以检测和保护敏感数据。正确 : 移除 logs:Unmask 权限可以防止开发人员查看被屏蔽的敏感数据。",
-      "B": "permissions for the developers to view the exported log data in Amazon S3. 错误 : 将日志导出到 S3 并使用 Macie 是一种额外的复杂解决方案, 无法直接满足题目要求的自动保护新创建的日志组。错误 : 题目要求保护敏感数据, 而不是完全移除开发人员对 CloudWatch Logs 的访问权限。",
+      "B": "为每个日志组单独创建数据保护策略。无法在云中只设置一个统一策略，且需要为每个 log group 分别配置，运维负担大；且未涉及对开发人员访问敏感数据的限制。",
       "C": "错误 : 与选项 B 类似, 导出到 S3 并使用 Macie 是一种复杂且不必要的解决方案。错误 : 无法自动保护新创建的日志组。",
       "D": "错误 : 为每个日志组单独创建数据保护策略无法自动应用于未来创建的日志组,违背了题目要求。正确 : 移除 logs:Unmask 权限可以防止开发人员查看敏感数据,但整体方案不够自动化。"
     }
@@ -543,7 +543,7 @@
       "C": "Take snapshots of the Amazon Elastic Block Store Amazon EBS) data volumes that are attached to the EC2 instance. 正确 : 创建 EBS 数据卷的快照可以保存当前数据状态,便于后续分析和恢复。",
       "D": "错误 : 禁用终止保护会使实例更容易被意外删除或恶意删除,这与保护实例的目标相悖。 B. Enable termination protection for the EC2 instance if termination protection has not been enabled. 正确 : 启用终止保护可以防止实例被意外或恶意终止 ,是保护实例的关键步骤。 C. Take snapshots of the Amazon Elastic Block Stor",
       "E": "Capture the EC2 instance metadata, and then tag the EC2 instance as under quarantine. 正确 : 捕获实例元数据可以帮助记录当前状态,标记为隔离状态可以防止进一步的潜在威胁扩散。 F. Immediately remove any entries in the EC2 instance metadata that contain sensitive information. 错误 : 删除元数据中的敏感信息可能会导致丢失重要的调查线索。",
-      "F": "termination protection has not been disabled. 错误 : 禁用终止保护会使实例更容易被意外删除或恶意删除,这与保护实例的目标相悖。 B. Enable termination protection for the EC2 instance if termination protection has not been enabled. 正确 : 启用终止保护可以防止实例被意外或恶意终止 ,是保护实例的关键步骤。 C. Take snapshots of the Amazon Elastic Block Store Amazon EBS) data volumes that are attached to the EC2 instance. 正确 : 创建 EBS 数据卷的快照可以保存当前数据状态,便于后续分析和恢复。 D. Remove all snapshots of the Amazon Elastic Block Store Amazon EBS) data volumes that are attached to the EC2 instance. 错误 : 删除快照会导致数据丢失, 无法进行后续调查和恢复。 E. Capture the EC2 instance metadata, and then tag the EC2 instance as under quarantine. 正确 : 捕获实例元数据可以帮助记录当前状态,标记为隔离状态可以防止进一步的潜在威胁扩散。 F. Immediately remove any entries in the EC2 instance metadata that contain sensitive information. 错误 : 删除元数据中的敏感信息可能会导致丢失重要的调查线索。"
+      "F": "立即移除 EC2 实例元数据中包含敏感信息的任何条目。错误：随意删除元数据会破坏隔离调查所需的取证依据；调查前先做快照、捕获元数据、打隔离标签等保全步骤，再处理敏感信息。"
     }
   },
   {
@@ -602,8 +602,8 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "bucket1 only 错误。虽然 bucket1 的存储桶策略允许用户“alice”访问 bucket1 ,但 IAM 用户策略并未限制“alice”对 bucket2 的访问。因此, “alice”可以同时访问 bucket1 和 bucket2 。",
-      "B": "bucket2 only 错误。 IAM 用户策略允许“alice”访问 bucket2 ,但 bucket1 的存储桶策略也明确允许“alice”访问 bucket1 。因此, “alice”可以同时访问 bucket1 和 bucket2 。",
+      "A": "仅 bucket1。错误：虽然 S3 存储桶策略和 IAM 用户策略如何共同决定用户的最终权限。权限的合并原则：用户的最终权限是存储桶策略和 IAM 策略的联合结果。bucket1 的存储桶策略允许用户“alice”访问 bucket1，但 IAM 用户策略并未限制“alice”对 bucket2 的访问。因此 S3 存储桶策略和 IAM 用户策略如何共同决定用户 alice 可以访问 bucket1。",
+      "B": "仅 bucket2。错误：IAM 用户策略允许“alice”访问 bucket2，但 bucket1 的存储桶策略也明确允许 alice 访问 bucket1。因此，“alice”可以同时访问两个存储桶。",
       "C": "Both bucket1 and bucket2 正确。根据权限合并原则,存储桶策略和 IAM 用户策略共同决定用户的最终权限。“alice”被 bucket1 的存储桶策略允许访问 bucket1 ,同时 IAM 用户策略允许访问 bucket2 。因此, “alice”可以访问两个存储桶。",
       "D": "Neither bucket1 nor bucket2 错误。存储桶策略和 IAM 用户策略都明确授予“alice”访问权限,因此“alice”可以访问两个存储桶。"
     }

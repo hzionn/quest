@@ -284,7 +284,7 @@
       "A": "Modify EBS default encryption settings in the target AWS Region to enable encryption. Use an Auto Scaling group instance refresh. 正确:修改 EBS 默认加密设置会确保所有新创建的 EBS 卷自动加密。结合 Auto Scaling 组实例刷新,可以确保新启动的实例使用加密的 EBS 卷。",
       "B": "Modify the launch templates for the web layer and the backend layer to add AWS Certificate Manager ACM) encryption for the attached EBS volumes. Use an Auto Scaling group instance refresh. 错误: ACM 用于管理 SSL/TLS 证书,主要用于传输层加密, 而不是用于 EBS 卷的加密。 EBS 卷加密需要使用 KMS 。",
       "C": "Create a new AWS Key Management Service AWS KMS) encrypted DB cluster from a snapshot of the existing DB cluster. 正确: Amazon Aurora 数据库加密需要使用 KMS 。通过现有快照创建新的加密数据库集群是实现加密的正确方法。",
-      "D": "the backend layer to add AWS Certificate Manager ACM) encryption for the attached EBS volumes. Use an Auto Scaling group instance refresh. 错误: ACM 用于管理 SSL/TLS 证书,主要用于传输层加密, 而不是用于 EBS 卷的加密。 EBS 卷加密需要使用 KMS 。 C. Create a new AWS Key Management Servic",
+      "D": "暂停 Aurora 数据库集群，对已停止的集群应用 ACM 证书。错误：Aurora 数据库加密需要在创建时通过 AWS KMS 设置，无法通过应用 ACM 证书来对已有未加密集群启用加密；ACM 证书用于 TLS/SSL 而非静态加密。",
       "E": "Apply AWS Certificate Manager ACM) encryption to the existing DB cluster. 错误: ACM 用于管理 SSL/TLS 证书,主要用于传输层加密, 而不是数据库加密。 Aurora 数据库加密需要使用 KMS 。"
     }
   },
@@ -841,9 +841,9 @@
     "answer": "A",
     "explanations": {
       "A": "使用了 Application Load Balancer AL",
-      "B": "和 Network Load Balancer NLB 的功能和使用场景。配置 TLS 证书以实现安全的 HTTPS 通信。如何在 ALB 中设置监听器和流量转发规则。使用 AWS Certificate Manager ACM 管理 TLS 证书。选项分析 A 使用了 Application Load Balancer ALB ,适合处理 HTTP 和 HTTPS 流量。创建了两个监听器: 一个监听器在端口 80 ( HTTP ) ,另一个监听器在端口 443 ( HTTPS ) 。设置了规则,将端口 80 的流量转发到端口 443 的监听器,确保所有流量最终通过 HTTPS 。在 AWS Certificate Manager ACM 中预置了 TLS 证书,并将证书附加到端口 443 的监听器,符合题目要求。此选项正确地实现了 TLS 保护,并且性能影响较小 ,因为 TLS 只在 ALB 层实现, 而不是端到端。 B 与选项 A 类似,但将 TLS 证书附加到了端口 80 的监听器, 而不是端口 443 。这是错误的,因为 TLS 证书应该附加到 HTTPS 监听器(端口 443 ) , 而不是 HTTP 监听器(端口 80 ) 。",
+      "B": "使用 Network Load Balancer (NLB)，适合处理高性能和低延迟的流量。但不支持复杂的 HTTP/HTTPS 规则（如流量转发）。这意味着了 TLS 终止，但 NLB 不支持基于 HTTP/HTTPS 路径的智能路由，无法将端口 443 流量转发到端口 80 的应用程序监听器。",
       "C": "使用了 Network Load Balancer NLB ,适合处理高性能和低延迟的流量,但不支持复杂的 HTTP/HTTPS 规则(如流量转发) 。虽然设置了 TLS 协议,但 NLB 不支持像 ALB 那样的流量转发规则(例如将端口 80 的流量转发到端口 443 ) 。此选项不符合题目要求,因为题目明确提到需要处理 HTTP 和 HTTPS 流量, 而 NLB 不适合这种场景。",
-      "D": "Balancer ALB 和 Network Load Balancer NLB 的功能和使用场景。配置 TLS 证书以实现安全的 HTTPS 通信。如何在 ALB 中设置监听器和流量转发规则。使用 AWS Certificate Manager ACM 管理 TLS 证书。选项分析 A 使用了 Application Load Balancer ALB ,适合处理 HTTP 和 HTTPS 流量。创建了两个监听器: 一个监听器在端口 80 ( HTTP ) ,另一个监听器在端口 443 ( HTTPS ) 。设置了规则,将端口 80 的流量转发到端口 443 的监听器,确保所有流量最终通过 HTTPS 。在 AWS Certificate Manager ACM 中预置了 TLS 证书,并将证书附加到端口 443 的监听器,符合题目要求。此选项正确地实现了 TLS 保护,并且性能影响较小 ,因为 TLS 只在 ALB 层实现, 而不是端到端。 B 与选项 A 类似,但将 TLS 证书附加到了端口 80 的监听器, 而不是端口 443 。这是错误的,因为 TLS 证书应该附加到 HTTPS 监听器(端口 443 ) , 而不是 HTTP 监听器(端口 80 ) 。 C 使用了 Network Load Balancer NLB ,适合处理高性能和低延迟的流量,但不支持复杂的 HTTP/HTTPS 规则(如流量转发) 。虽然设置了 TLS 协议,但 NLB 不支持像 ALB 那样的流量转发规则(例如将端口 80 的流量转发到端口 443 ) 。此选项不符合题目要求,因为题目明确提到需要处理 HTTP 和 HTTPS 流量, 而 NLB 不适合这种场景。 D 仅创建了一个监听器在端口 443 ,并设置了 TLS 协议。没有处理端口 80 的流量,也没有实现流量从 HTTP 到 HTTPS 的转发规则。此选项不符合题目要求,因为题目明确提到需要处理 HTTP 和 HTTPS 流量。"
+      "D": "仅创建了一个监听器在端口 443，并设置了 TLS 协议。没有处理端口 80 的流量，也没有实现流量从 HTTP（端口 80）的强制重定向到 HTTPS（端口 443），无法满足将端口 80 流量加密后重定向到端口 443 的需求。"
     }
   },
   {
@@ -1609,7 +1609,7 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "启用 AWS Security Hu",
+      "A": "启用 AWS Security Hub 并将 GuardDuty 发现结果发送到 Security Hub。错误：Security Hub 只是聚合发现结果发送到组织管理用户，并不能直接为整个组织启用并集中管理 GuardDuty 帐户，不符合题目要求。",
       "B": "并将 GuardDuty 发现结果发送到 Security Hub: 错误 : 虽然 Security Hub 可以整合 GuardDuty 的发现结果,但题目要求的是集中管理 GuardDuty 本身 , 而不是通过 Security Hub 查看 GuardDuty 的发现结果。错误 : 此选项没有提到如何自动启用 GuardDuty 或集中管理 GuardDuty 的配置。 B. 创建一个新的 AWS 账户并将其设置为 GuardDuty 的委派管理员账户 : 正确 : 此选项符合题目要求,可以通过委派管理员账户集中管理 GuardDuty 发现结果。正确 : 通过 GuardDuty 的自动成员账户添加功能,可以确保新账户自动启用 GuardDuty 。",
       "C": "创建一个新的 AWS 账户并启用 GuardDuty 和 Security Hub: 错误 : 虽然启用了 GuardDuty ,但没有提到如何集中管理 GuardDuty 发现结果。错误 : 启用 Security Hub 并不能满足题目要求的 GuardDuty 集中管理功能。",
       "D": "启用 AWS Security Hub 并将管理账户设置为 Security Hub 的委派管理员账户 : 错误 : 此选项主要关注 Security Hub , 而题目要求的是 GuardDuty 的集中管理。错误 : 将 Security Hub 发现结果发送到 GuardDuty 账户并不符合题目要求。"
@@ -1824,7 +1824,7 @@
     "answer": "C",
     "explanations": {
       "A": "首先对 EBS 卷进行快照,然后进行内存快照。这是错误的,因为内存快照需要在实例运行时进行 ,停止实例后无法获取内存快照。顺序错误,未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。",
-      "B": "中注销实例以确保流量不再发送到目标实例。 2. 选项分析 A 首先对 EBS 卷进行快照,然后进行内存快照。这是错误的,因为内存快照需要在实例运行时进行 ,停止实例后无法获取内存快照。顺序错误,未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。 B 首先进行内存快照,然后停止实例。这是正确的,因为内存快照需要在实例运行时进行。未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。",
+      "B": "首先停止 EC2 实例以便对内存快照。这是错误的，因为内存快照需要在实例运行时进行；停止实例后无法获取内存快照。顺序错误，未优先处理 Auto Scaling 组和 ALB 注销，可能导致实例被替换或流量继续发送到实例。",
       "C": "首先分离实例并注销 ALB ,确保实例不会被替换或继续接收流量。这是正确的流程。然后对 EBS 卷和内存进行快照,最后停止实例。这是正确的顺序。",
       "D": "首先分离实例并注销 ALB ,确保实例不会被替换或继续接收流量。这是正确的流程。然后停止实例后再进行内存快照,这是错误的 ,因为停止实例后无法获取内存快照。"
     }
@@ -1849,7 +1849,7 @@
     ],
     "explanations": {
       "A": "首先对 EBS 卷进行快照,然后进行内存快照。这是错误的,因为内存快照需要在实例运行时进行 ,停止实例后无法获取内存快照。顺序错误,未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。",
-      "B": "中注销实例以确保流量不再发送到目标实例。 2. 选项分析 A 首先对 EBS 卷进行快照,然后进行内存快照。这是错误的,因为内存快照需要在实例运行时进行 ,停止实例后无法获取内存快照。顺序错误,未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。 B 首先进行内存快照,然后停止实例。这是正确的,因为内存快照需要在实例运行时进行。未优先处理 Auto Scaling 组和 ALB 的分离,可能导致实例被替换或流量继续发送到实例。",
+      "B": "B. Record an A record that contains the IP address of the Amazon CloudFront distribution. 错误：A 记录用于域名直接映射到 IP 地址，但 CloudFront 不提供固定 IP 地址，且 A 记录不能用于子域名的 CNAME 配置。题目场景需要 CNAME 才能将 us-west-2 区域的域名指向 CloudFront 分发。",
       "C": "首先分离实例并注销 ALB ,确保实例不会被替换或继续接收流量。这是正确的流程。然后对 EBS 卷和内存进行快照,最后停止实例。这是正确的顺序。",
       "D": "首先分离实例并注销 ALB ,确保实例不会被替换或继续接收流量。这是正确的流程。然后停止实例后再进行内存快照,这是错误的,因为停止实例后无法获取内存快照。",
       "E": "正确: CloudFront 是题目要求的分发和缓存解决方案, 支持自定义域名和 ACM 证书。",
@@ -1869,7 +1869,7 @@
     },
     "answer": "B",
     "explanations": {
-      "B": "的集成与事件处理 Amazon SNS 的通知功能如何实现高效的安全事件监控和告警 2. 选项分析 A B 100% 错误 : 设置单独的 Lambda 函数并调用每个服务的 API 增加了额外的复杂性和运维开销。错误 : 需要手动管理多个 Lambda 函数和 EventBridge 规则,违背了“最少运维开销”的要求。 B 正确 : 直接使用 Amazon EventBridge 规则匹配 Security Hub 的高严重性发现事件,简化了流程。正确 : 通过 SNS 发送通知,订阅邮箱即可接收告警,符合“最少运维开销”的要求。",
+      "B": "直接使用 Amazon EventBridge 规则匹配 Security Hub 的高严重性发现事件，简化了流程。错误：通过 SNS 发送通知，订阅邮箱即可接收告警，符合“最少运维开销”的要求，但本题要求是“最少运维开销”，因此使用 EventBridge + SNS 是合理的；选项 B 通过 Lambda 与 EventBridge 处理 Security Hub 的高严重性发现事件，简化了流程，这是正确的做法。",
       "C": "错误 :AWS Control Tower 主要用于账户治理, 而不是直接处理安全事件。错误 : 匹配 Control Tower 事件无法满足题目要求的“高严重性安全发现”条件。",
       "D": "错误 : 托管 EC2 实例运行应用程序增加了运维开销和成本。错误 : 需要手动管理应用程序和 API 调用 ,违背了“最少运维开销”的要求。"
     }
