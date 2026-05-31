@@ -565,7 +565,7 @@
     "explanations": {
       "A": "Review the AWS CloudTrail event history logs in an Amazon S3 bucket and look for the TerminateInstances event to identify the federated user from the role session name. 错误:虽然可以通过 CloudTrail 日志找到 TerminateInstances 事件,但仅通过角色会话名称无法直接识别联合用户的具体身份。需要进一步分析 AssumeRole 相关事件才能关联到具体的联合用户。",
       "B": "Filter the AWS CloudTrail event history for the TerminateInstances event and identify the assumed IAM role. Review the AssumeRoleWithSAML event call in CloudTrail to identify the corresponding username. 正确:此方法直接通过 CloudTrail 筛选 TerminateInstances 事件,找到假设的 IAM 角色 ,然后进一步分析 AssumeRoleWithSAML 事件以识别联合用户。这是最快速且准确的方法,符合题目要求。",
-      "C": "Search the AWS CloudTrail logs for the TerminateInstances event an",
+      "C": "在 AWS CloudTrail 事件历史记录中搜索 TerminateInstances 事件。错误：虽然可以通过 CloudTrail 上找到 TerminateInstances 事件，但仅通过角色会话名称不涉及 IAM 用户身份，需要进一步分析 AssumeRoleWithSAML 事件以识别联合用户。仅看 TerminateInstances 调用是不够的。",
       "D": "Use Amazon Athena to run a SQL query on the AWS CloudTrail logs stored in an Amazon S3 bucket and filter on the TerminateInstances event. Identify the corresponding role and run another query to filter the AssumeRoleWithWebIdentity event for the user name. 错误:虽然 Athena 可以查询 CloudTrail 日志,但需要额外的配置和查询步骤,耗时较 ⻓ 。此外, AssumeRoleWithWebIdentity 事件与 SAML 联合身份验证无关,可能导致错误的关联。"
     }
   },
@@ -687,7 +687,7 @@
     "explanations": {
       "A": "Store the scripts in the AMI and encrypt the sensitive data using AWS KMS. Use the instance role profile to control access to the KMS keys needed to decrypt the data. 优点:使用 AWS KMS 加密数据是安全的做法,实例角色可以控制对 KMS 密钥的访问。缺点:将脚本存储在 AMI 中可能导致敏感数据暴露,因为 AMI 可以被共享或复制, 增加了数据泄露的 ⻛ 险。结论:此选项不够安全,敏感数据仍可能被暴露。",
       "B": "Store the sensitive data in AWS Systems Manager Parameter Store using the encrypted string parameter and assign the GetParameters permission to the EC2 instance role. 优点: AWS Systems Manager Parameter Store 提供了加密字符串参数功能,可以安全地存储敏感数据。优点:通过实例角色分配 GetParameters 权限,确保只有授权的实例可以访问敏感数据。结论:此选项是最佳实践,符合安全性要求。",
-      "C": "Externalize the bootstrap scripts in Amazon S3 and encrypt them using AWS KMS. Remove the scripts from the instance and clear the logs after the instance is configure",
+      "C": "自定义脚本作为 AMI 的一部分，并加密敏感数据，使用 AWS KMS。使用实例角色配置文件来控制对用于解密数据的 KMS 密钥的访问。错误：将 AMI 与加密脚本放在一起，每次更新脚本都要更新 AMI，增加运维负担。这种方法不符合在 AWS Systems Manager Parameter Store 中存储和管理脚本的安全最佳实践。",
       "D": "Block user access of the EC2 instance's metadata service using IAM policies. Remove all scripts and clear the logs after the scripts have completed. 优点:限制对 EC2 实例元数据服务的访问可以减少敏感信息泄露的 ⻛ 险。缺点:此选项没有解决敏感数据的存储问题,且清除脚本和日志是事后操作, 无法完全防止数据泄露。结论:此选项不够全面 , 无法确保敏感数据的安全性。"
     }
   },
@@ -1168,7 +1168,7 @@
     "answer": "B",
     "explanations": {
       "A": "Deploy the Lambda functions to a private subnet in the VPC. Configure the Lambda functions to access the S3 service through the NAT gateway. 错误原因:虽然 NAT 网关可以让私有子网中的资源访问 S3 ,但流量会通过互联网 , 而题目明确要求所有流量必须使用 AWS 网络,不能经过互联网。",
-      "B": "Deploy the Lambda functions to a private subnet in the VP",
+      "B": "将 Lambda 函数部署到 VPC 中的私有子网。创建一个 S3 Gateway Endpoint 以访问 S3 服务。正确：S3 Gateway Endpoint 提供 VPC 内部对 S3 的私有访问通道，不经过互联网；且免费、配置简单、运维负担极低，完全满足“流量必须使用 AWS 网络，不得通过互联网传输”的硬性要求。",
       "C": "Deploy the S3 bucket and the Lambda functions in the same private subnet. Configure the Lambda functions to use the default endpoint for the S3 service. 错误原因: S3 服务是区域级服务,不依赖具体的子网。将 S3 存储桶部署到特定子网没有意义,且默认端点可能会导致流量经过互联网。",
       "D": "Deploy an Amazon Simple Queue Service Amazon SQS) queue and the Lambda functions in the same private subnet. Configure the Lambda functions to send data to the SQS queue. Configure the SQS queue to send data to the S3 bucket. 错误原因:虽然 SQS 可以作为中间层,但题目没有要求使用 SQS ,且此选项增加了不必要的复杂性。 SQS 本身也需要正确配置以确保流量不经过互联网。"
     }
@@ -1551,7 +1551,7 @@
       "C"
     ],
     "explanations": {
-      "A": "Configure a finding aggregation Region for Security Hu",
+      "A": "为 Security Hub 配置一个发现结果聚合区域 (Finding Aggregation Region)，将所有区域的发现结果集中到一个区域进行管理。正确：跨区域聚合是 Security Hub 集中跨区域发现结果到主区域的标准做法，运维成本最低，满足将所有区域发现集中到指定 Security Hub 帐户的需求。",
       "B": "Create an AWS Lambda function that routes events from other Regions to the dedicated Security Hub account. Create an Amazon EventBridge rule to invoke the Lambda function. 错误:虽然可以通过 Lambda 函数和 EventBridge 规则实现事件路由,但这种方法需要额外的开发和维护工作,增加了运营开销,不符合“LEAST operational overhead”的要求。",
       "C": "Turn on the option to automatically enable accounts for Security Hub. 正确: Security Hub 提供了一个选项,可以自动为 AWS Organizations 中的所有现有账户和新账户启用 Security Hub 。这是实现跨账户管理的推荐方法,且运营开销最低。",
       "D": "Security Hub account. Create an Amazon EventBridge rule to invoke the Lambda function. 错误:虽然可以通过 Lambda 函数和 EventBridge 规则实现事件路由,但这种方法需要额外的开发和维护工作,增加了运营开销,不符合“LEAST operational overhead”的要求。 C. Turn on the option to automatically enable accounts for Security Hub. 正确: Security Hub 提供了一个选项,可以自动为 AWS Organizations 中的所有现有账户和新账户启用 Security Hub 。这是实现跨账户管理的推荐方法,且运营开销最低。 D. Create an SCP that denies the securityhub:DisableSecurityHub permission. Attach the SCP to the organization ʼ s root account. 错误:虽然 SCP 可以限制某些操作,但此选项并不能直接实现题目要求的自动管理和跨区域发现结果聚合。",
@@ -1896,7 +1896,7 @@
       "A": "Use an interface VPC endpoint for Amazon SQS. 正确。 Amazon SQS 需要使用接口 VPC 端点来实现私有连接,因为 SQS 是一个支持接口端点的服务。",
       "B": "Configure a connection to Amazon S3 through AWS Transit Gateway. 错误。 AWS Transit Gateway 主要用于连接多个 VPC 或本地网络, 而不是用于直接连接到 AWS 服务。 Amazon S3 的私有连接应该使用网关 VPC 端点。",
       "C": "Use a gateway VPC endpoint for Amazon S3. 正确。 Amazon S3 需要使用网关 VPC 端点来实现私有连接,因为 S3 是一个支持网关端点的服务。",
-      "D": "Modify the IAM role applied to the EC2 instances in the Auto Scaling group to allow outbound traffic to the interfac",
+      "D": "修改应用到 Auto Scaling 组中 EC2 实例的 IAM 角色，以允许其向接口端点发起出站流量。错误：让 EC2 实例访问 VPC 私有端点访问的是网络层面的私有连通问题，IAM 角色控制的是 API 调用权限而非网络可达性；流量是否私有由 VPC Endpoint 与路由决定，与角色无关。",
       "E": "Modify the endpoint policies on all VPC endpoints. Specify the SQS and S3 resources that the application uses. 正确。端点策略可以限制通过 VPC 端点访问的资源,从而实现最小权限原则。",
       "F": "Configure a connection to Amazon S3 through AWS Firewall Manager. 错误。 AWS Firewall Manager 用于集中管理防火墙规则, 而不是用于配置与 Amazon S3 的私有连接。"
     }

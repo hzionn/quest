@@ -623,7 +623,7 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Create an AWS WAF rate-based rule, and attach it to the AL",
+      "A": "创建 AWS WAF 速率限制规则并附加到 ALB。正确：WAF 规则附加到 ALB 后可以直接保护 Web 应用免受 DoS/扫描。最少的维护工作；WAF 规则可以自动检测和阻止恶意请求，无需手动更新和维护。",
       "B": "Update the security group that is attached to the ALB to block the attacking IP addresses. 错误:安全组是静态的,需要手动更新规则以阻止攻击 IP 地址。由于攻击 IP 地址会定期变化,这种方法需要持续的人工干预。安全组不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。",
       "C": "Update the ALB subnet's network ACL to block the attacking client IP addresses. 错误: 网络 ACL 是静态的,需要手动更新规则以阻止攻击 IP 地址。与安全组类似,这种方法需要持续的人工干预。网络 ACL 不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。",
       "D": "Create an AWS WAF rate-based rule, and attach it to the security group of the EC2 instances. 错误: AWS WAF 无法直接附加到 EC2 实例的安全组。 WAF 只能附加到支持的资源(如 ALB 、 API Gateway 等) 。安全组本身不支持基于速率的规则,因此此选项不符合要求。"
@@ -661,7 +661,7 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "Use Amazon Inspector. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Security Hu",
+      "A": "使用 Amazon Inspector。在 Amazon Inspector 中创建包含规则以匹配需要扫描的仓库，将 Amazon Inspector 的发现推送到 AWS Config。正确：Amazon Inspector 支持容器镜像扫描功能，包括基本扫描和高级扫描；AWS Security Hub 的集成中即可统一管理所有发现。Inspector 的发现可以发送到 AWS Security Hub，再通过结果发送 AWS Config 进行扫描。",
       "B": "Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to AWS Security Hub. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。虽然可以创建包含规则,但基本扫描的功能不足以满足题目中“持续扫描”和“推送扫描”的要求。此选项不符合题目要求,因此是错误答案。",
       "C": "Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to Amazon Inspector. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。 Amazon Inspector 是一个独立的服务, ECR 的发现无法直接推送到 Amazon Inspector 。此选项在技术上不可行 ,因此是错误答案。",
       "D": "Use Amazon Inspector. Create inclusion rules in Amazon Inspector to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Config. Amazon Inspector 支持对 ECR 中的容器镜像进行高级扫描。题目要求将发现推送到 AWS Security Hub , 而不是 AWS Config 。 AWS Config 主要用于资源配置合规性检查,不适合集中管理安全发现。此选项不符合题目要求,因此是错误答案。"
@@ -904,7 +904,7 @@
       "A": "Create an AWS Config rule to detect the creation of unencrypted RDS databases. Create an Amazon EventBridge rule to trigger on the AWS Config rules compliance state change and use Amazon Simple Notification Service Amazon SNS) to notify the security operations team. 正确。 AWS Config 可以检测资源是否符合加密要求, EventBridge 和 SNS 可以用于通知安全团队,确保未来的数据库创建符合加密策略。",
       "B": "Use AWS System Manager State Manager to detect RDS database encryption configuration drift. Create an Amazon EventBridge rule to track state changes and use Amazon Simple Notification Service Amazon SNS) to notify the security operations team. 错误。 AWS Systems Manager State Manager 主要用于管理实例配置, 而不是直接检测 RDS 数据库的加密状态。",
       "C": "Create a read replica for the existing unencrypted RDS database and enable replica encryption in the process. Once the replica becomes active, promote it into a standalone database instance and terminate the unencrypted database instance. 错误。虽然可以通过创建加密的只读副本来解决未加密数据库的问题,但此方法不如选项",
-      "D": "RDS databases. Create an Amazon EventBridge rule to trigger on the AWS Config rules compliance state change and use Amazon Simple Notification Servic",
+      "D": "使用 AWS Systems Manager Maintenance Window 来订阅 RDS 数据库的状态变化和 Amazon Simple Notification Service (Amazon SNS) 通知运维团队。错误：AWS Systems Manager 主要用于管理实例配置，并不直接监控 RDS 数据库的创建和加密配置。复制和启用加密是手动操作过程，没有实现自动化复制和加密的完整流程。",
       "E": "Enable encryption for the identified unencrypted RDS instance by changing the configurations of the existing database. 错误。 RDS 不支持直接对现有数据库启用加密,必须通过快照或副本的方式实现加密。"
     }
   },
@@ -1995,7 +1995,7 @@
     "explanations": {
       "A": "Configure an S3 Lifecycle rule on the S3 bucket to delete objects after 45 days. 正确: S3 Lifecycle 规则是专 ⻔ 设计用于管理对象的生命周期,包括自动删除过期数据。它是实现数据保留策略的最佳实践。高效: 无需额外的计算资源或复杂的配置。",
       "B": "Create an AWS Lambda function to check the last-modified date of the S3 objects and delete objects that are older than 45 days. Create an S3 event notification to invoke the Lambda function for each PutObject operation. 错误:虽然可以通过 Lambda 函数实现类似功能,但这种方法复杂且不必要。 S3 Lifecycle 规则已经提供了内置的解决方案。额外开销:需要编写代码、维护 Lambda 函数,并处理事件通知。",
-      "C": "Create an AWS Lambda function to check the last-modified date of the S3 objects an",
+      "C": "创建一个 AWS Lambda 函数检查最近修改日期，并使用 Amazon EventBridge 规则每月调用 Lambda 函数。错误：虽然技术上可以实现，但是 Lambda 函数和 EventBridge 规则需要额外的开发与维护成本。S3 Lifecycle 规则已提供了内建的解决方案，开发 Lambda + EventBridge 增加了运维复杂度。",
       "D": "Configure S3 Intelligent-Tiering on the S3 bucket to automatically transition objects to another storage class. 错误: S3 Intelligent-Tiering 是用于优化存储成本的解决方案, 而不是用于删除过期数据。不符合要求:题目明确要求删除超过 45 天的数据, 而不是转移到其他存储类别。"
     }
   },
