@@ -16,7 +16,7 @@
       "D"
     ],
     "explanations": {
-      "A": "函数赋予权限以访问其他 AWS 资源(如 S3 桶) 。安全性最佳实践:避免使用硬编码的凭证或不安全的访问方式。资源策略(如 S3 桶策略)的应用 :如何通过资源策略控制访问权限。选项分析 A. 创建一个仅具有编程访问权限的 IAM 用户,并使用环境变量存储访问密钥。错误:使用 IAM 用户和访问密钥对的方式不符合安全性最佳实践。 AWS 建议使用 IAM 角色而不是硬编码的凭证。环境变量存储访问密钥可能导致泄露 ⻛ 险。",
+      "A": "创建一个仅具有编程访问权限的 IAM 用户,并使用环境变量存储访问密钥。错误:使用 IAM 用户和访问密钥对的方式不符合安全性最佳实践。 AWS 建议使用 IAM 角色而不是硬编码的凭证。环境变量存储访问密钥可能导致泄露 ⻛ 险。",
       "B": "使用 Amazon EC2 密钥对,并通过 Secrets Manager 存储私钥。错误: EC2 密钥对用于 SSH 连接, 而不是用于与 S3 桶通信。此选项与题目需求不相关。 Secrets Manager 存储私钥的方式不适用于此场景。",
       "C": "创建一个 IAM 角色并附加允许访问 S3 桶的 IAM 策略。正确:这是为 Lambda 函数赋予权限的推荐方法。 IAM 角色可以安全地为 Lambda 函数提供所需的权限。通过 IAM 策略可以精确控制对 S3 桶的访问权限。",
       "D": "创建一个 IAM 角色并附加 S3 桶策略,指定 IAM 角色为主体。正确:桶策略可以进一步限制访问权限,并指定 IAM 角色为主体以允许访问。这种方法结合了 IAM 角色和资源策略的使用 ,是安全性最佳实践的一部分。",
@@ -39,7 +39,7 @@
       "A": "Custom SSL certificate that is stored in AWS Key Management Service AWS KMS 错误: AWS KMS 主要用于管理加密密钥, 而不是存储 SSL/TLS 证书。虽然 KMS 可以管理加密密钥, 但它并不是设计用来存储和管理 SSL/TLS 证书的服务。",
       "B": "Default SSL certificate that is stored in Amazon CloudFront 错误:虽然 Amazon CloudFront 支持 SSL/TLS 证书,但它使用的是默认的 SSL 证书, 无法存储自定义证书。自定义证书需要通过 AWS Certificate Manager ACM 或其他方式配置。",
       "C": "Custom SSL certificate that is stored in AWS Certificate Manager ACM 正确: AWS Certificate Manager ACM 是专 ⻔ 设计用于管理 SSL/TLS 证书的服务。它支持存储、分发和自动续订 SSL/TLS 证书, 非常适合用于 HTTPS 通信。",
-      "D": "in AWS Key Management Service AWS KMS 错误: AWS KMS 主要用于管理加密密钥, 而不是存储 SSL/TLS 证书。虽然 KMS 可以管理加密密钥, 但它并不是设计用来存储和管理 SSL/TLS 证书的服务。 B. Default SSL certificate that is stored in Amazon CloudFront 错误:虽然 Amazon CloudFront 支持 SSL/TLS 证书,但它使用的是默认的 SSL 证书, 无法存储自定义证书。自定义证书需要通过 AWS Certificate Manager ACM 或其他方式配置。 C. Custom SSL certificate that is stored in AWS Certificate Manager ACM 正确: AWS Certificate Manager ACM 是专 ⻔ 设计用于管理 SSL/TLS 证书的服务。它支持存储、分发和自动续订 SSL/TLS 证书, 非常适合用于 HTTPS 通信。 D. Default SSL certificate that is stored in Amazon S3 错误: Amazon S3 是对象存储服务,不适合存储 SSL/TLS 证书。虽然可以将证书文件存储在 S3 中, 但这不是推荐的做法,也无法直接用于 HTTPS 通信。"
+      "D": "Default SSL certificate that is stored in Amazon S3 错误: Amazon S3 是对象存储服务,不适合存储 SSL/TLS 证书。虽然可以将证书文件存储在 S3 中, 但这不是推荐的做法,也无法直接用于 HTTPS 通信。"
     }
   },
   {
@@ -85,7 +85,7 @@
       "A": "创建 SNS 主题并使用 Lambda 函数验证模板分析: 使用 Lambda 函数运行 aws cloudformation validate-template 命令可以验证模板的语法,但无法检查模板是否符合安全要求或内部标准。虽然可以发送通知, 但无法满足对资源配置合规性检查的需求。此选项错误。",
       "B": "创建 SNS 主题并使用 CloudFormation Guard 验证模板分析: CloudFormation Guard 是专 ⻔ 用于检查 CloudFormation 模板是否符合预定义规则的工具, 非常适合用于合规性检查。在 CI/CD 管道中集成 CloudFormation Guard 可以自动化模板验证,同时保持开发速度。通过 SNS 发送通知满足了安全团队的需求。此选项正确。",
       "C": "使用 S3 、 SQS 和 EC2 实例进行模板验证分析: 此选项设计复杂,涉及多个服务( S3 、 SQS 、 EC2 ) ,增加了操作复杂性和成本。虽然可以实现模板验证,但不如 CloudFormation Guard 直接且高效。此选项错误。",
-      "D": "管道的集成与自动化 CloudFormation 模板的验证与合规性检查通知机制的实现( Amazon SNS ) CloudFormation Guard 的使用选项分析 A. 创建 SNS 主题并使用 Lambda 函数验证模板分析: 使用 Lambda 函数运行 aws cloudformation validate-template 命令可以验证模板的语法,但无法检查模板是否符合安全要求或内部标准。虽然可以发送通知, 但无法满足对资源配置合规性检查的需求。此选项错误。 B. 创建 SNS 主题并使用 CloudFormation Guard 验证模板分析: CloudFormation Guard 是专 ⻔ 用于检查 CloudFormation 模板是否符合预定义规则的工具, 非常适合用于合规性检查。在 CI/CD 管道中集成 CloudFormation Guard 可以自动化模板验证,同时保持开发速度。通过 SNS 发送通知满足了安全团队的需求。此选项正确。 C. 使用 S3 、 SQS 和 EC2 实例进行模板验证分析: 此选项设计复杂,涉及多个服务( S3 、 SQS 、 EC2 ) ,增加了操作复杂性和成本。虽然可以实现模板验证,但不如 CloudFormation Guard 直接且高效。此选项错误。 D. 使用集中式 StackSet 并手动审核模板分析: 手动审核模板会显著降低开发速度,与题目要求的“保持开发速度”相悖。此选项错误。 3."
+      "D": "使用集中式 StackSet 并手动审核模板分析: 手动审核模板会显著降低开发速度,与题目要求的“保持开发速度”相悖。此选项错误。 3."
     }
   },
   {
@@ -107,9 +107,9 @@
     "explanations": {
       "A": "AWS Site-to-Site VPN 正确: AWS Site-to-Site VPN 支持 IPsec 加密,可以在 AWS 和本地数据中心之间建立安全的通信通道。适用于需要加密通信的场景,但可能会受到网络延迟的影响。",
       "B": "AWS Direct Connect 正确: AWS Direct Connect 提供专用的低延迟网络连接,适合对网络延迟敏感的应用。虽然 Direct Connect 本身不提供加密,但可以与 AWS Site-to-Site VPN 结合使用以实现 IPsec 加密。",
-      "C": "协议进行加密。 AWS 服务选择:熟悉 AWS Direct Connect 和 AWS Site-to-Site VPN 的功能和适用场景。选项分析 A. AWS Site-to-Site VPN 正确: AWS Site-to-Site VPN 支持 IPsec 加密,可以在 AWS 和本地数据中心之间建立安全的通信通道。适用于需要加密通信的场景,但可能会受到网络延迟的影响。 B. AWS Direct Connect 正确: AWS Direct Connect 提供专用的低延迟网络连接,适合对网络延迟敏感的应用。虽然 Direct Connect 本身不提供加密,但可以与 AWS Site-to-Site VPN 结合使用以实现 IPsec 加密。 C. AWS VPN CloudHub 错误: AWS VPN CloudHub 主要用于连接多个站点(如多个分支机构) ,不适合单一站点到 AWS 的连接场景。",
+      "C": "AWS VPN CloudHub 错误: AWS VPN CloudHub 主要用于连接多个站点(如多个分支机构) ,不适合单一站点到 AWS 的连接场景。",
       "D": "VPC peering 错误: VPC Peering 用于连接两个 AWS VPC , 无法连接本地数据中心与 AWS 。",
-      "E": "VPN 的功能和适用场景。选项分析 A. AWS Site-to-Site VPN 正确: AWS Site-to-Site VPN 支持 IPsec 加密,可以在 AWS 和本地数据中心之间建立安全的通信通道。适用于需要加密通信的场景,但可能会受到网络延迟的影响。 B. AWS Direct Connect 正确: AWS Direct Connect 提供专用的低延迟网络连接,适合对网络延迟敏感的应用。虽然 Direct Connect 本身不提供加密,但可以与 AWS Site-to-Site VPN 结合使用以实现 IPsec 加密。 C. AWS VPN CloudHub 错误: AWS VPN CloudHub 主要用于连接多个站点(如多个分支机构) ,不适合单一站点到 AWS 的连接场景。 D. VPC peering 错误: VPC Peering 用于连接两个 AWS VPC , 无法连接本地数据中心与 AWS 。 E. NAT gateway 错误: NAT Gateway 用于管理出站流量的网络地址转换,与本题的需求无关。"
+      "E": "NAT gateway 错误: NAT Gateway 用于管理出站流量的网络地址转换,与本题的需求无关。"
     }
   },
   {
@@ -129,11 +129,11 @@
       "D"
     ],
     "explanations": {
-      "A": "使用 DynamoD",
-      "B": "的备份与恢复功能。 AWS Backup 服务的使用 ,包括备份计划和生命周期管理。备份频率的调度表达式( cron 和 rate )的使用。选项分析 A. 使用 DynamoDB 的按需备份功能创建备份计划。配置生命周期策略以在 3 个月后过期备份。错误: DynamoDB 的按需备份功能可以手动创建备份,但无法自动化备份计划,也无法直接配置生命周期策略。 B. 使用 AWS DataSyn",
+      "A": "使用 DynamoDB 的按需备份功能创建备份计划。配置生命周期策略以在 3 个月后过期备份。错误: DynamoDB 的按需备份功能可以手动创建备份,但无法自动化备份计划,也无法直接配置生命周期策略。",
+      "B": "使用 AWS DataSync 创建备份计划。添加一个包含 3 个月保留期的备份规则。错误: AWS DataSync 主要用于数据迁移和同步, 而不是用于创建备份计划或管理备份生命周期。",
       "C": "创建备份计划。添加一个包含 3 个月保留期的备份规则。错误: AWS DataSync 主要用于数据迁移和同步, 而不是用于创建备份计划或管理备份生命周期。 C. 使用 AWS Backup 创建备份计划。添加一个包含 3 个月保留期的备份规则。正确: AWS Backup 支持 DynamoDB 表的备份,可以创建备份计划并设置保留期为 3 个月。",
       "D": "使用 cron 调度表达式设置备份频率。将每个 DynamoDB 表分配到备份计划中。正确: AWS Backup 支持使用 cron 表达式设置备份频率,可以精确地满足题目要求的备份时间(每月 15 日和 25 日的午夜) 。",
-      "E": ")的使用。选项分析 A. 使用 DynamoDB 的按需备份功能创建备份计划。配置生命周期策略以在 3 个月后过期备份。错误: DynamoDB 的按需备份功能可以手动创建备份,但无法自动化备份计划,也无法直接配置生命周期策略。 B. 使用 AWS DataSync 创建备份计划。添加一个包含 3 个月保留期的备份规则。错误: AWS DataSync 主要用于数据迁移和同步, 而不是用于创建备份计划或管理备份生命周期。 C. 使用 AWS Backup 创建备份计划。添加一个包含 3 个月保留期的备份规则。正确: AWS Backup 支持 DynamoDB 表的备份,可以创建备份计划并设置保留期为 3 个月。 D. 使用 cron 调度表达式设置备份频率。将每个 DynamoDB 表分配到备份计划中。正确: AWS Backup 支持使用 cron 表达式设置备份频率,可以精确地满足题目要求的备份时间(每月 15 日和 25 日的午夜) 。 E. 使用 rate 调度表达式设置备份频率。将每个 DynamoDB 表分配到备份计划中。错误: rate 表达式用于设置固定间隔的备份频率(如每小时或每天) , 无法满足题目中指定的具体日期和时间要求。"
+      "E": "使用 rate 调度表达式设置备份频率。将每个 DynamoDB 表分配到备份计划中。错误: rate 表达式用于设置固定间隔的备份频率(如每小时或每天) , 无法满足题目中指定的具体日期和时间要求。"
     }
   },
   {
@@ -168,8 +168,8 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "、 Security Hub 等) 。网络安全控制( AWS Network Firewall 、 Security Group 、 ACL 等) 。选项分析 A. 配置 GuardDuty 将事件发送到 Amazon Kinesis 数据流,并使用 Kinesis Data Analytics 处理事件。错误原因: 虽然可以通过 Kinesis 数据流处理事件,但使用网络 ACL 来阻止流量并不适合动态阻止特定实例的通信 ,因为网络 ACL 是针对整个子网的规则, 无法针对单个实例进行精确控制。此方案复杂且不符合题目要求的最佳实践。",
-      "B": "等) 。网络安全控制( AWS Network Firewall 、 Security Group 、 ACL 等) 。选项分析 A. 配置 GuardDuty 将事件发送到 Amazon Kinesis 数据流,并使用 Kinesis Data Analytics 处理事件。错误原因: 虽然可以通过 Kinesis 数据流处理事件,但使用网络 ACL 来阻止流量并不适合动态阻止特定实例的通信 ,因为网络 ACL 是针对整个子网的规则, 无法针对单个实例进行精确控制。此方案复杂且不符合题目要求的最佳实践。 B. 配置 GuardDuty 将事件发送到 Amazon EventBridge ,并使用 AWS WAF web ACL 处理事件。错误原因: AWS WAF 主要用于保护 Web 应用程序免受恶意流量攻击, 而不是用于阻止 EC2 实例之间的通信。题目要求阻止可疑实例的通信, WAF web ACL 不适合此场景。",
+      "A": "配置 GuardDuty 将事件发送到 Amazon Kinesis 数据流,并使用 Kinesis Data Analytics 处理事件。错误原因: 虽然可以通过 Kinesis 数据流处理事件,但使用网络 ACL 来阻止流量并不适合动态阻止特定实例的通信 ,因为网络 ACL 是针对整个子网的规则, 无法针对单个实例进行精确控制。此方案复杂且不符合题目要求的最佳实践。",
+      "B": "配置 GuardDuty 将事件发送到 Amazon EventBridge ,并使用 AWS WAF web ACL 处理事件。错误原因: AWS WAF 主要用于保护 Web 应用程序免受恶意流量攻击, 而不是用于阻止 EC2 实例之间的通信。题目要求阻止可疑实例的通信, WAF web ACL 不适合此场景。",
       "C": "启用 AWS Security Hub 以摄取 GuardDuty 发现,并将事件发送到 Amazon EventBridge ,使用 AWS Network Firewall 阻止流量。正确原因: Security Hub 可以整合 GuardDuty 的发现,并通过 EventBridge 触发自动化响应。 AWS Network Firewall 是专 ⻔ 设计用于管理和阻止网络流量的工具,能够动态添加规则以阻止特定实例的通信。此方案符合题目要求,能够有效阻止可疑实例的通信。",
       "D": "启用 AWS Security Hub ,并使用 Lambda 替换可疑实例的安全组。错误原因: 虽然替换安全组可以阻止实例的通信,但此方法可能会影响实例的其他正常功能,且操作复杂。相比使用 AWS Network Firewall 动态添加规则,此方法不够优雅且不符合最佳实践。"
     }
@@ -189,7 +189,7 @@
     "explanations": {
       "A": "Log in to the AWS account by using read-only credentials. Review the GuardDuty finding for details about the IAM credentials that were used. Use the IAM console to add a DenyAll policy to the IAM principal. 错误:虽然使用只读凭证可以避免对生产环境的影响,但直接添加 DenyAll 策略可能会导致误操作, 影响正常的 IAM 用户或角色功能。此外,该选项没有提到如何分析 API 调用的上下文信息,这对于调查事件至关重要。",
       "B": "Log in to the AWS account by using read-only credentials. Review the GuardDuty finding to determine which API calls initiated the finding. Use Amazon Detective to review the API calls in context. 正确:使用只读凭证可以避免对生产环境的影响。 Amazon Detective 是专 ⻔ 设计用于分析安全事件的工具, 可以提供 API 调用的上下文信息,帮助快速调查事件。这是最符合题目要求的解决方案。",
-      "C": "Log in to the AWS account by using administrator credentials. Review the GuardDuty finding for details about the IAM credentials that were use",
+      "C": "Log in to the AWS account by using administrator credentials. Review the GuardDuty finding for details about the IAM credentials that were used. Use the IAM console to add a DenyAll policy to the IAM principal. 错误:使用管理员凭证可能会增加安全 ⻛ 险,尤其是在处理安全事件时。直接添加 DenyAll 策略可能会导致误操作,影响正常的 IAM 用户或角色功能。没有提到如何分析 API 调用的上下文信息,这对于调查事件至关重要。",
       "D": "Use the IAM console to add a DenyAll policy to the IAM principal. 错误:虽然使用只读凭证可以避免对生产环境的影响,但直接添加 DenyAll 策略可能会导致误操作, 影响正常的 IAM 用户或角色功能。此外,该选项没有提到如何分析 API 调用的上下文信息,这对于调查事件至关重要。 B. Log in to the AWS account by using read-only credentials. Review the GuardDuty finding to determine which API calls initiated the finding. Use Amazon Detective to review the API calls in context. 正确:使用只读凭证可以避免对生产环境的影响。 Amazon Detective 是专 ⻔ 设计用于分析安全事件的工具, 可以提供 API 调用的上下文信息,帮助快速调查事件。这是最符合题目要求的解决方案。 C. Log in to the AWS account by using administrator credentials. Review the GuardDuty finding for details about the IAM credentials that were used. Use the IAM console to add a DenyAll policy to the IAM principal. 错误:使用管理员凭证可能会增加安全 ⻛ 险,尤其是在处理安全事件时。直接添加 DenyAll 策略可能会导致误操作,影响正常的 IAM 用户或角色功能。没有提到如何分析 API 调用的上下文信息,这对于调查事件至关重要。 D. Log in to the AWS account by using read-only credentials. Review the GuardDuty finding to determine which API calls initiated the finding. Use AWS CloudTrail Insights and AWS CloudTrail Lake to review the API calls in context. 错误:虽然 CloudTrail Insights 和 CloudTrail Lake 可以提供 API 调用的上下文信息,但它们的功能不如 Amazon Detective 专注于安全事件调查。 Amazon Detective 是专 ⻔ 设计用于分析安全事件的工具,使用它可以更快速地满足题目要求。"
     }
   },
@@ -222,8 +222,8 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "创建一个 AWS Lambda 函数来识别关键的 Security Hu",
-      "B": "与事件通知服务的集成,包括 Amazon EventBridge 和 Amazon SNS 的使用。重点在于如何检测关键的 Security Hub 发现,并通过电子邮件通知相关人员。选项分析 A. 创建一个 AWS Lambda 函数来识别关键的 Security Hub 发现。创建一个 Amazon SNS 主题作为 Lambda 函数的目标。将电子邮件端点订阅到 SNS 主题以接收发布的消息。错误:虽然可以使用 Lambda 函数来处理 Security Hub 发现,但这增加了不必要的复杂性。 AWS Security Hub 已经可以通过 EventBridge 直接发送事件, 无需额外的 Lambda 函数。 B. 创建一个 Amazon Kinesis Data Firehose 交付流。将交付流与 Amazon EventBridge 集成。创建一个具有过滤器以检测关键 Security Hub 发现的 EventBridge 规则。配置交付流将发现发送到电子邮件地址。错误: Kinesis Data Firehose 主要用于数据流的持久化和分析,不适合直接发送电子邮件通知。此选项复杂且不符合需求。",
+      "A": "创建一个 AWS Lambda 函数来识别关键的 Security Hub 发现。创建一个 Amazon SNS 主题作为 Lambda 函数的目标。将电子邮件端点订阅到 SNS 主题以接收发布的消息。错误:虽然可以使用 Lambda 函数来处理 Security Hub 发现,但这增加了不必要的复杂性。 AWS Security Hub 已经可以通过 EventBridge 直接发送事件, 无需额外的 Lambda 函数。",
+      "B": "创建一个 Amazon Kinesis Data Firehose 交付流。将交付流与 Amazon EventBridge 集成。创建一个具有过滤器以检测关键 Security Hub 发现的 EventBridge 规则。配置交付流将发现发送到电子邮件地址。错误: Kinesis Data Firehose 主要用于数据流的持久化和分析,不适合直接发送电子邮件通知。此选项复杂且不符合需求。",
       "C": "创建一个 Amazon EventBridge 规则以检测关键 Security Hub 发现。创建一个 Amazon SNS 主题作为 EventBridge 规则的目标。将电子邮件端点订阅到 SNS 主题以接收发布的消息。正确: EventBridge 可以直接检测 Security Hub 的关键发现,并将事件发送到 SNS 。 SNS 支持电子邮件订阅,能够满足通知需求。",
       "D": "创建一个 Amazon EventBridge 规则以检测关键 Security Hub 发现。创建一个 Amazon SES 主题作为 EventBridge 规则的目标。使用 Amazon SES API 格式化消息。选择一个电子邮件地址作为消息的接收者。错误: Amazon SES 主要用于大规模电子邮件发送, 而不是事件通知。使用 SES API 格式化消息增加了复杂性,不是最佳解决方案。"
     }
@@ -272,7 +272,7 @@
       "C"
     ],
     "explanations": {
-      "A": ")相关条件。如何限制会话的有效时间。安全性最佳实践:强制 MFA 和限制会话时 ⻓ 。选项分析 A. \"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"} 此选项正确。此条件用于检查用户是否启用了 MFA 。如果 MFA 未启用 ,则用户无法执行指定的操作。符合题目要求。",
+      "A": "\"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"} 此选项正确。此条件用于检查用户是否启用了 MFA 。如果 MFA 未启用 ,则用户无法执行指定的操作。符合题目要求。",
       "B": "\"Bool\": {\"aws:MultiFactorAuthPresent\": \"false\"} 此选项错误。此条件表示用户未启用 MFA 时允许操作,与题目要求强制 MFA 相违背。",
       "C": "\"NumericLessThan\": {\"aws:MultiFactorAuthAge\": \"7200\"} 此选项正确。此条件用于限制 MFA 会话的有效时间为 2 小时( 7200 秒) 。符合题目要求。",
       "D": "\"NumericGreaterThan\": {\"aws:MultiFactorAuthAge\": \"7200\"} 此选项错误。此条件表示 MFA 会话超过 2 小时后允许操作,与题目要求限制会话时 ⻓ 相违背。",
@@ -292,7 +292,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "函数进行自动化响应。 Amazon SNS 用于通知机制。选项分析 A 正确性:激活 Amazon GuardDuty 是正确的,因为它是专 ⻔ 用于检测和响应安全威胁的服务。错误点: GuardDuty 无法直接调用 AWS Lambda 函数进行自动化响应,必须通过 Amazon EventBridge 来实现事件驱动的自动化处理。",
+      "A": "激活 Amazon GuardDuty 是正确的，因为它是专门用于检测和响应安全威胁的服务。错误点：GuardDuty 无法直接调用 AWS Lambda 函数进行自动化响应，必须通过 Amazon EventBridge 来实现事件驱动的自动化流程。",
       "B": "正确性:激活 AWS Security Hub 可以汇总安全发现,但它主要用于集中管理和合规性检查, 而不是实时检测和响应。错误点: AWS Config 和 AWS Systems Manager 虽然可以用于合规性和自动化管理,但它们不是最佳选择来处理实时安全事件。",
       "C": "正确性:激活 Amazon GuardDuty 是正确的,因为它可以检测安全威胁。正确性:使用 Amazon EventBridge 从 GuardDuty 发现中触发 AWS Lambda 函数是正确的,因为 EventBridge 可以实现事件驱动的自动化响应。正确性:配置 Lambda 函数发布通知到 SNS 主题是正确的,因为 SNS 可以用于通知机制。",
       "D": "正确性:激活 AWS Security Hub 是正确的,但它主要用于合规性检查和集中管理, 而不是实时检测和响应。错误点:虽然可以使用 Amazon EventBridge 触发 Lambda 函数,但 Security Hub 不是最佳选择来处理实时安全事件。"
@@ -357,9 +357,9 @@
     "explanations": {
       "A": "Deploy a NAT gateway in each private subnet for every Availability Zone that is in use. 正确。 NAT 网关允许私有子网中的资源(如 EC2 实例)访问互联网 ,同时保持其私有 IP 地址。由于外部支付提供商需要预配置的 IP 白名单, NAT 网关可以确保通信的稳定性,即使环境扩展。",
       "B": "Place the DB instance in a public subnet. 错误。数据库实例应放置在私有子网中以增强安全性。将数据库放置在公共子网中会暴露其 IP 地址, 增加攻击 ⻛ 险。",
-      "C": "subnet. 错误。数据库实例应放置在私有子网中以增强安全性。将数据库放置在公共子网中会暴露其 IP 地址, 增加攻击 ⻛ 险。 C. Place the DB instance in a private subnet. 正确。数据库实例放置在私有子网中是最佳实践,可以防止直接的互联网访问,增强安全性。",
+      "C": "Place the DB instance in a private subnet. 正确。数据库实例放置在私有子网中是最佳实践,可以防止直接的互联网访问,增强安全性。",
       "D": "Configure the Auto Scaling group to place the EC2 instances in a public subnet. 错误。 EC2 实例应放置在私有子网中以限制直接的互联网访问。 ALB 可以处理来自互联网的 HTTP 和 HTTPS 流量,并将流量转发到私有子网中的 EC2 实例。",
-      "E": "subnet for every Availability Zone that is in use. 正确。 NAT 网关允许私有子网中的资源(如 EC2 实例)访问互联网 ,同时保持其私有 IP 地址。由于外部支付提供商需要预配置的 IP 白名单, NAT 网关可以确保通信的稳定性,即使环境扩展。 B. Place the DB instance in a public subnet. 错误。数据库实例应放置在私有子网中以增强安全性。将数据库放置在公共子网中会暴露其 IP 地址, 增加攻击 ⻛ 险。 C. Place the DB instance in a private subnet. 正确。数据库实例放置在私有子网中是最佳实践,可以防止直接的互联网访问,增强安全性。 D. Configure the Auto Scaling group to place the EC2 instances in a public subnet. 错误。 EC2 实例应放置在私有子网中以限制直接的互联网访问。 ALB 可以处理来自互联网的 HTTP 和 HTTPS 流量,并将流量转发到私有子网中的 EC2 实例。 E. Configure the Auto Scaling group to place the EC2 instances in a private subnet. 正确。 EC2 实例放置在私有子网中是最佳实践,可以通过 ALB 处理互联网流量,同时保持实例的安全性。",
+      "E": "Configure the Auto Scaling group to place the EC2 instances in a private subnet. 正确。 EC2 实例放置在私有子网中是最佳实践,可以通过 ALB 处理互联网流量,同时保持实例的安全性。",
       "F": "Deploy the ALB in a private subnet. 错误。 ALB 需要能够接收来自互联网的 HTTP 和 HTTPS 流量,因此应部署在公共子网中, 而不是私有子网。"
     }
   },
@@ -401,10 +401,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "和 Amazon CloudWatch 的日志处理和分析能力。掌握如何将日志数据转化为可搜索和可视化的指标。选项分析 A. 错误原因: AWS Elastic Load Balancer 的日志无法直接发送到 CloudWatch Logs 。 ELB 日志只能发送到 Amazon S3 。此外, CloudWatch Logs 过滤器无法直接处理 ELB 日志中的复杂查询需求。",
+      "A": "错误原因: AWS Elastic Load Balancer 的日志无法直接发送到 CloudWatch Logs 。 ELB 日志只能发送到 Amazon S3 。此外, CloudWatch Logs 过滤器无法直接处理 ELB 日志中的复杂查询需求。",
       "B": "日志只能发送到 Amazon S3 。此外, CloudWatch Logs 过滤器无法直接处理 ELB 日志中的复杂查询需求。 B. 错误原因:虽然可以使用 Amazon Athena 搜索存储在 S3 中的日志,但 CloudWatch Filters 无法直接处理 S3 日志文件。需要通过 Athena 查询生成指标, 而不是直接使用 CloudWatch Filters 。",
-      "C": "Load Balancer 的日志功能及其配置。熟悉 Amazon S3 、 Amazon Athena 和 Amazon CloudWatch 的日志处理和分析能力。掌握如何将日志数据转化为可搜索和可视化的指标。选项分析 A. 错误原因: AWS Elastic Load Balancer 的日志无法直接发送到 CloudWatch Logs 。 ELB 日志只能发送到 Amazon S3 。此外, CloudWatch Logs 过滤器无法直接处理 ELB 日志中的复杂查询需求。 B. 错误原因:虽然可以使用 Amazon Athena 搜索存储在 S3 中的日志,但 CloudWatch Filters 无法直接处理 S3 日志文件。需要通过 Athena 查询生成指标, 而不是直接使用 CloudWatch Filters 。 C. 正确原因:这是最佳解决方案。 ELB 日志可以发送到 Amazon S3 ,使用 Amazon Athena 可以对日志进行复杂查询。通过 Athena 查询生成所需的指标,并将这些指标发布到 Amazon CloudWatch 以实现可视化和监控。",
-      "D": "Balancer 的日志功能及其配置。熟悉 Amazon S3 、 Amazon Athena 和 Amazon CloudWatch 的日志处理和分析能力。掌握如何将日志数据转化为可搜索和可视化的指标。选项分析 A. 错误原因: AWS Elastic Load Balancer 的日志无法直接发送到 CloudWatch Logs 。 ELB 日志只能发送到 Amazon S3 。此外, CloudWatch Logs 过滤器无法直接处理 ELB 日志中的复杂查询需求。 B. 错误原因:虽然可以使用 Amazon Athena 搜索存储在 S3 中的日志,但 CloudWatch Filters 无法直接处理 S3 日志文件。需要通过 Athena 查询生成指标, 而不是直接使用 CloudWatch Filters 。 C. 正确原因:这是最佳解决方案。 ELB 日志可以发送到 Amazon S3 ,使用 Amazon Athena 可以对日志进行复杂查询。通过 Athena 查询生成所需的指标,并将这些指标发布到 Amazon CloudWatch 以实现可视化和监控。 D. 错误原因:与选项 A 类似, ELB 日志无法直接发送到 CloudWatch Logs 。此外, Athena 查询无法直接处理 CloudWatch Logs 中的数据。"
+      "C": "正确原因:这是最佳解决方案。 ELB 日志可以发送到 Amazon S3 ,使用 Amazon Athena 可以对日志进行复杂查询。通过 Athena 查询生成所需的指标,并将这些指标发布到 Amazon CloudWatch 以实现可视化和监控。",
+      "D": "错误原因:与选项 A 类似, ELB 日志无法直接发送到 CloudWatch Logs 。此外, Athena 查询无法直接处理 CloudWatch Logs 中的数据。"
     }
   },
   {
@@ -428,7 +428,7 @@
       "B": "正确: Conformance Pack 是管理多个 AWS Config 规则的最佳实践,可以简化规则的部署和管理。通过 security-01 账户(作为 AWS Config 的委派管理员账户)部署 Conformance Pack 是符合题目要求的。",
       "C": "错误:虽然 Conformance Pack 是正确的工具,但题目明确指出 security-01 是 AWS Config 的委派管理员账户,因此应该从 security-01 账户进行部署, 而不是 management-01 账户。",
       "D": "错误:虽然可以使用 CloudFormation StackSets 激活 AWS Config ,但题目要求解决方案必须自动处理未来账户的 AWSConfig 启用 , 而此选项未提及如何实现这一点。",
-      "E": "Pack ) 。 AWS Organizations 中跨账户资源管理的最佳实践。 CloudFormation StackSets 的使用及其在多账户环境中的应用。如何在新创建的账户中自动启用 AWS Config 。选项分析 A. 错误:虽然可以使用 CloudFormation StackSets 部署 AWS Config 规则,但此选项未提及如何自动启用 AWS Config ,也未提到如何处理未来账户的规则部署。 B. 正确: Conformance Pack 是管理多个 AWS Config 规则的最佳实践,可以简化规则的部署和管理。通过 security-01 账户(作为 AWS Config 的委派管理员账户)部署 Conformance Pack 是符合题目要求的。 C. 错误:虽然 Conformance Pack 是正确的工具,但题目明确指出 security-01 是 AWS Config 的委派管理员账户,因此应该从 security-01 账户进行部署, 而不是 management-01 账户。 D. 错误:虽然可以使用 CloudFormation StackSets 激活 AWS Config ,但题目要求解决方案必须自动处理未来账户的 AWSConfig 启用 , 而此选项未提及如何实现这一点。 E. 正确:使用 CloudFormation StackSets 从管理账户( management-01 )激活 AWS Config 是符合题目要求的,因为管理账户可以跨组织部署资源,并确保新账户自动启用 AWS Config 。"
+      "E": "正确:使用 CloudFormation StackSets 从管理账户( management-01 )激活 AWS Config 是符合题目要求的,因为管理账户可以跨组织部署资源,并确保新账户自动启用 AWS Config 。"
     }
   },
   {
@@ -448,11 +448,11 @@
       "E"
     ],
     "explanations": {
-      "A": "和 Amazon Macie )来分析和识别安全事件。理解 CloudTrail 日志的查询和分析方法。识别和保护敏感数据(如 PII )的能力。选项分析 A. Use Amazon CloudWatch Logs Insights to identify any objects in DOC EXAMPLE BUCKET1 that contain PII and that were available to the access key. 错误: CloudWatch Logs Insights 主要用于分析 CloudWatch 日志, 而题目中明确指出 CloudTrail 日志未配置到 CloudWatch Logs ,因此无法使用此方法。",
-      "B": "Use Amazon OpenSearch Service to query the CloudTrail logs in DO",
+      "A": "Use Amazon CloudWatch Logs Insights to identify any objects in DOC EXAMPLE BUCKET1 that contain PII and that were available to the access key. 错误: CloudWatch Logs Insights 主要用于分析 CloudWatch 日志, 而题目中明确指出 CloudTrail 日志未配置到 CloudWatch Logs ,因此无法使用此方法。",
+      "B": "Use Amazon OpenSearch Service to query the CloudTrail logs in DOC EXAMPLE BUCKET2 for API calls that used the access key to access an object that contained PII. 错误:虽然 OpenSearch 可以用于日志分析,但题目中并未提到 OpenSearch 已配置或适合直接查询 CloudTrail 日志。使用 OpenSearch 需要额外的配置,且不是最佳选择。",
       "C": "EXAMPLE BUCKET1 that contain PII and that were available to the access key. 错误: CloudWatch Logs Insights 主要用于分析 CloudWatch 日志, 而题目中明确指出 CloudTrail 日志未配置到 CloudWatch Logs ,因此无法使用此方法。 B. Use Amazon OpenSearch Service to query the CloudTrail logs in DOC EXAMPLE BUCKET2 for API calls that used the access key to access an object that contained PII. 错误:虽然 OpenSearch 可以用于日志分析,但题目中并未提到 OpenSearch 已配置或适合直接查询 CloudTrail 日志。使用 OpenSearch 需要额外的配置,且不是最佳选择。 C. Use Amazon Athena to query the CloudTrail logs in DOC EXAMPLE BUCKET2 for any API calls that used the access key to access an object that contained PII. 正确: Athena 可以直接查询存储在 S3 中的 CloudTrail 日志,能够有效地识别使用访问密钥的 API 调用。",
-      "D": "that wer",
-      "E": ")来分析和识别安全事件。理解 CloudTrail 日志的查询和分析方法。识别和保护敏感数据(如 PII )的能力。选项分析 A. Use Amazon CloudWatch Logs Insights to identify any objects in DOC EXAMPLE BUCKET1 that contain PII and that were available to the access key. 错误: CloudWatch Logs Insights 主要用于分析 CloudWatch 日志, 而题目中明确指出 CloudTrail 日志未配置到 CloudWatch Logs ,因此无法使用此方法。 B. Use Amazon OpenSearch Service to query the CloudTrail logs in DOC EXAMPLE BUCKET2 for API calls that used the access key to access an object that contained PII. 错误:虽然 OpenSearch 可以用于日志分析,但题目中并未提到 OpenSearch 已配置或适合直接查询 CloudTrail 日志。使用 OpenSearch 需要额外的配置,且不是最佳选择。 C. Use Amazon Athena to query the CloudTrail logs in DOC EXAMPLE BUCKET2 for any API calls that used the access key to access an object that contained PII. 正确: Athena 可以直接查询存储在 S3 中的 CloudTrail 日志,能够有效地识别使用访问密钥的 API 调用。 D. Use AWS Identity and Access Management Access Analyzer to identify any API calls that used the access key to access objects that contained PII in DOC EXAMPLE BUCKET1. 错误: IAM Access Analyzer 主要用于分析权限配置, 而不是用于查询 API 调用或识别 PII 数据。 E. Configure Amazon Macie to identify any objects in DOC EXAMPLE BUCKET1 that contain PII and that were available to the access key. 正确: Amazon Macie 专 ⻔ 用于识别存储在 S3 中的敏感数据(如 PII ) ,是解决此问题的最佳工具之一。"
+      "D": "Use AWS Identity and Access Management Access Analyzer to identify any API calls that used the access key to access objects that contained PII in DOC EXAMPLE BUCKET1. 错误: IAM Access Analyzer 主要用于分析权限配置, 而不是用于查询 API 调用或识别 PII 数据。",
+      "E": "Configure Amazon Macie to identify any objects in DOC EXAMPLE BUCKET1 that contain PII and that were available to the access key. 正确: Amazon Macie 专 ⻔ 用于识别存储在 S3 中的敏感数据(如 PII ) ,是解决此问题的最佳工具之一。"
     }
   },
   {
@@ -506,8 +506,8 @@
     "explanations": {
       "A": "Export the CloudWatch Logs group data to Amazon S3. Use Amazon Macie to query the logs for the specific IP address and the requested URL. 错误原因: Amazon Macie 主要用于敏感数据发现和分类, 而不是日志分析。使用 Macie 查询日志数据并不是其设计用途,因此不适合解决此问题。",
       "B": "Configure a CloudWatch Logs subscription to stream the log group to an Amazon OpenSearch Service cluster. Use OpenSearch Service to analyze the logs for the specific IP address and the requested URLs. 错误原因:虽然 OpenSearch Service 可以用于日志分析,但设置 CloudWatch Logs 订阅并配置 OpenSearch 集群需要额外的时间和资源,复杂度较高 ,不符合“最少努力”的要求。",
-      "C": "IP address an",
-      "D": "the requested URL. 错误原因: Amazon Macie 主要用于敏感数据发现和分类, 而不是日志分析。使用 Macie 查询日志数据并不是其设计用途,因此不适合解决此问题。 B. Configure a CloudWatch Logs subscription to stream the log group to an Amazon OpenSearch Service cluster. Use OpenSearch Service to analyze the logs for the specific IP address and the requested URLs. 错误原因:虽然 OpenSearch Service 可以用于日志分析,但设置 CloudWatch Logs 订阅并配置 OpenSearch 集群需要额外的时间和资源,复杂度较高 ,不符合“最少努力”的要求。 C. Use CloudWatch Logs Insights and a custom query syntax to analyze the CloudWatch logs for the specific IP address and the requested URLs. 正确原因: CloudWatch Logs Insights 是专 ⻔ 设计用于快速查询和分析 CloudWatch 日志的工具。它支持自定义查询语法,可以直接在现有的日志组中分析数据, 无需额外的配置或资源。 D. Export the CloudWatch Logs group data to Amazon S3. Use AWS Glue to crawl the S3 bucket for only the log entries that contain the specific IP address. Use AWS Glue to view the results. 错误原因:将日志导出到 S3 并使用 AWS Glue 进行爬取和分析需要额外的步骤和配置,复杂度较高 , 不符合“最少努力”的要求。"
+      "C": "Use CloudWatch Logs Insights and a custom query syntax to analyze the CloudWatch logs for the specific IP address and the requested URLs. 正确原因: CloudWatch Logs Insights 是专 ⻔ 设计用于快速查询和分析 CloudWatch 日志的工具。它支持自定义查询语法,可以直接在现有的日志组中分析数据, 无需额外的配置或资源。",
+      "D": "Export the CloudWatch Logs group data to Amazon S3. Use AWS Glue to crawl the S3 bucket for only the log entries that contain the specific IP address. Use AWS Glue to view the results. 错误原因:将日志导出到 S3 并使用 AWS Glue 进行爬取和分析需要额外的步骤和配置,复杂度较高 , 不符合“最少努力”的要求。"
     }
   },
   {
@@ -525,7 +525,7 @@
     "explanations": {
       "A": "在 EC2 实例的安全组中,允许入站 ICMP 流量。错误。安全组是状态性的,允许入站流量后会自动允许相关的出站流量。根据流日志, 入站流量已经被接受 ( ACCEPT ) ,问题出在出站流量被拒绝( REJECT ) 。因此修改安全组的入站规则无法解决问题。",
       "B": "在 EC2 实例的安全组中,允许出站 ICMP 流量。错误。虽然安全组控制出站流量,但流日志显示出站流量被 NACL 拒绝( REJECT ) 。安全组的出站规则已经不是问题所在。",
-      "C": "网络访问控制列表( NACL )和安全组的配置, 以及如何排查网络连接问题。具体涉及 ICMP 协议的流量控制和如何正确配置 NACL 以允许双向通信。选项分析 A. 在 EC2 实例的安全组中,允许入站 ICMP 流量。错误。安全组是状态性的,允许入站流量后会自动允许相关的出站流量。根据流日志, 入站流量已经被接受 ( ACCEPT ) ,问题出在出站流量被拒绝( REJECT ) 。因此修改安全组的入站规则无法解决问题。 B. 在 EC2 实例的安全组中,允许出站 ICMP 流量。错误。虽然安全组控制出站流量,但流日志显示出站流量被 NACL 拒绝( REJECT ) 。安全组的出站规则已经不是问题所在。 C. 在 VPC 的 NACL 中,允许入站 ICMP 流量。错误。流日志显示入站流量已经被接受( ACCEPT ) ,问题出在出站流量被拒绝( REJECT ) 。修改 NACL 的入站规则无法解决问题。",
+      "C": "在 VPC 的 NACL 中,允许入站 ICMP 流量。错误。流日志显示入站流量已经被接受( ACCEPT ) ,问题出在出站流量被拒绝( REJECT ) 。修改 NACL 的入站规则无法解决问题。",
       "D": "在 VPC 的 NACL 中,允许出站 ICMP 流量。正确。流日志显示出站流量被 NACL 拒绝( REJECT ) 。 NACL 是无状态的,需要显式允许出站 ICMP 流量才能解决问题。"
     }
   },
@@ -543,7 +543,7 @@
     "answer": "B",
     "explanations": {
       "A": "更新 Lambda 函数以向 S3 对象添加 TTL S3 标志。创建一个 S3 生命周期策略,通过使用 TTL S3 标志来过期超过 30 天的对象。错误原因: S3 对象的生命周期策略不需要依赖自定义的 TTL 标志。 S3 Lifecycle 可以直接基于对象的创建日期来过期对象。",
-      "B": "Time-to-Live TTL 功能的使用。如何设计高效的无服务器架构以满足数据生命周期管理需求。数据隐私和合规性要求(如处理 PII 数据) 。选项分析 A. 更新 Lambda 函数以向 S3 对象添加 TTL S3 标志。创建一个 S3 生命周期策略,通过使用 TTL S3 标志来过期超过 30 天的对象。错误原因: S3 对象的生命周期策略不需要依赖自定义的 TTL 标志。 S3 Lifecycle 可以直接基于对象的创建日期来过期对象。 B. 创建一个 S3 生命周期策略以过期超过 30 天的对象。更新 Lambda 函数以在 DynamoDB 表中添加 TTL 属性。启用 DynamoDB 表上的 TTL ,以基于 TTL 属性过期超过 30 天的条目。正确原因: S3 Lifecycle 策略可以直接管理 S3 对象的过期, 无需额外的标志或复杂逻辑。 DynamoDB 的 TTL 功能是专 ⻔ 设计用于自动删除过期数据的,使用 TTL 属性可以高效地管理数据生命周期。此选项提供了最少的操作复杂性,同时满足了删除过期数据的需求。",
+      "B": "创建一个 S3 生命周期策略以过期超过 30 天的对象。更新 Lambda 函数以在 DynamoDB 表中添加 TTL 属性。启用 DynamoDB 表上的 TTL ,以基于 TTL 属性过期超过 30 天的条目。正确原因: S3 Lifecycle 策略可以直接管理 S3 对象的过期, 无需额外的标志或复杂逻辑。 DynamoDB 的 TTL 功能是专 ⻔ 设计用于自动删除过期数据的,使用 TTL 属性可以高效地管理数据生命周期。此选项提供了最少的操作复杂性,同时满足了删除过期数据的需求。",
       "C": "创建一个 S3 生命周期策略以过期超过 30 天的对象,并向 S3 bucket 添加所有前缀。更新 Lambda 函数以删除超过 30 天的条目。错误原因: 添加所有前缀并不必要,因为 S3 Lifecycle 策略可以直接基于对象的创建日期进行管理。依赖 Lambda 函数来删除 DynamoDB 中的过期数据增加了操作复杂性, 而 DynamoDB TTL 功能可以自动处理过期数据。",
       "D": "创建一个 S3 生命周期策略以通过使用对象标签过期超过 30 天的对象。更新 Lambda 函数以删除超过 30 天的条目。错误原因: 虽然可以使用对象标签来管理 S3 生命周期,但这增加了额外的复杂性,因为需要确保所有对象都正确地被标记。依赖 Lambda 函数来删除 DynamoDB 中的过期数据增加了操作复杂性, 而 DynamoDB TTL 功能可以自动处理过期数据。"
     }
@@ -565,11 +565,11 @@
       "E"
     ],
     "explanations": {
-      "A": "的重要性。使用 IAM 用户代替根用户进行日常操作的安全性。选项分析 A. 使用 AWS 账户根用户访问密钥, 而不是 AWS Management Console 。错误:根用户访问密钥的使用是一个安全 ⻛ 险, AWS 的最佳实践是避免为根用户创建访问密钥。根用户应仅用于账户设置或紧急情况。",
+      "A": "使用 AWS 账户根用户访问密钥, 而不是 AWS Management Console 。错误:根用户访问密钥的使用是一个安全 ⻛ 险, AWS 的最佳实践是避免为根用户创建访问密钥。根用户应仅用于账户设置或紧急情况。",
       "B": "为附有 AdministratorAccess 托管策略的 AWS IAM 用户启用多重身份验证。错误:虽然为 IAM 用户启用 MFA 是一个良好的安全实践,但此选项与保护根用户无关。题目要求的是保护根用户, 而不是 IAM 用户。",
       "C": "使用 AWS KMS 加密所有 AWS 账户根用户和 AWS IAM 访问密钥,并将自动轮换设置为 30 天。错误:根用户不应该有访问密钥,因此加密和轮换根用户访问密钥是不必要的。此选项不符合 AWS 的最佳实践。",
       "D": "不要为 AWS 账户根用户创建访问密钥;相反,创建 AWS IAM 用户。正确: AWS 的最佳实践是避免为根用户创建访问密钥,并使用 IAM 用户进行日常操作。这可以减少根用户的暴露 ⻛ 险。",
-      "E": "。错误:根用户访问密钥的使用是一个安全 ⻛ 险, AWS 的最佳实践是避免为根用户创建访问密钥。根用户应仅用于账户设置或紧急情况。 B. 为附有 AdministratorAccess 托管策略的 AWS IAM 用户启用多重身份验证。错误:虽然为 IAM 用户启用 MFA 是一个良好的安全实践,但此选项与保护根用户无关。题目要求的是保护根用户, 而不是 IAM 用户。 C. 使用 AWS KMS 加密所有 AWS 账户根用户和 AWS IAM 访问密钥,并将自动轮换设置为 30 天。错误:根用户不应该有访问密钥,因此加密和轮换根用户访问密钥是不必要的。此选项不符合 AWS 的最佳实践。 D. 不要为 AWS 账户根用户创建访问密钥;相反,创建 AWS IAM 用户。正确: AWS 的最佳实践是避免为根用户创建访问密钥,并使用 IAM 用户进行日常操作。这可以减少根用户的暴露 ⻛ 险。 E. 为 AWS 账户根用户启用多重身份验证。正确:启用 MFA 是保护根用户的关键步骤,可以显著提高账户的安全性。"
+      "E": "为 AWS 账户根用户启用多重身份验证。正确:启用 MFA 是保护根用户的关键步骤,可以显著提高账户的安全性。"
     }
   },
   {
@@ -605,7 +605,7 @@
     "answer": "C",
     "explanations": {
       "A": "使用基于角色的方法,通过创建一个具有内联权限策略的 IAM 角色来允许访问密钥。根据需要更新角色信任策略中的 IAM 主体。正确性分析:基于角色的方法可以实现访问控制,但需要频繁更新角色信任策略以添加或移除 IAM 主体。这种方法在频繁变更的场景下不够灵活和可扩展。结论:此选项不符合题目要求。",
-      "B": "为 Secrets Manager 部署一个 VP",
+      "B": "为 Secrets Manager 部署一个 VPC 端点，创建并附加一个端点策略，指定被允许访问密钥的 IAM 主体。错误：VPC 端点本身不能直接控制 IAM 主体对 Secrets Manager 的权限；此方法无法有效阻止频繁变更 IAM 主体的问题。",
       "C": "端点。创建并附加一个端点策略,指定被允许访问密钥的 IAM 主体。根据需要更新 IAM 主体列表。正确性分析: VPC 端点策略主要用于控制网络访问, 而不是直接管理 IAM 主体对 Secrets Manager 的权限。此方法无法有效解决频繁变更 IAM 主体的问题。结论:此选项不符合题目要求。 C. 使用基于标签的方法,通过将资源策略附加到密钥上。将标签应用于密钥和 IAM 主体。使用 aws:PrincipalTag 和 aws:ResourceTag IAM 条件键来控制访问。正确性分析:基于标签的方法非常灵活,可以通过标签动态管理访问权限。使用 aws:PrincipalTag 和 aws:ResourceTag 条件键可以实现精细化的权限控制,且无需频繁修改策略。结论:此选项符合题目要求,是正确答案。",
       "D": "使用默认拒绝的方法,通过使用 IAM 策略显式拒绝访问密钥。将这些策略附加到一个 IAM 组。将所有 IAM 主体添加到 IAM 组中。当主体需要访问时将其从组中移除。当不再允许访问时再次将主体添加到组中。正确性分析:默认拒绝的方法不够灵活,频繁添加或移除 IAM 主体会增加管理复杂性。此外,显式拒绝策略可能会导致意外的权限问题。结论:此选项不符合题目要求。"
     }
@@ -624,9 +624,9 @@
     "answer": "A",
     "explanations": {
       "A": "Create an AWS WAF rate-based rule, and attach it to the AL",
-      "B": "Application Firewall )的功能,尤其是基于速率的规则( Rate- based Rule )如何帮助防御 DoS 攻击。同时涉及到安全组和网络 ACL 的使用场景,以及它们与 WAF 的区别。选项分析 A. Create an AWS WAF rate-based rule, and attach it to the ALB. 正确: AWS WAF 可以创建基于速率的规则, 用于检测和阻止来自特定 IP 地址的高频请求。将 WAF 规则附加到 ALB 可以直接保护 Web 应用免受 DoS 攻击。最少的维护工作: WAF 规则可以自动检测和阻止恶意流量, 无需手动更新 IP 地址。 B. Update the security group that is attached to the ALB to block the attacking IP addresses. 错误:安全组是静态的,需要手动更新规则以阻止攻击 IP 地址。由于攻击 IP 地址会定期变化,这种方法需要持续的人工干预。安全组不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。",
+      "B": "Update the security group that is attached to the ALB to block the attacking IP addresses. 错误:安全组是静态的,需要手动更新规则以阻止攻击 IP 地址。由于攻击 IP 地址会定期变化,这种方法需要持续的人工干预。安全组不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。",
       "C": "Update the ALB subnet's network ACL to block the attacking client IP addresses. 错误: 网络 ACL 是静态的,需要手动更新规则以阻止攻击 IP 地址。与安全组类似,这种方法需要持续的人工干预。网络 ACL 不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。",
-      "D": "Rule )如何帮助防御 DoS 攻击。同时涉及到安全组和网络 ACL 的使用场景,以及它们与 WAF 的区别。选项分析 A. Create an AWS WAF rate-based rule, and attach it to the ALB. 正确: AWS WAF 可以创建基于速率的规则, 用于检测和阻止来自特定 IP 地址的高频请求。将 WAF 规则附加到 ALB 可以直接保护 Web 应用免受 DoS 攻击。最少的维护工作: WAF 规则可以自动检测和阻止恶意流量, 无需手动更新 IP 地址。 B. Update the security group that is attached to the ALB to block the attacking IP addresses. 错误:安全组是静态的,需要手动更新规则以阻止攻击 IP 地址。由于攻击 IP 地址会定期变化,这种方法需要持续的人工干预。安全组不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。 C. Update the ALB subnet's network ACL to block the attacking client IP addresses. 错误: 网络 ACL 是静态的,需要手动更新规则以阻止攻击 IP 地址。与安全组类似,这种方法需要持续的人工干预。网络 ACL 不支持基于速率的规则,因此无法有效检测 DoS 攻击的模式。 D. Create an AWS WAF rate-based rule, and attach it to the security group of the EC2 instances. 错误: AWS WAF 无法直接附加到 EC2 实例的安全组。 WAF 只能附加到支持的资源(如 ALB 、 API Gateway 等) 。安全组本身不支持基于速率的规则,因此此选项不符合要求。"
+      "D": "Create an AWS WAF rate-based rule, and attach it to the security group of the EC2 instances. 错误: AWS WAF 无法直接附加到 EC2 实例的安全组。 WAF 只能附加到支持的资源(如 ALB 、 API Gateway 等) 。安全组本身不支持基于速率的规则,因此此选项不符合要求。"
     }
   },
   {
@@ -643,9 +643,9 @@
     "answer": "B",
     "explanations": {
       "A": "VPC flow logs were not turned on for the VPC where the EC2 instance was launched. 错误: GuardDuty 不依赖 VPC 流日志来生成 DNS 相关的发现。 GuardDuty 使用网络流量元数据和其他 AWS 服务的日志(如 CloudTrail )来检测威胁。",
-      "B": "的集成和跨账户、跨区域的配置。选项分析 A. VPC flow logs were not turned on for the VPC where the EC2 instance was launched. 错误: GuardDuty 不依赖 VPC 流日志来生成 DNS 相关的发现。 GuardDuty 使用网络流量元数据和其他 AWS 服务的日志(如 CloudTrail )来检测威胁。 B. The VPC where the EC2 instance was launched had the DHCP option configured for a custom OpenDNS resolver. 正确: GuardDuty 依赖于 AWS 提供的默认 DNS 解析器来检测恶意活动。如果 VPC 配置了自定义的 OpenDNS 解析器, GuardDuty 无法捕获 DNS 请求的相关元数据,因此不会生成 DNS 相关的发现。",
-      "C": "配置对 GuardDuty 发现的影响,例如 DHCP 选项集和自定义 DNS 解析器的使用。 GuardDuty 与 Security Hub 的集成和跨账户、跨区域的配置。选项分析 A. VPC flow logs were not turned on for the VPC where the EC2 instance was launche",
-      "D": "on for the VPC where the EC2 instance was launched. 错误: GuardDuty 不依赖 VPC 流日志来生成 DNS 相关的发现。 GuardDuty 使用网络流量元数据和其他 AWS 服务的日志(如 CloudTrail )来检测威胁。 B. The VPC where the EC2 instance was launched had the DHCP option configured for a custom OpenDNS resolver. 正确: GuardDuty 依赖于 AWS 提供的默认 DNS 解析器来检测恶意活动。如果 VPC 配置了自定义的 OpenDNS 解析器, GuardDuty 无法捕获 DNS 请求的相关元数据,因此不会生成 DNS 相关的发现。 C. The GuardDuty integration with Security Hub was never activated in the AWS account where the finding was generated. 错误:题目中明确提到 GuardDuty 和 Security Hub 已经在所有账户中自动启用 ,因此这个选项不符合题目描述。 D. Cross-Region aggregation in Security Hub was not configured. 错误:题目中没有提到跨区域配置的问题,并且跨区域聚合的配置与 GuardDuty 生成发现无关。即使没有跨区域聚合, 发现仍然会在本地区域生成。"
+      "B": "The VPC where the EC2 instance was launched had the DHCP option configured for a custom OpenDNS resolver. 正确: GuardDuty 依赖于 AWS 提供的默认 DNS 解析器来检测恶意活动。如果 VPC 配置了自定义的 OpenDNS 解析器, GuardDuty 无法捕获 DNS 请求的相关元数据,因此不会生成 DNS 相关的发现。",
+      "C": "The GuardDuty integration with Security Hub was never activated in the AWS account where the finding was generated. 错误:题目中明确提到 GuardDuty 和 Security Hub 已经在所有账户中自动启用 ,因此这个选项不符合题目描述。",
+      "D": "Cross-Region aggregation in Security Hub was not configured. 错误:题目中没有提到跨区域配置的问题,并且跨区域聚合的配置与 GuardDuty 生成发现无关。即使没有跨区域聚合, 发现仍然会在本地区域生成。"
     }
   },
   {
@@ -662,9 +662,9 @@
     "answer": "A",
     "explanations": {
       "A": "Use Amazon Inspector. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Security Hu",
-      "B": "的集成能力 , 用于集中管理和查看安全发现。如何创建包含规则以选择特定的仓库进行扫描。选项分析 A. Use Amazon Inspector. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Security Hub. Amazon Inspector 支持对 ECR 中的容器镜像进行高级扫描,包括持续扫描和推送扫描。可以在 Amazon ECR 中创建包含规则以选择需要扫描的仓库。 Amazon Inspector 的发现可以直接推送到 AWS Security Hub , 用于集中管理和查看安全发现。此选项完全满足题目要求,因此是正确答案。 B. Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to AWS Security Hub. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。虽然可以创建包含规则,但基本扫描的功能不足以满足题目中“持续扫描”和“推送扫描”的要求。此选项不符合题目要求,因此是错误答案。",
-      "C": "scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanne",
-      "D": "to be scanned. Push Amazon Inspector findings to AWS Security Hub. Amazon Inspector 支持对 ECR 中的容器镜像进行高级扫描,包括持续扫描和推送扫描。可以在 Amazon ECR 中创建包含规则以选择需要扫描的仓库。 Amazon Inspector 的发现可以直接推送到 AWS Security Hub , 用于集中管理和查看安全发现。此选项完全满足题目要求,因此是正确答案。 B. Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to AWS Security Hub. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。虽然可以创建包含规则,但基本扫描的功能不足以满足题目中“持续扫描”和“推送扫描”的要求。此选项不符合题目要求,因此是错误答案。 C. Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to Amazon Inspector. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。 Amazon Inspector 是一个独立的服务, ECR 的发现无法直接推送到 Amazon Inspector 。此选项在技术上不可行 ,因此是错误答案。 D. Use Amazon Inspector. Create inclusion rules in Amazon Inspector to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Config. Amazon Inspector 支持对 ECR 中的容器镜像进行高级扫描。题目要求将发现推送到 AWS Security Hub , 而不是 AWS Config 。 AWS Config 主要用于资源配置合规性检查,不适合集中管理安全发现。此选项不符合题目要求,因此是错误答案。"
+      "B": "Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to AWS Security Hub. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。虽然可以创建包含规则,但基本扫描的功能不足以满足题目中“持续扫描”和“推送扫描”的要求。此选项不符合题目要求,因此是错误答案。",
+      "C": "Use ECR basic scanning of container images. Create inclusion rules in Amazon ECR to match repositories that need to be scanned. Push findings to Amazon Inspector. ECR 基本扫描功能仅支持手动扫描,不支持持续扫描和推送扫描。 Amazon Inspector 是一个独立的服务, ECR 的发现无法直接推送到 Amazon Inspector 。此选项在技术上不可行 ,因此是错误答案。",
+      "D": "Use Amazon Inspector. Create inclusion rules in Amazon Inspector to match repositories that need to be scanned. Push Amazon Inspector findings to AWS Config. Amazon Inspector 支持对 ECR 中的容器镜像进行高级扫描。题目要求将发现推送到 AWS Security Hub , 而不是 AWS Config 。 AWS Config 主要用于资源配置合规性检查,不适合集中管理安全发现。此选项不符合题目要求,因此是错误答案。"
     }
   },
   {
@@ -687,11 +687,11 @@
     ],
     "explanations": {
       "A": "Enable AWS Security Hub in the AWS account. 分析:虽然 Security Hub 可以集中管理安全事件,但题目要求的是“尽快实现解决方案” , 而 GuardDuty 更适合快速检测恶意活动。此选项不是必须的,因此错误。",
-      "B": "的功能:集中管理和分析安全事件。 Amazon SNS 的功能: 用于发送通知到订阅的目标,例如电子邮件分发列表。 Amazon EventBridge 的功能:创建规则以自动响应事件并触发操作。选项分析 A. Enable AWS Security Hub in the AWS account. 分析:虽然 Security Hub 可以集中管理安全事件,但题目要求的是“尽快实现解决方案” , 而 GuardDuty 更适合快速检测恶意活动。此选项不是必须的,因此错误。 B. Enable Amazon GuardDuty in the AWS account. 分析: GuardDuty 是专 ⻔ 用于检测恶意活动的服务,能够快速发现被入侵的实例并生成高严重性发现。此选项正确。",
+      "B": "Enable Amazon GuardDuty in the AWS account. 分析: GuardDuty 是专 ⻔ 用于检测恶意活动的服务,能够快速发现被入侵的实例并生成高严重性发现。此选项正确。",
       "C": "Create an Amazon Simple Notification Service Amazon SNS) topic. Subscribe the security team's email distribution list to the topic. 分析: SNS 可以将通知发送到安全团队的电子邮件分发列表,满足题目要求的“自动通知”。此选项正确。",
-      "D": "Create an Amazon Simple Queue Servic",
-      "E": "的功能:创建规则以自动响应事件并触发操作。选项分析 A. Enable AWS Security Hub in the AWS account. 分析:虽然 Security Hub 可以集中管理安全事件,但题目要求的是“尽快实现解决方案” , 而 GuardDuty 更适合快速检测恶意活动。此选项不是必须的,因此错误。 B. Enable Amazon GuardDuty in the AWS account. 分析: GuardDuty 是专 ⻔ 用于检测恶意活动的服务,能够快速发现被入侵的实例并生成高严重性发现。此选项正确。 C. Create an Amazon Simple Notification Service Amazon SNS) topic. Subscribe the security team's email distribution list to the topic. 分析: SNS 可以将通知发送到安全团队的电子邮件分发列表,满足题目要求的“自动通知”。此选项正确。 D. Create an Amazon Simple Queue Service Amazon SQS) queue. Subscribe the security team's email distribution list to the queue. 分析: SQS 是消息队列服务,适合异步处理消息,但不直接支持发送通知到电子邮件分发列表。此选项错误。 E. Create an Amazon EventBridge rule for GuardDuty findings of high severity. Configure the rule to publish a message to the topic. 分析: EventBridge 可以根据 GuardDuty 的高严重性发现触发规则,并将消息发布到 SNS 主题,从而实现自动通知。此选项正确。",
-      "F": "high severity. Configure the rule to publish a message to the topic. 分析: EventBridge 可以根据 GuardDuty 的高严重性发现触发规则,并将消息发布到 SNS 主题,从而实现自动通知。此选项正确。 F. Create an Amazon EventBridge rule for Security Hub findings of high severity. Configure the rule to publish a message to the queue. 分析:题目要求的是 GuardDuty 的高严重性发现, 而不是 Security Hub 的发现。此外,消息发布到队列不符合题目要求的“发送通知到电子邮件分发列表”。此选项错误。"
+      "D": "Create an Amazon Simple Queue Service Amazon SQS) queue. Subscribe the security team's email distribution list to the queue. 分析: SQS 是消息队列服务,适合异步处理消息,但不直接支持发送通知到电子邮件分发列表。此选项错误。",
+      "E": "Create an Amazon EventBridge rule for GuardDuty findings of high severity. Configure the rule to publish a message to the topic. 分析: EventBridge 可以根据 GuardDuty 的高严重性发现触发规则,并将消息发布到 SNS 主题,从而实现自动通知。此选项正确。",
+      "F": "为高严重性的 GuardDuty 发现建立 Amazon EventBridge 规则。配置规则向 Amazon SQS 队列发布消息。错误：题目要求把告警直接送到团队邮件清单，使用 SQS 与最终的 SNS 邮件订阅相比，仍需要额外消费者处理消息，方案不够直接。"
     }
   },
   {
@@ -748,7 +748,7 @@
       "A": "禁用 GuardDuty 中的 FTP 规则: 错误。禁用 FTP 规则会完全关闭对 FTP 相关活动的监控,这可能导致真正的异常行为无法被检测到, 从而降低安全性。这种方法不符合题目要求的“改善信号与噪声比 ,同时保持对潜在异常行为的可 ⻅ 性”。",
       "B": "将 FTP 服务器添加到可信 IP 列表: 错误。可信 IP 列表的作用是忽略来自指定 IP 地址的流量,但题目中提到的是“多个位置的客户端”连接 FTP 服务器, 而不是单一 IP 地址。因此,这种方法无法解决问题。",
       "C": "创建抑制规则: 正确。抑制规则允许用户根据指定的条件自动归档 GuardDuty 的发现,从而减少噪声,同时保留对其他潜在异常行为的监控。这种方法符合题目要求。",
-      "D": "IP List )的使用场景。选项分析 A. 禁用 GuardDuty 中的 FTP 规则: 错误。禁用 FTP 规则会完全关闭对 FTP 相关活动的监控,这可能导致真正的异常行为无法被检测到, 从而降低安全性。这种方法不符合题目要求的“改善信号与噪声比 ,同时保持对潜在异常行为的可 ⻅ 性”。 B. 将 FTP 服务器添加到可信 IP 列表: 错误。可信 IP 列表的作用是忽略来自指定 IP 地址的流量,但题目中提到的是“多个位置的客户端”连接 FTP 服务器, 而不是单一 IP 地址。因此,这种方法无法解决问题。 C. 创建抑制规则: 正确。抑制规则允许用户根据指定的条件自动归档 GuardDuty 的发现,从而减少噪声,同时保留对其他潜在异常行为的监控。这种方法符合题目要求。 D. 创建 AWS Lambda 函数删除发现: 错误。使用 Lambda 函数删除发现是一种被动处理方式, 无法从根本上改善信号与噪声比。此外,这种方法需要额外的开发和维护工作,效率较低。"
+      "D": "创建 AWS Lambda 函数删除发现: 错误。使用 Lambda 函数删除发现是一种被动处理方式, 无法从根本上改善信号与噪声比。此外,这种方法需要额外的开发和维护工作,效率较低。"
     }
   },
   {
@@ -766,7 +766,7 @@
     "explanations": {
       "A": "Enable KMS encryption on the existing ECR repositories. Install Amazon Inspector Agent from the ECS container instances ʼ user data. Run an assessment with the CVE rules. 错误原因: Amazon Inspector 主要用于评估 EC2 实例的安全性, 而不是直接用于扫描 ECR 容器镜像的漏洞。 ECR 的漏洞扫描功能是内置的,不需要额外安装 Amazon Inspector 。正确部分:启用 KMS 加密是满足加密需求的正确步骤。",
       "B": "Recreate the ECR repositories with KMS encryption and ECR scanning enabled. Analyze the scan report after the next push of images. 正确原因: ECR 支持通过 KMS 加密存储库,并且可以启用内置的扫描功能来检测容器镜像中的漏洞。重新创建存储库并启用这些功能是满足题目要求的正确方法。正确部分:分析扫描报告是检测 CVE 的正确步骤。",
-      "C": "Container Registry ECR 的加密功能,特别是使用 AWS Key Management Service KMS 进行加密。 ECR 扫描功能, 用于检测容器镜像中的常 ⻅ 漏洞和暴露 (CVEs) 。如何正确配置和使用 AWS 服务以满足安全需求。选项分析 A. Enable KMS encryption on the existing ECR repositories. Install Amazon Inspector Agent from the ECS container instances ʼ user data. Run an assessment with the CVE rules. 错误原因: Amazon Inspector 主要用于评估 EC2 实例的安全性, 而不是直接用于扫描 ECR 容器镜像的漏洞。 ECR 的漏洞扫描功能是内置的,不需要额外安装 Amazon Inspector 。正确部分:启用 KMS 加密是满足加密需求的正确步骤。 B. Recreate the ECR repositories with KMS encryption and ECR scanning enable",
+      "C": "Recreate the ECR repositories with KMS encryption and ECR scanning enabled. Install AWS Systems Manager Agent on the ECS container instances. Run an inventory report. 错误原因: AWS Systems Manager Agent 主要用于管理 EC2 实例或其他资源的配置, 而不是用于扫描容器镜像的漏洞。运行库存报告无法满足 CVE 分析的需求。正确部分:重新创建存储库并启用 KMS 加密和扫描功能是正确的。",
       "D": "ECR scanning enabled. Analyze the scan report after the next push of images. 正确原因: ECR 支持通过 KMS 加密存储库,并且可以启用内置的扫描功能来检测容器镜像中的漏洞。重新创建存储库并启用这些功能是满足题目要求的正确方法。正确部分:分析扫描报告是检测 CVE 的正确步骤。 C. Recreate the ECR repositories with KMS encryption and ECR scanning enabled. Install AWS Systems Manager Agent on the ECS container instances. Run an inventory report. 错误原因: AWS Systems Manager Agent 主要用于管理 EC2 实例或其他资源的配置, 而不是用于扫描容器镜像的漏洞。运行库存报告无法满足 CVE 分析的需求。正确部分:重新创建存储库并启用 KMS 加密和扫描功能是正确的。 D. Enable KMS encryption on the existing ECR repositories. Use AWS Trusted Advisor to check the ECS container instances and to verify the findings against a list of current CVEs. 错误原因: AWS Trusted Advisor 主要用于提供成本优化、安全性、性能和服务限制的建议, 而不是用于扫描容器镜像的漏洞。它无法直接分析 CVE 。正确部分:启用 KMS 加密是满足加密需求的正确步骤。"
     }
   },
@@ -805,7 +805,7 @@
       "A": "Create a new trail and configure it to send CloudTrail logs to Amazon S3. Use Amazon EventBridge to send notification if a trail is deleted or stopped. 正确性分析:创建一个新的 trail 并发送日志到 S3 是一个可行的解决方案,但它无法确保所有现有账户和未来创建的账户都启用 CloudTrail 。错误原因: EventBridge 只能发送通知, 无法强制所有账户启用 CloudTrail ,也无法覆盖未来创建的账户。",
       "B": "Deploy an AWS Lambda function in every account to check if there is an existing trail and create a new trail, if needed. 正确性分析:使用 Lambda 函数可以检查和创建 trail ,但需要在每个账户中部署 Lambda ,管理复杂性高。错误原因:这种方法无法自动覆盖未来创建的账户,且需要额外的运维工作。",
       "C": "Edit the existing trail in the Organizations management account and apply it to the organization. 正确性分析:通过 Organizations 管理账户编辑 trail 并应用到整个组织,可以确保所有现有账户和未来创建的账户都启用 CloudTrail 。正确原因:这是 AWS 推荐的集中管理 CloudTrail 的最佳实践,能够覆盖所有账户。",
-      "D": "configure it to send CloudTrail logs to Amazon S3. Use Amazon EventBridge to send notification if a trail is deleted or stopped. 正确性分析:创建一个新的 trail 并发送日志到 S3 是一个可行的解决方案,但它无法确保所有现有账户和未来创建的账户都启用 CloudTrail 。错误原因: EventBridge 只能发送通知, 无法强制所有账户启用 CloudTrail ,也无法覆盖未来创建的账户。 B. Deploy an AWS Lambda function in every account to check if there is an existing trail and create a new trail, if needed. 正确性分析:使用 Lambda 函数可以检查和创建 trail ,但需要在每个账户中部署 Lambda ,管理复杂性高。错误原因:这种方法无法自动覆盖未来创建的账户,且需要额外的运维工作。 C. Edit the existing trail in the Organizations management account and apply it to the organization. 正确性分析:通过 Organizations 管理账户编辑 trail 并应用到整个组织,可以确保所有现有账户和未来创建的账户都启用 CloudTrail 。正确原因:这是 AWS 推荐的集中管理 CloudTrail 的最佳实践,能够覆盖所有账户。 D. Create an SCP to deny the cloudtrail:Delete* and cloudtrail:Stop* actions. Apply the SCP to all accounts. 正确性分析: SCP 可以防止删除或停止 CloudTrail ,但无法确保所有账户都启用 CloudTrail 。错误原因: SCP 只能限制操作权限, 无法强制创建或启用 CloudTrail 。"
+      "D": "Create an SCP to deny the cloudtrail:Delete* and cloudtrail:Stop* actions. Apply the SCP to all accounts. 正确性分析: SCP 可以防止删除或停止 CloudTrail ,但无法确保所有账户都启用 CloudTrail 。错误原因: SCP 只能限制操作权限, 无法强制创建或启用 CloudTrail 。"
     }
   },
   {
@@ -823,7 +823,7 @@
     "explanations": {
       "A": "Enable AWS CloudTrail logs, VPC flow logs, and DNS logs. Use Amazon CloudWatch Logs to manage these logs from a centralized account. CloudTrail 、 VPC Flow Logs 和 DNS Logs 确实可以记录相关活动,但 CloudWatch Logs 主要用于日志存储和分析, 而不是专 ⻔ 的威胁检测工具。此选项缺乏自动化威胁检测功能,因此不符合题目要求。",
       "B": "Enable AWS CloudTrail logs, VPC flow logs, and DNS logs. Use Amazon Macie to monitor these logs from a centralized account. Amazon Macie 主要用于敏感数据发现和保护,尤其是 Amazon S3 中的数据, 而不是用于监控和检测网络流量或 DNS 活动中的威胁。此选项功能不匹配题目要求。",
-      "C": "Flow Logs 、 DNS Logs 等服务的使用。重点在于如何实现持续监控和近实时威胁检测。选项分析 A. Enable AWS CloudTrail logs, VPC flow logs, and DNS logs. Use Amazon CloudWatch Logs to manage these logs from a centralized account. CloudTrail 、 VPC Flow Logs 和 DNS Logs 确实可以记录相关活动,但 CloudWatch Logs 主要用于日志存储和分析, 而不是专 ⻔ 的威胁检测工具。此选项缺乏自动化威胁检测功能,因此不符合题目要求。 B. Enable AWS CloudTrail logs, VPC flow logs, and DNS logs. Use Amazon Macie to monitor these logs from a centralize",
+      "C": "Enable Amazon GuardDuty from a centralized account. Use GuardDuty to manage AWS CloudTrail logs, VPC flow logs, andDNS logs. Amazon GuardDuty 是一种专 ⻔ 的威胁检测服务,可以分析 CloudTrail 、 VPC Flow Logs 和 DNS Logs 以检测潜在威胁。 GuardDuty 支持近实时监控,并能够识别异常行为和潜在威胁,完全符合题目要求。",
       "D": "DNS logs. Use Amazon CloudWatch Logs to manage these logs from a centralized account. CloudTrail 、 VPC Flow Logs 和 DNS Logs 确实可以记录相关活动,但 CloudWatch Logs 主要用于日志存储和分析, 而不是专 ⻔ 的威胁检测工具。此选项缺乏自动化威胁检测功能,因此不符合题目要求。 B. Enable AWS CloudTrail logs, VPC flow logs, and DNS logs. Use Amazon Macie to monitor these logs from a centralized account. Amazon Macie 主要用于敏感数据发现和保护,尤其是 Amazon S3 中的数据, 而不是用于监控和检测网络流量或 DNS 活动中的威胁。此选项功能不匹配题目要求。 C. Enable Amazon GuardDuty from a centralized account. Use GuardDuty to manage AWS CloudTrail logs, VPC flow logs, andDNS logs. Amazon GuardDuty 是一种专 ⻔ 的威胁检测服务,可以分析 CloudTrail 、 VPC Flow Logs 和 DNS Logs 以检测潜在威胁。 GuardDuty 支持近实时监控,并能够识别异常行为和潜在威胁,完全符合题目要求。 D. Enable Amazon Inspector from a centralized account. Use Amazon Inspector to manage AWS CloudTrail logs, VPC flow logs, and DNS logs. Amazon Inspector 主要用于评估 EC2 实例的安全性和漏洞, 而不是用于分析日志或检测网络流量中的威胁。此选项功能不匹配题目要求。"
     }
   },
@@ -859,10 +859,10 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "中不被明文暴露。成本效益:选择最具成本效益的解决方案。 AWS 服务:熟悉 AWS Secrets Manager 和 AWS Systems Manager Parameter Store 的功能和使用场景。权限管理:使用 IAM 权限限制对敏感信息的访问。选项分析 A. Set up IAM policies from the Lambda console to hide access to the environment variables. 错误原因: IAM 策略可以限制对环境变量的访问,但无法解决环境变量以明文形式存储的问题。敏感信息仍然暴露在 Lambda 控制台中。",
+      "A": "Set up IAM policies from the Lambda console to hide access to the environment variables. 错误原因: IAM 策略可以限制对环境变量的访问,但无法解决环境变量以明文形式存储的问题。敏感信息仍然暴露在 Lambda 控制台中。",
       "B": "Use AWS Step Functions to store the environment variables. Access the environment variables at runtime. Use IAM permissions to restrict access to the environment variables to only the Lambda functions that require access. 错误原因: AWS Step Functions 主要用于编排工作流, 而不是专 ⻔ 设计用于存储敏感信息。使用 Step Functions 存储环境变量并不是最佳实践,也不具备成本效益。",
       "C": "Store the environment variables in AWS Secrets Manager, and access them at runtime. Use IAM permissions to restrict access to the secrets to only the Lambda functions that require access. 正确但非最佳: AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息的服务, 支持加密和权限管理。然而 , Secrets Manager 的成本较高 ,对于短小的环境变量来说可能不是最具成本效益的选择。",
-      "D": "access them at runtime. Use IAM permissions to restrict access to the secrets to only the Lambda functions that require access. 正确但非最佳: AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息的服务, 支持加密和权限管理。然而 , Secrets Manager 的成本较高 ,对于短小的环境变量来说可能不是最具成本效益的选择。 D. Store the environment variables in AWS Systems Manager Parameter Store as secure string parameters, and access them at runtime. Use IAM permissions to restrict access to the parameters to only the Lambda functions that require access. 正确且最佳: AWS Systems Manager Parameter Store 支持存储敏感信息为“安全字符串” ,并提供加密和权限管理功能。相比 Secrets Manager , Parameter Store 的成本更低,适合存储短小的环境变量。"
+      "D": "Store the environment variables in AWS Systems Manager Parameter Store as secure string parameters, and access them at runtime. Use IAM permissions to restrict access to the parameters to only the Lambda functions that require access. 正确且最佳: AWS Systems Manager Parameter Store 支持存储敏感信息为“安全字符串” ,并提供加密和权限管理功能。相比 Secrets Manager , Parameter Store 的成本更低,适合存储短小的环境变量。"
     }
   },
   {
@@ -881,7 +881,7 @@
       "A": "Use AWS IAM Access Analyzer to analyze the policies. View the findings from policy validation checks. 正确: AWS IAM Access Analyzer 可以帮助分析 IAM 策略,包括 SCP ,提供策略验证检查的结果,确保策略符合最佳实践。这是优化 SCP 的推荐工具,因为它专 ⻔ 设计用于分析和验证策略的安全性和有效性。",
       "B": "Review AWS Trusted Advisor checks for all accounts in the organization. 错误: AWS Trusted Advisor 主要用于检查账户的成本优化、安全性、性能和服务限制,但它不专 ⻔ 用于分析或优化 SCP 。虽然它可以提供一些安全建议,但无法直接验证 SCP 的最佳实践。",
       "C": "Set up AWS Audit Manager. Run an assessment for all AWS Regions for all accounts. 错误: AWS Audit Manager 主要用于帮助用户自动化审计流程,并生成合规性报告,但它不适用于直接分析或优化 SCP 。它的功能与 SCP 优化无关。",
-      "D": "Advisor 、 AWS Audit Manager 、 Amazon Inspector 。 Community vote distribution 选项分析 A. Use AWS IAM Access Analyzer to analyze the policies. View the findings from policy validation checks. 正确: AWS IAM Access Analyzer 可以帮助分析 IAM 策略,包括 SCP ,提供策略验证检查的结果,确保策略符合最佳实践。这是优化 SCP 的推荐工具,因为它专 ⻔ 设计用于分析和验证策略的安全性和有效性。 B. Review AWS Trusted Advisor checks for all accounts in the organization. 错误: AWS Trusted Advisor 主要用于检查账户的成本优化、安全性、性能和服务限制,但它不专 ⻔ 用于分析或优化 SCP 。虽然它可以提供一些安全建议,但无法直接验证 SCP 的最佳实践。 C. Set up AWS Audit Manager. Run an assessment for all AWS Regions for all accounts. 错误: AWS Audit Manager 主要用于帮助用户自动化审计流程,并生成合规性报告,但它不适用于直接分析或优化 SCP 。它的功能与 SCP 优化无关。 D. Ensure that Amazon Inspector agents are installed on all Amazon EC2 instances in all accounts. 错误: Amazon Inspector 是一个漏洞管理工具, 用于扫描 EC2 实例的安全性和合规性,但它与 SCP 优化无关。安装 Inspector 代理不会帮助优化 SCP 。"
+      "D": "Ensure that Amazon Inspector agents are installed on all Amazon EC2 instances in all accounts. 错误: Amazon Inspector 是一个漏洞管理工具, 用于扫描 EC2 实例的安全性和合规性,但它与 SCP 优化无关。安装 Inspector 代理不会帮助优化 SCP 。"
     }
   },
   {
@@ -905,7 +905,7 @@
       "B": "Use AWS System Manager State Manager to detect RDS database encryption configuration drift. Create an Amazon EventBridge rule to track state changes and use Amazon Simple Notification Service Amazon SNS) to notify the security operations team. 错误。 AWS Systems Manager State Manager 主要用于管理实例配置, 而不是直接检测 RDS 数据库的加密状态。",
       "C": "Create a read replica for the existing unencrypted RDS database and enable replica encryption in the process. Once the replica becomes active, promote it into a standalone database instance and terminate the unencrypted database instance. 错误。虽然可以通过创建加密的只读副本来解决未加密数据库的问题,但此方法不如选项",
       "D": "RDS databases. Create an Amazon EventBridge rule to trigger on the AWS Config rules compliance state change and use Amazon Simple Notification Servic",
-      "E": "和 Amazon SNS 的集成, 用于通知安全团队。选项分析 A. Create an AWS Config rule to detect the creation of unencrypted RDS databases. Create an Amazon EventBridge rule to trigger on the AWS Config rules compliance state change and use Amazon Simple Notification Service Amazon SNS) to notify the security operations team. 正确。 AWS Config 可以检测资源是否符合加密要求, EventBridge 和 SNS 可以用于通知安全团队,确保未来的数据库创建符合加密策略。 B. Use AWS System Manager State Manager to detect RDS database encryption configuration drift. Create an Amazon EventBridge rule to track state changes and use Amazon Simple Notification Service Amazon SNS) to notify the security operations team. 错误。 AWS Systems Manager State Manager 主要用于管理实例配置, 而不是直接检测 RDS 数据库的加密状态。 C. Create a read replica for the existing unencrypted RDS database and enable replica encryption in the process. Once the replica becomes active, promote it into a standalone database instance and terminate the unencrypted database instance. 错误。虽然可以通过创建加密的只读副本来解决未加密数据库的问题,但此方法不如选项 D 的快照方法直接且高效。 D. Take a snapshot of the unencrypted RDS database. Copy the snapshot and enable snapshot encryption in the process. Restore the database instance from the newly created encrypted snapshot. Terminate the unencrypted database instance. 正确。通过快照复制并启用加密,然后从加密快照恢复数据库,是处理现有未加密数据库的推荐方法。 E. Enable encryption for the identified unencrypted RDS instance by changing the configurations of the existing database. 错误。 RDS 不支持直接对现有数据库启用加密,必须通过快照或副本的方式实现加密。"
+      "E": "Enable encryption for the identified unencrypted RDS instance by changing the configurations of the existing database. 错误。 RDS 不支持直接对现有数据库启用加密,必须通过快照或副本的方式实现加密。"
     }
   },
   {
@@ -921,7 +921,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Protection ) 。如何防止数据在 AWS 账户被恶意删除的情况下仍然可恢复。选项分析 A. 创建一个新的 Amazon S3 存储桶。使用 EBS 生命周期策略将 EBS 快照移动到新的 S3 存储桶。使用生命周期策略将快照移动到 S3 Glacier Instant Retrieval 存储类别。使用 S3 Object Lock 防止快照被删除。错误: EBS 快照无法直接通过生命周期策略移动到 S3 存储桶。 EBS 快照和 S3 对象是不同的存储类型, 无法通过生命周期策略直接转换。虽然 S3 Object Lock 可以防止对象被删除,但此方案无法解决账户被恶意删除快照的问题,因为快照本身仍然存储在原账户中。",
+      "A": "创建一个新的 Amazon S3 存储桶。使用 EBS 生命周期策略将 EBS 快照移动到新的 S3 存储桶。使用生命周期策略将快照移动到 S3 Glacier Instant Retrieval 存储类别。使用 S3 Object Lock 防止快照被删除。错误: EBS 快照无法直接通过生命周期策略移动到 S3 存储桶。 EBS 快照和 S3 对象是不同的存储类型, 无法通过生命周期策略直接转换。虽然 S3 Object Lock 可以防止对象被删除,但此方案无法解决账户被恶意删除快照的问题,因为快照本身仍然存储在原账户中。",
       "B": "使用 AWS Systems Manager 分发一个配置,将所有附加磁盘备份到 Amazon S3 。错误: AWS Systems Manager 无法直接备份 EBS 快照到 S3 。此选项未提及如何处理加密的快照,也未解决账户被恶意删除快照的问题。此方案更适用于文件级备份, 而非 EBS 快照级别的备份。",
       "C": "创建一个具有有限权限的新 AWS 账户。允许新账户访问加密 EBS 快照的 KMS 密钥。定期将加密的快照复制到新账户。正确:此方案通过创建一个新账户并定期复制快照到新账户,确保即使原账户的快照被删除,数据仍然可以从新账户恢复。通过允许新账户访问 KMS 密钥,确保加密的快照可以被解密和使用。此方案符合灾难恢复的最佳实践,提供了跨账户的数据保护。",
       "D": "使用 AWS Backup 将 EBS 快照复制到 Amazon S3 。使用 S3 Object Lock 防止快照被删除。错误: AWS Backup 可以备份 EBS 快照,但无法直接将快照复制到 S3 。 EBS 快照和 S3 对象是不同的存储类型。虽然 S3 Object Lock 可以防止对象被删除,但此方案未解决账户被恶意删除快照的问题。"
@@ -942,8 +942,8 @@
     "explanations": {
       "A": "Add an inbound rule to the security group to allow traffic from 0.0.0.0/0 for all ports. Add an outbound rule to the security group to allow traffic to 0.0.0.0/0 for all ports. Then immediately delete these rules. 分析:此选项建议临时添加允许所有流量的规则,然后删除这些规则。这种方法无法有效隔离目标实例,并且可能会导致短时间内的安全漏洞。删除规则后,现有的连接仍然可能保持活动状态,因为安全组规则的更改不会立即终止现有连接。结论:错误。",
       "B": "Remove the port 22 security group rule. Attach an instance role policy that allows AWS Systems Manager Session Manager connections so that the forensics team can access the target instance. 分析:此选项建议移除端口 22 的安全组规则,并使用 AWS Systems Manager Session Manager 进行访问。 Session Manager 提供了一种安全的方式来管理实例, 而无需依赖传统的 SSH 连接。这种方法可以有效隔离实例,同时允许取证团队安全访问目标实例。结论:正确。",
-      "C": "from 0.0.0.0/0 for all ports. Add an outbound rule to the security group to allow traffic to 0.0.0.0/0 for all ports. Then immediately delete these rules. 分析:此选项建议临时添加允许所有流量的规则,然后删除这些规则。这种方法无法有效隔离目标实例,并且可能会导致短时间内的安全漏洞。删除规则后,现有的连接仍然可能保持活动状态,因为安全组规则的更改不会立即终止现有连接。结论:错误。 B. Remove the port 22 security group rule. Attach an instance role policy that allows AWS Systems Manager Session Manager connections so that the forensics team can access the target instance. 分析:此选项建议移除端口 22 的安全组规则,并使用 AWS Systems Manager Session Manager 进行访问。 Session Manager 提供了一种安全的方式来管理实例, 而无需依赖传统的 SSH 连接。这种方法可以有效隔离实例,同时允许取证团队安全访问目标实例。结论:正确。 C. Create a network ACL that is associated with the target instance's subnet. Add a rule at the top of the inbound rule set to deny all traffic from 0.0.0.0/0. Add a rule at the top of the outbound rule set to deny all traffic to 0.0.0.0/0. 分析: 网络 ACL 是子网级别的控制, 而不是实例级别的控制。虽然可以通过网络 ACL 阻止所有流量, 但这会影响子网中的所有实例, 而不仅仅是目标实例。这种方法不符合题目要求的“仅隔离目标实例”的需求。结论:错误。",
-      "D": "an inbound rule to the security group to allow traffic from 0.0.0.0/0 for all ports. Add an outbound rule to the security group to allow traffic to 0.0.0.0/0 for all ports. Then immediately delete these rules. 分析:此选项建议临时添加允许所有流量的规则,然后删除这些规则。这种方法无法有效隔离目标实例,并且可能会导致短时间内的安全漏洞。删除规则后,现有的连接仍然可能保持活动状态,因为安全组规则的更改不会立即终止现有连接。结论:错误。 B. Remove the port 22 security group rule. Attach an instance role policy that allows AWS Systems Manager Session Manager connections so that the forensics team can access the target instance. 分析:此选项建议移除端口 22 的安全组规则,并使用 AWS Systems Manager Session Manager 进行访问。 Session Manager 提供了一种安全的方式来管理实例, 而无需依赖传统的 SSH 连接。这种方法可以有效隔离实例,同时允许取证团队安全访问目标实例。结论:正确。 C. Create a network ACL that is associated with the target instance's subnet. Add a rule at the top of the inbound rule set to deny all traffic from 0.0.0.0/0. Add a rule at the top of the outbound rule set to deny all traffic to 0.0.0.0/0. 分析: 网络 ACL 是子网级别的控制, 而不是实例级别的控制。虽然可以通过网络 ACL 阻止所有流量, 但这会影响子网中的所有实例, 而不仅仅是目标实例。这种方法不符合题目要求的“仅隔离目标实例”的需求。结论:错误。 D. Create an AWS Systems Manager document that adds a host-level firewall rule to block all inbound traffic and outbound traffic. Run the document on the target instance. 分析:此选项建议使用 AWS Systems Manager 文档来添加主机级防火墙规则。这种方法虽然可以实现隔离,但需要额外的配置和操作,复杂性较高。此外,题目中并未提到需要使用主机级防火墙规则。结论:错误。"
+      "C": "Create a network ACL that is associated with the target instance's subnet. Add a rule at the top of the inbound rule set to deny all traffic from 0.0.0.0/0. Add a rule at the top of the outbound rule set to deny all traffic to 0.0.0.0/0. 分析: 网络 ACL 是子网级别的控制, 而不是实例级别的控制。虽然可以通过网络 ACL 阻止所有流量, 但这会影响子网中的所有实例, 而不仅仅是目标实例。这种方法不符合题目要求的“仅隔离目标实例”的需求。结论:错误。",
+      "D": "Create an AWS Systems Manager document that adds a host-level firewall rule to block all inbound traffic and outbound traffic. Run the document on the target instance. 分析:此选项建议使用 AWS Systems Manager 文档来添加主机级防火墙规则。这种方法虽然可以实现隔离,但需要额外的配置和操作,复杂性较高。此外,题目中并未提到需要使用主机级防火墙规则。结论:错误。"
     }
   },
   {
@@ -982,11 +982,11 @@
       "C"
     ],
     "explanations": {
-      "A": "Configure CloudFront to add a cache key policy to allow a custom HTTP header that CloudFront sends to the AL",
-      "B": "的集成。如何通过自定义 HTTP 头确保流量来源的验证。防止未经授权的流量直接访问 ALB 。选项分析 A. Configure CloudFront to add a cache key policy to allow a custom HTTP header that CloudFront sends to the ALB. 错误:此选项提到的是“缓存键策略” ,但缓存键策略的主要作用是影响 CloudFront 的缓存行为, 而不是直接限制流量来源。此选项与题目要求无关。 B. Configure CloudFront to add a custom HTTP header to requests that CloudFront sends to the ALB. 正确:通过配置 CloudFront 添加自定义 HTTP 头,可以标识流量是从 CloudFront 发出的。这是确保 ALB 只接受来自 CloudFront 流量的关键步骤之一。",
+      "A": "In AWS Cost Explorer, filter chart data to display results from the past 30 days. Export the results to a data table. Group the data table by resource. 错误原因: AWS Cost Explorer 主要用于分析成本和使用情况, 而不是追踪具体的资源部署或配置活动。它无法提供详细的事件历史记录,因此不适合用于审计员工的操作行为。",
+      "B": "Use AWS Cost Anomaly Detection to create a cost monitor. Access the detection history. Set the time frame to Last 30 days. In the search area, choose the service category. 错误原因: AWS Cost Anomaly Detection 用于检测成本异常, 而不是追踪资源的具体操作或配置变更。虽然可以查看服务类别,但无法提供详细的事件级别信息。",
       "C": "Configure the ALB to forward only requests that contain the custom HTTP header. 正确:通过配置 ALB 仅转发包含特定自定义 HTTP 头的请求,可以确保 ALB 只处理来自 CloudFront 的流量。这是题目要求的另一个关键步骤。",
-      "D": "Balancer ALB 的集成。如何通过自定义 HTTP 头确保流量来源的验证。防止未经授权的流量直接访问 ALB 。选项分析 A. Configure CloudFront to add a cache key policy to allow a custom HTTP header that CloudFront sends to the ALB. 错误:此选项提到的是“缓存键策略” ,但缓存键策略的主要作用是影响 CloudFront 的缓存行为, 而不是直接限制流量来源。此选项与题目要求无关。 B. Configure CloudFront to add a custom HTTP header to requests that CloudFront sends to the ALB. 正确:通过配置 CloudFront 添加自定义 HTTP 头,可以标识流量是从 CloudFront 发出的。这是确保 ALB 只接受来自 CloudFront 流量的关键步骤之一。 C. Configure the ALB to forward only requests that contain the custom HTTP header. 正确:通过配置 ALB 仅转发包含特定自定义 HTTP 头的请求,可以确保 ALB 只处理来自 CloudFront 的流量。这是题目要求的另一个关键步骤。 D. Configure the ALB and CloudFront to use the X Forwarded-For header to check client IP addresses. 错误: X Forwarded-For 头主要用于记录客户端的真实 IP 地址,与限制流量来源无关。此选项无法解决题目中提到的问题。",
-      "E": "CloudFront to add a cache key policy to allow a custom HTTP header that CloudFront sends to the ALB. 错误:此选项提到的是“缓存键策略” ,但缓存键策略的主要作用是影响 CloudFront 的缓存行为, 而不是直接限制流量来源。此选项与题目要求无关。 B. Configure CloudFront to add a custom HTTP header to requests that CloudFront sends to the ALB. 正确:通过配置 CloudFront 添加自定义 HTTP 头,可以标识流量是从 CloudFront 发出的。这是确保 ALB 只接受来自 CloudFront 流量的关键步骤之一。 C. Configure the ALB to forward only requests that contain the custom HTTP header. 正确:通过配置 ALB 仅转发包含特定自定义 HTTP 头的请求,可以确保 ALB 只处理来自 CloudFront 的流量。这是题目要求的另一个关键步骤。 D. Configure the ALB and CloudFront to use the X Forwarded-For header to check client IP addresses. 错误: X Forwarded-For 头主要用于记录客户端的真实 IP 地址,与限制流量来源无关。此选项无法解决题目中提到的问题。 E. Configure the ALB and CloudFront to use the same X.509 certificate that is generated by AWS Certificate Manager ACM . 错误:使用相同的 X.509 证书主要用于 SSL/TLS 加密通信,与限制流量来源无关。此选项无法解决题目中提到的问题。 49 英文 A company discovers a bi ling anomaly in its AWS account. A security consultant investigates the anomaly and discovers that an employee who left the company 30 days ago sti l has access to the account. The company has not monitored account activity in the past. The security consultant needs to determine which resources have been deployed or reconfigured by the employee as quickly as possible. Which solution wi l meet these requirements? A.In AWS Cost Explorer, filter chart data to display results from the past 30 days. Export the results to a data table. Group the data table by resource. B.Use AWS Cost Anomaly Detection to create a cost monitor. Access the detection history. Set the time frame to Last 30 days. In the search area, choose the service category. C.In AWS CloudTrail, filter the event history to display results from the past 30 days. Create an Amazon Athena table that contains the data. Partition the table by event source. D.Use AWS Audit Manager to create an assessment for the past 30 days. Apply a usage-based framework to the assessment. Configure the assessment to assess by resource. 中文一家公司发现其 AWS 帐户有帐单异常。一位安全顾问调查了该异常,发现一名 30 天前离职的员工仍然可以存取该帐户。该公司过去从未监控过帐户活动。安全顾问需要尽快确定该员工部署或重新配置了哪些资源。哪种解决方案能够满足这些要求? A. 在 AWS Cost Explorer 中,筛选图表资料以显示过去 30 天的结果。将结果汇出到数据表。依资源将资料表分组。 B. 使用 AWS 成本异常检测建立成本监控器。存取检测历史记录。将时间范围设定为过去 30 天。在搜寻区域中,选择服务类别。 C. 在 AWS CloudTrail 中,筛选事件历史记录以显示过去 30 天的结果。建立包含资料的 Amazon Athena 表。依事件来源对錶进行分区。 D. 使用 AWS Audit Manager 建立过去 30 天的评估。将基于使用情况的框架应用于评估。将评估配置为按资源进行评估。解答 C 考察的知识点本题考察的是 AWS 安全审计与事件追踪的能力 ,尤其是如何快速定位和分析账户活动历史,以确定资源的部署或重新配置情况。涉及的服务包括 AWS CloudTrail 、 Amazon Athena 、 AWS Cost Explorer 、 AWS Cost Anomaly Detection 和 AWS Audit Manager 。选项分析 A. In AWS Cost Explorer, filter chart data to display results from the past 30 days. Export the results to a data table. Group the data table by resource. 错误原因: AWS Cost Explorer 主要用于分析成本和使用情况, 而不是追踪具体的资源部署或配置活动。它无法提供详细的事件历史记录,因此不适合用于审计员工的操作行为。 B. Use AWS Cost Anomaly Detection to create a cost monitor. Access the detection history. Set the time frame to Last 30 days. In the search area, choose the service category. 错误原因: AWS Cost Anomaly Detection 用于检测成本异常, 而不是追踪资源的具体操作或配置变更。虽然可以查看服务类别,但无法提供详细的事件级别信息。 C. In AWS CloudTrail, filter the event history to display results from the past 30 days. Create an Amazon Athena table that contains the data. Partition the table by event source. 正确原因: AWS CloudTrail 记录了账户中的所有 API 调用和活动日志,是追踪资源部署和配置变更的最佳工具。通过 Amazon Athena ,可以对 CloudTrail 日志进行查询和分析,快速定位相关事件。 D. Use AWS Audit Manager to create an assessment for the past 30 days. Apply a usage- based framework to the assessment. Configure the assessment to assess by resource. 错误原因: AWS Audit Manager 主要用于合规性评估, 而不是实时分析账户活动或事件历史。它无法快速定位具体的资源部署或配置变更。"
+      "D": "Use AWS Audit Manager to create an assessment for the past 30 days. Apply a usage- based framework to the assessment. Configure the assessment to assess by resource. 错误原因: AWS Audit Manager 主要用于合规性评估, 而不是实时分析账户活动或事件历史。它无法快速定位具体的资源部署或配置变更。",
+      "E": "配置 ALB 和 CloudFront 使用同样的 X.509 证书（由 AWS Certificate Manager (ACM) 颁发）。错误：使用相同的 X.509 证书主要用于 SSL/TLS 加密通信，与限制流量来源无关。此选项无法解决题目中提到的问题。"
     }
   },
   {
@@ -1005,7 +1005,7 @@
       "A": "Update the IAM policy attached to the role in the identity account to be: 错误。身份账户中的 IAM 策略已经允许用户调用 sts:AssumeRole 操作,并且资源指定为 arn:aws:iam::*:role/JobFunctionRole ,这已经正确配置了权限。问题不在于身份账户的 IAM 策略, 而在于目标账户的信任策略。",
       "B": "Update the trust policy on the role in the target account to be: 正确。目标账户中的 JobFunctionRole 需要信任身份账户中的 IdentityRole ,以便允许身份账户的用户通过 sts:AssumeRole 来访问目标账户的资源。如果信任策略未正确配置, 用户将无法跨账户访问。",
       "C": "Update the trust policy on the role in the identity account to be: 错误。身份账户中的 IdentityRole 的信任策略与问题无关,因为问题发生在目标账户的角色信任策略配置上。",
-      "D": "to the role in the identity account to be: 错误。身份账户中的 IAM 策略已经允许用户调用 sts:AssumeRole 操作,并且资源指定为 arn:aws:iam::*:role/JobFunctionRole ,这已经正确配置了权限。问题不在于身份账户的 IAM 策略, 而在于目标账户的信任策略。 B. Update the trust policy on the role in the target account to be: 正确。目标账户中的 JobFunctionRole 需要信任身份账户中的 IdentityRole ,以便允许身份账户的用户通过 sts:AssumeRole 来访问目标账户的资源。如果信任策略未正确配置, 用户将无法跨账户访问。 C. Update the trust policy on the role in the identity account to be: 错误。身份账户中的 IdentityRole 的信任策略与问题无关,因为问题发生在目标账户的角色信任策略配置上。 D. Update the IAM policy attached to the role in the target account to be: 错误。目标账户中的 IAM 策略控制的是角色的权限, 而不是信任关系。问题的核心是信任策略, 而不是 IAM 权限策略。"
+      "D": "Update the IAM policy attached to the role in the target account to be: 错误。目标账户中的 IAM 策略控制的是角色的权限, 而不是信任关系。问题的核心是信任策略, 而不是 IAM 权限策略。"
     }
   },
   {
@@ -1022,7 +1022,7 @@
     "answer": "B",
     "explanations": {
       "A": "Store the API key value as a SecureString parameter in AWS Systems Manager Parameter Store. 正确性: AWS Systems Manager Parameter Store 支持 SecureString 类型,可以安全地存储敏感信息。缺点:虽然 SecureString 是安全的,但 AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息 (如 API 密钥、数据库凭证等) ,并提供更丰富的功能(如自动轮换) 。结论:此选项是安全的,但不是最佳实践。",
-      "B": "和 Amazon S3 。重点在于选择最安全且符合最佳实践的方式来存储和引用敏感信息。选项分析 A. Store the API key value as a SecureString parameter in AWS Systems Manager Parameter Store. 正确性: AWS Systems Manager Parameter Store 支持 SecureString 类型,可以安全地存储敏感信息。缺点:虽然 SecureString 是安全的,但 AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息 (如 API 密钥、数据库凭证等) ,并提供更丰富的功能(如自动轮换) 。结论:此选项是安全的,但不是最佳实践。 B. Store the API key value in AWS Secrets Manager. 正确性: AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息的服务, 支持加密存储、访问控制和自动轮换。优势:提供了更高级的功能,如自动轮换和集成支持,符合最佳实践。结论:此选项是最佳答案。",
+      "B": "Store the API key value in AWS Secrets Manager. 正确性: AWS Secrets Manager 是专 ⻔ 设计用于存储和管理敏感信息的服务, 支持加密存储、访问控制和自动轮换。优势:提供了更高级的功能,如自动轮换和集成支持,符合最佳实践。结论:此选项是最佳答案。",
       "C": "Store the API key value in Amazon DynamoDB. 正确性: Amazon DynamoDB 是一个 NoSQL 数据库服务,虽然可以存储数据,但它不是专 ⻔ 设计用于存储敏感信息。缺点:缺乏专 ⻔ 的加密和管理敏感信息的功能,安全性较低。结论:此选项不适合存储 API 密钥。",
       "D": "Store the API key value in a new Amazon S3 bucket. 正确性: Amazon S3 可以存储数据,但它不是专 ⻔ 设计用于存储敏感信息。缺点:需要额外的配置(如加密和访问控制)来确保安全性,管理复杂性较高。结论:此选项不适合存储 API 密钥。"
     }
@@ -1066,7 +1066,7 @@
       "A": "Create an Amazon S3 bucket. Configure the bucket to use S3 Object Lock in compliance mode. Upload the data to the bucket. Create a resource-based bucket policy that meets all the regulatory requirements. 正确性分析:使用 S3 Object Lock 的合规模式可以防止数据被修改或删除,符合监管要求。但 S3 存储成本较高 ,尤其是对于需要 ⻓ 期保存的数据( 7 年) 。成本效益分析:相比 S3 Glacier , S3 的存储成本更高 ,因此不是最具成本效益的解决方案。结论:虽然技术上可行 ,但不是最具成本效益的选项。",
       "B": "Create an Amazon S3 bucket. Configure the bucket to use S3 Object Lock in governance mode. Upload the data to the bucket. Create a user-based IAM policy that meets all the regulatory requirements. 正确性分析:治理模式允许特定用户通过权限解除锁定,这可能导致数据被修改或删除,不完全符合监管要求。成本效益分析:与选项 A 类似, S3 存储成本较高 ,且治理模式不适合严格的合规需求。结论:不符合监管要求,且成本较高。",
       "C": "Create a vault in Amazon S3 Glacier. Create a Vault Lock policy in S3 Glacier that meets all the regulatory requirements. Upload the data to the vault. 正确性分析: Amazon S3 Glacier Vault Lock 允许创建不可更改的策略,确保数据无法被修改或删除,完全符合监管要求。成本效益分析: S3 Glacier 是专为 ⻓ 期数据存储设计的,成本远低于 S3 ,适合存储大规模数据(如几 PB )并满足 7 年的保留要求。结论:技术上可行且成本效益最高 ,是最佳选项。",
-      "D": "the data to the bucket. Create a resource-based bucket policy that meets all the regulatory requirements. 正确性分析:使用 S3 Object Lock 的合规模式可以防止数据被修改或删除,符合监管要求。但 S3 存储成本较高 ,尤其是对于需要 ⻓ 期保存的数据( 7 年) 。成本效益分析:相比 S3 Glacier , S3 的存储成本更高 ,因此不是最具成本效益的解决方案。结论:虽然技术上可行 ,但不是最具成本效益的选项。 B. Create an Amazon S3 bucket. Configure the bucket to use S3 Object Lock in governance mode. Upload the data to the bucket. Create a user-based IAM policy that meets all the regulatory requirements. 正确性分析:治理模式允许特定用户通过权限解除锁定,这可能导致数据被修改或删除,不完全符合监管要求。成本效益分析:与选项 A 类似, S3 存储成本较高 ,且治理模式不适合严格的合规需求。结论:不符合监管要求,且成本较高。 C. Create a vault in Amazon S3 Glacier. Create a Vault Lock policy in S3 Glacier that meets all the regulatory requirements. Upload the data to the vault. 正确性分析: Amazon S3 Glacier Vault Lock 允许创建不可更改的策略,确保数据无法被修改或删除,完全符合监管要求。成本效益分析: S3 Glacier 是专为 ⻓ 期数据存储设计的,成本远低于 S3 ,适合存储大规模数据(如几 PB )并满足 7 年的保留要求。结论:技术上可行且成本效益最高 ,是最佳选项。 D. Create an Amazon S3 bucket. Upload the data to the bucket. Use a lifecycle rule to transition the data to a vault in S3 Glacier. Create a Vault Lock policy that meets all the regulatory requirements. 正确性分析:虽然可以通过生命周期规则将数据转移到 S3 Glacier ,但初始存储在 S3 中会增加不必要的成本。最终仍需在 S3 Glacier 中创建 Vault Lock 策略。成本效益分析:相比直接使用 S3 Glacier (选项 C ) ,此选项增加了额外的 S3 存储成本,且流程更复杂。结论:技术上可行 ,但成本效益较低,不是最佳选项。"
+      "D": "Create an Amazon S3 bucket. Upload the data to the bucket. Use a lifecycle rule to transition the data to a vault in S3 Glacier. Create a Vault Lock policy that meets all the regulatory requirements. 正确性分析:虽然可以通过生命周期规则将数据转移到 S3 Glacier ,但初始存储在 S3 中会增加不必要的成本。最终仍需在 S3 Glacier 中创建 Vault Lock 策略。成本效益分析:相比直接使用 S3 Glacier (选项 C ) ,此选项增加了额外的 S3 存储成本,且流程更复杂。结论:技术上可行 ,但成本效益较低,不是最佳选项。"
     }
   },
   {
@@ -1085,7 +1085,7 @@
       "A": "错误原因:私钥是敏感信息,不能上传到 AWS 。 AWS 只需要验证签名的公钥, 而不是私钥。",
       "B": "错误原因:公钥不能用于签名操作。签名是由私钥完成的,公钥用于验证签名。此选项的描述不符合实际操作流程。",
       "C": "正确原因:当第三方身份提供商更新了签名证书后, SAML 元数据文件会包含新的证书信息。下载更新后的元数据文件并上传到 AWS IAM 中的身份提供商实体是解决问题的正确方法。",
-      "D": "错误原因: AWS IAM 中的身份提供商实体不支持自动同步或动态获取第三方身份提供商的公钥。需要手动更新元数据文件。考察的知识点本题考察的是 AWS 与第三方身份提供商( Identity Provider, IdP )集成时的 SAML 配置管理,特别是如何处理签名证书更新后的问题。涉及 AWS Identity and Access Management IAM 中定义的身份提供商实体的配置和操作。"
+      "D": "配置 AWS IAM 中的身份提供商实体不支持自动同步或动态获取第三方身份提供商的公钥，需要手动更新元数据文件，因此无法解决“同步刷新”的问题。错误：通常需要人工下载新的 IdP metadata XML 然后更新 IdP 实体的元数据。"
     }
   },
   {
@@ -1123,7 +1123,7 @@
       "A": "分析:此选项正确。通过更新 S3 网关端点的策略,可以限制只有属于公司组织的资源和主体才能访问 S3 。这种方法直接在网关端点层面控制访问,确保数据不会被泄露到外部组织的 S3 存储桶,同时保持 EC2 实例的正常功能。",
       "B": "分析:此选项错误。虽然可以通过实例配置文件角色限制访问,但这无法阻止被攻击的实例直接通过网关端点访问外部 S3 存储桶。实例角色的策略仅适用于实例本身的权限, 而网关端点的默认策略仍然允许访问。",
       "C": "分析:此选项错误。阻止端口 443 上的出站连接会影响 EC2 实例的正常功能,因为 S3 使用 HTTPS (端口 443 )进行通信。这种方法会导致分析任务无法正常运行。",
-      "D": "和 aws:PrincipalOrgID )的使用阻止数据泄露的安全措施选项分析 A. 分析:此选项正确。通过更新 S3 网关端点的策略,可以限制只有属于公司组织的资源和主体才能访问 S3 。这种方法直接在网关端点层面控制访问,确保数据不会被泄露到外部组织的 S3 存储桶,同时保持 EC2 实例的正常功能。 B. 分析:此选项错误。虽然可以通过实例配置文件角色限制访问,但这无法阻止被攻击的实例直接通过网关端点访问外部 S3 存储桶。实例角色的策略仅适用于实例本身的权限, 而网关端点的默认策略仍然允许访问。 C. 分析:此选项错误。阻止端口 443 上的出站连接会影响 EC2 实例的正常功能,因为 S3 使用 HTTPS (端口 443 )进行通信。这种方法会导致分析任务无法正常运行。 D. 分析:此选项错误。 SCP (服务控制策略)适用于整个账户的权限管理,但它无法直接控制网关端点的行为。此外, SCP 的应用可能会影响其他资源的正常运行 ,导致不必要的权限问题。"
+      "D": "分析:此选项错误。 SCP (服务控制策略)适用于整个账户的权限管理,但它无法直接控制网关端点的行为。此外, SCP 的应用可能会影响其他资源的正常运行 ,导致不必要的权限问题。"
     }
   },
   {
@@ -1142,7 +1142,7 @@
       "A": "Create an assessment in AWS Audit Manager from a prebuilt framework or a custom framework. Upload manual evidence from the on-premises workloads. Add the evidence to the assessment. Generate an assessment report after Audit Manager collects the necessary evidence from the AWS resources. 正确:此选项准确描述了 AWS Audit Manager 的功能。 Audit Manager 允许用户创建评估,上传手动证据(例如来自本地工作负载的证据) ,并结合 AWS 资源的自动收集证据生成合规性报告。这完全符合题目要求。",
       "B": "Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误: AWS Config 主要用于资源配置的合规性检查, 而不是生成合规性报告。虽然可以使用合规包 ( Conformance Pack )来检查资源是否符合标准,但它无法处理手动证据,也无法生成综合的合规性报告。",
       "C": "Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误: AWS Security Hub 主要用于集中管理和查看安全警报,并评估资源的安全性。它不支持上传手动证据,也无法生成合规性报告。",
-      "D": "manual evidence from the on-premises workloads. Add the evidence to the assessment. Generate an assessment report after Audit Manager collects the necessary evidence from the AWS resources. 正确:此选项准确描述了 AWS Audit Manager 的功能。 Audit Manager 允许用户创建评估,上传手动证据(例如来自本地工作负载的证据) ,并结合 AWS 资源的自动收集证据生成合规性报告。这完全符合题目要求。 B. Install the Amazon CloudWatch agent on the on-premises workloads. Use AWS Config to deploy a conformance pack from a sample conformance pack template or a custom YAML template. Generate an assessment report after AWS Config identifies noncompliant workloads and resources. 错误: AWS Config 主要用于资源配置的合规性检查, 而不是生成合规性报告。虽然可以使用合规包 ( Conformance Pack )来检查资源是否符合标准,但它无法处理手动证据,也无法生成综合的合规性报告。 C. Set up the appropriate security standard in AWS Security Hub. Upload manual evidence from the on-premises workloads. Wait for Security Hub to collect the evidence from the AWS resources. Download the list of controls as a .csv file. 错误: AWS Security Hub 主要用于集中管理和查看安全警报,并评估资源的安全性。它不支持上传手动证据,也无法生成合规性报告。 D. Install the Amazon CloudWatch agent on the on-premises workloads. Create a CloudWatch dashboard to monitor the onpremises workloads and the AWS resources. Run a query on the workloads and resources. Download the results. 错误: Amazon CloudWatch 主要用于监控和日志管理, 而不是用于合规性报告。虽然可以通过仪表板查看资源状态,但它无法处理手动证据,也无法生成合规性报告。"
+      "D": "Install the Amazon CloudWatch agent on the on-premises workloads. Create a CloudWatch dashboard to monitor the onpremises workloads and the AWS resources. Run a query on the workloads and resources. Download the results. 错误: Amazon CloudWatch 主要用于监控和日志管理, 而不是用于合规性报告。虽然可以通过仪表板查看资源状态,但它无法处理手动证据,也无法生成合规性报告。"
     }
   },
   {
@@ -1178,8 +1178,8 @@
     "answer": "B",
     "explanations": {
       "A": "Configure the permissions on the individual files in the S3 bucket so that only the CloudFront distribution has access to them. 错误:逐个配置文件权限的方式效率低下,且不符合最佳实践。 AWS 提供了更好的方法(如 OAC ) 来实现这种需求。",
-      "B": "Create an origin access control OA",
-      "C": "来限制访问。选项分析 A. Configure the permissions on the individual files in the S3 bucket so that only the CloudFront distribution has access to them. 错误:逐个配置文件权限的方式效率低下,且不符合最佳实践。 AWS 提供了更好的方法(如 OAC ) 来实现这种需求。 B. Create an origin access control OAC . Associate the OAC with the CloudFront distribution. Configure the S3 bucket permissions so that only the OAC can access the files in the S3 bucket. 正确: OAC 是 AWS 推荐的方式, 用于确保 CloudFront 可以安全地访问 S3 bucket , 而 S3 bucket 内容不会被直接公开访问。 OAC 是 CloudFront 的新功能,取代了之前的 Origin Access Identity OAI 。 C. Create an S3 role in AWS Identity and Access Management IAM . Allow only the CloudFront distribution to assume the role to access the files in the S3 bucket. 错误: IAM 角色通常用于服务之间的权限管理,但 CloudFront 无法直接假设 IAM 角色来访问 S3 bucket 。",
+      "B": "Create an origin access control OAC . Associate the OAC with the CloudFront distribution. Configure the S3 bucket permissions so that only the OAC can access the files in the S3 bucket. 正确: OAC 是 AWS 推荐的方式, 用于确保 CloudFront 可以安全地访问 S3 bucket , 而 S3 bucket 内容不会被直接公开访问。 OAC 是 CloudFront 的新功能,取代了之前的 Origin Access Identity OAI 。",
+      "C": "Create an S3 role in AWS Identity and Access Management IAM . Allow only the CloudFront distribution to assume the role to access the files in the S3 bucket. 错误: IAM 角色通常用于服务之间的权限管理,但 CloudFront 无法直接假设 IAM 角色来访问 S3 bucket 。",
       "D": "Access Management IAM . Allow only the CloudFront distribution to assume the role to access the files in the S3 bucket. 错误: IAM 角色通常用于服务之间的权限管理,但 CloudFront 无法直接假设 IAM 角色来访问 S3 bucket 。 D. Create an S3 bucket policy that uses only the CloudFront distribution ID as the principal and the Amazon Resource Name ARN) as the target. 错误: S3 bucket policy 无法直接使用 CloudFront distribution ID 作为主体。需要使用 OAC 或 OAI 来实现这种限制。"
     }
   },
@@ -1196,7 +1196,7 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "函数如何与 CloudWatch 日志集成,以及所需的权限。选项分析 A. Move the logs:CreateLogGroup action to the second Allow statement. 错误: logs:CreateLogGroup 的作用是创建日志组,但问题并不是日志组无法创建, 而是日志流 ( Log Stream ) 无法加载。将 logs:CreateLogGroup 移动到第二个语句不会解决问题,因为问题的根本原因是缺少 logs:CreateLogStream 权限。",
+      "A": "Move the logs:CreateLogGroup action to the second Allow statement. 错误: logs:CreateLogGroup 的作用是创建日志组,但问题并不是日志组无法创建, 而是日志流 ( Log Stream ) 无法加载。将 logs:CreateLogGroup 移动到第二个语句不会解决问题,因为问题的根本原因是缺少 logs:CreateLogStream 权限。",
       "B": "Add the logs:PutDestination action to the second Allow statement. 错误: logs:PutDestination 的作用是管理日志目标( Log Destination ) ,通常用于跨账户日志传输, 而不是创建或管理日志流。此操作与当前问题无关, 无法解决“error loading Log Streams”问题。",
       "C": "Add the logs:GetLogEvents action to the second Allow statement. 错误: logs:GetLogEvents 的作用是读取日志事件,但问题并不是读取日志事件, 而是日志流无法加载。此操作与当前问题无关, 无法解决“error loading Log Streams”问题。",
       "D": "Allow statement. 错误: logs:CreateLogGroup 的作用是创建日志组,但问题并不是日志组无法创建, 而是日志流 ( Log Stream ) 无法加载。将 logs:CreateLogGroup 移动到第二个语句不会解决问题,因为问题的根本原因是缺少 logs:CreateLogStream 权限。 B. Add the logs:PutDestination action to the second Allow statement. 错误: logs:PutDestination 的作用是管理日志目标( Log Destination ) ,通常用于跨账户日志传输, 而不是创建或管理日志流。此操作与当前问题无关, 无法解决“error loading Log Streams”问题。 C. Add the logs:GetLogEvents action to the second Allow statement. 错误: logs:GetLogEvents 的作用是读取日志事件,但问题并不是读取日志事件, 而是日志流无法加载。此操作与当前问题无关, 无法解决“error loading Log Streams”问题。 D. Add the logs:CreateLogStream action to the second Allow statement. 正确: logs:CreateLogStream 的作用是创建日志流( Log Stream ) ,这是 Lambda 函数在写入日志到 CloudWatch 时所需的权限。当前 IAM 策略缺少 logs:CreateLogStream 权限,导致日志流无法加载,添加此权限可以解决问题。"
@@ -1241,8 +1241,8 @@
       "A": "Stop the instance. Detach the root volume. Generate a new key pair. 正确:停止实例并卸载根卷是恢复访问的必要步骤,因为需要修改根卷上的 authorized_keys 文件。生成新的密钥对是恢复访问的关键步骤,新的公钥将被添加到 authorized_keys 文件中。",
       "B": "Keep the instance running. Detach the root volume. Generate a new key pair. 错误: 无法在实例运行时卸载根卷, AWS 要求实例必须停止才能卸载根卷。",
       "C": "When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new public key. Move the volume back to the original instance. Start the instance. 正确:将卷附加到另一个实例作为数据卷,可以访问文件系统并修改 authorized_keys 文件。使用新的公钥更新 authorized_keys 文件是恢复访问的正确方法。将卷移回原始实例并启动实例是恢复访问的最后步骤。",
-      "D": "from the original instance, attach the volume to another instance as a data volum",
-      "E": "instance. Detach the root volume. Generate a new key pair. 正确:停止实例并卸载根卷是恢复访问的必要步骤,因为需要修改根卷上的 authorized_keys 文件。生成新的密钥对是恢复访问的关键步骤,新的公钥将被添加到 authorized_keys 文件中。 B. Keep the instance running. Detach the root volume. Generate a new key pair. 错误: 无法在实例运行时卸载根卷, AWS 要求实例必须停止才能卸载根卷。 C. When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new public key. Move the volume back to the original instance. Start the instance. 正确:将卷附加到另一个实例作为数据卷,可以访问文件系统并修改 authorized_keys 文件。使用新的公钥更新 authorized_keys 文件是恢复访问的正确方法。将卷移回原始实例并启动实例是恢复访问的最后步骤。 D. When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new private key. Move the volume back to the original instance. Start the instance. 错误: authorized_keys 文件中存储的是公钥, 而不是私钥。修改为私钥是错误的操作。 E. When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new public key. Move the volume back to the original instance that is running. 错误: 无法在实例运行时重新挂载根卷, AWS 要求实例必须停止才能挂载根卷。"
+      "D": "When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new private key. Move the volume back to the original instance. Start the instance. 错误: authorized_keys 文件中存储的是公钥, 而不是私钥。修改为私钥是错误的操作。",
+      "E": "When the volume is detached from the original instance, attach the volume to another instance as a data volume. Modify the authorized_keys file with a new public key. Move the volume back to the original instance that is running. 错误: 无法在实例运行时重新挂载根卷, AWS 要求实例必须停止才能挂载根卷。"
     }
   },
   {
@@ -1258,8 +1258,8 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "、 AWS Systems Manager Automation 等 ) 的集成能力 ,以及自动化处理安全发现的能力。重点在于如何实现自动化的安全发现修复。 2. 选项分析 A. 正确 :Amazon EventBridge 可以订阅 Security Hub 的发现事件,并触发 AWS Lambda 函数来执行自动化修复操作。这种方式是 AWS 推荐的最佳实践之一 ,能够实现实时响应和自动化处理。",
-      "B": "与其他 AWS 服务 ( 如 Amazon EventBridge 、 AWS Lambda 、 AWS Systems Manager Automation 等 ) 的集成能力 ,以及自动化处理安全发现的能力。重点在于如何实现自动化的安全发现修复。 2. 选项分析 A. 正确 :Amazon EventBridge 可以订阅 Security Hub 的发现事件,并触发 AWS Lambda 函数来执行自动化修复操作。这种方式是 AWS 推荐的最佳实践之一 ,能够实现实时响应和自动化处理。 B. 错误 : 虽然 Security Hub 支持自定义操作,但自定义操作通常是手动触发的, 而不是自动化的。这不符合题目要求的“自动修复”需求。",
+      "A": "正确 :Amazon EventBridge 可以订阅 Security Hub 的发现事件,并触发 AWS Lambda 函数来执行自动化修复操作。这种方式是 AWS 推荐的最佳实践之一 ,能够实现实时响应和自动化处理。",
+      "B": "错误 : 虽然 Security Hub 支持自定义操作,但自定义操作通常是手动触发的, 而不是自动化的。这不符合题目要求的“自动修复”需求。",
       "C": "错误 : 与选项 B 类似, 自定义操作需要手动触发, 无法实现自动化修复。这不符合题目要求。",
       "D": "错误 :AWS Config 规则主要用于资源合规性检查, 而不是直接处理 Security Hub 的发现。虽然可以间接实现修复,但这不是最直接的解决方案。"
     }
@@ -1340,9 +1340,9 @@
     "explanations": {
       "A": "The principal's identity-based policy grants access to put objects into the S3 bucket with no conditions. 正确。基于身份的策略可以直接授予权限, 而不依赖资源策略的条件。如果主体的身份策略中明确允许 PutObject 操作,并且没有附加条件,那么即使资源策略中有条件限制,主体仍然可以执行操作。",
       "B": "The principal's identity-based policy overrides the condition because the identity-based policy contains an explicit allow. 错误。基于身份的策略不会“覆盖”资源策略的条件, 而是两者共同作用。如果资源策略中有明确的拒绝( explicit deny ) ,则拒绝优先。",
-      "C": "( Account-Based Access Control )的实现与条件匹配。选项分析 A. The principal's identity-based policy grants access to put objects into the S3 bucket with no conditions. 正确。基于身份的策略可以直接授予权限, 而不依赖资源策略的条件。如果主体的身份策略中明确允许 PutObject 操作,并且没有附加条件,那么即使资源策略中有条件限制,主体仍然可以执行操作。 B. The principal's identity-based policy overrides the condition because the identity-base",
-      "D": "Policy )与资源策略( Resource-based Policy )的交互。 ABAC ( Account-Based Access Control )的实现与条件匹配。选项分析 A. The principal's identity-based policy grants access to put objects into the S3 bucket with no conditions. 正确。基于身份的策略可以直接授予权限, 而不依赖资源策略的条件。如果主体的身份策略中明确允许 PutObject 操作,并且没有附加条件,那么即使资源策略中有条件限制,主体仍然可以执行操作。 B. The principal's identity-based policy overrides the condition because the identity-based policy contains an explicit allow. 错误。基于身份的策略不会“覆盖”资源策略的条件, 而是两者共同作用。如果资源策略中有明确的拒绝( explicit deny ) ,则拒绝优先。 C. The S3 bucket's resource policy does not deny access to put objects. 正确。如果资源策略没有明确拒绝 PutObject 操作,那么基于身份的策略中的允许( allow )将生效。这是导致操作成功的一个关键因素。 D. The S3 bucket's resource policy cannot allow actions to the principal. 错误。资源策略可以允许或拒绝主体执行操作,具体取决于策略的配置。",
-      "E": "principal's identity-based policy grants access to put objects into the S3 bucket with no conditions. 正确。基于身份的策略可以直接授予权限, 而不依赖资源策略的条件。如果主体的身份策略中明确允许 PutObject 操作,并且没有附加条件,那么即使资源策略中有条件限制,主体仍然可以执行操作。 B. The principal's identity-based policy overrides the condition because the identity-based policy contains an explicit allow. 错误。基于身份的策略不会“覆盖”资源策略的条件, 而是两者共同作用。如果资源策略中有明确的拒绝( explicit deny ) ,则拒绝优先。 C. The S3 bucket's resource policy does not deny access to put objects. 正确。如果资源策略没有明确拒绝 PutObject 操作,那么基于身份的策略中的允许( allow )将生效。这是导致操作成功的一个关键因素。 D. The S3 bucket's resource policy cannot allow actions to the principal. 错误。资源策略可以允许或拒绝主体执行操作,具体取决于策略的配置。 E. The bucket policy does not apply to principals in the same zone of trust. 错误。 S3 存储桶策略适用于所有主体, 无论是否在同一信任区域内。"
+      "C": "The S3 bucket's resource policy does not deny access to put objects. 正确。如果资源策略没有明确拒绝 PutObject 操作,那么基于身份的策略中的允许( allow )将生效。这是导致操作成功的一个关键因素。",
+      "D": "The S3 bucket's resource policy cannot allow actions to the principal. 错误。资源策略可以允许或拒绝主体执行操作,具体取决于策略的配置。",
+      "E": "The bucket policy does not apply to principals in the same zone of trust. 错误。 S3 存储桶策略适用于所有主体, 无论是否在同一信任区域内。"
     }
   },
   {
@@ -1359,9 +1359,9 @@
     "answer": "A",
     "explanations": {
       "A": "Modify the AWS WAF web ACL with an IP set match rule statement to deny incoming requests from the IP address range. 正确。 AWS WAF 支持 IP set match rule ,可以直接定义一个 IP 地址范围并设置为拒绝规则。这是最直接、最有效的方法来阻止特定 IP 地址范围的访问。",
-      "B": "Application Firewall )的功能和配置,特别是如何使用 IP set match rule 来阻止特定 IP 地址范围的访问。同时涉及安全组的功能和限制,以及 AWS WAF 的其他规则类型(如 rate-based rule 和 regex match conditions ) 。选项分析 A. Modify the AWS WAF web ACL with an IP set match rule statement to deny incoming requests from the IP address range. 正确。 AWS WAF 支持 IP set match rule ,可以直接定义一个 IP 地址范围并设置为拒绝规则。这是最直接、最有效的方法来阻止特定 IP 地址范围的访问。 B. Add a rule to all security groups to deny the incoming requests from the IP address range. 错误。安全组不支持“拒绝”规则,只能允许或拒绝流量。安全组的规则是基于允许列表的,因此无法通过安全组直接阻止特定 IP 地址范围的访问。",
+      "B": "Add a rule to all security groups to deny the incoming requests from the IP address range. 错误。安全组不支持“拒绝”规则,只能允许或拒绝流量。安全组的规则是基于允许列表的,因此无法通过安全组直接阻止特定 IP 地址范围的访问。",
       "C": "Modify the AWS WAF web ACL with a rate-based rule statement to deny the incoming requests from the IP address range. 错误。 Rate-based rule 是用于限制请求速率的规则,适用于防止 DDoS 攻击或异常流量,但不适合直接阻止特定 IP 地址范围的访问。",
-      "D": "rule 和 regex match conditions ) 。选项分析 A. Modify the AWS WAF web ACL with an IP set match rule statement to deny incoming requests from the IP address range. 正确。 AWS WAF 支持 IP set match rule ,可以直接定义一个 IP 地址范围并设置为拒绝规则。这是最直接、最有效的方法来阻止特定 IP 地址范围的访问。 B. Add a rule to all security groups to deny the incoming requests from the IP address range. 错误。安全组不支持“拒绝”规则,只能允许或拒绝流量。安全组的规则是基于允许列表的,因此无法通过安全组直接阻止特定 IP 地址范围的访问。 C. Modify the AWS WAF web ACL with a rate-based rule statement to deny the incoming requests from the IP address range. 错误。 Rate-based rule 是用于限制请求速率的规则,适用于防止 DDoS 攻击或异常流量,但不适合直接阻止特定 IP 地址范围的访问。 D. Configure the AWS WAF web ACL with regex match conditions. Specify a pattern set to deny the incoming requests based on the match condition. 错误。 Regex match conditions 是用于匹配请求内容(如 URL 、头信息等) 的规则, 无法直接用于匹配和阻止 IP 地址范围。"
+      "D": "Configure the AWS WAF web ACL with regex match conditions. Specify a pattern set to deny the incoming requests based on the match condition. 错误。 Regex match conditions 是用于匹配请求内容(如 URL 、头信息等) 的规则, 无法直接用于匹配和阻止 IP 地址范围。"
     }
   },
   {
@@ -1386,8 +1386,8 @@
       "A": "The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常用的安全机制。如果外部 ID 缺失或不正确,审计员将无法成功假设角色。",
       "B": "The auditor is using the incorrect password. 错误。 IAM 角色的假设不涉及密码, 而是基于临时凭证和权限策略。",
       "C": "The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果目标账户中的 IAM 角色未授予审计员 sts:AssumeRole 权限,审计员将无法假设该角色。",
-      "D": "的使用。权限策略中对 sts:AssumeRole 的授权。角色 ARN 的正确性及其在跨账户访问中的重要性。选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常用的安全机制。如果外部 ID 缺失或不正确,审计员将无法成功假设角色。 B. The auditor is using the incorrect password. 错误。 IAM 角色的假设不涉及密码, 而是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果目标账户中的 IAM 角色未授予审计员 sts:AssumeRole 权限,审计员将无法假设该角色。 D. The Amazon EC2 role used by the auditor must be set to the destination account rol",
-      "E": "的授权。角色 ARN 的正确性及其在跨账户访问中的重要性。选项分析 A. The external ID used by the auditor is missing or incorrect. 正确。外部 ID 是跨账户访问中常用的安全机制。如果外部 ID 缺失或不正确,审计员将无法成功假设角色。 B. The auditor is using the incorrect password. 错误。 IAM 角色的假设不涉及密码, 而是基于临时凭证和权限策略。 C. The auditor has not been granted sts:AssumeRole for the role in the destination account. 正确。如果目标账户中的 IAM 角色未授予审计员 sts:AssumeRole 权限,审计员将无法假设该角色。 D. The Amazon EC2 role used by the auditor must be set to the destination account role. 错误。 EC2 角色与跨账户访问无关,审计员假设角色时不需要使用 EC2 角色。 E. The secret key used by the auditor is missing or incorrect. 错误。 IAM 角色的假设不直接依赖于访问密钥, 而是基于临时凭证和权限策略。",
+      "D": "The Amazon EC2 role used by the auditor must be set to the destination account role. 错误。 EC2 角色与跨账户访问无关,审计员假设角色时不需要使用 EC2 角色。",
+      "E": "The secret key used by the auditor is missing or incorrect. 错误。 IAM 角色的假设不直接依赖于访问密钥, 而是基于临时凭证和权限策略。",
       "F": "The role ARN used by the auditor is missing or incorrect. 正确。如果审计员使用的角色 ARN 缺失或不正确,审计员将无法定位目标角色并假设它。"
     }
   },
@@ -1431,10 +1431,10 @@
     "explanations": {
       "A": "Ensure that the EC2 instance profile that is attached to the EC2 instances has permissions to create log streams and write logs. 正确。 EC2 实例需要通过 IAM 角色拥有足够的权限来创建日志流并写入日志到 CloudWatch Logs 。如果没有正确的权限, 日志无法上传。",
       "B": "Create a metric filter on the logs so that they can be viewed in the AWS Management Console. 错误。创建 metric filter 是用于分析日志数据的操作,与日志是否成功上传到 CloudWatch 无关。",
-      "C": "Endpoint 的使用与策略配置。 CloudWatch Agent 的配置与日志收集。选项分析 A. Ensure that the EC2 instance profile that is attached to the EC2 instances has permissions to create log streams and write logs. 正确。 EC2 实例需要通过 IAM 角色拥有足够的权限来创建日志流并写入日志到 CloudWatch Logs 。如果没有正确的权限, 日志无法上传。 B. Create a metric filter on the logs so that they can be viewed in the AWS Management Console. 错误。创建 metric filter 是用于分析日志数据的操作,与日志是否成功上传到 CloudWatch 无关。 C. Check the CloudWatch agent configuration file on each EC2 instance to make sure that the CloudWatch agent is collecting the proper log files. 正确。如果 CloudWatch Agent 配置文件中未正确指定日志路径或格式, 日志将无法被收集和上传。",
-      "D": "to the EC2 instances has permissions to create log streams and writ",
-      "E": "that the EC2 instance profile that is attached to the EC2 instances has permissions to create log streams and write logs. 正确。 EC2 实例需要通过 IAM 角色拥有足够的权限来创建日志流并写入日志到 CloudWatch Logs 。如果没有正确的权限, 日志无法上传。 B. Create a metric filter on the logs so that they can be viewed in the AWS Management Console. 错误。创建 metric filter 是用于分析日志数据的操作,与日志是否成功上传到 CloudWatch 无关。 C. Check the CloudWatch agent configuration file on each EC2 instance to make sure that the CloudWatch agent is collecting the proper log files. 正确。如果 CloudWatch Agent 配置文件中未正确指定日志路径或格式, 日志将无法被收集和上传。 D. Check the VPC endpoint policies of both VPC endpoints to ensure that the EC2 instances have permissions to use them. 正确。 VPC Endpoint 的策略需要允许 EC2 实例访问 CloudWatch Logs 和 CloudWatch Monitoring 服务。如果策略配置错误, 日志无法上传。 E. Create a NAT gateway in the subnet so that the EC2 instances can communicate with CloudWatch. 错误。题目中明确提到已经创建了 VPC Endpoint 用于与 CloudWatch 服务通信,因此不需要 NAT 网关。",
-      "F": "both VPC endpoints to ensure that the EC2 instances have permissions to use them. 正确。 VPC Endpoint 的策略需要允许 EC2 实例访问 CloudWatch Logs 和 CloudWatch Monitoring 服务。如果策略配置错误, 日志无法上传。 E. Create a NAT gateway in the subnet so that the EC2 instances can communicate with CloudWatch. 错误。题目中明确提到已经创建了 VPC Endpoint 用于与 CloudWatch 服务通信,因此不需要 NAT 网关。 F. Ensure that the security groups allow all the EC2 instances to communicate with each other to aggregate logs before sending. 错误。日志上传到 CloudWatch 是由每个实例独立完成的,不需要实例之间的通信。"
+      "C": "Check the CloudWatch agent configuration file on each EC2 instance to make sure that the CloudWatch agent is collecting the proper log files. 正确。如果 CloudWatch Agent 配置文件中未正确指定日志路径或格式, 日志将无法被收集和上传。",
+      "D": "Check the VPC endpoint policies of both VPC endpoints to ensure that the EC2 instances have permissions to use them. 正确。 VPC Endpoint 的策略需要允许 EC2 实例访问 CloudWatch Logs 和 CloudWatch Monitoring 服务。如果策略配置错误, 日志无法上传。",
+      "E": "Create a NAT gateway in the subnet so that the EC2 instances can communicate with CloudWatch. 错误。题目中明确提到已经创建了 VPC Endpoint 用于与 CloudWatch 服务通信,因此不需要 NAT 网关。 F. Ensure that the security groups allow all the EC2 instances to communicate with each other to aggregate logs before sending. 错误。日志上传到 CloudWatch 是由每个实例独立完成的,不需要实例之间的通信。",
+      "F": "确保安全组允许所有 EC2 实例相互通信，然后通过 NAT 网关聚合日志。错误：在 VPC 内已用 CloudWatch agent + Interface Endpoint 直接收集日志，无需让 EC2 实例之间互联或走 NAT gateway，且这样会增大攻击面和成本。"
     }
   },
   {
@@ -1450,10 +1450,10 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "函数的代码签名机制,以及如何防止未经授权的代码部署。选项分析 A. Revoke all versions of the signing profile assigned to the developer. 正确:撤销签名配置文件的所有版本会使得开发人员的代码无法通过 AWS Signer 的验证,从而无法部署到 Lambda 函数。这是直接解决问题的最佳方法,因为签名配置文件是代码签名的核心。",
+      "A": "Revoke all versions of the signing profile assigned to the developer. 正确:撤销签名配置文件的所有版本会使得开发人员的代码无法通过 AWS Signer 的验证,从而无法部署到 Lambda 函数。这是直接解决问题的最佳方法,因为签名配置文件是代码签名的核心。",
       "B": "Examine the developer's IAM roles. Remove all permissions that grant access to Signer. 错误:移除 IAM 权限只会阻止开发人员访问 AWS Signer ,但无法阻止已经签名的代码被部署到 Lambda 函数。此选项无法解决问题的核心 ,即阻止开发人员的代码被部署。",
       "C": "Re-encrypt all source code with a new AWS Key Management Service AWS KMS) key. 错误:重新加密源代码与代码签名无关, 无法阻止开发人员的代码被部署到 Lambda 函数。此选项与题目要求不匹配。",
-      "D": "to the developer. 正确:撤销签名配置文件的所有版本会使得开发人员的代码无法通过 AWS Signer 的验证,从而无法部署到 Lambda 函数。这是直接解决问题的最佳方法,因为签名配置文件是代码签名的核心。 B. Examine the developer's IAM roles. Remove all permissions that grant access to Signer. 错误:移除 IAM 权限只会阻止开发人员访问 AWS Signer ,但无法阻止已经签名的代码被部署到 Lambda 函数。此选项无法解决问题的核心 ,即阻止开发人员的代码被部署。 C. Re-encrypt all source code with a new AWS Key Management Service AWS KMS) key. 错误:重新加密源代码与代码签名无关, 无法阻止开发人员的代码被部署到 Lambda 函数。此选项与题目要求不匹配。 D. Use Amazon CodeGuru to profile all the code that the Lambda functions use. 错误: Amazon CodeGuru 是用于代码质量分析和性能优化的工具,与代码签名或阻止代码部署无关。此选项无法解决问题的核心。"
+      "D": "Use Amazon CodeGuru to profile all the code that the Lambda functions use. 错误: Amazon CodeGuru 是用于代码质量分析和性能优化的工具,与代码签名或阻止代码部署无关。此选项无法解决问题的核心。"
     }
   },
   {
@@ -1491,7 +1491,7 @@
       "A": "修改 EventBridge 事件模式,选择 Amazon S3 ,将事件类型设置为 All Events 。错误:虽然选择“所有事件”可能会捕获更多事件,但它会导致生成大量不相关的事件,可能会产生误报。此外,问题明确要求避免生成错误通知,因此此选项不符合要求。",
       "B": "修改 EventBridge 事件模式,选择 Amazon S3 ,将事件类型设置为 Bucket Level Operations 。错误: Bucket Level Operations 仅监控与桶级别相关的操作,例如创建、删除或修改桶, 而不会捕获对象级别的操作 (如 s3 PutObjectAcl ) 。此选项无法解决问题中提到的 s3 PutObjectAcl 事件未触发的问题。",
       "C": "启用 CloudTrail Insights 以识别异常的 API 活动。错误: CloudTrail Insights 用于检测异常的 API 活动,例如突然的流量激增或模式变化,但它不会直接解决问题中提到的 s3 PutObjectAcl 事件未触发的问题。此选项与问题要求无关。",
-      "D": "启用 CloudTrail 监控 S3 bucket 的数据事件,包括读写操作。正确: CloudTrail 默认仅记录管理事件(例如创建或删除资源) , 而数据事件(例如对象级别的操作, 如 s3 PutObjectAcl )需要单独启用。启用数据事件后, s3 PutObjectAcl 操作将被记录,并可以触发 EventBridge 事件。此选项符合问题要求,并避免生成错误通知。 74 英文 A company uses Amazon GuardDuty. The company's security team wants all High severity findings to automatically generate aticket in a third-party ticketing system through email integration.Which solution will meet this requirement? A. Create a verified identity for the third-party ticketing email system in Amazon Simple Email Service Amazon SES . Create an Amazon EventBridge rule that includes an event pattern that matches High severity GuardDuty findings. Specify the SES identity as the target for the EventBridge rule. B. Create an Amazon Simple Notification Service Amazon SNS) topic. Subscribe the third-party ticketing email system to the SNS topic. Create an Amazon EventBridge rule that includes an event pattern that matches High severity GuardDuty findings. Specify the SNS topic as the target for the EventBridge rule. C. Use the GuardDuty CreateFilter API operation to build a filter in GuardDuty to monitor for High severity findings. Export the results of the filter to an Amazon Simple Notification Service Amazon SNS) topic. Subscribe the third-party ticketing email system to the SNS topic. D. Use the GuardDuty CreateFilter API operation to build a filter in GuardDuty to monitor for High severity findings. Create an Amazon Simple Notification Service Amazon SNS) topic. Subscribe the third-party ticketing email system to the SNS topic. Create an Amazon EventBridge rule that includes an event pattern that matches GuardDuty findings that are selected by the filter. Specify the SNS topic as the target for the EventBridge rule. 中文一家公司使用 Amazon GuardDuty 。该公司的安全团队希望所有高严重性发现能够通过电子邮件集成自动在第三方工单系统中生成工单。哪种解决方案可以满足此要求? A. 在 Amazon Simple Email Service Amazon SES 中为第三方工单电子邮件系统创建一个经过验证的身份。创建一个 Amazon EventBridge 规则,其中包含一个与高严重性 GuardDuty 发现匹配的事件模式。将 SES 身份指定为 EventBridge 规则的目标。 B. 创建一个 Amazon Simple Notification Service Amazon SNS 主题。将第三方工单电子邮件系统订阅到 SNS 主题。创建一个 Amazon EventBridge 规则,其中包含一个与高严重性 GuardDuty 发现匹配的事件模式。将 SNS 主题指定为 EventBridge 规则的目标。 C. 使用 GuardDuty CreateFilter API 操作在 GuardDuty 中构建一个过滤器,以监控高严重性发现。将过滤器的结果导出到一个 Amazon Simple Notification Service Amazon SNS 主题。将第三方工单电子邮件系统订阅到 SNS 主题。 D. 使用 GuardDuty CreateFilter API 操作在 GuardDuty 中构建一个过滤器,以监控高严重性发现。创建一个 Amazon Simple Notification Service Amazon SNS 主题。将第三方工单电子邮件系统订阅到 SNS 主题。创建一个 Amazon EventBridge 规则,其中包含一个与过滤器选择的 GuardDuty 发现匹配的事件模式。将 SNS 主题指定为 EventBridge 规则的目标。解答 B 考察的知识点 Amazon GuardDuty 的功能和事件处理机制。 Amazon EventBridge 规则的使用和事件模式匹配。 Amazon SNS 的功能及其与第三方系统的集成。如何通过 AWS 服务实现自动化流程。选项分析 A. Create a verified identity for the third-party ticketing email system in Amazon Simple Email Service Amazon SES ... 分析:虽然 Amazon SES 可以发送电子邮件,但它需要额外的配置来验证身份,并且不直接支持事件模式匹配。相比之下, Amazon SNS 更适合与第三方系统集成。结论:错误。 B. Create an Amazon Simple Notification Service Amazon SNS) topic... 分析:此选项正确地使用了 Amazon SNS 来订阅第三方系统,并通过 Amazon EventBridge 规则匹配高严重性 GuardDuty 发现。 SNS 是处理通知和与外部系统集成的最佳选择。结论:正确。 C. Use the GuardDuty CreateFilter API operation... 分析:虽然 CreateFilter API 可以创建过滤器,但它并不直接支持将过滤器结果导出到 SNS 。此选项未及如何将过滤器与 EventBridge 规则集成,因此流程不完整。结论:错误。 D. Use the GuardDuty CreateFilter API operation... 分析:此选项试图结合 CreateFilter API 和 EventBridge 规则,但 CreateFilter API 的使用在此场景中并非必要。直接使用 EventBridge 规则匹配 GuardDuty 事件更简单有效。结论:错误。"
+      "D": "Use the GuardDuty CreateFilter API operation... 分析:此选项试图结合 CreateFilter API 和 EventBridge 规则,但 CreateFilter API 的使用在此场景中并非必要。直接使用 EventBridge 规则匹配 GuardDuty 事件更简单有效。结论:错误。"
     }
   },
   {
@@ -1516,9 +1516,9 @@
       "A": "Configure server-side encryption with AWS KMS managed encryption keys SSE KMS . 分析:正确。使用 SSE KMS 可以确保日志文件在存储时被加密,从而防止未经授权的访问。这是保护数据的一项重要措施。",
       "B": "Compress log files with secure gzip. 分析:错误。虽然压缩日志文件可以节省存储空间,但它与防止未经授权的访问和篡改无关,也不是 CloudTrail 日志安全性的核心要求。",
       "C": "Create an Amazon EventBridge rule to notify the security team of any modifications on CloudTrail log files. 分析:错误。虽然通知机制可以帮助监控日志文件的修改,但它无法直接防止未经授权的访问或篡改。此选项不是最佳实践的一部分。",
-      "D": "encryption keys SS",
-      "E": "server-side encryption with AWS KMS managed encryption keys SSE KMS . 分析:正确。使用 SSE KMS 可以确保日志文件在存储时被加密,从而防止未经授权的访问。这是保护数据的一项重要措施。 B. Compress log files with secure gzip. 分析:错误。虽然压缩日志文件可以节省存储空间,但它与防止未经授权的访问和篡改无关,也不是 CloudTrail 日志安全性的核心要求。 C. Create an Amazon EventBridge rule to notify the security team of any modifications on CloudTrail log files. 分析:错误。虽然通知机制可以帮助监控日志文件的修改,但它无法直接防止未经授权的访问或篡改。此选项不是最佳实践的一部分。 D. Implement least privilege access to the S3 bucket by configuring a bucket policy. 分析:正确。通过配置存储桶策略并实施最小权限原则,可以限制对日志文件的访问,从而防止未经授权的访问。 E. Configure CloudTrail log file integrity validation. 分析:正确。 CloudTrail 日志文件完整性验证可以检测日志文件是否被篡改,是确保日志文件安全性的重要步骤。",
-      "F": "any modifications on CloudTrail log files. 分析:错误。虽然通知机制可以帮助监控日志文件的修改,但它无法直接防止未经授权的访问或篡改。此选项不是最佳实践的一部分。 D. Implement least privilege access to the S3 bucket by configuring a bucket policy. 分析:正确。通过配置存储桶策略并实施最小权限原则,可以限制对日志文件的访问,从而防止未经授权的访问。 E. Configure CloudTrail log file integrity validation. 分析:正确。 CloudTrail 日志文件完整性验证可以检测日志文件是否被篡改,是确保日志文件安全性的重要步骤。 F. Configure Access Analyzer for S3. 分析:错误。 Access Analyzer for S3 主要用于分析存储桶的访问权限,但它无法直接防止日志文件的篡改或未经授权的访问。"
+      "D": "Implement least privilege access to the S3 bucket by configuring a bucket policy. 分析:正确。通过配置存储桶策略并实施最小权限原则,可以限制对日志文件的访问,从而防止未经授权的访问。",
+      "E": "Configure CloudTrail log file integrity validation. 分析:正确。 CloudTrail 日志文件完整性验证可以检测日志文件是否被篡改,是确保日志文件安全性的重要步骤。 F. Configure Access Analyzer for S3. 分析:错误。 Access Analyzer for S3 主要用于分析存储桶的访问权限,但它无法直接防止日志文件的篡改或未经授权的访问。",
+      "F": "为 CreateFilter API 操作建立一个 Lambda 函数。错误：CreateFilter 是 SES 的事件标记 API，与本题需求“收到经过验证的身份发送的电子邮件通知”流程无关，且自建 Lambda 处理不必要且增加运维负担。"
     }
   },
   {
@@ -1536,7 +1536,7 @@
     "explanations": {
       "A": "使用 CloudFormation 模板和 Fn::ImportValue 函数: 正确性分析:虽然可以通过 CloudFormation 模板导入子网 ID ,但这并不能实现跨账户资源共享。 Fn::ImportValue 函数仅适用于同一账户内的 CloudFormation 栈之间的资源共享。错误原因: 无法满足跨账户访问的需求,因此不符合题目要求。",
       "B": "使用 Transit Gateway : 正确性分析: Transit Gateway 可以实现跨账户网络连接,但它主要用于网络路由和连接, 而不是直接共享子网资源。错误原因:虽然可以通过 Transit Gateway 连接账户,但无法直接满足“共享子网”的需求。此外, Transit Gateway 的设置复杂度较高 ,不适合题目中提到的简单架构需求。",
-      "C": "Peering 、 Transit Gateway 等。安全性要求:确保各账户之间的资源隔离和权限控制。选项分析 A. 使用 CloudFormation 模板和 Fn::ImportValue 函数: 正确性分析:虽然可以通过 CloudFormation 模板导入子网 ID ,但这并不能实现跨账户资源共享。 Fn::ImportValue 函数仅适用于同一账户内的 CloudFormation 栈之间的资源共享。错误原因: 无法满足跨账户访问的需求,因此不符合题目要求。 B. 使用 Transit Gateway : 正确性分析: Transit Gateway 可以实现跨账户网络连接,但它主要用于网络路由和连接, 而不是直接共享子网资源。错误原因:虽然可以通过 Transit Gateway 连接账户,但无法直接满足“共享子网”的需求。此外, Transit Gateway 的设置复杂度较高 ,不适合题目中提到的简单架构需求。 C. 使用 AWS Resource Access Manager AWS RAM : 正确性分析: AWS RAM 允许跨账户共享资源,包括 VPC 子网。通过 RAM 共享的子网 ,成员账户可以直接使用这些子网来启动工作负载,同时保持资源隔离和权限控制。正确原因:完全符合题目要求,包括跨账户资源共享和安全性需求。",
+      "C": "使用 AWS Resource Access Manager AWS RAM : 正确性分析: AWS RAM 允许跨账户共享资源,包括 VPC 子网。通过 RAM 共享的子网 ,成员账户可以直接使用这些子网来启动工作负载,同时保持资源隔离和权限控制。正确原因:完全符合题目要求,包括跨账户资源共享和安全性需求。",
       "D": ",但这并不能实现跨账户资源共享。 Fn::ImportValue 函数仅适用于同一账户内的 CloudFormation 栈之间的资源共享。错误原因: 无法满足跨账户访问的需求,因此不符合题目要求。 B. 使用 Transit Gateway : 正确性分析: Transit Gateway 可以实现跨账户网络连接,但它主要用于网络路由和连接, 而不是直接共享子网资源。错误原因:虽然可以通过 Transit Gateway 连接账户,但无法直接满足“共享子网”的需求。此外, Transit Gateway 的设置复杂度较高 ,不适合题目中提到的简单架构需求。 C. 使用 AWS Resource Access Manager AWS RAM : 正确性分析: AWS RAM 允许跨账户共享资源,包括 VPC 子网。通过 RAM 共享的子网 ,成员账户可以直接使用这些子网来启动工作负载,同时保持资源隔离和权限控制。正确原因:完全符合题目要求,包括跨账户资源共享和安全性需求。 D. 使用 VPC Peering : 正确性分析: VPC Peering 可以实现跨账户网络连接,但它无法直接共享子网资源。成员账户需要额外配置路由表和安全组才能访问子网。错误原因:设置复杂且无法直接满足“共享子网”的需求。此外, VPC Peering 的点对点连接方式不适合多账户架构。 Community vote distribution 社区投票分布 C 100% https://shop542998714.m.taobao.com https://www.goofish.com/personal? userId=2645260430 错误原因:设置复杂且无法直接满足“共享子网”的需求。此外, VPC Peering 的点对点连接方式不适合多账户架构。"
     }
   },
@@ -1556,7 +1556,7 @@
       "A": "Deploy an AWS Config managed rule... 正确: AWS Config 提供了托管规则 access-keys-rotated ,可以直接设置 maxAccessKeyAge 参数为 90 天 , 自动检测未轮换的访问密钥。正确:通过 Amazon EventBridge 规则,可以捕获 AWS Config 的 NON_COMPLIANT 事件,并触发 Amazon SNS 通知。正确:此方案完全基于 AWS 托管服务, 自动化程度高 ,配置简单,符合“最少努力”的要求。",
       "B": "Create a script to export a .csv file... 错误:依赖 AWS Trusted Advisor 检查导出的 .csv 文件,增加了手动脚本开发和维护的复杂性。错误:需要额外配置 Amazon Athena 查询和 S3 事件触发器,步骤繁琐,不符合“最少努力”的要求。",
       "C": "Create a script to download the IAM credentials report... 错误:依赖 IAM 凭证报告,需要开发和维护脚本,增加了复杂性。错误:虽然可以通过 Amazon EventBridge 调度,但仍需手动处理报告数据,不如选项 A 自动化程度高。",
-      "D": "rule... 正确: AWS Config 提供了托管规则 access-keys-rotated ,可以直接设置 maxAccessKeyAge 参数为 90 天 , 自动检测未轮换的访问密钥。正确:通过 Amazon EventBridge 规则,可以捕获 AWS Config 的 NON_COMPLIANT 事件,并触发 Amazon SNS 通知。正确:此方案完全基于 AWS 托管服务, 自动化程度高 ,配置简单,符合“最少努力”的要求。 B. Create a script to export a .csv file... 错误:依赖 AWS Trusted Advisor 检查导出的 .csv 文件,增加了手动脚本开发和维护的复杂性。错误:需要额外配置 Amazon Athena 查询和 S3 事件触发器,步骤繁琐,不符合“最少努力”的要求。 C. Create a script to download the IAM credentials report... 错误:依赖 IAM 凭证报告,需要开发和维护脚本,增加了复杂性。错误:虽然可以通过 Amazon EventBridge 调度,但仍需手动处理报告数据,不如选项 A 自动化程度高。 D. Create an AWS Lambda function that queries the IAM API... 错误:需要开发 Lambda 函数以查询 IAM API 并处理数据,增加了开发和维护成本。错误:虽然可以通过 Amazon EventBridge 调度,但此方案完全依赖自定义代码,不如选项 A 简便。"
+      "D": "Create an AWS Lambda function that queries the IAM API... 错误:需要开发 Lambda 函数以查询 IAM API 并处理数据,增加了开发和维护成本。错误:虽然可以通过 Amazon EventBridge 调度,但此方案完全依赖自定义代码,不如选项 A 简便。"
     }
   },
   {
@@ -1574,8 +1574,8 @@
     "explanations": {
       "A": "Analyze an AWS Identity and Access Management IAM) use report from AWS Trusted Advisor to see when the access key was last used. 错误: AWS Trusted Advisor 的 IAM 使用报告主要用于检查账户的安全配置和最佳实践,但它无法直接提供访问密钥的使用时间。 Trusted Advisor 的功能更偏向于安全建议, 而不是具体的密钥使用分析。",
       "B": "Analyze Amazon CloudWatch Logs for activity by searching for the access key. 错误: CloudWatch Logs 可以记录应用程序和服务的日志,但它无法直接搜索访问密钥的使用情况。此外, CloudWatch Logs 需要事先配置日志记录,且搜索访问密钥的活动可能非常复杂且不可靠。",
-      "C": "Flow Logs 。选项分析 A. Analyze an AWS Identity and Access Management IAM) use report from AWS Truste",
-      "D": "Access Management IAM 、 AWS Trusted Advisor 、 Amazon CloudWatch Logs 和 VPC Flow Logs 。选项分析 A. Analyze an AWS Identity and Access Management IAM) use report from AWS Trusted Advisor to see when the access key was last used. 错误: AWS Trusted Advisor 的 IAM 使用报告主要用于检查账户的安全配置和最佳实践,但它无法直接提供访问密钥的使用时间。 Trusted Advisor 的功能更偏向于安全建议, 而不是具体的密钥使用分析。 B. Analyze Amazon CloudWatch Logs for activity by searching for the access key. 错误: CloudWatch Logs 可以记录应用程序和服务的日志,但它无法直接搜索访问密钥的使用情况。此外, CloudWatch Logs 需要事先配置日志记录,且搜索访问密钥的活动可能非常复杂且不可靠。 C. Analyze VPC flow logs for activity by searching for the access key. 错误: VPC Flow Logs 记录的是网络流量数据, 无法直接关联到访问密钥的使用情况。搜索访问密钥的活动不适用于 VPC Flow Logs ,因为它们记录的是网络层信息, 而不是身份验证或访问密钥的使用。 D. Analyze a credential report in AWS Identity and Access Management IAM) to see when the access key was last used. 正确: IAM 凭证报告提供了账户中所有用户的访问密钥使用情况,包括上次使用时间。这是评估访问密钥泄露影响的最直接和有效的方法,且不需要额外的配置或复杂的搜索。 78 英文 A company plans to create individual child accounts within an existing organization in AWS Organizations for each of its DevOps teams. AWS CloudTrail has been enabled and configured on all accounts to write audit logs to an Amazon S3 bucket in a centralized AWS account. A security engineer needs to ensure that DevOps team members are unable to modify or disable this configuration. How can the security engineer meet these requirements? A. Create an IAM policy that prohibits changes to the specific CloudTrail trail and apply the policy to the AWS account root user. B. Create an S3 bucket policy in the specified destination account for the CloudTrail trail that prohibits configuration changes from the AWS account root user in the source account. C. Create an SCP that prohibits changes to the specific CloudTrail trail and apply the SCP to the appropriate organizational unit or account in Organizations. D.Create an IAM policy that prohibits changes to the specific CloudTrail trail and apply the policy to a new IAM group. Have team members use individual IAM accounts that are members of the new IAM group. 中文一家公司计划在现有的 AWS Organizations 组织中为每个 DevOps 团队创建独立的子账户。 AWS CloudTrail 已在所有账户中启用并配置为将审计日志写入集中式 AWS 账户中的 Amazon S3 存储桶。安全工程师需要确保 DevOps 团队成员无法修改或禁用此配置。安全工程师如何满足这些要求? A. 创建一个 IAM 策略,禁止对特定的 CloudTrail 路径进行更改,并将该策略应用于 AWS 账户的根用户。 B. 在指定的目标账户中为 CloudTrail 路径创建一个 S3 存储桶策略,禁止源账户中的 AWS 账户根用户进行配置更改。 C. 创建一个 SCP ,禁止对特定的 CloudTrail 路径进行更改,并将 SCP 应用于 Organizations 中的适当组织单元或账户。 D. 创建一个 IAM 策略,禁止对特定的 CloudTrail 路径进行更改,并将该策略应用于一个新的 IAM 组。让团队成员使用属于该新 IAM 组的个人 IAM 账户。解答 C 考察的知识点本题主要考察 AWS Organizations 中的服务控制策略( SCP )的使用 ,以及如何通过 SCP 来限制对 AWS 资源的修改权限。同时涉及 CloudTrail 的集中化日志管理和安全性配置。选项分析 A. Create an IAM policy that prohibits changes to the specific CloudTrail trail and apply the policy to the AWS account root user. 错误: IAM 策略无法直接限制账户根用户的权限,因为根用户拥有所有权限, IAM 策略无法覆盖或限制根用户的操作。 B. Create an S3 bucket policy in the specified destination account for the CloudTrail trail that prohibits configuration changes from the AWS account root user in the source account. 错误: S3 存储桶策略仅用于控制对存储桶的访问权限, 无法直接限制 CloudTrail 的配置更改。此外,存储桶策略无法限制源账户的根用户对 CloudTrail 的操作。 C. Create an SCP that prohibits changes to the specific CloudTrail trail and apply the SCP to the appropriate organizational unit or account in Organizations. 正确: SCP (服务控制策略)是 AWS Organizations 中的一种策略,可以限制组织内账户的权限,包括根用户的权限。通过 SCP ,可以禁止对 CloudTrail 的修改操作,从而满足题目要求。 D. Create an IAM policy that prohibits changes to the specific CloudTrail trail and apply the policy to a new IAM group. Have team members use individual IAM accounts that are members of the new IAM group. 错误:虽然 IAM 策略可以限制 IAM 用户的权限,但无法限制账户根用户的权限。此外,题目要求是确保 DevOps 团队成员无法修改 CloudTrail 配置, 而不是仅限制 IAM 用户。"
+      "C": "Create an SCP that prohibits changes to the specific CloudTrail trail and apply the SCP to the appropriate organizational unit or account in Organizations. D.Create an IAM policy that prohibits changes to the specific CloudTrail trail and apply the policy to a new IAM group. Have team members use individual IAM accounts that are members of the new IAM group. 中文一家公司计划在现有的 AWS Organizations 组织中为每个 DevOps 团队创建独立的子账户。 AWS CloudTrail 已在所有账户中启用并配置为将审计日志写入集中式 AWS 账户中的 Amazon S3 存储桶。安全工程师需要确保 DevOps 团队成员无法修改或禁用此配置。安全工程师如何满足这些要求?",
+      "D": "Analyze a credential report in AWS Identity and Access Management IAM) to see when the access key was last used. 正确: IAM 凭证报告提供了账户中所有用户的访问密钥使用情况,包括上次使用时间。这是评估访问密钥泄露影响的最直接和有效的方法,且不需要额外的配置或复杂的搜索。 78 英文 A company plans to create individual child accounts within an existing organization in AWS Organizations for each of its DevOps teams. AWS CloudTrail has been enabled and configured on all accounts to write audit logs to an Amazon S3 bucket in a centralized AWS account. A security engineer needs to ensure that DevOps team members are unable to modify or disable this configuration. How can the security engineer meet these requirements?"
     }
   },
   {
@@ -1592,9 +1592,9 @@
     "answer": "A",
     "explanations": {
       "A": "正确: ALB 支持身份验证功能,可以通过 Amazon Cognito 集成 SAML 身份提供者(如 ADFS ) 。这种方法无需修改应用程序代码,只需配置 ALB 和 Cognito 即可实现员工身份验证。符合题目要求:员工可以通过 ADFS 进行身份验证,并通过 ALB 访问应用程序。",
-      "B": "的身份验证功能。如何在不修改应用程序的情况下实现安全访问控制。与 ADFS 集成的身份验证机制。选项分析 A. 正确: ALB 支持身份验证功能,可以通过 Amazon Cognito 集成 SAML 身份提供者(如 ADFS ) 。这种方法无需修改应用程序代码,只需配置 ALB 和 Cognito 即可实现员工身份验证。符合题目要求:员工可以通过 ADFS 进行身份验证,并通过 ALB 访问应用程序。 B. 错误: AWS IAM Identity Center AWS SSO 主要用于管理 AWS 账户和服务的访问权限, 而不是直接用于保护 EC2 实例上的应用程序。 IAM 策略无法直接控制 EC2 实例上的应用程序访问权限。",
+      "B": "错误: AWS IAM Identity Center AWS SSO 主要用于管理 AWS 账户和服务的访问权限, 而不是直接用于保护 EC2 实例上的应用程序。 IAM 策略无法直接控制 EC2 实例上的应用程序访问权限。",
       "C": "错误:此选项需要修改应用程序代码以集成 Amazon Cognito SDK ,这与题目要求的“不改变应用程序”相矛盾。此外,题目中并未提到需要使用 Amazon Cognito 身份池, 而是更适合使用用户池与 SAML 集成。",
-      "D": "Balancer ALB 的身份验证功能。如何在不修改应用程序的情况下实现安全访问控制。与 ADFS 集成的身份验证机制。选项分析 A. 正确: ALB 支持身份验证功能,可以通过 Amazon Cognito 集成 SAML 身份提供者(如 ADFS ) 。这种方法无需修改应用程序代码,只需配置 ALB 和 Cognito 即可实现员工身份验证。符合题目要求:员工可以通过 ADFS 进行身份验证,并通过 ALB 访问应用程序。 B. 错误: AWS IAM Identity Center AWS SSO 主要用于管理 AWS 账户和服务的访问权限, 而不是直接用于保护 EC2 实例上的应用程序。 IAM 策略无法直接控制 EC2 实例上的应用程序访问权限。 C. 错误:此选项需要修改应用程序代码以集成 Amazon Cognito SDK ,这与题目要求的“不改变应用程序”相矛盾。此外,题目中并未提到需要使用 Amazon Cognito 身份池, 而是更适合使用用户池与 SAML 集成。 D. 错误:此选项需要开发自定义 Lambda 函数和反向代理,增加了复杂性,并且需要修改应用程序的访问架构。题目要求的是一种简单的解决方案, 而不是复杂的自定义实现。"
+      "D": "错误:此选项需要开发自定义 Lambda 函数和反向代理,增加了复杂性,并且需要修改应用程序的访问架构。题目要求的是一种简单的解决方案, 而不是复杂的自定义实现。"
     }
   },
   {
@@ -1610,7 +1610,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "函数如何安全地访问敏感信息。选项分析 A. 创建一个 CodeCommit 仓库并迁移代码: 错误。虽然使用 AWS KMS 加密 CodeCommit 仓库是安全的,但这并没有解决 API 密钥与源代码分离存储的要求。将代码迁移到安全账户的 CodeCommit 仓库并不能满足“集中存储 API 密钥”的需求。",
+      "A": "创建一个 CodeCommit 仓库并迁移代码: 错误。虽然使用 AWS KMS 加密 CodeCommit 仓库是安全的,但这并没有解决 API 密钥与源代码分离存储的要求。将代码迁移到安全账户的 CodeCommit 仓库并不能满足“集中存储 API 密钥”的需求。",
       "B": "使用 S3 存储 API 密钥并通过预签名 URL 访问: 错误。虽然 S3 支持加密和预签名 URL ,但这种方法增加了复杂性,并且预签名 URL 可能会暴露敏感信息。 Secrets Manager 是更适合存储和管理 API 密钥的服务。",
       "C": "使用 AWS Secrets Manager 存储 API 密钥: 正确。 AWS Secrets Manager 专 ⻔ 设计用于安全存储和管理敏感信息(如 API 密钥) ,并支持与 AWS KMS 集成进行加密。通过 IAM 角色授予 Lambda 函数访问权限,可以安全地检索密钥。",
       "D": "使用加密的环境变量存储 API 密钥: 错误。虽然环境变量可以加密,但它们仍然存储在 Lambda 函数的配置中,与源代码紧密耦合。这不符合“集中存储 API 密钥”的要求。"
@@ -1651,7 +1651,7 @@
       "A": "使用带有 OAuth 或 SAML 的 bearer token 身份验证来管理和共享跨多个 Amazon API Gateway API 的中央 AmazonCognito 用户池。错误: Amazon Cognito 主要用于管理用户池和身份池,适合应用程序用户认证, 而不是跨账户访问的场景。此外,题目要求的是短期凭证, 而不是 ⻓ 期用户池管理。",
       "B": "实施 AWS IAM Identity Center AWS Single Sign-On) ,并使用所选的身份源。通过使用账户分配的权限集,为其他账户中的用户和组授予访问权限。错误: AWS IAM Identity Center ( AWS SSO )适用于集中式身份管理,但题目要求的是短期凭证的解决方案, 而不是 ⻓ 期用户组管理。此外, AWS SSO 的设置和管理复杂度较高 ,不符合“最少的操作努力”要求。",
       "C": "为每个外部账户创建一个唯一的 IAM 角色。创建一个信任策略。使用 AWS Secrets Manager 创建一个随机外部密钥。错误:虽然创建唯一的 IAM 角色是正确的方向,但使用 AWS Secrets Manager 生成随机密钥并不符合题目要求。题目明确要求增强信任以防止凭证共享, 而 Secrets Manager 的随机密钥无法直接实现这一点。",
-      "D": "条件键的使用 ,以及如何防止凭证被多个外部账户共享。选项分析 A. 使用带有 OAuth 或 SAML 的 bearer token 身份验证来管理和共享跨多个 Amazon API Gateway API 的中央 AmazonCognito 用户池。错误: Amazon Cognito 主要用于管理用户池和身份池,适合应用程序用户认证, 而不是跨账户访问的场景。此外,题目要求的是短期凭证, 而不是 ⻓ 期用户池管理。 B. 实施 AWS IAM Identity Center AWS Single Sign-On) ,并使用所选的身份源。通过使用账户分配的权限集,为其他账户中的用户和组授予访问权限。错误: AWS IAM Identity Center ( AWS SSO )适用于集中式身份管理,但题目要求的是短期凭证的解决方案, 而不是 ⻓ 期用户组管理。此外, AWS SSO 的设置和管理复杂度较高 ,不符合“最少的操作努力”要求。 C. 为每个外部账户创建一个唯一的 IAM 角色。创建一个信任策略。使用 AWS Secrets Manager 创建一个随机外部密钥。错误:虽然创建唯一的 IAM 角色是正确的方向,但使用 AWS Secrets Manager 生成随机密钥并不符合题目要求。题目明确要求增强信任以防止凭证共享, 而 Secrets Manager 的随机密钥无法直接实现这一点。 D. 为每个外部账户创建一个唯一的 IAM 角色。创建一个信任策略,其中包含使用 sts:ExternalId 条件键的条件。正确:使用 sts:ExternalId 条件键可以防止凭证被多个外部账户共享,从而增强信任。创建唯一的 IAM 角色并结合信任策略是实现短期凭证的最佳实践。此解决方案操作简单,符合“最少的操作努力”要求。"
+      "D": "为每个外部账户创建一个唯一的 IAM 角色。创建一个信任策略,其中包含使用 sts:ExternalId 条件键的条件。正确:使用 sts:ExternalId 条件键可以防止凭证被多个外部账户共享,从而增强信任。创建唯一的 IAM 角色并结合信任策略是实现短期凭证的最佳实践。此解决方案操作简单,符合“最少的操作努力”要求。"
     }
   },
   {
@@ -1667,7 +1667,7 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "、 Amazon Redshift 、 Amazon S3 等。重点在于选择最具操作效率的解决方案来处理和过滤 AWS WAF 日志。选项分析 A. 指定 Amazon Redshift 作为访问日志的目标位置。部署 Amazon Athena Redshift 连接器。使用 Athena 从 Amazon Redshift 查询数据,并按主机过滤日志。错误: AWS WAF 日志无法直接写入 Amazon Redshift ,必须通过中间步骤(如 S3 或 CloudWatch ) 。错误:使用 Amazon Athena Redshift 连接器增加了复杂性,降低了操作效率。",
+      "A": "指定 Amazon Redshift 作为访问日志的目标位置。部署 Amazon Athena Redshift 连接器。使用 Athena 从 Amazon Redshift 查询数据,并按主机过滤日志。错误: AWS WAF 日志无法直接写入 Amazon Redshift ,必须通过中间步骤(如 S3 或 CloudWatch ) 。错误:使用 Amazon Athena Redshift 连接器增加了复杂性,降低了操作效率。",
       "B": "指定 Amazon CloudWatch 作为访问日志的目标位置。使用 Amazon CloudWatch Logs Insights 设计一个查询以按主机过滤日志。正确: AWS WAF 可以直接将日志写入 Amazon CloudWatch Logs 。正确: CloudWatch Logs Insights 是专 ⻔ 设计用于查询和分析日志的工具, 支持高效的过滤和查询操作。正确:此选项提供了最直接和高效的解决方案,符合题目要求的“最高操作效率”。",
       "C": "指定 Amazon CloudWatch 作为访问日志的目标位置。将 CloudWatch 日志导出到 Amazon S3 桶。使用 Amazon Athena 查询日志并按主机过滤日志。错误:虽然可以通过 CloudWatch 导出日志到 S3 并使用 Athena 查询,但这增加了额外的步骤(导出到 S3 ) ,降低了操作效率。错误:相比直接使用 CloudWatch Logs Insights ,此方法复杂且不符合“最高操作效率”的要求。",
       "D": "指定 Amazon CloudWatch 作为访问日志的目标位置。使用 Amazon Redshift Spectrum 查询日志并按主机过滤日志。错误: AWS WAF 日志无法直接写入 Amazon Redshift Spectrum ,必须通过中间步骤(如 S3 ) 。错误:使用 Redshift Spectrum 查询日志增加了复杂性,降低了操作效率。"
@@ -1693,8 +1693,8 @@
       "A": "Ensure that the following policies are attached to the IAM role that the security engineer is using: EC2InstanceProfileForImageBuilder, EC2InstanceProfileForImageBuilderECRContainerBuilds, and AmazonSSMManagedInstanceCore. 错误:这些策略需要附加到 EC2 实例的实例配置文件, 而不是安全工程师的 IAM 角色。安全工程师的 IAM 角色不直接参与 EC2 Image Builder 的操作。",
       "B": "Ensure that the following policies are attached to the instance profile for the EC2 instance: EC2InstanceProfileForImageBuilder, EC2InstanceProfileForImageBuilderECRContainerBuilds, and AmazonSSMManagedInstanceCore. 正确:这些策略是 EC2 Image Builder 所需的基本权限,必须附加到 EC2 实例的实例配置文件,以便实例能够执行构建任务。",
       "C": "Ensure that the AWSImageBuilderFullAccess policy is attached to the instance profile for the EC2 instance. 错误: AWSImageBuilderFullAccess 是一个宽泛的权限策略,不符合最小权限原则。题目要求遵循最佳实践,因此不推荐使用此策略。",
-      "D": "to the IAM role that the security engineer is using: EC2InstanceProfileForImageBuilder, EC2InstanceProfileForImageBuilderECRContainerBuilds, and AmazonSSMManagedInstanceCor",
-      "E": "Builder 相关的权限。最小权限原则( Least Privilege )的应用。如何正确配置 EC2 实例的实例配置文件( Instance Profile ) 。 Amazon S3 权限的配置,尤其是 s3 PutObject 权限。选项分析 A. Ensure that the following policies are attached to the IAM role that the security engineer is using: EC2InstanceProfileForImageBuilder, EC2InstanceProfileForImageBuilderECRContainerBuilds, and AmazonSSMManagedInstanceCore. 错误:这些策略需要附加到 EC2 实例的实例配置文件, 而不是安全工程师的 IAM 角色。安全工程师的 IAM 角色不直接参与 EC2 Image Builder 的操作。 B. Ensure that the following policies are attached to the instance profile for the EC2 instance: EC2InstanceProfileForImageBuilder, EC2InstanceProfileForImageBuilderECRContainerBuilds, and AmazonSSMManagedInstanceCore. 正确:这些策略是 EC2 Image Builder 所需的基本权限,必须附加到 EC2 实例的实例配置文件,以便实例能够执行构建任务。 C. Ensure that the AWSImageBuilderFullAccess policy is attached to the instance profile for the EC2 instance. 错误: AWSImageBuilderFullAccess 是一个宽泛的权限策略,不符合最小权限原则。题目要求遵循最佳实践,因此不推荐使用此策略。 D. Ensure that the security engineer's IAM role has the s3 PutObject permission for the S3 bucket. 错误: s3 PutObject 权限需要赋予 EC2 实例的实例配置文件, 而不是安全工程师的 IAM 角色。 EC2 实例负责将日志写入 S3 , 而不是安全工程师。 E. Ensure that the instance profile for the EC2 instance has the s3 PutObject permission for the S3 bucket. 正确: EC2 实例需要 s3 PutObject 权限才能将日志写入指定的 S3 存储桶。这是解决 403 错误的关键步骤之一。"
+      "D": "确保安全工程师所使用的 IAM 角色具备 s3:PutObject 权限。错误：题目场景中 EC2 实例使用的是实例配置文件，与安全工程师本人的 IAM 角色无关；要解决 EC2 PutObject 失败，应在 EC2 的实例配置文件/角色上加上 s3:PutObject 权限。",
+      "E": "Ensure that the instance profile for the EC2 instance has the s3 PutObject permission for the S3 bucket. 正确: EC2 实例需要 s3 PutObject 权限才能将日志写入指定的 S3 存储桶。这是解决 403 错误的关键步骤之一。"
     }
   },
   {
@@ -1713,7 +1713,7 @@
       "A": "A customer managed key that uses customer provided key material 正确。客户管理密钥( Customer Managed Key )允许用户提供自己的密钥材料,并通过 AWS KMS 进行管理。用户可以设置密钥材料的生命周期,例如自动过期时间( 90 天) 。这完全符合题目要求。",
       "B": "A customer managed key that uses AWS provided key material 错误。虽然客户管理密钥可以使用 AWS 提供的密钥材料,但 AWS 提供的密钥材料无法设置自动过期时间。因此不符合题目要求。",
       "C": "An AWS managed key 错误。 AWS 管理密钥( AWS Managed Key )是由 AWS 自动创建和管理的, 用户无法控制密钥的生命周期或设置自动过期时间。因此不符合题目要求。",
-      "D": "Key )和客户提供的密钥材料( Customer Provided Key Material, CPKM )的使用场景。还涉及到密钥生命周期管理,包括密钥的自动过期和安全性要求。选项分析 A. A customer managed key that uses customer provided key material 正确。客户管理密钥( Customer Managed Key )允许用户提供自己的密钥材料,并通过 AWS KMS 进行管理。用户可以设置密钥材料的生命周期,例如自动过期时间( 90 天) 。这完全符合题目要求。 B. A customer managed key that uses AWS provided key material 错误。虽然客户管理密钥可以使用 AWS 提供的密钥材料,但 AWS 提供的密钥材料无法设置自动过期时间。因此不符合题目要求。 C. An AWS managed key 错误。 AWS 管理密钥( AWS Managed Key )是由 AWS 自动创建和管理的, 用户无法控制密钥的生命周期或设置自动过期时间。因此不符合题目要求。 D. Operating system encryption that uses GnuPG 错误。 GnuPG 是操作系统级别的加密工具,与 AWS KMS 无关。题目明确要求使用 AWS KMS ,因此此选项不符合要求。"
+      "D": "Operating system encryption that uses GnuPG 错误。 GnuPG 是操作系统级别的加密工具,与 AWS KMS 无关。题目明确要求使用 AWS KMS ,因此此选项不符合要求。"
     }
   },
   {
@@ -1736,8 +1736,8 @@
       "A": "使用 S3 存储加密的凭证,但这种方法需要额外的逻辑来管理加密和解密过程,且没有自动轮换功能。此方法复杂且不符合最佳实践。",
       "B": "错误:虽然 AWS Systems Manager Parameter Store 可以存储加密的凭证,但此选项依赖人工通知和应用程序重启, 无法实现自动轮换和最小化停机时间。",
       "C": "正确: AWS Secrets Manager 提供自动轮换功能,可以安全地管理和轮换数据库凭证,同时最小化应用程序停机时间。",
-      "D": "错误:虽然 AWS Systems Manager Parameter Stor",
-      "E": ")进行凭证的自动轮换和访问控制。如何最小化凭证轮换时的应用程序停机时间。选项分析 A. 使用 S3 存储加密的凭证,但这种方法需要额外的逻辑来管理加密和解密过程,且没有自动轮换功能。此方法复杂且不符合最佳实践。 B. 错误:虽然 AWS Systems Manager Parameter Store 可以存储加密的凭证,但此选项依赖人工通知和应用程序重启, 无法实现自动轮换和最小化停机时间。 C. 正确: AWS Secrets Manager 提供自动轮换功能,可以安全地管理和轮换数据库凭证,同时最小化应用程序停机时间。 D. 错误:虽然 AWS Systems Manager Parameter Store 支持加密存储,但它不支持自动轮换功能, 因此无法满足题目要求的“最小化停机时间”。 E. 正确:此选项结合了应用程序的动态凭证检索和 AWS Secrets Manager 的自动轮换功能,可以在密码轮换时最小化停机时间。"
+      "D": "错误:虽然 AWS Systems Manager Parameter Store 支持加密存储,但它不支持自动轮换功能, 因此无法满足题目要求的“最小化停机时间”。",
+      "E": "正确:此选项结合了应用程序的动态凭证检索和 AWS Secrets Manager 的自动轮换功能,可以在密码轮换时最小化停机时间。"
     }
   },
   {
@@ -1781,8 +1781,8 @@
       "A": "Create a custom authorization service using AWS Lambda. 错误:虽然 AWS Lambda 可以用来创建自定义授权服务,但题目中并未要求自定义授权服务。使用 Amazon Cognito 和 SAML 身份提供商已经可以满足需求,因此不需要额外创建 Lambda 函数。",
       "B": "Configure a SAML identity provider in Amazon Cognito to map attributes to the Amazon Cognito user pool attributes. 正确:这是实现用户认证的关键步骤之一。通过配置 SAML 身份提供商, 用户可以通过现有的目录登录到 AmazonCognito 用户池。",
       "C": "Configure the SAML identity provider to add the Amazon Cognito user pool as a relying party. 正确:将 Amazon Cognito 用户池配置为 SAML 身份提供商的依赖方 ,确保用户可以通过 SAML 身份提供商进行认证。",
-      "D": "the Amazon Cognito user pool as a relying party. 正确:将 Amazon Cognito 用户池配置为 SAML 身份提供商的依赖方 ,确保用户可以通过 SAML 身份提供商进行认证。 D. Configure an Amazon Cognito identity pool to integrate with social login providers. 错误:题目中并未提到需要集成社交登录提供商,且用户已经存在于 SAML 身份提供商中,因此此选项与题目需求无关。",
-      "E": "a custom authorization service using AWS Lambda. 错误:虽然 AWS Lambda 可以用来创建自定义授权服务,但题目中并未要求自定义授权服务。使用 Amazon Cognito 和 SAML 身份提供商已经可以满足需求,因此不需要额外创建 Lambda 函数。 B. Configure a SAML identity provider in Amazon Cognito to map attributes to the Amazon Cognito user pool attributes. 正确:这是实现用户认证的关键步骤之一。通过配置 SAML 身份提供商, 用户可以通过现有的目录登录到 AmazonCognito 用户池。 C. Configure the SAML identity provider to add the Amazon Cognito user pool as a relying party. 正确:将 Amazon Cognito 用户池配置为 SAML 身份提供商的依赖方 ,确保用户可以通过 SAML 身份提供商进行认证。 D. Configure an Amazon Cognito identity pool to integrate with social login providers. 错误:题目中并未提到需要集成社交登录提供商,且用户已经存在于 SAML 身份提供商中,因此此选项与题目需求无关。 E. Update DynamoDB to store the user email addresses and passwords. 错误: 用户认证应该通过 SAML 身份提供商和 Amazon Cognito 完成, 而不是直接存储用户的凭证到 DynamoDB 中,这不符合安全最佳实践。",
+      "D": "Configure an Amazon Cognito identity pool to integrate with social login providers. 错误:题目中并未提到需要集成社交登录提供商,且用户已经存在于 SAML 身份提供商中,因此此选项与题目需求无关。",
+      "E": "Update DynamoDB to store the user email addresses and passwords. 错误: 用户认证应该通过 SAML 身份提供商和 Amazon Cognito 完成, 而不是直接存储用户的凭证到 DynamoDB 中,这不符合安全最佳实践。",
       "F": "Update API Gateway to use a COGNITO_USER_POOLS authorizer. 正确:使用 COGNITO_USER_POOLS 授权器可以确保 API Gateway 能够验证用户的身份,并允许经过认证的用户调用 API 。"
     }
   },
@@ -1808,8 +1808,8 @@
       "A": "分析:正确。 Step Functions 可以用来自动化处理 IAM Access Analyzer 的发现, 并通过 SNS 发送通知。此选项符合题目要求的自动化修复和通知功能。",
       "B": "分析:错误。 AWS Batch 通常用于处理批量数据或计算任务, 而不是实时响应 IAM Access Analyzer 的发现。此选项不适合自动化修复和通知的场景。",
       "C": "分析:正确。 EventBridge 可以实时捕获 IAM Access Analyzer 的发现,并触发 Step Functions 进行自动化处理。此选项符合题目要求。",
-      "D": "Access Management IAM Access Analyzer 来识别和管理过于宽泛的访问权限。自动化响应和修复 IAM 策略中的外部或跨账户访问权限。使用 AWS 服务(如 Step Functions 、 EventBridge 、 SNS )来实现通知和自动化流程。选项分析 A. 分析:正确。 Step Functions 可以用来自动化处理 IAM Access Analyzer 的发现, 并通过 SNS 发送通知。此选项符合题目要求的自动化修复和通知功能。 B. 分析:错误。 AWS Batch 通常用于处理批量数据或计算任务, 而不是实时响应 IAM Access Analyzer 的发现。此选项不适合自动化修复和通知的场景。 C. 分析:正确。 EventBridge 可以实时捕获 IAM Access Analyzer 的发现,并触发 Step Functions 进行自动化处理。此选项符合题目要求。 D. 分析:错误。 CloudWatch 的 Metric Filter 通常用于监控日志或指标, 而不是直接处理 IAM Access Analyzer 的发现。此外, AWS Batch 不适合此场景。",
-      "E": "、 SNS )来实现通知和自动化流程。选项分析 A. 分析:正确。 Step Functions 可以用来自动化处理 IAM Access Analyzer 的发现, 并通过 SNS 发送通知。此选项符合题目要求的自动化修复和通知功能。 B. 分析:错误。 AWS Batch 通常用于处理批量数据或计算任务, 而不是实时响应 IAM Access Analyzer 的发现。此选项不适合自动化修复和通知的场景。 C. 分析:正确。 EventBridge 可以实时捕获 IAM Access Analyzer 的发现,并触发 Step Functions 进行自动化处理。此选项符合题目要求。 D. 分析:错误。 CloudWatch 的 Metric Filter 通常用于监控日志或指标, 而不是直接处理 IAM Access Analyzer 的发现。此外, AWS Batch 不适合此场景。 E. 分析:错误。虽然 SQS 可以用于消息队列,但题目要求的是通知功能, SNS 更适合直接通知安全团队。误。虽然 SQS 可以用于消息队列,但题目要求的是通知功能, SNS 更适合直接通知安全团队。",
+      "D": "分析:错误。 CloudWatch 的 Metric Filter 通常用于监控日志或指标, 而不是直接处理 IAM Access Analyzer 的发现。此外, AWS Batch 不适合此场景。",
+      "E": "分析:错误。虽然 SQS 可以用于消息队列,但题目要求的是通知功能, SNS 更适合直接通知安全团队。误。虽然 SQS 可以用于消息队列,但题目要求的是通知功能, SNS 更适合直接通知安全团队。",
       "F": "分析:正确。 SNS 可以用来发送通知,安全团队可以通过订阅接收相关信息。此选项符合题目要求。"
     }
   },
@@ -1828,8 +1828,8 @@
     "explanations": {
       "A": "In CloudTrail, turn on Insights events on the trail... 分析: CloudTrail Insights 主要用于检测异常活动,例如 API 调用的激增或减少,但它不支持直接基于特定事件名称(如 ConsoleLogin )和错误消息(如 \"Failed authentication\" )进行过滤和告警。因此此选项不符合要求。",
       "B": "Configure CloudTrail to send events to Amazon CloudWatch Logs... 分析:此选项正确地描述了通过 CloudTrail 将事件发送到 CloudWatch Logs ,然后使用 Metric Filter 创建过滤模式(匹配 eventName 为 ConsoleLogin 和 errorMessage 为 \"Failed authentication\" ) ,并设置 CloudWatch Alarm 来实现告警。这是实现需求的最佳实践。",
-      "C": "Filter 的集成事件监控与告警机制的实现选项分析 A. In CloudTrail, turn on Insights events on the trail... 分析: CloudTrail Insights 主要用于检测异常活动,例如 API 调用的激增或减少,但它不支持直接基于特定事件名称(如 ConsoleLogin )和错误消息(如 \"Failed authentication\" )进行过滤和告警。因此此选项不符合要求。 B. Configure CloudTrail to send events to Amazon CloudWatch Logs... 分析:此选项正确地描述了通过 CloudTrail 将事件发送到 CloudWatch Logs ,然后使用 Metric Filter 创建过滤模式(匹配 eventName 为 ConsoleLogin 和 errorMessage 为 \"Failed authentication\" ) ,并设置 CloudWatch Alarm 来实现告警。这是实现需求的最佳实践。 C. Create an Amazon Athena table from the CloudTrail events... 分析:虽然 Athena 可以查询 CloudTrail 事件,但它不适合实时监控和告警。 Athena 查询通常用于分析历史数据, 而不是实时触发告警。因此此选项不符合要求。",
-      "D": "authentication\" )进行过滤和告警。因此此选项不符合要求。 B. Configure CloudTrail to send events to Amazon CloudWatch Logs... 分析:此选项正确地描述了通过 CloudTrail 将事件发送到 CloudWatch Logs ,然后使用 Metric Filter 创建过滤模式(匹配 eventName 为 ConsoleLogin 和 errorMessage 为 \"Failed authentication\" ) ,并设置 CloudWatch Alarm 来实现告警。这是实现需求的最佳实践。 C. Create an Amazon Athena table from the CloudTrail events... 分析:虽然 Athena 可以查询 CloudTrail 事件,但它不适合实时监控和告警。 Athena 查询通常用于分析历史数据, 而不是实时触发告警。因此此选项不符合要求。 D. In AWS Identity and Access Management Access Analyzer... 分析: IAM Access Analyzer 用于分析权限和访问路径, 而不是监控登录失败事件。此选项与题目要求无关,因此不正确。"
+      "C": "Create an Amazon Athena table from the CloudTrail events... 分析:虽然 Athena 可以查询 CloudTrail 事件,但它不适合实时监控和告警。 Athena 查询通常用于分析历史数据, 而不是实时触发告警。因此此选项不符合要求。",
+      "D": "In AWS Identity and Access Management Access Analyzer... 分析: IAM Access Analyzer 用于分析权限和访问路径, 而不是监控登录失败事件。此选项与题目要求无关,因此不正确。"
     }
   },
   {
@@ -1852,8 +1852,8 @@
       "A": "Turn on VPC Flow Logs for all VPCs in the account. VPC Flow Logs 可以提供网络流量的详细信息,但它仅限于 VPC 级别的流量监控, 无法直接检测到账户级别的威胁。启用所有 VPC 的 Flow Logs 可能会产生较高的成本,且需要额外的工具来分析日志数据。因此,这个选项虽然有助于监控,但不是最具成本效益的解决方案。",
       "B": "Activate Amazon GuardDuty across all AWS Regions. Amazon GuardDuty 是一种托管威胁检测服务,可以在账户级别检测恶意活动和异常行为。它支持跨区域部署,提供全面的安全监控,且成本相对较低。这是一个非常有效的解决方案,符合题目要求。",
       "C": "Flow Logs for all VPCs in the account. VPC Flow Logs 可以提供网络流量的详细信息,但它仅限于 VPC 级别的流量监控, 无法直接检测到账户级别的威胁。启用所有 VPC 的 Flow Logs 可能会产生较高的成本,且需要额外的工具来分析日志数据。因此,这个选项虽然有助于监控,但不是最具成本效益的解决方案。 B. Activate Amazon GuardDuty across all AWS Regions. Amazon GuardDuty 是一种托管威胁检测服务,可以在账户级别检测恶意活动和异常行为。它支持跨区域部署,提供全面的安全监控,且成本相对较低。这是一个非常有效的解决方案,符合题目要求。 C. Activate Amazon Detective across all AWS Regions. Amazon Detective 用于调查和分析安全事件,但它的主要功能是事件分析, 而不是实时检测。激活 Detective 会增加成本,且不直接满足题目中“检测可疑活动”的要求。因此,这个选项不符合题目要求。",
-      "D": "Create an Amazon Simple Notification Servic",
-      "E": "等服务的功能和应用场景。重点关注如何在多个 AWS 区域中实现成本效益的安全监控和事件响应。选项分析 A. Turn on VPC Flow Logs for all VPCs in the account. VPC Flow Logs 可以提供网络流量的详细信息,但它仅限于 VPC 级别的流量监控, 无法直接检测到账户级别的威胁。启用所有 VPC 的 Flow Logs 可能会产生较高的成本,且需要额外的工具来分析日志数据。因此,这个选项虽然有助于监控,但不是最具成本效益的解决方案。 B. Activate Amazon GuardDuty across all AWS Regions. Amazon GuardDuty 是一种托管威胁检测服务,可以在账户级别检测恶意活动和异常行为。它支持跨区域部署,提供全面的安全监控,且成本相对较低。这是一个非常有效的解决方案,符合题目要求。 C. Activate Amazon Detective across all AWS Regions. Amazon Detective 用于调查和分析安全事件,但它的主要功能是事件分析, 而不是实时检测。激活 Detective 会增加成本,且不直接满足题目中“检测可疑活动”的要求。因此,这个选项不符合题目要求。 D. Create an Amazon Simple Notification Service Amazon SNS) topic. Create an Amazon EventBridge rule that responds to findings and publishes the findings to the SNS topic. Amazon SNS 可以用来发送通知, 而 EventBridge 可以用来响应 GuardDuty 的发现并触发通知。这个组合可以实现事件响应的自动化,且成本较低。这是一个有效的解决方案,符合题目要求。 E. Create an AWS Lambda function. Create an Amazon EventBridge rule that invokes the Lambda function to publish findings to Amazon Simple Email Service Amazon SES . 使用 Lambda 和 SES 可以实现事件通知,但相比 SNS , SES 的设置和管理复杂度更高。此外,这种方法可能会增加额外的成本,不如 SNS 直接和高效。因此,这个选项不是最具成本效益的解决方案。"
+      "D": "Create an Amazon Simple Notification Service Amazon SNS) topic. Create an Amazon EventBridge rule that responds to findings and publishes the findings to the SNS topic. Amazon SNS 可以用来发送通知, 而 EventBridge 可以用来响应 GuardDuty 的发现并触发通知。这个组合可以实现事件响应的自动化,且成本较低。这是一个有效的解决方案,符合题目要求。",
+      "E": "Create an AWS Lambda function. Create an Amazon EventBridge rule that invokes the Lambda function to publish findings to Amazon Simple Email Service Amazon SES . 使用 Lambda 和 SES 可以实现事件通知,但相比 SNS , SES 的设置和管理复杂度更高。此外,这种方法可能会增加额外的成本,不如 SNS 直接和高效。因此,这个选项不是最具成本效益的解决方案。"
     }
   },
   {
@@ -1895,7 +1895,7 @@
     "explanations": {
       "A": "修改与 EC2 实例关联的安全组,使其出站规则与入站规则一致。分析:安全组是状态性的,出站流量会自动允许响应入站流量。因此,修改安全组的出站规则并不会解决问题。此选项 u 错误。",
       "B": "修改与 CIDR 范围关联的网络 ACL ,以允许出站流量到临时端口。分析: 网络 ACL 是无状态的,需要显式允许入站和出站流量。临时端口 (通常范围为 1024 65535 ) 用于响应入站请求。如果网络 ACL 未允许出站流量到临时端口 ,外部用户无法接收到服务器的响应。此选项正确。",
-      "C": "网络配置,包括安全组和网络 ACL 的作用与区别。网络 ACL 的双向规则设置( 入站和出站规则) 。临时端口 ( Ephemeral Ports )的作用及其在出站流量中的重要性。选项分析 A. 修改与 EC2 实例关联的安全组,使其出站规则与入站规则一致。分析:安全组是状态性的,出站流量会自动允许响应入站流量。因此,修改安全组的出站规则并不会解决问题。此选项 u 错误。 B. 修改与 CIDR 范围关联的网络 ACL ,以允许出站流量到临时端口。分析: 网络 ACL 是无状态的,需要显式允许入站和出站流量。临时端口 (通常范围为 1024 65535 ) 用于响应入站请求。如果网络 ACL 未允许出站流量到临时端口 ,外部用户无法接收到服务器的响应。此选项正确。 C. 修改互联网网关上的入站规则以允许所需的端口。分析:互联网网关本身不具有入站规则的设置功能。流量控制由安全组和网络 ACL 负责。此选项错误。",
+      "C": "修改互联网网关上的入站规则以允许所需的端口。分析:互联网网关本身不具有入站规则的设置功能。流量控制由安全组和网络 ACL 负责。此选项错误。",
       "D": "修改与 CIDR 范围关联的网络 ACL ,使其出站规则与入站规则一致。分析:虽然网络 ACL 需要显式设置出站规则,但简单地使出站规则与入站规则一致并不能解决问题。需要明确允许出站流量到临时端口。此选项错误。"
     }
   },
@@ -1914,8 +1914,8 @@
     "explanations": {
       "A": "Turn on AWS Trusted Advisor. Configure security notifications as webhooks in the preferences section of the CI/CD pipeline. 错误: AWS Trusted Advisor 主要用于提供账户级别的建议和优化,并不直接支持“Policy-as-Code”功能,也无法在 CI/CD 流程中验证 CloudFormation 模板的安全性。",
       "B": "Turn on AWS Config. Use the prebuilt rules or customized rules. Subscribe tile CI/CD pipeline to an Amazon Simple Notification Service Amazon SNS) topic that receives notifications from AWS Config. 错误:虽然 AWS Config 可以监控资源是否符合预定义规则,但它是针对运行时资源的合规性检查, 而不是在 CI/CD 流程中对 CloudFormation 模板进行验证。",
-      "C": "that receives notifications from AWS Config. 错误:虽然 AWS Config 可以监控资源是否符合预定义规则,但它是针对运行时资源的合规性检查, 而不是在 CI/CD 流程中对 CloudFormation 模板进行验证。 C. Create rule sets in AWS CloudFormation Guar",
-      "D": "流程中验证基础设施代码是否符合安全策略。涉及的服务包括 AWS CloudFormation Guard 、 AWS Config 、 AWS Trusted Advisor 和 Service Control Policies SCPs 。选项分析 A. Turn on AWS Trusted Advisor. Configure security notifications as webhooks in the preferences section of the CI/CD pipeline. 错误: AWS Trusted Advisor 主要用于提供账户级别的建议和优化,并不直接支持“Policy-as-Code”功能,也无法在 CI/CD 流程中验证 CloudFormation 模板的安全性。 B. Turn on AWS Config. Use the prebuilt rules or customized rules. Subscribe tile CI/CD pipeline to an Amazon Simple Notification Service Amazon SNS) topic that receives notifications from AWS Config. 错误:虽然 AWS Config 可以监控资源是否符合预定义规则,但它是针对运行时资源的合规性检查, 而不是在 CI/CD 流程中对 CloudFormation 模板进行验证。 C. Create rule sets in AWS CloudFormation Guard. Run validation checks for CloudFormation templates as a phase of the CI/CD process. 正确: AWS CloudFormation Guard 是专 ⻔ 设计用于“Policy-as-Code”的工具,可以在 CI/CD 流程中验证 CloudFormation 模板是否符合安全策略。 D. Create rule sets as SCPs. Integrate the SCPs as a part of validation control in a phase of the CI/CD process. 错误: SCPs ( Service Control Policies ) 用于管理组织中的账户权限, 无法直接用于验证 CloudFormation 模板的安全性。"
+      "C": "Create rule sets in AWS CloudFormation Guard. Run validation checks for CloudFormation templates as a phase of the CI/CD process. 正确: AWS CloudFormation Guard 是专 ⻔ 设计用于“Policy-as-Code”的工具,可以在 CI/CD 流程中验证 CloudFormation 模板是否符合安全策略。",
+      "D": "Create rule sets as SCPs. Integrate the SCPs as a part of validation control in a phase of the CI/CD process. 错误: SCPs ( Service Control Policies ) 用于管理组织中的账户权限, 无法直接用于验证 CloudFormation 模板的安全性。"
     }
   },
   {
@@ -1931,10 +1931,10 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "函数与 VPC 内资源的通信选项分析 A. Add an egress-only internet gateway to the VPC. Allow only the Lambda function's subnet to route traffic through the egress-only internet gateway. 错误: Egress-only internet gateway 仅适用于 IPv6 流量, 而题目未提到使用 IPv6 。即使使用 IPv6 , 这种方法仍然会将流量发送到互联网 ,违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。",
-      "B": "Add a NAT gateway to the VP",
-      "C": "网络配置与流量管理 AWS Secrets Manager 的接口端点使用 Lambda 函数与 VPC 内资源的通信选项分析 A. Add an egress-only internet gateway to the VPC. Allow only the Lambda function's subnet to route traffic through the egress-only internet gateway. 错误: Egress-only internet gateway 仅适用于 IPv6 流量, 而题目未提到使用 IPv6 。即使使用 IPv6 , 这种方法仍然会将流量发送到互联网 ,违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。 B. Add a NAT gateway to the VPC. Configure only the Lambda function's subnet with a default route through the NAT gateway. 错误:虽然 NAT 网关可以让私有子网访问公共 AWS 服务,但它需要通过互联网访问 AWS 服务,这同样违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。 C. Configure a VPC peering connection to the default VPC for Secrets Manager. Configure the Lambda function's subnet to use the peering connection for routes. 错误: AWS Secrets Manager 是一个托管服务,默认情况下不运行在用户的 VPC 中,因此无法通过 VPC 对等连接直接访问 Secrets Manager 。",
-      "D": "an egress-only internet gateway to the VPC. Allow only the Lambda function's subnet to route traffic through the egress-only internet gateway. 错误: Egress-only internet gateway 仅适用于 IPv6 流量, 而题目未提到使用 IPv6 。即使使用 IPv6 , 这种方法仍然会将流量发送到互联网 ,违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。 B. Add a NAT gateway to the VPC. Configure only the Lambda function's subnet with a default route through the NAT gateway. 错误:虽然 NAT 网关可以让私有子网访问公共 AWS 服务,但它需要通过互联网访问 AWS 服务,这同样违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。 C. Configure a VPC peering connection to the default VPC for Secrets Manager. Configure the Lambda function's subnet to use the peering connection for routes. 错误: AWS Secrets Manager 是一个托管服务,默认情况下不运行在用户的 VPC 中,因此无法通过 VPC 对等连接直接访问 Secrets Manager 。 D. Configure a Secrets Manager interface VPC endpoint. Include the Lambda function's private subnet during the configuration process. 正确:通过配置 Secrets Manager 的接口 VPC 端点, Lambda 函数可以在 VPC 内直接与 Secrets Manager 通信, 而无需通过互联网。这符合题目中“VPC 必须不通过互联网发送或接收流量”的要求。"
+      "A": "Add an egress-only internet gateway to the VPC. Allow only the Lambda function's subnet to route traffic through the egress-only internet gateway. 错误: Egress-only internet gateway 仅适用于 IPv6 流量, 而题目未提到使用 IPv6 。即使使用 IPv6 , 这种方法仍然会将流量发送到互联网 ,违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。",
+      "B": "Add a NAT gateway to the VPC. Configure only the Lambda function's subnet with a default route through the NAT gateway. 错误:虽然 NAT 网关可以让私有子网访问公共 AWS 服务,但它需要通过互联网访问 AWS 服务,这同样违反了题目中“VPC 必须不通过互联网发送或接收流量”的要求。",
+      "C": "Configure a VPC peering connection to the default VPC for Secrets Manager. Configure the Lambda function's subnet to use the peering connection for routes. 错误: AWS Secrets Manager 是一个托管服务,默认情况下不运行在用户的 VPC 中,因此无法通过 VPC 对等连接直接访问 Secrets Manager 。",
+      "D": "Configure a Secrets Manager interface VPC endpoint. Include the Lambda function's private subnet during the configuration process. 正确:通过配置 Secrets Manager 的接口 VPC 端点, Lambda 函数可以在 VPC 内直接与 Secrets Manager 通信, 而无需通过互联网。这符合题目中“VPC 必须不通过互联网发送或接收流量”的要求。"
     }
   },
   {
@@ -1956,9 +1956,9 @@
     "explanations": {
       "A": "Use AWS Certificate Manager to encrypt all traffic between the client and application servers. 错误: AWS Certificate Manager 主要用于管理 SSL/TLS 证书,但它本身并不直接检查漏洞或限制攻击面。加密流量虽然是安全的最佳实践,但与题目要求的“检查漏洞”和“限制攻击面”无直接关系。",
       "B": "Review the application security groups to ensure that only the necessary ports are open. 正确:安全组是 AWS 中限制网络访问的主要工具,审查并关闭不必要的端口可以有效减少攻击面。",
-      "C": "Load Balancing 、 AWS KMS ) 。选项分析 A. Use AWS Certificate Manager to encrypt all traffic between the client and application servers. 错误: AWS Certificate Manager 主要用于管理 SSL/TLS 证书,但它本身并不直接检查漏洞或限制攻击面。加密流量虽然是安全的最佳实践,但与题目要求的“检查漏洞”和“限制攻击面”无直接关系。 B. Review the application security groups to ensure that only the necessary ports are open. 正确:安全组是 AWS 中限制网络访问的主要工具,审查并关闭不必要的端口可以有效减少攻击面。 C. Use Elastic Load Balancing to offload Secure Sockets Layer encryption. 错误: Elastic Load Balancing 可以卸载 SSL 加密,但这与检查漏洞或限制攻击面无直接关系。此选项与题目要求不匹配。",
-      "D": "Balancing 、 AWS KMS ) 。选项分析 A. Use AWS Certificate Manager to encrypt all traffic between the client and application servers. 错误: AWS Certificate Manager 主要用于管理 SSL/TLS 证书,但它本身并不直接检查漏洞或限制攻击面。加密流量虽然是安全的最佳实践,但与题目要求的“检查漏洞”和“限制攻击面”无直接关系。 B. Review the application security groups to ensure that only the necessary ports are open. 正确:安全组是 AWS 中限制网络访问的主要工具,审查并关闭不必要的端口可以有效减少攻击面。 C. Use Elastic Load Balancing to offload Secure Sockets Layer encryption. 错误: Elastic Load Balancing 可以卸载 SSL 加密,但这与检查漏洞或限制攻击面无直接关系。此选项与题目要求不匹配。 D. Use Amazon Inspector to periodically scan the backend instances. 正确: Amazon Inspector 是一种自动化的安全评估服务,可以扫描实例以发现已知漏洞。这直接符合题目要求的“检查漏洞”。",
-      "E": "Manager 、 Elastic Load Balancing 、 AWS KMS ) 。选项分析 A. Use AWS Certificate Manager to encrypt all traffic between the client and application servers. 错误: AWS Certificate Manager 主要用于管理 SSL/TLS 证书,但它本身并不直接检查漏洞或限制攻击面。加密流量虽然是安全的最佳实践,但与题目要求的“检查漏洞”和“限制攻击面”无直接关系。 B. Review the application security groups to ensure that only the necessary ports are open. 正确:安全组是 AWS 中限制网络访问的主要工具,审查并关闭不必要的端口可以有效减少攻击面。 C. Use Elastic Load Balancing to offload Secure Sockets Layer encryption. 错误: Elastic Load Balancing 可以卸载 SSL 加密,但这与检查漏洞或限制攻击面无直接关系。此选项与题目要求不匹配。 D. Use Amazon Inspector to periodically scan the backend instances. 正确: Amazon Inspector 是一种自动化的安全评估服务,可以扫描实例以发现已知漏洞。这直接符合题目要求的“检查漏洞”。 E. Use AWS Key Management Service AWS KMS) to encrypt all the traffic between the client and application servers. 错误: AWS KMS 主要用于管理加密密钥, 而不是直接用于加密网络流量。此选项与题目要求的“检查漏洞”和“限制攻击面”无直接关系。"
+      "C": "Use Elastic Load Balancing to offload Secure Sockets Layer encryption. 错误: Elastic Load Balancing 可以卸载 SSL 加密,但这与检查漏洞或限制攻击面无直接关系。此选项与题目要求不匹配。",
+      "D": "Use Amazon Inspector to periodically scan the backend instances. 正确: Amazon Inspector 是一种自动化的安全评估服务,可以扫描实例以发现已知漏洞。这直接符合题目要求的“检查漏洞”。",
+      "E": "Use AWS Key Management Service AWS KMS) to encrypt all the traffic between the client and application servers. 错误: AWS KMS 主要用于管理加密密钥, 而不是直接用于加密网络流量。此选项与题目要求的“检查漏洞”和“限制攻击面”无直接关系。"
     }
   },
   {
@@ -1977,7 +1977,7 @@
       "A": "Pull images from the public container registry. Publish the images to Amazon Elastic Container Registry Amazon ECR repositories with scan on push configured in a centralized AWS account. Use a CI/CD pipeline to deploy the images to different AWS accounts. Use identity-based policies to restrict access to which IAM principals can access the images. 正确性:此选项使用了 Amazon ECR 的推送时扫描功能,可以检测容器镜像中的漏洞,符合需求。问题:仅使用基于身份的策略限制 IAM 主体的访问, 而没有提到存储库策略, 无法完全满足“限制特定账户访问”的需求。结论:部分正确,但不是最佳答案。",
       "B": "Pull images from the public container registry. Publish the images to a private container registry that is hosted on Amazon EC2 instances in a centralized AWS account. Deploy host-based container scanning tools to EC2 instances that run Amazon ECS. Restrict access to the container images by using basic authentication over HTTPS. 正确性:此选项使用了私有容器注册表和主机级扫描工具,但管理复杂性较高。问题:需要手动管理 EC2 实例和扫描工具,增加了管理开销;使用基本身份验证而非 IAM 策略,安全性较低。结论:不符合“最少管理开销”的要求。",
       "C": "Container Registry Amazon ECR 的功能,包括推送时扫描 (scan on push) 。如何使用 IAM 策略和存储库策略来限制对资源的访问。跨账户资源共享和 CI/C",
-      "D": "管道的使用。选项分析 A. Pull images from the public container registry. Publish the images to Amazon Elastic Container Registry Amazon ECR repositories with scan on push configured in a centralized AWS account. Use a CI/CD pipeline to deploy the images to different AWS accounts. Use identity-based policies to restrict access to which IAM principals can access the images. 正确性:此选项使用了 Amazon ECR 的推送时扫描功能,可以检测容器镜像中的漏洞,符合需求。问题:仅使用基于身份的策略限制 IAM 主体的访问, 而没有提到存储库策略, 无法完全满足“限制特定账户访问”的需求。结论:部分正确,但不是最佳答案。 B. Pull images from the public container registry. Publish the images to a private container registry that is hosted on Amazon EC2 instances in a centralized AWS account. Deploy host-based container scanning tools to EC2 instances that run Amazon ECS. Restrict access to the container images by using basic authentication over HTTPS. 正确性:此选项使用了私有容器注册表和主机级扫描工具,但管理复杂性较高。问题:需要手动管理 EC2 实例和扫描工具,增加了管理开销;使用基本身份验证而非 IAM 策略,安全性较低。结论:不符合“最少管理开销”的要求。 C. Pull images from the public container registry. Publish the images to Amazon Elastic Container Registry Amazon ECR repositories with scan on push configured in a centralized AWS account. Use a CI/CD pipeline to deploy the images to different AWS accounts. Use repository policies and identity-based policies to restrict access to which IAM principals and accounts can access the images. 正确性:此选项使用了 Amazon ECR 的推送时扫描功能,可以检测容器镜像中的漏洞,符合需求。优势:结合了存储库策略和基于身份的策略,可以精确限制 IAM 主体和账户的访问权限,满足所有要求。结论:最佳答案。 D. Pull images from the public container registry. Publish the images to AWS CodeArtifact repositories in a centralized AWS account. Use a CI/CD pipeline to deploy the images to different AWS accounts. Use repository policies and identity-based policies to restrict access to which IAM principals and accounts can access the images. 正确性: AWS CodeArtifact 是一个软件包管理服务,不适合存储容器镜像。"
+      "D": "Pull images from the public container registry. Publish the images to AWS CodeArtifact repositories in a centralized AWS account. Use a CI/CD pipeline to deploy the images to different AWS accounts. Use repository policies and identity-based policies to restrict access to which IAM principals and accounts can access the images. 正确性: AWS CodeArtifact 是一个软件包管理服务,不适合存储容器镜像。"
     }
   },
   {
@@ -1996,7 +1996,7 @@
       "A": "Configure an S3 Lifecycle rule on the S3 bucket to delete objects after 45 days. 正确: S3 Lifecycle 规则是专 ⻔ 设计用于管理对象的生命周期,包括自动删除过期数据。它是实现数据保留策略的最佳实践。高效: 无需额外的计算资源或复杂的配置。",
       "B": "Create an AWS Lambda function to check the last-modified date of the S3 objects and delete objects that are older than 45 days. Create an S3 event notification to invoke the Lambda function for each PutObject operation. 错误:虽然可以通过 Lambda 函数实现类似功能,但这种方法复杂且不必要。 S3 Lifecycle 规则已经提供了内置的解决方案。额外开销:需要编写代码、维护 Lambda 函数,并处理事件通知。",
       "C": "Create an AWS Lambda function to check the last-modified date of the S3 objects an",
-      "D": "date of the S3 objects and delete objects that are older than 45 days. Create an S3 event notification to invoke the Lambda function for each PutObject operation. 错误:虽然可以通过 Lambda 函数实现类似功能,但这种方法复杂且不必要。 S3 Lifecycle 规则已经提供了内置的解决方案。额外开销:需要编写代码、维护 Lambda 函数,并处理事件通知。 C. Create an AWS Lambda function to check the last-modified date of the S3 objects and delete objects that are older than 45 days. Create an Amazon EventBridge rule to invoke the Lambda function each month. 错误:与选项 B 类似,这种方法复杂且不必要。 S3 Lifecycle 规则已经可以自动处理数据删除。额外开销:需要编写代码、维护 Lambda 函数,并配置 EventBridge 规则。 D. Configure S3 Intelligent-Tiering on the S3 bucket to automatically transition objects to another storage class. 错误: S3 Intelligent-Tiering 是用于优化存储成本的解决方案, 而不是用于删除过期数据。不符合要求:题目明确要求删除超过 45 天的数据, 而不是转移到其他存储类别。"
+      "D": "Configure S3 Intelligent-Tiering on the S3 bucket to automatically transition objects to another storage class. 错误: S3 Intelligent-Tiering 是用于优化存储成本的解决方案, 而不是用于删除过期数据。不符合要求:题目明确要求删除超过 45 天的数据, 而不是转移到其他存储类别。"
     }
   },
   {
@@ -2012,7 +2012,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "函数能够访问 S3 资源。涉及的知识点包括: Principal 、 Action 、 Resource 、 Condition 元素的使用 ,以及 S3 ARN 格式的正确性。选项分析 A. Remove the Condition element. Change the Principal element to the following: 移除 Condition 元素会导致策略失去对特定 Lambda 函数的限制,变得过于宽松,可能允许其他 Lambda 函数访问该 S3 Bucket 。更改 Principal 元素可能会破坏当前策略的正确性,因为当前 Principal 已经正确指定了 Lambda 服务。此选项不解决问题,且可能引入安全 ⻛ 险,因此错误。",
+      "A": "Remove the Condition element. Change the Principal element to the following: 移除 Condition 元素会导致策略失去对特定 Lambda 函数的限制,变得过于宽松,可能允许其他 Lambda 函数访问该 S3 Bucket 。更改 Principal 元素可能会破坏当前策略的正确性,因为当前 Principal 已经正确指定了 Lambda 服务。此选项不解决问题,且可能引入安全 ⻛ 险,因此错误。",
       "B": "Change the Action element to the following: Action 元素当前已经正确设置为 \"s3 GetObject\" ,这是 Lambda 函数读取 S3 对象所需的权限。更改 Action 元素没有意义,因为问题不在于 Action 的配置,因此此选项错误。",
       "C": "Change the Resource element to \"arn:aws:s3 DOC EXAMPLE BUCKET/*\". 当前 Resource 元素仅指定了 Bucket 本身 , 而未包含 Bucket 中的对象(即未包含 / 后缀) 。 Lambda 函数需要访问 Bucket 中的对象,因此 Resource 需要指定为 \"arn:aws:s3 DOC EXAMPLE BUCKET/ \" 。此选项正确,因为它解决了问题并符合最佳实践。",
       "D": "Change the Resource element to \"arn:aws:lambda:::function:MyLambdaFunction\". Change the Principal element to the following: 将 Resource 更改为 Lambda 函数的 ARN 是错误的,因为 Resource 应该指定 S3 Bucket 及其对象, 而不是 Lambda 函数。更改 Principal 元素也没有意义,因为当前 Principal 已经正确指定了 Lambda 服务。此选项完全错误。"
@@ -2034,7 +2034,7 @@
       "A": "The IAM policy needs to allow the kms:DescribeKey permission. 错误: kms:DescribeKey 权限用于查看密钥的元数据,但与解密操作无关。用户已经拥有 kms:Decrypt 权限,这足以解密对象。",
       "B": "The S3 bucket has been changed to use the AWS managed key to encrypt objects at rest. 错误:题目明确说明 S3 存储桶使用的是客户管理密钥( Customer Managed Key ) , 而不是 AWS 管理密钥( AWS Managed Key ) 。此选项与题目描述不符。",
       "C": "An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误:题目明确说明 S3 存储桶没有定义存储桶策略,但 IAM 用户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限,因此不需要额外的存储桶策略。",
-      "D": "to use the AWS managed key to encrypt objects at rest. 错误:题目明确说明 S3 存储桶使用的是客户管理密钥( Customer Managed Key ) , 而不是 AWS 管理密钥( AWS Managed Key ) 。此选项与题目描述不符。 C. An S3 bucket policy needs to be added to allow the IAM user to access the objects. 错误:题目明确说明 S3 存储桶没有定义存储桶策略,但 IAM 用户已经通过 IAM 策略获得了 s3 List 和 s3 Get 权限,因此不需要额外的存储桶策略。 D. The KMS key policy has been edited to remove the ability for the AWS account to have full access to the key. 正确: KMS 密钥策略是控制密钥访问的核心机制。如果密钥策略被编辑并移除了 AWS 账户对密钥的完全访问权限,即使 IAM 策略允许 kms:Decrypt 权限, 用户仍然无法解密对象。"
+      "D": "The KMS key policy has been edited to remove the ability for the AWS account to have full access to the key. 正确: KMS 密钥策略是控制密钥访问的核心机制。如果密钥策略被编辑并移除了 AWS 账户对密钥的完全访问权限,即使 IAM 策略允许 kms:Decrypt 权限, 用户仍然无法解密对象。"
     }
   },
   {
@@ -2069,7 +2069,7 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Firehose 与 OpenSearch 的集成 OpenSearch Dashboards 的可视化功能选项分析 A. 错误此选项提到使用 CloudWatch 警报作为通知机制, 但 GuardDuty 无法直接发送通知到 CloudWatch 警报。虽然可以通过 Kinesis Data Streams 将数据传输到 OpenSearch 并使用 QuickSight 进行可视化,但这不是最佳实践。此外, EventBridge 事件规则更适合处理事件模式匹配。",
+      "A": "错误此选项提到使用 CloudWatch 警报作为通知机制, 但 GuardDuty 无法直接发送通知到 CloudWatch 警报。虽然可以通过 Kinesis Data Streams 将数据传输到 OpenSearch 并使用 QuickSight 进行可视化,但这不是最佳实践。此外, EventBridge 事件规则更适合处理事件模式匹配。",
       "B": "错误此选项提到使用 CloudTrail 作为通知机制,但 GuardDuty 无法直接发送通知到 CloudTrail 。 CloudTrail 主要用于记录 API 调用 , 而不是事件路由。虽然 Kinesis Data Firehose 和 OpenSearch 的集成是正确的,但整体流程不符合要求。",
       "C": "正确此选项使用 Amazon EventBridge 作为事件路由工具,这是 GuardDuty 通知的推荐方式。通过 EventBridge ,可以设置两个目标: 一个是通过 Kinesis Data Firehose 将数据传输到 OpenSearch 以进行可视化和分析;另一个是通过 SNS 发送邮件通知给安全团队。此外, EventBridge 支持事件模式匹配,可以过滤出高严重性级别的发现。",
       "D": "错误此选项虽然使用了 EventBridge 作为事件路由工具,但提到使用 Kinesis Data Streams 而不是 Kinesis Data Firehose 。 Kinesis 此选项虽然使用了 EventBridge 作为事件路由工具,但提到使用 Kinesis Data Streams 而不是 Kinesis Data Firehose 。 KinesisData Firehose 更适合将数据传输到 OpenSearch ,因为它支持自动化的数据传输和格式化。此外, QuickSight 不是最佳工具来可视化 GuardDuty 发现, OpenSearch Dashboards 更适合此场景。"
@@ -2091,7 +2091,7 @@
       "A": "Create new S3 buckets with S3 Object Lock enabled in compliance mode. Place objects in the S3 buckets. 正确: S3 Object Lock 的合规模式确保数据无法被任何用户(包括 AWS 账户根用户)删除或覆盖,完全符合 WORM 模型的要求。合规模式是最严格的模式,适用于需要强制执行不可更改性的数据保护场景。",
       "B": "Use S3 Glacier Vault Lock to attach a Vault Lock policy to new S3 buckets. Wait 24 hours to complete the Vault Lock process. Place objects in the S3 buckets. 错误: S3 Glacier Vault Lock 是针对 Amazon S3 Glacier 存储库的功能, 而题目明确指出公司使用的是 S3 Standard 存储类,因此此选项不适用。此外, Vault Lock 的功能与 S3 Object Lock 不同, 无法直接满足题目要求。",
       "C": "Create new S3 buckets with S3 Object Lock enabled in governance mode. Place objects in the S3 buckets. 错误:治理模式允许特定用户(如 AWS 账户根用户)通过额外的权限绕过锁定并删除或覆盖对象,因此无法完全满足题目要求。治理模式适用于需要灵活管理的场景,但不适合需要严格 WORM 保护的场景。",
-      "D": "Many )模型以保护数据免受删除或覆盖。理解 AWS 账户权限,包括 AWS 账户根用户的权限限制。选项分析 A. Create new S3 buckets with S3 Object Lock enabled in compliance mode. Place objects in the S3 buckets. 正确: S3 Object Lock 的合规模式确保数据无法被任何用户(包括 AWS 账户根用户)删除或覆盖,完全符合 WORM 模型的要求。合规模式是最严格的模式,适用于需要强制执行不可更改性的数据保护场景。 B. Use S3 Glacier Vault Lock to attach a Vault Lock policy to new S3 buckets. Wait 24 hours to complete the Vault Lock process. Place objects in the S3 buckets. 错误: S3 Glacier Vault Lock 是针对 Amazon S3 Glacier 存储库的功能, 而题目明确指出公司使用的是 S3 Standard 存储类,因此此选项不适用。此外, Vault Lock 的功能与 S3 Object Lock 不同, 无法直接满足题目要求。 C. Create new S3 buckets with S3 Object Lock enabled in governance mode. Place objects in the S3 buckets. 错误:治理模式允许特定用户(如 AWS 账户根用户)通过额外的权限绕过锁定并删除或覆盖对象,因此无法完全满足题目要求。治理模式适用于需要灵活管理的场景,但不适合需要严格 WORM 保护的场景。 D. Create new S3 buckets with S3 Object Lock enabled in governance mode. Add a legal hold to the S3 buckets. Place objects in the S3 buckets. 错误:虽然法律保留( Legal Hold )可以防止对象被删除,但它可以被具有适当权限的用户移除,因此无法完全满足题目要求。治理模式本身也不够严格, 无法阻止 AWS 账户根用户删除或覆盖对象。"
+      "D": "Create new S3 buckets with S3 Object Lock enabled in governance mode. Add a legal hold to the S3 buckets. Place objects in the S3 buckets. 错误:虽然法律保留( Legal Hold )可以防止对象被删除,但它可以被具有适当权限的用户移除,因此无法完全满足题目要求。治理模式本身也不够严格, 无法阻止 AWS 账户根用户删除或覆盖对象。"
     }
   },
   {
@@ -2108,9 +2108,9 @@
     "answer": "D",
     "explanations": {
       "A": "错误原因: Secrets Manager 不是用于管理 SSL/TLS 证书的服务。它主要用于存储和管理敏感信息(如密码、 API 密钥等) 。因此, 无法通过 Secrets Manager 创建或管理证书。",
-      "B": "、以及 EC2 实例的证书安装。选项分析 A. 错误原因: Secrets Manager 不是用于管理 SSL/TLS 证书的服务。它主要用于存储和管理敏感信息(如密码、 API 密钥等) 。因此, 无法通过 Secrets Manager 创建或管理证书。 B. 部分正确: ACM 是用于管理 SSL/TLS 证书的正确服务,可以将证书关联到 ALB 。错误原因: ACM 管理的证书无法直接导出到 EC2 实例。 ACM 的证书只能用于 AWS 托管的服务(如 ALB 、 CloudFront 等) , 无法安装到 EC2 实例上。",
+      "B": "部分正确: ACM 是用于管理 SSL/TLS 证书的正确服务,可以将证书关联到 ALB 。错误原因: ACM 管理的证书无法直接导出到 EC2 实例。 ACM 的证书只能用于 AWS 托管的服务(如 ALB 、 CloudFront 等) , 无法安装到 EC2 实例上。",
       "C": "错误原因:虽然 IAM 可以存储 SSL/TLS 证书,但它不是推荐的证书管理方式。 IAM 中的证书主要用于 API Gateway 或 CloudFront , 而不是 ALB 或 EC2 实例。",
-      "D": "Balancer ALB 、以及 EC2 实例的证书安装。选项分析 A. 错误原因: Secrets Manager 不是用于管理 SSL/TLS 证书的服务。它主要用于存储和管理敏感信息(如密码、 API 密钥等) 。因此, 无法通过 Secrets Manager 创建或管理证书。 B. 部分正确: ACM 是用于管理 SSL/TLS 证书的正确服务,可以将证书关联到 ALB 。错误原因: ACM 管理的证书无法直接导出到 EC2 实例。 ACM 的证书只能用于 AWS 托管的服务(如 ALB 、 CloudFront 等) , 无法安装到 EC2 实例上。 C. 错误原因:虽然 IAM 可以存储 SSL/TLS 证书,但它不是推荐的证书管理方式。 IAM 中的证书主要用于 API Gateway 或 CloudFront , 而不是 ALB 或 EC2 实例。 D. 正确原因: ACM 支持导入第三方证书,并可以将证书关联到 ALB 以实现外部用户到 ALB 的加密。对于 ALB 到 EC2 实例的加密,需要手动将证书安装到 EC2 实例上。这是实现端到端加密的正确方法。"
+      "D": "正确原因: ACM 支持导入第三方证书,并可以将证书关联到 ALB 以实现外部用户到 ALB 的加密。对于 ALB 到 EC2 实例的加密,需要手动将证书安装到 EC2 实例上。这是实现端到端加密的正确方法。"
     }
   },
   {
@@ -2129,7 +2129,7 @@
       "A": "添加一个资源策略,允许组中的每个成员访问 Amazon SES 。错误 : 资源策略是针对具体资源的, 而 SCP 是组织级别的权限控制。即使添加资源策略, SCP 的“Deny”仍然会优先生效,导致权限被拒绝。",
       "B": "添加一个资源策略,允许 \"Principal\": {\"AWS\": \"arn:aws:iam::account- number:group/Dev\"} 。错误 : 同样,资源策略无法覆盖 SCP 的“Deny”规则。 SCP 的“Deny”优先级高于 IAM 策略和资源策略。",
       "C": "移除限制访问 Amazon SES 的 AWS Control Tower 控制 ( 保护措施 ) 。错误 : 题目中并未提到 AWS Control Tower 的保护措施 (Guardrails) 限制了 Amazon SES 的访问,因此这个选项与题目无关。",
-      "D": "100% 本题考察的是 AWS Organizations 中的服务控制策略 (SCP) 的工作机制,以及如何通过 SCP 限制或允许对 AWS 服务的访问。同时涉及 IAM 策略与 SCP 的交互关系,以及权限的最终评估逻辑。 2. 选项分析 A. 添加一个资源策略,允许组中的每个成员访问 Amazon SES 。错误 : 资源策略是针对具体资源的, 而 SCP 是组织级别的权限控制。即使添加资源策略, SCP 的“Deny”仍然会优先生效,导致权限被拒绝。 B. 添加一个资源策略,允许 \"Principal\": {\"AWS\": \"arn:aws:iam::account- number:group/Dev\"} 。错误 : 同样,资源策略无法覆盖 SCP 的“Deny”规则。 SCP 的“Deny”优先级高于 IAM 策略和资源策略。 C. 移除限制访问 Amazon SES 的 AWS Control Tower 控制 ( 保护措施 ) 。错误 : 题目中并未提到 AWS Control Tower 的保护措施 (Guardrails) 限制了 Amazon SES 的访问,因此这个选项与题目无关。 D. 从根 SCP 中移除 Amazon SES 。正确 : 根 SCP 中明确“Deny”了对 Amazon SES 的访问,这会覆盖所有子 OU 和账户的权限。移除该“Deny”规则后, IAM 策略和子 OU 的 SCP 将能够生效,从而允许开发者访问 Amazon SES 。"
+      "D": "从根 SCP 中移除 Amazon SES 。正确 : 根 SCP 中明确“Deny”了对 Amazon SES 的访问,这会覆盖所有子 OU 和账户的权限。移除该“Deny”规则后, IAM 策略和子 OU 的 SCP 将能够生效,从而允许开发者访问 Amazon SES 。"
     }
   },
   {
@@ -2151,7 +2151,7 @@
     "explanations": {
       "A": "Allow port 22 from source 0.0.0.0/0. 错误 : 允许所有来源访问端口 22 SSH) 是非常不安全的做法,因为它会暴露服务器给所有外部网络,增加被攻击的 ⻛ 险。",
       "B": "Allow port 443 from source 0.0.0.0/0. 正确 :HTTPS 是用于公共访问的协议,允许所有来源访问端口 443 是合理的,因为网站是公共的。",
-      "C": "100% 安全组的配置 : 如何正确设置安全组规则以确保最小权限原则。网络安全 : 限制访问来源以提高安全性。协议和端口 :HTTPS 443 和 SSH 22 的正确使用。 2. 选项分析 A. Allow port 22 from source 0.0.0.0/0. 错误 : 允许所有来源访问端口 22 SSH) 是非常不安全的做法,因为它会暴露服务器给所有外部网络,增加被攻击的 ⻛ 险。 B. Allow port 443 from source 0.0.0.0/0. 正确 :HTTPS 是用于公共访问的协议,允许所有来源访问端口 443 是合理的,因为网站是公共的。 C. Allow port 22 from 192.168.100.0/24. 正确 : 限制 SSH 访问到管理子网 192.168.100.0/24 符合最小权限原则,确保只有管理网络可以访问 SSH 。",
+      "C": "Allow port 22 from 192.168.100.0/24. 正确 : 限制 SSH 访问到管理子网 192.168.100.0/24 符合最小权限原则,确保只有管理网络可以访问 SSH 。",
       "D": "Allow port 22 from 10.0.1.0/24. 错误 10.0.1.0/24 是网站所在的子网 , 而不是管理子网。 SSH 访问应该限制到管理子网 , 而不是网站子网。",
       "E": "0.0.0.0/0. 错误 : 允许所有来源访问端口 22 SSH) 是非常不安全的做法,因为它会暴露服务器给所有外部网络,增加被攻击的 ⻛ 险。 B. Allow port 443 from source 0.0.0.0/0. 正确 :HTTPS 是用于公共访问的协议,允许所有来源访问端口 443 是合理的,因为网站是公共的。 C. Allow port 22 from 192.168.100.0/24. 正确 : 限制 SSH 访问到管理子网 192.168.100.0/24 符合最小权限原则,确保只有管理网络可以访问 SSH 。 D. Allow port 22 from 10.0.1.0/24. 错误 10.0.1.0/24 是网站所在的子网 , 而不是管理子网。 SSH 访问应该限制到管理子网 , 而不是网站子网。 E. Allow port 443 from 10.0.1.0/24. 错误 : 端口 443 是用于公共访问的协议,限制到 10.0.1.0/24 会阻止外部用户访问网站。"
     }
