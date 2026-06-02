@@ -1,8 +1,13 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import fs from 'fs';
 
-const PDF_FILE = 'GCP/Professional Cloud Architect_with_aizh-1-200.pdf';
 const EXAM_CODE = 'PCA';
+
+// CLI: node parse_gcp_pca.mjs <pdfPath> <zhOut> <enOut>
+// Defaults to the first part (questions 1-98) for backwards compatibility.
+const PDF_FILE = process.argv[2] || 'GCP/Professional Cloud Architect_with_aizh-1-200.pdf';
+const ZH_OUT = process.argv[3] || 'public/data/pca_1_98.json';
+const EN_OUT = process.argv[4] || 'public/data/pca_en_1_98.json';
 
 // Strip page footer / header noise. Each footer always ends with "Examtopics" then "  "
 // Use minimal non-greedy match and tight start anchor.
@@ -337,9 +342,9 @@ async function main() {
   zhQuestions.sort((a, b) => a.id - b.id);
   enQuestions.sort((a, b) => a.id - b.id);
 
-  fs.writeFileSync('public/data/pca_1_98.json', JSON.stringify(zhQuestions, null, 2));
-  fs.writeFileSync('public/data/pca_en_1_98.json', JSON.stringify(enQuestions, null, 2));
-  console.log('Wrote public/data/pca_1_98.json and public/data/pca_en_1_98.json');
+  fs.writeFileSync(ZH_OUT, JSON.stringify(zhQuestions, null, 2));
+  fs.writeFileSync(EN_OUT, JSON.stringify(enQuestions, null, 2));
+  console.log(`Wrote ${ZH_OUT} and ${EN_OUT}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
