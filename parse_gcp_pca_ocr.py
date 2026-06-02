@@ -26,12 +26,21 @@ WORKERS = 4
 # One thread per tesseract; parallelism comes from the worker pool.
 os.environ.setdefault('OMP_THREAD_LIMIT', '1')
 
-# (pdf path, output zh json, output en json)
+# (pdf path, output zh json, output en json, id_mode, id_base)
+#   id_mode 'marker'     -> use the "Question #N" number as the id (continuous,
+#                           unique numbering across the Topic 1 dump)
+#   id_mode 'seq'        -> assign sequential ids from id_base in document order
+#                           (used for the case-study PDF where each Topic
+#                           restarts its question numbering at #1)
 JOBS = [
     ('GCP/Professional Cloud Architect_with_aizh-1-200.pdf',
-     'public/data/pca_1_98.json', 'public/data/pca_en_1_98.json'),
+     'public/data/pca_1_98.json', 'public/data/pca_en_1_98.json', 'marker', 0),
     ('GCP/Professional Cloud Architect_with_aizh-201-400.pdf',
-     'public/data/pca_99_191.json', 'public/data/pca_en_99_191.json'),
+     'public/data/pca_99_191.json', 'public/data/pca_en_99_191.json', 'marker', 0),
+    ('GCP/Professional Cloud Architect_with_aizh-401-600.pdf',
+     'public/data/pca_192_267.json', 'public/data/pca_en_192_267.json', 'marker', 0),
+    ('GCP/Professional Cloud Architect_with_aizh-601-768.pdf',
+     'public/data/pca_268_344.json', 'public/data/pca_en_268_344.json', 'seq', 268),
 ]
 
 
@@ -347,28 +356,55 @@ def parse_block(qid, raw):
     return zh_obj, en_obj
 
 
-def process(pdf_path, zh_out, en_out):
-    print(f'Processing {pdf_path}')
+def process(pdf_path, zh_out, en_out, id_mode='marker', id_base=0):
+    print(f'Processing {pdf_path} (id_mode={id_mode})')
     full = ocr_pdf_cached(pdf_path)
     full = full.replace('\f', '\n')
     blocks = split_blocks(full)
-    # de-dup qid keep first complete
-    by_id = {}
-    for qid, raw in blocks:
-        parsed = parse_block(qid, raw)
-        if not parsed:
-            continue
-        zh, en = parsed
-        prev = by_id.get(qid)
-        if prev is None or len(zh['explanations']) > len(prev[0]['explanations']):
-            by_id[qid] = (zh, en)
-    ids = sorted(by_id)
-    print(f'  parsed {len(ids)} questions, ids {ids[0] if ids else "-"}..{ids[-1] if ids else "-"}')
-    missing = [i for i in range(ids[0], ids[-1] + 1) if i not in by_id] if ids else []
-    if missing:
-        print(f'  MISSING ids: {missing}')
-    zh_list = [by_id[i][0] for i in ids]
-    en_list = [by_id[i][1] for i in ids]
+
+    if id_mode == 'seq':
+        # Per-topic numbering repeats, so assign sequential ids in document
+        # order. Parse first, then number only the questions that parsed, so a
+        # dropped block does not shift everything after it confusingly — gaps
+        # are acceptable and the running counter stays tied to good questions.
+        zh_list, en_list = [], []
+        next_id = id_base
+        skipped = 0
+        for marker_qid, raw in blocks:
+            parsed = parse_block(marker_qid, raw)
+            if not parsed:
+                skipped += 1
+                continue
+            zh, en = parsed
+            zh['id'] = next_id
+            en['id'] = next_id
+            zh_list.append(zh)
+            en_list.append(en)
+            next_id += 1
+        ids = [q['id'] for q in zh_list]
+        print(f'  parsed {len(ids)} questions, ids '
+              f'{ids[0] if ids else "-"}..{ids[-1] if ids else "-"} '
+              f'(skipped {skipped} blocks)')
+    else:
+        # de-dup qid keep first complete
+        by_id = {}
+        for qid, raw in blocks:
+            parsed = parse_block(qid, raw)
+            if not parsed:
+                continue
+            zh, en = parsed
+            prev = by_id.get(qid)
+            if prev is None or len(zh['explanations']) > len(prev[0]['explanations']):
+                by_id[qid] = (zh, en)
+        ids = sorted(by_id)
+        print(f'  parsed {len(ids)} questions, ids '
+              f'{ids[0] if ids else "-"}..{ids[-1] if ids else "-"}')
+        missing = [i for i in range(ids[0], ids[-1] + 1) if i not in by_id] if ids else []
+        if missing:
+            print(f'  MISSING ids: {missing}')
+        zh_list = [by_id[i][0] for i in ids]
+        en_list = [by_id[i][1] for i in ids]
+
     with open(zh_out, 'w', encoding='utf-8') as f:
         json.dump(zh_list, f, ensure_ascii=False, indent=2)
     with open(en_out, 'w', encoding='utf-8') as f:
@@ -379,10 +415,10 @@ def process(pdf_path, zh_out, en_out):
 
 def main():
     only = sys.argv[1] if len(sys.argv) > 1 else None
-    for pdf, zh_out, en_out in JOBS:
+    for pdf, zh_out, en_out, id_mode, id_base in JOBS:
         if only and only not in pdf:
             continue
-        process(pdf, zh_out, en_out)
+        process(pdf, zh_out, en_out, id_mode, id_base)
 
 
 if __name__ == '__main__':
