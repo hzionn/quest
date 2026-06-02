@@ -553,11 +553,12 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
     questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
     return m
   }, [questions])
+  const logoSrc = provider === 'gcp' ? `${BASE_URL}gcp-logo.png` : awsLogo
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
       <div className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-gray-700/80">
-        <div className="flex justify-center mb-4">
-          <img src={awsLogo} alt="AWS" className="h-14" />
+        <div className="flex justify-center mb-4 h-14">
+          <img src={logoSrc} alt={provider.toUpperCase()} className="h-14 object-contain" />
         </div>
         <h2 className="text-xl font-bold text-white text-center mb-1">請選擇練習科別</h2>
         <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
@@ -608,8 +609,8 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center gap-3 py-12 text-gray-400 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
-            <Database size={32} className="text-blue-400/70" />
+          <div className="flex flex-col items-center gap-3 py-10 text-gray-400 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
+            <img src={`${BASE_URL}gcp-logo.png`} alt="Google Cloud Platform" className="h-16 object-contain opacity-90" />
             <p className="text-base font-semibold text-gray-200">GCP 題庫即將推出</p>
             <p className="text-xs text-gray-500 text-center max-w-xs">Google Cloud 認證相關題目正在準備中，敬請期待。</p>
           </div>
