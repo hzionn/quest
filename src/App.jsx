@@ -1352,6 +1352,9 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{currentQ.exam}</span>
                 <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
+                {currentQ.officialNo && (
+                  <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="官方題庫題號">官方 #{currentQ.officialNo}</span>
+                )}
                 <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
               </div>
               <div className="flex items-center gap-0.5">
@@ -2356,6 +2359,9 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{examQ.exam}</span>
               <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
+              {examQ.officialNo && (
+                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="官方題庫題號">官方 #{examQ.officialNo}</span>
+              )}
             </div>
             <CaseStudyBox text={examQ.caseStudy} />
             <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>

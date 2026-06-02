@@ -494,7 +494,8 @@
       "B": "使用 Anthos Config Management 创建一个 clusterSelector，选择相关的集群。在 Google Cloud Console 的 Google Kubernetes Engine 页面中，查看 Workloads 并过滤集群。检查过滤后的工作负载配置。正确性分析: ClusterSelector 是 Anthos Config Management 的功能，用于选择特定集群的资源。但此方法主要用于配置管理，而非性能问题排查。Rr: 无法直接查看微服务之间的性能数据，解决问题效率低。结论: 此选项错误。",
       "C": "使用 Anthos Config Management 创建一个namespaceselector，选择相关的集群命名空间。在 Google Cloud Console 的 Google Kubernetes Engine 页面中，访问 Workloads 并过滤命名空间。检查过滤后的工作负载配置。正确性分析: namespaceSelector 类似于 ClusterSelector，主要用于管理命名空间内的资源配置，而非性能问题排查。缺点: 同样无法直接查看微服务之间的性能数据。结论: 此选项错误。",
       "D": "使用默认的 istio 配置文件重新安装 istio，以收集请求延迟。在 Cloud Console 中评估微服务之间的遥测数据。正确性分析: 重新安装 istio 是不必要的，因为 Anthos Service Mesh 已经配置好遥测功能，直接使用现有工具即可查看性能数据。缺点: 重新安装 istio 会浪费时间且可能引入额外问题。结论: 此选项错误。"
-    }
+    },
+    "officialNo": 20
   },
   {
     "exam": "PCA",
@@ -645,7 +646,8 @@
       "B": "将日志导出到 BigQuery，并触发查询以处理相关事件。错误原因 BigQuery适合处理大规模数据分析，但不适合实时事件处理。触发查询的过程可能存在延迟，无法满足快速响应的需求。不符合事件驱动架构的设计原则。",
       "C": "将日志导出到 Pub/Sub 主题，并使用相关日志事件触发 Cloud Function, 正确原因: Pub/sub是Google Cloud的消息传递服务，支持实时事件流处理。Cloud Function可以基于Pub/sub消息触发，快速响应日志中的异常事件。符合Google推荐的事件驱动架构最佳实践。",
       "D": "将日志导出到 Cloud Storage 存储桶，并使用相关日志事件触发 cloud Run, 错误原因 Cloud storage适合存储静态文件，但不适合实时事件处理。Cloud Run虽然支持事件触发，但依赖Cloud storage的文件变化触发机制，可能存在延迟。不符合快速响应的要求。"
-    }
+    },
+    "officialNo": 16
   },
   {
     "exam": "PCA",
@@ -1436,7 +1438,8 @@
       "B": "Enable the Compute Engine API, and then enable logging on the firewall rules that match the traffic you want to save. 正确性分析: 此选项是错误的。启用 Compute Engine API 和防火墙规则日志记录与 Cloud VPN 日志保存无关。防火墙日志记录主要用于监控网络流量，而不是保存 Cloud VPN 的日志事件。缺点: 此选项未涉及 Cloud VPN 的日志保存机制，无法满足题目要求。",
       "C": "Set up a Cloud Logging Dashboard titled Cloud VPN Logs, and then add a chart that queries for the VPN metrics over a one-year time period. 正确性分析: 此选项是错误的。设置 Cloud Logging Dashboard 和查询图表仅用于可视化数据，而不是保存日志数据。题目要求保存日志事件一年，而不是创建可视化图表。缺点: 此选项无法满足题目要求的日志保存需求。",
       "D": "Set up a filter in Cloud Logging and a topic in Pub/Sub to publish the logs. 正确性分析: 此选项是部分正确的。设置过滤器和 Pub/Sub 主题可以将日志发布到其他服务，但 Pub/Sub 主要用于实时消息传递，而不是长期保存日志数据。缺点: Pub/Sub 不适合用于保存日志一年，无法满足题目要求。"
-    }
+    },
+    "officialNo": 93
   },
   {
     "exam": "PCA",
@@ -1473,7 +1476,8 @@
       "A": "在生产文件夹上创建一个聚合导出。将日志接收器设置为运营项目中的一个 Cloud Storage bucket, 分析: 生产文件夹包含所有生产项目，因此在文件夹级别创建聚合导出可以自动捕获观有和新创建的生产项目的日志。将日志接收器设置为运营项目中的 Cloud Storage bucket是一个合理的选择，因为它可以集中存储日志，便于操作团队管理。此选项符合题目要求，且是最佳实践。结论: 正确。",
       "B": "在组织资源上创建一个聚合导出。将日志接收器设置为运营项目中的一个 Cloud Storage bucket, 分析: 在组织级别创建聚合导出会捕获所有项目的日志，而不仅仅是生产项目的日志。题目明确要求只捕获生产项目的日志，因此此选项不符合要求。结论: 错误。5. 在生产项目中创建日志导出。将日志接收器设置为运营项目中的一个 Cloud Storage bucket, 分析: 此选项需要在每个生产项目中单独创建日志导出，无法自动捕获新创建的生产项目的日志。题目要求自动捕获新项目的日志，因此此选项不符合要求。结论: 错误。D. 在生产项目中创建日志导出。将日志接收器设置为生产项目中的 BigQuery datasets，并授予运营团队 IAM 访问权限以运行这些 datasets 上的查询。分析: 此选项需要在每个生产项目中单独创建日志导出，无法自动捕获新创建的生产项目的日志。将日志存储在 BigQuery datasets 中并授予 |AM 权限虽然可以实现查询功能，但题目要求的是集中存储日志，而不是分散存储。结论: 错误。",
       "D": "在生产项目中创建日志导出。将日志接收器设置为生产项目中的 BigQuery datasets，并授予运营团队 IAM 访问权限以运行这些 datasets 上的查询。分析: 此选项需要在每个生产项目中单独创建日志导出，无法自动捕获新创建的生产项目的日志。将日志存储在 BigQuery datasets 中并授予 |AM 权限虽然可以实现查询功能，但题目要求的是集中存储日志，而不是分散存储。结论: 错误。"
-    }
+    },
+    "officialNo": 18
   },
   {
     "exam": "PCA",
