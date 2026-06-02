@@ -237,7 +237,8 @@ function reducer(state, action) {
     case 'START_PRACTICE': {
       let filtered = [...state.questions]
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
-      if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
+      if (state.filterType === 'official') filtered = filtered.filter(q => q.officialNo)
+      else if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) {
         const rangeMatch = state.filterSearch.trim().match(/^(\d+)\s*[-~～]\s*(\d+)$/)
         if (rangeMatch) {
@@ -1522,6 +1523,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
             className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
+            <option value="official">官方必考（93 題）</option>
             <option value="single">單選題</option>
             <option value="multiple">多選題</option>
             <option value="matching">配對題</option>
