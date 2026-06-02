@@ -541,7 +541,13 @@ function PasswordGate({ onAuth }) {
 }
 
 // 登入後的科別選擇畫面：先選練習科別，再進入對應題目
+const CLOUD_PROVIDERS = [
+  { key: 'aws', label: 'AWS', accent: 'orange' },
+  { key: 'gcp', label: 'GCP', accent: 'blue' },
+]
+
 function SubjectSelect({ examTypes, questions, loading, onSelect }) {
+  const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
     questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
@@ -555,12 +561,32 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
         </div>
         <h2 className="text-xl font-bold text-white text-center mb-1">請選擇練習科別</h2>
         <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
+
+        {/* Cloud provider tabs */}
+        <div className="flex gap-1 bg-gray-900/60 rounded-xl p-1 mb-6 border border-gray-700/60">
+          {CLOUD_PROVIDERS.map(p => (
+            <button
+              key={p.key}
+              onClick={() => setProvider(p.key)}
+              className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                provider === p.key
+                  ? p.accent === 'orange'
+                    ? 'bg-orange-500/20 text-orange-300 shadow-sm'
+                    : 'bg-blue-500/20 text-blue-300 shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
           <div className="flex flex-col items-center gap-3 py-10 text-gray-400">
             <Loader2 size={32} className="animate-spin" />
             <span className="text-sm">題庫載入中...</span>
           </div>
-        ) : (
+        ) : provider === 'aws' ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {examTypes.map(exam => (
@@ -581,6 +607,12 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
               全部科別（{questions.length} 題）
             </button>
           </>
+        ) : (
+          <div className="flex flex-col items-center gap-3 py-12 text-gray-400 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
+            <Database size={32} className="text-blue-400/70" />
+            <p className="text-base font-semibold text-gray-200">GCP 題庫即將推出</p>
+            <p className="text-xs text-gray-500 text-center max-w-xs">Google Cloud 認證相關題目正在準備中，敬請期待。</p>
+          </div>
         )}
       </div>
     </div>
