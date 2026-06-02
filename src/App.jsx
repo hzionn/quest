@@ -546,6 +546,19 @@ const CLOUD_PROVIDERS = [
   { key: 'gcp', label: 'GCP', accent: 'blue' },
 ]
 
+// 各雲服務商已上線的考試代碼（用來在入口畫面分組）
+const PROVIDER_EXAMS = {
+  aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'AIP-C01', 'MLA-C01'],
+  gcp: ['PCA'],
+}
+
+function getProviderForExam(exam) {
+  for (const [provider, codes] of Object.entries(PROVIDER_EXAMS)) {
+    if (codes.includes(exam)) return provider
+  }
+  return 'aws'
+}
+
 function SubjectSelect({ examTypes, questions, loading, onSelect }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
@@ -553,7 +566,15 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
     questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
     return m
   }, [questions])
-  const logoSrc = provider === 'gcp' ? `${BASE_URL}gcp-logo.png` : awsLogo
+  const isAws = provider === 'aws'
+  const logoSrc = isAws ? awsLogo : `${BASE_URL}gcp-logo.png`
+  const accent = isAws
+    ? { hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-400', hoverText: 'group-hover:text-orange-300', badgeHoverBg: 'group-hover:bg-orange-500/30', badgeHoverText: 'group-hover:text-orange-200' }
+    : { hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400', hoverText: 'group-hover:text-blue-300', badgeHoverBg: 'group-hover:bg-blue-500/30', badgeHoverText: 'group-hover:text-blue-200' }
+  // 只列出當前服務商下、題庫實際有的科別
+  const providerExamCodes = PROVIDER_EXAMS[provider] || []
+  const visibleExams = providerExamCodes.filter(code => examTypes.includes(code))
+  const providerTotal = visibleExams.reduce((sum, code) => sum + (counts[code] || 0), 0)
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
       <div className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-gray-700/80">
@@ -587,26 +608,28 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
             <Loader2 size={32} className="animate-spin" />
             <span className="text-sm">題庫載入中...</span>
           </div>
-        ) : provider === 'aws' ? (
+        ) : visibleExams.length > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {examTypes.map(exam => (
+              {visibleExams.map(exam => (
                 <button
                   key={exam}
                   onClick={() => onSelect(exam)}
-                  className="flex items-center justify-between px-4 py-4 rounded-xl bg-gray-700/60 hover:bg-orange-500/20 border border-gray-600 hover:border-orange-400 text-left transition-all duration-200 group"
+                  className={`flex items-center justify-between px-4 py-4 rounded-xl bg-gray-700/60 ${accent.hoverBg} border border-gray-600 ${accent.hoverBorder} text-left transition-all duration-200 group`}
                 >
-                  <span className="font-semibold text-white group-hover:text-orange-300">{exam}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-lg bg-gray-600 text-gray-300 group-hover:bg-orange-500/30 group-hover:text-orange-200">{counts[exam] || 0} 題</span>
+                  <span className={`font-semibold text-white ${accent.hoverText}`}>{exam}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-lg bg-gray-600 text-gray-300 ${accent.badgeHoverBg} ${accent.badgeHoverText}`}>{counts[exam] || 0} 題</span>
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => onSelect('')}
-              className="w-full mt-4 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white text-sm font-medium transition-colors"
-            >
-              全部科別（{questions.length} 題）
-            </button>
+            {visibleExams.length > 1 && (
+              <button
+                onClick={() => onSelect('')}
+                className="w-full mt-4 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white text-sm font-medium transition-colors"
+              >
+                全部科別（{providerTotal} 題）
+              </button>
+            )}
           </>
         ) : (
           <div className="flex flex-col items-center gap-3 py-10 text-gray-400 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
@@ -2049,6 +2072,7 @@ const EXAM_SPECS = {
   'SCS-C03': { name: 'AWS Certified Security - Specialty (C03)', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
   'AIP-C01': { name: 'AWS Certified Generative AI Developer - Professional', count: 85, timeLimit: 205, passScore: 750, questions: '85 題，複選題及多個答案', time: '205 分鐘（3 小時 25 分）', types: '單選、多選' },
   'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
+  'PCA': { name: 'Google Professional Cloud Architect', count: 50, timeLimit: 120, passScore: 700, questions: '50 題（單選與多選）', time: '120 分鐘（2 小時）', types: '單選、多選' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {
