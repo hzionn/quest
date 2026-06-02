@@ -496,6 +496,32 @@ function getDisplayQuestion(q, lang, enMap) {
   return q
 }
 
+// 案例研究背景：與實際問題分開顯示，預設收合避免冗長題幹蓋過問題本身
+function CaseStudyBox({ text }) {
+  const [open, setOpen] = useState(false)
+  if (!text) return null
+  return (
+    <div className="mb-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/60 dark:bg-blue-900/10 overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-blue-700 dark:text-blue-300 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 transition-colors"
+      >
+        <span className="flex items-center gap-2"><FileText size={15} /> 案例背景</span>
+        <span className="flex items-center gap-1 text-xs font-normal text-blue-500/80 dark:text-blue-400/80">
+          {open ? '收合' : '展開'}
+          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </span>
+      </button>
+      {open && (
+        <div className="px-4 pb-3 pt-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words max-h-80 overflow-y-auto border-t border-blue-200/60 dark:border-blue-900/40">
+          {text}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Main App ──
 // ── Password Gate ──
 const SITE_PASSWORD = 'julia'
@@ -1346,7 +1372,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               </div>
             </div>
 
-            {/* Question text */}
+            {/* Case study background (collapsible) + Question text */}
+            <CaseStudyBox text={currentQ.caseStudy} />
             <p className="text-base leading-relaxed mb-5 whitespace-pre-wrap break-words">{currentQ.question}</p>
 
             {/* Navigation: prev, submit, next */}
@@ -2330,6 +2357,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
             </div>
+            <CaseStudyBox text={examQ.caseStudy} />
             <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>
 
             <QuestionInput
@@ -2422,6 +2450,7 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
       </button>
       {expanded && (
         <div className="px-4 pb-4 pt-2 border-t border-gray-200 dark:border-gray-700 animate-fade-in">
+          <CaseStudyBox text={displayQ.caseStudy} />
           <p className="text-sm mb-3 whitespace-pre-wrap break-words">{displayQ.question}</p>
           <QuestionInput
             question={displayQ}
