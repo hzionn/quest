@@ -40,7 +40,7 @@ JOBS = [
     ('GCP/Professional Cloud Architect_with_aizh-401-600.pdf',
      'public/data/pca_192_267.json', 'public/data/pca_en_192_267.json', 'marker', 0),
     ('GCP/Professional Cloud Architect_with_aizh-601-768.pdf',
-     'public/data/pca_268_344.json', 'public/data/pca_en_268_344.json', 'seq', 268),
+     'public/data/pca_268_345.json', 'public/data/pca_en_268_345.json', 'seq', 268),
 ]
 
 

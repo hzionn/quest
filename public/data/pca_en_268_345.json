@@ -1498,5 +1498,24 @@
       "C": "Resize compute resources to match predefined Compute Engine machine types. 错误原因: 调整计算资源以匹配 Compute Engine 的机器类型是迁移过程中需要考虑的事项，但在迁移前并不需要对本地架构进行此类调整。迁移后可以根据 Google Cloud 的最佳实践优化资源配置，而不是在迁移前进行资源调整。",
       "D": "Containerize the micro-services and host them in Google Kubernetes Engine. 正确原因: 将微服务容器化是迁移到 Google Cloud 的最佳实践之一，因为容器化可以提高应用的可移植性和可管理性。Google Kubernetes Engine (GKE) Google Cloud 提供的托管 Kubernetes 服务，能够高效地管理容器化的微服务。在迁移前进行容器化可以确保应用程序能够顺利运行在 GKE 上，同时简化后续的部署和管理工作。"
     }
+  },
+  {
+    "exam": "PCA",
+    "id": 345,
+    "type": "single",
+    "question": "TerramEarth's CTO wants to use the raw data from connected vehicles to help identify approximately when a vehicle in the field will have a catastrophic failure. You want to allow analysts to centrally query the vehicle data. Which architecture should you recommend?",
+    "options": {
+      "A": "IoT devices -> FTP -> Google Cloud Load Balancing -> Google Container Engine -> Cloud Pub/Sub -> Cloud Dataflow -> BigQuery -> Analysts",
+      "B": "IoT devices -> FTP -> App Engine Flexible Environment -> Cloud Pub/Sub -> Cloud Dataflow -> BigQuery -> Analysts",
+      "C": "IoT devices -> FTP -> Google Cloud Load Balancing -> Google Container Engine -> Cloud Pub/Sub -> Cloud Dataflow -> Cloud SQL -> Analysts",
+      "D": "IoT devices -> FTP -> App Engine Flexible Environment -> Cloud Pub/Sub -> Cloud Dataflow -> Cloud SQL -> Analysts"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Container-based ingestion behind a load balancer scales for the high-volume telemetry, while BigQuery is the right central analytics store for analysts to query petabytes of vehicle data.",
+      "B": "App Engine Flexible is a good HTTP-app runtime but is a less natural fit than a load-balanced container fleet for high-throughput IoT/FTP ingestion at TerramEarth's scale.",
+      "C": "Container Engine ingestion is fine, but Cloud SQL is a single-instance relational database — it does not scale to the analytical workloads or data volume implied by 'centrally query the vehicle data'.",
+      "D": "Combines the weaker ingestion fit of (B) with the wrong analytics store of (C); Cloud SQL cannot serve as the central analytics warehouse for this workload."
+    }
   }
 ]

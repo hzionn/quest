@@ -1498,5 +1498,24 @@
       "C": "Resize compute resources to match predefined Compute Engine machine types. 错误原因: 调整计算资源以匹配 Compute Engine 的机器类型是迁移过程中需要考虑的事项，但在迁移前并不需要对本地架构进行此类调整。迁移后可以根据 Google Cloud 的最佳实践优化资源配置，而不是在迁移前进行资源调整。",
       "D": "Containerize the micro-services and host them in Google Kubernetes Engine. 正确原因: 将微服务容器化是迁移到 Google Cloud 的最佳实践之一，因为容器化可以提高应用的可移植性和可管理性。Google Kubernetes Engine (GKE) Google Cloud 提供的托管 Kubernetes 服务，能够高效地管理容器化的微服务。在迁移前进行容器化可以确保应用程序能够顺利运行在 GKE 上，同时简化后续的部署和管理工作。"
     }
+  },
+  {
+    "exam": "PCA",
+    "id": 345,
+    "type": "single",
+    "question": "TerramEarth 的 CTO 希望利用来自联网车辆的原始数据来帮助识别大约何时现场车辆会发生灾难性故障。您希望允许分析师集中查询车辆数据。您应该推荐哪种架构?",
+    "options": {
+      "A": "IoT 装置 → FTP → Google Cloud Load Balancing → Google Container Engine → Cloud Pub/Sub → Cloud Dataflow → BigQuery → 分析师",
+      "B": "IoT 装置 → FTP → App Engine Flexible Environment → Cloud Pub/Sub → Cloud Dataflow → BigQuery → 分析师",
+      "C": "IoT 装置 → FTP → Google Cloud Load Balancing → Google Container Engine → Cloud Pub/Sub → Cloud Dataflow → Cloud SQL → 分析师",
+      "D": "IoT 装置 → FTP → App Engine Flexible Environment → Cloud Pub/Sub → Cloud Dataflow → Cloud SQL → 分析师"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。负载均衡器后的容器化摄入可承受车队遥测的高吞吐量，BigQuery 作为集中分析数据仓库可让分析师在 PB 级车辆数据上直接查询。",
+      "B": "App Engine Flexible 适合 HTTP 应用，但对 TerramEarth 这种以 IoT/FTP 高吞吐量摄入的场景，不如负载均衡器 + 容器集群自然。",
+      "C": "Container Engine 摄入合理，但 Cloud SQL 是关系型单实例数据库，无法承担题目要求的“集中分析查询”工作负载与数据规模。",
+      "D": "同时具备 (B) 较弱的摄入选型与 (C) 错误的分析存储，Cloud SQL 不适合作为集中分析仓库。"
+    }
   }
 ]
