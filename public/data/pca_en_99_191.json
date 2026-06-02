@@ -148,7 +148,8 @@
       "B": "Deploy a new service to Cloud Run with the new version. Add a Cloud Load Balancing instance in front of both services. 正确性分析: 此选项建议创建两个独立的服务，并使用 Cloud Load Balancer 来分配流量。虽然技术上可行，但这种方法复杂度较 iS, BAMA Cloud Run 的最佳实践。缺点: 需要额外配置 Cloud Load Balancer，增加了管理成本和复杂性。结论: 错误。",
       "C": "In the Google Cloud Console page for Cloud Run, set up continuous deployment using Cloud Build for the development branch. As part of the Cloud Build trigger, configure the substitution variable TRAFFIC_PERCENTAGE with the percentage of traffic you want directed to a new version. 正确性分析: 此选项提到使用 Cloud Build 的替代变量 TRAFFIC_PERCENTAGE 来控制流量分配。然而，Cloud Build 的主要功能是构建和部署代码，而不是直接管理流量分配。此选项混淆了 Cloud Build 和 Cloud Run 的职责。缺点: 不符合 Cloud Build 的设计用途，无法直接实现流量百分比控制。结论: 错误。",
       "D": "In the Google Cloud Console, configure Traffic Director with a new Service that points to the new version of the application on Cloud Run. Configure Traffic Director to send a small percentage of traffic to the new version of the application. 正确性分析: Traffic Director Google Cloud 的全局流量管理工具，适用于复杂的多区域流量分配场景。然而，对于 Cloud Run 的渐进式流量分配，使用 Traffic Director 是过度设计，且增加了不必要的复杂性。fim: 配置复杂，超出题目需求范围。结论: 错误。"
-    }
+    },
+    "officialNo": 19
   },
   {
     "exam": "PCA",
@@ -305,7 +306,8 @@
       "B": "Enable Firewall Rules Logging for the firewall rules you want to monitor. Firewall Insights需要启用Firewall Rules Logging才能生成相关日志。如果没有启用Firewall Rules Logging，Firewall Insights页面将无法显示任何日志行。此选项正确。",
       "C": "Verify that your user account is assigned the compute.networkAdmin Identity and Access Management (IAM) role. compute.networkAdmin角色人允许用户管理网络资源，但与日志生成无直接关系。即使用户没有此角色，启用Firewall Rules Logging仍然是解决问题的关键。此选项错误。",
       "D": "Install the Google Cloud SDK, and verify that there are no Firewall logs in the command line output. 安装Google Cloud SDK并检查日志输出是一个验证步骤，但它无法解决没有日志行的问题。问题的根本原因是没有启用Firewall Rules Logging，而不是日志工具或SDK的问题。此选项错误。"
-    }
+    },
+    "officialNo": 40
   },
   {
     "exam": "PCA",
@@ -532,7 +534,8 @@
       "B": "在远程 git 仓库上安装一个 post-commit hook，当代码推送到开发分支时测试代码并构建容器。在成功提交后，让开发人员将新构建的容器镜像部署到开发集群。错误原因: 虽然post-commit hook可以自动触发构建，但仍然依赖开发人员手动部署镜像，这与题目要求的“自动部署\"不符。此 db, post-commit hook的功能有限，无法实现复杂的CIMCD流程。",
       "C": "基于开发分支创建一个 Cloud Build 触发器，用于测试代码、构建容器并将其存储在 Container Registry 中。创建一个部署管道，监视新镜像并将新镜像部署到开发集群。确保只有部署工具有权限部署新版本。正确原因: 此选项完全符合题目要求。Cloud Build触发器可以自动测试代码并构建容器镜像，Container Registry用于存储镜像，部署管道可以自动监视新镜像并部署到开发集群。通过权限管理，确保只有部署工具可以执行部署操作，符合CMCD最佳实践。",
       "D": "基于开发分支创建一个 cloud Build 触发器，用于构建新的容器镜像并将其存储在 Container Registry 中。依赖 Vulnerability Scanning 确保代码测试成功。作为 Cloud Build 流程的最后一步，将新的容器镜像部署到开发集群。确保只有 Cloud Build AX 限部署新版本。错误原因: 虽然此选项也使用了Cloud Build触发器和Container Registry，但依赖Vulnerability Scanning来确保代码测试成功是不合理的。Vulnerability scanning主要用于安全漏洞扫描，而不是代码测试。此外，将部署作为loud Build流程的一部分可能会导致流程过于耦合，缺乏灵活性。"
-    }
+    },
+    "officialNo": 39
   },
   {
     "exam": "PCA",
