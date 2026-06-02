@@ -1517,5 +1517,24 @@
       "C": "Container Engine ingestion is fine, but Cloud SQL is a single-instance relational database — it does not scale to the analytical workloads or data volume implied by 'centrally query the vehicle data'.",
       "D": "Combines the weaker ingestion fit of (B) with the wrong analytics store of (C); Cloud SQL cannot serve as the central analytics warehouse for this workload."
     }
+  },
+  {
+    "exam": "PCA",
+    "id": 346,
+    "type": "single",
+    "question": "For this question, refer to the Helicopter Racing League (HRL) case study. Recently HRL started a new regional racing league in Cape Town, South Africa. In an effort to give customers in Cape Town a better user experience, HRL has partnered with the Content Delivery Network provider, Fastly. HRL needs to allow traffic coming from all of the Fastly IP address ranges into their Virtual Private Cloud network (VPC network). You are a member of the HRL security team and you need to configure the update that will allow only the Fastly IP address ranges through the External HTTP(S) load balancer. Which command should you use?",
+    "options": {
+      "A": "gcloud compute security-policies rules update 1000 --security-policy from-fastly --src-ip-ranges * --action \"allow\"",
+      "B": "gcloud compute firewall rules update sourceiplist-fastly --priority 1000 --allow tcp:443",
+      "C": "gcloud compute firewall rules update hlr-policy --priority 1000 --target-tags=sourceiplist-fastly --allow tcp:443",
+      "D": "gcloud compute security-policies rules update 1000 --security-policy hlr-policy --expression \"evaluatePreconfiguredExpr('sourceiplist-fastly')\" --action \"allow\""
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. The traffic enters through an External HTTP(S) load balancer, which is protected by Cloud Armor security policies (not VPC firewall rules). You update the security-policy rule (priority 1000) to allow the Fastly source IP ranges. This is the command that targets the load balancer path.",
+      "B": "Incorrect. VPC firewall rules do not govern traffic that arrives through an External HTTP(S) load balancer; Cloud Armor security policies do. A firewall rule is the wrong resource for this requirement.",
+      "C": "Incorrect. Same problem as B — this is a VPC firewall rule, not a Cloud Armor security policy, so it does not control access through the External HTTP(S) load balancer.",
+      "D": "Incorrect. While it does use security-policies, it relies on a preconfigured expression / named policy rather than directly allowing the required Fastly source IP ranges as the question asks; A is the command that directly allows the Fastly IP ranges."
+    }
   }
 ]

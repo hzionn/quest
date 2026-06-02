@@ -1517,5 +1517,24 @@
       "C": "Container Engine 摄入合理，但 Cloud SQL 是关系型单实例数据库，无法承担题目要求的“集中分析查询”工作负载与数据规模。",
       "D": "同时具备 (B) 较弱的摄入选型与 (C) 错误的分析存储，Cloud SQL 不适合作为集中分析仓库。"
     }
+  },
+  {
+    "exam": "PCA",
+    "id": 346,
+    "type": "single",
+    "question": "对于这个问题，请参考直升机赛车联盟 (HRL) 案例研究。最近，HRL 在南非开普敦启动了一个新的区域赛车联盟。为了给开普敦的客户提供更好的用户体验，HRL 与内容分发网络提供商 Fastly 合作。HRL 需要允许来自所有 Fastly IP 地址范围的流量进入其虚拟私有云网络 (VPC network)。作为 HRL 安全团队的一员，您需要配置更新，以便仅允许 Fastly IP 地址范围通过外部 HTTP(S) 负载均衡器。您应该使用哪个命令?",
+    "options": {
+      "A": "gcloud compute security-policies rules update 1000 --security-policy from-fastly --src-ip-ranges * --action \"allow\"",
+      "B": "gcloud compute firewall rules update sourceiplist-fastly --priority 1000 --allow tcp:443",
+      "C": "gcloud compute firewall rules update hlr-policy --priority 1000 --target-tags=sourceiplist-fastly --allow tcp:443",
+      "D": "gcloud compute security-policies rules update 1000 --security-policy hlr-policy --expression \"evaluatePreconfiguredExpr('sourceiplist-fastly')\" --action \"allow\""
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。流量通过外部 HTTP(S) 负载均衡器进入，由 Cloud Armor 安全策略（而非 VPC 防火墙规则）保护。更新安全策略规则（优先级 1000）以允许 Fastly 来源 IP 范围，正是针对负载均衡器路径的命令。",
+      "B": "错误。VPC 防火墙规则无法管控经由外部 HTTP(S) 负载均衡器进入的流量，应由 Cloud Armor 安全策略处理；防火墙规则用错了资源。",
+      "C": "错误。与 B 相同问题——这是 VPC 防火墙规则而非 Cloud Armor 安全策略，无法控制通过外部 HTTP(S) 负载均衡器的访问。",
+      "D": "错误。虽然用到 security-policies，但它依赖预设表达式/具名策略，而非如题目要求直接允许 Fastly 来源 IP 范围；A 才是直接允许 Fastly IP 范围的命令。"
+    }
   }
 ]
