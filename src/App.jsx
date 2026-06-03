@@ -1354,7 +1354,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
                 {currentQ.officialNo && (
-                  <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="官方題庫題號">官方 #{currentQ.officialNo}</span>
+                  <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{currentQ.officialNo}</span>
                 )}
                 <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
               </div>
@@ -1523,7 +1523,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
             className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
-            <option value="official">官方必考（93 題）</option>
+            <option value="official">壓題參考（93 題）</option>
             <option value="single">單選題</option>
             <option value="multiple">多選題</option>
             <option value="matching">配對題</option>
@@ -2362,7 +2362,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
               {examQ.officialNo && (
-                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="官方題庫題號">官方 #{examQ.officialNo}</span>
+                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{examQ.officialNo}</span>
               )}
             </div>
             <CaseStudyBox text={examQ.caseStudy} />
