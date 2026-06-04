@@ -484,6 +484,9 @@ function reducer(state, action) {
 
 // ── Helper: Question type label ──
 const typeLabels = { single: '單選題', multiple: '多選題', matching: '配對題', ordering: '排序題' }
+// ── Helper: Exam code display name (data keys stay as the short code) ──
+const EXAM_DISPLAY_NAMES = { 'PCA': 'GCP-PCA' }
+const displayExam = code => EXAM_DISPLAY_NAMES[code] || code
 // 錯題清單：需累計答對這麼多次才算「學會」並移出清單（答錯不會歸零）
 const MASTERY_THRESHOLD = 3
 
@@ -644,7 +647,7 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
                   onClick={() => onSelect(exam)}
                   className={`flex items-center justify-between px-4 py-4 rounded-xl bg-gray-700/60 ${accent.hoverBg} border border-gray-600 ${accent.hoverBorder} text-left transition-all duration-200 group`}
                 >
-                  <span className={`font-semibold text-white ${accent.hoverText}`}>{exam}</span>
+                  <span className={`font-semibold text-white ${accent.hoverText}`}>{displayExam(exam)}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-lg bg-gray-600 text-gray-300 ${accent.badgeHoverBg} ${accent.badgeHoverText}`}>{counts[exam] || 0} 題</span>
                 </button>
               ))}
@@ -1173,7 +1176,7 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
               <tbody>
                 {Object.entries(stats.byExam).map(([exam, count]) => (
                   <tr key={exam} className="border-b border-gray-100 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-750/50 transition-colors">
-                    <td className="py-2.5 px-4 font-medium">{exam}</td>
+                    <td className="py-2.5 px-4 font-medium">{displayExam(exam)}</td>
                     <td className="py-2.5 px-4">
                       <span className="inline-flex items-center gap-2">
                         {count}
@@ -1350,7 +1353,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             {/* Question header */}
             <div className="flex items-start justify-between mb-5">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{currentQ.exam}</span>
+                <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{displayExam(currentQ.exam)}</span>
                 <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
                 {currentQ.officialNo && (
@@ -1512,7 +1515,7 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
             className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
-            {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
+            {examTypes.map(e => <option key={e} value={e}>{displayExam(e)}</option>)}
           </select>
         </div>
         <div className="flex-1 min-w-[140px]">
@@ -2130,11 +2133,11 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                   <Clock size={32} className="text-orange-500" />
                 </div>
                 <h2 className="text-xl font-bold">模擬考設定</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{spec ? `依據 ${selectedExam} 真實考試規則` : '設定考試參數後開始挑戰'}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{spec ? `依據 ${displayExam(selectedExam)} 真實考試規則` : '設定考試參數後開始挑戰'}</p>
               </div>
               {spec && (
                 <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 text-sm">
-                  <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> {selectedExam} 考試規格</p>
+                  <p className="font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1.5"><AlertCircle size={14} /> {displayExam(selectedExam)} 考試規格</p>
                   <ul className="text-blue-600 dark:text-blue-400 space-y-1 ml-5 list-disc">
                     <li>{spec.questions}</li>
                     <li>{spec.time}</li>
@@ -2182,7 +2185,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
                   >
                     <option value="">全部科別</option>
-                    {examTypes.map(e => <option key={e} value={e}>{e}</option>)}
+                    {examTypes.map(e => <option key={e} value={e}>{displayExam(e)}</option>)}
                   </select>
                 </div>
                 {/* Language toggle - only show when CLF-C02 has English version */}
@@ -2358,7 +2361,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
           <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-5">
-              <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{examQ.exam}</span>
+              <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{displayExam(examQ.exam)}</span>
               <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
               {examQ.officialNo && (
@@ -2451,7 +2454,7 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
             ? <CheckCircle size={18} className="text-green-600 dark:text-green-400 shrink-0" />
             : <XCircle size={18} className="text-red-600 dark:text-red-400 shrink-0" />
           }
-          <span className="text-sm font-semibold">第 {index + 1} 題 — {detail.question.exam} #{detail.question.id}</span>
+          <span className="text-sm font-semibold">第 {index + 1} 題 — {displayExam(detail.question.exam)} #{detail.question.id}</span>
           <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium">{typeLabels[detail.question.type]}</span>
         </div>
         <ChevronRight size={16} className={`transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} />
@@ -2582,7 +2585,7 @@ function StatsTab({ state, dispatch, examTypes }) {
                 return (
                   <div key={exam} className="p-4 rounded-xl border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold text-sm">{exam}</span>
+                      <span className="font-semibold text-sm">{displayExam(exam)}</span>
                       <div className="flex items-center gap-3 text-sm">
                         <span className="text-gray-500 dark:text-gray-400">{s.correct}/{s.total}</span>
                         <span className={`font-bold ${passed ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{pct}%</span>
@@ -2693,7 +2696,7 @@ function QuestionList({ items, dispatch, showMastery = false, defaultCollapsed =
             >
               <div className="flex items-center gap-2">
                 {collapsed ? <ChevronRight size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
-                <span className="text-sm font-semibold">{exam}</span>
+                <span className="text-sm font-semibold">{displayExam(exam)}</span>
                 <span className="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg font-medium">{examItems.length} 題</span>
               </div>
               <span
