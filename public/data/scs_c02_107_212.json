@@ -1399,8 +1399,8 @@
     "type": "multiple",
     "question": "一家公司有一个批处理系统,该系统使用 Amazon S3 、 Amazon EC2 和 AWS Key Management Service AWS KMS 。该系统使用两个 AWS 账户:账户 A 和账户 B 。账户 A 托管一个 S3 存储桶, 用于存储将被处理的对象。 S3 存储桶还存储处理结果。所有 S3 存储桶对象均由账户 A 中管理的 KMS 密钥加密。账户 B 托管一个 VPC ,该 VPC 有一组 EC2 实例通过存储桶策略中的声明访问账户 A 的 S3 存储桶。该 VPC 创建时启用了 DNS 主机名和 DNS 解析功能。一名安全工程师需要在不更改系统代码的情况下更新系统设计。批处理 EC2 实例的任何 AWS API 调用均不得通过互联网传输。哪种步骤组合可以满足这些要求?(选择两项)",
     "options": {
-      "A": "在账户",
-      "B": "的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对于网关 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3 GetObject 、 s3 ListBucket 、 s3 PutObject 和 s3 PutObjectAcl 操作。 B. 在账户 B 的 VPC 中,为 Amazon S3 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3 GetObject 、 s3 ListBucket 、 s3 PutObject 和 s3 PutObjectAcl 操作。",
+      "A": "在账户 B 的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对于网关 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3:GetObject 、 s3:ListBucket 、 s3:PutObject 和 s3:PutObjectAcl 操作。",
+      "B": "在账户 B 的 VPC 中,为 Amazon S3 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3:GetObject 、 s3:ListBucket 、 s3:PutObject 和 s3:PutObjectAcl 操作。",
       "C": "在账户 B 的 VPC 中,为 AWS KMS 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 KMS 密钥执行 kms:Encrypt 、 kms:Decrypt 和 kms:GenerateDataKey 操作。确保为终端节点启用私有 DNS 。",
       "D": "在账户 B 的 VPC 中,为 AWS KMS 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 KMS 密钥执行 kms:Encrypt 、 kms:Decrypt 和 kms:GenerateDataKey 操作。确保为终端节点禁用私有 DNS 。",
       "E": "在账户 B 的 VPC 中,验证 S3 存储桶策略是否允许跨账户使用 s3 PutObjectAcl 操作。在账户 B 的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对于网关 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3 GetObject 、 s3 ListBucket 和 s3 PutObject 操作。"
@@ -1412,7 +1412,9 @@
     "explanations": {
       "C": "在账户 B 的 VPC 中,为 AWS KMS 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 KMS 密钥执行 kms:Encrypt 、 kms:Decrypt 和 kms:GenerateDataKey 操作。确保为终端节点启用私有 DNS 。正确: AWS KMS 支持接口 VPC 终端节点,可以确保流量不经过互联网。正确:资源策略允许所需的 KMS 操作( kms:Encrypt 、 kms:Decrypt 和 kms:GenerateDataKey ) ,满足加密和解密的需求。正确:启用私有 DNS 确保通过私有网络解析 KMS 的域名。",
       "D": "在账户 B 的 VPC 中,为 AWS KMS 创建一个接口 VPC 终端节点。对于接口 VPC 终端节点,创建一个资源策略,允许对 KMS 密钥执行 kms:Encrypt 、 kms:Decrypt 和 kms:GenerateDataKey 操作。确保为终端节点禁用私有 DNS 。错误:禁用私有 DNS 会导致无法通过私有网络解析 KMS 的域名,违背题目要求。",
-      "E": "在账户 B 的 VPC 中,验证 S3 存储桶策略是否允许跨账户使用 s3 PutObjectAcl 操作。在账户 B 的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对于网关 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3 GetObject 、 s3 ListBucket 和 s3 PutObject 操作。错误:虽然网关 VPC 终端节点是正确的,但题目没有要求验证 S3 存储桶策略的 s3 PutObjectAcl 操作。"
+      "E": "在账户 B 的 VPC 中,验证 S3 存储桶策略是否允许跨账户使用 s3 PutObjectAcl 操作。在账户 B 的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对于网关 VPC 终端节点,创建一个资源策略,允许对 S3 存储桶执行 s3 GetObject 、 s3 ListBucket 和 s3 PutObject 操作。错误:虽然网关 VPC 终端节点是正确的,但题目没有要求验证 S3 存储桶策略的 s3 PutObjectAcl 操作。",
+      "A": "在账户 B 的 VPC 中,为 Amazon S3 创建一个网关 VPC 终端节点。对 S3 存储桶执行 s3:GetObject、s3:ListBucket、s3:PutObject 和 s3:PutObjectAcl 操作。正确：S3 Gateway VPC Endpoint 提供 VPC 内对 S3 的私有连接，流量不经过互联网，符合题目“EC2 实例的 AWS API 调用均不得通过互联网传输”的要求。",
+      "B": "在账户 B 的 VPC 中,为 Amazon S3 创建一个接口 VPC 终端节点。错误：S3 虽然也支持 Interface VPC Endpoint，但 Gateway Endpoint 是 S3 的标准且免费的私有连接方案，运维与成本更低；本题用 Gateway Endpoint 即可满足需求，选 Interface Endpoint 并非最佳实践。"
     }
   },
   {
