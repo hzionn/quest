@@ -21,7 +21,7 @@
   {
     "exam": "SAA-C03",
     "id": 502,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司运营一个使用内容管理系统 (CMS) 的网站，该系统运行在 Amazon EC2 上。 CMS 运行在单个 EC2 实例上，并使用 Amazon Aurora MySQL Multi-AZ DB 实例作为数据层。网站图片存储在挂载到 EC2 实例内部的 Amazon Elastic Block Store (Amazon EBS) 卷上。 解决方案架构师应采取哪些操作组合来提高网站的性能和弹性” (选择两个)",
     "options": {
       "A": "将网站图片移到一个挂载到每个 EC2 实例上的 Amazon S3 存储桶中",
@@ -30,9 +30,7 @@
       "D": "从现有的 EC2 实例创建一个Amazon Machine Image (AMI). {FA AMI 4 Application Load Balancer 后面配置新的实例，并作 为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站在 AWS Global Accelerator 中配置一个加速 器。",
       "E": "从现有的 EC2 实例创建一个Amazon Machine Image (AMI), {3 AMI 4 Application Load Balancer 后面配置新的实例，并作 为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站配置一个Amazon CloudFront 分发。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com “”闲鱼: https://www.goofish.comy/personal?userld=2645260430 ”微信: Examtopics"
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance 错误：Amazon S3 不支持直接挂载到 EC2 实例。虽然可以通过 S3 API 或工具（如 s3fs）访问 S3，但这不是最佳实践，目性能可能 受限。",
       "B": "Share the website images by using an NFS share from the primary EC2 instance. Mount this share on the other EC2 instances 错误：使用 NFS 共享会导致单点故障问题，目性能和扩展性较差，不符合高可用性和性能优化的要求。",
@@ -139,7 +137,7 @@
   {
     "exam": "SAA-C03",
     "id": 508,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司已将多个 Microsoft Windows Server 工作负载迁移到运行在 us-west-1 区域的 Amazon EC2 实例上。该公司根据需要手动 备份这些工作负载以创建镜像。 如果 us-west-1 区域发生自然灾害，该公司希望能够快速在 us-west-2 区域恢复工作负载。该公司希望 EC2 实例的数据丢失不超过 24 小时。同时，该公司希望自动化 EC2 实例的任何备份。 哪些解决方案可以以最少的管理工作量满足这些需求? (选择两个)",
     "options": {
       "A": "创建一个基于 Amazon EC2 BY Amazon Machine Image (AMI) 生命周期策略，根据标签创建备份。将备份计划安排为每天运行 两次。按需复制镜像。",
@@ -148,9 +146,7 @@
       "D": "使用 AWS Backup 创建一个备份库。使用 AWS Backup 为 EC2 实例创建备份计划，根据标签值定义备份目标为 us-west-2。将 备份计划安排为每天运行两次。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com “”闲鱼: https://www.goofish.comy/personal?userld=2645260430 ”微信: Examtopics",
       "E": "使用 AWS Backup 创建一个备份库。使用 AWS Backup 79 EC2 实例创建备份计划，根据标签值将备份计划安排为每天运行两 次。按需复制到 us-west-2。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Create an Amazon EC2-backed Amazon Machine Image (AMI) lifecycle policy to create a backup based on tags. Schedule the backup to run twice daily. Copy the image on demand. 正确性分析：此选项提到使用AMI椹命周期策略创建备份并按需复制镜像，但按需复制需要手动操作，无法满足“自动化备份”的要 求。 结论：错误。",
       "B": "Create an Amazon EC2-backed Amazon Machine Image (AMI) lifecycle policy to create a backup based on tags. Schedule the backup to run twice daily. Configure the copy to the us-west-2 Region. 正确性分析：此选项使用AMI椹命周期策略创建备份，并自动将备份复制到us-west-2区域，符合“自动化备份”和“跨区域棭难恢 复”的要求。 结论：正确。",
@@ -276,7 +272,7 @@
   {
     "exam": "SAA-C03",
     "id": 515,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司正在将本地应用程序迁移到AWS。该公司希望使用Amazon Redshift作为解决方案。 在此场景中，哪些用例适合使用Amazon Redshift? (选择三个。)",
     "options": {
       "A": "支持数据API以通过传统、容器化和事件驱动的应用程序访问数据",
@@ -286,9 +282,7 @@
       "E": "全球扩展以支持PB级数据和每分钟数干万次请求",
       "F": "创建集群的二级副本"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Supporting data APIs to access data with traditional, containerized, and event-driven applications 分析：Amazon Redshift主要用于数据仓库和分析工作负载，而不是专门设计用于支持数据API访问。此选项更适合Amazon DynamoDB或Amazon RDS等服务，因此此选项错误。",
       "B": "Supporting client-side and server-side encryption 分析：Amazon Redshift支持加密功能，包括客户端和服务器端加密，确保数据安全性。此选项正确。",
@@ -415,7 +409,7 @@
   {
     "exam": "SAA-C03",
     "id": 522,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司使用 Amazon Elastic Kubernetes Service (Amazon EKS) 运行容器应用程序。该公司的工作负载在一天中并不一致。公司希 望 Amazon EKS 根据工作负载进行自动扩展和缩减。 以下步骤组合可以以最少的运营开销满足这些要求?” (选择两个。)",
     "options": {
       "A": "使用 AWS Lambda 函数调整 EKS 集群的大小。",
@@ -424,9 +418,7 @@
       "D": "并将其连接到 Amazon EKS,",
       "E": "使用 AWS App Mesh 观察网络活动。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Use an AWS Lambda function to resize the EKS cluster. 错误：虽然 AWS Lambda 可以用于自动化任务，但直接使用 Lambda 函数来调整 EKS 集群的大小需要额外的编程和维护工作，增 加了操作开销。",
       "B": "Use the Kubernetes Metrics Server to activate horizontal pod autoscaling. 正确：Kubernetes Metrics Server 是实现水平 Pod 自动扩展（Horizontal Pod Autoscaling, HPA）的关键组件。它可以根据 CPU 或 内存使用情况动态调整 Pod 的数量。",
@@ -831,7 +823,7 @@
   {
     "exam": "SAA-C03",
     "id": 543,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司在多个独立计费的AWS账户中运行Amazon EC2实例。该公司最近购买了一个Savings Plan。由于公司业务需求的变化，公 司已经退役了大量的EC2实例。该公司希望在其其他AWS账户中使用Savings Plan折扣。 哪些步骤组合可以满足这些要求? (选择两个)",
     "options": {
       "A": "从管理账户的AWS Account Management Console中，在计费偏好部分启用折扣共享。",
@@ -840,9 +832,7 @@
       "D": "在一个新的付款账户中，在AWS Organizations中创建一个组织。从管理账户邀请其他AWS账户加入该组织。",
       "E": "在现有的AWS账户中，在AWS Organizations中创建一个组织，该账户拥有现有的EC2实例和Savings Plan。从管理账户邀请其他 AWS账户加入该组织。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "From the AWS Account Management Console of the management account, turn on discount sharing from the billing preferences section. 正确。AWS允许通过管理账户在计费偏好中启用折扣共享，这样可以将Savings Plan的折扣应用到组织中的其他账户。",
       "B": "From the AWS Account Management Console of the account that purchased the existing Savings Plan, turn on discount sharing from the billing preferences section. Include all accounts. 错误。折扣共享必须通过AWS Organizations的管理账户来启用，而不是通过购买Savings Plan的账户。",
@@ -968,7 +958,7 @@
   {
     "exam": "SAA-C03",
     "id": 550,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司正在使用AWS Key Management Service (AWS KMS) 密钥来加密 AWS Lambda 环境变量。解决方案架构师需要确保具有 所需的权限来解密和使用环境变量。 解决方案架构师必须采取哪些步骤来实施正确的权限? (选择两个)",
     "options": {
       "A": "在 Lambda 资源策略中添加 AWS KMS 权限。",
@@ -977,9 +967,7 @@
       "D": "在 AWS KMS 密角策略中允许 Lambda 执行角色。",
       "E": "在 AWS KMS 密钥策略中允许 Lambda 资源策略。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Add AWS KMS permissions in the Lambda resource policy. 错误。Lambda 资源策略主要用于控制对 Lambda 函数的访问权限，而不是用于配置 KMS 的权限。KMS 权限需要在执行角色或 KMS 密钥策略中配置。",
       "B": "Add AWS KMS permissions in the Lambda execution role. 正确。Lambda 执行角色需要具备解密 KMS 密钥的权限，以便能够解密环境变量。",
@@ -1143,7 +1131,7 @@
   {
     "exam": "SAA-C03",
     "id": 559,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司在 AWS 上为不同的产品线托管了多个应用程序。这些应用程序使用了不同的计算资源，包括 Amazon EC2 实例和 Application Load Balancers。这些应用程序运行在同一个 AWS Organizations 组织中的不同 AWS 账户中，并分布在多个 AWS 区域 内。每个产品线的团队已经在各自账户中为每个计算资源打上了标签。 该公司希望通过 Organizations 的合并计费功能获取每个产品线的成本详细信息。 哪种步骤组合可以满足这些需求? (选择两个。)",
     "options": {
       "A": "控制台中选择一个特定的 AWS 生成标签。",
@@ -1152,9 +1140,7 @@
       "D": "账户激活所选标签。",
       "E": "从 Organizations 管理账户激活所选标签。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Select a specific AWS generated tag in the AWS Billing console. 错误：AWS生成的标疮（如“aws:createdBy”）虽然可以用于某些场景，但题目明确提到的是用户定义的标疮（user-defined tags），而不是AWS生成的标疮。",
       "B": "Select a specific user-defined tag in the AWS Billing console. 正确：用户定义的标疮可以在AWS Billing控制台中选择，用于痢化成本分配。此步骤是实现目标的必要条件。",
@@ -1204,7 +1190,7 @@
   {
     "exam": "SAA-C03",
     "id": 562,
-    "type": "multiple",
+    "type": "single",
     "question": "解决方案架构师需要确保从 VPC 中的 Amazon EC2 实例到 Amazon DynamoDB 的 API 调用不会通过互联网传输。 解决方案架构师应采取哪些步骤来满足此要求?” (选择两个。)",
     "options": {
       "A": "为端点创建路由表条目。",
@@ -1213,9 +1199,7 @@
       "D": "在VPC 的每个子网中为端点创建弹性网络接口。",
       "E": "在端点的安全组中创建安全组条目以提供访问权限。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create a route table entry for the endpoint. 正确：网关端点需要在VPC的路由表中添加条目，以确保流量通过端点而不是互联网。此步骤是配置网关端点的必要部分。",
       "B": "Create a gateway endpoint for DynamoDB. 正确：Amazon DynamoDB支持网关端点，网关端点允许流量通过AWS网络而不是互联网访问DynamoDB。",
@@ -1917,7 +1901,7 @@
   {
     "exam": "SAA-C03",
     "id": 599,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司希望使用Amazon Elastic Container Service (Amazon ECS) 集群和 Amazon RDS DB 实例来构建和运行一个支付处理应用程 序。为了满足合规要求，该公司将在其本地数据中心运行该应用程序。 一个解决方案架构师希望将 AWS Outposts 作为解决方案的一部分。解决方案架构师正在与公司的运营团队合作来构建该应用程 序。 哪些活动是公司运营团队的责任? (选择三个)",
     "options": {
       "A": "机架提供可靠的电力和网络连接",
@@ -1927,9 +1911,7 @@
       "E": "组件的物理维护",
       "F": "集群提供额外容量，以缓解服务器故障和维护事件"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Providing resilient power and network connectivity to the Outposts racks 正确。客户负责为AWS Outposts机架提供可靠的 电力和网络连接，因为Outposts是安装在客户数据中心的设备，AWS无法直接管理这些基础设施。",
       "B": "Managing the virtualization hypervisor, storage systems, and the AWS services that run on Outposts 错误。AWS负责管 理Outposts上的虚拟化层、存储系统以及AWS服务，客户无需承担这些责任。",
@@ -2265,7 +2247,7 @@
   {
     "exam": "SAA-C03",
     "id": 617,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司希望将本地数据中心迁移到AWSs。数据中心托管一个存储服务器，该服务器使用基于NFS的文件系统存储数据。存储服务 器存储了200 GB的数据。公司需要在不中断现有服务的情况下迁移数据。AWs中的多个资源必须能够通过NFs协议访问这些数据。 哪些步骤组合能够最具成本效益地满足这些需求? (选择两个)",
     "options": {
       "A": "创建一个Amazon FSx for Lustre文件系统。",
@@ -2274,9 +2256,7 @@
       "D": "手动使用操作系统的复制命令将数据推送到AWSs目标。",
       "E": "在本地数据中心安装一个AWS Datasync代理。使用一个Datasync任务在本地位置和AWSs之间传输数据。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Create an Amazon FSx for Lustre file system. Amazon FSx for Lustre是一个高性能文件系统，主要用于高性能计算（HPC）和机器学习等场景。 它不支持NFS协议，目不适合一般的文件存储需求。 错误原因：不符合题目要求的NFS协议访问需求。",
       "B": "Create an Amazon Elastic File System (Amazon EFS) file system. Amazon EFS是一个完全托管的NFS文件系统，支持多资源同时访问。 它非常适合存储共享文件，并且支持无中断迁移。 正确原因：符合题目要求的NFS协议访问需求。",
@@ -2364,7 +2344,7 @@
   {
     "exam": "SAA-C03",
     "id": 622,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司正在为其订阅用户创建一个新的网络应用程序。该应用程序将由一个静态单页面和一个持久化数据库层组成。该应用程序 将在早晨的4小时内拥有数百万用户，但在一天的其余时间内仅有几千用户。公司的数据架构师要求能够快速演进其数据库模式。 哪些解决方案能够满足这些需求并提供最大的可扩展性” (选择两个)",
     "options": {
       "A": "部署 Amazon DynamoDB 作为数据库解决方案。配置按需容量。",
@@ -2373,9 +2353,7 @@
       "D": "将静态内容部署到一个 Amazon S3 存储桶中。为该 S3 存储桶配置一个Amazon CloudFront 分发作为源。",
       "E": "在 Auto Scaling 组中的一组 Amazon EC2 实例上部署静态内容的网络服务器。配置实例定期从 Amazon Elastic File System (Amazon EFS) 卷刷新内容。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Deploy Amazon DynamoDB as the database solution. Provision on-demand capacity. 正确：DynamoDB按需容量模式允许根据流量动态调整资源，适合高峰和低峰流量的场景。",
       "B": "Deploy Amazon Aurora as the database solution. Choose the serverless DB engine mode. 错误：虽然Aurora Serverless支持自动扩展，但题目要求“快速棠化数据库模式”，Aurora的模式棠化不如DynamoDB棬梮。",
@@ -2653,7 +2631,7 @@
   {
     "exam": "SAA-C03",
     "id": 637,
-    "type": "multiple",
+    "type": "single",
     "question": "解决方案架构师正在设计一个新的服务，该服务位于 Amazon API Gateway 后面。该服务的请求模式将不可预测，并可能突然从0 请求增加到每秒超过 500 次请求。需要在后端数据库中持久化的数据总量目前少于 1 GB，并且未来增长不可预测。数据可以使用 简单的键值请求进行查询。 哪些 AWS 服务组合可以满足这些要求? (选择两个)",
     "options": {
       "A": "AWS Fargate AWS Fargate",
@@ -2662,9 +2640,7 @@
       "D": "Amazon EC2 Auto Scaling Amazon EC2 Auto Scaling",
       "E": "MySQL-compatible Amazon Aurora MySQL-compatible Amazon Aurora"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "AWS Fargate 错误。AWS Fargate是用于运行容器化应用的无服务器计算引擎，但题目中没有提到需要运行容器化服务，也没有复杂的应用逻辑 需要容器支持。因此不适合此场景。",
       "B": "AWS Lambda 正确。AWS Lambda是无服务器计算服务，能够处理突发的请求模式（从0到500每秒），并且与Amazon API Gateway集成良好，适 合处理动态请求。",
@@ -2714,7 +2690,7 @@
   {
     "exam": "SAA-C03",
     "id": 640,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司有一个应用程序工作流程，该工作流程使用 AWS Lambda 函数从 Amazon S3 下载并解密文件。这些文件使用 AWS Key Management Service (AWS KMS) 密铀进行加密。解决方案架构师需要设计一个解决方案，以确保正确设置所需的权限。 以下哪些操作组合可以实现这一点? (选择两个)",
     "options": {
       "A": "权限附加到 Lambda 函数的资源策略",
@@ -2723,9 +2699,7 @@
       "D": "创建一个具有 kms:decrypt 权限的新 IAM 策略，并将该策略附加到 Lambda 函数",
       "E": "创建一个具有 kms:decrypt 权限的新 IAM 角色，并将执行角色附加到 Lambda 函数"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Attach the kms:decrypt permission to the Lambda function’s resource policy 错误。Lambda 函数的资源策略并不支持直接附加权限。权限需要通过 IAM 角色或 KMS 密钥策略来授予。",
       "B": "Grant the decrypt permission for the Lambda IAM role in the KMS key's policy 正确。KMS 密钥策略需要显式授予 Lambda 的 IAM 角色解密权限，以便 Lambda 函数能够使用 KMS 密钥解密文件。",
@@ -2794,7 +2768,7 @@
   {
     "exam": "SAA-C03",
     "id": 644,
-    "type": "multiple",
+    "type": "single",
     "question": "一家国际公司为其运营的每个国家设置了一个子域名。子域名的格式为example.com、country1.example.com 和 country2.example.com。该公司的工作负载位于 Application Load Balancer 后面。公司希望对传输中的网站数据进行加密。 哪些步骤组合可以满足这些要求? (选择两个)",
     "options": {
       "A": "使用 AWS Certificate Manager (ACM) 控制台为顶级域名 example.com 请求一个公共证书，以及为 *example.com 请求一个通 配符证书。",
@@ -2803,9 +2777,7 @@
       "D": "通过电子邮件地址验证域名所有权。通过向 DNS 提供商添加所需的 DNS 记录切换到 DNS 验证。",
       "E": "通过向 DNS 提供商添加所需的 DNS 记录验证域名所有权。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use the AWS Certificate Manager (ACM) console to request a public certificate for the apex top domain example.com and a wildcard certificate for *.example.com. 正确。公共证书适用于公开访问的域名，通配符证书可以覆盖所有子域名（如 country1.example.com和country2.example.com）。这是满足题目要求的正确步骤。",
       "B": "Use the AWS Certificate Manager (ACM) console to request a private certificate for the apex top domain example.com and a wildcard certificate for *.example.com. 错误。私有证书通常用于内部应用程序或服务，而不是公开访问的域名。题目要求 加密网站数据，这需要公共证书。",
@@ -3007,7 +2979,7 @@
   {
     "exam": "SAA-C03",
     "id": 655,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司在一个具有目标组的Auto Scaling组中的Amazon EC2实例上运行一个Web应用程序。该公司设计了该应用程序以支持会话 亲和性 (粘性会话) ，以提供更好的用户体验。 该应用程序必须作为一个端点公开在互联网上可用。必须在端点上应用WAF以增强安全性。端点上必须配置会话亲和性 (粘性会 话) 。 哪种步骤组合可以满足这些要求? (选择两个。)",
     "options": {
       "A": "创建一个公共的Network Load Balancer。指定应用程序目标组。",
@@ -3016,9 +2988,7 @@
       "D": "创建第二个目标组。将Elastic IP地址添加到EC2实例。",
       "E": "中创建一个web ACL。将web ACL与端点关联。"
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Create a public Network Load Balancer. Specify the application target group. 错误：Network Load Balancer 不支持会话粘性（Sticky Sessions）。会话粘性是 Application Load Balancer 的功能。",
       "B": "Create a Gateway Load Balancer. Specify the application target group. 错误：Gateway Load Balancer 主要用于流量转发和网络安全设备的集成，不适用于 Web 应用程序的负载均衡，也不支持会话粘 性。",
@@ -3068,7 +3038,7 @@
   {
     "exam": "SAA-C03",
     "id": 658,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司使用本地网络附加存储 (NAS) 系统为其高性能计算 (HPC) 工作负载提供文件共享服务。该公司希望将其对延迟敏感的 HPC工作负载及其存储迁移到AWS云。公司必须能够从文件系统提供NFs和SMB多协议访问。 哪种解决方案能以最低的延迟满足这些要求” (选择两个。)",
     "options": {
       "A": "将计算优化型EC2实例部署到集群放置组中。",
@@ -3077,9 +3047,7 @@
       "D": "将EC2实例附加到Amazon FSx for OpenZFS文件系统。",
       "E": "将EC2实例附加到Amazon FSx for NetApp ONTAP文件系统。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Deploy compute optimized EC2 instances into a cluster placement group. 分析：集群放置组提供低延迟、高知吐量的网络连接，非常适合高性能计算（HPC）工作负载。此选项正确。",
       "B": "Deploy compute optimized EC2 instances into a partition placement group. 分析：分区放置组主要用于分布式应用程序的容错性，而不是优化低延迟网络连接。因此，此选项不适合解决问题，错误。",
@@ -3224,7 +3192,7 @@
   {
     "exam": "SAA-C03",
     "id": 666,
-    "type": "multiple",
+    "type": "single",
     "question": "一家初创公司正在使用Amazon EC2 实例为其客户托管一个网站。该网站由一个无状态的 Python 应用程序和一个 MySQL 数据库组 成。该网站仅处理少量流量。公司担心实例的可靠性，需要迁移到高可用架构。公司无法修改应用程序代码。 解决方案架构师应该采取哪些行动组合来实现网站的高可用性? (选择两个)",
     "options": {
       "A": "为使用中的每个可用区配置一个 Internet 网关。",
@@ -3233,9 +3201,7 @@
       "D": "使用 AWS DataSync 在多个 EC2 实例之间同步数据库数据。",
       "E": "创建一个 Application Load Balancer，将流量分配到跨两个可用区分布的 EC2 实例 Auto Scaling 组。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Provision an internet gateway in each Availability Zone in use. 错误：Internet Gateway用于提供VPC与互联网的连接，但与高可用架构无关。高可用性主要关注服务的宛余和故障转移，而不是网 络连接的配置。",
       "B": "Migrate the database to an Amazon RDS for MySQL Multi-AZ DB instance. 正确：Amazon RDS Multi-AZ提供了数据库的宛余和自动故障转移功能，确保数据库的高可用性。",
@@ -3380,7 +3346,7 @@
   {
     "exam": "SAA-C03",
     "id": 674,
-    "type": "multiple",
+    "type": "single",
     "question": "为 DB 实例开启自动扩展。 B. Create a read replica forthe DB instance. Configure the application to send read traffic to the read replica. 为 DB 实例创建一个只读副本。配置应用程序将读取流量发送到只读副本。 C. Convert the DB instance to a Multi-AZ DB instance deployment. Configure the application to send read traffic to the standby DB instance. 将 DB 实例转换为 Multi-AZ DB 实例部署。配置应用程序将读取流量发送到备用 DB 实例。 D. Create an Amazon ElastiCache cluster. Configure the application to cache query results in the ElastiCache cluster. 创建一个Amazon ElastiCache 集群。配置应用程序将查询结果缓存到 ElastiCache 集群中。 E. Configure the Auto Scaling group subnets to ensure that the EC2 instances are provisioned in the same Availability Zone as the DB instance. ACE Auto Scaling 组子网以确保 EC2 实例在与 DB 实例相同的可用区中进行配置。 Correct Answer: BD 正确答案: BD Community vote distribution 社区投票分布 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics 日 题目分析与解答 1. 考察的知识点 Amazon RDS的性能优化，包括读副本 (Read Replica) 和缓存 (ElastiCache) 。 如何解决数据库性能瓶颈，尤其是高读负载场景。 理解Multi-AZ部署的用途和限制。 2. 选项分析",
     "options": {
       "A": "错误: Amazon RDS不支持自动扩展 (Auto Scaling) 。RDS实例的扩展需要手动调整实例类型或使用读副本。",
@@ -3389,9 +3355,7 @@
       "D": "正确: 使用ElastiCache可以缓存查询结果，减少数据库的读负载，从而提高性能。",
       "E": "错误: 虽然将EC2实例和RDS实例放在同一个可用区可以减少网络延迟，但这并不能解决数据库的高读负载问题。 3. 我选的答案 B D 4. 官方答案 B D 5. 与官方答案的比较 我的答案与官方答案一致。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com [A\\&: https://www.goofish.com/personal?userld=2645260430 ”微信: Examtopics =XAMTOPICS AWS Certified Solutions Architect - Associate SAA-C03 (2026/03/11) JOSE: \" IT认证轻松过\" https://shop542998714.m.taobao.com 咸鱼: \"IT认证轻松过\" https://www.goofish.com/personal?userld=2645260430 苇wechat letacbao shop 芭xianyu shop 微信:\" Examtopics \""
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Turn on auto scaling for the DB instance. 错误：Amazon RDS不支持自动扩展（Auto Scaling）。RDS实例的扩展需要孅动调整实例类型或使用读副本。",
       "B": "Create a read replica for the DB instance. Configure the application to send read traffic to the read replica. 正确：读副本可以分担数据寑的读负载，从而提高性能。这是解决高读负载问题的推荐方法。",
@@ -3563,7 +3527,7 @@
   {
     "exam": "SAA-C03",
     "id": 683,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司正在将其多层本地应用程序迁移到AWS。该应用程序由单节点MySQL数据库和多节点Web层组成。公司在迁移过程中必须 尽量减少对应用程序的更改。公司希望在迁移后提高应用程序的弹性。 哪些步骤的组合可以满足这些要求” (选择两个。)",
     "options": {
       "A": "将Web层迁移到一个Auto Scaling组中的Amazon EC2实例，并置于一个Application Load Balancer之后。",
@@ -3572,9 +3536,7 @@
       "D": "将Web层迁移到一个AWS Lambda函数。",
       "E": "将数据库迁移到一个Amazon DynamoDB表。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Migrate the web tier to Amazon EC2 instances in an Auto Scaling group behind an Application Load Balancer. 正确：将Web层迁移到Auto Scaling组中的EC2实例，并置于Application Load Balancer之后，可以提高Web层的弹性和可用性。 Auto Scaling组可以根据流量动态调整实例数量，而ALB可以分发流量并提供高可用性。",
       "B": "Migrate the database to Amazon EC2 instances in an Auto Scaling group behind a Network Load Balancer. 错误：数据库通常不适合放在Auto Scaling组中，因为数据库需要栓态保持，而Auto Scaling组的实例是无栓态的。 Network Load Balancer适合处理高性能的网络流量，但不适合直接用于数据库的高可用性。",
@@ -3643,7 +3605,7 @@
   {
     "exam": "SAA-C03",
     "id": 687,
-    "type": "multiple",
+    "type": "single",
     "question": "一家使用AWS的公司需要一个解决方案来预测每月制造过程所需的资源。 该解决方案必须使用当前存储在Amazon $3 bucket HAY 历史数据。 该公司没有机器学习 (ML) 经验，并希望使用托管服务进行训练和预测。 哪些步骤组合可以满足这些要求? (选择两个)",
     "options": {
       "A": "部署一个Amazon SageMaker模型。为推理创建一个sageMaker端点。",
@@ -3652,9 +3614,7 @@
       "D": "配置一个带有函数URL的AWS Lambdakkax, iZEARE Amazon Forecast预测器根据输入创建预测。",
       "E": "通过S3 bucket中的历史数据训练一个Amazon Forecast预测器。"
     },
-    "answer": [
-      "D"
-    ],
+    "answer": "D",
     "explanations": {
       "D": "1. 考察的知识点 本题主要考察AWS的机器学习服务，包括Amazon SageMaker和Amazon Forecast的使用场景。 重点在于选择适合无机器学习经验的用户的托管服务，并结合历史数据进行预测。 2. 独立分析每个选项 A. Deploy an Amazon SageMaker model. Create a SageMaker endpoint for inference. Amazon SageMaker是一个强大的机器学习平台，但它需要用户具备一定的机器学习知识来构建、训练和部署模型。 题目明确指出公司没有机器学习经验，因此直接使用SageMaker模型并创建端点不符合要求。 错误原因: 不符合'无机器学习经验\"的条件。 B. Use Amazon SageMaker to train a model by using the historical data in the S3 bucket. 使用Amazon SageMaker训练模型需要用户具备一定的机器学习知识，包括数据预处理、模型选择和超参数调优。 题目要求使用托管服务，且公司没有机器学习经验，因此此选项不符合要求。 错误原因: 不符合'无机器学习经验\"的条件。 C. Configure an AWS Lambda function with a function URL that uses Amazon SageMaker endpoints to create predictions based on the inputs. 此选项涉及使用AWS Lambda函数调用SageMaker端点进行预测。 昌然Lambda函数可以简化调用过程，但前提是用户需要先构建和部署SageMaker模型，这与题目要求的“无机器学习经验\"不符。 错误原因: 依赖sageMaker模型，不符合题目要求。 D. Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs. Amazon Forecast是一个托管服务，专门用于时间序列预测，且不需要用户具备机器学习经验。 此选项通过Lambda函数调用Amazon Forecast预测器生成预测，符合题目要求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。 E. Train an Amazon Forecast predictor by using the historical data in the S3 bucket. Amazon Forecast可以直接使用3中的历史数据训练预测器，且不需要用户具备机器学习经验。 此选项符合题目要求，能够满足公司需求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。 3. 我的答案 选项D和E。 4. 官方答案 官方答案是: D和上E。 5. 比较与思考 我的答案与官方答案一致。 原因分析: Amazon Forecast是专门为时间序列预测设计的托管服务，且不需要用户具备机器学习经验，完全符合题目要求。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com [A\\&: https://www.goofish.com/personal?userld=2645260430 ”微信: Examtopics =XAMTOPICS AWS Certified Solutions Architect - Associate SAA-C03 (2026/03/11) JOSE: \" IT认证轻松过\" https://shop542998714.m.taobao.com 咸鱼: \"IT认证轻松过\" https://www.goofish.com/personal?userld=2645260430 苇wechat letacbao shop 芭xianyu shop 微信:\" Examtopics \""
     }
@@ -3700,7 +3660,7 @@
   {
     "exam": "SAA-C03",
     "id": 690,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司定期将大小为GB的文件上传到Amazon S3。在公司上传文件后，公司使用一组Amazon EC2 Spot Instances对文件格式进行 转码。公司需要在从本地数据中心向Amazon S3上传数据时，以及从Amazon S3下载数据到EC2实例时扩展吞吐量。 哪些解决方案可以满足这些要求? (选择两个。)",
     "options": {
       "A": "使用S3 bucket access point而不是直接访问S3 bucket,",
@@ -3709,9 +3669,7 @@
       "D": "并行获取对象的多个字节范围。",
       "E": "在上传文件时为每个对象添加随机前缀。"
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Use the S3 bucket access point instead of accessing the S3 bucket directly. 错误：S3 Bucket Access Point主要用于简化对S3的访问管理，尤其是在多账户或多应用场景下，但它并不能直接提高上传或下载的 知吐量。",
       "B": "Upload the files into multiple S3 buckets. 错误：使用多个S3 Bucket并不能提高单个Bucket的知吐量，目增加了管理复杂性。优化知吐量的重点是如何高效地使用单个 Bucket。",
@@ -3723,7 +3681,7 @@
   {
     "exam": "SAA-C03",
     "id": 691,
-    "type": "multiple",
+    "type": "single",
     "question": "解决方案架构师正在设计一个共享存储解决方案，用于部署在多个可用区的一个Web应用程序。该Web应用程序运行在一个Auto Scaling组中的Amazon EC2实例上。公司计划频繁更改内容。该解决方案必须具有强一致性，以便在内容发生变化后立即返回新内 容。 哪些解决方案满足这些要求? (选择两个)",
     "options": {
       "A": "使用AWS Storage Gateway Volume Gateway Internet Small Computer Systems Interface (iSCSI)块存储，并将其挂载到单个EC2 实例上。",
@@ -3732,9 +3690,7 @@
       "D": "使用AWS DataSsync在Auto Scaling组中的EC2主机之间执行连续的数据同步。",
       "E": "创建一个Amazon S3桶来存储Web内容。将Cache-Control头的元数据设置为no-cache。使用Amazon CloudFront来分发内容。"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "使用AWS Storage Gateway Volume Gateway Internet Small Computer Systems Interface (iSCSI)块存储，并将其挂载到单 个EC2实例上。 错误：AWS Storage Gateway Volume Gateway主要用于混合云场景，将本地存储扩展到AWS云中，不适合跨多个可用区的共享存储 需求。",
       "B": "创建一个Amazon Elastic File System (Amazon EFS)文件系统。将EFS文件系统挂载到单个EC2实例上。 正确：Amazon EFS支持跨多个可用区的共享文件系统，提供强一致性，适合频痏更新内容的场景。",
@@ -3898,7 +3854,7 @@
   {
     "exam": "SAA-C03",
     "id": 700,
-    "type": "multiple",
+    "type": "single",
     "question": "一家游戏公司希望在多个 AWS 区域推出一个新的面向互联网的应用程序。该应用程序将使用 TCP 和 UDP 协议进行通信。公司需要 为全球用户提供高可用性和最低延迟。 解决方案架构师应采取哪些组合操作来满足这些需求? (选择两个。)",
     "options": {
       "A": "在每个区域的应用程序前创建内部 Network Load Balancers,",
@@ -3907,9 +3863,7 @@
       "D": "配置 Amazon Route 53 使用地理位置路由策略分配流量。",
       "E": "处理流量并将请求路由到每个区域的应用程序。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create internal Network Load Balancers in front of the application in each Region. 错误：内部 Network Load Balancer 是为内部流量设计的，无法处理互联网流量。 题目要求“互联网面对的应用”，因此此选项不符合要求。",
       "B": "Create external Application Load Balancers in front of the application in each Region. 错误：虽然 Application Load Balancer 可以处理互联网流量，但它主要用于 HTTP/HTTPS 协议，而题目明确提到需要支持 TCP 和 UDP 协议。 此选项不符合题目要求。",
@@ -4078,7 +4032,7 @@
   {
     "exam": "SAA-C03",
     "id": 709,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司在 AWS Organizations 中有一个组织。该公司在根组织单元 (OU) 的四个 AWS 账户中运行 Amazon EC2 实例。共有三个非 生产账户和一个生产账户。公司希望禁止用户在非生产账户中启动某些大小的 EC2 实例。公司已经创建了一个服务控制策略 (SCP) 来拒绝访问启动使用被禁止类型的实例。 哪些解决方案可以部署 SCP 来满足这些要求” (选择两个)",
     "options": {
       "A": "将 SCP 附加到组织的根 OU。",
@@ -4087,9 +4041,7 @@
       "D": "为生产账户创建一个 OU。将 SCP 附加到该 OU。将生产成员账户移到新的 OU.",
       "E": "为所需账户创建一个 OU。将 SCP 附加到该 OU。将非生产成员账户移到新的 OU."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Attach the SCP to the root OU for the organization. 错误：将SCP附加到根OU会影响所有账户，包括椹产账户，而题目要求仅限制非椹产账户。",
       "B": "Attach the SCP to the three nonproduction Organizations member accounts. 错误：SCP不能直接附加到单个账户，SCP只能附加到组痣单元（OU）或根OU。",
@@ -4590,7 +4542,7 @@
   {
     "exam": "SAA-C03",
     "id": 737,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司有一个应用程序，可以向世界各地的学生提供按需培训视频。该应用程序还允许授权内容开发人员上传视频。数据存储在 us-east-2区域的Amazon S3桶中。 该公司在eu-west-2区域创建了一个S3桶，并在ap-southeast-1区域创建了另一个S3桶。该公司希望将数据复制到新的S3桶中。该公 司需要尽量减少靠近eu-west-2和ap-southeast-1的开发人员上传视频和学生流式播放视频的延迟。 以下哪种步骤组合可以以最少的应用程序更改满足这些要求? (选择两个。)",
     "options": {
       "A": "配置从us-east-2 S3桶到eu-west-2 S3桶的单向复制。配置从us-east-2 S3桶到ap-southeast-1 S3桶的单向复制。",
@@ -4599,9 +4551,7 @@
       "D": "创建一个S3 Multi-Region Access Point。修改应用程序以使用Multi-Region Access Point的Amazon Resource Name (ARN)进行 视频流式播放。不要修改应用程序以进行视频上传。",
       "E": "创建一个S3 Multi-Region Access Point。修改应用程序以使用Multi-Region Access Point的Amazon Resource Name (ARN) #47 视频流式播放和上传。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com “”闲鱼: https://www.goofish.comy/personal?userld=2645260430 ”微信: Examtopics"
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "配置从us-east-2 S3橘到eu-west-2 S3橘的单向复制。配置从us-east-2 S3橘到ap-southeast-1 S3橘的单向复制。 正确性分析：此选项使用了跨区域复制 (CRR)，可以将数据从us-east-2复制到其他区域的S3橘，满足数据复制需求。 问题：虽然可以实现数据复制，但无法优化视频上传和流式播放的延迟，因为开发者和学生仍然需要直接访问us-east-2的S3橘。 结论：错误。",
       "B": "配置从us-east-2 S3橘到eu-west-2 S3橘的单向复制。配置从eu-west-2 S3橘到ap-southeast-1 S3橘的单向复制。 正确性分析：此选项使用了链式跨区域复制 (CRR)，可以将数据从us-east-2复制到eu-west-2，再从eu-west-2复制到ap-southeast- 1。 问题：链式复制增加了复杂性，目无法优化视频上传和流式播放的延迟。 结论：错误。",
@@ -4762,7 +4712,7 @@
   {
     "exam": "SAA-C03",
     "id": 746,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司正在部署一个处理近实时流数据的应用程序。该公司计划使用 Amazon EC2 实例来运行该工作负载。网络架构必须可配 置，以提供节点之间尽可能低的延迟。 哪些网络解决方案的组合可以满足这些要求” (选择两个。)",
     "options": {
       "A": "在每个 EC2 实例上启用并配置增强型网络。",
@@ -4771,9 +4721,7 @@
       "D": "为每个 EC2 实例附加多个弹性网络接口。",
       "E": "使用 Amazon Elastic Block Store (Amazon EBS) 优化的实例类型。"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Enable and configure enhanced networking on each EC2 instance. 正确：增强型网络（Enhanced Networking）通过使用高性能网络接口（如Elastic Network Adapter或ENA）显著降低网络延迟并提 高知吐量。 这是实现最低网络延迟的关键配置之一。",
       "B": "Group the EC2 instances in separate accounts. 错误：将实例分组到不同账户中不会降低网络延迟，反而可能增加跨账户通人的复杂性。 与题目要求的“最低可能的延迟”无关。",
