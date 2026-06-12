@@ -1177,7 +1177,7 @@
   {
     "exam": "SCS-C02",
     "id": 272,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司使用 Amazon Elastic Kubernetes Service Amazon EKS 集群来运行其基于 Kubernetes 的应用程序。该公司使用 Amazon GuardDuty 来保护这些应用程序。在 GuardDuty 中启用了 EKS Protection 。然而 ,相应的 GuardDuty 功能并未监控基于 Kubernetes 的应用程序。哪种解决方案可以使 GuardDuty 监控基于 Kubernetes 的应用程序?",
     "options": {
       "A": "为托管 EKS 集群的 VPC 启用 VPC 流日志。",
@@ -1185,11 +1185,13 @@
       "C": "确保 AmazonGuardDutyFullAccess AWS 托管策略已附加到 GuardDuty 服务角色。",
       "D": "在 Amazon EKS 中启用控制平面日志。确保日志已被导入到 Amazon CloudWatch 。"
     },
-    "answer": [
-      "D",
-      "A"
-    ],
-    "explanations": {}
+    "answer": "D",
+    "explanations": {
+      "A": "为托管 EKS 集群的 VPC 启用 VPC 流日志。错误：VPC 流日志主要用于监控网络流量，而不是 Kubernetes 控制平面活动。EKS Protection 需要的是 EKS 控制平面日志，而非 VPC 流日志。",
+      "B": "为 EKS 集群分配 CloudWatchEventsFullAccess AWS 托管策略。错误：CloudWatchEventsFullAccess 策略与 GuardDuty 的 EKS Protection 功能无关。此策略用于管理 CloudWatch Events，而不是启用或监控 EKS 控制平面日志。",
+      "C": "确保 AmazonGuardDutyFullAccess AWS 托管策略已附加到 GuardDuty 服务角色。错误：虽然 AmazonGuardDutyFullAccess 策略允许 GuardDuty 执行其功能，但它并不能直接启用或监控 EKS 控制平面日志。此选项与问题无关。",
+      "D": "在 Amazon EKS 中启用控制平面日志。确保日志已被导入到 Amazon CloudWatch。正确：GuardDuty 的 EKS Protection 功能依赖于 EKS 控制平面日志来监控 Kubernetes 应用程序。启用控制平面日志并将其导入到 CloudWatch 是正确的解决方案。"
+    }
   },
   {
     "exam": "SCS-C02",
