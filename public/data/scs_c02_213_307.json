@@ -1851,7 +1851,7 @@
   {
     "exam": "SCS-C02",
     "id": 307,
-    "type": "multiple",
+    "type": "single",
     "question": "一家公司拥有大量运行应用程序的 Amazon Linux 2 Amazon EC2 实例。该应用程序处理敏感数据,并具有以下合规性要求 : 不能对 EC2 实例的远程访问管理端口进行内部或外部暴露。 • 所有远程会话活动必须记录在审计日志中。 • 所有对 EC2 实例的远程访问必须通过 AWS IAM Identity Center 进行身份验证和授权。该公司的 DevOps 团队偶尔需要连接到其中一个 EC2 实例以排除故障。哪种解决方案能够在满足合规性要求的同时提供对 EC2 实例的远程访问 ?",
     "options": {
       "A": "在账户级别授予对 EC2 串行控制台的访问权限。创建一个 IAM 策略,允许 DevOps 团队的 IAM 角色访问 EC2 串行控制台。",
@@ -1859,10 +1859,7 @@
       "C": "分配允许访问 AWS Systems Manager 的 EC2 实例角色。创建一个 IAM 策略,授予对 Systems Manager Session Manager 的访问权限。将该策略分配给 DevOps 团队的 IAM 角色。",
       "D": "使用 AWS Systems Manager Automation runbooks 打开对 EC2 实例的远程访问端口。为 EC2 实例附加一个角色以允许运行 runbooks 。"
     },
-    "answer": [
-      "C",
-      "E"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Grant access to the EC2 serial console at the account level... 分析 :EC2 串行控制台可以提供对实例的访问,但它不满足“记录所有远程会话活动”的要求。此外,串行控制台的使用需要额外的配置,并不直接支持 IAM Identity Center 的认证和授权。结论 : 错误。",
       "B": "Enable EC2 instance Connect on the AMI... 分析 :EC2 Instance Connect 允许通过 SSH 访问实例,但需要开放端口 ( 如 22 端口 ) ,这违反了“不暴露远程管理端口”的合规要求。此外,它不支持记录所有远程会话活动。结论 : 错误。",
