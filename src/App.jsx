@@ -451,6 +451,20 @@ function reducer(state, action) {
       }
     }
 
+    case 'CLEAR_WRONG_BY_EXAM': {
+      // 將指定考科的所有「錯題」標記為已學會：累計答對數補到 MASTERY_THRESHOLD，移出錯題清單。
+      const newHistory = { ...state.statsHistory }
+      Object.entries(newHistory).forEach(([k, v]) => {
+        if (v.exam !== action.exam) return
+        const everWrong = v.everWrong ?? !v.correct
+        if (!everWrong) return
+        const count = v.correctCount ?? v.correctStreak ?? 0
+        if (count >= MASTERY_THRESHOLD) return
+        newHistory[k] = { ...v, correctCount: MASTERY_THRESHOLD }
+      })
+      return { ...state, statsHistory: newHistory }
+    }
+
     case 'RESTORE_STATS':
       return { ...state, statsHistory: action.statsHistory }
 
@@ -2602,13 +2616,29 @@ function QuestionList({ items, dispatch, showMastery = false, defaultCollapsed =
                 <span className="text-sm font-semibold">{exam}</span>
                 <span className="text-xs px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg font-medium">{examItems.length} 題</span>
               </div>
-              <span
-                role="button"
-                onClick={(e) => { e.stopPropagation(); dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: examQuestions[0], questions: examQuestions, startIndex: 0 }) }}
-                className="px-3 py-1 text-xs bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 shadow-sm"
-              >
-                <Play size={12} /> 練習此科
-              </span>
+              <div className="flex items-center gap-1.5">
+                {showMastery && (
+                  <span
+                    role="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (window.confirm(`確定要將 ${exam} 的 ${examItems.length} 道錯題標記為已學會並移出清單嗎？`)) {
+                        dispatch({ type: 'CLEAR_WRONG_BY_EXAM', exam })
+                      }
+                    }}
+                    className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-semibold transition-all duration-200 flex items-center gap-1"
+                  >
+                    <X size={12} /> 清除此科
+                  </span>
+                )}
+                <span
+                  role="button"
+                  onClick={(e) => { e.stopPropagation(); dispatch({ type: 'GOTO_PRACTICE_QUESTION', question: examQuestions[0], questions: examQuestions, startIndex: 0 }) }}
+                  className="px-3 py-1 text-xs bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 shadow-sm"
+                >
+                  <Play size={12} /> 練習此科
+                </span>
+              </div>
             </button>
             {!collapsed && (
               <div className="divide-y divide-gray-100 dark:divide-gray-700/50">
