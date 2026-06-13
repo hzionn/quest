@@ -2020,6 +2020,14 @@ function CollapsibleText({ text, maxHeight = 120 }) {
   )
 }
 
+// 解析顯示：去除前面重複的英文選項文字，只保留中文段落（含中文裡夾帶的英文服務名稱）
+function zhExplanation(text) {
+  if (typeof text !== 'string') return text
+  const idx = text.search(/[一-鿿]/)
+  if (idx <= 0) return text  // 沒有中文、或一開始就是中文 → 原樣顯示
+  return text.slice(idx).trim()
+}
+
 function ExplanationView({ question, userAnswer }) {
   const q = question
   if (!q.explanations) return null
@@ -2060,7 +2068,7 @@ function ExplanationView({ question, userAnswer }) {
               ? 'border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-900/20 text-gray-700 dark:text-gray-300'
               : 'border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300'
           }`}>
-            {selectedText}
+            {zhExplanation(selectedText)}
           </div>
         ) : (
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 px-3 py-3 text-sm text-gray-400 dark:text-gray-500">
@@ -2104,7 +2112,7 @@ function MatchingExplanationDropdown({ entries, defaultKey, qType }) {
       </div>
       {selectedText && (
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 px-3 py-3 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
-          {selectedText}
+          {zhExplanation(selectedText)}
         </div>
       )}
     </div>
