@@ -1517,9 +1517,10 @@
     "type": "single",
     "question": "一家公司运行一个使用 Amazon RDS for PostgreSQL 的应用程序。该应用程序仅在工作日的工作时间内接收流量。公司希望根据这 种使用情况优化成本并减少运营开销。 哪种解决方案可以满足这些需求?",
     "options": {
-      "A": "使用 AWS 的 Instance Scheduler 配置启动和停止计划。 B.Turn off automatic backups. Create weekly manual snapshots of the database. 关闭自动备份。每周手动创建数据库快照。 C. Create a custom AWS Lambda function to start and stop the database based on minimum CPU utilization. 创建一个自定义 AWS Lambda 函数，根据最低 CPU 利用率启动和停止数据库。 D. Purchase All Upfront reserved DB instances. 购买 All Upfront 预留 DB 实例。 Correct Answer: A 正确答案: A Community vote distribution 社区投票分布 日 题目分析与解答 1. 考察的知识点 本题考察的是如何优化成本和减少操作开销，特别是针对Amazon RDS数据库的使用模式优化。 涉及的知识点包括: Instance Scheduler、RDS备份策略、Lambda函数的自动化操作、以及Reserved Instances的成本优化。 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics 2. 选项分析 A. Use the Instance Scheduler on AWS to configure start and stop schedules. 正确: Instance Scheduler是一个AWS解决方案，可以根据预定义的时间表启动和停止资源 (如RDS实例) 。 它非常适合这种仅在工作日和工作时间需要运行的场景，可以显著降低成本。",
-      "B": "错误: 关闭自动备份可能会导致数据委失风险增加，手动创建快照增加了操作开销，不符合减少操作开销的要求。 此外，这种方法并不能直接优化运行成本。",
-      "C": "错误: BMALambdawI UMM, (eT CPU AREER SLL HM Sek SPL AL Fae) BBE. Itoh, FPAFIHEHP EE Lambda kenny BFS, AAPOR FIBRES."
+      "A": "使用 AWS 上的 Instance Scheduler 配置启动和停止计划。",
+      "B": "关闭自动备份。每周为数据库创建手动快照。",
+      "C": "创建一个自定义的 AWS Lambda 函数，根据最低 CPU 利用率来启动和停止数据库。",
+      "D": "购买全额预付 (All Upfront) 预留数据库实例。"
     },
     "answer": "A",
     "explanations": {
@@ -3346,16 +3347,19 @@
   {
     "exam": "SAA-C03",
     "id": 674,
-    "type": "single",
-    "question": "为 DB 实例开启自动扩展。 B. Create a read replica forthe DB instance. Configure the application to send read traffic to the read replica. 为 DB 实例创建一个只读副本。配置应用程序将读取流量发送到只读副本。 C. Convert the DB instance to a Multi-AZ DB instance deployment. Configure the application to send read traffic to the standby DB instance. 将 DB 实例转换为 Multi-AZ DB 实例部署。配置应用程序将读取流量发送到备用 DB 实例。 D. Create an Amazon ElastiCache cluster. Configure the application to cache query results in the ElastiCache cluster. 创建一个Amazon ElastiCache 集群。配置应用程序将查询结果缓存到 ElastiCache 集群中。 E. Configure the Auto Scaling group subnets to ensure that the EC2 instances are provisioned in the same Availability Zone as the DB instance. ACE Auto Scaling 组子网以确保 EC2 实例在与 DB 实例相同的可用区中进行配置。 Correct Answer: BD 正确答案: BD Community vote distribution 社区投票分布 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics 日 题目分析与解答 1. 考察的知识点 Amazon RDS的性能优化，包括读副本 (Read Replica) 和缓存 (ElastiCache) 。 如何解决数据库性能瓶颈，尤其是高读负载场景。 理解Multi-AZ部署的用途和限制。 2. 选项分析",
+    "type": "multiple",
+    "question": "一家公司运行一个由 Amazon RDS DB 实例支持的应用程序。随着使用量增长，数据库的读取流量大幅增加，导致性能下降。公司希望在尽量减少运营开销的前提下，提升数据库处理读取密集型工作负载的能力。哪些解决方案可以满足这些要求？（选择两项）",
     "options": {
-      "A": "错误: Amazon RDS不支持自动扩展 (Auto Scaling) 。RDS实例的扩展需要手动调整实例类型或使用读副本。",
-      "B": "正确: 读副本可以分担数据库的读负载，从而提高性能。这是解决高读负载问题的推荐方法。",
-      "C": "错误: Multi-AZ部署的备用实例仅用于故障转移，不支持处理读流量。",
-      "D": "正确: 使用ElastiCache可以缓存查询结果，减少数据库的读负载，从而提高性能。",
-      "E": "错误: 虽然将EC2实例和RDS实例放在同一个可用区可以减少网络延迟，但这并不能解决数据库的高读负载问题。 3. 我选的答案 B D 4. 官方答案 B D 5. 与官方答案的比较 我的答案与官方答案一致。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com [A\\&: https://www.goofish.com/personal?userld=2645260430 ”微信: Examtopics =XAMTOPICS AWS Certified Solutions Architect - Associate SAA-C03 (2026/03/11) JOSE: \" IT认证轻松过\" https://shop542998714.m.taobao.com 咸鱼: \"IT认证轻松过\" https://www.goofish.com/personal?userld=2645260430 苇wechat letacbao shop 芭xianyu shop 微信:\" Examtopics \""
+      "A": "为该 DB 实例开启自动扩展。",
+      "B": "为该 DB 实例创建一个只读副本。配置应用程序将读取流量发送到该只读副本。",
+      "C": "将该 DB 实例转换为 Multi-AZ DB 实例部署。配置应用程序将读取流量发送到备用 DB 实例。",
+      "D": "创建一个 Amazon ElastiCache 集群。配置应用程序将查询结果缓存到该 ElastiCache 集群中。",
+      "E": "配置 Auto Scaling 组的子网，确保 EC2 实例与该 DB 实例预置在同一个可用区中。"
     },
-    "answer": "B",
+    "answer": [
+      "B",
+      "D"
+    ],
     "explanations": {
       "A": "Turn on auto scaling for the DB instance. 错误：Amazon RDS不支持自动扩展（Auto Scaling）。RDS实例的扩展需要孅动调整实例类型或使用读副本。",
       "B": "Create a read replica for the DB instance. Configure the application to send read traffic to the read replica. 正确：读副本可以分担数据寑的读负载，从而提高性能。这是解决高读负载问题的推荐方法。",
@@ -4225,7 +4229,7 @@
     "exam": "SAA-C03",
     "id": 720,
     "type": "single",
-    "question": "一家制造公司在 AWS 上运行其报告生成应用程序。该应用程序生成每个报告大约需要 20 分钟。该应用程序构建为一个运行在单个 Amazon EC2 实例上的单体架构。应用程序需要对其紧密耦合的模块进行频繁更新。随着公司添加新功能，应用程序变得复杂且难 以维护。 每次公司修补软件模块时，应用程序都会经历停机。报告生成在任何中断后都必须从头开始重新启动。公司希望重新设计应用程 序，使其能够灵活、可扩展并逐步改进。公司希望尽量减少应用程序停机时间。 哪种解决方案可以满足这些需求? A.Run the application on AWS Lambda as a single function with maximum provisioned concurrency. 将应用程序作为单个函数运行在 AWS Lambda 上，并设置最大预置并发。 B. Run the application on Amazon EC2 Spot Instances as microservices with a Spot Fleet default allocation strategy. 将应用程序作为微服务运行在 Amazon EC2 Spot Instances 上，并使用 Spot Fleet 默认分配策略。 C. Run the application on Amazon Elastic Container Service (Amazon ECS) as microservices with service auto scaling. 将应用程序作为微服务运行在Amazon Elastic Container Service (Amazon ECS) 上，并启用服务自动扩展。 D. Run the application on AWS Elastic Beanstalk as a single application environment with an all-at-once deployment strategy. 将应用程序作为单个应用程序环境运行在 AWS Elastic Beanstalk 上，并使用一次性部署策略。 Correct Answer: C 正确答案: C IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics Community vote distribution 社区投票分布 题目分析与解答 1. 考察的知识点 微服务架构设计 应用程序的可扩展性和灵活性 减少应用程序停机时间 AWS服务选择: Amazon ECS, AWS Lambda, EC2 Spot Instances, AWS Elastic Beanstalk 2. 选项分析",
+    "question": "一家制造公司在 AWS 上运行其报告生成应用程序。该应用程序生成每个报告大约需要 20 分钟。该应用程序构建为一个运行在单个 Amazon EC2 实例上的单体架构。应用程序需要对其紧密耦合的模块进行频繁更新。随着公司添加新功能，应用程序变得复杂且难 以维护。 每次公司修补软件模块时，应用程序都会经历停机。报告生成在任何中断后都必须从头开始重新启动。公司希望重新设计应用程 序，使其能够灵活、可扩展并逐步改进。公司希望尽量减少应用程序停机时间。 哪种解决方案可以满足这些需求?",
     "options": {
       "A": "错误原因: AWS Lambda适合运行短时间的无服务器函数，而题目中提到报告生成需要约20分钟，这超出了Lambda的最大执行时间 限制15分钟) 。 此外，将整个应用程序作为单个函数运行不符合微服务架构的设计目标。",
       "B": "错误原因: 虽然EC2 Spot Instances可以降低成本，但它们可能会因价格波动或容量不足而中断，这与题目要求的\"最小化应用程序 停机时间\"相冲突。 此外，spot Fleet默认分配策略并未直接解决应用程序的灵活性和可扩展性问题。",
@@ -4410,12 +4414,12 @@
     "exam": "SAA-C03",
     "id": 730,
     "type": "single",
-    "question": "一家包襄递送公司有一个应用程序，该应用程序使用 Amazon EC2 实例和一个Amazon Aurora MySQL 数据库集群。随着应用程序 越来越受欢迎，EC2 实例的使用量仅略有增加，而数据库集群的使用量增长速度更快。 该公司添加了一个只读副本，这在短时间内减少了数据库集群的使用量。然而，负载继续增加。导致数据库集群使用量增加的操作 都是与递送详情相关的重复读取语句。公司需要缓解重复读取对数据库集群的影响。 哪种解决方案将以最具成本效益的方式满足这些需求? A.Implement an Amazon ElastiCache for Redis cluster between the application and the DB cluster. 在应用程序和数据库集群之间实施一个 Amazon ElastiCache for Redis 集群。 B. Add an additional read replica to the DB cluster. 向数据库集群添加一个额外的只读副本。 C. Configure Aurora Auto Scaling for the Aurora read replicas. 为 Aurora 只读副本配置 Aurora Auto Scaling. D. Modify the DB cluster to have multiple writer instances. 将数据库集群修改为具有多个写入实例。 Correct Answer: A 正确答案: A Community vote distribution 社区投票分布 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics 题目分析与解答 1. 考察的知识点 Amazon Aurora数据库的性能优化和扩展能力。 缓存服务 (Amazon ElastiCache) 的使用场景和成本效益。 读副本的作用及其局限性。 Aurora Auto Scaling的功能和适用场景。 多写入实例的适用场景。 2. 选项分析",
+    "question": "一家包襄递送公司有一个应用程序，该应用程序使用 Amazon EC2 实例和一个Amazon Aurora MySQL 数据库集群。随着应用程序 越来越受欢迎，EC2 实例的使用量仅略有增加，而数据库集群的使用量增长速度更快。 该公司添加了一个只读副本，这在短时间内减少了数据库集群的使用量。然而，负载继续增加。导致数据库集群使用量增加的操作 都是与递送详情相关的重复读取语句。公司需要缓解重复读取对数据库集群的影响。 哪种解决方案将以最具成本效益的方式满足这些需求?",
     "options": {
-      "A": "正确: Amazon ElastiCache for Redis是一个高性能的内存缓存服务，可以显著减少数据库的重复读取负载。 成本效益: 缓存服务通常比增加数据库资源更具成本效益，尤其是针对重复读取操作。 适用场景: 题目明确指出数据库负载主要来自重复读取操作，因此使用缓存是最合适的解决方案。",
-      "B": "错误: 虽然增加读副本可以分担读取负载，但题目己经提到添加读副本只能短期缓解问题，无法从根本上解决负载持续增加的问 题。 成本效益: 增加读副本会增加数据库的运行成本，且无法有效解决重复读取的问题。",
-      "C": "错误: Aurora Auto Scaling可以动态调整读副本的数量，但这仍然是通过增加数据库资源来解决问题，成本较高。 适用场景: Auto Scaling适用于负载波动较大的场景，而题目中的负载是持续增加的，且主要是重复读取操作，使用缓存更合适。",
-      "D": "错误: 题目明确指出负载主要来自读取操作，而不是写入操作，因此增加写入实例无法解决问题。 成本效益: 多写入实例的配置复杂且成本较高，不适用于当前场景。 3. 我选的答案 A.Implement an Amazon ElastiCache for Redis cluster between the application and the DB cluster. 4. 官方答案 A.Implement an Amazon ElastiCache for Redis cluster between the application and the DB cluster. 5. 与官方答案的比较 我的答案与官方答案一致。 原因: 使用Amazon ElastiCache for Redis可以最有效地解决重复读取操作导致的数据库负载问题，同时具有较高的成本效益。 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com “闲鱼: https//www.goofish.comy/personal?userld=2645260430 ”微信: Examtopics =XAMTOPICS AWS Certified Solutions Architect - Associate SAA-C03 (2026/03/11) JOSE: \" IT认证轻松过\" https://shop542998714.m.taobao.com 咸鱼: \"IT认证轻松过\" https://www.goofish.com/personal?userld=2645260430 苇wechat letacbao shop 芭xianyu shop 微信:\" Examtopics \""
+      "A": "在应用程序与 DB 集群之间实施一个 Amazon ElastiCache for Redis 集群。",
+      "B": "为该 DB 集群添加一个额外的只读副本。",
+      "C": "为 Aurora 只读副本配置 Aurora Auto Scaling。",
+      "D": "修改该 DB 集群，使其拥有多个写入实例。"
     },
     "answer": "A",
     "explanations": {
