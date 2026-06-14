@@ -996,19 +996,19 @@
     "exam": "SCS-C02",
     "id": 49,
     "type": "single",
-    "question": "一家公司使用身分联合来对身分识别帐户 987654321987 中的使用者进行身分验证,其中使用者承担名为 IdentityRole 的 IAM 角色。然后,使用者在目标 AWS 帐户 123456789123 中承担名为 JobFunctionRole 的 IAM 角色来执行其工作职能。使用者无法承担目标帐户中的 IAM 角色。身分帐户中角色所附加的策略是: 应该怎麽做才能使用户在目标帐户中承担适当的角色 ?",
+    "question": "一家公司发现其 AWS 账户中存在计费异常。一位安全顾问调查了该异常，并发现一名在 30 天前离职的员工仍然可以访问该账户。公司过去未监控账户活动。安全顾问需要尽快确定该员工部署或重新配置了哪些资源。哪种解决方案可以满足这些需求？",
     "options": {
-      "A": "将身分帐户中附加到角色的 IAM 策略更新为:",
-      "B": "将目标帐号中角色的信任策略更新为:",
-      "C": "将身分帐户中的角色的信任策略更新为:",
-      "D": "将附加到目标帐户中的角色的 IAM 策略更新为:"
+      "A": "在 AWS Cost Explorer 中，过滤图表数据以显示过去 30 天的结果。将结果导出到数据表。按资源对数据表进行分组。",
+      "B": "使用 AWS Cost Anomaly Detection 创建一个成本监控器。访问检测历史记录。将时间范围设置为过去 30 天。在搜索区域中选择服务类别。",
+      "C": "在 AWS CloudTrail 中，过滤事件历史记录以显示过去 30 天的结果。创建一个包含数据的 Amazon Athena 表。按事件来源对表进行分区。",
+      "D": "使用 AWS Audit Manager 创建一个过去 30 天的评估。对评估应用基于使用情况的框架。将评估配置为按资源进行评估。"
     },
-    "answer": "B",
+    "answer": "C",
     "explanations": {
-      "A": "Update the IAM policy attached to the role in the identity account to be: 错误。身份账户中的 IAM 策略已经允许用户调用 sts:AssumeRole 操作,并且资源指定为 arn:aws:iam::*:role/JobFunctionRole ,这已经正确配置了权限。问题不在于身份账户的 IAM 策略, 而在于目标账户的信任策略。",
-      "B": "Update the trust policy on the role in the target account to be: 正确。目标账户中的 JobFunctionRole 需要信任身份账户中的 IdentityRole ,以便允许身份账户的用户通过 sts:AssumeRole 来访问目标账户的资源。如果信任策略未正确配置, 用户将无法跨账户访问。",
-      "C": "Update the trust policy on the role in the identity account to be: 错误。身份账户中的 IdentityRole 的信任策略与问题无关,因为问题发生在目标账户的角色信任策略配置上。",
-      "D": "Update the IAM policy attached to the role in the target account to be: 错误。目标账户中的 IAM 策略控制的是角色的权限, 而不是信任关系。问题的核心是信任策略, 而不是 IAM 权限策略。"
+      "A": "在 AWS Cost Explorer 中，过滤图表数据以显示过去 30 天的结果。将结果导出到数据表。按资源对数据表进行分组。错误原因：AWS Cost Explorer 主要用于分析成本和使用情况，而不是追踪具体的资源部署或配置活动。它无法提供详细的事件历史记录，因此不适合用于审计员工的操作行为。",
+      "B": "使用 AWS Cost Anomaly Detection 创建一个成本监控器。访问检测历史记录。将时间范围设置为过去 30 天。在搜索区域中选择服务类别。错误原因：AWS Cost Anomaly Detection 用于检测成本异常，而不是追踪资源的具体操作或配置变更。虽然可以查看服务类别，但无法提供详细的事件级别信息。",
+      "C": "在 AWS CloudTrail 中，过滤事件历史记录以显示过去 30 天的结果。创建一个包含数据的 Amazon Athena 表。按事件来源对表进行分区。正确原因：AWS CloudTrail 记录了账户中的所有 API 调用和活动日志，是追踪资源部署和配置变更的最佳工具。通过 Amazon Athena，可以对 CloudTrail 日志进行查询和分析，快速定位相关事件。",
+      "D": "使用 AWS Audit Manager 创建一个过去 30 天的评估。对评估应用基于使用情况的框架。将评估配置为按资源进行评估。错误原因：AWS Audit Manager 主要用于合规性评估，而不是实时分析账户活动或事件历史。它无法快速定位具体的资源部署或配置变更。"
     }
   },
   {
