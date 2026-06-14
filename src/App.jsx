@@ -16,6 +16,9 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
+// Cache-bust token: changes every build so a new deploy forces fresh JSON
+// instead of the browser/CDN serving a stale question bank.
+const DATA_VERSION = (typeof __BUILD_ID__ !== 'undefined') ? __BUILD_ID__ : String(Date.now())
 
 // ── Check admin mode ──
 const isAdmin = new URLSearchParams(window.location.search).has('admin')
@@ -697,13 +700,13 @@ export default function App() {
   useEffect(() => {
     const load = async () => {
       try {
-        const manifestRes = await fetch(`${BASE_URL}data/manifest.json`)
+        const manifestRes = await fetch(`${BASE_URL}data/manifest.json?v=${DATA_VERSION}`)
         if (!manifestRes.ok) throw new Error('無法載入題庫清單')
         const manifest = await manifestRes.json()
         const allQuestions = []
         for (const file of manifest.files) {
           try {
-            const res = await fetch(`${BASE_URL}data/${file}`)
+            const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`)
             if (!res.ok) continue
             const data = await res.json()
             const questions = Array.isArray(data) ? data : (data.questions || [])
@@ -720,7 +723,7 @@ export default function App() {
           const enQuestions = []
           for (const file of manifest.enFiles) {
             try {
-              const res = await fetch(`${BASE_URL}data/${file}`)
+              const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`)
               if (!res.ok) continue
               const data = await res.json()
               const questions = Array.isArray(data) ? data : (data.questions || [])
