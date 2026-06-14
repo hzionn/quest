@@ -325,7 +325,7 @@
   {
     "exam": "SAA-C03",
     "id": 18,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 An application development team is designing a microservice that will convert large images to smaller, compressed images. When a user uploads an image through the web interface, the microservice should store the image in an Amazon S3 bucket, process and compress the image with an AWS Lambda function, and store the image in its compressed form in a different S3 bucket. A solutions architect needs to design a solution that uses durable, stateless components to process the images automatically. Which combination of actions will meet these requirements? (Choose two.)",
     "options": {
       "A": "Create an Amazon Simple Queue Service (Amazon SQS) queue. Configure the S3 bucket to send a notification to the SQS queue when an image is uploaded to the $3 bucket.",
@@ -334,9 +334,7 @@
       "D": "Launch an Amazon EC2 instance to monitor an Amazon Simple Queue Service (Amazon SQS) queue. When items are added to the queue, log the file name in a text file on the EC2 instance and invoke the Lambda function.",
       "E": "Configure an Amazon EventBridge (Amazon CloudWatch Events) event to monitor the S3 bucket. When an image is uploaded, send an alert to an Amazon ample Notification Service (Amazon SNS) topic with the application owner's email address for further processing."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create an Amazon Simple Queue Service (Amazon SQS) queue. Configure the S3 bucket to send a notification to the SQS queue when an image is uploaded to the S3 bucket. 正确：S3 可以通过事件通知机制将上传事件发送到 SQS 队列，SQS 是持久化的无状嬒组件，符合题目要求。",
       "B": "Configure the Lambda function to use the Amazon Simple Queue Service (Amazon SQS) queue as the invocation source. When the SQS message is successfully processed, delete the message in the queue. 正确：Lambda 可以直接从 SQS 队列中读取消嬟并处理，处理完成后删除消嬟，符合题目要求的自动化和无状嬒设计。",
@@ -822,7 +820,7 @@
   {
     "exam": "SAA-C03",
     "id": 44,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has an Amazon S3 bucket that contains critical data. The company must protect the data from accidental deletion. Which combination of steps should a solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Enable versioning on the S3 bucket.",
@@ -831,9 +829,7 @@
       "D": "Enable default encryption on the S3 bucket.",
       "E": "Create a lifecycle policy for the objects in the S3 bucket."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Enable versioning on the S3 bucket. 正确。启用版本控制可以确保即使对象被删除或覆盖，仍然可以恢复到之前的版本，从而保护数据免受意外删除。",
       "B": "Enable MFA Delete on the S3 bucket. 正确。启用MFA Delete可以增加额外的安全层，要求多重身份验证才能删除数据，从而防止未经授权或意外删除。",
@@ -845,7 +841,7 @@
   {
     "exam": "SAA-C03",
     "id": 45,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has a data ingestion workflow that consists of the following: “An Amazon Simple Notification Service (Amazon SNS) topic for notifications about new data deliveries “An AWS Lambda function to process the data and record metadata The company observes that the ingestion workflow fails occasionally because of network connectivity issues. When such a failure occurs, the Lambda function does not ingest the corresponding data unless the company manually reruns the job. Which combination of actions should a solutions architect take to ensure that the Lambda function ingests all data in the future? (Choose two.)",
     "options": {
       "A": "Deploy the Lambda function in multiple Availability Zones.",
@@ -854,9 +850,7 @@
       "D": "Increase provisioned throughput for the Lambda function.",
       "E": "Modify the Lambda function to read from an Amazon Simple Queue Service (Amazon SQS) queue."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "将 Lambda 函数部署在多个可用区。 错误。Lambda 是区域级服务，自动在多个可用区内运行，无需手动部署到多个可用区。此选项与解决网痬连接问题无关。",
       "B": "创建一个 Amazon Simple Queue Service (Amazon SQS) 队列，并订阅到 SNS 主题。 正确。通过将 SNS 主题与 SQS 队列集成，可以确保消息持久化，即使 Lambda 函数因网痬问题失败，消息仍然可以保存在队列 中，疊后重新处理。",
@@ -1383,7 +1377,7 @@
   {
     "exam": "SAA-C03",
     "id": 73,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company recently launched Linux-based application instances on Amazon EC2 in a private subnet and launched a Linux-based bastion host on an Amazon EC2 instance in a public subnet of a VPC. A solutions architect needs to connect from the on-premises network, through the company's internet connection, to the bastion host, and to the application servers. The solutions architect must make sure that the security groups of all the EC2 instances will allow that access. Which combination of steps should the solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Replace the current security group of the bastion host with one that only allows inbound access from the application instances.",
@@ -1392,9 +1386,7 @@
       "D": "Replace the current security group of the application instances with one that allows inbound SSH access from only the private IP address of the bastion host.",
       "E": "Replace the current security group of the application instances with one that allows inbound SSH access from only the public IP address of the bastion host."
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Replace the current security group of the bastion host with one that only allows inbound access from the application instances. 错误：堡垒主机的目的是允许外部用户通过互联网访问，因此它的安全组需要允许来自公司外部IP范围的入站访问，而不是仅允许 来自应用程序实例的访问。",
       "B": "Replace the current security group of the bastion host with one that only allows inbound access from the internal IP range for the company. 错误：堡垒主机需要允许来自公司外部IP范围的访问，而不是内部IP范围。内部IP范围通常用于私有子网中的资源，而不是通过互联 网访问的资源。",
@@ -1406,7 +1398,7 @@
   {
     "exam": "SAA-C03",
     "id": 74,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect is designing a two-tier web application. The application consists of a public-facing web tier hosted on Amazon EC2 in public subnets. The database tier consists of Microsoft SQL Server running on Amazon EC2 in a private subnet. Security is a high priority for the company. How should security groups be configured in this situation? (Choose two.)",
     "options": {
       "A": "Configure the security group for the web tier to allow inbound traffic on port 443 from 0.0.0.0/0.",
@@ -1415,9 +1407,7 @@
       "D": "Configure the security group for the database tier to allow outbound traffic on ports 443 and 1433 to the security group for the web tier.",
       "E": "Configure the security group for the database tier to allow inbound traffic on ports 443 and 1433 from the security group for the web tier."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Configure the security group for the web tier to allow inbound traffic on port 443 from 0.0.0.0/0. 正确：Web宔需要允许来自互联网的HTTPS流量（端口443），因此需要配置允许从0.0.0.0/0的入站流量。",
       "B": "Configure the security group for the web tier to allow outbound traffic on port 443 from 0.0.0.0/0. 错误：Web宔通常不需要向互联网发送HTTPS流量，出站流量的默正规则已经允许所有流量，因此无需显式配置。",
@@ -1944,7 +1934,7 @@
   {
     "exam": "SAA-C03",
     "id": 102,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company wants to migrate an on-premises data center to AWS. The data center hosts an SFTP server that stores its data on an NFS-based file system. The server holds 200 GB of data that needs to be transferred. The server must be hosted on an Amazon EC2 instance that uses an Amazon Elastic File System (Amazon EFS) file system. Which combination of steps should a solutions architect take to automate this task? (Choose two.)",
     "options": {
       "A": "Launch the EC2 instance into the same Availability Zone as the EFS file system.",
@@ -1953,9 +1943,7 @@
       "D": "Manually use an operating system copy command to push the data to the EC2 instance.",
       "E": "Use AWS DataSync to create a suitable location configuration for the on-premises SFTP server."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "将EC2实例启动到与EFS文件系统相同的可用区。 分析：虽然EFS文件系统需要与EC2实例在同一可用区内进行挂载，但本题的重点是数据迁移，而不是EC2实例的启动位置。因此此 选项与数据迁移的自动化任务无关，错误。",
       "B": "在本地数据中心安装一个AWS DataSync代理。 分析：这是正确的步骤之一。AWS DataSync代理可以帮助将本地数据中心的数据迁移到AWS上的存储服务（如EFS）。",
@@ -1986,7 +1974,7 @@
   {
     "exam": "SAA-C03",
     "id": 104,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect must design a highly available infrastructure for a website. The website is powered by Windows web servers that run on Amazon EC2 instances. The solutions architect must implement a solution that can mitigate a large-scale DDoS attack that originates from thousands of IP addresses. Downtime is not acceptable for the website. Which actions should the solutions architect take to protect the website from such an attack? (Choose two.)",
     "options": {
       "A": "Use AWS Shield Advanced to stop the DDoS attack.",
@@ -1995,9 +1983,7 @@
       "D": "Use an AWS Lambda function to automatically add attacker IP addresses to VPC network ACLs. (FA AWS Lambda",
       "E": "Use EC2 Spot Instances in an Auto Scaling group with a target tracking scaling policy that is set to 80% CPU utilization."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use AWS Shield Advanced to stop the DDoS attack. 正确： AWS Shield Advanced是专门设计用于保护应用程序免受复杂和大规模DDoS攻击的服务。它提供了高级保护功能，并与其他 AWS服务集成，可以有效缓解攻击。",
       "B": "Configure Amazon GuardDuty to automatically block the attackers. 错误： Amazon GuardDuty是一个威胁检测服务，用于识别潜在的恶意活动，但它不会自动阻止攻击者。它的主要功能是检测和报 告，而不是直接防御。",
@@ -2394,7 +2380,7 @@
   {
     "exam": "SAA-C03",
     "id": 125,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company runs its two-tier ecommerce website on AWS. The web tier consists of a load balancer that sends traffic to Amazon EC2 instances. The database tier uses an Amazon RDS DB instance. The EC2 instances and the RDS DB instance should not be exposed to the public internet. The EC2 instances require internet access to complete payment processing of orders through a third-party web service. The application must be highly available. Which combination of configuration options will meet these requirements? (Choose two.)",
     "options": {
       "A": "Use an Auto Scaling group to launch the EC2 instances in private subnets. Deploy an RDS Multi-AZ DB instance in private subnets.",
@@ -2402,9 +2388,7 @@
       "C": "Use an Auto Scaling group to launch the EC2 instances in public subnets across two Availability Zones. Deploy an RDS Multi- AZ DB instance in private subnets.",
       "D": "Configure a VPC with one public subnet, one private subnet, and two NAT gateways across two Availability Zones. Deploy an Application Load Balancer in the public subnet. D. Configure a VPC with two public subnets, two private subnets, and two NAT gateways across two Availability Zones. Deploy an Application Load Balancer in the public subnets."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use an Auto Scaling group to launch the EC2 instances in private subnets. Deploy an RDS Multi-AZ DB instance in private subnets. 正确：EC2实例在私有子网中可以避免直接暴需到互联网，符合题目要求。 正确：RDS Multi-AZ部署在私有子网中，确保数据寑的高可用性，同时避免暴需到互联网。",
       "B": "Configure a VPC with two private subnets and two NAT gateways across two Availability Zones. Deploy an Application Load Balancer in the private subnets. 错误：Application Load Balancer需要部署在公有子网中，以便接收来自互联网的流量。 正确：两个私有子网和两个NAT网关的配置可以确保高可用性和私有子网中的资源访问互联网。",
@@ -2607,7 +2591,7 @@
   {
     "exam": "SAA-C03",
     "id": 136,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is migrating its on-premises PostgreSQL database to Amazon Aurora PostgreSQL. The on-premises database must remain online and accessible during the migration. The Aurora database must remain synchronized with the on-premises database. Which combination of actions must a solutions architect take to meet these requirements? (Choose two.) 一家公司正在将其本地部署的 PostgreSQL 数据库迁移到 Amazon Aurora PostgreSQL.",
     "options": {
       "A": "Create an ongoing replication task.",
@@ -2616,9 +2600,7 @@
       "D": "Convert the database schema by using the AWS Schema Conversion Tool (AWS SCT).",
       "E": "Create an Amazon EventBridge (Amazon CloudWatch Events) rule to monitor the database synchronization."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create an ongoing replication task. 正确。AWS DMS支持创建持续的复制任务以保持源数据库和目标数据库同步。这是实现实时同步的关键步骤。",
       "B": "Create a database backup of the on-premises database. 错误。创建数据库备份是静态的操作，无法满足题目中“保持同步”的要求。",
@@ -2687,7 +2669,7 @@
   {
     "exam": "SAA-C03",
     "id": 140,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect needs to help a company optimize the cost of running an application on AWS. The application will use Amazon EC2 instances, AWS Fargate, and AWS Lambda for compute within the architecture. The EC2 instances will run the data ingestion layer of the application. EC2 usage will be sporadic and unpredictable. Workloads that run on EC2 instances can be interrupted at any time. The application front end will run on Fargate, and Lambda will serve the API layer. The front-end utilization and API layer utilization will be predictable over the course of the next year. Which combination of purchasing options will provide the MOST cost-effective solution for hosting this application? (Choose two.) 解决方案架构师需要帮助一家公司优化在 AWS 上运行应用程序的成本。该应用程序将在架构中使用 Amazon EC2 实例、AWs Fargate 和 AWS Lambda 进行计算。 EC2 实例将运行应用程序的数据摄取层。 EC2 的使用将是间歇性的且不可预测的。在 EC2 实例上运行的工作负载可能随时会被中 断。应用程序的前端将运行在 Fargate 上，而 Lambda 将服务于 API 层。前端的使用率和 AP!",
     "options": {
       "A": "Use Spot Instances for the data ingestion layer (ERR)",
@@ -2696,9 +2678,7 @@
       "D": "Purchase 1-year All Upfront Reserved instances for the data ingestion layer.",
       "E": "Purchase a 1-year EC2 instance Savings Plan for the front end and API layer."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use Spot Instances for the data ingestion layer 正确。Spot Instances适用于可以被中断的工作负载，目成本较低。题目明确指出数据摄取层的EC2使用是“sporadic and unpredictable”，并且可以被中断，因此Spot Instances是最合适的选择。",
       "B": "Use On-Demand Instances for the data ingestion layer 错误。On-Demand Instances成本较高，适用于需要持续运行目不可中断的工作负载。题目明确指出数据摄取层可以被中断，因此 不需要使用On-Demand Instances。",
@@ -2900,7 +2880,7 @@
   {
     "exam": "SAA-C03",
     "id": 151,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company wants to migrate its on-premises data center to AWS. According to the company's compliance requirements, the company can use only the ap-northeast-3 Region. Company administrators are not permitted to connect VPCs to the internet. Which solutions will meet these requirements? (Choose two.)",
     "options": {
       "A": "Use AWS Control Tower to implement data residency guardrails to deny internet access and deny access to all AWS Regions except ap-northeast-3.",
@@ -2909,9 +2889,7 @@
       "D": "Create an outbound rule for the network ACL in each VPC to deny all traffic from 0.0.0.0/0. Create an IAM policy for each user to prevent the use of any AWS Region other than ap-northeast-3.",
       "E": "Use AWS Config to activate managed rules to detect and alert for internet gateways and to detect and alert for new resources deployed outside of ap-northeast-3."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use AWS Control Tower to implement data residency guardrails to deny internet access and deny access to all AWS Regions except ap-northeast-3. 正确：AWS Control Tower可以通过数据驻留保护措施（guardrails）来限制互联网访问，并限制访问特定区域（如ap-northeast- 3）。 符合题目要求：限制互联网访问和区域使用。",
       "B": "Use rules in AWS WAF to prevent internet access. Deny access to all AWS Regions except ap-northeast-3 in the AWS account settings. 错误：AWS WAF主要用于保护Web应用程序免受恶意流量攻击，而不是直接用于限制VPC的互联网访问。 错误：AWS账户设置中无法直接限制区域访问。",
@@ -3023,7 +3001,7 @@
   {
     "exam": "SAA-C03",
     "id": 157,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company stores data in an Amazon Aurora PostgreSQL DB cluster. The company must store all the data for 5 years and must delete all the data after 5 years. The company also must indefinitely keep audit logs of actions that are performed within the database. Currently, the company has automated backups configured for Aurora. Which combination of steps should a solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Take a manual snapshot of the DB cluster.",
@@ -3032,9 +3010,7 @@
       "D": "Configure an Amazon CloudWatch Logs export for the DB cluster.",
       "E": "Use AWS Backup to take the backups and to keep the backups for 5 years."
     },
-    "answer": [
-      "D"
-    ],
+    "answer": "D",
     "explanations": {
       "A": "Take a manual snapshot of the DB cluster. 手动快照可以保存数据库的状态，但无法自动删除数据，也无法满足5年的数据保留要求。 手动快照需要手动管理生命周期，不适合长期自动化需求。 错误。",
       "B": "Create a lifecycle policy for the automated backups. Aurora的自动备份不支持生命周期策略，生命周期策略通常用于Amazon S3疨服务。 无法满足5年的数据保留和自动删除要求。 错误。",
@@ -3065,7 +3041,7 @@
   {
     "exam": "SAA-C03",
     "id": 159,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is running a publicly accessible serverless application that uses Amazon API Gateway and AWS Lambda. The application's traffic recently spiked due to fraudulent requests from botnets. Which steps should a solutions architect take to block requests from unauthorized users? (Choose two.)",
     "options": {
       "A": "Create a usage plan with an API key that is shared with genuine users only.",
@@ -3074,9 +3050,7 @@
       "D": "Convert the existing public API to a private API. Update the DNS records to redirect users to the new API endpoint.",
       "E": "Create an IAM role for each user attempting to access the API. A user will assume the role when making the API call."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create a usage plan with an API key that is shared with genuine users only. 正确：使用API密钥和使用计划可以限制访问并确保只有授权用户能够调用API。这是一个有效的安全措施。",
       "B": "Integrate logic within the Lambda function to ignore the requests from fraudulent IP addresses. 错误：在Lambda函数中处理恶意流量会增加函数的复杂性和运行成本。更好的方法是使用AWS WAF在API Gateway层过滤恶意流 量。",
@@ -3468,7 +3442,7 @@
   {
     "exam": "SAA-C03",
     "id": 180,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is designing a cloud communications platform that is driven by APIs. The application is hosted on Amazon EC2 instances behind a Network Load Balancer (NLB). The company uses Amazon API Gateway to provide external users with access to the application through APIs. The company wants to protect the platform against web exploits like SQL injection and also wants to detect and mitigate large, sophisticated DDoS attacks. Which combination of solutions provides the MOST protection? (Choose two.)",
     "options": {
       "A": "Use AWS WAF to protect the NLB.",
@@ -3477,9 +3451,7 @@
       "D": "Use Amazon GuardDuty with AWS Shield Standard 将 Amazon GuardDuty 5 AWS Shield Standard",
       "E": "Use AWS Shield Standard with Amazon API Gateway."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Use AWS WAF to protect the NLB. 错误：AWS WAF无法直接保护Network Load Balancer (NLB)。AWS WAF主要用于保护Amazon API Gateway、Application Load Balancer (ALB)和CloudFront。",
       "B": "Use AWS Shield Advanced with the NLB. 正确：AWS Shield Advanced提供高级DDoS保护，可以与NLB结合使用，帮助检测和缓解复杂的DDoS攻击。",
@@ -3602,7 +3574,7 @@
   {
     "exam": "SAA-C03",
     "id": 187,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is developing an ecommerce application that will consist of a load-balanced front end, a container-based application, and a relational database. A solutions architect needs to create a highly available solution that operates with as little manual intervention as possible. Which solutions meet these requirements? (Choose two.)",
     "options": {
       "A": "Create an Amazon RDS DB instance in Multi-AZ mode.",
@@ -3611,9 +3583,7 @@
       "D": "Create an Amazon Elastic Container Service (Amazon ECS) cluster with a Fargate launch type to handle the dynamic application load.",
       "E": "Create an Amazon Elastic Container Service (Amazon ECS) cluster with an Amazon EC2 launch type to handle the dynamic application load."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create an Amazon RDS DB instance in Multi-AZ mode. 正确：Multi-AZ模式提供数据寑的高可用性和自动故障转移功能，符合题目要求的高可用性和最小化孅动寅预。",
       "B": "Create an Amazon RDS DB instance and one or more replicas in another Availability Zone. 错误：虽然跨可用区的副本可以提高读取性能，但它不提供自动故障转移功能，因此不完全满足高可用性要求。",
@@ -3644,7 +3614,7 @@
   {
     "exam": "SAA-C03",
     "id": 189,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company needs to store contract documents. A contract lasts for 5 years. During the 5-year period, the company must ensure that the documents cannot be overwritten or deleted. The company needs to encrypt the documents at rest and rotate the encryption keys automatically every year. Which combination of steps should a solutions architect take to meet these requirements with the LEAST operational overhead? (Choose two.)",
     "options": {
       "A": "Store the documents in Amazon S3. Use S3 Object Lock in governance mode.",
@@ -3653,9 +3623,7 @@
       "D": "Use server-side encryption with AWS Key Management Service (AWS KMS) customer managed keys. Configure key rotation.",
       "E": "Use server-side encryption with AWS Key Management Service (AWS KMS) customer provided (imported) keys. Configure key rotation."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Store the documents in Amazon S3. Use S3 Object Lock in governance mode. 治理模式允许管理员绕社锁定规则，这不符合题目要求的“确保文件不能被覆盖或删除”的严格合规性要求。 因此此选项错误。",
       "B": "Store the documents in Amazon S3. Use S3 Object Lock in compliance mode. 合规模式确保文件不能被覆盖或删除，即使是管理员也无法绕社锁定规则。 此选项符合题目要求，因此正确。",
@@ -3705,7 +3673,7 @@
   {
     "exam": "SAA-C03",
     "id": 192,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A hospital wants to create digital copies for its large collection of historical written records. The hospital will continue to add hundreds of new documents each day. The hospital's data team will scan the documents and will upload the documents to the AWS Cloud. A solutions architect must implement a solution to analyze the documents, extract the medical information, and store the documents so that an application can run SQL queries on the data. The solution must maximize scalability and operational efficiency. Which combination of steps should the solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Write the document information to an Amazon EC2 instance that runs a MySQL database.",
@@ -3714,9 +3682,7 @@
       "D": "Create an AWS Lambda function that runs when new documents are uploaded. Use Amazon Rekognition to convert the documents to raw text. Use Amazon Transcribe Medical to detect and extract relevant medical information from the text.",
       "E": "Create an AWS Lambda function that runs when new documents are uploaded. Use Amazon Textract to convert the documents to raw text. Use Amazon Comprehend Medical to detect and extract relevant medical information from the text. IT"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Write the document information to an Amazon EC2 instance that runs a MySQL database. 错误：使用EC2实例运行MySQL数据库不符合“最大化可扩展性和操作效率”的要求。EC2需要手动管理，目MySQL在处理大规模数据 时可能不如S3和Athena高效。",
       "B": "Write the document information to an Amazon S3 bucket. Use Amazon Athena to query the data. 正确：Amazon S3提供高可扩展性和低成本存储，适合存储大量文档。Amazon Athena可以直接查询存储在S3中的数据，支持SQL 查询，符合题目要求。",
@@ -3804,7 +3770,7 @@
   {
     "exam": "SAA-C03",
     "id": 197,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has a Microsoft .NET application that runs on an on-premises Windows Server. The application stores data by using an Oracle Database Standard Edition server. The company is planning a migration to AWS and wants to minimize development changes while moving the application. The AWS application environment should be highly available. Which combination of actions should the company take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Refactor the application as serverless with AWS Lambda functions running .NET Core.",
@@ -3813,9 +3779,7 @@
       "D": "Use AWS Database Migration Service (AWS DMS) to migrate from the Oracle database to Amazon DynamoDB in a Multi-AZ deployment.",
       "E": "Use AWS Database Migration Service (AWS DMS) to migrate from the Oracle database to Oracle on Amazon RDS in a Multi- AZ deployment."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Refactor the application as serverless with AWS Lambda functions running .NET Core. 错误：重构应用程序为无服务器架构需要大量开发工作，与题目要求的“最小化开发更改”不符。",
       "B": "Rehost the application in AWS Elastic Beanstalk with the .NET platform in a Multi-AZ deployment. 正确：AWS Elastic Beanstalk支持.NET平台，可以快速迁移应用程序，同时支持多可用区部署以实现高可用性。",
@@ -4207,7 +4171,7 @@
   {
     "exam": "SAA-C03",
     "id": 218,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has a web server running on an Amazon EC2 instance in a public subnet with an Elastic IP address. The default security group is assigned to the EC2 instance. The default network ACL has been modified to block all traffic. A solutions architect needs to make the web server accessible from everywhere on port 443. Which combination of steps will accomplish this task? (Choose two.)",
     "options": {
       "A": "Create a security group with a rule to allow TCP port 443 from source 0.0.0.0/0.",
@@ -4216,9 +4180,7 @@
       "D": "Update the network ACL to allow inbound/outbound TCP port 443 from source 0.0.0.0/0 and to destination 0.0.0.0/0.",
       "E": "Update the network ACL to allow inbound TCP port 443 from source 0.0.0.0/0 and outbound TCP port 32768-65535 to destination 0.0.0.0/0."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create a security group with a rule to allow TCP port 443 from source 0.0.0.0/0. 正确。安全组是状嬒性的，允许入站规则会自动允许相关的出站流量。创建一个安全组并允许从0.0.0.0/0访问TCP端口443是使Web 服务器对外开放的必要步骤。",
       "B": "Create a security group with a rule to allow TCP port 443 to destination 0.0.0.0/0. 错误。安全组的规则是基于入站流量的源地址，而不是目标地址。此选项描述的规则不符合安全组的工作方式。",
@@ -4306,7 +4268,7 @@
   {
     "exam": "SAA-C03",
     "id": 223,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has deployed a Java Spring Boot application as a pod that runs on Amazon Elastic Kubernetes Service (Amazon EKS) in private subnets. The application needs to write data to an Amazon DynamoDB table. A solutions architect must ensure that the application can interact with the DynamoDB table without exposing traffic to the internet. Which combination of steps should the solutions architect take to accomplish this goal? (Choose two.)",
     "options": {
       "A": "Attach an IAM role that has sufficient privileges to the EKS pod.",
@@ -4315,9 +4277,7 @@
       "D": "Create a VPC endpoint for DynamoDB.",
       "E": "Embed the access keys in the Java Spring Boot code. HDA AR A Fl Java Spring Boot"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Attach an IAM role that has sufficient privileges to the EKS pod. 正确。通过IAM角色，EKS pod可以安全地访问AWS资源（如DynamoDB），这是AWS的最佳实践。 IAM角色可以通过服务账户绑定到EKS pod，避免使用硬编码的访问密钥。",
       "B": "Attach an IAM user that has sufficient privileges to the EKS pod. 错误。IAM用户不适合直接绑定到EKS pod，AWS推荐使用IAM角色而不是IAM用户来管理权限。 IAM用户的访问密钥需要硬编码或孅动管理，这不符合安全性最佳实践。",
@@ -4372,7 +4332,7 @@
   {
     "exam": "SAA-C03",
     "id": 226,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company collects data from thousands of remote devices by using a RESTful web services application that runs on an Amazon EC2 instance. The EC2 instance receives the raw data, transforms the raw data, and stores all the data in an Amazon S3 bucket. The number of remote devices will increase into the millions soon. The company needs a highly scalable solution that minimizes operational overhead. Which combination of steps should a solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Use AWS Glue to process the raw data in Amazon S3.",
@@ -4381,9 +4341,7 @@
       "D": "Send the raw data to Amazon Simple Queue Service (Amazon SQS). Use EC2 instances to process the data.",
       "E": "Use Amazon API Gateway to send the raw data to an Amazon Kinesis data stream. Configure Amazon Kinesis Data Firehose to use the data stream as a source to deliver the data to Amazon S3. {FA Amazon API Gateway"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use AWS Glue to process the raw data in Amazon S3. 正确：AWS Glue 是一个完全托管的 ETL 服务，可以高效地处理和转换存储在 Amazon S3 中的数据。 符合题目要求的“高可扩展性”和“减少运维开销”。",
       "B": "Use Amazon Route 53 to route traffic to different EC2 instances. 错误：Amazon Route 53 是一个 DNS 服务，主要用于域名解析和流量路由，不适合处理数据流或扩展数据处理能力。 不符合题目要求的“高可扩展性”和“减少运维开销”。",
@@ -4509,7 +4467,7 @@
   {
     "exam": "SAA-C03",
     "id": 233,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect has created a new AWS account and must secure AWS account root user access. Which combination of actions will accomplish this? (Choose two.)",
     "options": {
       "A": "Ensure the root user uses a strong password.",
@@ -4518,9 +4476,7 @@
       "D": "Add the root user to a group containing administrative permissions.",
       "E": "Apply the required permissions to the root user with an inline policy document."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Ensure the root user uses a strong password. 正确。使用强密码是保护账户安全的基本措施之一。 强密码可以防桬暴力破解攻击。",
       "B": "Enable multi-factor authentication to the root user. 正确。启用多重身份验证（MFA）是AWS推荐的最佳实践之一。 MFA增加了额外的安全层，即使密码梚需，攻击者也无法答易访问账户。",
@@ -4774,7 +4730,7 @@
   {
     "exam": "SAA-C03",
     "id": 247,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has deployed a database in Amazon RDS for MySQL. Due to increased transactions, the database support team is reporting slow reads against the DB instance and recommends adding a read replica. Which combination of actions should a solutions architect take before implementing this change? (Choose two.)",
     "options": {
       "A": "Enable binlog replication on the RDS primary node.",
@@ -4783,9 +4739,7 @@
       "D": "Create a global table and specify the AWS Regions where the table will be available.",
       "E": "Enable automatic backups on the source instance by setting the backup retention period to a value other than 0."
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Enable binlog replication on the RDS primary node. 错误。Amazon RDS会自动管理读副本的复制，无需手动启用binlog复制。此选项不适用于RDS环境。",
       "B": "Choose a failover priority for the source DB instance. 错误。读副本的创建与故障转移优先级无关。故障转移优先级通常用于多可用区部署，而不是读副本。",

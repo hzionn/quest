@@ -21,7 +21,7 @@
   {
     "exam": "SAA-C03",
     "id": 502,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company runs a website that uses a content management system (CMS) on Amazon EC2. The CMS runs on a single EC2 instance and uses an Amazon Aurora MySQL Multi-AZ DB instance for the data tier. Website images are stored on an Amazon Elastic Block Store (Amazon EBS) volume that is mounted inside the EC2 instance. Which combination of actions should a solutions architect take to improve the performance and resilience of the website? (Choose two.)",
     "options": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance",
@@ -30,9 +30,7 @@
       "D": "Create an Amazon Machine Image (AMI) from the existing EC2 instance. Use the AMI to provision new instances behind an Application Load Balancer as part of an Auto Scaling group. Configure the Auto Scaling group to maintain a minimum of two instances. Configure an accelerator in AWS Global Accelerator for the website",
       "E": "Create an Amazon Machine Image (AMI) from the existing EC2 instance. Use the AMI to provision new instances behind an Application Load Balancer as part of an Auto Scaling group. Configure the Auto Scaling group to maintain a minimum of two instances. Configure an Amazon CloudFront distribution for the website."
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance 错误：Amazon S3 不支持直接挂载到 EC2 实例。虽然可以通过 S3 API 或工具（如 s3fs）访问 S3，但这不是最佳实践，目性能可能 受限。",
       "B": "Share the website images by using an NFS share from the primary EC2 instance. Mount this share on the other EC2 instances 错误：使用 NFS 共享会导致单点故障问题，目性能和扩展性较差，不符合高可用性和性能优化的要求。",
@@ -139,7 +137,7 @@
   {
     "exam": "SAA-C03",
     "id": 508,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has migrated multiple Microsoft Windows Server workloads to Amazon EC2 instances that run in the us-west-1 Region. The company manually backs up the workloads to create an image as needed. In the event of a natural disaster in the us-west-1 Region, the company wants to recover workloads quickly in the us-west-2 Region. The company wants no more than 24 hours of data loss on the EC2 instances. The company also wants to automate any backups of the EC2 instances. Which solutions will meet these requirements with the LEAST administrative effort? (Choose two.)",
     "options": {
       "A": "Create an Amazon EC2-backed Amazon Machine Image (AMI) lifecycle policy to create a backup based on tags. Schedule the backup to run twice daily. Copy the image on demand.",
@@ -148,9 +146,7 @@
       "D": "Create a backup vault by using AWS Backup. Use AWS Backup to create a backup plan for the EC2 instances based on tag values. Define the destination for the copy as us-west-2. Specify the backup schedule to run twice daily.",
       "E": "Create a backup vault by using AWS Backup. Use AWS Backup to create a backup plan for the EC2 instances based on tag values. Specify the backup schedule to run twice daily. Copy on demand to us-west-2."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Create an Amazon EC2-backed Amazon Machine Image (AMI) lifecycle policy to create a backup based on tags. Schedule the backup to run twice daily. Copy the image on demand. 正确性分析：此选项提到使用AMI椹命周期策略创建备份并按需复制镜像，但按需复制需要手动操作，无法满足“自动化备份”的要 求。 结论：错误。",
       "B": "Create an Amazon EC2-backed Amazon Machine Image (AMI) lifecycle policy to create a backup based on tags. Schedule the backup to run twice daily. Configure the copy to the us-west-2 Region. 正确性分析：此选项使用AMI椹命周期策略创建备份，并自动将备份复制到us-west-2区域，符合“自动化备份”和“跨区域棭难恢 复”的要求。 结论：正确。",
@@ -276,7 +272,7 @@
   {
     "exam": "SAA-C03",
     "id": 515,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is migrating an on-premises application to AWS. The company wants to use Amazon Redshift as a solution. Which use cases are suitable for Amazon Redshift in this scenario? (Choose three.)",
     "options": {
       "A": "Supporting data APIs to access data with traditional, containerized, and event-driven applications",
@@ -286,9 +282,7 @@
       "E": "Scaling globally to support petabytes of data and tens of millions of requests per minute",
       "F": "Creating a secondary replica of the cluster by using the AWS Management Console 使用AWS Management Console"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Supporting data APIs to access data with traditional, containerized, and event-driven applications 分析：Amazon Redshift主要用于数据仓库和分析工作负载，而不是专门设计用于支持数据API访问。此选项更适合Amazon DynamoDB或Amazon RDS等服务，因此此选项错误。",
       "B": "Supporting client-side and server-side encryption 分析：Amazon Redshift支持加密功能，包括客户端和服务器端加密，确保数据安全性。此选项正确。",
@@ -415,7 +409,7 @@
   {
     "exam": "SAA-C03",
     "id": 522,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company runs container applications by using Amazon Elastic Kubernetes Service (Amazon EKS). The company's workload is not consistent throughout the day. The company wants Amazon EKS to scale in and out according to the workload. Which combination of steps will meet these requirements with the LEAST operational overhead? (Choose two.)",
     "options": {
       "A": "Use an AWS Lambda function to resize the EKS cluster.",
@@ -424,9 +418,7 @@
       "D": "Use Amazon API Gateway and connect it to Amazon EKS. {FA Amazon API Gateway",
       "E": "Use AWS App Mesh to observe network activity."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Use an AWS Lambda function to resize the EKS cluster. 错误：虽然 AWS Lambda 可以用于自动化任务，但直接使用 Lambda 函数来调整 EKS 集群的大小需要额外的编程和维护工作，增 加了操作开销。",
       "B": "Use the Kubernetes Metrics Server to activate horizontal pod autoscaling. 正确：Kubernetes Metrics Server 是实现水平 Pod 自动扩展（Horizontal Pod Autoscaling, HPA）的关键组件。它可以根据 CPU 或 内存使用情况动态调整 Pod 的数量。",
@@ -831,7 +823,7 @@
   {
     "exam": "SAA-C03",
     "id": 543,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company runs Amazon EC2 instances in multiple AWS accounts that are individually bled. The company recently purchased a Savings Pian. Because of changes in the company's business requirements, the company has decommissioned a large number of EC2 instances. The company wants to use its Savings Plan discounts on its other AWS accounts. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "From the AWS Account Management Console of the management account, turn on discount sharing from the billing preferences section.",
@@ -840,9 +832,7 @@
       "D": "Create an organization in AWS Organizations in a new payer account. Invite the other AWS accounts to join the organization from the management account.",
       "E": "Create an organization in AWS Organizations in the existing AWS account with the existing EC2 instances and Savings Plan. Invite the other AWS accounts to join the organization from the management account."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "From the AWS Account Management Console of the management account, turn on discount sharing from the billing preferences section. 正确。AWS允许通过管理账户在计费偏好中启用折扣共享，这样可以将Savings Plan的折扣应用到组织中的其他账户。",
       "B": "From the AWS Account Management Console of the account that purchased the existing Savings Plan, turn on discount sharing from the billing preferences section. Include all accounts. 错误。折扣共享必须通过AWS Organizations的管理账户来启用，而不是通过购买Savings Plan的账户。",
@@ -968,7 +958,7 @@
   {
     "exam": "SAA-C03",
     "id": 550,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is using AWS Key Management Service (AWS KMS) keys to encrypt AWS Lambda environment variables. A solutions architect needs to ensure that the required permissions are in place to decrypt and use the environment variables. Which steps must the solutions architect take to implement the correct permissions? (Choose two.)",
     "options": {
       "A": "Add AWS KMS permissions in the Lambda resource policy.",
@@ -977,9 +967,7 @@
       "D": "Allow the Lambda execution role in the AWS KMS key policy.",
       "E": "Allow the Lambda resource policy in the AWS KMS key policy."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Add AWS KMS permissions in the Lambda resource policy. 错误。Lambda 资源策略主要用于控制对 Lambda 函数的访问权限，而不是用于配置 KMS 的权限。KMS 权限需要在执行角色或 KMS 密钥策略中配置。",
       "B": "Add AWS KMS permissions in the Lambda execution role. 正确。Lambda 执行角色需要具备解密 KMS 密钥的权限，以便能够解密环境变量。",
@@ -1143,7 +1131,7 @@
   {
     "exam": "SAA-C03",
     "id": 559,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company hosts multiple applications on AWS for different product lines. The applications use different compute resources, including Amazon EC2 instances and Application Load Balancers. The applications run in different AWS accounts under the same organization in AWS Organizations across multiple AWS Regions. Teams for each product line have tagged each compute resource in the individual accounts. The company wants more details about the cost for each product line from the consolidated billing feature in Organizations. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "Select a specific AWS generated tag in the AWS Billing console. ££ AWS Billing",
@@ -1152,9 +1140,7 @@
       "D": "Activate the selected tag from each AWS account. MS AWS",
       "E": "Activate the selected tag from the Organizations management account."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Select a specific AWS generated tag in the AWS Billing console. 错误：AWS生成的标疮（如“aws:createdBy”）虽然可以用于某些场景，但题目明确提到的是用户定义的标疮（user-defined tags），而不是AWS生成的标疮。",
       "B": "Select a specific user-defined tag in the AWS Billing console. 正确：用户定义的标疮可以在AWS Billing控制台中选择，用于痢化成本分配。此步骤是实现目标的必要条件。",
@@ -1204,7 +1190,7 @@
   {
     "exam": "SAA-C03",
     "id": 562,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect needs to ensure that API calls to Amazon DynamoDB from Amazon EC2 instances in a VPC do not travel across the internet. Which combination of steps should the solutions architect take to meet this requirement? (Choose two.)",
     "options": {
       "A": "Create a route table entry for the endpoint.",
@@ -1213,9 +1199,7 @@
       "D": "Create an elastic network interface forthe endpoint in each of the subnets of the VPC.",
       "E": "Create a security group entry in the endpoint's security group to provide access."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create a route table entry for the endpoint. 正确：网关端点需要在VPC的路由表中添加条目，以确保流量通过端点而不是互联网。此步骤是配置网关端点的必要部分。",
       "B": "Create a gateway endpoint for DynamoDB. 正确：Amazon DynamoDB支持网关端点，网关端点允许流量通过AWS网络而不是互联网访问DynamoDB。",
@@ -1917,7 +1901,7 @@
   {
     "exam": "SAA-C03",
     "id": 599,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company wants to use Amazon Elastic Container Service (Amazon ECS) clusters and Amazon RDS DB instances to build and run a payment processing application. The company will run the application in its on-premises data center for compliance purposes. A solutions architect wants to use AWS Outposts as part of the solution. The solutions architect is working with the company's operational team to build the application. Which activities are the responsibility of the company's operational team? (Choose three.)",
     "options": {
       "A": "Providing resilient power and network connectivity to the Outposts racks 为 Outposts",
@@ -1927,9 +1911,7 @@
       "E": "Physical maintenance of Outposts components Outposts",
       "F": "Providing extra capacity for Amazon ECS clusters to mitigate server failures and maintenance events 为 Amazon ECS"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Providing resilient power and network connectivity to the Outposts racks 正确。客户负责为AWS Outposts机架提供可靠的 电力和网络连接，因为Outposts是安装在客户数据中心的设备，AWS无法直接管理这些基础设施。",
       "B": "Managing the virtualization hypervisor, storage systems, and the AWS services that run on Outposts 错误。AWS负责管 理Outposts上的虚拟化层、存储系统以及AWS服务，客户无需承担这些责任。",
@@ -2265,7 +2247,7 @@
   {
     "exam": "SAA-C03",
     "id": 617,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company wants to migrate an on-premises data center to AWS. The data center hosts a storage server that stores data in an NFS-based file system. The storage server holds 200 GB of data. The company needs to migrate the data without interruption to existing services. Multiple resources in AWS must be able to access the data by using the NFS protocol. Which combination of steps will meet these requirements MOST cost-effectively? (Choose two.)",
     "options": {
       "A": "Create an Amazon FSx for Lustre file system.",
@@ -2274,9 +2256,7 @@
       "D": "Manually use an operating system copy command to push the data into the AWS destination.",
       "E": "Install an AWS DataSync agent in the on-premises data center. Use a DataSync task between the on-premises location and AWS."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Create an Amazon FSx for Lustre file system. Amazon FSx for Lustre是一个高性能文件系统，主要用于高性能计算（HPC）和机器学习等场景。 它不支持NFS协议，目不适合一般的文件存储需求。 错误原因：不符合题目要求的NFS协议访问需求。",
       "B": "Create an Amazon Elastic File System (Amazon EFS) file system. Amazon EFS是一个完全托管的NFS文件系统，支持多资源同时访问。 它非常适合存储共享文件，并且支持无中断迁移。 正确原因：符合题目要求的NFS协议访问需求。",
@@ -2364,7 +2344,7 @@
   {
     "exam": "SAA-C03",
     "id": 622,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is creating a new web application for its subscribers. The application will consist of a static single page and a persistent database layer. The application will have millions of users for 4 hours in the morning, but the application will have only a few thousand users during the rest of the day. The company's data architects have requested the ability to rapidly evolve their schema. Which solutions will meet these requirements and provide the MOST scalability? (Choose two.)",
     "options": {
       "A": "Deploy Amazon DynamoDB as the database solution. Provision on-demand capacity.",
@@ -2373,9 +2353,7 @@
       "D": "Deploy the static content into an Amazon S3 bucket. Provision an Amazon CloudFront distribution with the S3 bucket as the origin,",
       "E": "Deploy the web servers for static content across a fleet of Amazon EC2 instances in Auto Scaling groups. Configure the instances to periodically refresh the content from an Amazon Elastic File System (Amazon EFS) volume."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Deploy Amazon DynamoDB as the database solution. Provision on-demand capacity. 正确：DynamoDB按需容量模式允许根据流量动态调整资源，适合高峰和低峰流量的场景。",
       "B": "Deploy Amazon Aurora as the database solution. Choose the serverless DB engine mode. 错误：虽然Aurora Serverless支持自动扩展，但题目要求“快速棠化数据库模式”，Aurora的模式棠化不如DynamoDB棬梮。",
@@ -2653,7 +2631,7 @@
   {
     "exam": "SAA-C03",
     "id": 637,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect is designing a new service behind Amazon API Gateway. The request patterns for the service will be unpredictable and can change suddenly from 0 requests to over 500 per second. The total size of the data that needs to be persisted in a backend database is currently less than 1 GB with unpredictable future growth. Data can be queried using simple key-value requests. Which combination ofAWS services would meet these requirements? (Choose two.)",
     "options": {
       "A": "AWS Fargate AWS Fargate",
@@ -2662,9 +2640,7 @@
       "D": "Amazon EC2 Auto Scaling Amazon EC2 Auto Scaling",
       "E": "MySQL-compatible Amazon Aurora MySQL-compatible Amazon Aurora"
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "AWS Fargate 错误。AWS Fargate是用于运行容器化应用的无服务器计算引擎，但题目中没有提到需要运行容器化服务，也没有复杂的应用逻辑 需要容器支持。因此不适合此场景。",
       "B": "AWS Lambda 正确。AWS Lambda是无服务器计算服务，能够处理突发的请求模式（从0到500每秒），并且与Amazon API Gateway集成良好，适 合处理动态请求。",
@@ -2714,7 +2690,7 @@
   {
     "exam": "SAA-C03",
     "id": 640,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has an application workflow that uses an AWS Lambda function to download and decrypt files from Amazon S3. These files are encrypted using AWS Key Management Service (AWS KMS) keys. A solutions architect needs to design a solution that will ensure the required permissions are set correctly. Which combination of actions accomplish this? (Choose two.)",
     "options": {
       "A": "Attach the kms:decrypt permission to the Lambda function's resource policy 将 kms:decrypt",
@@ -2723,9 +2699,7 @@
       "D": "Create a new IAM policy with the kms:decrypt permission and attach the policy to the Lambda function.",
       "E": "Create a new IAM role with the kms:decrypt permission and attach the execution role to the Lambda function."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Attach the kms:decrypt permission to the Lambda function’s resource policy 错误。Lambda 函数的资源策略并不支持直接附加权限。权限需要通过 IAM 角色或 KMS 密钥策略来授予。",
       "B": "Grant the decrypt permission for the Lambda IAM role in the KMS key's policy 正确。KMS 密钥策略需要显式授予 Lambda 的 IAM 角色解密权限，以便 Lambda 函数能够使用 KMS 密钥解密文件。",
@@ -2794,7 +2768,7 @@
   {
     "exam": "SAA-C03",
     "id": 644,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 An international company has a subdomain for each country that the company operates in. The subdomains are formatted as example.com, country1.example.com, and country2.example.com. The company's workloads are behind an Application Load Balancer. The company wants to encrypt the website data that is in transit. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "Use the AWS Certificate Manager (ACM) console to request a public certificate for the apex top domain example com and a wildcard certificate for *example.com.",
@@ -2803,9 +2777,7 @@
       "D": "Validate domain ownership by email address. Switch to DNS validation by adding the required DNS records to the DNS provider.",
       "E": "Validate domain ownership for the domain by adding the required DNS records to the DNS provider."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Use the AWS Certificate Manager (ACM) console to request a public certificate for the apex top domain example.com and a wildcard certificate for *.example.com. 正确。公共证书适用于公开访问的域名，通配符证书可以覆盖所有子域名（如 country1.example.com和country2.example.com）。这是满足题目要求的正确步骤。",
       "B": "Use the AWS Certificate Manager (ACM) console to request a private certificate for the apex top domain example.com and a wildcard certificate for *.example.com. 错误。私有证书通常用于内部应用程序或服务，而不是公开访问的域名。题目要求 加密网站数据，这需要公共证书。",
@@ -3007,7 +2979,7 @@
   {
     "exam": "SAA-C03",
     "id": 655,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company runs a web application on Amazon EC2 instances in an Auto Scaling group that has a target group. The company designed the application to work with session affinity (sticky sessions) for a better user experience. The application must be available publicly over the internet as an endpoint. A WAF must be applied to the endpoint for additional security. Session affinity (sticky sessions) must be configured on the endpoint. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "Create a public Network Load Balancer. Specify the application target group.",
@@ -3016,9 +2988,7 @@
       "D": "Create a second target group. Add Elastic IP addresses to the EC2 instances.",
       "E": "Create a web ACL in AWS WAF. Associate the web ACL with the endpoint 在AWS WAF"
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Create a public Network Load Balancer. Specify the application target group. 错误：Network Load Balancer 不支持会话粘性（Sticky Sessions）。会话粘性是 Application Load Balancer 的功能。",
       "B": "Create a Gateway Load Balancer. Specify the application target group. 错误：Gateway Load Balancer 主要用于流量转发和网络安全设备的集成，不适用于 Web 应用程序的负载均衡，也不支持会话粘 性。",
@@ -3068,7 +3038,7 @@
   {
     "exam": "SAA-C03",
     "id": 658,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company uses an on-premises network-attached storage (NAS) system to provide file shares to its high performance computing (HPC) workloads. The company wants to migrate its latency-sensitive HPC workloads and its storage to the AWS Cloud. The company must be able to provide NFS and SMB multi-protocol access from the file system. Which solution will meet these requirements with the LEAST latency? (Choose two.)",
     "options": {
       "A": "Deploy compute optimized EC2 instances into a cluster placement group.",
@@ -3077,9 +3047,7 @@
       "D": "Attach the EC2 instances to an Amazon FSx for OpenZFs file system.",
       "E": "Attach the EC2 instances to an Amazon FSx for NetApp ONTAP file system."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Deploy compute optimized EC2 instances into a cluster placement group. 分析：集群放置组提供低延迟、高知吐量的网络连接，非常适合高性能计算（HPC）工作负载。此选项正确。",
       "B": "Deploy compute optimized EC2 instances into a partition placement group. 分析：分区放置组主要用于分布式应用程序的容错性，而不是优化低延迟网络连接。因此，此选项不适合解决问题，错误。",
@@ -3224,7 +3192,7 @@
   {
     "exam": "SAA-C03",
     "id": 666,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A startup company is hosting a website for its customers on an Amazon EC2 instance. The website consists of a stateless Python application and a MySQL database. The website serves only a small amount of traffic. The company is concerned about the reliability of the instance and needs to migrate to a highly available architecture. The company cannot modify the application code. Which combination of actions should a solutions architect take to achieve high availability for the website? (Choose two.)",
     "options": {
       "A": "Provision an internet gateway in each Availability Zone in use.",
@@ -3233,9 +3201,7 @@
       "D": "Use AWS DataSync to synchronize the database data across multiple EC2 instances.",
       "E": "Create an Application Load Balancer to distribute traffic to an Auto Scaling group of EC2 instances that are distributed across two Availability Zones."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Provision an internet gateway in each Availability Zone in use. 错误：Internet Gateway用于提供VPC与互联网的连接，但与高可用架构无关。高可用性主要关注服务的宛余和故障转移，而不是网 络连接的配置。",
       "B": "Migrate the database to an Amazon RDS for MySQL Multi-AZ DB instance. 正确：Amazon RDS Multi-AZ提供了数据库的宛余和自动故障转移功能，确保数据库的高可用性。",
@@ -3390,7 +3356,8 @@
       "E": "Configure the Auto Scaling group subnets to ensure that the EC2 instances are provisioned in the same Availability Zone as the DB instance."
     },
     "answer": [
-      "B"
+      "B",
+      "D"
     ],
     "explanations": {
       "A": "Turn on auto scaling for the DB instance. 错误：Amazon RDS不支持自动扩展（Auto Scaling）。RDS实例的扩展需要孅动调整实例类型或使用读副本。",
@@ -3563,7 +3530,7 @@
   {
     "exam": "SAA-C03",
     "id": 683,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is migrating its multi-tier on-premises application to AWS. The application consists of a single-node MySQL database and a multi-node web tier. The company must minimize changes to the application during the migration. The company wants to improve application resiliency after the migration. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "Migrate the web tier to Amazon EC2 instances in an Auto Scaling group behind an Application Load Balancer.",
@@ -3572,9 +3539,7 @@
       "D": "Migrate the web tier to an AWS Lambda function.",
       "E": "Migrate the database to an Amazon DynamoDB table."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Migrate the web tier to Amazon EC2 instances in an Auto Scaling group behind an Application Load Balancer. 正确：将Web层迁移到Auto Scaling组中的EC2实例，并置于Application Load Balancer之后，可以提高Web层的弹性和可用性。 Auto Scaling组可以根据流量动态调整实例数量，而ALB可以分发流量并提供高可用性。",
       "B": "Migrate the database to Amazon EC2 instances in an Auto Scaling group behind a Network Load Balancer. 错误：数据库通常不适合放在Auto Scaling组中，因为数据库需要栓态保持，而Auto Scaling组的实例是无栓态的。 Network Load Balancer适合处理高性能的网络流量，但不适合直接用于数据库的高可用性。",
@@ -3643,7 +3608,7 @@
   {
     "exam": "SAA-C03",
     "id": 687,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company that uses AWS needs a solution to predict the resources needed for manufacturing processes each month. The solution must use historical values that are currently stored in an Amazon S3 bucket. The company has no machine learning (ML) experience and wants to use a managed service for the training and predictions. Which combination of steps will meet these requirements? (Choose two.)",
     "options": {
       "A": "Deploy an Amazon SageMaker model. Create a SageMaker endpoint for inference.",
@@ -3652,9 +3617,7 @@
       "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs.",
       "E": "Train an Amazon Forsecast predictor by using the historical data in the $3 bucket."
     },
-    "answer": [
-      "D"
-    ],
+    "answer": "D",
     "explanations": {
       "D": "1. 考察的知识点 本题主要考察AWS的机器学习服务，包括Amazon SageMaker和Amazon Forecast的使用场景。 重点在于选择适合无机器学习经验的用户的托管服务，并结合历史数据进行预测。 2. 独立分析每个选项 A. Deploy an Amazon SageMaker model. Create a SageMaker endpoint for inference. Amazon SageMaker是一个强大的机器学习平台，但它需要用户具备一定的机器学习知识来构建、训练和部署模型。 题目明确指出公司没有机器学习经验，因此直接使用SageMaker模型并创建端点不符合要求。 错误原因: 不符合'无机器学习经验\"的条件。 B. Use Amazon SageMaker to train a model by using the historical data in the S3 bucket. 使用Amazon SageMaker训练模型需要用户具备一定的机器学习知识，包括数据预处理、模型选择和超参数调优。 题目要求使用托管服务，且公司没有机器学习经验，因此此选项不符合要求。 错误原因: 不符合'无机器学习经验\"的条件。 C. Configure an AWS Lambda function with a function URL that uses Amazon SageMaker endpoints to create predictions based on the inputs. 此选项涉及使用AWS Lambda函数调用SageMaker端点进行预测。 昌然Lambda函数可以简化调用过程，但前提是用户需要先构建和部署SageMaker模型，这与题目要求的“无机器学习经验\"不符。 错误原因: 依赖sageMaker模型，不符合题目要求。 D. Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs. Amazon Forecast是一个托管服务，专门用于时间序列预测，且不需要用户具备机器学习经验。 此选项通过Lambda函数调用Amazon Forecast预测器生成预测，符合题目要求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。 E. Train an Amazon Forecast predictor by using the historical data in the S3 bucket. Amazon Forecast可以直接使用3中的历史数据训练预测器，且不需要用户具备机器学习经验。 此选项符合题目要求，能够满足公司需求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。 3. 我的答案 选项D和E。 4. 官方答案 官方答案是: D和上E。 5. 比较与思考 我的答案与官方答案一致。 原因分析: Amazon Forecast是专门为时间序列预测设计的托管服务，且不需要用户具备机器学习经验，完全符合题目要求。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com [A\\&: https://www.goofish.com/personal?userld=2645260430 ”微信: Examtopics =XAMTOPICS AWS Certified Solutions Architect - Associate SAA-C03 (2026/03/11) JOSE: \" IT认证轻松过\" https://shop542998714.m.taobao.com 咸鱼: \"IT认证轻松过\" https://www.goofish.com/personal?userld=2645260430 苇wechat letacbao shop 芭xianyu shop 微信:\" Examtopics \""
     }
@@ -3700,7 +3663,7 @@
   {
     "exam": "SAA-C03",
     "id": 690,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company regularly uploads GB-sized files to Amazon S3. After the company uploads the files, the company uses a fleet of Amazon EC2 Spot Instances to transcode the file format. The company needs to scale throughput when the company uploads data from the on-premises data center to Amazon S3 and when the company downloads data from Amazon S3 to the EC2 instances. Which solutions will meet these requirements? (Choose two.)",
     "options": {
       "A": "Use the S3 bucket access point instead of accessing the S3 bucket directly.",
@@ -3709,9 +3672,7 @@
       "D": "Fetch multiple byte-ranges of an object in parallel.",
       "E": "Add a random prefix to each object when uploading the files."
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "Use the S3 bucket access point instead of accessing the S3 bucket directly. 错误：S3 Bucket Access Point主要用于简化对S3的访问管理，尤其是在多账户或多应用场景下，但它并不能直接提高上传或下载的 知吐量。",
       "B": "Upload the files into multiple S3 buckets. 错误：使用多个S3 Bucket并不能提高单个Bucket的知吐量，目增加了管理复杂性。优化知吐量的重点是如何高效地使用单个 Bucket。",
@@ -3723,7 +3684,7 @@
   {
     "exam": "SAA-C03",
     "id": 691,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A solutions architect is designing a shared storage solution for a web application that is deployed across multiple Availability Zones. The web application runs on Amazon EC2 instances that are in an Auto Scaling group. The company plans to make frequent changes to the content. The solution must have strong consistency in returning the new content as soon as the changes occur. Which solutions meet these requirements? (Choose two.)",
     "options": {
       "A": "Use AWS Storage Gateway Volume Gateway Internet Small Computer Systems Interface (iSCSI) block storage that is mounted to the individual EC2 instances.",
@@ -3732,9 +3693,7 @@
       "D": "Use AWS DataSync to perform continuous synchronization of data between EC2 hosts in the Auto Scaling group.",
       "E": "Create an Amazon S3 bucket to store the web content. Set the metadata for the Cache-Control header to no-cache. Use Amazon CloudFront to deliver the content."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "使用AWS Storage Gateway Volume Gateway Internet Small Computer Systems Interface (iSCSI)块存储，并将其挂载到单 个EC2实例上。 错误：AWS Storage Gateway Volume Gateway主要用于混合云场景，将本地存储扩展到AWS云中，不适合跨多个可用区的共享存储 需求。",
       "B": "创建一个Amazon Elastic File System (Amazon EFS)文件系统。将EFS文件系统挂载到单个EC2实例上。 正确：Amazon EFS支持跨多个可用区的共享文件系统，提供强一致性，适合频痏更新内容的场景。",
@@ -3898,7 +3857,7 @@
   {
     "exam": "SAA-C03",
     "id": 700,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A gaming company wants to launch a new internet-facing application in multiple AWS Regions. The application will use the TCP and UDP protocols for communication. The company needs to provide high availability and minimum latency for global users. Which combination of actions should a solutions architect take to meet these requirements? (Choose two.)",
     "options": {
       "A": "Create internal Network Load Balancers in front of the application in each Region.",
@@ -3907,9 +3866,7 @@
       "D": "Configure Amazon Route 53 to use a geolocation routing policy to distribute the traffic.",
       "E": "Configure Amazon CloudFront to handle the traffic and route requests to the application in each Region 配置 Amazon CloudFront"
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Create internal Network Load Balancers in front of the application in each Region. 错误：内部 Network Load Balancer 是为内部流量设计的，无法处理互联网流量。 题目要求“互联网面对的应用”，因此此选项不符合要求。",
       "B": "Create external Application Load Balancers in front of the application in each Region. 错误：虽然 Application Load Balancer 可以处理互联网流量，但它主要用于 HTTP/HTTPS 协议，而题目明确提到需要支持 TCP 和 UDP 协议。 此选项不符合题目要求。",
@@ -4078,7 +4035,7 @@
   {
     "exam": "SAA-C03",
     "id": 709,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has an organization in AWS Organizations. The company runs Amazon EC2 instances across four AWS accounts in the root organizational unit (OU). There are three nonproduction accounts and one production account. The company wants to prohibit users from launching EC2 instances of a certain size in the nonproduction accounts. The company has created a service control policy (SCP) to deny access to launch instances that use the prohibited types. Which solutions to deploy the SCP will meet these requirements? (Choose two.)",
     "options": {
       "A": "Attach the SCP to the root OU forthe organization.",
@@ -4087,9 +4044,7 @@
       "D": "Create an OU forthe production account. Attach the SCP to the OU. Move the production member account into the new OU.",
       "E": "Create an OU for the required accounts. Attach the SCP to the OU. Move the nonproduction member accounts into the new OU."
     },
-    "answer": [
-      "B"
-    ],
+    "answer": "B",
     "explanations": {
       "A": "Attach the SCP to the root OU for the organization. 错误：将SCP附加到根OU会影响所有账户，包括椹产账户，而题目要求仅限制非椹产账户。",
       "B": "Attach the SCP to the three nonproduction Organizations member accounts. 错误：SCP不能直接附加到单个账户，SCP只能附加到组痣单元（OU）或根OU。",
@@ -4590,7 +4545,7 @@
   {
     "exam": "SAA-C03",
     "id": 737,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company has an application that delivers on-demand training videos to students around the world. The application also allows authorized content developers to upload videos. The data is stored in an Amazon S3 bucket in the us-east-2 Region. The company has created an S3 bucket in the eu-west-2 Region and an S3 bucket in the ap-southeast-1 Region. The company wants to replicate the data to the new S3 buckets. The company needs to minimize latency for developers who upload videos and students who stream videos near eu-west-2 and ap-southeast-1. Which combination of steps will meet these requirements with the FEWEST changes to the application? (Choose two.)",
     "options": {
       "A": "Configure one-way replication from the us-east-2 S3 bucket to the eu-west-2 S3 bucket. Configure one-way replication from the us-east-2 S3 bucket to the ap-southeast-1 S3 bucket.",
@@ -4599,9 +4554,7 @@
       "D": "Create an S3 Multi-Region Access Point. Modify the application to use the Amazon Resource Name (ARN) of the Multi- Region Access Point for video streaming. Do not modify the application for video uploads.",
       "E": "Create an S3 Multi-Region Access Point. Modify the application to use the Amazon Resource Name (ARN) of the Multi- Region Access Point for video streaming and uploads."
     },
-    "answer": [
-      "C"
-    ],
+    "answer": "C",
     "explanations": {
       "A": "配置从us-east-2 S3橘到eu-west-2 S3橘的单向复制。配置从us-east-2 S3橘到ap-southeast-1 S3橘的单向复制。 正确性分析：此选项使用了跨区域复制 (CRR)，可以将数据从us-east-2复制到其他区域的S3橘，满足数据复制需求。 问题：虽然可以实现数据复制，但无法优化视频上传和流式播放的延迟，因为开发者和学生仍然需要直接访问us-east-2的S3橘。 结论：错误。",
       "B": "配置从us-east-2 S3橘到eu-west-2 S3橘的单向复制。配置从eu-west-2 S3橘到ap-southeast-1 S3橘的单向复制。 正确性分析：此选项使用了链式跨区域复制 (CRR)，可以将数据从us-east-2复制到eu-west-2，再从eu-west-2复制到ap-southeast- 1。 问题：链式复制增加了复杂性，目无法优化视频上传和流式播放的延迟。 结论：错误。",
@@ -4762,7 +4715,7 @@
   {
     "exam": "SAA-C03",
     "id": 746,
-    "type": "multiple",
+    "type": "single",
     "question": "Topic 1 A company is deploying an application that processes streaming data in near-real time. The company plans to use Amazon EC2 instances for the workload. The network architecture must be configurable to provide the lowest possible latency between nodes. Which combination of network solutions will meet these requirements? (Choose two.)",
     "options": {
       "A": "Enable and configure enhanced networking on each EC2 instance.",
@@ -4771,9 +4724,7 @@
       "D": "Attach multiple elastic network interfaces to each EC2 instance.",
       "E": "Use Amazon Elastic Block Store (Amazon EBS) optimized instance types."
     },
-    "answer": [
-      "A"
-    ],
+    "answer": "A",
     "explanations": {
       "A": "Enable and configure enhanced networking on each EC2 instance. 正确：增强型网络（Enhanced Networking）通过使用高性能网络接口（如Elastic Network Adapter或ENA）显著降低网络延迟并提 高知吐量。 这是实现最低网络延迟的关键配置之一。",
       "B": "Group the EC2 instances in separate accounts. 错误：将实例分组到不同账户中不会降低网络延迟，反而可能增加跨账户通人的复杂性。 与题目要求的“最低可能的延迟”无关。",
