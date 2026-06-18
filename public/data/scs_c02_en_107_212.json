@@ -327,7 +327,7 @@
     "explanations": {
       "A": "错误 分析： 安全组的 ⼊ 站规则允许来 ⾃ 应 ⽤ 程序 VPC 的所有流量，这不符合最 ⼩ 权限原则。 ⽹ 络 ACL 规则配置为允许整个应 ⽤ 程序 VPC 的 IP 地址范围，这也过于宽泛，可能会 允许不必要的流量。 虽然可以实现访问，但这种配置不够安全，且不符合最佳实践。",
       "B": "错误 分析： 在应 ⽤ 程序 VPC 和数据库 VPC 中分别创建安全组，并设置 IP 地址范围的 ⼊ 站规则， 这种 ⽅ 法过于宽泛，允许了整个 VP",
-      "C": "间通信： VPC Peering 的使 ⽤ 和配置。 安全组的规则：如何通过安全组控制流量。 ⽹ 络 ACL 的规则： ⽹ 络 ACL 与安全组的区别及使 ⽤ 场景。 最 ⼩ 权限原则：确保只有需要访问的资源能够访问。 选项分析 A. 错误 分析： 安全组的 ⼊ 站规则允许来 ⾃ 应 ⽤ 程序 VPC 的所有流量，这不符合最 ⼩ 权限原则。 ⽹ 络 ACL 规则配置为允许整个应 ⽤ 程序 VPC 的 IP 地址范围，这也过于宽泛，可能会 允许不必要的流量。 虽然可以实现访问，但这种配置不够安全，且不符合最佳实践。 B. 错误 分析： 在应 ⽤ 程序 VPC 和数据库 VPC 中分别创建安全组，并设置 IP 地址范围的 ⼊ 站规则， 这种 ⽅ 法过于宽泛，允许了整个 VPC 的流量， ⽽ 不是仅限于需要访问的实例。 这种配置不符合最 ⼩ 权限原则，可能会导致不必要的安全 ⻛ 险。 C. 正确 分析： 在应 ⽤ 程序 VPC 中创建 ⼀ 个新的安全组，不设置任何 ⼊ 站规则，这符合最 ⼩ 权限原 则。 在数据库 VPC 中创建 ⼀ 个新的安全组，并设置 ⼊ 站规则，允许来 ⾃ 应 ⽤ 程序 VPC 中指定安全组的流量。这种 ⽅ 法确保只有绑定了该安全组的实例可以访问数据库。 这种配置是基于安全组之间的引 ⽤ ，符合 AWS 最佳实践，且更加安全。",
+      "C": "正确 分析： 在应 ⽤ 程序 VPC 中创建 ⼀ 个新的安全组，不设置任何 ⼊ 站规则，这符合最 ⼩ 权限原 则。 在数据库 VPC 中创建 ⼀ 个新的安全组，并设置 ⼊ 站规则，允许来 ⾃ 应 ⽤ 程序 VPC 中指定安全组的流量。这种 ⽅ 法确保只有绑定了该安全组的实例可以访问数据库。 这种配置是基于安全组之间的引 ⽤ ，符合 AWS 最佳实践，且更加安全。",
       "D": "错误 分析： 在应 ⽤ 程序 VPC 中创建安全组，并设置 ⼊ 站规则允许来 ⾃ 数据库 VPC 的 IP 地址范 围，这种 ⽅ 法过于宽泛，可能会允许不在应 ⽤ 程序 VPC 中创建安全组，并设置 ⼊ 站 规则允许来 ⾃ 数据库 VPC 的 IP 地址范围，这种 ⽅ 法过于宽泛，可能会允许不必要的 流量。 ⽹ 络 ACL 规则配置为允许整个应 ⽤ 程序 VPC 的 IP 地址范围，这也不符合最 ⼩ 权限原 则。 这种配置不够安全，且不符合最佳实践。"
     }
   },
@@ -501,10 +501,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Install Amazon Kinesis Agent on the on-premises server to send the logs to Amazon DynamoDB... 正确性分析 :Amazon Kinesis Agent 可以收集 ⽇ 志并发送到 DynamoDB ，但 DynamoDB 并不适合存储 ⼤ 量 ⽇ 志数据，尤其 是需要 ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外，定期导出到 S3 并使 ⽤ Athena 查询增加了开发复杂性。 错误原因 : 开发复杂性较 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。",
-      "B": ".. 正确性分析 :Amazon Kinesis Agent 可以收集 ⽇ 志并发送到 DynamoDB ，但 DynamoDB 并不适合存储 ⼤ 量 ⽇ 志数据，尤其 是需要 ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外，定期导出到 S3 并使 ⽤ Athena 查询增加了开发复杂性。 错误原因 : 开发复杂性较 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。 B. Install Amazon Managed Streaming for Apache Kafka Amazon MSK ... 正确性分析 :Amazon MSK 可以 ⽤ 于实时数据流处理，但它主要是 ⼀ 个流处理平台，不 适合 ⻓ 期存储数据。设置 365 天 的数据保留期会导致存储成本 ⾼ 昂，且不 ⽀ 持直接的模式匹配和 ⼦ 字符串搜索。 错误原因 :MSK 不适合 ⻓ 期存储 ⽇ 志数据，且不 ⽀ 持复杂查询。",
+      "A": "the logs to Amazon DynamoDB... 正确性分析 :Amazon Kinesis Agent 可以收集 ⽇ 志并发送到 DynamoDB ，但 DynamoDB 并不适合存储 ⼤ 量 ⽇ 志数据，尤其 是需要 ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外，定期导出到 S3 并使 ⽤ Athena 查询增加了开发复杂性。 错误原因 : 开发复杂性较 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。",
+      "B": "Install Amazon Managed Streaming for Apache Kafka Amazon MSK ... 正确性分析 :Amazon MSK 可以 ⽤ 于实时数据流处理，但它主要是 ⼀ 个流处理平台，不 适合 ⻓ 期存储数据。设置 365 天 的数据保留期会导致存储成本 ⾼ 昂，且不 ⽀ 持直接的模式匹配和 ⼦ 字符串搜索。 错误原因 :MSK 不适合 ⻓ 期存储 ⽇ 志数据，且不 ⽀ 持复杂查询。",
       "C": "Install Amazon Kinesis Agent on the on-premises server to send the logs to Amazon Kinesis Data Firehose... 正确性分析 :Amazon Kinesis Agent 可以 ⾼ 效地收集 ⽇ 志并发送到 Kinesis Data Firehose 。 Firehose 可以直接将数据存储到 Amazon OpenSearch Service ， OpenSearch ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外， OpenSearch 的 Index State Management ISM 策略可以 ⾃ 动删除过期数据，符合 365 天的要求。 正确原因 : 此选项提供了 ⼀ 个低开发复杂性、 ⾼ 效的解决 ⽅ 案，满 ⾜ 所有需求。",
-      "D": "the logs to Amazon DynamoDB... 正确性分析 :Amazon Kinesis Agent 可以收集 ⽇ 志并发送到 DynamoDB ，但 DynamoDB 并不适合存储 ⼤ 量 ⽇ 志数据，尤其 是需要 ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外，定期导出到 S3 并使 ⽤ Athena 查询增加了开发复杂性。 错误原因 : 开发复杂性较 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。 B. Install Amazon Managed Streaming for Apache Kafka Amazon MSK ... 正确性分析 :Amazon MSK 可以 ⽤ 于实时数据流处理，但它主要是 ⼀ 个流处理平台，不 适合 ⻓ 期存储数据。设置 365 天 的数据保留期会导致存储成本 ⾼ 昂，且不 ⽀ 持直接的模式匹配和 ⼦ 字符串搜索。 错误原因 :MSK 不适合 ⻓ 期存储 ⽇ 志数据，且不 ⽀ 持复杂查询。 C. Install Amazon Kinesis Agent on the on-premises server to send the logs to Amazon Kinesis Data Firehose... 正确性分析 :Amazon Kinesis Agent 可以 ⾼ 效地收集 ⽇ 志并发送到 Kinesis Data Firehose 。 Firehose 可以直接将数据存储到 Amazon OpenSearch Service ， OpenSearch ⽀ 持复杂查询 ( 如模式匹配和 ⼦ 字符串搜索 ) 。此外， OpenSearch 的 Index State Management ISM 策略可以 ⾃ 动删除过期数据，符合 365 天的要求。 正确原因 : 此选项提供了 ⼀ 个低开发复杂性、 ⾼ 效的解决 ⽅ 案，满 ⾜ 所有需求。 D. Use Amazon API Gateway and AWS Lambda to write the logs from the on- premises server to Amazon DynamoDB... 正确性分析 : 使 ⽤ API Gateway 和 Lambda 将 ⽇ 志写 ⼊ DynamoDB 增加了开发复杂性。 DynamoDB 不适合复杂查询 ( 如模式 匹配和 ⼦ 字符串搜索 ) ，且 TTL 功能仅 ⽀ 持按时间删除数据，不 ⽀ 持复杂的 ⽣ 命周期管 理。 错误原因 : 开发复杂性 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。"
+      "D": "Use Amazon API Gateway and AWS Lambda to write the logs from the on- premises server to Amazon DynamoDB... 正确性分析 : 使 ⽤ API Gateway 和 Lambda 将 ⽇ 志写 ⼊ DynamoDB 增加了开发复杂性。 DynamoDB 不适合复杂查询 ( 如模式 匹配和 ⼦ 字符串搜索 ) ，且 TTL 功能仅 ⽀ 持按时间删除数据，不 ⽀ 持复杂的 ⽣ 命周期管 理。 错误原因 : 开发复杂性 ⾼ ， DynamoDB 不适合 ⽇ 志存储和复杂查询。"
     }
   },
   {
@@ -566,7 +566,7 @@
       "A": "Review the AWS CloudTrail event history logs in an Amazon S3 bucket and look for the TerminateInstances event to identify the federated user from the role session name. 错误：虽然可以通过 CloudTrail ⽇ 志找到 TerminateInstances 事件，但仅通过 ⾓ ⾊ 会话名称 ⽆ 法直接识别联合 ⽤ 户的具体 ⾝ 份。 需要进 ⼀ 步分析 AssumeRole 相关事件才能关联到具体的联合 ⽤ 户。",
       "B": "Filter the AWS CloudTrail event history for the TerminateInstances event and identify the assumed IAM role. Review the AssumeRoleWithSAML event call in CloudTrail to identify the corresponding username. 正确：此 ⽅ 法直接通过 CloudTrail 筛选 TerminateInstances 事件，找到假设的 IAM ⾓ ⾊ ，然后进 ⼀ 步分析 AssumeRoleWithSAML 事件以识别联合 ⽤ 户。 这是最快速且准确的 ⽅ 法，符合题 ⽬ 要求。",
       "C": "Search the AWS CloudTrail logs for the TerminateInstances event an",
-      "D": "look for the TerminateInstances event to identify the federated user from the role session name. 错误：虽然可以通过 CloudTrail ⽇ 志找到 TerminateInstances 事件，但仅通过 ⾓ ⾊ 会话名称 ⽆ 法直接识别联合 ⽤ 户的具体 ⾝ 份。 需要进 ⼀ 步分析 AssumeRole 相关事件才能关联到具体的联合 ⽤ 户。 B. Filter the AWS CloudTrail event history for the TerminateInstances event and identify the assumed IAM role. Review the AssumeRoleWithSAML event call in CloudTrail to identify the corresponding username. 正确：此 ⽅ 法直接通过 CloudTrail 筛选 TerminateInstances 事件，找到假设的 IAM ⾓ ⾊ ，然后进 ⼀ 步分析 AssumeRoleWithSAML 事件以识别联合 ⽤ 户。 这是最快速且准确的 ⽅ 法，符合题 ⽬ 要求。 C. Search the AWS CloudTrail logs for the TerminateInstances event and note the event time. Review the IAM Access Advisor tab for all federated roles. The last accessed time should match the time when the instance was terminated. 错误： IAM Access Advisor 提供的是 ⾓ ⾊ 的最近访问时间，但 ⽆ 法直接关联到具 体的 ⽤ 户操作。 此 ⽅ 法较为间接且效率较低，不符合题 ⽬ 要求的 “ 最快速 ” ⽅ 式。 D. Use Amazon Athena to run a SQL query on the AWS CloudTrail logs stored in an Amazon S3 bucket and filter on the TerminateInstances event. Identify the corresponding role and run another query to filter the AssumeRoleWithWebIdentity event for the user name. 错误：虽然 Athena 可以查询 CloudTrail ⽇ 志，但需要额外的配置和查询步骤，耗 时较 ⻓ 。 此外， AssumeRoleWithWebIdentity 事件与 SAML 联合 ⾝ 份验证 ⽆ 关，可能导致 错误的关联。"
+      "D": "Use Amazon Athena to run a SQL query on the AWS CloudTrail logs stored in an Amazon S3 bucket and filter on the TerminateInstances event. Identify the corresponding role and run another query to filter the AssumeRoleWithWebIdentity event for the user name. 错误：虽然 Athena 可以查询 CloudTrail ⽇ 志，但需要额外的配置和查询步骤，耗 时较 ⻓ 。 此外， AssumeRoleWithWebIdentity 事件与 SAML 联合 ⾝ 份验证 ⽆ 关，可能导致 错误的关联。"
     }
   },
   {
@@ -584,7 +584,7 @@
     "explanations": {
       "A": "检查 ⼊ 站和出站安全组，查找 DENY 规则 安全组在 AWS 中是 “ 允许规则 ” ， ⽽ 不是 “ 拒绝规则 ” 。安全组不会有 DENY 规则，因 此这个选项是错误的。",
       "B": "检查 ⼊ 站和出站 ⽹ 络 ACL 规则，查找 DENY 规则 ⽹ 络 ACL 是基于 ⼦ ⽹ 的规则，可以包含 “ 允许规则 ” 和 “ 拒绝规则 ” 。如果 ⽹ 络 ACL 中 存在 DENY 规则，可能会阻 ⽌ 两个实例 之间的通信。因此，这个选项是正确的。",
-      "C": "Flow Logs 的使 ⽤ ，以及 AWS X Ray 的功能。 选项分析 A. 检查 ⼊ 站和出站安全组，查找 DENY 规则 安全组在 AWS 中是 “ 允许规则 ” ， ⽽ 不是 “ 拒绝规则 ” 。安全组不会有 DENY 规则，因 此这个选项是错误的。 B. 检查 ⼊ 站和出站 ⽹ 络 ACL 规则，查找 DENY 规则 ⽹ 络 ACL 是基于 ⼦ ⽹ 的规则，可以包含 “ 允许规则 ” 和 “ 拒绝规则 ” 。如果 ⽹ 络 ACL 中 存在 DENY 规则，可能会阻 ⽌ 两个实例 之间的通信。因此，这个选项是正确的。 C. 查看 VPC Flow Logs 中被拒绝的数据包原因代码 VPC Flow Logs 可以帮助分析 ⽹ 络流量问题，但它是 ⼀ 个辅助 ⼯ 具， ⽤ 于查看流 量是否被拒绝以及原因代码。虽然它可 以提供信息，但它不是直接的排查步骤，因此这个选项不是最佳答案。",
+      "C": "查看 VPC Flow Logs 中被拒绝的数据包原因代码 VPC Flow Logs 可以帮助分析 ⽹ 络流量问题，但它是 ⼀ 个辅助 ⼯ 具， ⽤ 于查看流 量是否被拒绝以及原因代码。虽然它可 以提供信息，但它不是直接的排查步骤，因此这个选项不是最佳答案。",
       "D": "使 ⽤ AWS X Ray 跟踪端到端应 ⽤ 程序流程 AWS X Ray 主要 ⽤ 于应 ⽤ 程序性能和分布式跟踪， ⽽ 不是 ⽤ 于排查 ⽹ 络连接问 题。因此，这个选项与题 ⽬ 要求 ⽆ 关，是 错误的。"
     }
   },
@@ -607,11 +607,11 @@
       "E"
     ],
     "explanations": {
-      "A": "The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListBucket action for the S3 bucket. 分析：正确。为了访问 S3 桶中的对象， EC2 实例需要有权限执 ⾏ s3 ListBucket 操 作以列出桶中的内容。如果没有此权 限，应 ⽤ 程序将 ⽆ 法获取对象。",
+      "A": "IAM instance profile that is attached to the EC2 instances does not allow the s3 ListBucket action for the S3 bucket. 分析：正确。为了访问 S3 桶中的对象， EC2 实例需要有权限执 ⾏ s3 ListBucket 操 作以列出桶中的内容。如果没有此权 限，应 ⽤ 程序将 ⽆ 法获取对象。",
       "B": "The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListParts action for the S3 bucket. 分析：错误。 s3 ListParts 操作 ⽤ 于列出分段上传的部分，与获取对象 ⽆ 关，因此 不是问题的原因。",
-      "C": "⽹ 关终端节点与 S3 桶策略的交互。 选项分析 A. The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListBucket action for the S3 bucket. 分析：正确。为了访问 S3 桶中的对象， EC2 实例需要有权限执 ⾏ s3 ListBucket 操 作以列出桶中的内容。如果没有此权 限，应 ⽤ 程序将 ⽆ 法获取对象。 B. The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListParts action for the S3 bucket. 分析：错误。 s3 ListParts 操作 ⽤ 于列出分段上传的部分，与获取对象 ⽆ 关，因此 不是问题的原因。 C. The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:ListKeys action to the EC2 instance profile ARN. 分析：错误。 kms:ListKeys 操作 ⽤ 于列出 KMS 密钥，与解密对象 ⽆ 关，因此不是 问题的原因。",
-      "D": "to the EC2 instances does not allow the s3 ListBucket action for the S3 bucket. 分析：正确。为了访问 S3 桶中的对象， EC2 实例需要有权限执 ⾏ s3 ListBucket 操 作以列出桶中的内容。如果没有此权 限，应 ⽤ 程序将 ⽆ 法获取对象。 B. The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListParts action for the S3 bucket. 分析：错误。 s3 ListParts 操作 ⽤ 于列出分段上传的部分，与获取对象 ⽆ 关，因此 不是问题的原因。 C. The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:ListKeys action to the EC2 instanc",
-      "E": "IAM instance profile that is attached to the EC2 instances does not allow the s3 ListBucket action for the S3 bucket. 分析：正确。为了访问 S3 桶中的对象， EC2 实例需要有权限执 ⾏ s3 ListBucket 操 作以列出桶中的内容。如果没有此权 限，应 ⽤ 程序将 ⽆ 法获取对象。 B. The IAM instance profile that is attached to the EC2 instances does not allow the s3 ListParts action for the S3 bucket. 分析：错误。 s3 ListParts 操作 ⽤ 于列出分段上传的部分，与获取对象 ⽆ 关，因此 不是问题的原因。 C. The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:ListKeys action to the EC2 instance profile ARN. 分析：错误。 kms:ListKeys 操作 ⽤ 于列出 KMS 密钥，与解密对象 ⽆ 关，因此不是 问题的原因。 D. The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:Decrypt action to the EC2 instanceprofile ARN. 分析：正确。为了解密 S3 桶中的对象， EC2 实例需要有权限执 ⾏ kms:Decrypt 操 作。如果没有此权限，应 ⽤ 程序将 ⽆ 法解密对象。 E. The S3 bucket policy does not allow access from the gateway VPC endpoint. 分析：正确。 S3 桶策略需要明确允许来 ⾃ ⽹ 关 VPC 终端节点的访问。如果桶策略 未配置正确， EC2 实例将 ⽆ 法通过 VPC 终端节点访问 S3 桶。",
+      "C": "The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:ListKeys action to the EC2 instance profile ARN. 分析：错误。 kms:ListKeys 操作 ⽤ 于列出 KMS 密钥，与解密对象 ⽆ 关，因此不是 问题的原因。",
+      "D": "The KMS key policy that encrypts the objects in the S3 bucket does not allow the kms:Decrypt action to the EC2 instanceprofile ARN. 分析：正确。为了解密 S3 桶中的对象， EC2 实例需要有权限执 ⾏ kms:Decrypt 操 作。如果没有此权限，应 ⽤ 程序将 ⽆ 法解密对象。",
+      "E": "The S3 bucket policy does not allow access from the gateway VPC endpoint. 分析：正确。 S3 桶策略需要明确允许来 ⾃ ⽹ 关 VPC 终端节点的访问。如果桶策略 未配置正确， EC2 实例将 ⽆ 法通过 VPC 终端节点访问 S3 桶。",
       "F": "The security group that is attached to the EC2 instances is missing an inbound rule from the S3 managed prefix list over port 443. 分析：错误。 S3 通过 ⽹ 关 VPC 终端节点访问时，不需要安全组的 ⼊ 站规则，因为 流量是通过终端节点处理的， ⽽ 不是 直接通过安全组。"
     }
   },
@@ -1343,7 +1343,7 @@
       "A": "Review GuardDuty findings to find InstanceCredentialExfiltration events. 正确 :Amazon GuardDuty 是专 ⻔ 设计 ⽤ 于检测安全威胁的服务，包括凭证泄露事件 (InstanceCredentialExfiltration) 。 它可以 ⾃ 动分析数据并 ⽣ 成相关的安全发现。 InstanceCredentialExfiltration 事件是 GuardDuty 的 ⼀ 个特定功能 ， ⽤ 于检测凭证被 导出并可能被外部账户使 ⽤ 的情况。",
       "B": "Review assessment reports in the Audit Manager console to find InstanceCredentialExfiltration events. 错误 :AWS Audit Manager 主要 ⽤ 于合规性评估和报告， ⽽ 不是实时检测安全事件。它 ⽆ 法直接检测或报告 InstanceCredentialExfiltration 事件。",
       "C": "Review CloudTrail logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 : 虽然 CloudTrail 可以记录 API 调 ⽤ ，但 ⼿ 动分析 ⽇ 志以检测凭证泄露事件 ⾮ 常耗时 且容易遗漏。它 ⽆ 法像 GuardDuty ⼀ 样提供 ⾃ 动化的安全发现。",
-      "D": "InstanceCredentialExfiltration events. 正确 :Amazon GuardDuty 是专 ⻔ 设计 ⽤ 于检测安全威胁的服务，包括凭证泄露事件 (InstanceCredentialExfiltration) 。 它可以 ⾃ 动分析数据并 ⽣ 成相关的安全发现。 InstanceCredentialExfiltration 事件是 GuardDuty 的 ⼀ 个特定功能 ， ⽤ 于检测凭证被 导出并可能被外部账户使 ⽤ 的情况。 B. Review assessment reports in the Audit Manager console to find InstanceCredentialExfiltration events. 错误 :AWS Audit Manager 主要 ⽤ 于合规性评估和报告， ⽽ 不是实时检测安全事件。它 ⽆ 法直接检测或报告 InstanceCredentialExfiltration 事件。 C. Review CloudTrail logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 : 虽然 CloudTrail 可以记录 API 调 ⽤ ，但 ⼿ 动分析 ⽇ 志以检测凭证泄露事件 ⾮ 常耗时 且容易遗漏。它 ⽆ 法像 GuardDuty ⼀ 样提供 ⾃ 动化的安全发现。 D. Review CloudWatch logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志分析，但它并不具备 ⾃ 动检测凭证泄露事件的 能 ⼒ 。与 CloudTrail 类似， ⼿ 动分 析 ⽇ 志效率低下。"
+      "D": "Review CloudWatch logs for GetSessionToken API calls to AWS Security Token Service AWS STS) that come from an account ID from outside the company. 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志分析，但它并不具备 ⾃ 动检测凭证泄露事件的 能 ⼒ 。与 CloudTrail 类似， ⼿ 动分 析 ⽇ 志效率低下。"
     }
   },
   {
@@ -1527,7 +1527,7 @@
       "B": "使 ⽤ AWS IAM Access Analyzer 。 错误： IAM Access Analyzer ⽤ 于分析权限和访问 ⻛ 险， ⽽ 不是监控登录活动。 Access Analyzer ⽆ 法 ⽣ 成与根 ⽤ 户登录相关的 ⽇ 志条 ⽬ ，因此 ⽆ 法实现所需的功 能。",
       "C": "配置 AWS CloudTrail 将其 ⽇ 志发送到 Amazon CloudWatch Logs 。 正确： CloudTrail 可以记录根 ⽤ 户登录活动，并将 ⽇ 志发送到 CloudWatch Logs 。 通过配置 CloudWatch Logs 的指标过滤器，可以检测成功的根 ⽤ 户登录事件。 创建 CloudWatch 警报并通过 SNS 发送通知是实现实时通知的有效 ⽅ 法。",
       "D": "Advisor 及其针对根账户的安全评估。 错误： AWS Trusted Advisor 主要 ⽤ 于提供账户安全建议，但它 ⽆ 法实时检测或通 知根 ⽤ 户登录活动。 Trusted Advisor 的 API ⽆ 法直接触发事件规则来检测登录 ⾏ 为。 B. 使 ⽤ AWS IAM Access Analyzer 。 错误： IAM Access Analyzer ⽤ 于分析权限和访问 ⻛ 险， ⽽ 不是监控登录活动。 Access Analyzer ⽆ 法 ⽣ 成与根 ⽤ 户登录相关的 ⽇ 志条 ⽬ ，因此 ⽆ 法实现所需的功 能。 C. 配置 AWS CloudTrail 将其 ⽇ 志发送到 Amazon CloudWatch Logs 。 正确： CloudTrail 可以记录根 ⽤ 户登录活动，并将 ⽇ 志发送到 CloudWatch Logs 。 通过配置 CloudWatch Logs 的指标过滤器，可以检测成功的根 ⽤ 户登录事件。 创建 CloudWatch 警报并通过 SNS 发送通知是实现实时通知的有效 ⽅ 法。 D. 配置 AWS CloudTrail 将 ⽇ 志通知发送到 ⼀ 个 Amazon SNS 主题。 错误： CloudTrail ⽆ 法直接将 ⽇ 志通知发送到 SNS 主题。需要通过其他服务（如 CloudWatch Logs 或 Lambda ）处理 ⽇ 志。 虽然可以使 ⽤ Lambda 解析 ⽇ 志，但这种 ⽅ 法复杂且不符合题 ⽬ 要求的最佳实践。",
-      "E": "等）实 现实时通知。 理解 AWS 最佳实践和服务集成。 选项分析 A. 使 ⽤ AWS Trusted Advisor 及其针对根账户的安全评估。 错误： AWS Trusted Advisor 主要 ⽤ 于提供账户安全建议，但它 ⽆ 法实时检测或通 知根 ⽤ 户登录活动。 Trusted Advisor 的 API ⽆ 法直接触发事件规则来检测登录 ⾏ 为。 B. 使 ⽤ AWS IAM Access Analyzer 。 错误： IAM Access Analyzer ⽤ 于分析权限和访问 ⻛ 险， ⽽ 不是监控登录活动。 Access Analyzer ⽆ 法 ⽣ 成与根 ⽤ 户登录相关的 ⽇ 志条 ⽬ ，因此 ⽆ 法实现所需的功 能。 C. 配置 AWS CloudTrail 将其 ⽇ 志发送到 Amazon CloudWatch Logs 。 正确： CloudTrail 可以记录根 ⽤ 户登录活动，并将 ⽇ 志发送到 CloudWatch Logs 。 通过配置 CloudWatch Logs 的指标过滤器，可以检测成功的根 ⽤ 户登录事件。 创建 CloudWatch 警报并通过 SNS 发送通知是实现实时通知的有效 ⽅ 法。 D. 配置 AWS CloudTrail 将 ⽇ 志通知发送到 ⼀ 个 Amazon SNS 主题。 错误： CloudTrail ⽆ 法直接将 ⽇ 志通知发送到 SNS 主题。需要通过其他服务（如 CloudWatch Logs 或 Lambda ）处理 ⽇ 志。 虽然可以使 ⽤ Lambda 解析 ⽇ 志，但这种 ⽅ 法复杂且不符合题 ⽬ 要求的最佳实践。 E. 配置 ⼀ 个 Amazon EventBridge 事件规则。 正确： EventBridge 可以捕获 CloudTrail 事件（如根 ⽤ 户登录活动） ，并触发 SNS 通 知。 这种 ⽅ 法直接且 ⾼ 效，符合题 ⽬ 要求的实时通知需求。"
+      "E": "配置 ⼀ 个 Amazon EventBridge 事件规则。 正确： EventBridge 可以捕获 CloudTrail 事件（如根 ⽤ 户登录活动） ，并触发 SNS 通 知。 这种 ⽅ 法直接且 ⾼ 效，符合题 ⽬ 要求的实时通知需求。"
     }
   },
   {
@@ -1746,7 +1746,7 @@
       "A": "创建 ⼀ 个 AWS Lambda 函数，列出所有证书并通过 AWS SDK 遍历每个证书以描 述证书。 分析 : 正确性 : 可以实现 ⽬ 标，但需要 ⼿ 动编写代码来处理证书列表和过滤逻辑。 效率 : 不够 ⾼ 效，因为需要定期运 ⾏ Lambda 函数并 ⼿ 动管理逻辑，增加了运维复杂 性。 结论 : 此选项正确但不是最优解。",
       "B": "创建 ⼀ 个 Amazon CloudWatch 警报，使 ⽤ DaysToExpiry 指标。 分析 : 正确性 :AWS Certificate Manager 提供 DaysToExpiry 指标，但仅适 ⽤ 于 ACM 管理 的证书，不 ⽀ 持导 ⼊ 的证书。 效率 : ⽆ 法覆盖所有证书 ( 包括导 ⼊ 的证书 ) ，因此不满 ⾜ 题 ⽬ 要求。 结论 : 此选项错误。",
       "C": "设置 AWS Security Hub 并启 ⽤ AWS Foundational Security Best Practices 标 准。 分析 : 正确性 :AWS Security Hub 可以提供安全发现，但其主要 ⽬ 标是安全合规性， ⽽ 不是 专 ⻔ 针对证书到期的监控。 效率 : 需要额外配置和集成，复杂度较 ⾼ ，且不直接针对证书到期问题。 结论 : 此选项错误。",
-      "D": "100% A. 创建 ⼀ 个 AWS Lambda 函数，列出所有证书并通过 AWS SDK 遍历每个证书以描 述证书。 分析 : 正确性 : 可以实现 ⽬ 标，但需要 ⼿ 动编写代码来处理证书列表和过滤逻辑。 效率 : 不够 ⾼ 效，因为需要定期运 ⾏ Lambda 函数并 ⼿ 动管理逻辑，增加了运维复杂 性。 结论 : 此选项正确但不是最优解。 B. 创建 ⼀ 个 Amazon CloudWatch 警报，使 ⽤ DaysToExpiry 指标。 分析 : 正确性 :AWS Certificate Manager 提供 DaysToExpiry 指标，但仅适 ⽤ 于 ACM 管理 的证书，不 ⽀ 持导 ⼊ 的证书。 效率 : ⽆ 法覆盖所有证书 ( 包括导 ⼊ 的证书 ) ，因此不满 ⾜ 题 ⽬ 要求。 结论 : 此选项错误。 C. 设置 AWS Security Hub 并启 ⽤ AWS Foundational Security Best Practices 标 准。 分析 : 正确性 :AWS Security Hub 可以提供安全发现，但其主要 ⽬ 标是安全合规性， ⽽ 不是 专 ⻔ 针对证书到期的监控。 效率 : 需要额外配置和集成，复杂度较 ⾼ ，且不直接针对证书到期问题。 结论 : 此选项错误。 D. 创建 ⼀ 个 Amazon EventBridge 规则，使 ⽤ ACM 的预定义模式。 分析 : 正确性 :Amazon EventBridge 提供 ACM Certificate Approaching Expiration 事件， 可以直接监控证书到期情况。 效率 : ⽆ 需 ⼿ 动编写代码或复杂配置，直接使 ⽤ 预定义事件模式，最为 ⾼ 效。 结论 : 此选项正确且是最优解。"
+      "D": "创建 ⼀ 个 Amazon EventBridge 规则，使 ⽤ ACM 的预定义模式。 分析 : 正确性 :Amazon EventBridge 提供 ACM Certificate Approaching Expiration 事件， 可以直接监控证书到期情况。 效率 : ⽆ 需 ⼿ 动编写代码或复杂配置，直接使 ⽤ 预定义事件模式，最为 ⾼ 效。 结论 : 此选项正确且是最优解。"
     }
   },
   {
@@ -1765,7 +1765,7 @@
       "A": "启 ⽤ AWS Trusted Advisor 安全检查，并报告所有区域的所有安全事件。 错误 :AWS Trusted Advisor 主要 ⽤ 于提供优化建议 ( 如成本、性能、安全性等 ) ， ⽽ 不 是记录 API 调 ⽤ 活动。它 ⽆ 法满 ⾜ 记录和集中存储 API 调 ⽤ ⽇ 志的需求。",
       "B": "为每个区域创建单独的 AWS CloudTrail trails ，并指定 ⼀ 个 Amazon S3 bucket 来 接收 ⽇ 志 ⽂ 件以供后续分析。 错误 : 虽然可以为每个区域创建单独的 CloudTrail trails ，但这种 ⽅ 法复杂且不必要。 CloudTrail ⽀ 持跨区域的单 ⼀ trail 配 置，可以简化管理。",
       "C": "创建 ⼀ 个新的 AWS CloudTrail trail 并将该 trail 应 ⽤ 于所有区域，指定 ⼀ 个 Amazon S3 bucket 作为存储位置。 正确 : 这是最简单且符合要求的解决 ⽅ 案。 CloudTrail ⽀ 持跨区域 trail ，可以记录所有区 域的 API 调 ⽤ 活动，并集中存储到 ⼀ 个 S3 bucket 中。",
-      "D": "Advisor 安全检查，并报告所有区域的所有安全事件。 错误 :AWS Trusted Advisor 主要 ⽤ 于提供优化建议 ( 如成本、性能、安全性等 ) ， ⽽ 不 是记录 API 调 ⽤ 活动。它 ⽆ 法满 ⾜ 记录和集中存储 API 调 ⽤ ⽇ 志的需求。 B. 为每个区域创建单独的 AWS CloudTrail trails ，并指定 ⼀ 个 Amazon S3 bucket 来 接收 ⽇ 志 ⽂ 件以供后续分析。 错误 : 虽然可以为每个区域创建单独的 CloudTrail trails ，但这种 ⽅ 法复杂且不必要。 CloudTrail ⽀ 持跨区域的单 ⼀ trail 配 置，可以简化管理。 C. 创建 ⼀ 个新的 AWS CloudTrail trail 并将该 trail 应 ⽤ 于所有区域，指定 ⼀ 个 Amazon S3 bucket 作为存储位置。 正确 : 这是最简单且符合要求的解决 ⽅ 案。 CloudTrail ⽀ 持跨区域 trail ，可以记录所有区 域的 API 调 ⽤ 活动，并集中存储到 ⼀ 个 S3 bucket 中。 D. 为所有区域的所有 AWS 服务启 ⽤ Amazon CloudWatch ⽇ 志记录，并将它们汇总到 ⼀ 个 Amazon S3 bucket 以供后续分析。 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志记录服务运 ⾏ 状态， ⽽ 不是专 ⻔ 记录 API 调 ⽤ 活 动。使 ⽤ CloudTrail 是更合适的解 决 ⽅ 案。"
+      "D": "为所有区域的所有 AWS 服务启 ⽤ Amazon CloudWatch ⽇ 志记录，并将它们汇总到 ⼀ 个 Amazon S3 bucket 以供后续分析。 错误 :CloudWatch 主要 ⽤ 于监控和 ⽇ 志记录服务运 ⾏ 状态， ⽽ 不是专 ⻔ 记录 API 调 ⽤ 活 动。使 ⽤ CloudTrail 是更合适的解 决 ⽅ 案。"
     }
   },
   {
@@ -2050,7 +2050,7 @@
     "explanations": {
       "A": "Create a Network Access Scope in Amazon VPC Network Access Analyzer. 错误： Amazon VPC Network Access Analyzer 主要 ⽤ 于分析 ⽹ 络访问 路径和验证 ⽹ 络配置是否符合预期，但它 ⽆ 法直接 捕获实时流量或识别被拒绝的流量。",
       "B": "Enable VPC flow logs for the VPC where the affected EC2 instances are located. 正确： VPC Flow Logs 可以捕获被拒绝的流量记录，包括 ⽬ 标端 ⼝ 和协 议。通过搜索 REJECT 记录，可以轻松识别尝试连接到 TCP 端 ⼝ 2905 的 EC2 实例。 此 ⽅ 法操作简单且直接，符合题 ⽬ 要求的 “LEAST operational effort” 。",
-      "C": "Flow Logs 的功能与配置，特别是如何捕获被拒绝的流量。 ⽹ 络 ACL 的 ⼯ 作原理及其与 VPC Flow Logs 的结合使 ⽤ 。 如何 ⾼ 效地识别异常流量来源。 选项分析 A. Create a Network Access Scope in Amazon VPC Network Access Analyzer. 错误： Amazon VPC Network Access Analyzer 主要 ⽤ 于分析 ⽹ 络访问 路径和验证 ⽹ 络配置是否符合预期，但它 ⽆ 法直接 捕获实时流量或识别被拒绝的流量。 B. Enable VPC flow logs for the VPC where the affected EC2 instances are locate",
+      "C": "Flow Logs 的功能与配置，特别是如何捕获被拒绝的流量。 ⽹ 络 ACL 的 ⼯ 作原理及其与 VPC Flow Logs 的结合使 ⽤ 。 如何 ⾼ 效地识别异常流量来源。 选项分析",
       "D": "EC2 instances are located. 正确： VPC Flow Logs 可以捕获被拒绝的流量记录，包括 ⽬ 标端 ⼝ 和协 议。通过搜索 REJECT 记录，可以轻松识别尝试连接到 TCP 端 ⼝ 2905 的 EC2 实例。 此 ⽅ 法操作简单且直接，符合题 ⽬ 要求的 “LEAST operational effort” 。 C. Enable Amazon GuardDuty. 错误：虽然 GuardDuty 可以检测恶意活动，但需要额外配置 ⾃ 定义 IP 列 表，并且依赖于 Amazon Detective 进 ⾏ 进 ⼀ 步分 析。这增加了操作复杂性，不符合 “LEAST operational effort” 的要求。 D. Create a firewall in AWS Network Firewall. 错误： AWS Network Firewall 可以记录流量，但需要额外配置防 ⽕ 墙规 则和 CloudWatch Logs 指标过滤器。这种 ⽅ 法 ⽐ 使 ⽤ VPC Flow Logs 更复杂，操作成本更 ⾼ 。"
     }
   },
