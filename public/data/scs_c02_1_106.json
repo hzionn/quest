@@ -2180,6 +2180,11 @@
       "D": "将 CloudWatchAgentServerPolicy AWS 托管策略附加到 EC2 实例角色。"
     },
     "answer": "D",
-    "explanations": {}
+    "explanations": {
+      "A": "将 AWS CloudTrail 添加到 EC2 实例的信任策略中。将自定义日志发送到 CloudTrail 而不是 CloudWatch 。错误:CloudTrail 是用于记录 API 调用的服务,而不是用于收集 EC2 实例上的自定义应用日志。将日志发送到 CloudTrail 与题目要求不符。",
+      "B": "将 Amazon S3 添加到 EC2 实例的信任策略中。配置应用程序将自定义日志写入 CloudWatch 可用于摄取日志的 S3 bucket 。错误:虽然可以将日志写入 S3 并通过 CloudWatch Logs 进行摄取,但这不是题目要求的解决方案。题目明确要求使用 CloudWatch Agent,而不是通过 S3。",
+      "C": "将 Amazon Inspector 添加到 EC2 实例的信任策略中。使用 Amazon Inspector 而不是 CloudWatch agent 来收集自定义日志。错误:Amazon Inspector 是用于安全漏洞扫描的服务,与日志收集无关。使用 Inspector 代替 CloudWatch Agent 不符合题目要求。",
+      "D": "将 CloudWatchAgentServerPolicy AWS 托管策略附加到 EC2 实例角色。正确:CloudWatchAgentServerPolicy 是 AWS 提供的托管策略,允许 EC2 实例通过 CloudWatch Agent 将日志发送到 CloudWatch。没有正确的 IAM 权限,CloudWatch Agent 无法正常工作。"
+    }
   }
 ]

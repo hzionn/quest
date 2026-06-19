@@ -755,7 +755,12 @@
       "D": "Forward the credentials of the IAM role in the top-level account to the IAM user in the business unit account."
     },
     "answer": "A",
-    "explanations": {}
+    "explanations": {
+      "A": "Attach a policy to the IAM user to allow the user to assume the role that was created in the top-level account.正確：在業務部門帳戶中為 IAM 使用者附加包含 sts:AssumeRole 動作的政策,資源設為頂級帳戶中為該部門建立的角色 ARN。使用者即可透過 AWS STS AssumeRole 暫時取得該角色憑證,存取 S3 中對應日誌前綴的物件。",
+      "B": "Create an SCP that grants premissions to the top-level account.錯誤：SCP（Service Control Policy）只能設定權限護欄、限制成員帳戶的最大權限,無法授予權限。即使建立 SCP,業務部門使用者仍需 IAM 政策才能執行 AssumeRole。",
+      "C": "Use the root account of the business unit account to assume the role that was created in the top-level account. Specify the role ʼ s ARN in the policy.錯誤：使用根帳戶（Root User）進行跨帳戶存取是嚴重的安全風險,違反最佳實踐。應改用具備最小權限的 IAM 使用者或角色。",
+      "D": "Forward the credentials of the IAM role in the top-level account to the IAM user in the business unit account.錯誤：將頂級帳戶中 IAM 角色的長期憑證轉發給業務部門的 IAM 使用者並不安全,也非正確的跨帳戶存取方式。正確做法是透過 AssumeRole 取得臨時憑證。"
+    }
   },
   {
     "exam": "SCS-C02",
