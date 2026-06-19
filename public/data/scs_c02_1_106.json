@@ -1763,7 +1763,13 @@
       "A",
       "E"
     ],
-    "explanations": {}
+    "explanations": {
+      "A": "为安全团队创建一个本地单独的紧急访问 IAM 用户。在 AWS CloudTrail 中创建一个启用了 Amazon CloudWatch Logs 的跟踪。使用 Amazon EventBridge 监控本地用户活动。正确:创建一个本地 IAM 用户是紧急访问的标准做法,尤其是在 SAML 不可用的情况下。使用 AWS CloudTrail 记录用户活动,并通过 Amazon EventBridge 监控活动,符合安全与审计要求。",
+      "B": "为 AWS 账户创建一个紧急访问 EC2 密钥对。将密钥对提供给安全团队。使用 AWS CloudTrail 监控密钥对活动。使用 Amazon Simple Notification Service Amazon SNS 向安全团队发送通知。错误:使用 EC2 密钥对进行紧急访问不符合最佳实践,因为密钥对的管理和分发存在安全风险。虽然可以使用 CloudTrail 监控密钥对活动,但这种方法不够安全和灵活。",
+      "C": "为账户创建一个紧急访问 IAM 角色。允许安全团队成员执行 AssumeRoleWithSAML 操作。在 AWS CloudTrail 中创建一个启用了 Amazon CloudWatch Logs 的跟踪。使用 Amazon EventBridge 监控安全团队活动。错误:题目明确指出 SAML 可能会出现问题,因此依赖 SAML 的 AssumeRoleWithSAML 操作不符合要求。虽然 CloudTrail 和 EventBridge 可以监控活动,但此选项未解决 SAML 不可用的核心问题。",
+      "D": "在每个工作负载实例的操作系统级别创建一个本地单独的紧急访问 IAM 用户。配置不受限制的安全组以授予紧急访问 IAM 用户访问权限。错误:在操作系统级别创建 IAM 用户并配置不受限制的安全组会带来严重的安全风险。这种方法不符合 AWS 最佳实践,也未提到日志记录和监控。",
+      "E": "为 Amazon EC2 配置 AWS Systems Manager Session Manager 。基于 Session Manager 配置 AWS CloudTrail 过滤器。将结果发送到一个 Amazon Simple Notification Service Amazon SNS 主题。正确:使用 AWS Systems Manager Session Manager 可以安全地访问 EC2 实例,而无需直接登录或使用密钥对。基于 Session Manager 配置 AWS CloudTrail 过滤器并将结果发送到 Amazon SNS 主题,可记录紧急访问活动并通知安全团队。"
+    }
   },
   {
     "exam": "SCS-C02",
