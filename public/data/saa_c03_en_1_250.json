@@ -2036,13 +2036,18 @@
     "type": "single",
     "question": "Topic 1 A bicycle sharing company is developing a multi-tier architecture to track the location of its bicycles during peak operating hours. The company wants to use these data points in its existing analytics platform. A solutions architect must determine the most viable multi-tier option to support this architecture. The data points must be accessible from the REST API. Which action meets these requirements for storing and retrieving location data?",
     "options": {
-      "A": "Use Amazon Athena with Amazon S3. (FA Amazon Athena 4 Amazon $3,",
-      "B": "Use Amazon API Gateway with AWS Lambda. {FA Amazon API Gateway 与 AWS Lambda.",
-      "C": "Use Amazon QuickSight with Amazon Redshift. {FA Amazon QuickSight Amazon Redshift.",
-      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics. {FA Amazon API Gateway 与 Amazon Kinesis Data Analytics,"
+      "A": "Use Amazon Athena with Amazon S3.",
+      "B": "Use Amazon API Gateway with AWS Lambda.",
+      "C": "Use Amazon QuickSight with Amazon Redshift.",
+      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics."
     },
     "answer": "B",
-    "explanations": {}
+    "explanations": {
+      "A": "Use Amazon Athena with Amazon S3.\n错误。 原因：\nAthena 是对 S3 上的数据做交互式 SQL 查询（偏离线/交互式分析），不是为 REST API 提供低延迟在线查询而设计。\nS3 + Athena 不适合高峰期大量位置点的“实时写入 + API 频繁读取”的在线交易型访问模式（延迟、数据组织方式、查询启动开销等都不匹配）。\n题目强调“数据点必须可从 REST API 访问”，该组合不直接提供 REST API 接入与在线读写路径。",
+      "B": "Use Amazon API Gateway with AWS Lambda.\n正确（在给定选项中最符合）。 原因：\nAPI Gateway 直接用于构建与发布 REST API，满足“数据点必须可从 REST API 访问”。\nLambda 承载业务逻辑：接收位置上报请求、校验/转换数据、并把数据写入后端存储；在查询时从后端存储读取并返回给 API。\n可天然构建“多层架构”（API 层 + 计算层 + 数据层）。尽管选项未写出数据层，但 Lambda 作为中间层是标准做法。\n具备弹性扩缩，适配“peak operating hours”的突发高并发（前提是后端存储也选用可扩展方案）。",
+      "C": "Use Amazon QuickSight with Amazon Redshift.\n错误。 原因：\nQuickSight 是 BI 可视化，不用于提供 REST API 的在线读写接口。\nRedshift 是数据仓库，适合分析型查询，但并非此题强调的“REST API 可访问的在线存取位置数据点”的第一选择。\n该组合更像“数据进仓 + 报表分析”，不能直接解决 REST API 存取位置点的需求。",
+      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics.\n错误。 原因：\nKinesis Data Analytics 主要用于对流数据做实时分析（SQL/Flink），它不是典型的“存储 + API 查询”后端。\n即使可以通过 API Gateway 接入，也缺少“持久化存储与按需查询”的核心闭环；Kinesis Data Analytics 本身不作为数据存储系统。\n若要实现该场景，通常还需要 Kinesis Data Streams/Firehose + DynamoDB/S3/OpenSearch 等组件，选项未体现。"
+    }
   },
   {
     "exam": "SAA-C03",
@@ -4687,7 +4692,12 @@
       "D": "Move the database to a separate EC2 instance, and schedule backups to Amazon S3. Create an Amazon Machine Image (AMI) from the original EC2 instance. Configure an Application Load Balancer in two Availability Zones. Attach an Auto Scaling group that uses the AMI across two Availability Zones."
     },
     "answer": "C",
-    "explanations": {}
+    "explanations": {
+      "A": "Move the database to Amazon RDS, and enable automatic backups. Manually launch another EC2 instance in the same Availability Zone. Configure an Application Load Balancer in the Availability Zone, and set the two instances as targets.\n正确点：将数据库迁移到 Amazon RDS 并启用自动备份是一个合理的选择，可以提高数据库的可用性和管理效率。\n错误点：手动启动另一个 EC2 实例并将其配置在同一可用区无法实现高可用性，因为如果该可用区发生故障，整个架构仍然会不可用。",
+      "B": "Migrate the database to an Amazon Aurora instance with a read replica in the same Availability Zone as the existing EC2 instance. Manually launch another EC2 instance in the same Availability Zone. Configure an Application Load Balancer, and set the two EC2 instances as targets.\n正确点：Amazon Aurora 是一个高性能的数据库服务，支持读副本以提高读取性能。\n错误点：将读副本和 EC2 实例都放在同一可用区无法实现高可用性。如果该可用区发生故障，整个架构仍然会不可用。",
+      "C": "Move the database to Amazon Aurora with a read replica in another Availability Zone. Create an Amazon Machine Image (AMI) from the EC2 instance. Configure an Application Load Balancer in two Availability Zones. Attach an Auto Scaling group that uses the AMI across two Availability Zones.\n正确点：将数据库迁移到 Amazon Aurora 并在另一个可用区创建读副本可以实现数据库的高可用性。\n正确点：使用 Amazon Machine Image (AMI) 创建 EC2 实例模板，并通过 Auto Scaling 组在多个可用区中运行实例，可以实现应用层的高可用性和自动扩展。\n正确点：配置 Application Load Balancer 跨多个可用区分配流量，进一步提高架构的高可用性。",
+      "D": "Move the database to a separate EC2 instance, and schedule backups to Amazon S3. Create an Amazon Machine Image (AMI) from the original EC2 instance. Configure an Application Load Balancer in two Availability Zones. Attach an Auto Scaling group that uses the AMI across two Availability Zones.\n正确点：将数据库迁移到单独的 EC2 实例并备份到 Amazon S3 可以提高数据的持久性。\n错误点：使用 EC2 实例作为数据库服务需要手动管理，无法充分利用 Amazon RDS 或 Amazon Aurora 的高可用性和自动管理功能。"
+    }
   },
   {
     "exam": "SAA-C03",
