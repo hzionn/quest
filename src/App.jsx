@@ -614,13 +614,13 @@ export default function App() {
   useEffect(() => {
     const load = async () => {
       try {
-        const manifestRes = await fetch(`${BASE_URL}data/manifest.json?v=${DATA_VERSION}`)
+        const manifestRes = await fetch(`${BASE_URL}data/manifest.json?v=${DATA_VERSION}`, { cache: 'no-store' })
         if (!manifestRes.ok) throw new Error('無法載入題庫清單')
         const manifest = await manifestRes.json()
         const allQuestions = []
         for (const file of manifest.files) {
           try {
-            const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`)
+            const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
             if (!res.ok) continue
             const data = await res.json()
             const questions = Array.isArray(data) ? data : (data.questions || [])
@@ -637,7 +637,7 @@ export default function App() {
           const enQuestions = []
           for (const file of manifest.enFiles) {
             try {
-              const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`)
+              const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
               if (!res.ok) continue
               const data = await res.json()
               const questions = Array.isArray(data) ? data : (data.questions || [])
