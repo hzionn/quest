@@ -2172,6 +2172,11 @@
       "D": "Attach the CloudWatchAgentServerPolicy AWS managed policy to the EC2 instance role."
     },
     "answer": "D",
-    "explanations": {}
+    "explanations": {
+      "A": "Add AWS CloudTrail to the trust policy of the EC2 in stance. Send the custom logs to CloudTrail instead of CloudWatch.错误:CloudTrail 是用于记录 API 调用的服务,而不是用于收集 EC2 实例上的自定义应用日志。将日志发送到 CloudTrail 与题目要求不符。",
+      "B": "Add Amazon S3 to the trust policy of the EC2 instance. Configure the application to write the custom logs to an S3 bucket that CloudWatch can use to ingest the logs.错误:虽然可以将日志写入 S3 并通过 CloudWatch Logs 进行摄取,但这不是题目要求的解决方案。题目明确要求使用 CloudWatch Agent,而不是通过 S3。",
+      "C": "Add Amazon Inspector to the trust policy of the EC2 instance. Use Amazon Inspector instead of the CloudWatch agent to collect the custom logs.错误:Amazon Inspector 是用于安全漏洞扫描的服务,与日志收集无关。使用 Inspector 代替 CloudWatch Agent 不符合题目要求。",
+      "D": "Attach the CloudWatchAgentServerPolicy AWS managed policy to the EC2 instance role.正确:CloudWatchAgentServerPolicy 是 AWS 提供的托管策略,允许 EC2 实例通过 CloudWatch Agent 将日志发送到 CloudWatch。没有正确的 IAM 权限,CloudWatch Agent 无法正常工作。"
+    }
   }
 ]
