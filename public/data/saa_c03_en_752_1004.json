@@ -1761,13 +1761,18 @@
     "type": "single",
     "question": "Topic 1 A company has an on-premises business application that generates hundreds of files each day. These files are stored on an SMB file share and require a low-latency connection to the application servers. A new company policy states all application-generated files must be copied to AWS. There is already a VPN connection to AWS. The application development team does not have time to make the necessary code modifications to move the application to AWS. Which service should a solutions architect recommend to allow the application to copy files to AWS?",
     "options": {
-      "A": "Amazon Elastic File System (Amazon EFS) Amazon Elastic File System (Amazon EFS)",
-      "B": "Amazon FSx for Windows File Server Amazon FSx for Windows File Server",
-      "C": "AWS Snowball AWS Snowball",
-      "D": "AWS Storage Gateway AWS Storage Gateway"
+      "A": "Amazon Elastic File System (Amazon EFS)",
+      "B": "Amazon FSx for Windows File Server",
+      "C": "AWS Snowball",
+      "D": "AWS Storage Gateway"
     },
     "answer": "D",
-    "explanations": {}
+    "explanations": {
+      "A": "Amazon Elastic File System (Amazon EFS)\nAmazon EFS 是一个可扩展的文件存储服务，适用于 Linux 工作负载。\n然而，本题中提到文件存储在 SMB 文件共享上，而 SMB 协议通常与 Windows 环境有关，EFS 不支持 SMB 协议。\n因此，此选项错误。",
+      "B": "Amazon FSx for Windows File Server\nAmazon FSx for Windows File Server 支持 SMB 协议，并且可以提供低延迟的文件共享服务。\n然而，本题要求将文件从本地复制到 AWS，而不是直接迁移到 AWS 上的文件系统。\n此选项虽然支持 SMB，但无法满足“将文件复制到 AWS”的需求，因此错误。",
+      "C": "AWS Snowball\nAWS Snowball 是一种物理设备，用于大规模数据迁移。\n本题中提到文件是每天生成的，因此需要一个持续的解决方案，而不是一次性迁移工具。\n此选项不符合需求，因此错误。",
+      "D": "AWS Storage Gateway\nAWS Storage Gateway 是一种混合云存储服务，可以将本地文件与 AWS 存储集成。\n它支持 SMB 协议，并且可以通过文件网关将文件复制到 Amazon S3。\n此选项完全符合题目要求，因此正确。"
+    }
   },
   {
     "exam": "SAA-C03",

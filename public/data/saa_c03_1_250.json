@@ -2036,13 +2036,18 @@
     "type": "single",
     "question": "一家自行车共享公司正在开发一个多层架构，用于在运营高峰时段跟踪其自行车的位置。该公司希望在其现有的分析平台中使用这 些数据点。一名解决方案架构师必须确定支持此架构的最可行的多层选项。这些数据点必须可通过 REST API 访问。 哪项操作满足用于存储和检索位置数据的这些要求?",
     "options": {
-      "A": "Use Amazon Athena with Amazon S3. (FA Amazon Athena 4 Amazon $3,",
-      "B": "Use Amazon API Gateway with AWS Lambda. {FA Amazon API Gateway 与 AWS Lambda.",
-      "C": "Use Amazon QuickSight with Amazon Redshift. {FA Amazon QuickSight Amazon Redshift.",
-      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics. {FA Amazon API Gateway 与 Amazon Kinesis Data Analytics,"
+      "A": "Use Amazon Athena with Amazon S3.",
+      "B": "Use Amazon API Gateway with AWS Lambda.",
+      "C": "Use Amazon QuickSight with Amazon Redshift.",
+      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics."
     },
     "answer": "B",
-    "explanations": {}
+    "explanations": {
+      "A": "Use Amazon Athena with Amazon S3.\n错误。 原因：\nAthena 是对 S3 上的数据做交互式 SQL 查询（偏离线/交互式分析），不是为 REST API 提供低延迟在线查询而设计。\nS3 + Athena 不适合高峰期大量位置点的“实时写入 + API 频繁读取”的在线交易型访问模式（延迟、数据组织方式、查询启动开销等都不匹配）。\n题目强调“数据点必须可从 REST API 访问”，该组合不直接提供 REST API 接入与在线读写路径。",
+      "B": "Use Amazon API Gateway with AWS Lambda.\n正确（在给定选项中最符合）。 原因：\nAPI Gateway 直接用于构建与发布 REST API，满足“数据点必须可从 REST API 访问”。\nLambda 承载业务逻辑：接收位置上报请求、校验/转换数据、并把数据写入后端存储；在查询时从后端存储读取并返回给 API。\n可天然构建“多层架构”（API 层 + 计算层 + 数据层）。尽管选项未写出数据层，但 Lambda 作为中间层是标准做法。\n具备弹性扩缩，适配“peak operating hours”的突发高并发（前提是后端存储也选用可扩展方案）。",
+      "C": "Use Amazon QuickSight with Amazon Redshift.\n错误。 原因：\nQuickSight 是 BI 可视化，不用于提供 REST API 的在线读写接口。\nRedshift 是数据仓库，适合分析型查询，但并非此题强调的“REST API 可访问的在线存取位置数据点”的第一选择。\n该组合更像“数据进仓 + 报表分析”，不能直接解决 REST API 存取位置点的需求。",
+      "D": "Use Amazon API Gateway with Amazon Kinesis Data Analytics.\n错误。 原因：\nKinesis Data Analytics 主要用于对流数据做实时分析（SQL/Flink），它不是典型的“存储 + API 查询”后端。\n即使可以通过 API Gateway 接入，也缺少“持久化存储与按需查询”的核心闭环；Kinesis Data Analytics 本身不作为数据存储系统。\n若要实现该场景，通常还需要 Kinesis Data Streams/Firehose + DynamoDB/S3/OpenSearch 等组件，选项未体现。"
+    }
   },
   {
     "exam": "SAA-C03",
@@ -4687,7 +4692,12 @@
       "D": "将数据库迁移到一个单独的 EC2 实例，并将备份计划到 Amazon S3。从原始 EC2 实例创建一个 Amazon Machine Image (AMI)。在两个可用区中配置一个 Application Load Balancer。附加一个使用该 AMI 的 Auto Scaling 组，并跨两个可用区运行。"
     },
     "answer": "C",
-    "explanations": {}
+    "explanations": {
+      "A": "将数据库迁移到 Amazon RDS，并启用自动备份。在同一可用区手动启动另一个 EC2 实例。配置一个 Application Load Balancer，并将两个实例设置为目标。\n正确点：将数据库迁移到 Amazon RDS 并启用自动备份是一个合理的选择，可以提高数据库的可用性和管理效率。\n错误点：手动启动另一个 EC2 实例并将其配置在同一可用区无法实现高可用性，因为如果该可用区发生故障，整个架构仍然会不可用。",
+      "B": "将数据库迁移到一个Amazon Aurora 实例，并在与现有 EC2 实例相同的可用区中创建一个只读副本。在同一可用区手动启动另 一个 EC2 实例。配置一个 Application Load Balancer，并将两个 EC2 实例设置为目标。\n正确点：Amazon Aurora 是一个高性能的数据库服务，支持读副本以提高读取性能。\n错误点：将读副本和 EC2 实例都放在同一可用区无法实现高可用性。如果该可用区发生故障，整个架构仍然会不可用。",
+      "C": "将数据库迁移到 Amazon Aurora，并在另一个可用区创建一个只读副本。从 EC2 实例创建一个 Amazon Machine Image (AMI)。在两个可用区中配置一个 Application Load Balancer。附加一个使用该 AMI 的 Auto Scaling 组，并跨两个可用区运行。\n正确点：将数据库迁移到 Amazon Aurora 并在另一个可用区创建读副本可以实现数据库的高可用性。\n正确点：使用 Amazon Machine Image (AMI) 创建 EC2 实例模板，并通过 Auto Scaling 组在多个可用区中运行实例，可以实现应用层的高可用性和自动扩展。\n正确点：配置 Application Load Balancer 跨多个可用区分配流量，进一步提高架构的高可用性。",
+      "D": "将数据库迁移到一个单独的 EC2 实例，并将备份计划到 Amazon S3。从原始 EC2 实例创建一个 Amazon Machine Image (AMI)。在两个可用区中配置一个 Application Load Balancer。附加一个使用该 AMI 的 Auto Scaling 组，并跨两个可用区运行。\n正确点：将数据库迁移到单独的 EC2 实例并备份到 Amazon S3 可以提高数据的持久性。\n错误点：使用 EC2 实例作为数据库服务需要手动管理，无法充分利用 Amazon RDS 或 Amazon Aurora 的高可用性和自动管理功能。"
+    }
   },
   {
     "exam": "SAA-C03",
