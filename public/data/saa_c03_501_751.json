@@ -21,7 +21,7 @@
   {
     "exam": "SAA-C03",
     "id": 502,
-    "type": "single",
+    "type": "multiple",
     "question": "一家公司运营一个使用内容管理系统 (CMS) 的网站，该系统运行在 Amazon EC2 上。 CMS 运行在单个 EC2 实例上，并使用 Amazon Aurora MySQL Multi-AZ DB 实例作为数据层。网站图片存储在挂载到 EC2 实例内部的 Amazon Elastic Block Store (Amazon EBS) 卷上。 解决方案架构师应采取哪些操作组合来提高网站的性能和弹性” (选择两个)",
     "options": {
       "A": "将网站图片移动到一个挂载在每个 EC2 实例上的 Amazon S3 存储桶中。",
@@ -30,7 +30,10 @@
       "D": "从现有的 EC2 实例创建一个 Amazon Machine Image (AMI)。使用该 AMI 在 Application Load Balancer 后面预置新实例，作为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站在 AWS Global Accelerator 中配置一个加速器。",
       "E": "从现有的 EC2 实例创建一个 Amazon Machine Image (AMI)。使用该 AMI 在 Application Load Balancer 后面预置新实例，作为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站配置一个 Amazon CloudFront 分配。"
     },
-    "answer": "C",
+    "answer": [
+      "C",
+      "E"
+    ],
     "explanations": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance 错误：Amazon S3 不支持直接挂载到 EC2 实例。虽然可以通过 S3 API 或工具（如 s3fs）访问 S3，但这不是最佳实践，目性能可能 受限。",
       "B": "Share the website images by using an NFS share from the primary EC2 instance. Mount this share on the other EC2 instances 错误：使用 NFS 共享会导致单点故障问题，目性能和扩展性较差，不符合高可用性和性能优化的要求。",

@@ -5,10 +5,10 @@
     "type": "single",
     "question": "Topic 1 A company wants to ingest customer payment data into the company's data lake in Amazon S3. The company receives payment data every minute on average. The company wants to analyze the payment data in real time. Then the company wants to ingest the data into the data lake. Which solution will meet these requirements with the MOST operational efficiency?",
     "options": {
-      "A": "Use Amazon Kinesis Data Streams to ingest data. Use AWS Lambda to analyze the data in real time. {FA Amazon Kinesis Data Streams",
+      "A": "Use Amazon Kinesis Data Streams to ingest data. Use AWS Lambda to analyze the data in real time.",
       "B": "Use AWS Glue to ingest data. Use Amazon Kinesis Data Analytics to analyze the data in real time.",
-      "C": "Use Amazon Kinesis Data Firehose to ingest data. Use Amazon Kinesis Data Analytics to analyze the data in real time. {FA Amazon Kinesis Data Firehose",
-      "D": "Use Amazon API Gateway to ingest data. Use AWS Lambda to analyze the data in real time. {FA Amazon API Gateway"
+      "C": "Use Amazon Kinesis Data Firehose to ingest data. Use Amazon Kinesis Data Analytics to analyze the data in real time.",
+      "D": "Use Amazon API Gateway to ingest data. Use AWS Lambda to analyze the data in real time."
     },
     "answer": "C",
     "explanations": {
@@ -21,7 +21,7 @@
   {
     "exam": "SAA-C03",
     "id": 502,
-    "type": "single",
+    "type": "multiple",
     "question": "Topic 1 A company runs a website that uses a content management system (CMS) on Amazon EC2. The CMS runs on a single EC2 instance and uses an Amazon Aurora MySQL Multi-AZ DB instance for the data tier. Website images are stored on an Amazon Elastic Block Store (Amazon EBS) volume that is mounted inside the EC2 instance. Which combination of actions should a solutions architect take to improve the performance and resilience of the website? (Choose two.)",
     "options": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance.",
@@ -30,7 +30,10 @@
       "D": "Create an Amazon Machine Image (AMI) from the existing EC2 instance. Use the AMI to provision new instances behind an Application Load Balancer as part of an Auto Scaling group. Configure the Auto Scaling group to maintain a minimum of two instances. Configure an accelerator in AWS Global Accelerator for the website.",
       "E": "Create an Amazon Machine Image (AMI) from the existing EC2 instance. Use the AMI to provision new instances behind an Application Load Balancer as part of an Auto Scaling group. Configure the Auto Scaling group to maintain a minimum of two instances. Configure an Amazon CloudFront distribution for the website."
     },
-    "answer": "C",
+    "answer": [
+      "C",
+      "E"
+    ],
     "explanations": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance 错误：Amazon S3 不支持直接挂载到 EC2 实例。虽然可以通过 S3 API 或工具（如 s3fs）访问 S3，但这不是最佳实践，目性能可能 受限。",
       "B": "Share the website images by using an NFS share from the primary EC2 instance. Mount this share on the other EC2 instances 错误：使用 NFS 共享会导致单点故障问题，目性能和扩展性较差，不符合高可用性和性能优化的要求。",
@@ -280,7 +283,7 @@
       "C": "Building analytics workloads during specified hours and when the application is not active",
       "D": "Caching data to reduce the pressure on the backend database",
       "E": "Scaling globally to support petabytes of data and tens of millions of requests per minute",
-      "F": "Creating a secondary replica of the cluster by using the AWS Management Console 使用AWS Management Console"
+      "F": "Creating a secondary replica of the cluster by using the AWS Management Console"
     },
     "answer": "B",
     "explanations": {
@@ -298,7 +301,7 @@
     "type": "single",
     "question": "Topic 1 A company provides an API interface to customers so the customers can retrieve their financial information. Ehe company expects a larger number of requests during peak usage times of the year. The company requires the API to respond consistently with low latency to ensure customer satisfaction. The company needs to provide a compute host for the API. Which solution will meet these requirements with the LEAST operational overhead?",
     "options": {
-      "A": "Use an Application Load Balancer and Amazon Elastic Container Service (Amazon ECS). {FB Application Load Balancer和Amazon Elastic Container Service (Amazon ECS),",
+      "A": "Use an Application Load Balancer and Amazon Elastic Container Service (Amazon ECS). {FB Application Load Balancer",
       "B": "Use Amazon AP! Gateway and AWS Lambda functions with provisioned concurrency.",
       "C": "Use an Application Load Balancer and an Amazon Elastic Kubernetes Service (Amazon EKS) cluster.",
       "D": "Use Amazon API Gateway and AWS Lambda functions with reserved concurrency."
@@ -336,10 +339,10 @@
     "type": "single",
     "question": "Topic 1 An application uses an Amazon RDS MySQL DB instance. The RDS database is becoming low on disk space. A solutions architect wants to increase the disk space without downtime. Which solution meets these requirements with the LEAST amount of effort?",
     "options": {
-      "A": "Enable storage autoscaling in RDS 在 RDS",
-      "B": "Increase the RDS database instance size 增加 RDS",
-      "C": "Change the RDS database instance storage type to Provisioned IOPS 将 RDS",
-      "D": "Back up the RDS database, increase the storage capacity, restore the database, and stop the previous instance 备份 RDS"
+      "A": "Enable storage autoscaling in RDS",
+      "B": "Increase the RDS database instance size",
+      "C": "Change the RDS database instance storage type to Provisioned IOPS",
+      "D": "Back up the RDS database, increase the storage capacity, restore the database, and stop the previous instance"
     },
     "answer": "A",
     "explanations": {
@@ -415,7 +418,7 @@
       "A": "Use an AWS Lambda function to resize the EKS cluster.",
       "B": "Use the Kubernetes Metrics Server to activate horizontal pod autoscaling.",
       "C": "Use the Kubernetes Cluster Autoscaler to manage the number of nodes in the cluster.",
-      "D": "Use Amazon API Gateway and connect it to Amazon EKS. {FA Amazon API Gateway",
+      "D": "Use Amazon API Gateway and connect it to Amazon EKS.",
       "E": "Use AWS App Mesh to observe network activity."
     },
     "answer": "B",
@@ -628,10 +631,10 @@
     "type": "single",
     "question": "Topic 1 A company stores data in Amazon S3. According to regulations, the data must not contain personally identifiable information (Pll). The company recently discovered that S3 buckets have some objects that contain Pll. The company needs to automatically detect Pll in S3 buckets and to notify the company’s security team. Which solution will meet these requirements?",
     "options": {
-      "A": "Use Amazon Macie. Create an Amazon EventBridge rule to filter the SensitiveData event type from Macie findings and to send an Amazon Simple Notification Service (Amazon SNS) notification to the security team. {FA Amazon Macie。",
-      "B": "Use Amazon GuardDuty. Create an Amazon EventBridge rule to filter the CRITICAL event type from GuardDuty findings and to send an Amazon Simple Notification Service (Amazon SNS) notification to the security team. {FA Amazon GuardDuty。",
-      "C": "Use Amazon Macie. Create an Amazon EventBridge rule to filter the SensitiveData:S3Object/Personal event type from Macie findings and to send an Amazon Simple Queue Service (Amazon SQS) notification to the security team. {FA Amazon Macie。",
-      "D": "Use Amazon GuardDuty. Create an Amazon EventBridge rule to filter the CRITICAL event type from GuardDuty findings and to send an Amazon Simple Queue Service (Amazon SQS) notification to the security team. {FA Amazon GuardDuty。"
+      "A": "Use Amazon Macie. Create an Amazon EventBridge rule to filter the SensitiveData event type from Macie findings and to send an Amazon Simple Notification Service (Amazon SNS) notification to the security team.",
+      "B": "Use Amazon GuardDuty. Create an Amazon EventBridge rule to filter the CRITICAL event type from GuardDuty findings and to send an Amazon Simple Notification Service (Amazon SNS) notification to the security team.",
+      "C": "Use Amazon Macie. Create an Amazon EventBridge rule to filter the SensitiveData:S3Object/Personal event type from Macie findings and to send an Amazon Simple Queue Service (Amazon SQS) notification to the security team.",
+      "D": "Use Amazon GuardDuty. Create an Amazon EventBridge rule to filter the CRITICAL event type from GuardDuty findings and to send an Amazon Simple Queue Service (Amazon SQS) notification to the security team."
     },
     "answer": "A",
     "explanations": {
@@ -1309,8 +1312,8 @@
     "type": "single",
     "question": "Topic 1 A solutions architect is designing the storage architecture for a new web application used for storing and viewing engineering drawings. All application components will be deployed on the AWS infrastructure. The application design must support caching to minimize the amount of time that users wait for the engineering drawings to load. The application must be able to store petabytes of data. Which combination of storage and caching should the solutions architect use?",
     "options": {
-      "A": "Amazon S3 with Amazon CloudFront Amazon $3 与 Amazon CloudFront",
-      "B": "Amazon S3 Glacier with Amazon ElastiCache Amazon $3 Glacier 与 Amazon ElastiCache Cc. Amazon Elastic Block Store (Amazon EBS) volumes with Amazon CloudFront Amazon Elastic Block Store (Amazon EBS) #45 Amazon CloudFront D. AWS Storage Gateway with Amazon ElastiCache AWS Storage Gateway 与 Amazon ElastiCache Correct Answer: A 正确答案: A Community vote distribution 社区投票分布 IT认证轻松过 淘宝: https://shop542998714.m.taobao.com ”闲鱼: https://www.goofish.com/personal?userld=2645260430 ff: Examtopics 题目分析与解答 1.",
+      "A": "Amazon S3 with Amazon CloudFront Amazon $3",
+      "B": "Amazon S3 Glacier with Amazon ElastiCache Amazon $3 Glacier",
       "C": "Amazon Elastic Block Store (Amazon EBS) volumes with Amazon CloudFront Amazon EBS"
     },
     "answer": "A",
@@ -1460,9 +1463,9 @@
     "type": "single",
     "question": "Topic 1 A company is building a RESTful serverless web application on AWS by using Amazon API Gateway and AWS Lambda. The users of this web application will be geographically distributed, and the company wants to reduce the latency of API requests to these users. Which type of endpoint should a solutions architect use to meet these requirements?",
     "options": {
-      "A": "Private endpoint 私有端点",
+      "A": "Private endpoint",
       "B": "Regional endpoint",
-      "C": "Interface VPC endpoint 接口 VPC 端点",
+      "C": "Interface VPC endpoint",
       "D": "Edge-optimized endpoint"
     },
     "answer": "D",
@@ -1747,7 +1750,7 @@
       "A": "Use the AWS Load Balancer Controller to provision a Network Load Balancer.",
       "B": "Use the AWS Load Balancer Controller to provision an Application Load Balancer.",
       "C": "Use an AWS Lambda function to connect the requests to Amazon EKS.",
-      "D": "Use Amazon API Gateway to connect the requests to Amazon EKS. {FA Amazon API Gateway"
+      "D": "Use Amazon API Gateway to connect the requests to Amazon EKS."
     },
     "answer": "B",
     "explanations": {
@@ -1904,12 +1907,12 @@
     "type": "single",
     "question": "Topic 1 A company wants to use Amazon Elastic Container Service (Amazon ECS) clusters and Amazon RDS DB instances to build and run a payment processing application. The company will run the application in its on-premises data center for compliance purposes. A solutions architect wants to use AWS Outposts as part of the solution. The solutions architect is working with the company's operational team to build the application. Which activities are the responsibility of the company's operational team? (Choose three.)",
     "options": {
-      "A": "Providing resilient power and network connectivity to the Outposts racks 为 Outposts",
+      "A": "Providing resilient power and network connectivity to the Outposts racks",
       "B": "Managing the virtualization hypervisor, storage systems, and the AWS services that run on Outposts",
       "C": "Physical security and access controls of the data center environment",
       "D": "Availability of the Outposts infrastructure including the power supplies, servers, and networking equipment within the Outposts racks Outposts",
       "E": "Physical maintenance of Outposts components Outposts",
-      "F": "Providing extra capacity for Amazon ECS clusters to mitigate server failures and maintenance events 为 Amazon ECS"
+      "F": "Providing extra capacity for Amazon ECS clusters to mitigate server failures and maintenance events"
     },
     "answer": "A",
     "explanations": {
@@ -2023,7 +2026,7 @@
     "question": "Topic 1 A company has several on-premises Internet Small Computer Systems Interface (ISCSI) network storage servers. The company wants to reduce the number of these servers by moving to the AWS Cloud. A solutions architect must provide low-latency access to frequently used data and reduce the dependency on on-premises servers with a minimal number of infrastructure changes. Which solution will meet these requirements?",
     "options": {
       "A": "Deploy an Amazon S3 File Gateway.",
-      "B": "Deploy Amazon Elastic Block Store (Amazon EBS) storage with backups to Amazon S3. @BS Amazon Elastic Block Store (Amazon EBS) 存储，",
+      "B": "Deploy Amazon Elastic Block Store (Amazon EBS) storage with backups to Amazon S3. @BS Amazon Elastic Block Store (Amazon EBS)",
       "C": "Deploy an AWS Storage Gateway volume gateway that is configured with stored volumes.",
       "D": "Deploy an AWS Storage Gateway volume gateway that is configured with cached volumes."
     },
@@ -2079,7 +2082,7 @@
     "type": "single",
     "question": "Topic 1 A company has an application that serves clients that are deployed in more than 20.000 retail storefront locations around the world. The application consists of backend web services that are exposed over HTTPS on port 443. The application is hosted on Amazon EC2 instances behind an Application Load Balancer (ALB). The retail locations communicate with the web application over the public internet. The company allows each retail location to register the IP address that the retail location has been allocated by its local ISP. The company's security team recommends to increase the security of the application endpoint by restricting access to only the IP addresses registered by the retail locations. What should a solutions architect do to meet these requirements?",
     "options": {
-      "A": "Associate an AWS WAF web ACL with the ALB. Use IP rule sets on the ALB to filter traffic. Update the IP addresses in the rule to include the registered IP addresses. SAWS WAF的Web ACL与ALB关联。 在ALB",
+      "A": "Associate an AWS WAF web ACL with the ALB. Use IP rule sets on the ALB to filter traffic. Update the IP addresses in the rule to include the registered IP addresses. SAWS WAF",
       "B": "Deploy AWS Firewall Manager to manage the ALConfigure firewall rules to restrict traffic to the ALModify the firewall rules to include the registered IP addresses.",
       "C": "Store the IP addresses in an Amazon DynamoDB table. Configure an AWS Lambda authorization function on the ALB to validate that incoming requests are from the registered IP addresses.",
       "D": "Configure the network ACL on the subnet that contains the public interface of the ALB. Update the ingress rules on the network ACL with entries for each of the registered IP addresses."
@@ -2370,7 +2373,7 @@
     "options": {
       "A": "Configure AWS Shield.",
       "B": "Configure AWS WAF.",
-      "C": "Set up API Gateway with an Amazon CloudFront distribution. Configure AWS Shield in CloudFront. {FA Amazon CloudFront",
+      "C": "Set up API Gateway with an Amazon CloudFront distribution. Configure AWS Shield in CloudFront.",
       "D": "Set up API Gateway with an Amazon CloudFront distribution. Configure AWS WAF in CloudFront. {FB Amazon CloudFront"
     },
     "answer": "B",
@@ -2407,9 +2410,9 @@
     "question": "Topic 1 A company is hosting a website behind multiple Application Load Balancers. The company has different distribution rights for its content around the world. A solutions architect needs to ensure that users are served the correct content without violating distribution rights. Which configuration should the solutions architect choose to meet these requirements?",
     "options": {
       "A": "Configure Amazon CloudFront with AWS WAF.",
-      "B": "Configure Application Load Balancers with AWS WAF ECE Application Load Balancers 与 AWS WAF,",
+      "B": "Configure Application Load Balancers with AWS WAF ECE Application Load Balancers",
       "C": "Configure Amazon Route 53 with a geolocation policy ER BCH Amazon Route 53",
-      "D": "Configure Amazon Route 53 with a geoproximity routing policy 配置 Amazon Route 53"
+      "D": "Configure Amazon Route 53 with a geoproximity routing policy"
     },
     "answer": "C",
     "explanations": {
@@ -2463,7 +2466,7 @@
     "type": "single",
     "question": "Topic 1 A global company runs its applications in multiple AWS accounts in AWS Organizations. The company's applications use multipart uploads to upload data to multiple Amazon S3 buckets across AWS Regions. The company wants to report on incomplete multipart uploads for cost compliance purposes. Which solution will meet these requirements with the LEAST operational overhead?",
     "options": {
-      "A": "Configure AWS Config with a rule to report the incomplete multipart upload object count. BCE AWS Config，",
+      "A": "Configure AWS Config with a rule to report the incomplete multipart upload object count. BCE AWS Config",
       "B": "Create a service control policy (SCP) to report the incomplete multipart upload object count.",
       "C": "Configure $3 Storage Lens to report the incomplete multipart upload object count.",
       "D": "Create an S3 Multi-Region Access Point to report the incomplete multipart upload object count."
@@ -2485,7 +2488,7 @@
       "A": "Create an RDS manual snapshot. Upgrade to the new version of Amazon RDS for MySQL.",
       "B": "Use native backup and restore. Restore the data to the upgraded new version of Amazon RDS for MySQL.",
       "C": "Use AWS Database Migration Service (AWS DMS) to replicate the data to the upgraded new version of Amazon RDS for MySQL.",
-      "D": "Use Amazon RDS Blue/Green Deployments to deploy and test production changes. {FA Amazon RDS Blue/Green Deployments"
+      "D": "Use Amazon RDS Blue/Green Deployments to deploy and test production changes."
     },
     "answer": "D",
     "explanations": {
@@ -2560,7 +2563,7 @@
     "options": {
       "A": "Serve read traffic from the Multi-AZ standby replica.",
       "B": "Configure the DB instance to use Transfer Acceleration.",
-      "C": "Create a read replica from the source DB instance. Serve read traffic from the read replica. EC 从源 DB",
+      "C": "Create a read replica from the source DB instance. Serve read traffic from the read replica. EC",
       "D": "Use Amazon Kinesis Data Firehose between the application and Amazon RDS to increase the concurrency of database requests."
     },
     "answer": "C",
@@ -2674,10 +2677,10 @@
     "type": "single",
     "question": "Topic 1 A company is building a new furniture inventory application. The company has deployed the application on a fleet ofAmazon EC2 instances across multiple Availability Zones. The EC2 instances run behind an Application Load Balancer (ALB) in their VPC. A solutions architect has observed that incoming traffic seems to favor one EC2 instance, resulting in latency for some requests. What should the solutions architect do to resolve this issue?",
     "options": {
-      "A": "Disable session affinity (sticky sessions) on the ALB 在ALB",
-      "B": "Replace the ALB with a Network Load Balancer 用Network Load Balancer蔡换ALB",
+      "A": "Disable session affinity (sticky sessions) on the ALB",
+      "B": "Replace the ALB with a Network Load Balancer",
       "C": "Increase the number of EC2 instances in each Availability Zone",
-      "D": "Adjust the frequency of the health checks on the ALB's target group 调整ALB"
+      "D": "Adjust the frequency of the health checks on the ALB's target group"
     },
     "answer": "A",
     "explanations": {
@@ -2693,8 +2696,8 @@
     "type": "single",
     "question": "Topic 1 A company has an application workflow that uses an AWS Lambda function to download and decrypt files from Amazon S3. These files are encrypted using AWS Key Management Service (AWS KMS) keys. A solutions architect needs to design a solution that will ensure the required permissions are set correctly. Which combination of actions accomplish this? (Choose two.)",
     "options": {
-      "A": "Attach the kms:decrypt permission to the Lambda function's resource policy 将 kms:decrypt",
-      "B": "Grant the decrypt permission for the Lambda IAM role in the KMS key's policy 在KMS",
+      "A": "Attach the kms:decrypt permission to the Lambda function's resource policy",
+      "B": "Grant the decrypt permission for the Lambda IAM role in the KMS key's policy",
       "C": "Grant the decrypt permission for the Lambda resource policy in the KMS key's policy.",
       "D": "Create a new IAM policy with the kms:decrypt permission and attach the policy to the Lambda function.",
       "E": "Create a new IAM role with the kms:decrypt permission and attach the execution role to the Lambda function."
@@ -2851,8 +2854,8 @@
     "options": {
       "A": "Use Amazon FSx for Lustre scratch file systems.",
       "B": "Use Amazon FSx for Lustre persistent file systems.",
-      "C": "Use Amazon Elastic File System (Amazon EFS) with Bursting Throughput mode. {FQ Amazon Elastic File System (Amazon EFS) 的 Bursting Throughput 模式。",
-      "D": "Use Amazon Elastic File System (Amazon EFS) with Provisioned Throughput mode. {$F Amazon Elastic File System (Amazon EFS) 的 Provisioned Throughput 模式。"
+      "C": "Use Amazon Elastic File System (Amazon EFS) with Bursting Throughput mode. {FQ Amazon Elastic File System (Amazon EFS)",
+      "D": "Use Amazon Elastic File System (Amazon EFS) with Provisioned Throughput mode. {$F Amazon Elastic File System (Amazon EFS)"
     },
     "answer": "B",
     "explanations": {
@@ -2986,7 +2989,7 @@
       "B": "Create a Gateway Load Balancer. Specify the application target group.",
       "C": "Create a public Application Load Balancer. Specify the application target group.",
       "D": "Create a second target group. Add Elastic IP addresses to the EC2 instances.",
-      "E": "Create a web ACL in AWS WAF. Associate the web ACL with the endpoint 在AWS WAF"
+      "E": "Create a web ACL in AWS WAF. Associate the web ACL with the endpoint"
     },
     "answer": "C",
     "explanations": {
@@ -3119,7 +3122,7 @@
     "type": "single",
     "question": "Topic 1 A company uses AWS Cost Explorer to monitor its AWS costs. The company notices that Amazon Elastic Block Store (Amazon EBS) storage and snapshot costs increase every month. However, the company does not purchase additional EBS storage every month. The company wants to optimize monthly costs for its current storage usage. Which solution will meet these requirements with the LEAST operational overhead?",
     "options": {
-      "A": "Use logs in Amazon CloudWatch Logs to monitor the storage utilization of Amazon EBS. Use Amazon EBS Elastic Volumes to reduce the size of the EBS volumes. {FA Amazon CloudWatch Logs",
+      "A": "Use logs in Amazon CloudWatch Logs to monitor the storage utilization of Amazon EBS. Use Amazon EBS Elastic Volumes to reduce the size of the EBS volumes.",
       "B": "Use a custom script to monitor space usage. Use Amazon EBS Elastic Volumes to reduce the size of the EBS volumes.",
       "C": "Delete all expired and unused snapshots to reduce snapshot costs.",
       "D": "Delete all nonessential snapshots. Use Amazon Data Lifecycle Manager to create and manage the snapshots according to the company's snapshot policy requirements."
@@ -3516,8 +3519,8 @@
     "options": {
       "A": "Use an IAM policy that allows users to create only encrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Config and AWS Systems Manager to automate the detection and remediation of unencrypted EBS volumes.",
       "B": "Use AWS Key Management Service (AWS KMS) to manage access to encrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Lambda and Amazon EventBridge to automate the detection and remediation of unencrypted EBS volumes.",
-      "C": "Use Amazon Macie to detect unencrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Systems Manager Automation rules to automatically encrypt existing and new EBS volumes. {FA Amazon Macie",
-      "D": "Use Amazon inspector to detect unencrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Systems Manager Automation rules to automatically encrypt existing and new EBS volumes. {FA Amazon Inspector"
+      "C": "Use Amazon Macie to detect unencrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Systems Manager Automation rules to automatically encrypt existing and new EBS volumes.",
+      "D": "Use Amazon inspector to detect unencrypted Amazon Elastic Block Store (Amazon EBS) volumes. Use AWS Systems Manager Automation rules to automatically encrypt existing and new EBS volumes."
     },
     "answer": "A",
     "explanations": {
@@ -3631,7 +3634,7 @@
       "A": "Create individual users in IAM Identity Center for each account. Create separate developer and administrator groups in IAM Identity Center. Assign the users to the appropriate groups. Create a custom IAM policy for each group to set fine-grained permissions. IAM Identity Center",
       "B": "Create individual users in IAM Identity Center for each account. Create separate developer and administrator groups in IAM Identity Center. Assign the users to the appropriate groups. Attach AWS managed IAM policies to each user as needed for fine-grained permissions. IAM Identity Center",
       "C": "Create individual users in IAM Identity Center. Create new developer and administrator groups in IAM Identity Center. Create new permission sets that include the appropriate IAM policies for each group. Assign the new groups to the appropriate accounts. Assign the new permission sets to the new groups. When new users are hired, add them to the appropriate group.",
-      "D": "Create individual users in IAM Identity Center. Create new permission sets that include the appropriate IAM policies for each user. Assign the users to the appropriate accounts. Grant additional IAM permissions to the users from within specific IT认证轻松过淘宝: https://shop542998714.m.taobao.com [A\\&4: https://www.goofish.com/personal?userld=2645260430 ”微信: Examtopics accounts. When new users are hired, add them to IAM Identity Center and assign them to the accounts."
+      "D": "Create individual users in IAM Identity Center. Create new permission sets that include the appropriate IAM policies for each user. Assign the users to the appropriate accounts. Grant additional IAM permissions to the users from within specific IT"
     },
     "answer": "C",
     "explanations": {
@@ -3842,9 +3845,9 @@
     "question": "Topic 1 A company has an application that uses Docker containers in its local data center. The application runs on a container host that stores persistent data in a volume on the host. The container instances use the stored persistent data. The company wants to move the application to a fully managed service because the company does not want to manage any servers or storage infrastructure. Which solution will meet these requirements?",
     "options": {
       "A": "Use Amazon Elastic Kubernetes Service (Amazon EKS) with self-managed nodes. Create an Amazon Elastic Block Store (Amazon EBS) volume attached to an Amazon EC2 instance. Use the EBS volume as a persistent volume mounted in the containers.",
-      "B": "Use Amazon Elastic Container Service (Amazon ECS) with an AWS Fargate launch type. Create an Amazon Elastic File System (Amazon EFS) volume. Add the EFS volume as a persistent storage volume mounted in the containers. {$F Amazon Elastic Container Service (Amazon ECS) 和 AWS Fargate",
-      "C": "Use Amazon Elastic Container Service (Amazon ECS) with an AWS Fargate launch type. Create an Amazon S3 bucket. Map the S3 bucket as a persistent storage volume mounted in the containers. {FQ Amazon Elastic Container Service (Amazon ECS) 和 AWS Fargate",
-      "D": "Use Amazon Elastic Container Service (Amazon ECS) with an Amazon EC2 launch type. Create an Amazon Elastic File System (Amazon EFS) volume. Add the EFS volume as a persistent storage volume mounted in the containers. {$F Amazon Elastic Container Service (Amazon ECS) 和 Amazon EC2"
+      "B": "Use Amazon Elastic Container Service (Amazon ECS) with an AWS Fargate launch type. Create an Amazon Elastic File System (Amazon EFS) volume. Add the EFS volume as a persistent storage volume mounted in the containers. {$F Amazon Elastic Container Service (Amazon ECS)",
+      "C": "Use Amazon Elastic Container Service (Amazon ECS) with an AWS Fargate launch type. Create an Amazon S3 bucket. Map the S3 bucket as a persistent storage volume mounted in the containers. {FQ Amazon Elastic Container Service (Amazon ECS)",
+      "D": "Use Amazon Elastic Container Service (Amazon ECS) with an Amazon EC2 launch type. Create an Amazon Elastic File System (Amazon EFS) volume. Add the EFS volume as a persistent storage volume mounted in the containers. {$F Amazon Elastic Container Service (Amazon ECS)"
     },
     "answer": "B",
     "explanations": {
@@ -3864,7 +3867,7 @@
       "B": "Create external Application Load Balancers in front of the application in each Region.",
       "C": "Create an AWS Global Accelerator accelerator to route traffic to the load balancers in each Region.",
       "D": "Configure Amazon Route 53 to use a geolocation routing policy to distribute the traffic.",
-      "E": "Configure Amazon CloudFront to handle the traffic and route requests to the application in each Region 配置 Amazon CloudFront"
+      "E": "Configure Amazon CloudFront to handle the traffic and route requests to the application in each Region"
     },
     "answer": "A",
     "explanations": {

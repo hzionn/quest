@@ -429,10 +429,10 @@
     "type": "single",
     "question": "一家快速增长的电子商务公司正在单一的 AWS Region 中运行其工作负载。解决方案架构师必须创建一个包括不同 AWS Region 的 灾难恢复 (DR) 策略。公司希望其数据库在 DR Region 中保持最新状态，并具有尽可能低的延迟。DR Region 中的其余基础设施需 要以降低的容量运行，并且必须能够在必要时进行扩展。 哪种解决方案能够以最低的恢复时间目标 (RTO) 满足这些要求?",
     "options": {
-      "A": "使用Amazon Aurora global database 和 pilot light BE.",
-      "B": "Use an Amazon Aurora global database with a warm standby deployment. {FA Amazon Aurora global database 和 warm standby 部署。",
-      "C": "Use an Amazon RDS Multi-AZ DB instance with a pilot light deployment. {FA Amazon RDS Multi-AZ DB instance ff] pilot light 部署。",
-      "D": "Use an Amazon RDS Multi-AZ DB instance with a warm standby deployment. {FA Amazon RDS Multi-AZ DB instance 和 warm standby 部署。"
+      "A": "使用 Amazon Aurora global database 并采用 pilot light（预置基础）部署。",
+      "B": "使用 Amazon Aurora global database 并采用 warm standby（温备）部署。",
+      "C": "使用 Amazon RDS Multi-AZ DB 实例并采用 pilot light（预置基础）部署。",
+      "D": "使用 Amazon RDS Multi-AZ DB 实例并采用 warm standby（温备）部署。"
     },
     "answer": "B",
     "explanations": {
@@ -701,7 +701,7 @@
     "options": {
       "A": "将所有三个层托管在 Amazon EC2 实例上。使用 Amazon FSx File Gateway 在各层之间进行文件共享。",
       "B": "将所有三个层托管在 Amazon EC2 实例上。使用 Amazon FSx for Windows File Server 在各层之间进行文件共享。",
-      "C": "将应用层和业务层托管在 Amazon EC2 实例上。将数据库层托管在 Amazon RDS £. {FA Amazon Elastic File System (Amazon EFS) 在各层之间进行文件共享。",
+      "C": "将应用层和业务层托管在 Amazon EC2 实例上。将数据库层托管在 Amazon RDS 上。使用 Amazon Elastic File System (Amazon EFS) 在各层之间进行文件共享。",
       "D": "将应用层和业务层托管在 Amazon EC2 实例上。将数据库层托管在 Amazon RDS 上。使用 Provisioned IOPS SSD (io2) Amazon Elastic Block Store (Amazon EBS) 卷在各层之间进行文件共享。"
     },
     "answer": "B",
@@ -1336,9 +1336,9 @@
     "type": "single",
     "question": "一家公司正在使用一组 Amazon EC2 实例从本地数据源摄取数据。 数据是 JSON 格式，摄取速率最高可达 1 MB/s, 当 EC2 实例重 新启动时，正在传输的数据会丢失。 该公司的数据科学团队希望以接近实时的方式查询摄取的数据。 哪种解决方案提供可扩展的接近实时数据查询并且数据丢失最少?",
     "options": {
-      "A": "将数据发布到Amazon Kinesis Data Streams, (FA Kinesis Data Analytics 查询数据。",
+      "A": "将数据发布到 Amazon Kinesis Data Streams。使用 Kinesis Data Analytics 查询数据。",
       "B": "将数据发布到 Amazon Kinesis Data Firehose，并将 Amazon Redshift 作为目标。使用 Amazon Redshift 查询数据。",
-      "C": "将摄取的数据存储在 EC2 实例存储中。将数据发布到 Amazon Kinesis Data Firehose, #4 Amazon $3 作为目标。使用 Amazon Athena 查询数据。",
+      "C": "将摄取的数据存储在 EC2 实例存储中。将数据发布到 Amazon Kinesis Data Firehose，并将 Amazon S3 作为目标。使用 Amazon Athena 查询数据。",
       "D": "将摄取的数据存储在 Amazon Elastic Block Store (Amazon EBS) 卷中。将数据发布到 Amazon ElastiCache for Redis。订阅 Redis 频道以查询数据。"
     },
     "answer": "A",
@@ -1604,10 +1604,10 @@
     "type": "single",
     "question": "一家公司希望让客户能够使用本地的 Microsoft Active Directory 下载存储在 Amazon S3 中的文件。客户的应用程序使用 SFTP 客户 端来下载文件。 哪种解决方案能够以最少的运营开销并且无需更改客户的应用程序来满足这些需求?",
     "options": {
-      "A": "设置 AWS Transfer Family, (FA SFTP 连接到 Amazon S3。配置集成的 Active Directory 身份验证。",
-      "B": "设置 AWS Database Migration Service (AWS DMS)，同步本地客户端与 Amazon S3。配置集成的 Active Directory 身份验证。",
-      "C": "设置 AWS DataSsync，通过使用 AWS IAM Identity Center (AWS Single Sign-On) 在本地位置和 S3 位置之间进行同步。",
-      "D": "设置一个 Windows Amazon EC2 实例，通过 SFTP 将本地客户端连接到 Amazon S3。集成 AWS Identity and Access Management (IAM)."
+      "A": "设置使用 SFTP 连接 Amazon S3 的 AWS Transfer Family。配置集成的 Active Directory 身份验证。",
+      "B": "设置 AWS Database Migration Service (AWS DMS) 以将本地客户端与 Amazon S3 同步。配置集成的 Active Directory 身份验证。",
+      "C": "设置 AWS DataSync，使用 AWS IAM Identity Center (AWS Single Sign-On) 在本地位置和 S3 位置之间进行同步。",
+      "D": "设置一个使用 SFTP 的 Windows Amazon EC2 实例，以将本地客户端连接到 Amazon S3。集成 AWS Identity and Access Management (IAM)。"
     },
     "answer": "A",
     "explanations": {
@@ -1813,10 +1813,10 @@
     "type": "single",
     "question": "一家公司希望限制访问其主要网络应用程序之一的内容，并通过使用AWS提供的授权技术保护内容。 该公司希望实施无服务器架 构，并为少于100名用户提供身份验证解决方案。 该解决方案需要与主要网络应用程序集成，并在全球学围内提供网络内容。 该解 决方案还必须随着公司用户基础的增长进行扩展，同时提供尽可能低的登录延迟。 哪个解决方案最具成本效益地满足这些要求?",
     "options": {
-      "A": "使用 Amazon Cognito 进行身份验证。使用 Lambda@Edge 进行授权。使用Amazon CloudFront 在全球范围内提供网络应用程 序。",
-      "B": "使用 AWS Directory Service for Microsoft Active Directory 进行身份验证。使用 AWS Lambda 进行授权。使用 Application Load Balancer 在全球范围内提供网络应用程序。",
-      "C": "进行身份验证。使用 AWS Lambda i#47#24N. (FA Amazon S3 Transfer Acceleration 在全球范围内提供 网络应用程序。",
-      "D": "使用 AWS Directory Service for Microsoft Active Directory 进行身份验证。使用 Lambda@Edge 进行授权。使用 AWS Elastic Beanstalk 在全球范围内提供网络应用程序。"
+      "A": "使用 Amazon Cognito 进行身份验证。使用 Lambda@Edge 进行授权。使用 Amazon CloudFront 在全球范围内提供该 Web 应用程序。",
+      "B": "使用 AWS Directory Service for Microsoft Active Directory 进行身份验证。使用 AWS Lambda 进行授权。使用 Application Load Balancer 在全球范围内提供该 Web 应用程序。",
+      "C": "使用 Amazon Cognito 进行身份验证。使用 AWS Lambda 进行授权。使用 Amazon S3 Transfer Acceleration 在全球范围内提供该 Web 应用程序。",
+      "D": "使用 AWS Directory Service for Microsoft Active Directory 进行身份验证。使用 Lambda@Edge 进行授权。使用 AWS Elastic Beanstalk 在全球范围内提供该 Web 应用程序。"
     },
     "answer": "A",
     "explanations": {
