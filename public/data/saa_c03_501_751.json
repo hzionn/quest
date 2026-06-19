@@ -21,16 +21,19 @@
   {
     "exam": "SAA-C03",
     "id": 502,
-    "type": "single",
+    "type": "multiple",
     "question": "一家公司运营一个使用内容管理系统 (CMS) 的网站，该系统运行在 Amazon EC2 上。 CMS 运行在单个 EC2 实例上，并使用 Amazon Aurora MySQL Multi-AZ DB 实例作为数据层。网站图片存储在挂载到 EC2 实例内部的 Amazon Elastic Block Store (Amazon EBS) 卷上。 解决方案架构师应采取哪些操作组合来提高网站的性能和弹性” (选择两个)",
     "options": {
-      "A": "将网站图片移到一个挂载到每个 EC2 实例上的 Amazon S3 存储桶中",
+      "A": "将网站图片移动到一个挂载在每个 EC2 实例上的 Amazon S3 存储桶中。",
       "B": "通过主 EC2 实例使用 NFS 共享来共享网站图片。在其他 EC2 实例上挂载此共享。",
-      "C": "将网站图片移到一个挂载到每个 EC2 实例上的 Amazon Elastic File System (Amazon EFS) 文件系统中。",
-      "D": "从现有的 EC2 实例创建一个Amazon Machine Image (AMI). {FA AMI 4 Application Load Balancer 后面配置新的实例，并作 为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站在 AWS Global Accelerator 中配置一个加速 器。",
-      "E": "从现有的 EC2 实例创建一个Amazon Machine Image (AMI), {3 AMI 4 Application Load Balancer 后面配置新的实例，并作 为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站配置一个Amazon CloudFront 分发。 IT认证轻松过淘宝: https://shop542998714.m.taobao.com “”闲鱼: https://www.goofish.comy/personal?userld=2645260430 ”微信: Examtopics"
+      "C": "将网站图片移动到一个挂载在每个 EC2 实例上的 Amazon Elastic File System (Amazon EFS) 文件系统中。",
+      "D": "从现有的 EC2 实例创建一个 Amazon Machine Image (AMI)。使用该 AMI 在 Application Load Balancer 后面预置新实例，作为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站在 AWS Global Accelerator 中配置一个加速器。",
+      "E": "从现有的 EC2 实例创建一个 Amazon Machine Image (AMI)。使用该 AMI 在 Application Load Balancer 后面预置新实例，作为 Auto Scaling 组的一部分。配置 Auto Scaling 组以保持至少两个实例。为网站配置一个 Amazon CloudFront 分配。"
     },
-    "answer": "C",
+    "answer": [
+      "C",
+      "E"
+    ],
     "explanations": {
       "A": "Move the website images into an Amazon S3 bucket that is mounted on every EC2 instance 错误：Amazon S3 不支持直接挂载到 EC2 实例。虽然可以通过 S3 API 或工具（如 s3fs）访问 S3，但这不是最佳实践，目性能可能 受限。",
       "B": "Share the website images by using an NFS share from the primary EC2 instance. Mount this share on the other EC2 instances 错误：使用 NFS 共享会导致单点故障问题，目性能和扩展性较差，不符合高可用性和性能优化的要求。",
@@ -433,10 +436,10 @@
     "type": "single",
     "question": "一家公司运行一个基于微服务的无服务器 Web 应用程序。 该应用程序必须能够从多个 Amazon DynamoDB 表中检索数据。 解决 方案架构师需要赋予应用程序检索数据的能力， 同时不影响应用程序的基线性能。 哪种解决方案将以最具操作效率的方式满足这些要求?",
     "options": {
-      "A": "AWS AppSync pipeline resolvers AWS AppSync pipeline resolvers",
-      "B": "Amazon CloudFront with Lambda@Edge functions Amazon CloudFront with Lambda@Edge functions",
-      "C": "Edge-optimized Amazon API Gateway with AWS Lambda functions Edge-optimized Amazon API Gateway with AWS Lambda functions",
-      "D": "Amazon Athena Federated Query with a DynamoDB connector Amazon Athena Federated Query with a DynamoDB connector"
+      "A": "AWS AppSync pipeline resolvers",
+      "B": "Amazon CloudFront with Lambda@Edge functions",
+      "C": "Edge-optimized Amazon API Gateway with AWS Lambda functions",
+      "D": "Amazon Athena Federated Query with a DynamoDB connector"
     },
     "answer": "A",
     "explanations": {
@@ -506,10 +509,10 @@
     "type": "single",
     "question": "一家公司拥有一个区域性的基于订阅的流媒体服务，该服务运行在单一的 AWS Region。其架构包括运行在 Amazon EC2 实例上的 Web 服务器和应用服务器。这些 EC2 实例位于 Auto Scaling 组中，并通过 Elastic Load Balancers 进行负载均衡。架构还包括一个 跨多个可用区的 Amazon Aurora 全球数据库集群。 该公司希望实现全球扩展，并确保其应用程序的停机时间最小化。 哪种解决方案将提供最高的容错能力?",
     "options": {
-      "A": "扩展 Web 层和应用层的 Auto Scaling 组，以在第二个 Region 的可用区中部署实例。使用 Aurora 全球数据库在主 Region 和第 二个 Region 部署数据库。使用 Amazon Route 53 健康检查和故障转移路由策略到第二个 Region,",
-      "B": "将 Web 层和应用层部署到第二个 Region。在第二个 Region 添加一个 Aurora PostgreSQL 跨 Region 的 Aurora Replica。使用 Amazon Route 53 健康检查和故障转移路由策略到第二个 Region。根据需要将次级提升为主级。",
-      "C": "将 Web 层和应用层部署到第二个 Region。在第二个 Region 创建一个 Aurora PostgreSQL 数据库。使用 AWS Database Migration Service (AWS DMS) 将主数据库复制到第二个 Region, (FA Amazon Route 53 健康检查和故障转移路由策略到第二 个 Region。",
-      "D": "将 Web 层和应用层部署到第二个 Region。使用 Amazon Aurora 全球数据库在主 Region 和第二个 Region 部署数据库。使用 Amazon Route 53 健康检查和故障转移路由策略到第二个 Region。根据需要将次级提升为主级。"
+      "A": "扩展 Web 层和应用层的 Auto Scaling 组，以在第二个 Region 的多个可用区中部署实例。使用 Aurora global database 在主 Region 和第二个 Region 部署数据库。使用 Amazon Route 53 运行状况检查并配置故障转移路由策略指向第二个 Region。",
+      "B": "将 Web 层和应用层部署到第二个 Region。在第二个 Region 中添加一个 Aurora PostgreSQL 跨 Region 的 Aurora Replica。使用 Amazon Route 53 运行状况检查并配置故障转移路由策略指向第二个 Region。根据需要将辅助实例提升为主实例。",
+      "C": "将 Web 层和应用层部署到第二个 Region。在第二个 Region 中创建一个 Aurora PostgreSQL 数据库。使用 AWS Database Migration Service (AWS DMS) 将主数据库复制到第二个 Region。使用 Amazon Route 53 运行状况检查并配置故障转移路由策略指向第二个 Region。",
+      "D": "将 Web 层和应用层部署到第二个 Region。使用 Amazon Aurora global database 在主 Region 和第二个 Region 部署数据库。使用 Amazon Route 53 运行状况检查并配置故障转移路由策略指向第二个 Region。根据需要将辅助实例提升为主实例。"
     },
     "answer": "D",
     "explanations": {
@@ -601,12 +604,12 @@
     "type": "multiple",
     "question": "一家公司在一个AWS区域中运行一个工作负载。客户通过使用Amazon API Gateway REST AP连接并访问该工作负载。该公司使用 Amazon Route 53作为其DNS提供商。公司希望为所有客户提供独立上且安全的URL。 哪些步骤组合可以以最高的操作效率满足这些要求?” (选择三项)",
     "options": {
-      "A": "在注册商中注册所需的域名。在Route 53托管区域中创建通配符自定义域名，并在区域中创建指向API Gateway端点的记录。",
-      "B": "在不同的区域中，在AWS Certificate Manager (ACM)中请求与域名匹配的通配符证书。",
-      "C": "根据需要在Route 53中为每个客户创建托管区域。创建指向API Gateway端点的区域记录。",
-      "D": "在同一区域中，在AWS Certificate Manager (ACM)中请求与自定义域名匹配的通配符证书。",
-      "E": "在API Gateway中为每个客户创建多个API端点。",
-      "F": "在API Gateway FAIREST API创建自定义域名。从AWS Certificate Manager (ACM)导入证书。"
+      "A": "在注册商处注册所需的域名。在 Route 53 托管区域中创建通配符自定义域名，并在该区域中创建指向 API Gateway 端点的记录。",
+      "B": "在另一个区域中，在 AWS Certificate Manager (ACM) 中请求与这些域名匹配的通配符证书。",
+      "C": "按需在 Route 53 中为每个客户创建托管区域。创建指向 API Gateway 端点的区域记录。",
+      "D": "在同一区域中，在 AWS Certificate Manager (ACM) 中请求与该自定义域名匹配的通配符证书。",
+      "E": "在 API Gateway 中为每个客户创建多个 API 端点。",
+      "F": "在 API Gateway 中为该 REST API 创建一个自定义域名。从 AWS Certificate Manager (ACM) 导入证书。"
     },
     "answer": [
       "A",
@@ -982,10 +985,10 @@
     "type": "single",
     "question": "一家公司有一个金融应用程序，该应用程序会生成报告。这些报告平均大小为 50 KB，并存储在 Amazon S3 中。报告在生成后的第 一周内会被频繁访问，并且必须存储数年。这些报告必须能够在 6 小时内检索。 哪种解决方案最具成本效益地满足这些要求?",
     "options": {
-      "A": "使用 S3 Standard。使用 S3 Lifecycle 规则在 7 天后将报告转移到 S3 Glacier。",
-      "B": "使用 S3 Standard, (FA S3 Lifecycle 规则在 7 天后将报告转移到 S3 Standard-Infrequent Access (S3 Standard-lA),",
-      "C": "使用 S3 Intelligent-Tiering, AC S3 Intelligent-Tiering 将报告转移到 S3 Standard-Infrequent Access ($3 Standard-IA) 和 S3 Glacier.",
-      "D": "使用 S3 Standard, (#FA S3 Lifecycle 规则在 7 天后将报告转移到 S3 Glacier Deep Archive,"
+      "A": "使用 S3 Standard。使用 S3 Lifecycle 规则在 7 天后将报告转换到 S3 Glacier。",
+      "B": "使用 S3 Standard。使用 S3 Lifecycle 规则在 7 天后将报告转换到 S3 Standard-Infrequent Access (S3 Standard-IA)。",
+      "C": "使用 S3 Intelligent-Tiering。配置 S3 Intelligent-Tiering 将报告转换到 S3 Standard-Infrequent Access (S3 Standard-IA) 和 S3 Glacier。",
+      "D": "使用 S3 Standard。使用 S3 Lifecycle 规则在 7 天后将报告转换到 S3 Glacier Deep Archive。"
     },
     "answer": "A",
     "explanations": {
@@ -1096,10 +1099,10 @@
     "type": "single",
     "question": "解决方案架构师管理一个分析应用程序。该应用程序将大量半结构化数据存储在一个 Amazon S3 bucket 中。解决方案架构师希望 使用并行数据处理来更快速地处理数据。解决方案架构师还希望使用存储在 Amazon Redshift 数据库中的信息来丰富数据。 哪种解决方案可以满足这些需求?",
     "options": {
-      "A": "使用 Amazon Athena 处理 S3 数据。使用 AWS Glue 和 Amazon Redshift 数据来丰富 S3 数据。",
-      "B": "使用Amazon EMR 处理 S3 AGE. {FA Amazon EMR 和 Amazon Redshift 数据来丰富 S3 AGE.",
-      "C": "使用Amazon EMR 处理 S3 AGE, (FA Amazon Kinesis Data Streams 将 S3 数据移动到Amazon Redshift，以便数据可以被丰 富。",
-      "D": "使用 AWS Glue 处理 S3 数据。使用 AWS Lake Formation 和 Amazon Redshift 数据来丰富 S3 数据。"
+      "A": "使用 Amazon Athena 处理 S3 数据。使用 AWS Glue 结合 Amazon Redshift 数据来丰富 S3 数据。",
+      "B": "使用 Amazon EMR 处理 S3 数据。使用 Amazon EMR 结合 Amazon Redshift 数据来丰富 S3 数据。",
+      "C": "使用 Amazon EMR 处理 S3 数据。使用 Amazon Kinesis Data Streams 将 S3 数据移动到 Amazon Redshift，以便对数据进行丰富。",
+      "D": "使用 AWS Glue 处理 S3 数据。使用 AWS Lake Formation 结合 Amazon Redshift 数据来丰富 S3 数据。"
     },
     "answer": "B",
     "explanations": {
@@ -2310,10 +2313,10 @@
     "type": "single",
     "question": "一家公司计划在 AWS 云中部署一个关键业务应用程序。该应用程序需要持久存储，并具有一致的低延迟性能。 解决方案架构师应该推荐哪种类型的存储以满足这些需求?",
     "options": {
-      "A": "Instance store volume Instance store volume",
-      "B": "Amazon ElastiCache for Memcached cluster Amazon ElastiCache for Memcached cluster",
-      "C": "Provisioned IOPS SSD Amazon Elastic Block Store (Amazon EBS) volume Provisioned IOPS SSD Amazon Elastic Block Store (Amazon EBS) volume",
-      "D": "Throughput Optimized HDD Amazon Elastic Block Store (Amazon EBS) volume Throughput Optimized HDD Amazon Elastic Block Store (Amazon EBS) volume"
+      "A": "Instance store volume",
+      "B": "Amazon ElastiCache for Memcached cluster",
+      "C": "Provisioned IOPS SSD Amazon Elastic Block Store (Amazon EBS) volume",
+      "D": "Throughput Optimized HDD Amazon Elastic Block Store (Amazon EBS) volume"
     },
     "answer": "C",
     "explanations": {
@@ -2635,11 +2638,11 @@
     "type": "single",
     "question": "解决方案架构师正在设计一个新的服务，该服务位于 Amazon API Gateway 后面。该服务的请求模式将不可预测，并可能突然从0 请求增加到每秒超过 500 次请求。需要在后端数据库中持久化的数据总量目前少于 1 GB，并且未来增长不可预测。数据可以使用 简单的键值请求进行查询。 哪些 AWS 服务组合可以满足这些要求? (选择两个)",
     "options": {
-      "A": "AWS Fargate AWS Fargate",
-      "B": "AWS Lambda AWS Lambda",
-      "C": "Amazon DynamoDB Amazon DynamoDB",
-      "D": "Amazon EC2 Auto Scaling Amazon EC2 Auto Scaling",
-      "E": "MySQL-compatible Amazon Aurora MySQL-compatible Amazon Aurora"
+      "A": "AWS Fargate",
+      "B": "AWS Lambda",
+      "C": "Amazon DynamoDB",
+      "D": "Amazon EC2 Auto Scaling",
+      "E": "MySQL-compatible Amazon Aurora"
     },
     "answer": "B",
     "explanations": {
@@ -2888,10 +2891,10 @@
     "type": "single",
     "question": "一家公司希望将其本地部署的 Microsoft SQL Server Enterprise 版数据库迁移到 AWS。该公司的在线应用程序使用该数据库处理事 务。数据分析团队使用同一个生产数据库运行报告以进行分析处理。公司希望通过尽可能迁移到托管服务来减少运营开销。 哪种解决方案可以以最少的运营开销满足这些需求?",
     "options": {
-      "A": "迁移到 Amazon RDS for Microsoft SQL Server。使用只读副本进行报告用途",
-      "B": "迁移到运行 Microsoft SQL Server 的 Amazon EC2。使用 Always On 只读副本进行报告用途",
-      "C": "迁移到Amazon DynamoDB, (FA DynamoDB 按需副本进行报告用途",
-      "D": "迁移到 Amazon Aurora MySQL。使用 Aurora 只读副本进行报告用途"
+      "A": "迁移到 Amazon RDS for Microsoft SQL Server。使用只读副本用于报告用途。",
+      "B": "迁移到运行在 Amazon EC2 上的 Microsoft SQL Server。使用 Always On 只读副本用于报告用途。",
+      "C": "迁移到 Amazon DynamoDB。使用 DynamoDB 按需副本用于报告用途。",
+      "D": "迁移到 Amazon Aurora MySQL。使用 Aurora 只读副本用于报告用途。"
     },
     "answer": "A",
     "explanations": {
@@ -3004,10 +3007,10 @@
     "type": "single",
     "question": "一家公司运营一个存储历史事件图片的网站。网站用户需要能够根据图片中事件发生的年份进行搜索和查看。平均来说，用户每年 只会请求每张图片一到两次。公司希望有一个高可用的解决方案来存储和向用户交付图片。 哪个解决方案最具成本效益地满足这些需求?",
     "options": {
-      "A": "将图片存储在 Amazon Elastic Block Store (Amazon EBS)。使用运行在 Amazon EC2 上的 Web 服务器。",
-      "B": "将图片存储在 Amazon Elastic File System (Amazon EFS)。使用运行在 Amazon EC2 上的 Web 服务器。",
-      "C": "将图片存储在 Amazon S3 Standard, {FA S3 Standard 通过静态网站直接交付图片。",
-      "D": "将图片存储在 Amazon S3 Standard-Infrequent Access (S3 Standard-IA)。使用 S3 Standard-lA 通过静态网站直接交付图片。"
+      "A": "将图片存储在 Amazon Elastic Block Store (Amazon EBS) 中。使用运行在 Amazon EC2 上的 Web 服务器。",
+      "B": "将图片存储在 Amazon Elastic File System (Amazon EFS) 中。使用运行在 Amazon EC2 上的 Web 服务器。",
+      "C": "将图片存储在 Amazon S3 Standard 中。使用 S3 Standard 通过静态网站直接交付图片。",
+      "D": "将图片存储在 Amazon S3 Standard-Infrequent Access (S3 Standard-IA) 中。使用 S3 Standard-IA 通过静态网站直接交付图片。"
     },
     "answer": "D",
     "explanations": {
@@ -3063,10 +3066,10 @@
     "type": "single",
     "question": "一家公司正在迁移其数据中心，并希望在两周内将 50 TB 的数据安全地传输到 AWS。现有数据中心与 AWS 之间有一个 90% 利用率 的 Site-to-Site VPN 连接。 解决方案架构师应该使用哪项 AWS 服务来满足这些要求?",
     "options": {
-      "A": "AWS DataSync with a VPC endpoint AWS DataSync with a VPC endpoint",
-      "B": "AWS Direct Connect AWS Direct Connect",
-      "C": "AWS Snowball Edge Storage Optimized AWS Snowball Edge Storage Optimized",
-      "D": "AWS Storage Gateway AWS Storage Gateway"
+      "A": "AWS DataSync with a VPC endpoint",
+      "B": "AWS Direct Connect",
+      "C": "AWS Snowball Edge Storage Optimized",
+      "D": "AWS Storage Gateway"
     },
     "answer": "C",
     "explanations": {
@@ -3393,10 +3396,10 @@
     "type": "single",
     "question": "一家公司的应用程序使用 Network Load Balancers, Auto Scaling groups, Amazon EC2 instances #088242 Amazon VPC 中的数据 库。该公司希望以接近实时的方式捕获其 Amazon VPC 中网络接口的流入和流出流量信息。公司希望将这些信息发送到 Amazon OpenSearch Service 进行分析。 哪种解决方案可以满足这些需求?",
     "options": {
-      "A": "中创建一个日志组。配置 VPC Flow Logs 将日志数据发送到日志组。使用Amazon Kinesis Data Streams 将日志从日志组流式传输到 OpenSearch Service。",
-      "B": "中创建一个日志组。配置 VPC Flow Logs 将日志数据发送到日志组。使用Amazon Kinesis Data Firehose 将日志从日志组流式传输到 OpenSearch Service,",
-      "C": "在 AWS CloudTrail 中创建一个 trail。配置 VPC Flow Logs 将日志数据发送到 trail, {FA Amazon Kinesis Data Streams 将日志从 trail 流式传输到 OpenSearch Service,",
-      "D": "在 AWS CloudTrail 中创建一个 trail。配置 VPC Flow Logs 将日志数据发送到 trail, {FA Amazon Kinesis Data Firehose AGM trail 流式传输到 OpenSearch Service,"
+      "A": "在 Amazon CloudWatch Logs 中创建一个日志组。配置 VPC Flow Logs 将日志数据发送到该日志组。使用 Amazon Kinesis Data Streams 将日志从日志组流式传输到 OpenSearch Service。",
+      "B": "在 Amazon CloudWatch Logs 中创建一个日志组。配置 VPC Flow Logs 将日志数据发送到该日志组。使用 Amazon Kinesis Data Firehose 将日志从日志组流式传输到 OpenSearch Service。",
+      "C": "在 AWS CloudTrail 中创建一个 trail。配置 VPC Flow Logs 将日志数据发送到该 trail。使用 Amazon Kinesis Data Streams 将日志从 trail 流式传输到 OpenSearch Service。",
+      "D": "在 AWS CloudTrail 中创建一个 trail。配置 VPC Flow Logs 将日志数据发送到该 trail。使用 Amazon Kinesis Data Firehose 将日志从 trail 流式传输到 OpenSearch Service。"
     },
     "answer": "B",
     "explanations": {
@@ -3728,10 +3731,10 @@
     "type": "single",
     "question": "一家公司有一个包含嵌入式 NoSQL 数据库的 Web 应用程序。该应用程序运行在 Amazon EC2 实例上，并位于一个 Application Load Balancer (ALB) 后面。这些实例运行在单个可用区中的 Amazon EC2 Auto Scaling 组中。 最近流量的增加要求该应用程序具有高可用性，并且数据库最终一致性。 哪种解决方案能够以最少的运营开销满足这些要求?",
     "options": {
-      "A": "将 ALB 蔡换为 Network Load Balancer, #£ EC2 SE(l_F#EPBRAZE NoSQL 数据库及其复制服务。",
-      "B": "将 ALB 蔡换为 Network Load Balancer, {FA AWS Database Migration Service (AWS DMS) 43#RAZE NoSQL 数据库迁移到 Amazon DynamoDB,",
-      "C": "修改 Auto Scaling 组以使用跨三个可用区的 EC2 实例。在 EC2 SEG_PHHPERAZY NoSQL 数据库及其复制服务。",
-      "D": "修改 Auto Scaling 组以使用跨三个可用区的 EC2 实例。使用 AWS Database Migration Service (AWS DMS) 38RA ZU NoSQL 数 据库迁移到 Amazon DynamoDB,"
+      "A": "将 ALB 替换为 Network Load Balancer。在 EC2 实例上保留嵌入式 NoSQL 数据库及其复制服务。",
+      "B": "将 ALB 替换为 Network Load Balancer。使用 AWS Database Migration Service (AWS DMS) 将嵌入式 NoSQL 数据库迁移到 Amazon DynamoDB。",
+      "C": "修改 Auto Scaling 组以使用跨三个可用区的 EC2 实例。在 EC2 实例上保留嵌入式 NoSQL 数据库及其复制服务。",
+      "D": "修改 Auto Scaling 组以使用跨三个可用区的 EC2 实例。使用 AWS Database Migration Service (AWS DMS) 将嵌入式 NoSQL 数据库迁移到 Amazon DynamoDB。"
     },
     "answer": "D",
     "explanations": {
@@ -4516,10 +4519,10 @@
     "type": "single",
     "question": "一家公司正在开发一款移动游戏，该游戏将分数更新流式传输到后端处理器，然后将结果发布到排行榜上。解决方案架构师需要设 计一个解决方案，该解决方案能够处理大量流量峰值、按接收顺序处理移动游戏更新，并将处理后的更新存储在高可用的数据库 中。公司还希望尽量减少维护该解决方案所需的管理开销。 解决方案架构师应该怎么做来满足这些需求?",
     "options": {
-      "A": "将分数更新推送到 Amazon Kinesis Data Streams, {FA AWS Lambda 处理 Kinesis Data Streams 中的更新。将处理后的更新存 储在 Amazon DynamoDB 中。",
-      "B": "将分数更新推送到 Amazon Kinesis Data Streams。使用设置了 Auto Scaling AY Amazon EC2 实例集群处理更新。将处理后的更 新存储在 Amazon Redshift 中。",
-      "C": "将分数更新推送到 Amazon Simple Notification Service (Amazon SNS) 主题。订阅一个 AWS Lambda 函数到 SNS 主题以处理更 新。将处理后的更新存储在运行在 Amazon EC2 上的 SQL 数据库中。",
-      "D": "将分数更新推送到 Amazon Simple Queue Service (Amazon SQS) 队列。使用设置了 Auto Scaling AY Amazon EC2 实例集群处理 SQS 队列中的更新。将处理后的更新存储在 Amazon RDS Multi-AZ DB 实例中。"
+      "A": "将分数更新推送到 Amazon Kinesis Data Streams。使用 AWS Lambda 处理 Kinesis Data Streams 中的更新。将处理后的更新存储在 Amazon DynamoDB 中。",
+      "B": "将分数更新推送到 Amazon Kinesis Data Streams。使用一组配置了 Auto Scaling 的 Amazon EC2 实例处理这些更新。将处理后的更新存储在 Amazon Redshift 中。",
+      "C": "将分数更新推送到 Amazon Simple Notification Service (Amazon SNS) 主题。将一个 AWS Lambda 函数订阅到该 SNS 主题以处理更新。将处理后的更新存储在运行于 Amazon EC2 上的 SQL 数据库中。",
+      "D": "将分数更新推送到 Amazon Simple Queue Service (Amazon SQS) 队列。使用一组配置了 Auto Scaling 的 Amazon EC2 实例处理 SQS 队列中的更新。将处理后的更新存储在 Amazon RDS Multi-AZ 数据库实例中。"
     },
     "answer": "A",
     "explanations": {

@@ -119,10 +119,10 @@
     "type": "single",
     "question": "一家公司有一个应用程序用于接收传入的消息。几十个其他应用程序和微服务随后快速消费这些消息。消息数量变化很大，有时会 突然增加到每秒 100,000 条。该公司希望解耦解决方案并提高可扩展性。 哪种解决方案满足这些要求?",
     "options": {
-      "A": "将消息持久化到 Amazon Kinesis Data Analytics。配置消费者应用程序读取和处理消息。",
-      "B": "将接收应用程序部署在 Amazon EC2 实例上的 Auto Scaling 组中，以根据 CPU 指标扩展 EC2 实例的数量。",
-      "C": "将消息写入具有单个分片的 Amazon Kinesis Data Streams, (FA AWS Lambda 函数预处理消息并将其存储在 Amazon DynamoDB 中。配置消费者应用程序从 DynamoDB 读取以处理消息。",
-      "D": "将消息发布到具有多个 Amazon Simple Queue Service (Amazon SQS) 订阅的 Amazon Simple Notification Service (Amazon SNS) 主题。配置消费者应用程序从队列中处理消息。"
+      "A": "将消息持久化到 Amazon Kinesis Data Analytics。配置消费者应用程序读取并处理这些消息。",
+      "B": "将摄取应用程序部署在 Auto Scaling 组中的 Amazon EC2 实例上，以根据 CPU 指标扩展 EC2 实例的数量。",
+      "C": "将消息写入只有单个分片的 Amazon Kinesis Data Streams。使用 AWS Lambda 函数对消息进行预处理并将其存储在 Amazon DynamoDB 中。配置消费者应用程序从 DynamoDB 读取以处理消息。",
+      "D": "将消息发布到带有多个 Amazon Simple Queue Service (Amazon SQS) 订阅的 Amazon Simple Notification Service (Amazon SNS) 主题。配置消费者应用程序从队列中处理消息。"
     },
     "answer": "D",
     "explanations": {
@@ -290,10 +290,10 @@
     "type": "single",
     "question": "一家公司在 AWS 上托管了一个数据湖。该数据湖由存储在 Amazon S3 和Amazon RDS for PostgreSQL 中的数据组成。该公司需要 一个报告解决方案，该解决方案可以提供数据可视化并包含数据湖中的所有数据源。只有公司的管理团队应该拥有对所有可视化内 容的完全访问权限。公司的其他成员应该仅拥有有限的访问权限。 哪种解决方案可以满足这些需求?",
     "options": {
-      "A": "中创建一个分析。连接所有数据源并创建新的数据集。发布仪表板以可视化数据。将仪表板共享给适当 AY IAM 角色。",
-      "B": "中创建一个分析。连接所有数据源并创建新的数据集。发布仪表板以可视化数据。将仪表板共享给适当 的用户和组。",
-      "C": "中的数据创建一个 AWS Glue AAMC SE. BIHE—S AWS Glue 提取、转换和加载 (ETD) 作业以生成报告。将报告 发布到 Amazon S3。使用 S3 存储桶策略限制对报告的访问。",
-      "D": "中的数据创建一个 AWS Glue #40EPIZE, (BFA Amazon Athena Federated Query 访问 Amazon RDS for PostgreSQL PRAISE. (FA Amazon Athena 生成报告。将报告发布到 Amazon S3。使用 S3 存储桶策略限制对报告的访问。"
+      "A": "在 Amazon QuickSight 中创建一个分析。连接所有数据源并创建新的数据集。发布仪表板以可视化数据。将仪表板共享给相应的 IAM 角色。",
+      "B": "在 Amazon QuickSight 中创建一个分析。连接所有数据源并创建新的数据集。发布仪表板以可视化数据。将仪表板共享给相应的用户和组。",
+      "C": "为 Amazon S3 中的数据创建一个 AWS Glue 表和爬网程序。创建一个 AWS Glue 提取、转换和加载 (ETL) 作业以生成报告。将报告发布到 Amazon S3。使用 S3 存储桶策略来限制对报告的访问。",
+      "D": "为 Amazon S3 中的数据创建一个 AWS Glue 表和爬网程序。使用 Amazon Athena Federated Query 访问 Amazon RDS for PostgreSQL 中的数据。使用 Amazon Athena 生成报告。将报告发布到 Amazon S3。使用 S3 存储桶策略来限制对报告的访问。"
     },
     "answer": "B",
     "explanations": {
@@ -387,10 +387,10 @@
     "type": "single",
     "question": "一家电子商务公司希望在 AWS 上推出一个每日特价网站。每天将有一个产品进行为期 24 小时的促销。该公司希望能够在高峰时段 以毫秒级延迟处理每小时数百万次请求。 哪种解决方案能够以最少的运营开销满足这些需求?",
     "options": {
-      "A": "使用Amazon S3 在不同的 S3 存储桶中托管完整网站。添加 Amazon CloudFront 分发。将 S3 存储桶设置为分发的源。将订单 数据存储在 Amazon S3 中。",
-      "B": "在多个可用区的 Auto Scaling 组中运行的Amazon EC2 实例上部署完整网站。添加一个 Application Load Balancer (ALB) 来分配 网站流量。为后端 API 添加另一个 ALB。将数据存储在 Amazon RDS for MySQL 中。",
-      "C": "将完整应用程序迁移到容器中运行。在 Amazon Elastic Kubernetes Service (Amazon EKS) 上托管容器。使用 Kubernetes Cluster Autoscaler 增加和减少处理流量突发的 pod 数量。将数据存储在 Amazon RDS for MySQL 中。",
-      "D": "使用一个 Amazon S3 存储桶托管网站的静态内容。部署一个Amazon CloudFront 分发。将 S3 FAIRE AIR. (FA Amazon API Gateway 和 AWS Lambda 函数作为后端 APl。将数据存储在 Amazon DynamoDB 中。"
+      "A": "使用 Amazon S3 将整个网站托管在不同的 S3 存储桶中。添加 Amazon CloudFront 分配。将 S3 存储桶设置为分配的源。将订单数据存储在 Amazon S3 中。",
+      "B": "将整个网站部署在跨多个可用区的 Auto Scaling 组中运行的 Amazon EC2 实例上。添加一个 Application Load Balancer (ALB) 来分配网站流量。为后端 API 添加另一个 ALB。将数据存储在 Amazon RDS for MySQL 中。",
+      "C": "将整个应用程序迁移到容器中运行。在 Amazon Elastic Kubernetes Service (Amazon EKS) 上托管这些容器。使用 Kubernetes Cluster Autoscaler 增加和减少 pod 的数量以处理突发流量。将数据存储在 Amazon RDS for MySQL 中。",
+      "D": "使用一个 Amazon S3 存储桶托管网站的静态内容。部署一个 Amazon CloudFront 分配。将 S3 存储桶设置为源。使用 Amazon API Gateway 和 AWS Lambda 函数作为后端 API。将数据存储在 Amazon DynamoDB 中。"
     },
     "answer": "D",
     "explanations": {
@@ -407,9 +407,9 @@
     "question": "一个解决方案架构师正在使用 Amazon S3 设计一个新的数字媒体应用程序的存储架构。 媒体文件必须能够在一个可用区丢失的情 况下保持弹性。 一些文件被频繁访问，而其他文件则以不可预测的模式很少被访问。 解决方案架构师必须尽量减少存储和检索媒 体文件的成本。 哪个存储选项满足这些要求?",
     "options": {
       "A": "S3 standard S3 Standard",
-      "B": "S3 Intelligent-Tiering S3 Intelligent-Tiering",
+      "B": "S3 Intelligent-Tiering",
       "C": "S3 Standard-Infrequent Access (S3 Standard-IA) S3 Standard-Infrequent Access (S3 Standard-lA)",
-      "D": "S3 One Zone-Infrequent Access (S3 One Zone-IA) S3 One Zone-Infrequent Access (S3 One Zone-IA)"
+      "D": "S3 One Zone-Infrequent Access (S3 One Zone-IA)"
     },
     "answer": "B",
     "explanations": {
@@ -1422,10 +1422,10 @@
     "type": "single",
     "question": "一家公司希望将一个多层应用程序从本地迁移到 AWS 云，以提高应用程序的性能。该应用程序由通过 RESTful 服务相互通信的应用 程序层组成。当某一层过载时，事务会被丢奔。解决方案架构师必须设计一个解决方案来解决这些问题并使应用程序现代化。 满足这些要求并且操作效率最高的解决方案是什么?",
     "options": {
-      "A": "并将事务直接定向到 AWS Lambda 函数作为应用程序层。使用Amazon Simple Queue Service (Amazon SQS) 作为应用程序服务之间的通信层。",
-      "B": "使用Amazon CloudWatch 指标分析应用程序性能历史记录，以确定性能故障期间服务器的峰值利用率。增加应用程序服务器的 Amazon EC2 实例大小以满足峰值需求。",
-      "C": "处理运行在 Amazon EC2 Auto Scaling 组中的应用程序服务器之间的消 息传递。使用 Amazon CloudWatch 监控 SNS 队列长度并根据需要进行扩展和缩减。",
-      "D": "处理运行在 Amazon EC2 Auto Scaling 组中的应用程序服务器之间的消息传 i. (FA Amazon CloudWatch 监控 SQS 队列长度，并在检测到通信故障时进行扩展。"
+      "A": "使用 Amazon API Gateway 并将事务直接定向到 AWS Lambda 函数作为应用程序层。使用 Amazon Simple Queue Service (Amazon SQS) 作为应用程序服务之间的通信层。",
+      "B": "使用 Amazon CloudWatch 指标分析应用程序性能历史记录，以确定性能故障期间服务器的峰值利用率。增大应用程序服务器的 Amazon EC2 实例大小以满足峰值需求。",
+      "C": "使用 Amazon Simple Notification Service (Amazon SNS) 处理在 Auto Scaling 组中的 Amazon EC2 上运行的应用程序服务器之间的消息传递。使用 Amazon CloudWatch 监控 SNS 队列长度并按需进行扩展和缩减。",
+      "D": "使用 Amazon Simple Queue Service (Amazon SQS) 处理在 Auto Scaling 组中的 Amazon EC2 上运行的应用程序服务器之间的消息传递。使用 Amazon CloudWatch 监控 SQS 队列长度，并在检测到通信故障时进行扩展。"
     },
     "answer": "A",
     "explanations": {
@@ -1441,10 +1441,10 @@
     "type": "single",
     "question": "一家公司每天从位于单个工厂的几人台机器接收10 TB的仪器数据。 这些数据由存储在工厂内本地数据中心的存储区域网络 (SAN) 上的JSON文件组成。 公司希望将这些数据发送到Amazon S3，以便多个额外的系统可以访问这些数据， 从而提供关键的近实时分 析。由于数据被认为是敏感的，因此安全传输非常重要。 哪种解决方案提供最可靠的数据传输?",
     "options": {
-      "A": "AWS DataSync over public internet AWS DataSync over public internet",
-      "B": "AWS DataSync over AWS Direct Connect AWS DataSync over AWS Direct Connect",
-      "C": "AWS Database Migration Service (AWS DMS) over public internet AWS Database Migration Service (AWS DMS) over public internet",
-      "D": "AWS Database Migration Service (AWS DMS) over AWS Direct Connect AWS Database Migration Service (AWS DMS) over AWS Direct Connect"
+      "A": "AWS DataSync over public internet",
+      "B": "AWS DataSync over AWS Direct Connect",
+      "C": "AWS Database Migration Service (AWS DMS) over public internet",
+      "D": "AWS Database Migration Service (AWS DMS) over AWS Direct Connect"
     },
     "answer": "B",
     "explanations": {
@@ -1785,10 +1785,10 @@
     "type": "single",
     "question": "一家公司正在设计一个应用程序，用户将小文件上传到Amazon S3。用户上传文件后，文件需要进行一次简单处理以转换数据，并 以JSON 格式保存数据以供后续分析。 每个文件在上传后必须尽快处理。需求会有所变化。在某些日子里，用户会上传大量文件。而在其他日子里，用户可能只上传少量 文件或不上传文件。 哪种解决方案以最少的运营开销满足这些需求?",
     "options": {
-      "A": "配置 Amazon EMR 从 Amazon S3 读取文本文件。运行处理脚本以转换数据。将生成的 JSON 文件存储在 Amazon Aurora DB 集 群中。",
-      "B": "配置 Amazon $3 发送事件通知到 Amazon Simple Queue Service (Amazon SQS) BAY. {FA Amazon EC2 实例从队列中读取并 处理数据。将生成的JSON 文件存储在 Amazon DynamoDB 中。",
-      "C": "上EN 配置 Amazon $3 发送事件通知到 Amazon Simple Queue Service (Amazon SQS) 队列。使用 AWS Lambda 函数从队列中读取并 处理数据。将生成的JSON 文件存储在 Amazon DynamoDB 中。",
-      "D": "配置 Amazon EventBridge (Amazon CloudWatch Events) 发送事件到 Amazon Kinesis Data Streams，当有新文件上传时。使用 AWS Lambda 函数从流中消费事件并处理数据。将生成的JSON 文件存储在 Amazon Aurora DB 集群中。"
+      "A": "配置 Amazon EMR 从 Amazon S3 读取文本文件。运行处理脚本以转换数据。将生成的 JSON 文件存储在 Amazon Aurora DB 集群中。",
+      "B": "配置 Amazon S3 向 Amazon Simple Queue Service (Amazon SQS) 队列发送事件通知。使用 Amazon EC2 实例从队列中读取并处理数据。将生成的 JSON 文件存储在 Amazon DynamoDB 中。",
+      "C": "配置 Amazon S3 向 Amazon Simple Queue Service (Amazon SQS) 队列发送事件通知。使用 AWS Lambda 函数从队列中读取并处理数据。将生成的 JSON 文件存储在 Amazon DynamoDB 中。",
+      "D": "配置 Amazon EventBridge (Amazon CloudWatch Events) 在有新文件上传时向 Amazon Kinesis Data Streams 发送事件。使用 AWS Lambda 函数从流中消费事件并处理数据。将生成的 JSON 文件存储在 Amazon Aurora DB 集群中。"
     },
     "answer": "C",
     "explanations": {
@@ -2255,9 +2255,9 @@
     "type": "single",
     "question": "一家公司正在构建一个基于网络的应用程序，该应用程序运行在多个可用区的 Amazon EC2 实例上。该网络应用程序将提供对一个 文本文档存储库的访问，总计约 900 TB 的大小。公司预计该网络应用程序将经历高需求的时期。解决方案架构师必须确保文本文 档的存储组件能够随时扩展以满足应用程序的需求。公司对解决方案的整体成本感到担忧。 哪个存储解决方案最具成本效益地满足这些需求?",
     "options": {
-      "A": "Amazon Elastic Block Store (Amazon EBS) Amazon Elastic Block Store (Amazon EBS)",
-      "B": "Amazon Elastic File System (Amazon EFS) Amazon Elastic File System (Amazon EFS)",
-      "C": "Amazon OpenSearch Service (Amazon Elasticsearch Service) Amazon OpenSearch Service (Amazon Elasticsearch Service)",
+      "A": "Amazon Elastic Block Store (Amazon EBS)",
+      "B": "Amazon Elastic File System (Amazon EFS)",
+      "C": "Amazon OpenSearch Service (Amazon Elasticsearch Service)",
       "D": "Amazon $3 Amazon S3"
     },
     "answer": "D",
@@ -2717,10 +2717,10 @@
     "type": "single",
     "question": "一家游戏公司正在设计一个高可用架构。该应用程序运行在一个经过修改的 Linux 内核上，并且仅支持基于 UDP 的流量。公司需要 前端层提供最佳的用户体验。该层必须具有低延迟、将流量路由到最近的边缘位置，并提供静态 IP 地址以进入应用程序端点。 解决方案架构师应该怎么做以满足这些需求?",
     "options": {
-      "A": "配置 Amazon Route 53 将请求转发到 Application Load Balancer, {FA AWS Lambda 作为 AWS Application Auto Scaling 中的 应用程序。",
-      "B": "配置 Amazon CloudFront 将请求转发到 Network Load Balancer, {#F3 AWS Lambda 作为 AWS Application Auto Scaling 组中的 应用程序。",
-      "C": "配置 AWS Global Accelerator 将请求转发到 Network Load Balancer。使用 Amazon EC2 实例作为 EC2 Auto Scaling 组中的应用 程序。",
-      "D": "配置 Amazon API Gateway 将请求转发到 Application Load Balancer, {#@FA Amazon EC2 实例作为 EC2 Auto Scaling 组中的应用 程序。"
+      "A": "配置 Amazon Route 53 将请求转发到 Application Load Balancer。在 AWS Application Auto Scaling 中使用 AWS Lambda 作为应用程序。",
+      "B": "配置 Amazon CloudFront 将请求转发到 Network Load Balancer。在 AWS Application Auto Scaling 组中使用 AWS Lambda 作为应用程序。",
+      "C": "配置 AWS Global Accelerator 将请求转发到 Network Load Balancer。在 EC2 Auto Scaling 组中使用 Amazon EC2 实例作为应用程序。",
+      "D": "配置 Amazon API Gateway 将请求转发到 Application Load Balancer。在 EC2 Auto Scaling 组中使用 Amazon EC2 实例作为应用程序。"
     },
     "answer": "C",
     "explanations": {
@@ -3030,9 +3030,9 @@
     "type": "single",
     "question": "一位解决方案架构师正在为即将到来的音乐活动优化一个网站。表演的视频将进行实时流媒体播放，随后可供按需观看。预计该活 动将吸引全球在线观众。 哪项服务将提升实时流媒体和按需流媒体的性能?",
     "options": {
-      "A": "Amazon CloudFront Amazon CloudFront",
-      "B": "AWS Global Accelerator AWS Global Accelerator",
-      "C": "Amazon Route 53 Amazon Route 53",
+      "A": "Amazon CloudFront",
+      "B": "AWS Global Accelerator",
+      "C": "Amazon Route 53",
       "D": "Amazon $3 Transfer Acceleration Amazon S3 Transfer Acceleration"
     },
     "answer": "A",
@@ -3070,10 +3070,10 @@
     "type": "single",
     "question": "一家电子商务公司在 AWS 云中托管其分析应用程序。该应用程序每月生成约 300 MB 的数据。数据以 JSON 格式存储。公司正在评 估一种灾难恢复解决方案以备份数据。数据必须在需要时以毫秒级的速度访问，并且数据必须保留 30 天。 哪种解决方案最具成本效益地满足这些要求?",
     "options": {
-      "A": "Amazon OpenSearch Service (Amazon Elasticsearch Service) Amazon OpenSearch Service (Amazon Elasticsearch Service)",
-      "B": "Amazon S3 Glacier Amazon S3 Glacier",
+      "A": "Amazon OpenSearch Service (Amazon Elasticsearch Service)",
+      "B": "Amazon S3 Glacier",
       "C": "Amazon $3 Standard Amazon S3 Standard",
-      "D": "Amazon RDS for PostgreSQL Amazon RDS for PostgreSQL"
+      "D": "Amazon RDS for PostgreSQL"
     },
     "answer": "C",
     "explanations": {
@@ -3108,10 +3108,10 @@
     "type": "single",
     "question": "一家公司希望在 AWS 上使用高性能计算 (HPC) 基础设施进行金融风险建模。该公司的 HPC 工作负载运行在 Linux 上。每个 HPC 工 作流运行在数百个 Amazon EC2 Spot Instances 上，人生命周期短暂，并生成数干个输出文件，这些文件最终存储在持久性存储中用 于分析和长期未来使用。 该公司寻求一种云存储解决方案，人允许将本地数据复制到长期持久性存储中，以便所有 EC2 实例能够处理数据。该解决方案还应是 一个高性能文件系统，与持久性存储集成，用于读取和写入数据集和输出文件。 哪种 AWS 服务组合满足这些需求?",
     "options": {
-      "A": "Amazon FSx for Lustre integrated with Amazon S3 Amazon FSx for Lustre integrated with Amazon S3",
-      "B": "Amazon FSx for Windows File Server integrated with Amazon S3 Amazon FSx for Windows File Server integrated with Amazon S3",
+      "A": "Amazon FSx for Lustre integrated with Amazon S3",
+      "B": "Amazon FSx for Windows File Server integrated with Amazon S3",
       "C": "Amazon $3 Glacier integrated with Amazon Elastic Block Store (Amazon EBS) Amazon S3 Glacier integrated with Amazon Elastic Block Store (Amazon EBS)",
-      "D": "Amazon S3 bucket with a VPC endpoint integrated with an Amazon Elastic Block Store (Amazon EBS) General Purpose SSD (gp2) volume Amazon S3 bucket with a VPC endpoint integrated with an Amazon Elastic Block Store (Amazon EBS) General Purpose SSD (gp2) volume"
+      "D": "Amazon S3 bucket with a VPC endpoint integrated with an Amazon Elastic Block Store (Amazon EBS) General Purpose SSD (gp2) volume"
     },
     "answer": "A",
     "explanations": {
@@ -3704,8 +3704,8 @@
     "options": {
       "A": "添加 Amazon RDS 只读副本。",
       "B": "使用 Amazon ElastiCache for Redis。",
-      "C": "Use Amazon Route 53 DNS caching (FA Amazon Route 53 DNS 缓存。",
-      "D": "使用 Amazon ElastiCache for Memcached,"
+      "C": "使用 Amazon Route 53 DNS 缓存。",
+      "D": "使用 Amazon ElastiCache for Memcached。"
     },
     "answer": "A",
     "explanations": {
@@ -3775,16 +3775,19 @@
   {
     "exam": "SAA-C03",
     "id": 197,
-    "type": "single",
+    "type": "multiple",
     "question": "一家公司有一个 Microsoft .NET 应用程序，运行在本地的 Windows Server 上。该应用程序使用 Oracle Database Standard Edition 服务器存储数据。公司计划迁移到 AWS，并希望在迁移应用程序时尽量减少开发更改。AWS 应用程序环境应具有高可用性。 公司应该采取哪些行动组合以满足这些要求” (选择两个)",
     "options": {
-      "A": "将应用程序重构为无服务器架构，使用运行 NET Core 的 AWS Lambda 函数。",
-      "B": "将应用程序重新托管到 AWS Elastic Beanstalk, (FA NET 平台进行多可用区部署。",
-      "C": "将应用程序重新平台化以运行在 Amazon EC2 上，使用Amazon Linux Amazon Machine Image (AMI),",
-      "D": "使用 AWS Database Migration Service (AWS DMS) 从 Oracle 数据库迁移到 Amazon DynamoDB，并进行多可用区部署。",
-      "E": "使用 AWS Database Migration Service (AWS DMS) 从 Oracle 数据库迁移到 Amazon RDS 上的 Oracle，并进行多可用区部署。"
+      "A": "将应用程序重构为无服务器架构，使用运行 .NET Core 的 AWS Lambda 函数。",
+      "B": "将应用程序以 .NET 平台重新托管到 AWS Elastic Beanstalk，并采用多可用区 (Multi-AZ) 部署。",
+      "C": "将应用程序重新平台化，使用 Amazon Linux Amazon Machine Image (AMI) 在 Amazon EC2 上运行。",
+      "D": "使用 AWS Database Migration Service (AWS DMS) 将 Oracle 数据库迁移到 Amazon DynamoDB，并采用多可用区 (Multi-AZ) 部署。",
+      "E": "使用 AWS Database Migration Service (AWS DMS) 将 Oracle 数据库迁移到 Amazon RDS 上的 Oracle，并采用多可用区 (Multi-AZ) 部署。"
     },
-    "answer": "B",
+    "answer": [
+      "B",
+      "E"
+    ],
     "explanations": {
       "A": "Refactor the application as serverless with AWS Lambda functions running .NET Core. 错误：重构应用程序为无服务器架构需要大量开发工作，与题目要求的“最小化开发更改”不符。",
       "B": "Rehost the application in AWS Elastic Beanstalk with the .NET platform in a Multi-AZ deployment. 正确：AWS Elastic Beanstalk支持.NET平台，可以快速迁移应用程序，同时支持多可用区部署以实现高可用性。",
@@ -4065,8 +4068,8 @@
     "type": "single",
     "question": "一家公司需要每天将其数据库导出到Amazon S3，以供其他团队访问。导出的对象大小在 2 GB 到 5 GB 之间变化。数据的 S3 访问 模式是可变的，并且变化迅速。数据必须立即可用，并且必须保持可访问状态长达 3 个月。公司需要最具成本效益的解决方案，同 时不会增加检索时间。 该公司应该使用哪种 S3 存储类别来满足这些要求?",
     "options": {
-      "A": "S3 Intelligent-Tiering S3 Intelligent-Tiering",
-      "B": "S3 Glacier Instant Retrieval S3 Glacier Instant Retrieval",
+      "A": "S3 Intelligent-Tiering",
+      "B": "S3 Glacier Instant Retrieval",
       "C": "$3 Standard S3 Standard",
       "D": "S3 Standard-Infrequent Access (S3 Standard-IA) S3 Standard-Infrequent Access (S3 Standard-lA)"
     },
@@ -4201,9 +4204,9 @@
     "question": "一家公司的应用程序出现性能问题。该应用程序是有状态的，需要在 Amazon EC2 实例上完成内存任务。公司使用 AWS CloudFormation 部署基础设施，并使用了 M5 EC2 实例系列。随着流量增加，应用程序性能下降。用户报告在尝试访问应用程序时 出现延迟。 哪种解决方案可以以最具操作效率的方式解决这些问题?",
     "options": {
       "A": "将 EC2 实例替换为运行在 Auto Scaling 组中的 T3 EC2 实例。通过使用 AWS Management Console 进行更改。",
-      "B": "修改 CloudFormation 模板，使 EC2 实例运行在 Auto Scaling 组中。在需要增加时手动增加 Auto Scaling 组的期望容量和最大 容量。",
-      "C": "修改 CloudFormation 模板。将 EC2 实例替换为 R5 EC2 SLM, {FA Amazon CloudWatch A SAY EC2 内人存指标来跟踪应用程序 性能，以进行未来的容量规划。",
-      "D": "修改 CloudFormation 模板。将 EC2 实例替换为 R5 EC2 实例。在 EC2 实例上部署 Amazon CloudWatch agent，以生成自定义 应用程序延迟指标，用于未来的容量规划。"
+      "B": "修改 CloudFormation 模板，使 EC2 实例运行在 Auto Scaling 组中。在需要增加时手动增大 Auto Scaling 组的期望容量和最大容量。",
+      "C": "修改 CloudFormation 模板。将 EC2 实例替换为 R5 EC2 实例。使用 Amazon CloudWatch 内置的 EC2 内存指标来跟踪应用程序性能，以进行未来的容量规划。",
+      "D": "修改 CloudFormation 模板。将 EC2 实例替换为 R5 EC2 实例。在 EC2 实例上部署 Amazon CloudWatch 代理，以生成自定义应用程序延迟指标，用于未来的容量规划。"
     },
     "answer": "D",
     "explanations": {
@@ -4238,9 +4241,9 @@
     "type": "single",
     "question": "一家公司在一组 Amazon Linux EC2 实例上运行一个应用程序。由于合规原因，公司必须保留所有应用程序日志文件 7 年。这些日 志文件将由一个报告工具进行分析，该工具必须能够同时访问所有文件。 哪个存储解决方案最具成本效益地满足这些要求?",
     "options": {
-      "A": "Amazon Elastic Block Store (Amazon EBS) Amazon Elastic Block Store (Amazon EBS)",
-      "B": "Amazon Elastic File System (Amazon EFS) Amazon Elastic File System (Amazon EFS)",
-      "C": "Amazon EC2 instance store Amazon EC2 instance store",
+      "A": "Amazon Elastic Block Store (Amazon EBS)",
+      "B": "Amazon Elastic File System (Amazon EFS)",
+      "C": "Amazon EC2 instance store",
       "D": "Amazon $3 Amazon S3"
     },
     "answer": "D",
@@ -4534,10 +4537,10 @@
     "type": "single",
     "question": "一家公司有一个用于图片分享的三层应用程序。该应用程序使用一个 Amazon EC2 实例作为前端层，另一个 EC2 实例作为应用层， 第三个 EC2 实例作为 MySQL 数据库。解决方案架构师必须设计一个可扩展且高可用的解决方案，并且需要对应用程序进行最少的 更改。 哪个解决方案满足这些要求?",
     "options": {
-      "A": "使用 Amazon S3 托管前端层。使用 AWS Lambda 函数作为应用层。将数据库迁移到 Amazon DynamoDB #4. {FA Amazon S3 存储和提供用户的图片。",
-      "B": "使用负载均衡的多可用区 AWS Elastic Beanstalk 环境作为前端层和应用层。将数据库迁移到具有多个只读副本的 Amazon RDS DB 实例以提供用户的图片。",
-      "C": "使用Amazon S3 托管前端层。使用 Auto Scaling 组中的 EC2 实例群作为应用层。将数据库迁移到内存优化的实例类型以存储和 提供用户的图片。",
-      "D": "使用负载均衡的多可用区 AWS Elastic Beanstalk 环境作为前端层和应用层。将数据库迁移到 Amazon RDS 多可用区 DB 实例。 使用 Amazon S3 存储和提供用户的图片。"
+      "A": "使用 Amazon S3 托管前端层。使用 AWS Lambda 函数作为应用层。将数据库迁移到 Amazon DynamoDB 表中。使用 Amazon S3 存储和提供用户的图片。",
+      "B": "使用负载均衡的多可用区 (Multi-AZ) AWS Elastic Beanstalk 环境作为前端层和应用层。将数据库迁移到具有多个只读副本的 Amazon RDS DB 实例以提供用户的图片。",
+      "C": "使用 Amazon S3 托管前端层。使用 Auto Scaling 组中的一组 EC2 实例作为应用层。将数据库迁移到内存优化的实例类型以存储和提供用户的图片。",
+      "D": "使用负载均衡的多可用区 (Multi-AZ) AWS Elastic Beanstalk 环境作为前端层和应用层。将数据库迁移到 Amazon RDS 多可用区 (Multi-AZ) DB 实例。使用 Amazon S3 存储和提供用户的图片。"
     },
     "answer": "D",
     "explanations": {
