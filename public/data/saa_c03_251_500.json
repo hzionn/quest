@@ -82,7 +82,7 @@
     "question": "一家公司有一个电子商务结账工作流程，该流程将订单写入数据库并调用服务处理付款。 用户在结账过程中遇到超时问题。当用户 重新提交结账表单时，会为同一笔预期交易创建多个唯一订单。 解决方案架构师应如何重构此工作流程以防止创建多个订单?",
     "options": {
       "A": "配置网络应用程序将订单消息发送到 Amazon Kinesis Data Firehose, 设置支付服务从 Kinesis Data Firehose 中检索消息并处理 订单。",
-      "B": "中创建一个规则，根据记录的应用程序路径请求调用 AWS Lambda 函数。 使用 Lambda 查询数据库，调用 支付服务，并传递订单信息。",
+      "B": "在 AWS CloudTrail 中创建一个规则，根据记录的应用程序路径请求调用 AWS Lambda 函数。使用 Lambda 查询数据库，调用支付服务，并传递订单信息。",
       "C": "将订单存储在数据库中。发送包含订单号的消息到 Amazon Simple Notification Service (Amazon SNS), 设置支付服务轮询 Amazon SNS，检索消息并处理订单。",
       "D": "将订单存储在数据库中。发送包含订单号的消息到 Amazon Simple Queue Service (Amazon SQS) FIFO 队列。 设置支付服务检 索消息并处理订单。从队列中删除消息。"
     },
@@ -159,7 +159,7 @@
     "type": "single",
     "question": "一家公司正在为运行在 Amazon RDS DB 实例上的所有数据库实施新的数据保留策略。公司必须保留每日备份至少 2 年。备份必须 一臻且可恢复。 解决方案架构师应该推荐哪种解决方案来满足这些要求?",
     "options": {
-      "A": "中创建一个备份库以保留 RDs 备份。创建一个具有每日计划和创建后 2 年到期时间的新备份计划。将 RDS DB 实例分配到备份计划。",
+      "A": "在 AWS Backup 中创建一个备份库以保留 RDS 备份。创建一个具有每日计划和创建后 2 年到期时间的新备份计划。将 RDS DB 实例分配到备份计划。",
       "B": "为 RDs DB 实例配置一个备份窗口以进行每日快照。为每个 RDS DB 实例分配一个 2 年的快照保留策略。使用Amazon Data Lifecycle Manager (Amazon DLM) 来安排快照删除。",
       "C": "配置数据库事务日志以自动备份到 Amazon CloudWatch Logs，并设置 2 年的到期时间。",
       "D": "配置一个 AWS Database Migration Service (AWS DMS) 复制任务。部署一个复制实例，并配置一个变更数据捕获 (CDO) 任务， 将数据库更改流式传输到 Amazon S3 作为目标。配置 S3 生命周期策略以在 2 年后删除快照。"
