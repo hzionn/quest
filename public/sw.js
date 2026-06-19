@@ -1,11 +1,15 @@
 // Network-first for HTML and data JSON so that a normal refresh always picks
 // up the latest deploy (and the latest question bank). Hashed JS/CSS assets
 // stay cache-first since their filenames already change on every deploy.
-const VERSION = 'v2'
+const VERSION = 'v3'
 const RUNTIME = `quest-runtime-${VERSION}`
 
 self.addEventListener('install', (event) => {
   self.skipWaiting()
+})
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting()
 })
 
 self.addEventListener('activate', (event) => {

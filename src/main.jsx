@@ -29,7 +29,19 @@ if ('serviceWorker' in navigator) {
       await Promise.all(names.filter((n) => !n.startsWith('quest-runtime-')).map((n) => caches.delete(n)))
     } catch { /* ignore */ }
     try {
-      await navigator.serviceWorker.register(swUrl, { updateViaCache: 'none' })
+      const reg = await navigator.serviceWorker.register(swUrl, { updateViaCache: 'none' })
+      // Force an immediate update check; if a new SW is waiting, activate it now.
+      reg.update().catch(() => {})
+      reg.addEventListener('updatefound', () => {
+        const sw = reg.installing
+        if (!sw) return
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+            // A new version is ready and an old one controls the page → take over.
+            sw.postMessage?.({ type: 'SKIP_WAITING' })
+          }
+        })
+      })
     } catch { /* ignore */ }
   }
 
