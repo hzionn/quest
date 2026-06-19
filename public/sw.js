@@ -1,59 +1,25 @@
-// Network-first for HTML and data JSON so that a normal refresh always picks
-// up the latest deploy (and the latest question bank). Hashed JS/CSS assets
-// stay cache-first since their filenames already change on every deploy.
-const VERSION = 'v3'
-const RUNTIME = `quest-runtime-${VERSION}`
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting()
-})
-
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting()
-})
+// Kill-switch service worker.
+//
+// Earlier builds registered a network-first service worker. It turned out to be
+// a sticky extra cache layer that could pin users to an old version, so the app
+// no longer uses a service worker (freshness now comes from the per-build ?v=
+// cache-bust + cache:'no-store' on data fetches).
+//
+// This file remains only to deactivate any previously-installed SW: browsers
+// re-check the SW script on navigation, pick this version up, then it clears all
+// caches, unregisters itself, and reloads open tabs back to a SW-free state.
+self.addEventListener('install', () => self.skipWaiting())
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    const keys = await caches.keys()
-    await Promise.all(keys.filter((k) => k !== RUNTIME).map((k) => caches.delete(k)))
-    await self.clients.claim()
-  })())
-})
-
-const isNetworkFirst = (url) => {
-  if (url.pathname.endsWith('/') || url.pathname.endsWith('.html')) return true
-  if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) return true
-  return false
-}
-
-self.addEventListener('fetch', (event) => {
-  const req = event.request
-  if (req.method !== 'GET') return
-  const url = new URL(req.url)
-  if (url.origin !== self.location.origin) return
-
-  if (isNetworkFirst(url)) {
-    event.respondWith((async () => {
-      try {
-        const fresh = await fetch(req, { cache: 'no-store' })
-        const cache = await caches.open(RUNTIME)
-        cache.put(req, fresh.clone()).catch(() => {})
-        return fresh
-      } catch {
-        const cached = await caches.match(req)
-        if (cached) return cached
-        throw new Error('offline and no cache')
-      }
-    })())
-    return
-  }
-
-  event.respondWith((async () => {
-    const cached = await caches.match(req)
-    if (cached) return cached
-    const fresh = await fetch(req)
-    const cache = await caches.open(RUNTIME)
-    cache.put(req, fresh.clone()).catch(() => {})
-    return fresh
+    try {
+      const keys = await caches.keys()
+      await Promise.all(keys.map((k) => caches.delete(k)))
+    } catch { /* ignore */ }
+    try {
+      await self.registration.unregister()
+    } catch { /* ignore */ }
+    const clients = await self.clients.matchAll({ type: 'window' })
+    clients.forEach((c) => c.navigate(c.url))
   })())
 })
