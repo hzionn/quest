@@ -16,9 +16,11 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
-// Cache-bust token: changes every build so a new deploy forces fresh JSON
-// instead of the browser/CDN serving a stale question bank.
-const DATA_VERSION = (typeof __BUILD_ID__ !== 'undefined') ? __BUILD_ID__ : String(Date.now())
+// Cache-bust token computed fresh on every page load (not at build time), so a
+// plain refresh always re-fetches the question bank from the network and can
+// never be served a stale copy by the browser or CDN. Combined with the
+// cache:'no-store' option on every data fetch below.
+const DATA_VERSION = String(Date.now())
 
 // ── Check admin mode ──
 const isAdmin = new URLSearchParams(window.location.search).has('admin')
