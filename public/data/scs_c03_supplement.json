@@ -1,0 +1,21 @@
+[
+  {
+    "exam": "SCS-C03 補充",
+    "id": 340,
+    "type": "single",
+    "question": "某公司的安全工程师正在调查 AWS 云中某个 Web 应用程序的可疑流量。该 Web 应用程序由位于 Amazon CloudFront 分发层后的应用负载均衡器 (ALB) 保护。ALB 关联了 AWS WAF Web 访问控制列表 (ACL)。该公司将 AWS WAF 日志存储在 Amazon S3 存储桶中。工程师注意到 AWS WAF 日志中所有传入请求都来自少数几个对应于 CloudFront 边缘节点的 IP 地址。安全工程师必须确定发起这些可疑请求的客户端的源 IP 地址。哪种方案能够满足这一要求？",
+    "options": {
+      "A": "在部署了 ALB 的 VPC 中启用 VPC 流日志。检查源字段以获取客户端 IP 地址。",
+      "B": "检查 AWS WAF 日志中的 X-Forwarded-For 标头，以确定原始客户端 IP 地址。",
+      "C": "修改 CloudFront 分发配置，禁用 ALB 连接重用。检查 AWS WAF 日志中的 clientIp 字段，以确定原始客户端 IP 地址。",
+      "D": "配置 CloudFront 向发送到 ALB 的源请求添加名为 Client-IP 的自定义标头。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：VPC 流日志会捕获 ALB 与 EC2 实例之间的网络流量，但不会显示原始客户端 IP——只会看到 CloudFront 边缘节点的 IP。",
+      "B": "正确：CloudFront 会向转发到源服务器（ALB）的请求加入 X-Forwarded-For (XFF) 标头，内容包含原始客户端 IP（以及任何中间代理 IP），格式如 X-Forwarded-For: client_ip, proxy1_ip, proxy2_ip。AWS WAF 可以记录 XFF 标头（如已在 Web ACL 中设定），检查日志中的 XFF 即可取得真实客户端 IP。",
+      "C": "错误：禁用 ALB 连接重用并不会让 AWS WAF 日志中的 clientIp 字段变成原始客户端 IP；该字段仍是 CloudFront 边缘服务器的 IP。",
+      "D": "错误：虽然技术上可行，但需要额外修改 CloudFront 分发设定，并且自定义 Client-IP 标头不能保证被 AWS WAF 记录。XFF 已是传递原始客户端 IP 的标准方式，没有必要自创标头。"
+    }
+  }
+]
