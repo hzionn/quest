@@ -24,6 +24,25 @@
   },
   {
     "exam": "SCS-C03 補充",
+    "id": 326,
+    "type": "single",
+    "question": "某公司的安全团队希望收到来自 AWS 的电子邮件通知，了解任何有关 DoS 攻击的滥用报告。一位安全工程师需要实现一个解决方案，以便在 AWS 发送任何针对该账户的滥用报告时，都能收到近乎实时的警报。该安全工程师已经创建了一个 Amazon Simple Notification Service (Amazon SNS) 主题，并将安全团队的电子邮件地址订阅到了该主题。为了满足这些要求，安全工程师接下来应该做什么？",
+    "options": {
+      "A": "使用 AWS Trusted Advisor API 检测 AWS 滥用报告通知类型为 AWS_ABUSE_DOS_REPORT 的通知。创建一个 AWS Lambda 函数，该函数使用 Trusted Advisor API 来检查该通知。创建一个 Amazon EventBridge 规则，使该 Lambda 函数每分钟运行一次。配置 Lambda 函数，使其在发现通知时向 SNS 主题发布消息。",
+      "B": "创建一个 Amazon EventBridge 规则，该规则使用 AWS Health 并识别 AWS_ABUSE_DOS_REPORT 的特定事件。配置该规则操作，使其向 SNS 主题发布消息。",
+      "C": "使用 AWS Support API 检测主题为 AWS_ABUSE_DOS_REPORT 的 AWS 滥用报告案例。创建一个 AWS Lambda 函数，该函数使用 AWS Support API 检查是否存在此类支持案例。创建一个 Amazon EventBridge 规则，使该 Lambda 函数每分钟运行一次。配置 Lambda 函数，使其在发现案例时向 SNS 主题发布消息。",
+      "D": "配置 AWS CloudTrail 将日志发送到 Amazon CloudWatch Logs。为检测到的任何 AWS_ABUSE_DOS_REPORT 事件创建 CloudWatch Logs 指标过滤器。配置 Amazon CloudWatch 警报，以便在达到指标过滤器阈值时向 SNS 主题发布消息。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：Trusted Advisor 用于成本、效能、安全等检查的最佳实践建议，并不提供 AWS_ABUSE_DOS_REPORT 这种滥用通知；另外每分钟轮询 Lambda 也非事件驱动，延迟与成本都比 EventBridge + AWS Health 高。",
+      "B": "正确：AWS Health 会发布帐户层级事件，其中 `AWS_ABUSE_DOS_REPORT` 正是 AWS 寄发 DoS 滥用报告时触发的事件。建立一条 EventBridge 规则订阅该事件，再将动作设为发布到 SNS 主题，即可达到近乎即时的电子邮件通知，最简单且符合事件驱动模型。",
+      "C": "错误：虽然 AWS Support API 能查询支援案例（含滥用报告），但是要每分钟轮询、再判断是否有新案例，做法复杂、延迟高，远不如 AWS Health + EventBridge 的事件驱动方案。",
+      "D": "错误：CloudTrail 记录的是 AWS API 调用，AWS_ABUSE_DOS_REPORT 是 AWS Health 的事件类型，并不是一笔 API 呼叫，因此 CloudTrail 中不会出现这类纪录，对其建 CloudWatch Logs 指标过滤器也抓不到。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
     "id": 340,
     "type": "single",
     "question": "某公司的安全工程师正在调查 AWS 云中某个 Web 应用程序的可疑流量。该 Web 应用程序由位于 Amazon CloudFront 分发层后的应用负载均衡器 (ALB) 保护。ALB 关联了 AWS WAF Web 访问控制列表 (ACL)。该公司将 AWS WAF 日志存储在 Amazon S3 存储桶中。工程师注意到 AWS WAF 日志中所有传入请求都来自少数几个对应于 CloudFront 边缘节点的 IP 地址。安全工程师必须确定发起这些可疑请求的客户端的源 IP 地址。哪种方案能够满足这一要求？",
