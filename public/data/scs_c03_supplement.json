@@ -59,5 +59,99 @@
       "C": "错误：禁用 ALB 连接重用并不会让 AWS WAF 日志中的 clientIp 字段变成原始客户端 IP；该字段仍是 CloudFront 边缘服务器的 IP。",
       "D": "错误：虽然技术上可行，但需要额外修改 CloudFront 分发设定，并且自定义 Client-IP 标头不能保证被 AWS WAF 记录。XFF 已是传递原始客户端 IP 的标准方式，没有必要自创标头。"
     }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 357,
+    "type": "matching",
+    "question": "一家公司使用 AWS Organizations 中的一個組織來管理多個 AWS 帳戶。一名安全工程師需要監控整個組織中 AWS 資源的安全合規性。當任何 AWS 資源不符合公司的安全政策時，該工程師希望收到通知。請從下列清單中，為每一項需求選出正確的、以 AWS Config 為基礎的解決方案。每個解決方案只能使用一次。",
+    "available_options": [
+      "AWS Config aggregator（彙總器）",
+      "AWS Config conformance packs（一致性套件）",
+      "AWS Config with AWS Systems Manager（搭配 Systems Manager）",
+      "AWS Config rules（規則）",
+      "AWS Config with AWS User Notifications（搭配 User Notifications）"
+    ],
+    "matches": [
+      {
+        "use_case": "提供一組可跨整個組織部署的合規規則集",
+        "correct_answer": "AWS Config conformance packs（一致性套件）"
+      },
+      {
+        "use_case": "將多個帳戶與多個 AWS 區域的合規資料，集中到單一帳戶以統一檢視",
+        "correct_answer": "AWS Config aggregator（彙總器）"
+      },
+      {
+        "use_case": "依據期望設定來評估 AWS 資源的組態設定",
+        "correct_answer": "AWS Config rules（規則）"
+      },
+      {
+        "use_case": "當資源不合規時，自動採取修正措施",
+        "correct_answer": "AWS Config with AWS Systems Manager（搭配 Systems Manager）"
+      },
+      {
+        "use_case": "當偵測到組態變更或合規違規時，發送通知",
+        "correct_answer": "AWS Config with AWS User Notifications（搭配 User Notifications）"
+      }
+    ],
+    "explanations": {
+      "_full": "本題對應 AWS Config 在跨組織安全合規場景中的五大能力：\n\n1) 提供一組可跨整個組織部署的合規規則集 → AWS Config conformance packs（一致性套件）：把一組 Config rules 與修正動作打包，可透過 Organizations 一次套用到所有帳戶／區域，是「跨組織統一規則集」的標準解法。\n\n2) 將多個帳戶與多個 AWS 區域的合規資料集中到單一帳戶以統一檢視 → AWS Config aggregator（彙總器）：把分散在各帳戶／區域的 Config 資源與合規狀態彙整到一個中央帳戶/彙總器，供統一查詢與儀表板顯示。\n\n3) 依據期望設定來評估 AWS 資源的組態設定 → AWS Config rules（規則）：對個別資源組態進行持續評估，標記為 COMPLIANT / NON_COMPLIANT，是合規評估的核心引擎。\n\n4) 當資源不合規時自動採取修正措施 → AWS Config with AWS Systems Manager：Config 偵測不合規後，可透過 Systems Manager Automation 文件（SSM Automation runbooks）自動執行修正動作，達成「Auto Remediation」。\n\n5) 當偵測到組態變更或合規違規時發送通知 → AWS Config with AWS User Notifications：把 Config 事件（合規違規／組態變更）路由到 AWS User Notifications，以郵件等管道集中通知工程師。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 358,
+    "type": "ordering",
+    "question": "一家公司正在開發一套事件回應流程，用來隔離被惡意軟體感染的 Amazon EC2 主機。該公司使用 AWS Organizations 中的一個組織來管理多個 AWS 帳戶。公司在組織中設定了 AWS Security Hub，以接收來自多個帳戶、跨多個 AWS 區域的發現結果（findings）。一名安全工程師開發了一個 AWS Lambda 函數，用來移除任何「疑似被惡意軟體感染」的 EC2 實例所屬安全組中的所有規則。請從下列清單中選出正確的步驟並排序，以便將此 Lambda 函數部署為 Security Hub 中的自訂動作（custom action）並加以使用。每個步驟只能使用一次，或完全不使用。（選出三項並排序）",
+    "available_steps": [
+      "在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作（custom action）",
+      "對 Security Hub 中的 Amazon EventBridge 規則建立並套用一組篩選條件（filter set）",
+      "在 Amazon EventBridge 中定義一條規則",
+      "在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作",
+      "在 Security Hub 中，針對「安全組」的發現結果選取該自訂動作"
+    ],
+    "ordered_steps": [
+      "在 Amazon EventBridge 中定義一條規則",
+      "在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作（custom action）",
+      "在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作"
+    ],
+    "explanations": {
+      "_full": "Security Hub 自訂動作（Custom Action）的部署流程：\n\nStep 1：在 Amazon EventBridge 中定義一條規則 — 規則的事件模式 (event pattern) 為 `Security Hub Findings - Custom Action`，目標 (target) 設為前述 Lambda 函數。這條規則是把 Security Hub 自訂動作和 Lambda 串接起來的橋樑。\n\nStep 2：在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作 — 自訂動作會產生一個 ARN，EventBridge 規則的事件模式會比對這個 ARN 才會觸發。\n\nStep 3：在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作 — 真正觸發隔離流程的步驟。題目場景是「移除被感染 EC2 的安全組規則」，因此要在 EC2 相關的發現上套用此自訂動作（而不是直接在安全組的發現上）。\n\n其他選項：「對 EventBridge 規則套用一組篩選條件」不是必要步驟（事件模式已含篩選）；「對安全組發現結果選取自訂動作」與題目場景（修補來自 EC2 感染的發現）不對應。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 359,
+    "type": "matching",
+    "question": "一家電子商務公司正在強化其事件回應能力，以便更快速、更有效地處理潛在的服務中斷。請從下列清單中，為每一個使用情境選出正確的事件回應措施。每個措施只能使用一次，或完全不使用。",
+    "available_options": [
+      "選擇並設定日誌（Select and set up logs）",
+      "為每種事件類型製作 RACI 權責分配表（負責、當責、諮詢、知會）",
+      "制定事件回應劇本（playbooks）",
+      "針對相關 AWS 服務，訓練事件回應的利害關係人",
+      "發展數位鑑識能力（forensics）",
+      "執行事件回應演練（simulations）"
+    ],
+    "matches": [
+      {
+        "use_case": "釐清角色與職責（Clarify roles and responsibilities）",
+        "correct_answer": "為每種事件類型製作 RACI 權責分配表（負責、當責、諮詢、知會）"
+      },
+      {
+        "use_case": "提升團隊成員技能（Upskill team members）",
+        "correct_answer": "針對相關 AWS 服務，訓練事件回應的利害關係人"
+      },
+      {
+        "use_case": "將流程制度化／標準化（Formalize processes）",
+        "correct_answer": "制定事件回應劇本（playbooks）"
+      },
+      {
+        "use_case": "驗證公司準備工作的有效性（Verify the effectiveness of preparations）",
+        "correct_answer": "執行事件回應演練（simulations）"
+      }
+    ],
+    "explanations": {
+      "_full": "本題對應 AWS Security Incident Response 框架中事件回應「準備（Prepare）」階段的四個關鍵要素：\n\n1) 釐清角色與職責 → RACI 權責分配表：RACI（Responsible/Accountable/Consulted/Informed）是針對「人／團隊」的責任界定工具。為每種事件類型製作 RACI 才能明確誰執行、誰拍板、誰諮詢、誰被告知。\n\n2) 提升團隊成員技能 → 針對相關 AWS 服務訓練利害關係人：教育訓練是提升技能最直接的手段，且要圍繞事件回應會用到的 AWS 服務（GuardDuty、Security Hub、Detective、IR Runbook…）。\n\n3) 將流程制度化／標準化 → 制定事件回應劇本（playbooks）：playbook 是把流程步驟、決策樹、Runbook 固化為可重複執行的標準文件，正是「流程制度化」的具體產出。\n\n4) 驗證公司準備工作的有效性 → 執行事件回應演練（simulations）：演練/Game Day 是壓力測試流程與人員的標準做法，能在真實事件之前找出缺口。\n\n未被配對的選項：「選擇並設定日誌」屬於「Detect」階段的基礎建設，不是準備階段四要素之一；「發展數位鑑識能力」雖重要，但對應的是「Analyze/Containment」階段而非本題四個情境。"
+    }
   }
 ]
