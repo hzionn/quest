@@ -1,0 +1,1211 @@
+[
+  {
+    "exam": "SOA-C02",
+    "id": 359,
+    "type": "single",
+    "question": "A company runs its entire suite of applications on Amazon EC2 instances. The company plans to move the applications to containers and AWS Fargate. Within 6 months, the company plans to retire its EC2 instances and use only Fargate. The company has been able to estimate its future Fargate costs. A SysOps administrator needs to choose a purchasing option to help the company minimize costs. The SysOps administrator must maximize any discounts that are available and must ensure that there are no unused reservations. Which purchasing option will meet these requirements?",
+    "options": {
+      "A": "Compute Savings Plans for 1 year with the No Upfront payment option",
+      "B": "Compute Savings Plans for 1 year with the Partial Upfront payment option",
+      "C": "EC2 Instance Savings Plans for 1 year with the All Upfront payment option",
+      "D": "EC2 Reserved Instances for 1 year with the Partial Upfront payment option"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Compute Savings Plans for 1 year with the No Upfront payment option This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Compute Savings Plans for 1 year with the Partial Upfront payment option This approach meets the stated requirements.",
+      "C": "Incorrect. EC2 Instance Savings Plans for 1 year with the All Upfront payment option This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. EC2 Reserved Instances for 1 year with the Partial Upfront payment option This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 360,
+    "type": "single",
+    "question": "A manufacturing company uses an Amazon RDS DB instance to store inventory of all stock items. The company maintains several AWS Lambda functions that interact with the database to add, update, and delete items. The Lambda functions use hardcoded credentials to connect to the database. A SysOps administrator must ensure that the database credentials are never stored in plaintext and that the password is rotated every 30 days. Which solution will meet these requirements in the MOST operationally efficient manner?",
+    "options": {
+      "A": "Store the database password as an environment variable for each Lambda function. Create a new Lambda function that is named PasswordRotate. Use Amazon EventBridge to schedule the PasswordRotate function every 30 days to change the database password and update the environment variable for each Lambda function.",
+      "B": "Use AWS Key Management Service (AWS KMS) to encrypt the database password and to store the encrypted password as an environment variable for each Lambda function. Grant each Lambda function access to the KMS key so that the database password can be decrypted when required. Create a new Lambda function that is named PasswordRotate to change the password every 30 days.",
+      "C": "Use AWS Secrets Manager to store credentials for the database. Create a Secrets Manager secret, and select the database so that Secrets Manager will use a Lambda function to update the database password automatically. Specify an automatic rotation schedule of 30 days. Update each Lambda function to access the database password from Secrets Manager.",
+      "D": "Use AWS Systems Manager Parameter Store to create a secure string to store credentials for the database. Create a new Lambda function called PasswordRotate. Use Amazon EventBridge to schedule the PasswordRotate function every 30 days to change the database password and to update the secret within Parameter Store. Update each Lambda function to access the database password from Parameter Store."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Store the database password as an environment variable for each Lambda function. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Use AWS Key Management Service (AWS KMS) to encrypt the database password and to store the encrypted password as an environment variable for each Lambda function. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Use AWS Secrets Manager to store credentials for the database. This approach meets the stated requirements.",
+      "D": "Incorrect. Use AWS Systems Manager Parameter Store to create a secure string to store credentials for the database. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 361,
+    "type": "single",
+    "question": "A developer creates a web application that runs on Amazon EC2 instances behind an Application Load Balancer (ALB). The instances are in an Auto Scaling group. The developer reviews the deployment and notices some suspicious traffic to the application. The traffic is malicious and is coming from a single public IP address. A SysOps administrator must block the public IP address. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create a security group rule to deny all inbound traffic from the suspicious IP address. Associate the security group with the ALB.",
+      "B": "Implement Amazon Detective to monitor traffic and to block malicious activity from the internet. Configure Detective to integrate with the ALB.",
+      "C": "Implement AWS Resource Access Manager (AWS RAM) to manage traffic rules and to block malicious activity from the internet. Associate AWS RAM with the ALB.",
+      "D": "Add the malicious IP address to an IP set in AWS WAF. Create a web ACL. Include an IP set rule with the action set to BLOCK. Associate the web ACL with the ALB."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Create a security group rule to deny all inbound traffic from the suspicious IP address. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Implement Amazon Detective to monitor traffic and to block malicious activity from the internet. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Implement AWS Resource Access Manager (AWS RAM) to manage traffic rules and to block malicious activity from the internet. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Add the malicious IP address to an IP set in AWS WAF. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 362,
+    "type": "single",
+    "question": "A SysOps administrator is creating resources from an AWS. CloudFbrmation template that defines an Auto Scaling group of Amazon EC2 instances. The Auto Scaling group launch template provisions each EC2 instance by using a user data script. The creation of the Auto Scaling group resource is failing because of an error. The wait condition is not receiving the required number of signals. How should the SysOps administrator resolve this error?",
+    "options": {
+      "A": "Run cfn-signal at the completion of the user data script.",
+      "B": "Modify the EC2 instances’ security group to allow outgoing traffic on port 443.",
+      "C": "Reduce the Auto Scaling group's DesiredCapacity value in the CloudFormation template.",
+      "D": "Set the AssociatePublicIpAddress property to True in the Auto Scaling group launch template."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Run cfn-signal at the completion of the user data script. This approach meets the stated requirements.",
+      "B": "Incorrect. Modify the EC2 instances’ security group to allow outgoing traffic on port 443. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Reduce the Auto Scaling group's DesiredCapacity value in the CloudFormation template. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Set the AssociatePublicIpAddress property to True in the Auto Scaling group launch template. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 363,
+    "type": "single",
+    "question": "A company is trying to connect two applications. One application runs in an on-premises data center that has a hostname of host1.onprem private. The other application runs on an Amazon EC2 instance that has a hostname of host1.awscloud private. An AWS Site-to-Site VPN connection is in place between the on-premises network and AWS. The application that runs in the data center tries to connect to the application that runs on the EC2 instance, but DNS resolution fails. A SysOps administrator must implement DNS resolution between on-premises and AWS resources. Which solution allows the on-premises application to resolve the EC2 instance hostname?",
+    "options": {
+      "A": "Set up an Amazon Route 53 inbound resolver endpoint with a forwarding rule for the onprem.private hosted zone. Associate the resolver with the VPC of the EC2 instance. Configure the on-premises DNS resolver to forward onprem.private DNS queries to the inbound resolver endpoint.",
+      "B": "Set up an Amazon Route 53 inbound resolver endpoint. Associate the resolver with the VPC of the EC2 instance. Configure the on-premises DNS resolver to forward awscloud.private DNS queries to the inbound resolver endpoint.",
+      "C": "Set up an Amazon Route 53 outbound resolver endpoint with a forwarding rule for the onprem.private hosted zone. Associate the resolver with the AWS Region of the EC2 instance. Configure the on-premises DNS resolver to forward onprem.private DNS queries to the outbound resolver endpoint.",
+      "D": "Set up an Amazon Route 53 outbound resolver endpoint. Associate the resolver with the AWS Region of the EC2 instance. Configure the on-premises DNS resolver to forward awscloud.private DNS queries to the outbound resolver endpoint."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Set up an Amazon Route 53 inbound resolver endpoint with a forwarding rule for the onprem.private hosted zone. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Set up an Amazon Route 53 inbound resolver endpoint. This approach meets the stated requirements.",
+      "C": "Incorrect. Set up an Amazon Route 53 outbound resolver endpoint with a forwarding rule for the onprem.private hosted zone. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Set up an Amazon Route 53 outbound resolver endpoint. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 364,
+    "type": "single",
+    "question": "A company needs to deploy instances of an application and associated infrastructure to multiple AWS Regions. The company wants to use a single AWS CloudFormation template to achieve this goal. The company uses AWS Organizations and wants to administer and run this template from a central administration account. What should a SysOps administrator do to meet these requirements?",
+    "options": {
+      "A": "Create a CloudFormation template that is stored in Amazon S3. Configure Cross-Region Replication (CRR) on the S3 bucket. Reference the required accounts and remote Regions in the input template parameters.",
+      "B": "In the central administration account, create a CloudFormation primary template that loads CloudFormation nested stacks from Amazon S3 buckets in the target Regions.",
+      "C": "Create CloudFormation nested stacks by using a primary template in the central administration account. Configure the required accounts and Regions for deployment of the nested stacks.",
+      "D": "Create a CloudFormation stack set that includes service-managed permissions. Deploy the stack set into the required accounts and Regions from the central administration account."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Create a CloudFormation template that is stored in Amazon S3. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. In the central administration account, create a CloudFormation primary template that loads CloudFormation nested stacks from Amazon S3 buckets in the target Regions. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create CloudFormation nested stacks by using a primary template in the central administration account. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Create a CloudFormation stack set that includes service-managed permissions. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 365,
+    "type": "single",
+    "question": "A company's SysOps administrator manages a fleet of hundreds of Amazon EC2 instances that run Windows-based workloads and Linux-based workloads. Each EC2 instance has a tag that identifies its operating system. All the EC2 instances run AWS Systems Manager Session Manager. A zero-day vulnerability is reported, and no patches are available. The company's security team provides code for all the relevant operating systems to reduce the risk of the vulnerability. The SysOps administrator needs to implement the code on the EC2 instances and must provide a report that shows that the code has successfully run on all the instances. What should the SysOps administrator do to meet these requirements as quickly as possible?",
+    "options": {
+      "A": "Use Systems Manager Run Command. Choose either the AWS-RunShellScript document or the AWS-RunPowerShellScript document. Configure Run Command with the code from the security team. Specify the operating system tag in the Targets parameter. Run the command. Provide the command history's evidence to the security team.",
+      "B": "Create an AWS Lambda function that connects to the EC2 instances through Session Manager. Configure the Lambda function to identify the operating system, run the code from the security team, and return the results to an Amazon RDS DB instance. Query the DB instance for the results. Provide the results as evidence to the security team.",
+      "C": "Log on to each EC2 instance. Run the code from the security team on each EC2 instance. Copy and paste the results of each run into a single spreadsheet. Provide the spreadsheet as evidence to the security team.",
+      "D": "Update the launch templates of the EC2 instances to include the code from the security team in the user data. Relaunch the EC2 instances by using the updated launch templates. Retrieve the EC2 instance logs of each instance. Provide the EC2 instance logs as evidence to the security team."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Use Systems Manager Run Command. This approach meets the stated requirements.",
+      "B": "Incorrect. Create an AWS Lambda function that connects to the EC2 instances through Session Manager. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Log on to each EC2 instance. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Update the launch templates of the EC2 instances to include the code from the security team in the user data. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 366,
+    "type": "single",
+    "question": "A company has an application that collects notifications from thousands of alarm systems. The notifications include alarm notifications and information notifications. The information notifications include the system arming processes, disarming processes, and sensor status. All notifications are kept as messages in an Amazon Simple Queue Service (Amazon SQS) queue. Amazon EC2 instances that are in an Auto Scaling group process the messages. A SysOps administrator needs to implement a solution that prioritizes alarm notifications over information notifications. Which solution will meet these requirements?",
+    "options": {
+      "A": "Adjust the Auto Scaling group to scale faster when a high number of messages is in the queue.",
+      "B": "Use the Amazon Simple Notification Service (Amazon SNS) fanout feature with Amazon SQS to send the notifications in parallel to all the C2 instances",
+      "C": "Add an Amazon DynamoDB stream to accelerate the message processing",
+      "D": "Create a queue for alarm notifications and a queue for information notifications. Update the application to collect messages from the alarm notifications queue first."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Adjust the Auto Scaling group to scale faster when a high number of messages is in the queue. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Use the Amazon Simple Notification Service (Amazon SNS) fanout feature with Amazon SQS to send the notifications in parallel to all the C2 instances This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Add an Amazon DynamoDB stream to accelerate the message processing This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Create a queue for alarm notifications and a queue for information notifications. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 367,
+    "type": "single",
+    "question": "A SysOps administrator needs to deploy an application in multiple AWS Regions. The SysOps administrator must implement a solution that routes users to the Region with the lowest latency. In case of failure, the solution must automatically route requests to a Region with a healthy instance of the application. The company needs a solution with the shortest time to failover. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create Amazon Route 53 A records that have the same name for each endpoint. Use a latency routing policy. Associate a health check with each record.",
+      "B": "Create Amazon Route 53 A records that have the same name for each endpoint. Use a failover routing policy. Associate a health check with each record.",
+      "C": "Create an AWS Global Accelerator standard accelerator. Create an endpoint group for each Region. Add a listener to the accelerator. Associate the endpoint group with the listener.",
+      "D": "Create Amazon Route 53 A records that have the same name for each endpoint. Use a geolocation routing policy. Associate a health check with each record."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Create Amazon Route 53 A records that have the same name for each endpoint. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Create Amazon Route 53 A records that have the same name for each endpoint. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Create an AWS Global Accelerator standard accelerator. This approach meets the stated requirements.",
+      "D": "Incorrect. Create Amazon Route 53 A records that have the same name for each endpoint. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 368,
+    "type": "single",
+    "question": "A company runs an application on Amazon EC2 instances behind an Application Load Balancer. The EC2 instances are in an Auto Scaling group. The application sometimes becomes slow and unresponsive. Amazon CloudWatch metrics show that some EC2 instances are experiencing high CPU load. A SysOps administrator needs to create a CloudWatch dashboard that can automatically display CPU metrics of all the EC2 instances. The metrics must include new instances that are launched as part of the Auto Scaling group. What should the SysOps administrator do to meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Create a CloudWatch dashboard. Use activity notifications from the Auto Scaling group to invoke a custom AWS Lambda function. Use the Lambda function to update the CloudWatch dashboard to monitor the CPUUtilization metric for the new instance IDs.",
+      "B": "Create a CloudWatch dashboard. Run a custom script on each EC2 instance to stream the CPU utilization to the dashboard.",
+      "C": "Use CloudWatch metrics explorer to filter by the aws:autoscaling:groupName tag and to create a visualization for the CPUUtilization metric. Add the visualization to a CloudWatch dashboard.",
+      "D": "Use CloudWatch metrics explorer to filter by instance state and to create a visualization for the CPUUtilization metric. Add the visualization to a CloudWatch dashboard."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Create a CloudWatch dashboard. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Create a CloudWatch dashboard. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Use CloudWatch metrics explorer to filter by the aws:autoscaling:groupName tag and to create a visualization for the CPUUtilization metric. This approach meets the stated requirements.",
+      "D": "Incorrect. Use CloudWatch metrics explorer to filter by instance state and to create a visualization for the CPUUtilization metric. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 369,
+    "type": "single",
+    "question": "A company has an encrypted Amazon S3 bucket that is hosted in the ap-southeast-2 Region. Users from the eu-west-2 Region access the S3 bucket over the internet. The users from eu-west-2 need faster transfers to and from the S3 bucket for large files. Which solution will meet these requirements?",
+    "options": {
+      "A": "Reduce the length of the S3 bucket prefixes within the S3 bucket.",
+      "B": "Change the server-side encryption on the S3 bucket from AES to RSA.",
+      "C": "Create a new S3 bucket that has an identical name in eu-west-2. Use the new S3 bucket endpoint's domain name for access.",
+      "D": "Enable S3 Transfer Acceleration on the S3 bucket. Use the new s3-accelerate endpoint's domain name for access."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Reduce the length of the S3 bucket prefixes within the S3 bucket. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Change the server-side encryption on the S3 bucket from AES to RSA. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create a new S3 bucket that has an identical name in eu-west-2. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Enable S3 Transfer Acceleration on the S3 bucket. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 370,
+    "type": "single",
+    "question": "A company has a large on-premises tape backup solution. The company has started to use AWS Storage Gateway. The company created a Tape Gateway to replace the existing on-premises hardware. The company's backup engineer noticed that some of the backup jobs that were supposed to write to AWS failed to run because of a \"Not Enough Space\" error. The company does not want these failures to happen again. The company also wants to consistently have enough tape available What is the MOST operationally efficient way for a SysOps administrator to meet these requirements?",
+    "options": {
+      "A": "Create an AWS Lambda function that runs on an hourly basis and checks how many tapes have available space. If the available tapes are below a certain threshold, provision more.",
+      "B": "Install the Amazon CloudWatch agent on the on-premises system. Push the log files to a CloudWatch log group. Create an AWS Lambda function that creates more tapes when the \"Not Enough Space\" error appears. Create a metric filter and a metric alarm that launches the Lambda function.",
+      "C": "Create an additional Tape Gateway with its own set of tapes. Configure Amazon Simple Notification Service (Amazon SNS) to send a notification to the backup engineer if the tapes that are associated with the primary Tape Gateway do not have available space.",
+      "D": "Configure tape auto-create on the Tape Gateway. In the auto-create settings, configure a minimum number of tapes, an appropriate barcode prefix, and a tape pool."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Create an AWS Lambda function that runs on an hourly basis and checks how many tapes have available space. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Install the Amazon CloudWatch agent on the on-premises system. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create an additional Tape Gateway with its own set of tapes. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Configure tape auto-create on the Tape Gateway. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 371,
+    "type": "single",
+    "question": "A SysOps administrator manages a company's Amazon S3 buckets. The SysOps administrator has identified 5 GB of incomplete multipart uploads in an S3 bucket in the company's AWS account. The SysOps administrator needs to reduce the number of incomplete multipart upload objects in the S3 bucket. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an S3 Lifecycle rule on the S3 bucket to delete expired markers or incomplete multipart uploads.",
+      "B": "Require users that perform uploads of files into Amazon S3 to use the S3 TransferUtility.",
+      "C": "Enable S3 Versioning on the S3 bucket that contains the incomplete multipart uploads.",
+      "D": "Create an S3 Object Lambda Access Point to delete incomplete multipart uploads."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create an S3 Lifecycle rule on the S3 bucket to delete expired markers or incomplete multipart uploads. This approach meets the stated requirements.",
+      "B": "Incorrect. Require users that perform uploads of files into Amazon S3 to use the S3 TransferUtility. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Enable S3 Versioning on the S3 bucket that contains the incomplete multipart uploads. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create an S3 Object Lambda Access Point to delete incomplete multipart uploads. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 372,
+    "type": "single",
+    "question": "A SysOps administrator needs to create an Amazon S3 bucket as a resource in an AWS CloudFormation template. The bucket name must be randomly generated, and the bucket must be encrypted. Other resources in the template will reference the bucket. Which CloudFormation resource definition should the SysOps administrator use to meet these requirements? (Question contains diagram)",
+    "options": {
+      "A": "Option A (CloudFormation template snippet — see PDF image)",
+      "B": "Option B (CloudFormation template snippet — see PDF image)",
+      "C": "Option C (CloudFormation template snippet — see PDF image)",
+      "D": "Option D (CloudFormation template snippet — see PDF image)"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Option A (CloudFormation template snippet — see PDF image) This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Option B (CloudFormation template snippet — see PDF image) This approach meets the stated requirements.",
+      "C": "Incorrect. Option C (CloudFormation template snippet — see PDF image) This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Option D (CloudFormation template snippet — see PDF image) This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 373,
+    "type": "single",
+    "question": "A SysOps administrator manages policies for many AWS member accounts in an AWS Organizations structure. Administrators on other teams have access to the account root user credentials of the member accounts. The SysOps administrator must prevent all teams, including their administrators, from using Amazon DynamoDB. The solution must not affect the ability of the teams to access other AWS services. Which solution will meet these requirements?",
+    "options": {
+      "A": "In all member accounts, configure IAM policies that deny access to all DynamoDB resources for all users, including the root user.",
+      "B": "Create a service control policy (SCP) in the management account to deny all DynamoDB actions. Apply the SCP to the root of the organization",
+      "C": "In all member accounts, configure IAM policies that deny AmazonDynamoDBFullAccess to all users, including the root user.",
+      "D": "Remove the default service control policy (SCP) in the management account. Create a replacement SCP that includes a single statement that denies all DynamoDB actions."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. In all member accounts, configure IAM policies that deny access to all DynamoDB resources for all users, including the root user. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Create a service control policy (SCP) in the management account to deny all DynamoDB actions. This approach meets the stated requirements.",
+      "C": "Incorrect. In all member accounts, configure IAM policies that deny AmazonDynamoDBFullAccess to all users, including the root user. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Remove the default service control policy (SCP) in the management account. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 374,
+    "type": "single",
+    "question": "A company has users that deploy Amazon EC2 instances that have more disk performance capacity than is required. A SysOps administrator needs to review all Amazon Elastic Block Store (Amazon EBS) volumes that are associated with the instances and create cost optimization recommendations based on IOPS and throughput. What should the SysOps administrator do to meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Use the monitoring graphs in the EC2 console to view metrics for EBS volumes. Review the consumed space against the provisioned space on each volume. Identify any volumes that have low utilization.",
+      "B": "Stop the EC2 instances from the EC2 console. Change the EC2 instance type for Amazon EBS-optimized. Start the EC2 instances.",
+      "C": "Opt in to AWS Compute Optimizer. Allow sufficient time for metrics to be gathered. Review the Compute Optimizer findings for EBS volumes.",
+      "D": "Install the fio tool onto the EC2 instances and create a .cfg file to approximate the required workloads. Use the benchmark results to gauge whether the provisioned EBS volumes are of the most appropriate type."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Use the monitoring graphs in the EC2 console to view metrics for EBS volumes. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Stop the EC2 instances from the EC2 console. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Opt in to AWS Compute Optimizer. This approach meets the stated requirements.",
+      "D": "Incorrect. Install the fio tool onto the EC2 instances and create a .cfg file to approximate the required workloads. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 375,
+    "type": "single",
+    "question": "A SysOps administrator has many Windows Amazon EC2 instances that need to share a file system between nodes. The SysOps administrator creates an Amazon Elastic File System (Amazon EFS) file share. After creation of the file share, the SysOps administrator is having trouble mounting the file share to the EC2 instances. Which action should the SysOps administrator take so that the EC2 instances can share the files?",
+    "options": {
+      "A": "Delete the EFS file share. Create an Amazon FSx for Windows File Server file share for the EC2 instances.",
+      "B": "Use the correct IAM credentials to mount the EFS file share.",
+      "C": "Configure NFSv4 support on the Windows operating system that is running on the EC2 instances.",
+      "D": "Allow the correct port for NFS through the security group and network ACL."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Delete the EFS file share. This approach meets the stated requirements.",
+      "B": "Incorrect. Use the correct IAM credentials to mount the EFS file share. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Configure NFSv4 support on the Windows operating system that is running on the EC2 instances. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Allow the correct port for NFS through the security group and network ACL. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 376,
+    "type": "single",
+    "question": "A company has a multi-account environment. Account A has a production application that is hosted on an Amazon EC2 instance. The application needs to query data in an Amazon DynamoDB table that is hosted in Account B. A SysOps administrator needs to provide the EC2 instance in Account A with access to the DynamoDB table in Account B. What is the MOST secure solution that will meet these requirements?",
+    "options": {
+      "A": "Update the IAM policy that is attached to the EC2 instance's IAM role to allow the dynamodb:Query permission on the DynamoDB table in Account B. Add a policy in Account A to allow the DynamoDB service principal to use the PassRole action to pass the role to Account B.",
+      "B": "In Account B, create an IAM role that has permission to query the DynamoDB table. Add the EC2 instance's IAM role to the trust policy on the newly created IAM role in Account Update the IAM policy that is attached to the EC2 instance's IAM role to allow the sts:AssumeRole permission on the newly created IAM role in Account B.",
+      "C": "Update the IAM policy that is attached to the EC2 instance's IAM role to allow the dynamodb:Query permission on the DynamoDB table in Account B. Update the DynamoDB table's resource policy to allow the query action from the EC2 instance's IAM role.",
+      "D": "In Account B, create a static IAM key that has the appropriate permissions to query the DynamoDB table. Embed these credentials into the credentials file on the EC2 instance. Reference the credentials every time the application needs to query the table."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Update the IAM policy that is attached to the EC2 instance's IAM role to allow the dynamodb:Query permission on the DynamoDB table in Account B. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. In Account B, create an IAM role that has permission to query the DynamoDB table. This approach meets the stated requirements.",
+      "C": "Incorrect. Update the IAM policy that is attached to the EC2 instance's IAM role to allow the dynamodb:Query permission on the DynamoDB table in Account B. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. In Account B, create a static IAM key that has the appropriate permissions to query the DynamoDB table. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 377,
+    "type": "single",
+    "question": "A company has implemented a Kubernetes cluster on Amazon Elastic Kubernetes Service (Amazon ECS) to host a microservices- based application. The company expects application traffic to increase significantly for the next month and wants to prevent the application from crashing because of the high number of requests. Which solution will meet these requirements with the LEAST administrative overhead?",
+    "options": {
+      "A": "Create a second EKS cluster. Load balance the workload between the two clusters.",
+      "B": "Implement the Kubernetes Horizontal Pod Autoscaler. Set a target CPU utilization percentage.",
+      "C": "Migrate the application from Amazon EKS to Amazon EC2 for the next month. Migrate the application back to Amazon EKS when the month ends.",
+      "D": "Implement the Kubernetes Vertical Pod Autoscaler. Set a target CPU utilization percentage."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Create a second EKS cluster. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Implement the Kubernetes Horizontal Pod Autoscaler. This approach meets the stated requirements.",
+      "C": "Incorrect. Migrate the application from Amazon EKS to Amazon EC2 for the next month. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Implement the Kubernetes Vertical Pod Autoscaler. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 378,
+    "type": "multiple",
+    "question": "A company deploys a new application to Amazon EC2 instances. The application code is stored in an AWS CodeCommit repository. The company uses an AWS CodePipeline pipeline to deploy the code to the EC2 instances through a continuous integration and continuous delivery (CI/CD) process. A SysOps administrator needs to ensure that sensitive database information is configured properly on the EC2 instances to prevent accidental leakage of credentials. Which solutions will store and retrieve the sensitive information in the MOST secure manner? (Choose two.)",
+    "options": {
+      "A": "Store the values in AWS Secrets Manager. Update the code to retrieve these values when the application starts. Store the values as environmental variables that the application can use.",
+      "B": "Store the values in AWS Systems Manager Parameter Store as secret strings. Update the code to retrieve these values when the application starts. Store the values as environmental variables that the application can use.",
+      "C": "Store the values in an AWS Lambda function. Update the code to invoke the Lambda function when the application starts. Configure the Lambda function to inject the values as environmental variables that the application can use.",
+      "D": "Store the configuration information in a file on the EC2 instances. Ensure that the underlying drives are encrypted by AWS Key Management Service (AWS KMS). Update the application to read the file when the application starts. Store the values as environmental variables.",
+      "E": "Store the values in a text file in an Amazon S3 bucket. In the CI/CD pipeline, copy the file to the EC2 instance in an appropriate location on a disk that the application can read."
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. Store the values in AWS Secrets Manager. This approach meets the stated requirements.",
+      "B": "Correct. Store the values in AWS Systems Manager Parameter Store as secret strings. This approach meets the stated requirements.",
+      "C": "Incorrect. Store the values in an AWS Lambda function. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Store the configuration information in a file on the EC2 instances. This does not satisfy the requirements as described in the question.",
+      "E": "Incorrect. Store the values in a text file in an Amazon S3 bucket. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 379,
+    "type": "single",
+    "question": "A SysOps administrator configured VPC flow logs by using the default format. The SysOps administrator specified Amazon CloudWatch Logs as the destination. This solution has worked successfully for several months. However, because of additional troubleshooting requirements, the SysOps administrator needs to include the tcp-flags field on the flow logs. What should the SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Create a new flow log. Include the tcp-flags field in the custom log format. Delete the original flow log.",
+      "B": "In the CloudWatch Logs log group, modify the filter to include the tcp-flags field and the type field.",
+      "C": "In CloudWatch Metrics, modify the metric configuration to include the tcp-flags field.",
+      "D": "Modify the existing flow log. Include the tcp-flags field and the type field in the custom log format. Save the configuration."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create a new flow log. This approach meets the stated requirements.",
+      "B": "Incorrect. In the CloudWatch Logs log group, modify the filter to include the tcp-flags field and the type field. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. In CloudWatch Metrics, modify the metric configuration to include the tcp-flags field. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Modify the existing flow log. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 380,
+    "type": "multiple",
+    "question": "A SysOps administrator notices that the cache hit ratio for an Amazon CloudFront distribution is less than 10%. The SysOps administrator needs to increase the cache hit ratio for the distribution, improve network performance, and reduce the load on the origin. Which combination of actions should the SysOps administrator take to meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Enable CloudFront Origin Shield for the required AWS Regions.",
+      "B": "Change the viewer protocol policy to use HTTPS only.",
+      "C": "Add a second origin. Create an origin group that includes both origins. Activate CloudFront origin failover.",
+      "D": "Turn on automatic compression of objects in the cache behavior settings.",
+      "E": "Increase the CloudFront TTL values in the cache behavior settings."
+    },
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanations": {
+      "A": "Correct. Enable CloudFront Origin Shield for the required AWS Regions. This approach meets the stated requirements.",
+      "B": "Incorrect. Change the viewer protocol policy to use HTTPS only. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Add a second origin. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Turn on automatic compression of objects in the cache behavior settings. This does not satisfy the requirements as described in the question.",
+      "E": "Correct. Increase the CloudFront TTL values in the cache behavior settings. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 381,
+    "type": "single",
+    "question": "A custom application must be installed on all Amazon EC2 instances. The application is small, updated frequently, and can be installed automatically. How can the application be deployed on new EC2 instances?",
+    "options": {
+      "A": "Launch a script that downloads and installs the application using Amazon EC2 user data.",
+      "B": "Create a custom API using Amazon API Gateway to call an installation executable from an AWS CloudFormation template.",
+      "C": "Use AWS Systems Manager to inject the application into an AMI.",
+      "D": "Configure AWS CodePipeline to deploy code changes and updates."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Launch a script that downloads and installs the application using Amazon EC2 user data. This approach meets the stated requirements.",
+      "B": "Incorrect. Create a custom API using Amazon API Gateway to call an installation executable from an AWS CloudFormation template. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Use AWS Systems Manager to inject the application into an AMI. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Configure AWS CodePipeline to deploy code changes and updates. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 382,
+    "type": "single",
+    "question": "A SysOps administrator wants to securely share an object from a private Amazon S3 bucket with a group of users who do not have an AWS account. What is the MOST operationally efficient solution that will meet this requirement?",
+    "options": {
+      "A": "Attach an S3 bucket policy that only allows object downloads from the users' IP addresses.",
+      "B": "Create an IAM role that has access to the object. Instruct the users to assume the role.",
+      "C": "Create an IAM user that has access to the object. Share the credentials with the users.",
+      "D": "Generate a presigned URL for the object. Share the URL with the users."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Attach an S3 bucket policy that only allows object downloads from the users' IP addresses. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Create an IAM role that has access to the object. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create an IAM user that has access to the object. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Generate a presigned URL for the object. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 383,
+    "type": "single",
+    "question": "A company is running an ecommerce application on AWS. The application maintains many open but idle connections to an Amazon Aurora DB cluster. During times of peak usage, the database produces the following error message: \"Too many connections.\" The database clients are also experiencing errors. Which solution will resolve these errors?",
+    "options": {
+      "A": "Increase the read capacity units (RCUs) and the write capacity units (WCUs) on the database.",
+      "B": "Configure RDS Proxy. Update the application with the RDS Proxy endpoint.",
+      "C": "Turn on enhanced networking for the DB instances.",
+      "D": "Modify the DB cluster to use a burstable instance type."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Increase the read capacity units (RCUs) and the write capacity units (WCUs) on the database. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Configure RDS Proxy. This approach meets the stated requirements.",
+      "C": "Incorrect. Turn on enhanced networking for the DB instances. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Modify the DB cluster to use a burstable instance type. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 384,
+    "type": "single",
+    "question": "A SysOps administrator is troubleshooting a VPC with public and private subnets that leverage custom network ACLs. Instances in the private subnet are unable to access the internet. There is an internet gateway attached to the public subnet. The private subnet has a route to a NAT gateway that is also attached to the public subnet. The Amazon EC2 instances are associated with the default security group for the VPC. What is causing the issue in this scenario?",
+    "options": {
+      "A": "There is a network ACL on the private subnet set to deny all outbound traffic.",
+      "B": "There is no NAT gateway deployed in the private subnet of the VPC.",
+      "C": "The default security group for the VPC blocks all inbound traffic to the EC2 instances.",
+      "D": "The default security group for the VPC blocks all outbound traffic from the EC2 instances."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. There is a network ACL on the private subnet set to deny all outbound traffic. This approach meets the stated requirements.",
+      "B": "Incorrect. There is no NAT gateway deployed in the private subnet of the VPC. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. The default security group for the VPC blocks all inbound traffic to the EC2 instances. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. The default security group for the VPC blocks all outbound traffic from the EC2 instances. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 385,
+    "type": "single",
+    "question": "A company stores its internal data within an Amazon S3 bucket. All existing data within the S3 bucket is protected by using server- side encryption with Amazon S3 managed encryption keys (SSE-S3). S3 Versioning is enabled. A SysOps administrator must replicate the internal data to another S3 bucket in a different AWS account for disaster recovery. All the existing data is copied from the source S3 bucket to the destination S3 bucket. Which replication solution is MOST operationally efficient?",
+    "options": {
+      "A": "Add a replication rule to the source bucket and specify the destination bucket. Create a bucket policy for the destination bucket to allow the owner of the source bucket to replicate objects.",
+      "B": "Schedule an AWS Batch job with Amazon EventBridge to copy new objects from the source bucket to the destination bucket. Create a Batch Operations IAM role in the destination account.",
+      "C": "Configure an Amazon S3 event notification for the source bucket to invoke an AWS Lambda function to copy new objects to the destination bucket. Ensure that the Lambda function has cross-account access permissions.",
+      "D": "Run a scheduled script on an Amazon EC2 instance to copy new objects from the source bucket to the destination bucket. Assign cross-account access permissions to the EC2 instance's role."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Add a replication rule to the source bucket and specify the destination bucket. This approach meets the stated requirements.",
+      "B": "Incorrect. Schedule an AWS Batch job with Amazon EventBridge to copy new objects from the source bucket to the destination bucket. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Configure an Amazon S3 event notification for the source bucket to invoke an AWS Lambda function to copy new objects to the destination bucket. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Run a scheduled script on an Amazon EC2 instance to copy new objects from the source bucket to the destination bucket. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 386,
+    "type": "single",
+    "question": "A company has a high performance computing (HPC) application that runs on Amazon EC2 instances. The application requires minimum latency and maximum network throughput between nodes. How should a SysOps administrator deploy the EC2 instances to meet these requirements?",
+    "options": {
+      "A": "Use a cluster placement group in a single Availability Zone.",
+      "B": "Use a cluster placement group across multiple Availability Zones.",
+      "C": "Use a partition placement group in a single Availability Zone.",
+      "D": "Use a partition placement group across multiple Availability Zones."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Use a cluster placement group in a single Availability Zone. This approach meets the stated requirements.",
+      "B": "Incorrect. Use a cluster placement group across multiple Availability Zones. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Use a partition placement group in a single Availability Zone. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Use a partition placement group across multiple Availability Zones. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 387,
+    "type": "single",
+    "question": "A company has a stateless application that is hosted on a fleet of 10 Amazon EC2 On-Demand Instances in an Auto Scaling group. A minimum of 6 instances are needed to meet service requirements. Which action will maintain uptime for the application MOST cost-effectively?",
+    "options": {
+      "A": "Use a Spot Fleet with an On-Demand capacity of 6 instances.",
+      "B": "Update the Auto Scaling group with a minimum of 6 On-Demand Instances and a maximum of 10 On-Demand Instances.",
+      "C": "Update the Auto Scaling group with a minimum of 1 On-Demand Instance and a maximum of 6 On-Demand Instances.",
+      "D": "Use a Spot Fleet with a target capacity of 6 instances."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Use a Spot Fleet with an On-Demand capacity of 6 instances. This approach meets the stated requirements.",
+      "B": "Incorrect. Update the Auto Scaling group with a minimum of 6 On-Demand Instances and a maximum of 10 On-Demand Instances. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Update the Auto Scaling group with a minimum of 1 On-Demand Instance and a maximum of 6 On-Demand Instances. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Use a Spot Fleet with a target capacity of 6 instances. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 388,
+    "type": "multiple",
+    "question": "A company has developed a service that is deployed on a fleet of Linux-based Amazon EC2 instances that are in an Auto Scaling group. The service occasionally fails unexpectedly because of an error in the application code. The company's engineering team determines that resolving the underlying cause of the service failure could take several weeks. A SysOps administrator needs to create a solution to automate recovery if the service crashes on any of the EC2 instances. Which solutions will meet this requirement? (Choose two.)",
+    "options": {
+      "A": "Install the Amazon CloudWatch agent on the EC2 instances. Configure the CloudWatch agent to monitor the service. Set the CloudWatch action to restart if the service health check fails.",
+      "B": "Tag the EC2 instances. Create an AWS Lambda function that uses AWS Systems Manager Session Manager to log in to the tagged EC2 instances and restart the service. Schedule the Lambda function to run every 5 minutes.",
+      "C": "Tag the EC2 instances. Use AWS Systems Manager State Manager to create an association that uses the AWS-RunShellScript document. Configure the association command with a script that checks if the service is running and that starts the service if the service is not running. For targets, specify the EC2 instance tag. Schedule the association to run every 5 minutes.",
+      "D": "Update the EC2 user data that is specified in the Auto Scaling group's launch template to include a script that runs on a cron schedule every 5 minutes. Configure the script to check if the service is running and to start the service if the service is not running. Redeploy all the EC2 instances in the Auto Scaling group with the updated launch template.",
+      "E": "Update the EC2 user data that is specified in the Auto Scaling group's launch template to ensure that the service runs during startup. Redeploy all the EC2 instances in the Auto Scaling group with the updated launch template."
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "Correct. Install the Amazon CloudWatch agent on the EC2 instances. This approach meets the stated requirements.",
+      "B": "Incorrect. Tag the EC2 instances. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Tag the EC2 instances. This approach meets the stated requirements.",
+      "D": "Incorrect. Update the EC2 user data that is specified in the Auto Scaling group's launch template to include a script that runs on a cron schedule every 5 minutes. This does not satisfy the requirements as described in the question.",
+      "E": "Incorrect. Update the EC2 user data that is specified in the Auto Scaling group's launch template to ensure that the service runs during startup. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 389,
+    "type": "single",
+    "question": "A company's web application runs on Amazon EC2 instances in a single AWS Region. The infrastructure must be designed so the application remains available with no performance degradation in the event of an Availability Zone (AZ) failure. To ensure optimal performance, the application must maintain a minimum of 12 instances at all times. Which solution will meet the requirements with the fewest running instances possible?",
+    "options": {
+      "A": "2 AZs with 6 instances in each AZ",
+      "B": "2 AZs with 12 instances in each AZ",
+      "C": "3 AZs with 4 instances in each AZ",
+      "D": "3 AZs with 6 instances in each AZ"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 2 AZs with 6 instances in each AZ This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. 2 AZs with 12 instances in each AZ This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. 3 AZs with 4 instances in each AZ This does not satisfy the requirements as described in the question.",
+      "D": "Correct. 3 AZs with 6 instances in each AZ This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 390,
+    "type": "multiple",
+    "question": "A company needs to monitor the disk utilization of Amazon Elastic Block Store (Amazon EBS) volumes. The EBS volumes are attached to Amazon EC2 Linux instances. A SysOps administrator must set up an Amazon CloudWatch alarm that provides an alert when disk utilization increases to more than 80%. Which combination of steps must the SysOps administrator take to meet these requirements? (Choose three.)",
+    "options": {
+      "A": "Create an IAM role that includes the CloudWatchAgentServerPolicy AWS managed policy. Attach the role to the instances.",
+      "B": "Create an IAM role that includes the CloudWatchApplicationInsightsReadOnlyAccess AWS managed policy. Attach the role to the instances.",
+      "C": "Install and start the CloudWatch agent by using AWS Systems Manager or the command line.",
+      "D": "Install and start the CloudWatch agent by using an IAM role. Attach the CloudWatchAgentServerPolicy AWS managed policy to the role.",
+      "E": "Configure a CloudWatch alarm to enter ALARM state when the disk_used_percent CloudWatch metric is greater than 80%."
+    },
+    "answer": [
+      "A",
+      "C",
+      "E"
+    ],
+    "explanations": {
+      "A": "Correct. Create an IAM role that includes the CloudWatchAgentServerPolicy AWS managed policy. This approach meets the stated requirements.",
+      "B": "Incorrect. Create an IAM role that includes the CloudWatchApplicationInsightsReadOnlyAccess AWS managed policy. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Install and start the CloudWatch agent by using AWS Systems Manager or the command line. This approach meets the stated requirements.",
+      "D": "Incorrect. Install and start the CloudWatch agent by using an IAM role. This does not satisfy the requirements as described in the question.",
+      "E": "Correct. Configure a CloudWatch alarm to enter ALARM state when the disk_used_percent CloudWatch metric is greater than 80%. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 391,
+    "type": "single",
+    "question": "An ecommerce company uses an Amazon ElastiCache for Redis cluster for in-memory caching of popular product queries on a shopping website. The cache eviction policy is randomly evicting keys whether or not a TTL is set. A SysOps administrator must improve the cache hit ratio without increasing costs. Which solution will meet these requirements?",
+    "options": {
+      "A": "Add another node to the ElastiCache cluster.",
+      "B": "Increase the ElastiCache TTL value.",
+      "C": "Change the eviction policy to randomly evict keys that have a TTL set.",
+      "D": "Change the eviction policy to evict the least frequently used keys."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Add another node to the ElastiCache cluster. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Increase the ElastiCache TTL value. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Change the eviction policy to randomly evict keys that have a TTL set. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Change the eviction policy to evict the least frequently used keys. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 392,
+    "type": "single",
+    "question": "A company deployed a new web application on multiple Amazon EC2 instances behind an Application Load Balancer (ALB). The EC2 instances run in an Auto Scaling group. Users report that they are frequently being prompted to log in. What should a SysOps administrator do to resolve this issue?",
+    "options": {
+      "A": "Configure an Amazon CloudFront distribution with the ALB as the origin.",
+      "B": "Enable sticky sessions (session affinity) for the target group of EC2 instances.",
+      "C": "Redeploy the EC2 instances in a spread placement group.",
+      "D": "Replace the ALB with a Network Load Balancer."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Configure an Amazon CloudFront distribution with the ALB as the origin. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Enable sticky sessions (session affinity) for the target group of EC2 instances. This approach meets the stated requirements.",
+      "C": "Incorrect. Redeploy the EC2 instances in a spread placement group. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Replace the ALB with a Network Load Balancer. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 393,
+    "type": "single",
+    "question": "A company has scientists who upload large data objects to an Amazon S3 bucket. The scientists upload the objects as multipart uploads. The multipart uploads often fail because of poor end-client connectivity. The company wants to optimize storage costs that are associated with the data. A SysOps administrator must implement a solution that presents metrics for incomplete uploads. The solution also must automatically delete any incomplete uploads after 7 Which solution will meet these requirements?",
+    "options": {
+      "A": "Review the Incomplete Multipart Upload Bytes metric in the S3 Storage Lens dashboard. Create an S3 Lifecycle policy to automatically delete any incomplete multipart uploads after 7 days.",
+      "B": "Implement S3 Intelligent-Tiering to move data into lower-cost storage classes after 7 days. Create an S3 Storage Lens policy to automatically delete any incomplete multipart uploads after 7 days.",
+      "C": "Access the S3 console. Review the Metrics tab to check the storage that incomplete multipart uploads are consuming. Create an AWS Lambda function to delete any incomplete multipart uploads after 7 days.",
+      "D": "Use the S3 analytics storage class analysis tool to identify and measure incomplete multipart uploads. Configure an S3 bucket policy to enforce restrictions on multipart uploads to delete incomplete multipart uploads after 7 days."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Review the Incomplete Multipart Upload Bytes metric in the S3 Storage Lens dashboard. This approach meets the stated requirements.",
+      "B": "Incorrect. Implement S3 Intelligent-Tiering to move data into lower-cost storage classes after 7 days. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Access the S3 console. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Use the S3 analytics storage class analysis tool to identify and measure incomplete multipart uploads. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 394,
+    "type": "single",
+    "question": "A company stores data in Amazon S3 buckets that are provisioned in three separate AWS Regions. The data is copied from the S3 buckets to the data center over the public internet using a VPN. The SysOps administrator notices that, occasionally, the transfers take longer than usual, and determines the issue is congestion within the company's ISP network. What is the MOST cost-effective approach the administrator can take to ensure consistent transfer times from S3 to the data center?",
+    "options": {
+      "A": "Establish an AWS Direct Connect link to each Region. Create a private virtual interface over each link.",
+      "B": "Establish an AWS Direct Connect link to each Region. Create a public virtual interface over each link.",
+      "C": "Establish an AWS Direct Connect link to one of the Regions. Create a private virtual interface over that link.",
+      "D": "Establish an AWS Direct Connect link to one of the Regions. Create a public virtual interface over that link."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Establish an AWS Direct Connect link to each Region. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Establish an AWS Direct Connect link to each Region. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Establish an AWS Direct Connect link to one of the Regions. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Establish an AWS Direct Connect link to one of the Regions. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 395,
+    "type": "single",
+    "question": "A company has an Amazon EC2 instance that supports a production system. The EC2 instance is backed by an Amazon Elastic Block Store (Amazon EBS) volume. The EBS volume's drive has filled to 100% capacity, which is causing the application on the EC2 instance to experience errors. Which solution will remediate these errors in the LEAST amount of time?",
+    "options": {
+      "A": "Modify the EBS volume by adding additional drive space. Log on to the EC2 instance. Use the file system-specific commands to extend the file system.",
+      "B": "Create a snapshot of the existing EBS volume. When the snapshot is complete, create an EBS volume of a larger size from the snapshot in the same Availability Zone as the EC2 instance. Attach the new EBS volume to the EC2 instance. Mount the file system.",
+      "C": "Create a new EBS volume of a larger size in the same Availability Zone as the EC2 instance. Attach the EBS volume to the EC2 instance. Copy the data from the existing EBS volume to the new EBS volume.",
+      "D": "Stop the EC2 instance. Change the EC2 instance to a larger instance size that includes additional drive space. Start the EC2 instance."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Modify the EBS volume by adding additional drive space. This approach meets the stated requirements.",
+      "B": "Incorrect. Create a snapshot of the existing EBS volume. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create a new EBS volume of a larger size in the same Availability Zone as the EC2 instance. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Stop the EC2 instance. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 396,
+    "type": "single",
+    "question": "A company has several member accounts that are in an organization in AWS Organizations. The company recently discovered that administrators have been using account root user credentials. The company must prevent the administrators from using root user credentials to perform any actions on Amazon EC2 instances. What should a SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Create an identity-based IAM policy in each member account to deny actions on EC2 instances by the root user.",
+      "B": "In the organization's management account, create a service control policy (SCP) to deny actions on EC2 instances by the root user in all member accounts.",
+      "C": "Use AWS Config to prevent any actions on EC2 instances by the root user.",
+      "D": "Use Amazon Inspector in each member account to scan for root user logins and to prevent any actions on EC2 instances by the root user."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Create an identity-based IAM policy in each member account to deny actions on EC2 instances by the root user. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. In the organization's management account, create a service control policy (SCP) to deny actions on EC2 instances by the root user in all member accounts. This approach meets the stated requirements.",
+      "C": "Incorrect. Use AWS Config to prevent any actions on EC2 instances by the root user. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Use Amazon Inspector in each member account to scan for root user logins and to prevent any actions on EC2 instances by the root user. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 397,
+    "type": "single",
+    "question": "A company is transitioning away from applications that are hosted on Amazon EC2 instances. The company wants to implement a serverless architecture that uses Amazon S3, Amazon API Gateway, AWS Lambda, and Amazon CloudFront. As part of this transition, the company has Elastic IP addresses that are unassociated with any EC2 instances after the EC2 instances are terminated. A SysOps administrator needs to automate the process of releasing all unassociated Elastic IP addresses that remain after the EC2 instances are terminated. Which solution will meet this requirement in the MOST operationally efficient way?",
+    "options": {
+      "A": "Activate the eip-attached AWS Config managed rule to run automatically when resource changes occur in the AWS account. Configure automatic remediation for the rule. Specify the AWS-ReleaseElasticIP AWS Systems Manager Automation runbook for remediation. Specify an appropriate role that has permission for the remediation.",
+      "B": "Create a custom Lambda function that calls the EC2 ReleaseAddress API operation and specifies the Elastic IP address AllocationId. Invoke the Lambda function by using an Amazon EventBridge rule. Specify AWS services as the event source, All Events as the event type, and AWS Trusted Advisor as the target.",
+      "C": "Create an Amazon EventBridge rule. Specify AWS services as the event source, Instance State-change Notification as the event type, and Amazon EC2 as the service. Invoke a Lambda function that extracts the Elastic IP address from the notification. Use AWS CloudFormation to release the address by specifying the AllocationId as an input parameter.",
+      "D": "Create a custom Lambda function that calls the EC2 ReleaseAddress API operation and specifies the Elastic IP address AllocationId. Invoke the Lambda function by using an Amazon EventBridge rule. Specify AWS services as the event source, Instance State-change Notification as the event type, and Amazon EC2 as the service."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Activate the eip-attached AWS Config managed rule to run automatically when resource changes occur in the AWS account. This approach meets the stated requirements.",
+      "B": "Incorrect. Create a custom Lambda function that calls the EC2 ReleaseAddress API operation and specifies the Elastic IP address AllocationId. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create an Amazon EventBridge rule. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create a custom Lambda function that calls the EC2 ReleaseAddress API operation and specifies the Elastic IP address AllocationId. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 398,
+    "type": "single",
+    "question": "A company uses Amazon CloudFront to serve static content to end users. The company's marketing team recently deployed updates to 150 images on the company's website. However, the website is not displaying some of the new images. A SysOps administrator reviews the CloudFront distribution's cache settings. The default TTL for the distribution is set to 1 week (604,800 seconds). What should the SysOps administrator do to refresh the cache with the new images in the MOST operationally efficient way?",
+    "options": {
+      "A": "Create a new CloudFront distribution that has the same origin. Set the default TTL to 1 minute (60 seconds). Switch Amazon Route 53 DNS records to use the new distribution.",
+      "B": "Instruct the marketing team to upload the new images to a different location. When the new images are uploaded, update the website to locate the new images.",
+      "C": "Issue a CloudFront invalidation request to immediately expire the new images from the marketing team's update.",
+      "D": "Update the existing CloudFront distribution to reconfigure the default TTL to 1 minute (60 seconds). During submission of the new configuration, include the flag to invalidate objects in the specified path."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Create a new CloudFront distribution that has the same origin. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Instruct the marketing team to upload the new images to a different location. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Issue a CloudFront invalidation request to immediately expire the new images from the marketing team's update. This approach meets the stated requirements.",
+      "D": "Incorrect. Update the existing CloudFront distribution to reconfigure the default TTL to 1 minute (60 seconds). This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 399,
+    "type": "single",
+    "question": "A SysOps administrator is responsible for a company's disaster recovery procedures. The company has a source Amazon S3 bucket in a production account, and it wants to replicate objects from the source to a destination S3 bucket in a nonproduction account. The SysOps administrator configures S3 cross-Region, cross-account replication to copy the source S3 bucket to the destination S3 bucket. When the SysOps administrator attempts to access objects in the destination S3 bucket, they receive an Access Denied Which solution will resolve this problem?",
+    "options": {
+      "A": "Modify the replication configuration to change object ownership to the destination S3 bucket owner.",
+      "B": "Ensure that the replication rule applies to all objects in the source S3 bucket and is not scoped to a single prefix.",
+      "C": "Retry the request when the S3 Replication Time Control (S3 RTC) has elapsed.",
+      "D": "Verify that the storage class for the replicated objects did not change between the source S3 bucket and the destination S3 bucket."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Modify the replication configuration to change object ownership to the destination S3 bucket owner. This approach meets the stated requirements.",
+      "B": "Incorrect. Ensure that the replication rule applies to all objects in the source S3 bucket and is not scoped to a single prefix. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Retry the request when the S3 Replication Time Control (S3 RTC) has elapsed. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Verify that the storage class for the replicated objects did not change between the source S3 bucket and the destination S3 bucket. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 400,
+    "type": "single",
+    "question": "A company is running Amazon RDS for PostgreSQL Multi-AZ DB clusters. The company uses an AWS CloudFormation template to create the databases individually with a default size of 100 GB. The company creates the databases every Monday and deletes the databases every Friday. Occasionally, the databases run low on disk space and initiate an Amazon CloudWatch alarm. A SysOps administrator must prevent the databases from running low on disk space in the future. Which solution will meet these requirements with the FEWEST changes to the application?",
+    "options": {
+      "A": "Modify the CloudFormation template to use Amazon Aurora PostgreSQL as the DB engine.",
+      "B": "Modify the CloudFormation template to use Amazon DynamoDB as the database. Activate storage auto scaling during creation of the tables.",
+      "C": "Modify the Cloud Formation template to activate storage auto scaling on the existing DB instances.",
+      "D": "Create a CloudWatch alarm to monitor DB instance storage space. Configure the alarm to invoke the VACUUM command."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Modify the CloudFormation template to use Amazon Aurora PostgreSQL as the DB engine. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Modify the CloudFormation template to use Amazon DynamoDB as the database. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Modify the Cloud Formation template to activate storage auto scaling on the existing DB instances. This approach meets the stated requirements.",
+      "D": "Incorrect. Create a CloudWatch alarm to monitor DB instance storage space. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 401,
+    "type": "single",
+    "question": "A SysOps administrator wants to share a copy of a production database with a migration account. The production database is hosted on an Amazon RDS DB instance and is encrypted at rest with an AWS Key Management Service (AWS KMS) key that has an alias of production-rds-key. What must the SysOps administrator do to meet these requirements with the LEAST administrative overhead?",
+    "options": {
+      "A": "Take a snapshot of the RDS DB instance in the production account. Amend the KMS key policy of the production-rds-key KMS key to give access to the migration account's root user. Share the snapshot with the migration account.",
+      "B": "Create an RDS read replica in the migration account. Configure the KMS key policy to replicate the production-rds-key KMS key to the migration account.",
+      "C": "Take a snapshot of the RDS DB instance in the production account. Share the snapshot with the migration account. In the migration account, create a new KMS key that has an identical alias.",
+      "D": "Use native database toolsets to export the RDS DB instance to Amazon S3. Create an S3 bucket and an S3 bucket policy for cross account access between the production account and the migration account. Use native database toolsets to import the database from Amazon S3 to a new RDS DB instance."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Take a snapshot of the RDS DB instance in the production account. This approach meets the stated requirements.",
+      "B": "Incorrect. Create an RDS read replica in the migration account. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Take a snapshot of the RDS DB instance in the production account. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Use native database toolsets to export the RDS DB instance to Amazon S3. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 402,
+    "type": "single",
+    "question": "A company hosts a continuous integration and continuous delivery (CI/CD) environment on AWS. The CI/CD environment includes a Jenkins server that is hosted on an Amazon EC2 instance. A 500 GB General Purpose SSD (gp2) Amazon Elastic Block Store (Amazon EBS) volume is attached to the EC2 instance. Because of disk throughput limitations, the Jenkins server reports performance issues that are resulting in slower builds on the server. The EBS volume needs to sustain 3,000 IOPS while performing nightly build tasks. A SysOps administrator examines the server's history in Amazon CloudWatch. The BurstBalance metric has had a value of 0 during nightly builds. The SysOps administrator needs to improve the performance and meet the sustained throughput requirements. Which solution will meet these requirements MOST cost-effectively?",
+    "options": {
+      "A": "Double the gp2 EBS volume size from 500 GB to 1,000 GB.",
+      "B": "Change the volume type from gp2 to General Purpose SSD (gp3).",
+      "C": "Change the volume type from gp2 to Throughput Optimized HDD (st1).",
+      "D": "Change the volume type from gp2 to Provisioned IOPS SSD (io2)."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Double the gp2 EBS volume size from 500 GB to 1,000 GB. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Change the volume type from gp2 to General Purpose SSD (gp3). This approach meets the stated requirements.",
+      "C": "Incorrect. Change the volume type from gp2 to Throughput Optimized HDD (st1). This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Change the volume type from gp2 to Provisioned IOPS SSD (io2). This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 403,
+    "type": "single",
+    "question": "A company is running an application on a group of Amazon EC2 instances behind an Application Load Balancer. The EC2 instances run across three Availability Zones. The company needs to provide the customers with a maximum of two static IP addresses for their applications. How should a SysOps administrator meet these requirement?",
+    "options": {
+      "A": "Add AWS Global Accelerator in front of the Application Load Balancer.",
+      "B": "Add an internal Network Load Balancer behind the Application Load Balancer.",
+      "C": "Configure the Application Load Balancer in only two Availability Zones.",
+      "D": "Create two Elastic IP addresses and assign them to the Application Load Balancer."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Add AWS Global Accelerator in front of the Application Load Balancer. This approach meets the stated requirements.",
+      "B": "Incorrect. Add an internal Network Load Balancer behind the Application Load Balancer. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Configure the Application Load Balancer in only two Availability Zones. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create two Elastic IP addresses and assign them to the Application Load Balancer. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 404,
+    "type": "single",
+    "question": "A SysOps administrator receives an alert that a production Auto Scaling group has been scaled down to two Amazon EC2 instances. The Auto Scaling group was originally configured with a minimum capacity of three instances. However, the SysOps administrator confirms that the configuration now reflects a minimum capacity of two instances. Which AWS service will help identify who made the change?",
+    "options": {
+      "A": "AWS Config",
+      "B": "Amazon Inspector",
+      "C": "Amazon Macie",
+      "D": "Amazon Cloud Watch Logs"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Config This approach meets the stated requirements.",
+      "B": "Incorrect. Amazon Inspector This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Amazon Macie This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Amazon Cloud Watch Logs This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 405,
+    "type": "single",
+    "question": "A company wants to store sensitive financial data within Amazon S3 buckets. The company has a corporate policy that does not allow public read or write access to the buckets. A SysOps administrator must create a solution to automatically remove S3 permissions that allow public read or write access. Which AWS service should the SysOps administrator use to meet these requirements in the MOST operationally efficient manner?",
+    "options": {
+      "A": "AWS Config",
+      "B": "AWS Security Hub",
+      "C": "AWS Trusted Advisor",
+      "D": "Amazon Inspector"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Config This approach meets the stated requirements.",
+      "B": "Incorrect. AWS Security Hub This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. AWS Trusted Advisor This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Amazon Inspector This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 406,
+    "type": "multiple",
+    "question": "A SysOps administrator must create an IAM policy for a developer who needs access to specific AWS services. Based on the requirements, the SysOps administrator creates the following policy: Which actions does this policy allow? (Choose two.)",
+    "options": {
+      "A": "Create an AWS Storage Gateway.",
+      "B": "Create an IAM role for an AWS Lambda function.",
+      "C": "Delete an Amazon Simple Queue Service (Amazon SQS) queue.",
+      "D": "Describe AWS load balancers.",
+      "E": "Invoke an AWS Lambda function."
+    },
+    "answer": [
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. Create an AWS Storage Gateway. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Create an IAM role for an AWS Lambda function. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Delete an Amazon Simple Queue Service (Amazon SQS) queue. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Describe AWS load balancers. This approach meets the stated requirements.",
+      "E": "Correct. Invoke an AWS Lambda function. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 407,
+    "type": "single",
+    "question": "A SysOps administrator is re-architecting an application. The SysOps administrator has moved the database from a public subnet, where the database used a public endpoint, into a private subnet to restrict access from the public network. After this change, an AWS Lambda function that requires read access to the database cannot connect to the database. The SysOps administrator must resolve this issue without compromising security. Which solution meets these requirements?",
+    "options": {
+      "A": "Create an AWS PrivateLink interface endpoint for the Lambda function. Connect to the database using its private endpoint.",
+      "B": "Connect the Lambda function to the database VPC. Connect to the database using its private endpoint.",
+      "C": "Attach an IAM role to the Lambda function with read permissions to the database.",
+      "D": "Move the database to a public subnet. Use security groups for secure access."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create an AWS PrivateLink interface endpoint for the Lambda function. This approach meets the stated requirements.",
+      "B": "Incorrect. Connect the Lambda function to the database VPC. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Attach an IAM role to the Lambda function with read permissions to the database. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Move the database to a public subnet. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 408,
+    "type": "multiple",
+    "question": "Users are reporting consistent forced logouts from a stateful web application. The logouts occur before the expiration of a 15- minute application logout timer. The web application is hosted on Amazon EC2 instances that are in an Auto Scaling group. The instances run behind an Application Load Balancer (ALB) that has a single target group. The ALB is configured as the origin in an Amazon CloudFront distribution. Session affinity (sticky sessions) is already enabled on the ALB target group and uses duration-based cookies. The web application generates its own application cookie. Which combination of actions should a SysOps administrator take to resolve the logout problem? (Choose two.)",
+    "options": {
+      "A": "Change to the least outstanding requests algorithm on the ALB target group.",
+      "B": "Configure cookie forwarding in the CloudFront distribution's cache behavior settings.",
+      "C": "Configure the duration-based cookie to be named AWSALB.",
+      "D": "Configure the ALB to use the expiration cookie header.",
+      "E": "Change the ALB to use application-based cookies."
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. Change to the least outstanding requests algorithm on the ALB target group. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Configure cookie forwarding in the CloudFront distribution's cache behavior settings. This approach meets the stated requirements.",
+      "C": "Incorrect. Configure the duration-based cookie to be named AWSALB. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Configure the ALB to use the expiration cookie header. This does not satisfy the requirements as described in the question.",
+      "E": "Correct. Change the ALB to use application-based cookies. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 409,
+    "type": "single",
+    "question": "A company's social media application has strict data residency requirements. The company wants to use Amazon Route 53 to provide the application with DNS services. A SysOps administrator must implement a solution that routes requests to a defined list of AWS Regions. The routing must be based on the user's location. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure a Route 53 latency routing policy.",
+      "B": "Configure a Route 53 multivalue answer routing policy.",
+      "C": "Configure a Route 53 geolocation routing policy.",
+      "D": "Configure a Route 53 IP-based routing policy."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Configure a Route 53 latency routing policy. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Configure a Route 53 multivalue answer routing policy. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Configure a Route 53 geolocation routing policy. This approach meets the stated requirements.",
+      "D": "Incorrect. Configure a Route 53 IP-based routing policy. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 410,
+    "type": "single",
+    "question": "A company has a cluster of Linux Amazon EC2 Spot Instances that read many files from and write many files to attached Amazon Elastic Block Store (Amazon EBS) volumes. The EC2 instances are frequently started and stopped. As part of the process when an EC2 instance starts, an EBS volume is restored from a snapshot. EBS volumes that are restored from snapshots are experiencing initial performance that is lower than expected. The company's workload needs almost all the provisioned IOPS on the attached EBS volumes. The EC2 instances are unable to support the workload when the performance of the EBS volumes is too low. A SysOps administrator must implement a solution to ensure that the EBS volumes provide the expected performance when they are restored from snapshots. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure fast snapshot restore (FSR) on the snapshots that are used.",
+      "B": "Restore each snapshot onto an unencrypted EBS volume. Encrypt the EBS volume when the performance stabilizes.",
+      "C": "Format the EBS volumes as XFS file systems before restoring the snapshots.",
+      "D": "Increase the Linux read-ahead buffer to 1 MiB."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Configure fast snapshot restore (FSR) on the snapshots that are used. This approach meets the stated requirements.",
+      "B": "Incorrect. Restore each snapshot onto an unencrypted EBS volume. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Format the EBS volumes as XFS file systems before restoring the snapshots. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Increase the Linux read-ahead buffer to 1 MiB. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 411,
+    "type": "single",
+    "question": "A company recently deployed an application in production. The production environment currently runs on a single Amazon EC2 instance that hosts the application's web application and a MariaDB database. Company policy states that all IT production environments must be highly available. What should a SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Migrate the database from the EC2 instance to an Amazon RDS for MariaDB Multi-AZ DB instance. Run the application on EC2 instances that are in an Auto Scaling group that extends across multiple Availability Zones. Place the EC2 instances behind a load balancer.",
+      "B": "Migrate the database from the EC2 instance to an Amazon RDS for MariaDB Multi-AZ DB instance. Use AWS Application Migration Service to convert the application into an AWS Lambda function. Specify the Multi-AZ option for the Lambda function.",
+      "C": "Copy the database to a different EC2 instance in a different Availability Zone. Use AWS Backup to create Amazon Machine Images (AMIs) of the application EC2 instance and the database EC2 instance. Create an AWS Lambda function that performs health checks every minute. In case of failure, configure the Lambda function to launch a new EC2 instance from the AMIs that AWS Backup created.",
+      "D": "Migrate the database to a different EC2 instance. Place the application EC2 instance in an Auto Scaling group that extends across multiple Availability Zones. Create an Amazon Machine Image (AMI) from the database EC2 instance. Use the AMI to launch a second database EC2 instance in a different Availability Zone. Put the second database EC2 instance in the stopped state. Use the second database EC2 instance as a standby."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Migrate the database from the EC2 instance to an Amazon RDS for MariaDB Multi-AZ DB instance. This approach meets the stated requirements.",
+      "B": "Incorrect. Migrate the database from the EC2 instance to an Amazon RDS for MariaDB Multi-AZ DB instance. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Copy the database to a different EC2 instance in a different Availability Zone. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Migrate the database to a different EC2 instance. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 412,
+    "type": "single",
+    "question": "A company is running workloads on premises and on AWS. A SysOps administrator needs to automate tasks across all servers on premises by using AWS services. The SysOps administrator must not install long-term credentials on the on-premises servers. What should the SysOps administrator do to meet these requirements?",
+    "options": {
+      "A": "Create an IAM role and instance profile that include AWS Systems Manager permissions. Attach the role to the on-premises servers.",
+      "B": "Create a managed-instance activation in AWS Systems Manager. Install the Systems Manager Agent (SSM Agent) on the on- premises servers. Register the servers with the activation code and ID from the instance activation.",
+      "C": "Create an AWS managed IAM policy that includes the appropriate AWS Systems Manager permissions. Download the IAM policy to the on-premises servers.",
+      "D": "Create an IAM user and an access key. Log on to the on-premises servers and install the AWS CLI. Configure the access key in the AWS credentials file after the AWS CLI is successfully installed."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Create an IAM role and instance profile that include AWS Systems Manager permissions. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Create a managed-instance activation in AWS Systems Manager. This approach meets the stated requirements.",
+      "C": "Incorrect. Create an AWS managed IAM policy that includes the appropriate AWS Systems Manager permissions. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create an IAM user and an access key. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 413,
+    "type": "single",
+    "question": "A company has deployed an application on AWS. The application runs on a fleet of Linux Amazon EC2 instances that are in an Auto Scaling group. The Auto Scaling group is configured to use launch templates. The launch templates launch Amazon Elastic Block Store (Amazon EBS) backed EC2 instances that use General Purpose SSD (gp3) EBS volumes for primary storage. A SysOps administrator needs to implement a solution to ensure that all the EC2 instances can share the same underlying files. The solution also must ensure that the data is consistent. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon Elastic File System (Amazon EFS) file system. Create a new launch template version that includes user data that mounts the EFS file system. Update the Auto Scaling group to use the new launch template version to cycle in newer EC2 instances and to terminate the older EC2 instances.",
+      "B": "Enable Multi-Attach on the EBS volumes. Create a new launch template version that includes user data that mounts the EBS volume. Update the Auto Scaling group to use the new template version to cycle in newer EC2 instances and to terminate the older EC2 instances.",
+      "C": "Create a cron job that synchronizes the data between the EBS volumes for all the EC2 instances in the Auto Scaling group. Create a lifecycle hook during instance launch to configure the cron job on all the EC2 instances. Rotate out the older EC2 instances.",
+      "D": "Create a new launch template version that creates an Amazon Elastic File System (Amazon EFS) file system. Update the Auto Scaling group to use the new template version to cycle in newer EC2 instances and to terminate the older EC2 instances."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create an Amazon Elastic File System (Amazon EFS) file system. This approach meets the stated requirements.",
+      "B": "Incorrect. Enable Multi-Attach on the EBS volumes. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create a cron job that synchronizes the data between the EBS volumes for all the EC2 instances in the Auto Scaling group. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create a new launch template version that creates an Amazon Elastic File System (Amazon EFS) file system. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 414,
+    "type": "single",
+    "question": "A company has 50 AWS accounts and wants to create an identical Amazon VPC in each account. Any changes the company makes to the VPCs in the future must be implemented on every VPC. What is the MOST operationally efficient method to deploy and update the VPCs in each account?",
+    "options": {
+      "A": "Create an AWS CloudFormation template that defines the VPC. Sign in to the AWS Management Console under each account. Create a stack from the template.",
+      "B": "Create a shell script that configures the VPC using the AWS CLI. Provide a list of accounts to the shell script from a text file. Create the VPC in every account in the list.",
+      "C": "Create an AWS Lambda function that configures the VPStore the account information in Amazon DynamoDB. Grant Lambda access to the DynamoDB table. Create the VPC in every account in the list.",
+      "D": "Create an AWS CloudFormation template that defines the VPC. Create an AWS CloudFormation StackSet based on the template. Deploy the template to all accounts using the stack set."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Create an AWS CloudFormation template that defines the VPC. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Create a shell script that configures the VPC using the AWS CLI. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Create an AWS Lambda function that configures the VPStore the account information in Amazon DynamoDB. This does not satisfy the requirements as described in the question.",
+      "D": "Correct. Create an AWS CloudFormation template that defines the VPC. This approach meets the stated requirements."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 415,
+    "type": "single",
+    "question": "A company hosts a web application on an Amazon EC2 instance in a production VPC. Client connections to the application are failing. A SysOps administrator inspects the VPC flow logs and finds the following entry: What is a possible cause of these failed connections?",
+    "options": {
+      "A": "A security group deny rule is blocking traffic on port 443.",
+      "B": "The EC2 instance is shut down.",
+      "C": "The network ACL is blocking HTTPS traffic.",
+      "D": "The VPC has no internet gateway attached."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. A security group deny rule is blocking traffic on port 443. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. The EC2 instance is shut down. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. The network ACL is blocking HTTPS traffic. This approach meets the stated requirements.",
+      "D": "Incorrect. The VPC has no internet gateway attached. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 416,
+    "type": "single",
+    "question": "A media company hosts a public news and video portal on AWS. The portal uses an Amazon DynamoDB table with provisioned capacity to maintain an index of video files that are stored in an Amazon S3 bucket. During a recent event, millions of visitors came to the portal for news. This increase in traffic caused read requests to be throttled in the DynamoDB table. Videos could not be displayed in the portal. The company's operations team manually increased the provisioned capacity on a temporary basis to meet the demand. The company wants the operations team to receive an alert before the table is throttled in the future. The company has created an Amazon Simple Notification Service (Amazon SNS) topic and has subscribed the operations team's email address to the SNS topic. What should the company do next to meet these requirements?",
+    "options": {
+      "A": "Create an Amazon CloudWatch alarm that uses the ConsumedReadCapacityUnits metric. Set the alarm threshold to a value that is close to the DynamoDB table's provisioned capacity. Configure the alarm to publish notifications to the SNS topic.",
+      "B": "Turn on auto scaling on the DynamoDB table. Configure an Amazon EventBridge rule to publish notifications to the SNS topic during scaling events.",
+      "C": "Turn on Amazon CloudWatch Logs for the DynamoDB table. Create an Amazon CloudWatch metric filter to pattern match the THROTTLING_EXCEPTION status code from DynamoDB. Create a CloudWatch alarm for the metric. Select the SNS topic for notifications.",
+      "D": "Configure the application to store logs in Amazon CloudWatch Logs. Create an Amazon CloudWatch metric filter to pattern match the THROTTLING_EXCEPTION status code from DynamoDB. Create a CloudWatch alarm for the metric. Select the SNS topic for notifications."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create an Amazon CloudWatch alarm that uses the ConsumedReadCapacityUnits metric. This approach meets the stated requirements.",
+      "B": "Incorrect. Turn on auto scaling on the DynamoDB table. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Turn on Amazon CloudWatch Logs for the DynamoDB table. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Configure the application to store logs in Amazon CloudWatch Logs. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 417,
+    "type": "single",
+    "question": "A company runs its web application on multiple Amazon EC2 instances that are part of an Auto Scaling group. The company wants the Auto Scaling group to scale out as soon as CPU utilization rises above 50% for the instances. How should a SysOps administrator configure the Auto Scaling group to meet these requirements?",
+    "options": {
+      "A": "Configure the Auto Scaling group to scale based on events.",
+      "B": "Configure the Auto Scaling group to scale based on a schedule.",
+      "C": "Configure the Auto Scaling group to scale dynamically based on demand.",
+      "D": "Configure the Auto Scaling group to use predictive scaling."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Configure the Auto Scaling group to scale based on events. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Configure the Auto Scaling group to scale based on a schedule. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Configure the Auto Scaling group to scale dynamically based on demand. This approach meets the stated requirements.",
+      "D": "Incorrect. Configure the Auto Scaling group to use predictive scaling. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 418,
+    "type": "single",
+    "question": "A company's VPC has an existing IPv4 configuration. The IPv4 configuration includes public subnets, private subnets, NAT gateways, default route tables, and ACLs. The company associates an IPv6 CIDR block with the VPC. The company adds IPv6 allocations to each existing subnet and adds routes to the route tables. The company updates the ACLs to allow all IPv6 traffic. Public subnets are working as expected, but private subnets are not allowing internet IPv6 connections. What should a SysOps administrator do to allow outbound-only connectivity for the new IPv6 subnets?",
+    "options": {
+      "A": "Configure an egress-only internet gateway and associate it with the VPC. Create a default route in the route tables that are associated with the private subnets. Configure the default route to point to the egress-only internet gateway.",
+      "B": "Turn on IPv6 NAT on the NAT gateways. Create a default route in the route tables that are associated with the private subnets. Configure the default route to point to the NAT gateways.",
+      "C": "Configure a new IPv6-only NAT gateway. Create a default route in the route tables that are associated with the private subnets. Configure the default route to point to the IPv6-only NAT gateway.",
+      "D": "Create a default route in the route tables that are associated with the private subnets. Configure the default route to point to the existing internet gateway."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Configure an egress-only internet gateway and associate it with the VPC. This approach meets the stated requirements.",
+      "B": "Incorrect. Turn on IPv6 NAT on the NAT gateways. This does not satisfy the requirements as described in the question.",
+      "C": "Incorrect. Configure a new IPv6-only NAT gateway. This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create a default route in the route tables that are associated with the private subnets. This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 419,
+    "type": "single",
+    "question": "A company runs a worker process on three Amazon EC2 instances. The instances are in an Auto Scaling group that is configured to use a simple scaling policy. The instances process messages from an Amazon Simple Queue Service (Amazon SQS) queue. Random periods of increased messages are causing a decrease in the performance of the worker process. A SysOps administrator must scale the instances to accommodate the increased number of messages. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use CloudWatch to create a metric math expression to calculate the approximate age of the oldest message in the SQS queue. Create a target tracking scaling policy for the metric math expression to modify the Auto Scaling group.",
+      "B": "Use CloudWatch to create a metric math expression to calculate the approximate number of messages visible in the SQS queue for each instance. Create a target tracking scaling policy for the metric math expression to modify the Auto Scaling group.",
+      "C": "Create an Application Load Balancer (ALB). Attach the ALB to the Auto Scaling group. Create a target tracking scaling policy for the ALBRequestCountPerTarget metric to modify the Auto Scaling group.",
+      "D": "Create an Application Load Balancer (ALB). Attach the ALB to the Auto Scaling group. Create a scheduled scaling policy for the Auto Scaling group."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Use CloudWatch to create a metric math expression to calculate the approximate age of the oldest message in the SQS queue. This does not satisfy the requirements as described in the question.",
+      "B": "Correct. Use CloudWatch to create a metric math expression to calculate the approximate number of messages visible in the SQS queue for each instance. This approach meets the stated requirements.",
+      "C": "Incorrect. Create an Application Load Balancer (ALB). This does not satisfy the requirements as described in the question.",
+      "D": "Incorrect. Create an Application Load Balancer (ALB). This does not satisfy the requirements as described in the question."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 420,
+    "type": "single",
+    "question": "A company has created a NAT gateway in a public subnet in a VPC. The VPC also contains a private subnet that includes Amazon EC2 instances. The EC2 instances use the NAT gateway to access the internet to download patches and updates. The company has configured a VPC flow log for the elastic network interface of the NAT gateway. The company is publishing the output to Amazon CloudWatch Logs. A SysOps administrator must identify the top five internet destinations that the EC2 instances in the private subnet communicate with for downloads. What should the SysOps administrator do to meet this requirement in the MOST operationally efficient way? Amazon CloudWatch Logs。",
+    "options": {
+      "A": "Use AWS CloudTrail Insights events to identify the top five internet destinations.",
+      "B": "Use Amazon CloudFront standard logs (access logs) to identify the top five internet destinations.",
+      "C": "Use CloudWatch Logs Insights to identify the top five internet destinations.",
+      "D": "Change the flow log to publish logs to Amazon S3. Use Amazon Athena to query the log files in Amazon S3."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Use AWS CloudTrail Insights events to identify the top five internet destinations. This does not satisfy the requirements as described in the question.",
+      "B": "Incorrect. Use Amazon CloudFront standard logs (access logs) to identify the top five internet destinations. This does not satisfy the requirements as described in the question.",
+      "C": "Correct. Use CloudWatch Logs Insights to identify the top five internet destinations. This approach meets the stated requirements.",
+      "D": "Incorrect. Change the flow log to publish logs to Amazon S3. This does not satisfy the requirements as described in the question."
+    }
+  }
+]

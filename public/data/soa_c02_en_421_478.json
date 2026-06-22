@@ -1,0 +1,1119 @@
+[
+  {
+    "exam": "SOA-C02",
+    "id": 421,
+    "type": "single",
+    "question": "A company manages its production applications across several AWS accounts. The company hosts the production applications on Amazon EC2 instances that run Amazon Linux 2. The EC2 instances are spread across multiple VPCs. Each VPC uses its own Amazon Route 53 private hosted zone for private DNS. A VPC from Account A needs to resolve private DNS records from a private hosted zone that is associated with a different VPC in Account B. What should a SysOps administrator do to meet these requirements?",
+    "options": {
+      "A": "In Account A, create an AWS Systems Manager document that updates the /etc/resolv.conf file across all EC2 instances to point to the AWS provided default DNS resolver for the VPC in Account B.",
+      "B": "In Account A, create an AWS CloudFormation template that associates the private hosted zone from Account B with the private hosted zone in Account A.",
+      "C": "In Account A, use the AWS CLI to create a VPC association authorization. When the association is created, use the AWS CLI in Account B to associate the VPC from Account A with the private hosted zone in Account B.",
+      "D": "In Account B, use the AWS CLI to create a VPC association authorization. When the association is created, use the AWS CLI in Account A to associate the VPC from Account B with the private hosted zone in Account A."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. In Account A, create an AWS Systems Manager document that updates the /etc/resolv.conf file across all EC2 instances to point to the AWS provided default DNS resolver for the VPC in Account B.",
+      "B": "Incorrect. This option does not satisfy the requirements. In Account A, create an AWS CloudFormation template that associates the private hosted zone from Account B with the private hosted zone in Account A.",
+      "C": "Incorrect. This option does not satisfy the requirements. In Account A, use the AWS CLI to create a VPC association authorization. When the association is created, use the AWS CLI in Account B to associate the VPC from Account A with the private hosted zone in Account B.",
+      "D": "Correct. This option meets the requirements described in the question. In Account B, use the AWS CLI to create a VPC association authorization. When the association is created, use the AWS CLI in Account A to associate the VPC from Account B with the private hosted zone in Account A."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 422,
+    "type": "single",
+    "question": "A company has attached the following policy to an IAM user: Which of the following actions are allowed for the IAM user?",
+    "options": {
+      "A": "Amazon RDS DescribeDBInstances action in the us-east-1 Region",
+      "B": "Amazon S3 PutObject operation in a bucket named testbucket",
+      "C": "Amazon EC2 DescribeInstances action in the us-east-1 Region",
+      "D": "Amazon EC2 AttachNetworkInterface action in the eu-west-1 Region"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Amazon RDS DescribeDBInstances action in the us-east-1 Region",
+      "B": "Incorrect. This option does not satisfy the requirements. Amazon S3 PutObject operation in a bucket named testbucket",
+      "C": "Correct. This option meets the requirements described in the question. Amazon EC2 DescribeInstances action in the us-east-1 Region",
+      "D": "Incorrect. This option does not satisfy the requirements. Amazon EC2 AttachNetworkInterface action in the eu-west-1 Region"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 423,
+    "type": "single",
+    "question": "A company has an on-premises DNS solution and wants to resolve DNS records in an Amazon Route 53 private hosted zone for example.com. The company has set up an AWS Direct Connect connection for network connectivity between the on-premises network and the VPC. A SysOps administrator must ensure that an on-premises server can query records in the example.com domain. What should the SysOps administrator do to meet these requirements?",
+    "options": {
+      "A": "Create a Route 53 Resolver inbound endpoint. Attach a security group to the endpoint to allow inbound traffic on TCP/UDP port 53 from the on-premises DNS servers.",
+      "B": "Create a Route 53 Resolver inbound endpoint. Attach a security group to the endpoint to allow outbound traffic on TCP/UDP port 53 to the on-premises DNS servers.",
+      "C": "Create a Route 53 Resolver outbound endpoint. Attach a security group to the endpoint to allow inbound traffic on TCP/UDP port 53 from the on-premises DNS servers.",
+      "D": "Create a Route 53 Resolver outbound endpoint. Attach a security group to the endpoint to allow outbound traffic on TCP/UDP port 53 to the on-premises DNS servers."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Create a Route 53 Resolver inbound endpoint. Attach a security group to the endpoint to allow inbound traffic on TCP/UDP port 53 from the on-premises DNS servers.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create a Route 53 Resolver inbound endpoint. Attach a security group to the endpoint to allow outbound traffic on TCP/UDP port 53 to the on-premises DNS servers.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create a Route 53 Resolver outbound endpoint. Attach a security group to the endpoint to allow inbound traffic on TCP/UDP port 53 from the on-premises DNS servers.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create a Route 53 Resolver outbound endpoint. Attach a security group to the endpoint to allow outbound traffic on TCP/UDP port 53 to the on-premises DNS servers."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 424,
+    "type": "single",
+    "question": "A company uses AWS CloudFormation to deploy its application infrastructure. Recently, a user accidentally changed a property of a database in a CloudFormation template and performed a stack update that caused an interruption to the application. A SysOps administrator must determine how to modify the deployment process to allow the DevOps team to continue to deploy the infrastructure, but prevent against accidental modifications to specific resources. Which solution will meet these requirements?",
+    "options": {
+      "A": "Set up an AWS Config rule to alert based on changes to any CloudFormation stack. An AWS Lambda function can then describe the stack to determine if any protected resources were modified and cancel the operation.",
+      "B": "Set up an Amazon EventBridge event with a rule to initiate based on any CloudFormation API call. An AWS Lambda function can then describe the stack to determine if any protected resources were modified and cancel the operation.",
+      "C": "Launch the CloudFormation templates using a stack policy with an explicit allow for all resources and an explicit deny of the protected resources with an action of Update:*.",
+      "D": "Attach an IAM policy to the DevOps team role that prevents a CloudFormation stack from updating, with a condition based on the specific Amazon Resource Names (ARNs) of the protected resources."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Set up an AWS Config rule to alert based on changes to any CloudFormation stack. An AWS Lambda function can then describe the stack to determine if any protected resources were modified and cancel the operation.",
+      "B": "Incorrect. This option does not satisfy the requirements. Set up an Amazon EventBridge event with a rule to initiate based on any CloudFormation API call. An AWS Lambda function can then describe the stack to determine if any protected resources were modified and cancel the operation.",
+      "C": "Correct. This option meets the requirements described in the question. Launch the CloudFormation templates using a stack policy with an explicit allow for all resources and an explicit deny of the protected resources with an action of Update:*.",
+      "D": "Incorrect. This option does not satisfy the requirements. Attach an IAM policy to the DevOps team role that prevents a CloudFormation stack from updating, with a condition based on the specific Amazon Resource Names (ARNs) of the protected resources."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 425,
+    "type": "multiple",
+    "question": "A SysOps administrator has an AWS CloudFormation template of the company's existing infrastructure in us-west-2. The administrator attempts to use the template to launch a new stack in eu-west-1, but the stack only partially deploys, receives an error message, and then rolls back. Why would this template fail to deploy? (Choose two.)",
+    "options": {
+      "A": "The template referenced an IAM user that is not available in eu-west-1.",
+      "B": "The template referenced an Amazon Machine Image (AMI) that is not available in eu-west-1.",
+      "C": "The template did not have the proper level of permissions to deploy the resources.",
+      "D": "The template requested services that do not exist in eu-west-1.",
+      "E": "CloudFormation templates can be used only to update existing services."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. The template referenced an IAM user that is not available in eu-west-1.",
+      "B": "Correct. This option meets the requirements described in the question. The template referenced an Amazon Machine Image (AMI) that is not available in eu-west-1.",
+      "C": "Incorrect. This option does not satisfy the requirements. The template did not have the proper level of permissions to deploy the resources.",
+      "D": "Correct. This option meets the requirements described in the question. The template requested services that do not exist in eu-west-1.",
+      "E": "Incorrect. This option does not satisfy the requirements. CloudFormation templates can be used only to update existing services."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 426,
+    "type": "single",
+    "question": "An application accesses data through a file system interface. The application runs on Amazon EC2 instances in multiple Availability Zones, all of which must share the same data. While the amount of data is currently small, the company anticipates that it will grow to tens of terabytes over the lifetime of the application. What is the MOST scalable storage solution to fulfill this requirement?",
+    "options": {
+      "A": "Connect a large Amazon EBS volume to multiple instances and schedule snapshots.",
+      "B": "Deploy Amazon EFS in the VPC and create mount targets in multiple subnets.",
+      "C": "Launch an EC2 instance and share data using SMB/CIFS or NFS.",
+      "D": "Deploy an AWS Storage Gateway cached volume on Amazon EC2."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Connect a large Amazon EBS volume to multiple instances and schedule snapshots.",
+      "B": "Correct. This option meets the requirements described in the question. Deploy Amazon EFS in the VPC and create mount targets in multiple subnets.",
+      "C": "Incorrect. This option does not satisfy the requirements. Launch an EC2 instance and share data using SMB/CIFS or NFS.",
+      "D": "Incorrect. This option does not satisfy the requirements. Deploy an AWS Storage Gateway cached volume on Amazon EC2."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 427,
+    "type": "single",
+    "question": "A company is deploying an ecommerce application to an AWS Region that is located in France. The company wants users from only France to be able to access the first version of the application. The company plans to add more countries for the next version of the application. A SysOps administrator needs to configure the routing policy in Amazon Route 53. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use a geoproximity routing policy. Select France as the location in the record.",
+      "B": "Use a geolocation routing policy. Select France as the location in the record.",
+      "C": "Use an IP-based routing policy. Select all IP addresses that are allocated to France in the record.",
+      "D": "Use a geoproximity routing policy. Select all IP addresses that are allocated to France in the record."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Use a geoproximity routing policy. Select France as the location in the record.",
+      "B": "Correct. This option meets the requirements described in the question. Use a geolocation routing policy. Select France as the location in the record.",
+      "C": "Incorrect. This option does not satisfy the requirements. Use an IP-based routing policy. Select all IP addresses that are allocated to France in the record.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use a geoproximity routing policy. Select all IP addresses that are allocated to France in the record."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 428,
+    "type": "multiple",
+    "question": "A SysOps administrator is using IAM credentials to try to upload a file to a customer's Amazon S3 bucket that is named DOC- EXAMPLE-BUCKET. The SysOps administrator is receiving an AccessDenied message. Which combination of configuration changes will correct this problem? (Choose two.)",
+    "options": {
+      "A": "Add this IAM policy to the SysOps administrator user:",
+      "B": "Add this IAM policy to the customer S3 bucket:",
+      "C": "Add this IAM policy to the SysOps administrator user:",
+      "D": "Add this IAM policy to the customer account root user:",
+      "E": "Add this IAM policy to the SysOps administrator account root user:"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Add this IAM policy to the SysOps administrator user:",
+      "B": "Correct. This option meets the requirements described in the question. Add this IAM policy to the customer S3 bucket:",
+      "C": "Incorrect. This option does not satisfy the requirements. Add this IAM policy to the SysOps administrator user:",
+      "D": "Incorrect. This option does not satisfy the requirements. Add this IAM policy to the customer account root user:",
+      "E": "Incorrect. This option does not satisfy the requirements. Add this IAM policy to the SysOps administrator account root user:"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 429,
+    "type": "single",
+    "question": "A company uses AWS Organizations to host several applications across multiple AWS accounts. Several teams are responsible for building and maintaining the infrastructure of the applications across the AWS accounts. A SysOps administrator must implement a solution to ensure that user accounts and permissions are centrally managed. The solution must be integrated with the company's existing on-premises Active Directory environment. The SysOps administrator already has enabled AWS IAM Identity Center (AWS Single Sign-On) and has set up an AWS Direct Connect connection. What is the MOST operationally efficient solution that meets these requirements?",
+    "options": {
+      "A": "Create a Simple AD domain, and establish a forest trust relationship with the on-premises Active Directory domain. Set the Simple AD domain as the identity source for IAM Identity Center. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "B": "Create an Active Directory domain controller on an Amazon EC2 instance that is joined to the on-premises Active Directory domain. Set the Active Directory domain controller as the identity source for IAM Identity Center. Create the required role- based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "C": "Create an AD Connector that is associated with the on-premises Active Directory domain. Set the AD Connector as the identity source for IAM Identity Center. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "D": "Use the built-in SSO directory as the identity source for IAM Identity Center. Copy the users and groups from the on- premises Active Directory domain. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create a Simple AD domain, and establish a forest trust relationship with the on-premises Active Directory domain. Set the Simple AD domain as the identity source for IAM Identity Center. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an Active Directory domain controller on an Amazon EC2 instance that is joined to the on-premises Active Directory domain. Set the Active Directory domain controller as the identity source for IAM Identity Center. Create the required role- based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "C": "Correct. This option meets the requirements described in the question. Create an AD Connector that is associated with the on-premises Active Directory domain. Set the AD Connector as the identity source for IAM Identity Center. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use the built-in SSO directory as the identity source for IAM Identity Center. Copy the users and groups from the on- premises Active Directory domain. Create the required role-based permission sets. Assign each group of users to the AWS accounts that the group will manage."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 430,
+    "type": "single",
+    "question": "A company wants to apply an existing Amazon Route 53 private hosted zone to a new VPC to allow for customized resource name resolution within the VPC. The SysOps administrator created the VPC and added the appropriate resource record sets to the private hosted zone. Which step should the SysOps administrator take to complete the setup?",
+    "options": {
+      "A": "Associate the Route 53 private hosted zone with the VPC.",
+      "B": "Create a rule in the default security group for the VPC that allows traffic to the Route 53 Resolver.",
+      "C": "Ensure the VPC network ACLs allow traffic to the Route 53 Resolver.",
+      "D": "Ensure there is a route to the Route 53 Resolver in each of the VPC route tables."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Associate the Route 53 private hosted zone with the VPC.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create a rule in the default security group for the VPC that allows traffic to the Route 53 Resolver.",
+      "C": "Incorrect. This option does not satisfy the requirements. Ensure the VPC network ACLs allow traffic to the Route 53 Resolver.",
+      "D": "Incorrect. This option does not satisfy the requirements. Ensure there is a route to the Route 53 Resolver in each of the VPC route tables."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 431,
+    "type": "single",
+    "question": "A company has an AWS Site-to-Site VPN connection between on-premises resources and resources that are hosted in a VPC. A SysOps administrator launches an Amazon EC2 instance that has only a private IP address into a private subnet in the VPC. The EC2 instance runs Microsoft Windows Server. A security group for the EC2 instance has rules that allow inbound traffic from the on-premises network over the VPN connection. The on-premises environment contains a third-party network firewall. Rules in the third-party network firewall allow Remote Desktop Protocol (RDP) traffic to flow between the on-premises users over the VPN connection. The on-premises users are unable to connect to the EC2 instance and receive a timeout error. What should the SysOps administrator do to troubleshoot this issue?",
+    "options": {
+      "A": "Create Amazon CloudWatch logs for the EC2 instance to check for blocked traffic.",
+      "B": "Create Amazon CloudWatch logs for the Site-to-Site VPN connection to check for blocked traffic.",
+      "C": "Create VPC flow logs for the EC2 instance's elastic network interface to check for rejected traffic.",
+      "D": "Instruct users to use EC2 Instance Connect as a connection method."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create Amazon CloudWatch logs for the EC2 instance to check for blocked traffic.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create Amazon CloudWatch logs for the Site-to-Site VPN connection to check for blocked traffic.",
+      "C": "Correct. This option meets the requirements described in the question. Create VPC flow logs for the EC2 instance's elastic network interface to check for rejected traffic.",
+      "D": "Incorrect. This option does not satisfy the requirements. Instruct users to use EC2 Instance Connect as a connection method."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 432,
+    "type": "multiple",
+    "question": "A SysOps administrator has set up a new Amazon EC2 instance as a web server in a public subnet. The instance uses HTTP port 80 and HTTPS port 443. The SysOps administrator has confirmed internet connectivity by downloading operating system updates and software from public repositories. However, the SysOps administrator cannot access the instance from a web browser on the internet. Which combination of steps should the SysOps administrator take to troubleshoot this issue? (Choose three.)",
+    "options": {
+      "A": "Ensure that the inbound rules of the instance’s security group allow traffic on ports 80 and 443.",
+      "B": "Ensure that the outbound rules of the instance’s security group allow traffic on ports 80 and 443.",
+      "C": "Ensure that ephemeral ports 1024-65535 are allowed in the inbound rules of the network ACL that is associated with the instance's subnet.",
+      "D": "Ensure that ephemeral ports 1024-65535 are allowed in the outbound rules of the network ACL that is associated with the instance’s subnet.",
+      "E": "Ensure that the filtering rules for any firewalls that are running on the instance allow inbound traffic on ports 80 and 443."
+    },
+    "answer": [
+      "A",
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Ensure that the inbound rules of the instance’s security group allow traffic on ports 80 and 443.",
+      "B": "Incorrect. This option does not satisfy the requirements. Ensure that the outbound rules of the instance’s security group allow traffic on ports 80 and 443.",
+      "C": "Incorrect. This option does not satisfy the requirements. Ensure that ephemeral ports 1024-65535 are allowed in the inbound rules of the network ACL that is associated with the instance's subnet.",
+      "D": "Correct. This option meets the requirements described in the question. Ensure that ephemeral ports 1024-65535 are allowed in the outbound rules of the network ACL that is associated with the instance’s subnet.",
+      "E": "Correct. This option meets the requirements described in the question. Ensure that the filtering rules for any firewalls that are running on the instance allow inbound traffic on ports 80 and 443."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 433,
+    "type": "single",
+    "question": "A SysOps administrator needs to monitor a process that runs on Linux Amazon EC2 instances. If the process stops, the process must restart automatically. The Amazon CloudWatch agent is already installed on all the EC2 instances. Which solution will meet these requirements?",
+    "options": {
+      "A": "Add a procstat monitoring configuration to the CloudWatch agent for the process. Create an Amazon EventBridge event rule that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "B": "Add a StatsD monitoring configuration to the CloudWatch agent for the process. Create a CloudWatch alarm that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "C": "Add a StatsD monitoring configuration to the CloudWatch agent for the process. Create an Amazon EventBridge event rule that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "D": "Add a procstat monitoring configuration to the CloudWatch agent for the process. Create a CloudWatch alarm that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Add a procstat monitoring configuration to the CloudWatch agent for the process. Create an Amazon EventBridge event rule that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "B": "Incorrect. This option does not satisfy the requirements. Add a StatsD monitoring configuration to the CloudWatch agent for the process. Create a CloudWatch alarm that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "C": "Incorrect. This option does not satisfy the requirements. Add a StatsD monitoring configuration to the CloudWatch agent for the process. Create an Amazon EventBridge event rule that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops.",
+      "D": "Incorrect. This option does not satisfy the requirements. Add a procstat monitoring configuration to the CloudWatch agent for the process. Create a CloudWatch alarm that initiates an AWS Systems Manager Automation runbook to restart the process after the process stops."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 434,
+    "type": "single",
+    "question": "A company has an application that uses an Amazon RDS for MariaDB Multi-AZ database. The application becomes unavailable for several minutes every time the database experiences a failover during a planned maintenance event. What should a SysOps administrator do to reduce the downtime of the application during failover?",
+    "options": {
+      "A": "Create an RDS for MariaDB DB cluster that has multiple writer instances. Configure the application to retry failed queries on another primary node during maintenance events.",
+      "B": "Configure the RDS maintenance window settings to pool connections while a failover is in process.",
+      "C": "Configure an Amazon ElastiCache write-through cache for the database. Configure the application to connect to the cache instead of directly to the database.",
+      "D": "Create an RDS proxy that is associated with the database. Configure the application to connect to the proxy instead of directly to the database."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create an RDS for MariaDB DB cluster that has multiple writer instances. Configure the application to retry failed queries on another primary node during maintenance events.",
+      "B": "Incorrect. This option does not satisfy the requirements. Configure the RDS maintenance window settings to pool connections while a failover is in process.",
+      "C": "Incorrect. This option does not satisfy the requirements. Configure an Amazon ElastiCache write-through cache for the database. Configure the application to connect to the cache instead of directly to the database.",
+      "D": "Correct. This option meets the requirements described in the question. Create an RDS proxy that is associated with the database. Configure the application to connect to the proxy instead of directly to the database."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 435,
+    "type": "multiple",
+    "question": "A SysOps administrator has noticed millions of LIST requests on an Amazon S3 bucket. Which services or features can the administrator use to investigate where the requests are coming from? (Choose two.)",
+    "options": {
+      "A": "AWS CloudTrail data events",
+      "B": "Amazon EventBridge",
+      "C": "AWS Health Dashboard",
+      "D": "Amazon S3 server access logging",
+      "E": "AWS Trusted Advisor"
+    },
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. AWS CloudTrail data events",
+      "B": "Incorrect. This option does not satisfy the requirements. Amazon EventBridge",
+      "C": "Incorrect. This option does not satisfy the requirements. AWS Health Dashboard",
+      "D": "Correct. This option meets the requirements described in the question. Amazon S3 server access logging",
+      "E": "Incorrect. This option does not satisfy the requirements. AWS Trusted Advisor"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 436,
+    "type": "single",
+    "question": "A SysOps administrator configures VPC flow logs to publish to Amazon CloudWatch Logs. The SysOps administrator reviews the logs in CloudWatch Logs and notices less traffic than expected. After the SysOps administrator compares the VPC flow logs to logs that were captured on premises, the SysOps administrator believes that the VPC flow logs are incomplete. Which of the following is a possible reason for the difference in traffic?",
+    "options": {
+      "A": "CloudWatch Logs throttling has been applied.",
+      "B": "The CloudWatch IAM role does not have a trust relationship with the VPC flow logs service.",
+      "C": "The VPC flow log is still in the process of being created.",
+      "D": "VPC flow logs cannot capture traffic from on-premises servers to a VPC."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. CloudWatch Logs throttling has been applied.",
+      "B": "Incorrect. This option does not satisfy the requirements. The CloudWatch IAM role does not have a trust relationship with the VPC flow logs service.",
+      "C": "Incorrect. This option does not satisfy the requirements. The VPC flow log is still in the process of being created.",
+      "D": "Correct. This option meets the requirements described in the question. VPC flow logs cannot capture traffic from on-premises servers to a VPC."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 438,
+    "type": "single",
+    "question": "A SysOps administrator has an Amazon S3 website and wants to restrict access to a single Amazon CloudFront distribution. Visitors to the website should not be able to circumvent CloudFront or view the S3 website directly from the bucket. Which AWS service or feature will meet these requirements?",
+    "options": {
+      "A": "S3 bucket ACL",
+      "B": "AWS Firewall Manager",
+      "C": "Amazon Route 53 private hosted zone",
+      "D": "Origin access identity (OAI)"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. S3 bucket ACL",
+      "B": "Incorrect. This option does not satisfy the requirements. AWS Firewall Manager",
+      "C": "Incorrect. This option does not satisfy the requirements. Amazon Route 53 private hosted zone",
+      "D": "Correct. This option meets the requirements described in the question. Origin access identity (OAI)"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 439,
+    "type": "single",
+    "question": "A SysOps administrator is responsible for the security of a company's AWS account. The company has a policy that a user may stop or terminate Amazon EC2 instances only when the user is authenticated by using a multi-factor authentication (MFA) device. Which policy should the SysOps administrator apply to meet this requirement?",
+    "options": {
+      "A": "(image-based option)",
+      "B": "(image-based option)",
+      "C": "(image-based option)",
+      "D": "(image-based option)"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. (image-based option)",
+      "B": "Incorrect. This option does not satisfy the requirements. (image-based option)",
+      "C": "Incorrect. This option does not satisfy the requirements. (image-based option)",
+      "D": "Incorrect. This option does not satisfy the requirements. (image-based option)"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 440,
+    "type": "single",
+    "question": "A global company wants to allow anyone in the world to upload videos from a mobile phone. The company's mobile app uploads the videos across the public internet to an Amazon S3 bucket in the us-east-1 Region for further processing. Videos that users upload from locations that are distant from us-east-1 have slower upload speeds than videos that users upload from close to us-east-1. In many cases, the slow uploads cause users from the distant locations to cancel their uploads. Which solution will improve the upload speeds for the users from distant locations?",
+    "options": {
+      "A": "Enable S3 Transfer Acceleration on the S3 bucket. Change the mobile app to use the S3 Transfer Acceleration endpoint for uploads.",
+      "B": "Create an S3 access point for the S3 bucket in several AWS Regions across the world. Change the mobile app to use the S3 access point endpoint for uploads.",
+      "D": "Create new public Network Load Balancers (NLBs) in several AWS Regions across the world. Specify the S3 bucket as the target of the NLBs. Change the mobile app to use the closest NLB for uploads."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Enable S3 Transfer Acceleration on the S3 bucket. Change the mobile app to use the S3 Transfer Acceleration endpoint for uploads.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an S3 access point for the S3 bucket in several AWS Regions across the world. Change the mobile app to use the S3 access point endpoint for uploads.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create new public Network Load Balancers (NLBs) in several AWS Regions across the world. Specify the S3 bucket as the target of the NLBs. Change the mobile app to use the closest NLB for uploads."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 441,
+    "type": "single",
+    "question": "A company is using AWS Certificate Manager (ACM) to manage public SSL/TLS certificates. A SysOps administrator needs to send an email notification when a certificate has less than 14 days until expiration. Which solution will meet this requirement with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an Amazon CloudWatch custom metric to monitor certificate expiration for all ACM certificates. Create an Amazon EventBridge rule that has an event source of aws.cloudwatch. Configure the rule to send an event to a target Amazon Simple Notification Service (Amazon SNS) topic if the DaysToExpiry metric is less than 14. Subscribe the appropriate email addresses to the SNS topic.",
+      "B": "Create an Amazon EventBridge rule that has an event source of aws.acm. Configure the rule to evaluate the DaysToExpiry metric for all ACM certificates. Configure the rule to send an event to a target Amazon Simple Notification Service (Amazon SNS) topic if DaysToExpiry is less than 14. Subscribe the appropriate email addresses to the SNS topic.",
+      "C": "Create an Amazon CloudWatch dashboard that displays the DaysToExpiry metric for all ACM certificates. If DaysToExpiry is less than 14, send an email message to the appropriate email addresses. Send the email message by running a predefined CLI command to publish to an Amazon Simple Notification Service (Amazon SNS) topic.",
+      "D": "Create an Amazon EventBridge rule that has an event source of aws.acm. Configure the rule to evaluate the DaysToExpiry metric for all ACM certificates. Configure a target SMS identity that uses a predefined email template. Configure the rule to send an event to the target SMS identity if DaysToExpiry is less than 14."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch custom metric to monitor certificate expiration for all ACM certificates. Create an Amazon EventBridge rule that has an event source of aws.cloudwatch. Configure the rule to send an event to a target Amazon Simple Notification Service (Amazon SNS) topic if the DaysToExpiry metric is less than 14. Subscribe the appropriate email addresses to the SNS topic.",
+      "B": "Correct. This option meets the requirements described in the question. Create an Amazon EventBridge rule that has an event source of aws.acm. Configure the rule to evaluate the DaysToExpiry metric for all ACM certificates. Configure the rule to send an event to a target Amazon Simple Notification Service (Amazon SNS) topic if DaysToExpiry is less than 14. Subscribe the appropriate email addresses to the SNS topic.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch dashboard that displays the DaysToExpiry metric for all ACM certificates. If DaysToExpiry is less than 14, send an email message to the appropriate email addresses. Send the email message by running a predefined CLI command to publish to an Amazon Simple Notification Service (Amazon SNS) topic.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an Amazon EventBridge rule that has an event source of aws.acm. Configure the rule to evaluate the DaysToExpiry metric for all ACM certificates. Configure a target SMS identity that uses a predefined email template. Configure the rule to send an event to the target SMS identity if DaysToExpiry is less than 14."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 442,
+    "type": "single",
+    "question": "A SysOps administrator created an AWS CloudFormation template that provisions an Amazon EventBridge rule that invokes an AWS Lambda function. The Lambda function is designed to write event details to an Amazon CloudWatch log group. The function has permissions to write events to Amazon CloudWatch Logs. However, the SysOps administrator discovered that the Lambda function is not running. How should the SysOps administrator resolve the problem?",
+    "options": {
+      "A": "Update the CloudFormation stack to include an AWS::IAM::Role resource with the required IAM permissions for EventBridge to invoke the function. Assign the role to the EventBridge rule.",
+      "B": "Update the CloudFormation stack to include an AWS::IAM::Role resource with the required IAM permissions for the function. Assign the role as the function execution role.",
+      "C": "Update the CloudFormation stack with an AWS::Lambda::Permission resource to ensure events.amazonaws.com has permissions to invoke the function.",
+      "D": "Update the CloudFormation stack with an AWS::Lambda::Permission resource to ensure lambda.amazonaws.com has permissions to invoke the function."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Update the CloudFormation stack to include an AWS::IAM::Role resource with the required IAM permissions for EventBridge to invoke the function. Assign the role to the EventBridge rule.",
+      "B": "Incorrect. This option does not satisfy the requirements. Update the CloudFormation stack to include an AWS::IAM::Role resource with the required IAM permissions for the function. Assign the role as the function execution role.",
+      "C": "Correct. This option meets the requirements described in the question. Update the CloudFormation stack with an AWS::Lambda::Permission resource to ensure events.amazonaws.com has permissions to invoke the function.",
+      "D": "Incorrect. This option does not satisfy the requirements. Update the CloudFormation stack with an AWS::Lambda::Permission resource to ensure lambda.amazonaws.com has permissions to invoke the function."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 443,
+    "type": "single",
+    "question": "A company has an Amazon EC2 instance that has high CPU utilization. The EC2 instance is a t3.large instance and is running a test web application. The company discovers that the web application would operate better on a compute optimized large instance. What should a SysOps administrator do to make this change?",
+    "options": {
+      "A": "Migrate the EC2 instance to a compute optimized instance by using AWS VM Import/Export.",
+      "B": "Enable hibernation on the EC2 instance. Change the instance type to a compute optimized instance. Disable hibernation on the EC2 instance.",
+      "C": "Stop the EC2 instance. Change the instance type to a compute optimized instance. Start the EC2 instance.",
+      "D": "Change the instance type to a compute optimized instance while the EC2 instance is running."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Migrate the EC2 instance to a compute optimized instance by using AWS VM Import/Export.",
+      "B": "Incorrect. This option does not satisfy the requirements. Enable hibernation on the EC2 instance. Change the instance type to a compute optimized instance. Disable hibernation on the EC2 instance.",
+      "C": "Correct. This option meets the requirements described in the question. Stop the EC2 instance. Change the instance type to a compute optimized instance. Start the EC2 instance.",
+      "D": "Incorrect. This option does not satisfy the requirements. Change the instance type to a compute optimized instance while the EC2 instance is running."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 444,
+    "type": "single",
+    "question": "A development team created and deployed a new AWS Lambda function 15 minutes ago. Although the function was invoked many times, Amazon CloudWatch Logs are not showing any log messages. What is one cause of this?",
+    "options": {
+      "A": "The developers did not enable log messages for this Lambda function.",
+      "B": "The Lambda function's role does not include permissions to create CloudWatch Logs items.",
+      "C": "The Lambda function raises an exception before the first log statement has been reached.",
+      "D": "The Lambda functions creates local log files that have to be shipped to CloudWatch Logs first before becoming visible."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. The developers did not enable log messages for this Lambda function.",
+      "B": "Correct. This option meets the requirements described in the question. The Lambda function's role does not include permissions to create CloudWatch Logs items.",
+      "C": "Incorrect. This option does not satisfy the requirements. The Lambda function raises an exception before the first log statement has been reached.",
+      "D": "Incorrect. This option does not satisfy the requirements. The Lambda functions creates local log files that have to be shipped to CloudWatch Logs first before becoming visible."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 445,
+    "type": "single",
+    "question": "A company observes that a newly created Amazon CloudWatch alarm is not transitioning out of the INSUFFICIENT_DATA state. The alarm was created to track the mem_used_percent metric from an Amazon EC2 instance that is deployed in a public subnet. A review of the EC2 instance shows that the unified CloudWatch agent is installed and is running. However, the metric is not available in CloudWatch. A SysOps administrator needs to implement a solution to resolve this problem. Which solution will meet these requirements?",
+    "options": {
+      "A": "Enable CloudWatch detailed monitoring for the EC2 instance",
+      "B": "Create an IAM instance profile that contains CloudWatch permissions. Add the instance profile to the EC2 instance",
+      "C": "Migrate the EC2 instance into a private subnet",
+      "D": "Create an IAM user that has an access key ID and a secret access key. Update the unified CloudWatch agent configuration file to use those credentials"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Enable CloudWatch detailed monitoring for the EC2 instance",
+      "B": "Correct. This option meets the requirements described in the question. Create an IAM instance profile that contains CloudWatch permissions. Add the instance profile to the EC2 instance",
+      "C": "Incorrect. This option does not satisfy the requirements. Migrate the EC2 instance into a private subnet",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an IAM user that has an access key ID and a secret access key. Update the unified CloudWatch agent configuration file to use those credentials"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 446,
+    "type": "single",
+    "question": "A company is uploading important files as objects to Amazon S3. The company needs to be informed if an object is corrupted during the upload. What should a SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Pass the Content-Disposition value as a request body during the object upload",
+      "B": "Pass the Content-MD5 value as a request header during the object upload",
+      "C": "Pass x-amz-object-lock-mode as a request header during the object upload",
+      "D": "Pass x-amz-server-side-encryption-customer-algorithm as a request body during the object upload"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Pass the Content-Disposition value as a request body during the object upload",
+      "B": "Correct. This option meets the requirements described in the question. Pass the Content-MD5 value as a request header during the object upload",
+      "C": "Incorrect. This option does not satisfy the requirements. Pass x-amz-object-lock-mode as a request header during the object upload",
+      "D": "Incorrect. This option does not satisfy the requirements. Pass x-amz-server-side-encryption-customer-algorithm as a request body during the object upload"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 447,
+    "type": "multiple",
+    "question": "A SysOps administrator needs to create a report that shows how many bytes are sent to and received from each target group member for an Application Load Balancer (ALB). Which combination of steps should the SysOps administrator take to meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Enable access logging for the ALB. Save the logs to an Amazon S3 bucket.",
+      "B": "Install the Amazon CloudWatch agent on the instances in the target group.",
+      "C": "Use Amazon Athena to query the ALB logs. Query the table. Use the received_bytes and sent_bytes fields to calculate the total bytes grouped by the target port field.",
+      "D": "Use Amazon Athena to query the ALB logs. Query the table. Use the received_bytes and sent_bytes fields to calculate the total bytes grouped by the client port field.",
+      "E": "Create an Amazon CloudWatch dashboard that shows the Sum statistic of the ProcessedBytes metric for the ALB."
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Enable access logging for the ALB. Save the logs to an Amazon S3 bucket.",
+      "B": "Incorrect. This option does not satisfy the requirements. Install the Amazon CloudWatch agent on the instances in the target group.",
+      "C": "Correct. This option meets the requirements described in the question. Use Amazon Athena to query the ALB logs. Query the table. Use the received_bytes and sent_bytes fields to calculate the total bytes grouped by the target port field.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use Amazon Athena to query the ALB logs. Query the table. Use the received_bytes and sent_bytes fields to calculate the total bytes grouped by the client port field.",
+      "E": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch dashboard that shows the Sum statistic of the ProcessedBytes metric for the ALB."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 448,
+    "type": "single",
+    "question": "A company runs thousands of Amazon EC2 instances that are based on the Amazon Linux 2 Amazon Machine Image (AMI). A SysOps administrator must implement a solution to record commands and output from any user that needs an interactive session on one of the EC2 instances. The solution must log the data to a durable storage location. The solution also must provide automated notifications and alarms that are based on the log data. Which solution will meet these requirements with the MOST operational efficiency?",
+    "options": {
+      "A": "Configure command session logging on each EC2 instance. Configure the unified Amazon CloudWatch agent to send session logs to Amazon CloudWatch Logs. Set up query filters and alerts by using Amazon Athena.",
+      "B": "Require all users to use a central bastion host when they need command line access to an EC2 instance. Configure the unified Amazon CloudWatch agent on the bastion host to send session logs to Amazon CloudWatch Logs. Set up a metric filter and a metric alarm for relevant security findings in CloudWatch Logs.",
+      "C": "Require all users to use AWS Systems Manager Session Manager when they need command line access to an EC2 instance. Configure Session Manager to stream session logs to Amazon CloudWatch Logs. Set up a metric filter and a metric alarm for relevant security findings in CloudWatch Logs.",
+      "D": "Configure command session logging on each EC2 instance. Require all users to use AWS Systems Manager Run Command documents when they need command line access to an EC2 instance. Configure the unified Amazon CloudWatch agent to send session logs to Amazon CloudWatch Logs. Set up CloudWatch alarms that are based on Amazon Athena query results."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Configure command session logging on each EC2 instance. Configure the unified Amazon CloudWatch agent to send session logs to Amazon CloudWatch Logs. Set up query filters and alerts by using Amazon Athena.",
+      "B": "Incorrect. This option does not satisfy the requirements. Require all users to use a central bastion host when they need command line access to an EC2 instance. Configure the unified Amazon CloudWatch agent on the bastion host to send session logs to Amazon CloudWatch Logs. Set up a metric filter and a metric alarm for relevant security findings in CloudWatch Logs.",
+      "C": "Correct. This option meets the requirements described in the question. Require all users to use AWS Systems Manager Session Manager when they need command line access to an EC2 instance. Configure Session Manager to stream session logs to Amazon CloudWatch Logs. Set up a metric filter and a metric alarm for relevant security findings in CloudWatch Logs.",
+      "D": "Incorrect. This option does not satisfy the requirements. Configure command session logging on each EC2 instance. Require all users to use AWS Systems Manager Run Command documents when they need command line access to an EC2 instance. Configure the unified Amazon CloudWatch agent to send session logs to Amazon CloudWatch Logs. Set up CloudWatch alarms that are based on Amazon Athena query results."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 449,
+    "type": "multiple",
+    "question": "A company that uses AWS Organizations recently implemented AWS Control Towerю The company now needs to centralize identity management. A SysOps administrator must federate AWS ШAM Identity Center with an external SAML 2.0 identity provider (IdP) to centrally manage access to all the company's accounts and cloud applications. Which prerequisites must the SysOps administrator have so that the SysOps administrator can connect to the external IdP? (Choose two.)",
+    "options": {
+      "A": "A copy of the IAM identity Center SAML metadata",
+      "B": "The IdP metadata including the public X 509 certificate",
+      "C": "The IP address of the IdP",
+      "D": "Root access to the management account",
+      "E": "Administrative permissions to the member accounts of the organization"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. A copy of the IAM identity Center SAML metadata",
+      "B": "Correct. This option meets the requirements described in the question. The IdP metadata including the public X 509 certificate",
+      "C": "Incorrect. This option does not satisfy the requirements. The IP address of the IdP",
+      "D": "Incorrect. This option does not satisfy the requirements. Root access to the management account",
+      "E": "Incorrect. This option does not satisfy the requirements. Administrative permissions to the member accounts of the organization"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 450,
+    "type": "single",
+    "question": "A company recently moved its server infrastructure to Amazon EC2 instances. The company wants to use Amazon CloudWatch Logs to track the instance logs. What should a SysOps administrator do to meet this requirement in compliance with AWS best practices?",
+    "options": {
+      "A": "Configure CloudWatch from the AWS Management Console for the instances. Wait for AWS to automatically install and configure the agents for the instances",
+      "B": "Install and configure the CloudWatch agent on the instances. Attach an IAM role to allow the instances to write logs to CloudWatch",
+      "C": "Install and configure the CloudWatch agent on the instances. Attach an IAM user to allow the instances to write logs to CloudWatch",
+      "D": "Install and configure the CloudWatch agent on the instances. Attach the necessary security groups to allow the instances to write logs to CloudWatch"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Configure CloudWatch from the AWS Management Console for the instances. Wait for AWS to automatically install and configure the agents for the instances",
+      "B": "Correct. This option meets the requirements described in the question. Install and configure the CloudWatch agent on the instances. Attach an IAM role to allow the instances to write logs to CloudWatch",
+      "C": "Incorrect. This option does not satisfy the requirements. Install and configure the CloudWatch agent on the instances. Attach an IAM user to allow the instances to write logs to CloudWatch",
+      "D": "Incorrect. This option does not satisfy the requirements. Install and configure the CloudWatch agent on the instances. Attach the necessary security groups to allow the instances to write logs to CloudWatch"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 451,
+    "type": "single",
+    "question": "A company uses AWS CloudFormation to deploy its infrastructure. The company recently retired an application. A cloud operations engineer initiates CloudFormation stack deletion, and the stack gets stuck in DELETE_FAILED status. A SysOps administrator discovers that the stack had deployed a security group. The security group is referenced by other security groups in the environment. The SysOps administrator needs to delete the stack without affecting other applications. Which solution will meet these requirements in the MOST operationally efficient manner?",
+    "options": {
+      "A": "Create a new security group that has a different name. Apply identical rules to the new security group. Replace all other security groups that reference the new security group Delete the stack.",
+      "B": "Create a CloudFormation change set to delete the security group. Deploy the change set.",
+      "C": "Delete the stack again. Specify that the security group be retained.",
+      "D": "Perform CloudFormation drift detection. Delete the stack."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create a new security group that has a different name. Apply identical rules to the new security group. Replace all other security groups that reference the new security group Delete the stack.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create a CloudFormation change set to delete the security group. Deploy the change set.",
+      "C": "Correct. This option meets the requirements described in the question. Delete the stack again. Specify that the security group be retained.",
+      "D": "Incorrect. This option does not satisfy the requirements. Perform CloudFormation drift detection. Delete the stack."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 452,
+    "type": "single",
+    "question": "A company needs to monitor its website’s availability to end users. The company needs a solution to provide an Amazon Simple Notification Service (Amazon SNS) notification if the website's uptime decreases to less than 99%. The monitoring must provide an accurate view of the user experience on the website. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon CloudWatch alarm that is based on the website's logs that are published to a CloudWatch Logs log group. Configure the alarm to publish an SNS notification if the number of HTTP 4xx errors and 5xx errors exceeds a specified threshold.",
+      "B": "Create an Amazon CloudWatch alarm that is based on the website's published metrics in CloudWatch. Configure the alarm to publish an SNS notification that is based on anomaly detection.",
+      "C": "Create an Amazon CloudWatch Synthetics heartbeat monitoring canary. Associate the canary with the website's URL for end users. Create a CloudWatch alarm for the canary. Configure the alarm to publish an SNS notification if the value of the SuccessPercent metric is less than 99%.",
+      "D": "Create an Amazon CloudWatch Synthetics broken link checker monitoring canary. Associate the canary with the website's URL for end users. Create a CloudWatch alarm for the canary. Configure the alarm to publish an SNS notification if the value of the SuccessPercent metric is less than 99%."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch alarm that is based on the website's logs that are published to a CloudWatch Logs log group. Configure the alarm to publish an SNS notification if the number of HTTP 4xx errors and 5xx errors exceeds a specified threshold.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch alarm that is based on the website's published metrics in CloudWatch. Configure the alarm to publish an SNS notification that is based on anomaly detection.",
+      "C": "Correct. This option meets the requirements described in the question. Create an Amazon CloudWatch Synthetics heartbeat monitoring canary. Associate the canary with the website's URL for end users. Create a CloudWatch alarm for the canary. Configure the alarm to publish an SNS notification if the value of the SuccessPercent metric is less than 99%.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch Synthetics broken link checker monitoring canary. Associate the canary with the website's URL for end users. Create a CloudWatch alarm for the canary. Configure the alarm to publish an SNS notification if the value of the SuccessPercent metric is less than 99%."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 453,
+    "type": "single",
+    "question": "A company needs to track spending in its AWS account. The company must receive a notification when current costs and forecasted costs exceed specific thresholds. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create a new IAM role. Attach the AWSPurchaseOrdersServiceRolePolicy AWS managed policy to the role. Check AWS Cost Explorer on a regular basis to monitor current costs and forecasted costs.",
+      "B": "Create an AWS Cost and Usage Report. Create an AWS Step Functions state machine that runs when a new usage file is generated. Configure the state machine to pass the data to Amazon Forecast and to invoke an AWS Lambda function. Configure the Lambda function to parse the data and to send a notification to an Amazon Simple Notification Service (Amazon SNS) topic if costs exceed the thresholds.",
+      "C": "Create an AWS Cost and Usage Report. Separate the current costs and forecasted costs by service. Schedule the report to be sent to an Amazon Simple Notification Service (Amazon SNS) topic each month.",
+      "D": "Create a recurring cost budget in AWS Budgets. Create an alert for the actual cost. Create a second alert for the forecasted costs. Configure an Amazon Simple Notification Service (Amazon SNS) topic to receive the alerts."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create a new IAM role. Attach the AWSPurchaseOrdersServiceRolePolicy AWS managed policy to the role. Check AWS Cost Explorer on a regular basis to monitor current costs and forecasted costs.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an AWS Cost and Usage Report. Create an AWS Step Functions state machine that runs when a new usage file is generated. Configure the state machine to pass the data to Amazon Forecast and to invoke an AWS Lambda function. Configure the Lambda function to parse the data and to send a notification to an Amazon Simple Notification Service (Amazon SNS) topic if costs exceed the thresholds.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create an AWS Cost and Usage Report. Separate the current costs and forecasted costs by service. Schedule the report to be sent to an Amazon Simple Notification Service (Amazon SNS) topic each month.",
+      "D": "Correct. This option meets the requirements described in the question. Create a recurring cost budget in AWS Budgets. Create an alert for the actual cost. Create a second alert for the forecasted costs. Configure an Amazon Simple Notification Service (Amazon SNS) topic to receive the alerts."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 454,
+    "type": "single",
+    "question": "A company uses a multi-account structure in the AWS Cloud. The company's environment includes a shared account for common resources. The environment also includes a development account for new application development. The company uses Amazon Route 53 for DNS management. The company manages all its Route 53 hosted zones from the shared account. A SysOps administrator needs to obtain a new SSL/TLS certificate for an application that is deployed in the development account. What must the SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Create a new AWS Key Management Service (AWS KMS) key in the shared account. Configure the key policy to give read access to the development account's root principal.",
+      "B": "Request a new certificate by using AWS Certificate Manager (ACM) from the shared account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.",
+      "C": "Request a new certificate by using AWS Certificate Manager (ACM) from the development account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.",
+      "D": "Create a new AWS Key Management Service (AWS KMS) key in the development account. Configure the key policy to give read access to the shared account’s root principal. Use Route 53 from the shared account to create a validation record set that references the Amazon Resource Name (ARN) of the KMS key."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create a new AWS Key Management Service (AWS KMS) key in the shared account. Configure the key policy to give read access to the development account's root principal.",
+      "B": "Incorrect. This option does not satisfy the requirements. Request a new certificate by using AWS Certificate Manager (ACM) from the shared account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.",
+      "C": "Correct. This option meets the requirements described in the question. Request a new certificate by using AWS Certificate Manager (ACM) from the development account. Use Route 53 from the shared account to create validation record sets in the relevant hosted zone.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create a new AWS Key Management Service (AWS KMS) key in the development account. Configure the key policy to give read access to the shared account’s root principal. Use Route 53 from the shared account to create a validation record set that references the Amazon Resource Name (ARN) of the KMS key."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 455,
+    "type": "single",
+    "question": "A company's SysOps administrator is troubleshooting communication between the components of an application. The company configured VPC flow logs to be published to Amazon CloudWatch Logs. However, there are no logs in CloudWatch Logs. What could be blocking the VPC flow logs from being published to CloudWatch Logs?",
+    "options": {
+      "A": "The IAM policy that is attached to the IAM role for the flow log is missing the logs CreateLogGroup permission",
+      "B": "The IAM policy that is attached to the IAM role for the flow log is missing the logs CreateExportTask permission",
+      "C": "The VPC is configured for IPv6 addresses",
+      "D": "The VPC is peered with another VPC in the AWS account"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. The IAM policy that is attached to the IAM role for the flow log is missing the logs CreateLogGroup permission",
+      "B": "Incorrect. This option does not satisfy the requirements. The IAM policy that is attached to the IAM role for the flow log is missing the logs CreateExportTask permission",
+      "C": "Incorrect. This option does not satisfy the requirements. The VPC is configured for IPv6 addresses",
+      "D": "Incorrect. This option does not satisfy the requirements. The VPC is peered with another VPC in the AWS account"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 456,
+    "type": "single",
+    "question": "A company deploys a new application on three Amazon EC2 instances across three Availability Zones. The company uses a Network Load Balancer (NLB) to route traffic to the EC2 instances. A SysOps administrator must implement a solution so that the EC2 instances allow traffic from only the NLB. What should the SysOps administrator do to meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Configure the security group that is associated with the EC2 instances to allow traffic from only the security group that is associated with the NLB",
+      "B": "Configure the security group that is associated with the EC2 instances to allow traffic from only the elastic network interfaces that are associated with the NLB",
+      "C": "Create a network ACL Associate the network ACL with the application subnets. Configure the network ACL to allow inbound traffic from only the CIDR ranges of the NLB",
+      "D": "Use a third-party firewall solution that is installed on a separate EC2 instance. Configure a firewall rule that allows traffic to the application's EC2 instances from only the subnets where the NLB is deployed."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Configure the security group that is associated with the EC2 instances to allow traffic from only the security group that is associated with the NLB",
+      "B": "Incorrect. This option does not satisfy the requirements. Configure the security group that is associated with the EC2 instances to allow traffic from only the elastic network interfaces that are associated with the NLB",
+      "C": "Incorrect. This option does not satisfy the requirements. Create a network ACL Associate the network ACL with the application subnets. Configure the network ACL to allow inbound traffic from only the CIDR ranges of the NLB",
+      "D": "Incorrect. This option does not satisfy the requirements. Use a third-party firewall solution that is installed on a separate EC2 instance. Configure a firewall rule that allows traffic to the application's EC2 instances from only the subnets where the NLB is deployed."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 457,
+    "type": "single",
+    "question": "A company that uses ServiceNow has an AWS account where a sensitive workload runs. The necessary security groups are in place. The company needs to implement a solution to create an incident in ServiceNow every time the rules change in any security group. Which solution will meet this requirement with the LEAST operational effort?",
+    "options": {
+      "A": "Create an Amazon CloudWatch alarm that enters ALARM state when security groups change. Configure the alarm to invoke an AWS Lambda function that connects to ServiceNow to create an incident.",
+      "B": "Enable AWS Security Hub. Create an AWS Lambda function that connects to ServiceNow to create an incident. Create an Amazon EventBridge rule to detect security group changes. Configure the event type as Security Hub Findings - Custom Action. Configure the EventBridge rule to invoke the Lambda function.",
+      "C": "Create an Amazon EventBridge rule to detect security group changes. Configure the event type as AWS API Call via CloudTrail. Configure the EventBridge rule to run the AWS-CreateServiceNowIncidentAWS Systems Manager Automation runbook to create an incident in ServiceNow.",
+      "D": "Launch an Amazon EC2 instance that has a persistent connection to ServiceNow to detect security group changes. Export AWS CloudTrail logs to the EC2 instance. Write a bash script to run a scheduled cron job every 30 minutes to search the CloudTrail logs for security groups changes. Configure the EC2 instance to create an incident in ServiceNow when a change is detected."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch alarm that enters ALARM state when security groups change. Configure the alarm to invoke an AWS Lambda function that connects to ServiceNow to create an incident.",
+      "B": "Incorrect. This option does not satisfy the requirements. Enable AWS Security Hub. Create an AWS Lambda function that connects to ServiceNow to create an incident. Create an Amazon EventBridge rule to detect security group changes. Configure the event type as Security Hub Findings - Custom Action. Configure the EventBridge rule to invoke the Lambda function.",
+      "C": "Correct. This option meets the requirements described in the question. Create an Amazon EventBridge rule to detect security group changes. Configure the event type as AWS API Call via CloudTrail. Configure the EventBridge rule to run the AWS-CreateServiceNowIncidentAWS Systems Manager Automation runbook to create an incident in ServiceNow.",
+      "D": "Incorrect. This option does not satisfy the requirements. Launch an Amazon EC2 instance that has a persistent connection to ServiceNow to detect security group changes. Export AWS CloudTrail logs to the EC2 instance. Write a bash script to run a scheduled cron job every 30 minutes to search the CloudTrail logs for security groups changes. Configure the EC2 instance to create an incident in ServiceNow when a change is detected."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 458,
+    "type": "single",
+    "question": "A company needs to enforce tagging requirements for Amazon DynamoDB tables in its AWS accounts. A SysOps administrator must implement a solution to identify and remediate all DynamoDB tables that do not have the appropriate tags. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create a custom AWS Lambda function to evaluate and remediate all DynamoDB tables. Create an Amazon EventBridge scheduled rule to invoke the Lambda function.",
+      "B": "Create a custom AWS Lambda function to evaluate and remediate ail DynamoDB tables. Create an AWS Config custom rule to invoke the Lambda function.",
+      "C": "Use the required-tags AWS Config managed rule to evaluate all DynamoDB tables for the appropriate tags. Configure an automatic remediation action that uses an AWS Systems Manager Automation custom runbook.",
+      "D": "Create an Amazon EventBridge managed rule to evaluate all DynamoDB tables for the appropriate tags. Configure the EventBridge rule to run an AWS Systems Manager Automation custom runbook for remediation."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create a custom AWS Lambda function to evaluate and remediate all DynamoDB tables. Create an Amazon EventBridge scheduled rule to invoke the Lambda function.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create a custom AWS Lambda function to evaluate and remediate ail DynamoDB tables. Create an AWS Config custom rule to invoke the Lambda function.",
+      "C": "Correct. This option meets the requirements described in the question. Use the required-tags AWS Config managed rule to evaluate all DynamoDB tables for the appropriate tags. Configure an automatic remediation action that uses an AWS Systems Manager Automation custom runbook.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an Amazon EventBridge managed rule to evaluate all DynamoDB tables for the appropriate tags. Configure the EventBridge rule to run an AWS Systems Manager Automation custom runbook for remediation."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 459,
+    "type": "single",
+    "question": "A company is preparing for a marketing campaign that will increase traffic to a new web application. The application uses Amazon API Gateway and AWS Lambda for the application logic. The application stores relevant user data in an Amazon Aurora MySQL DB cluster that has one Aurora Replica. Database queries for the application are 5% write and 95% read. What should a SysOps administrator do to scale the database when traffic increases?",
+    "options": {
+      "A": "Configure Aurora Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the Aurora Replicas.",
+      "B": "Configure Aurora Auto Scaling to increase or decrease the size of the Aurora Replicas based on the average CPU utilization of the Aurora Replicas.",
+      "C": "Configure AWS Auto Scaling to monitor the Aurora cluster. Configure AWS Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the primary instance.",
+      "D": "Configure AWS Auto Scaling to monitor the Aurora cluster. Configure AWS Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the existing Aurora Replica."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Configure Aurora Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the Aurora Replicas.",
+      "B": "Incorrect. This option does not satisfy the requirements. Configure Aurora Auto Scaling to increase or decrease the size of the Aurora Replicas based on the average CPU utilization of the Aurora Replicas.",
+      "C": "Incorrect. This option does not satisfy the requirements. Configure AWS Auto Scaling to monitor the Aurora cluster. Configure AWS Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the primary instance.",
+      "D": "Incorrect. This option does not satisfy the requirements. Configure AWS Auto Scaling to monitor the Aurora cluster. Configure AWS Auto Scaling to add or remove Aurora Replicas in the cluster based on the average CPU utilization of the existing Aurora Replica."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 460,
+    "type": "single",
+    "question": "A company is using Amazon S3 to set up a temporary static website that is public. A SysOps administrator creates an S3 bucket by using the default settings. The SysOps administrator updates the S3 bucket properties to configure static website hosting. The SysOps administrator then uploads objects that contain content for index html and error html. When the SysOps administrator navigates to the website URL the SysOps administrator receives an HTTP Status Code 403: Forbidden (Access Denied) error. What should the SysOps administrator do to resolve this error?",
+    "options": {
+      "A": "Create an Amazon Route 53 DNS entry Point the entry to the S3 bucket.",
+      "B": "Edit the S3 bucket permissions by turning off Block Public Access settings. Create a bucket policy to allow GetObject access on the S3 bucket.",
+      "C": "Edit the permissions on the index html and error html files for read access.",
+      "D": "Edit the S3 bucket permissions by turning off Block Public Access settings. Create a bucket policy to allow PutObject access on the S3 bucket."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Create an Amazon Route 53 DNS entry Point the entry to the S3 bucket.",
+      "B": "Correct. This option meets the requirements described in the question. Edit the S3 bucket permissions by turning off Block Public Access settings. Create a bucket policy to allow GetObject access on the S3 bucket.",
+      "C": "Incorrect. This option does not satisfy the requirements. Edit the permissions on the index html and error html files for read access.",
+      "D": "Incorrect. This option does not satisfy the requirements. Edit the S3 bucket permissions by turning off Block Public Access settings. Create a bucket policy to allow PutObject access on the S3 bucket."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 461,
+    "type": "single",
+    "question": "A company has internal hybrid applications that have resources in the AWS Cloud and on premises. Users report that the applications sometimes are not available. The company has configured an Amazon CloudWatch alarm to monitor the tunnel status of its AWS Site-to-Site VPN connection. A SysOps administrator must implement a solution that creates a high-priority ticket in an internal ticketing tool when the VPN tunnel is down. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an Amazon Simple Notification Service (Amazon SNS) topic for the CloudWatch alarm. Subscribe the ticketing tool's endpoint to the SNS topic.",
+      "B": "Create an Amazon Simple Queue Service (Amazon SQS) queue as the target for the CloudWatch alarm. Configure the queue to transform messages into tickets and to post the tickets to the ticketing tool’s endpoint.",
+      "C": "Create an AWS Lambda function. Configure the CloudWatch alarm to directly invoke the Lambda function to create individual tickets in the ticketing tool.",
+      "D": "Create an Amazon EventBridge rule that monitors the VPN tunnel directly. Configure the ticketing tool’s endpoint as the target of the rule."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Create an Amazon Simple Notification Service (Amazon SNS) topic for the CloudWatch alarm. Subscribe the ticketing tool's endpoint to the SNS topic.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an Amazon Simple Queue Service (Amazon SQS) queue as the target for the CloudWatch alarm. Configure the queue to transform messages into tickets and to post the tickets to the ticketing tool’s endpoint.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create an AWS Lambda function. Configure the CloudWatch alarm to directly invoke the Lambda function to create individual tickets in the ticketing tool.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an Amazon EventBridge rule that monitors the VPN tunnel directly. Configure the ticketing tool’s endpoint as the target of the rule."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 462,
+    "type": "single",
+    "question": "A SysOps administrator is troubleshooting an AWS CloudFormation stack creation that failed. Before the SysOps administrator can identify the problem, the stack and its resources are deleted. For future deployments, the SysOps administrator must preserve any resources that CloudFormation successfully created. What should the SysOps administrator do to meet this requirement?",
+    "options": {
+      "A": "Set the value of the DisableRollback parameter to False during stack creation",
+      "B": "Set the value of the OnFailure parameter to DO_NOTHING during stack creation",
+      "C": "Specify a rollback configuration that has a rollback trigger of DO_NOTHING during stack creation",
+      "D": "Set the value of the OnFailure parameter to ROLLBACK during stack creation"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Set the value of the DisableRollback parameter to False during stack creation",
+      "B": "Correct. This option meets the requirements described in the question. Set the value of the OnFailure parameter to DO_NOTHING during stack creation",
+      "C": "Incorrect. This option does not satisfy the requirements. Specify a rollback configuration that has a rollback trigger of DO_NOTHING during stack creation",
+      "D": "Incorrect. This option does not satisfy the requirements. Set the value of the OnFailure parameter to ROLLBACK during stack creation"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 463,
+    "type": "single",
+    "question": "A company needs to implement a solution to install specific software on Amazon EC2 instances when the instances launch. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure AWS Systems Manager State Manager associations to bootstrap the EC2 instances with the required software at launch.",
+      "B": "Use the Amazon CloudWatch agent to detect EC2 InstanceStart events and to inject the required software. Modify the InstanceRole IAM role to add permissions for the StartTask API operation.",
+      "C": "Use Amazon Inspector to detect EC2 launch events. Configure Amazon Inspector to install the required software as part of lifecycle hooks for theEC2launch events.",
+      "D": "Use AWS Security Hub remediation actions to install the required software at launch."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Configure AWS Systems Manager State Manager associations to bootstrap the EC2 instances with the required software at launch.",
+      "B": "Incorrect. This option does not satisfy the requirements. Use the Amazon CloudWatch agent to detect EC2 InstanceStart events and to inject the required software. Modify the InstanceRole IAM role to add permissions for the StartTask API operation.",
+      "C": "Incorrect. This option does not satisfy the requirements. Use Amazon Inspector to detect EC2 launch events. Configure Amazon Inspector to install the required software as part of lifecycle hooks for theEC2launch events.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use AWS Security Hub remediation actions to install the required software at launch."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 464,
+    "type": "single",
+    "question": "A company is using Amazon CloudWatch alarms to monitor Amazon Elastic Kubernetes Service (Amazon EKS) workloads. The alarms are initiated through a threshold definition and are not helping the EKS cluster operate more efficiently. A SysOps administrator must implement a solution that identifies anomalies and generates recommendations for how to address the anomalies. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use CloudWatch anomaly detection to identify anomalies and provide recommendations",
+      "B": "Use CloudWatch Container Insights with Amazon DevOps Guru to identify anomalies and provide recommendations.",
+      "C": "Use CloudWatch Container Insights to identify anomalies and provide recommendations",
+      "D": "Use CloudWatch anomaly detection with CloudWatch Container Insights to identify anomalies and provide recommendations"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Use CloudWatch anomaly detection to identify anomalies and provide recommendations",
+      "B": "Correct. This option meets the requirements described in the question. Use CloudWatch Container Insights with Amazon DevOps Guru to identify anomalies and provide recommendations.",
+      "C": "Incorrect. This option does not satisfy the requirements. Use CloudWatch Container Insights to identify anomalies and provide recommendations",
+      "D": "Incorrect. This option does not satisfy the requirements. Use CloudWatch anomaly detection with CloudWatch Container Insights to identify anomalies and provide recommendations"
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 465,
+    "type": "multiple",
+    "question": "A company has an application that uses Amazon DynamoDB tables. The tables are spread across AWS accounts and AWS Regions. The company uses AWS CloudFormation to deploy AWS resources. A new team at the company is deleting unused AWS resources. The team accidentally deletes several production DynamoDB tables by running an AWS Lambda function that makes a DynamoDB DeleteTable API call. The table deletions cause an application outage. A SysOps administrator must implement a solution that minimizes the chance of accidental deletions of tables. The solution also must minimize data loss that results from accidental deletions. Which combination of steps will meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Enable termination protection for the CloudFormation stacks that deploy the DynamoDB tables.",
+      "B": "Enable deletion protection for the DynamoDB tables.",
+      "C": "Enable point-in-time recovery for the DynamoDB tables. Restore the tables if they are accidentally deleted.",
+      "D": "Schedule daily backups of the DynamoDB tables. Restore the tables if they are accidentally deleted.",
+      "E": "Export the DynamoDB tables to Amazon S3 every day. Use Import from Amazon S3 to restore data for tables that are accidentally deleted."
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Enable termination protection for the CloudFormation stacks that deploy the DynamoDB tables.",
+      "B": "Correct. This option meets the requirements described in the question. Enable deletion protection for the DynamoDB tables.",
+      "C": "Correct. This option meets the requirements described in the question. Enable point-in-time recovery for the DynamoDB tables. Restore the tables if they are accidentally deleted.",
+      "D": "Incorrect. This option does not satisfy the requirements. Schedule daily backups of the DynamoDB tables. Restore the tables if they are accidentally deleted.",
+      "E": "Incorrect. This option does not satisfy the requirements. Export the DynamoDB tables to Amazon S3 every day. Use Import from Amazon S3 to restore data for tables that are accidentally deleted."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 466,
+    "type": "single",
+    "question": "A company has created an AWS CloudFormation template that consists of the AWS::EC2::Instance resource and a custom CloudFormation resource. The custom CloudFormation resource is an AWS Lambda function that attempts to run automation on the Amazon EC2 instance. During testing, the Lambda function fails because the Lambda function tries to run before the EC2 instance is launched. Which solution will resolve this issue?",
+    "options": {
+      "A": "Add a DependsOn attribute to the custom resource. Specify the EC2 instance in the DependsOn attribute.",
+      "B": "Update the custom resource's service token to point to a valid Lambda function.",
+      "C": "Update the Lambda function to use the cfn-response module to send a response to the custom resource.",
+      "D": "Use the Fn::If intrinsic function to check for the EC2 instance before the custom resource runs."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Add a DependsOn attribute to the custom resource. Specify the EC2 instance in the DependsOn attribute.",
+      "B": "Incorrect. This option does not satisfy the requirements. Update the custom resource's service token to point to a valid Lambda function.",
+      "C": "Incorrect. This option does not satisfy the requirements. Update the Lambda function to use the cfn-response module to send a response to the custom resource.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use the Fn::If intrinsic function to check for the EC2 instance before the custom resource runs."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 467,
+    "type": "single",
+    "question": "A SysOps administrator needs to ensure that an Amazon RDS for PostgreSQL DB instance has available backups. The DB instance has automated backups turned on with a backup retention period of 7 days. However, no automated backups for the DB instance have been created in the past month. What could be the cause of the lack of automated backups?",
+    "options": {
+      "A": "The Amazon S3 bucket that stores the backups is full.",
+      "B": "The DB instance is in the STORAGE_FULL state.",
+      "C": "The DB instance is not configured for Multi-AZ.",
+      "D": "The backup retention period must be 30 days."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. The Amazon S3 bucket that stores the backups is full.",
+      "B": "Correct. This option meets the requirements described in the question. The DB instance is in the STORAGE_FULL state.",
+      "C": "Incorrect. This option does not satisfy the requirements. The DB instance is not configured for Multi-AZ.",
+      "D": "Incorrect. This option does not satisfy the requirements. The backup retention period must be 30 days."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 468,
+    "type": "single",
+    "question": "A company has a list of pre-approved Amazon Machine Images (AMIs) for developers to use to launch Amazon EC2 instances. However, developers are still launching EC2 instances from unapproved AMIs. A SysOps administrator must implement a solution that automatically terminates any instances that are launched from unapproved AMIs. Which solution will meet this requirement?",
+    "options": {
+      "A": "Set up an AWS Config managed rule to check if instances are running from AMIs that are on the list of pre-approved AMIs. Configure an automatic remediation action so that an AWS Systems Manager Automation runbook terminates any instances that are noncompliant with the rule.",
+      "B": "Store the list of pre-approved AMIs in an Amazon DynamoDB global table that is replicated to all AWS Regions that the developers use. Create Regional EC2 launch templates. Configure the launch templates to check AMIs against the list and to terminate any instances that are not on the list.",
+      "C": "Select the Amazon CloudWatch metric that shows all running instances and the AMIs that the instances were launched from. Create a CloudWatch alarm that terminates an instance if the metric shows the use of an unapproved AMI.",
+      "D": "Create a custom Amazon Inspector finding to compare a running instance's AMI against the list of pre-approved AMIs. Create an AWS Lambda function that terminates instances. Configure Amazon Inspector to report findings of unapproved AMIs to an Amazon Simple Queue Service (Amazon SQS) queue to invoke the Lambda function."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Set up an AWS Config managed rule to check if instances are running from AMIs that are on the list of pre-approved AMIs. Configure an automatic remediation action so that an AWS Systems Manager Automation runbook terminates any instances that are noncompliant with the rule.",
+      "B": "Incorrect. This option does not satisfy the requirements. Store the list of pre-approved AMIs in an Amazon DynamoDB global table that is replicated to all AWS Regions that the developers use. Create Regional EC2 launch templates. Configure the launch templates to check AMIs against the list and to terminate any instances that are not on the list.",
+      "C": "Incorrect. This option does not satisfy the requirements. Select the Amazon CloudWatch metric that shows all running instances and the AMIs that the instances were launched from. Create a CloudWatch alarm that terminates an instance if the metric shows the use of an unapproved AMI.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create a custom Amazon Inspector finding to compare a running instance's AMI against the list of pre-approved AMIs. Create an AWS Lambda function that terminates instances. Configure Amazon Inspector to report findings of unapproved AMIs to an Amazon Simple Queue Service (Amazon SQS) queue to invoke the Lambda function."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 469,
+    "type": "single",
+    "question": "Users of a company's internal web application recently experienced application performance issues for a brief period. The application includes frontend web servers that run in an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. The application also includes a backend Amazon Aurora PostgreSQL DB cluster that includes one DB instance. A SysOps administrator determines that the source of the performance issues was high utilization of the DB cluster. The single writer instance experienced more than 90% utilization for 11 minutes. The cause of the high utilization was an automated report that is scheduled to run one time each week. What should the SysOps administrator do to ensure that users do not experience performance issues each week when the report runs?",
+    "options": {
+      "A": "Increase the size of the DB instance. Monitor the performance during the next scheduled run of the report.",
+      "B": "Add a reader instance. Change the database connection string of the report application to use the newly created reader instance.",
+      "C": "Add another writer instance. Change the database connection string of the report application to use the newly created writer instance.",
+      "D": "Configure auto scaling for the DB cluster. Set the minimum capacity units, maximum capacity units, and target utilization."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Increase the size of the DB instance. Monitor the performance during the next scheduled run of the report.",
+      "B": "Correct. This option meets the requirements described in the question. Add a reader instance. Change the database connection string of the report application to use the newly created reader instance.",
+      "C": "Incorrect. This option does not satisfy the requirements. Add another writer instance. Change the database connection string of the report application to use the newly created writer instance.",
+      "D": "Incorrect. This option does not satisfy the requirements. Configure auto scaling for the DB cluster. Set the minimum capacity units, maximum capacity units, and target utilization."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 470,
+    "type": "single",
+    "question": "A company is using AWS to deploy a critical application on a fleet of Amazon EC2 instances. The company is rewriting the application because the application failed a security review. The application will take 12 months to rewrite. While this rewrite happens, the company needs to rotate IAM access keys that the application uses. A SysOps administrator must implement an automated solution that finds and rotates IAM access keys that are at least 30 days old. The solution must then continue to rotate the IAM access keys every 30 days. Which solution will meet this requirement with the MOST operational efficiency?",
+    "options": {
+      "A": "Use an AWS Config rule to identify IAM access keys that are at least 30 days old. Configure AWS Config to invoke an AWS Systems Manager Automation runbook to rotate the identified IAM access keys.",
+      "B": "Use AWS Trusted Advisor to identify IAM access keys that are at least 30 days old. Configure Trusted Advisor to invoke an AWS Systems Manager Automation runbook to rotate the identified IAM access keys.",
+      "C": "Create a script that checks the age of IAM access keys and rotates them if they are at least 30 days old. Launch an EC2 instance. Schedule the script to run as a cron expression on the EC2 instance every day.",
+      "D": "Create an AWS Lambda function that checks the age of IAM access keys and rotates them if they are at least 30 days old. Use an Amazon EventBridge rule to invoke the Lambda function every time a new IAM access key is created."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Use an AWS Config rule to identify IAM access keys that are at least 30 days old. Configure AWS Config to invoke an AWS Systems Manager Automation runbook to rotate the identified IAM access keys.",
+      "B": "Incorrect. This option does not satisfy the requirements. Use AWS Trusted Advisor to identify IAM access keys that are at least 30 days old. Configure Trusted Advisor to invoke an AWS Systems Manager Automation runbook to rotate the identified IAM access keys.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create a script that checks the age of IAM access keys and rotates them if they are at least 30 days old. Launch an EC2 instance. Schedule the script to run as a cron expression on the EC2 instance every day.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an AWS Lambda function that checks the age of IAM access keys and rotates them if they are at least 30 days old. Use an Amazon EventBridge rule to invoke the Lambda function every time a new IAM access key is created."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 471,
+    "type": "single",
+    "question": "A company receives an alert from an Amazon CloudWatch alarm. The alarm indicates that a web application that is running on Amazon EC2 instances is not responding to requests. The EC2 instances have a Red Hat Enterprise Linux operating system and are in an Auto Scaling group. The Auto Scaling group has a minimum capacity of 2 and a maximum capacity of 5. An investigation reveals that the web application is experiencing out-of-memory errors. The company adds memory to the web application and wants to track operating system memory utilization. A CloudWatch memory metric does not currently exist for the EC2 instances in the Auto Scaling group. What should a SysOps administrator do to provide a CloudWatch memory metric for the EC2 instances?",
+    "options": {
+      "A": "Use an Amazon Machine Image (AMI) that includes the CloudWatch agent.",
+      "B": "Turn on CloudWatch detailed monitoring.",
+      "C": "Turn on Instance Metadata Service Version 2 (IMDSv2).",
+      "D": "Use an Amazon Machine Image (AMI) that is based on Amazon Linux."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Use an Amazon Machine Image (AMI) that includes the CloudWatch agent.",
+      "B": "Incorrect. This option does not satisfy the requirements. Turn on CloudWatch detailed monitoring.",
+      "C": "Incorrect. This option does not satisfy the requirements. Turn on Instance Metadata Service Version 2 (IMDSv2).",
+      "D": "Incorrect. This option does not satisfy the requirements. Use an Amazon Machine Image (AMI) that is based on Amazon Linux."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 472,
+    "type": "single",
+    "question": "A company is using an Amazon CloudWatch alarm to monitor the FreeLocalStorage metric for an Amazon Aurora PostgreSQL production database. The alarm goes into ALARM state and indicates that the database is running low on temporary storage. A SysOps administrator discovers that a weekly report is using most of the temporary storage that is currently allocated. What should the SysOps administrator do to solve this problem?",
+    "options": {
+      "A": "Turn on Aurora PostgreSQL query plan management.",
+      "B": "Modify the configuration of the DB cluster to turn on storage auto scaling.",
+      "C": "Add an Aurora read replica to the DB cluster. Modify the report to use the new read replica.",
+      "D": "Modify the DB instance class for each DB instance in the DB cluster to increase the instance size."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Turn on Aurora PostgreSQL query plan management.",
+      "B": "Correct. This option meets the requirements described in the question. Modify the configuration of the DB cluster to turn on storage auto scaling.",
+      "C": "Incorrect. This option does not satisfy the requirements. Add an Aurora read replica to the DB cluster. Modify the report to use the new read replica.",
+      "D": "Incorrect. This option does not satisfy the requirements. Modify the DB instance class for each DB instance in the DB cluster to increase the instance size."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 473,
+    "type": "single",
+    "question": "A company is running a development application on an Amazon EC2 instance. The application uploads 500,000 files that are 1 GB in size into a target Amazon S3 bucket that has default encryption enabled. The EC2 instance is in the same AWS Region where the S3 bucket is deployed. The company uses performance logging that is built into the application software. The logs show that the application is constantly waiting for the files to be written to the S3 bucket. A SysOps administrator needs to improve the application's throughput performance. The SysOps administrator validates that the networking on the EC2 instance is not constrained. What should the SysOps administrator do to improve the S3 upload performance?",
+    "options": {
+      "A": "Enable S3 Transfer Acceleration on the S3 bucket.",
+      "B": "Split the S3 write operations to use multiple bucket prefixes to write items in parallel.",
+      "C": "Configure AWS PrivateLink for Amazon S3. Turn off encryption on the S3 bucket.",
+      "D": "Configure AWS Global Accelerator in the Region. Turn off encryption on the S3 bucket."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Enable S3 Transfer Acceleration on the S3 bucket.",
+      "B": "Correct. This option meets the requirements described in the question. Split the S3 write operations to use multiple bucket prefixes to write items in parallel.",
+      "C": "Incorrect. This option does not satisfy the requirements. Configure AWS PrivateLink for Amazon S3. Turn off encryption on the S3 bucket.",
+      "D": "Incorrect. This option does not satisfy the requirements. Configure AWS Global Accelerator in the Region. Turn off encryption on the S3 bucket."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 474,
+    "type": "single",
+    "question": "A company is using an Amazon EC2 Auto Scaling group to support a workload. A SysOps administrator finds that the Auto Scaling group is configured with two similar scaling policies. One scaling policy adds 5 instances when CPU utilization reaches 80%. The other scaling policy adds 10 instances when CPU utilization reaches 80%. What will happen when CPU utilization reaches the 80% threshold?",
+    "options": {
+      "A": "Amazon EC2 Auto Scaling will add 5 instances.",
+      "B": "Amazon EC2 Auto Scaling will add 10 instances.",
+      "C": "Amazon EC2 Auto Scaling will add 15 instances.",
+      "D": "The Auto Scaling group will not scale because of conflicting policies."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Amazon EC2 Auto Scaling will add 5 instances.",
+      "B": "Correct. This option meets the requirements described in the question. Amazon EC2 Auto Scaling will add 10 instances.",
+      "C": "Incorrect. This option does not satisfy the requirements. Amazon EC2 Auto Scaling will add 15 instances.",
+      "D": "Incorrect. This option does not satisfy the requirements. The Auto Scaling group will not scale because of conflicting policies."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 475,
+    "type": "single",
+    "question": "An application uses an Amazon Aurora MySQL DB cluster that includes one Aurora Replica. The application's read performance degrades when there are more than 200 user connections. The number of user connections is approximately 180 on a consistent basis. Occasionally, the number of user connections increases rapidly to more than 200. A SysOps administrator must implement a solution that will scale the application automatically as user demand increases or decreases. Which solution will meet these requirements?",
+    "options": {
+      "A": "Modify the DB cluster by increasing the Aurora Replica instance size.",
+      "B": "Modify the DB cluster by changing to serverless mode whenever the number of user connections exceeds 200.",
+      "C": "Migrate to a new Aurora DB cluster that has multiple writer instances. Modify the application's database connection string.",
+      "D": "Create an auto scaling policy that has a target value of 195 for the DatabaseConnections metric."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Modify the DB cluster by increasing the Aurora Replica instance size.",
+      "B": "Incorrect. This option does not satisfy the requirements. Modify the DB cluster by changing to serverless mode whenever the number of user connections exceeds 200.",
+      "C": "Incorrect. This option does not satisfy the requirements. Migrate to a new Aurora DB cluster that has multiple writer instances. Modify the application's database connection string.",
+      "D": "Correct. This option meets the requirements described in the question. Create an auto scaling policy that has a target value of 195 for the DatabaseConnections metric."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 476,
+    "type": "single",
+    "question": "A company runs a single-page web application on AWS. The application uses Amazon CloudFront to deliver static content from an Amazon S3 bucket origin. The application also uses an Amazon Elastic Kubernetes Service (Amazon EKS) cluster to serve API calls. Users sometimes report that the website is not operational, even when monitoring shows that the index page is reachable and that the EKS cluster is healthy. A SysOps administrator must implement additional monitoring that can detect when the website is not operational before users report the problem. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon CloudWatch Synthetics heartbeat monitor canary that points to the fully qualified domain name (FQDN) of the website.",
+      "B": "Create an Amazon CloudWatch Synthetics API canary that monitors the availability of API endpoints from the EKS cluster.",
+      "C": "Create an Amazon CloudWatch RUM app monitor that points to the fully qualified domain name (FQDN) of the website. Configure the app monitor to collect performance telemetry and JavaScript errors.",
+      "D": "Create an Amazon CloudWatch RUM app monitor that uses the API endpoints from the EKS cluster."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. This option meets the requirements described in the question. Create an Amazon CloudWatch Synthetics heartbeat monitor canary that points to the fully qualified domain name (FQDN) of the website.",
+      "B": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch Synthetics API canary that monitors the availability of API endpoints from the EKS cluster.",
+      "C": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch RUM app monitor that points to the fully qualified domain name (FQDN) of the website. Configure the app monitor to collect performance telemetry and JavaScript errors.",
+      "D": "Incorrect. This option does not satisfy the requirements. Create an Amazon CloudWatch RUM app monitor that uses the API endpoints from the EKS cluster."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 477,
+    "type": "single",
+    "question": "A company hosts an application on Amazon EC2 instances. The instances are in an Amazon EC2 Auto Scaling group that uses a launch template. The amount of application traffic changes throughout the day. Scaling events happen frequently. A SysOps administrator needs to help developers troubleshoot the application. When a scaling event removes an instance, EC2 Auto Scaling terminates the instance before the developers can log in to the instance to diagnose issues. Which solution will prevent termination of the instance so that the developers can log in to the instance?",
+    "options": {
+      "A": "Ensure that the Delete on termination setting is turned off in the UserData section of the launch template.",
+      "B": "Update the Auto Scaling group by enabling instance scale-in protection for newly launched instances.",
+      "C": "Use Amazon Inspector to configure a rules package to protect the instances from termination.",
+      "D": "Use Amazon GuardDuty to configure rules to protect the instances from termination."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Ensure that the Delete on termination setting is turned off in the UserData section of the launch template.",
+      "B": "Correct. This option meets the requirements described in the question. Update the Auto Scaling group by enabling instance scale-in protection for newly launched instances.",
+      "C": "Incorrect. This option does not satisfy the requirements. Use Amazon Inspector to configure a rules package to protect the instances from termination.",
+      "D": "Incorrect. This option does not satisfy the requirements. Use Amazon GuardDuty to configure rules to protect the instances from termination."
+    }
+  },
+  {
+    "exam": "SOA-C02",
+    "id": 478,
+    "type": "single",
+    "question": "A SysOps administrator must ensure that all of a company's current and future Amazon S3 buckets have logging enabled. If an S3 bucket does not have logging enabled, an automated process must enable logging for the S3 bucket. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use AWS Trusted Advisor to perform a check for S3 buckets that do not have logging enabled. Configure the check to enable logging for S3 buckets that do not have logging enabled.",
+      "B": "Configure an S3 bucket policy that requires all current and future S3 buckets to have logging enabled.",
+      "C": "Use the s3-bucket-logging-enabled AWS Config managed rule. Add a remediation action that uses an AWS Lambda function to enable logging.",
+      "D": "Use the s3-bucket-logging-enabled AWS Config managed rule. Add a remediation action that uses the AWS- ConfigureS3BucketLogging AWS Systems Manager Automation runbook to enable logging."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. This option does not satisfy the requirements. Use AWS Trusted Advisor to perform a check for S3 buckets that do not have logging enabled. Configure the check to enable logging for S3 buckets that do not have logging enabled.",
+      "B": "Incorrect. This option does not satisfy the requirements. Configure an S3 bucket policy that requires all current and future S3 buckets to have logging enabled.",
+      "C": "Incorrect. This option does not satisfy the requirements. Use the s3-bucket-logging-enabled AWS Config managed rule. Add a remediation action that uses an AWS Lambda function to enable logging.",
+      "D": "Correct. This option meets the requirements described in the question. Use the s3-bucket-logging-enabled AWS Config managed rule. Add a remediation action that uses the AWS- ConfigureS3BucketLogging AWS Systems Manager Automation runbook to enable logging."
+    }
+  }
+]
