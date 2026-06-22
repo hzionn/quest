@@ -1,6 +1,25 @@
 [
   {
     "exam": "SCS-C03 補充",
+    "id": 316,
+    "type": "single",
+    "question": "一家公司将基础设施和应用程序代码存储在 AWS 外部的基于 Web 的第三方 Git 兼容代码存储库中。该公司希望通过使用 OpenID Connect (OIDC) 使这些代码存储库能够安全地进行身份验证，并承担公司 AWS 账户中现有的 IAM 角色。哪种解决方案能够满足这些要求？",
+    "options": {
+      "A": "使用 AWS Identity and Access Management (IAM) 联合身份验证创建 OIDC 身份提供程序 (IdP)。修改 IAM 角色的信任策略，允许代码库承担 IAM 角色。",
+      "B": "使用 AWS Identity and Access Management (IAM) Roles Anywhere 创建一个使用 OIDC 的信任锚。修改 IAM 角色的信任策略，允许代码存储库承担 IAM 角色。",
+      "C": "设置 AWS IAM Identity Center 账户实例。将代码库的访问权限配置为客户托管的 OIDC 应用程序。授予该应用程序对 IAM 角色的访问权限。",
+      "D": "使用 AWS Resource Access Manager (AWS RAM) 创建一个使用 OIDC 的新资源共享。将资源共享限制为指定的代码库。授予 IAM 角色对该资源共享的访问权限。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：在 IAM 中把外部 Git 供应商（如 GitHub、GitLab、Bitbucket）注册为 OIDC 身份提供程序（IdP），再修改目标 IAM 角色的信任策略，明确允许该 OIDC IdP（例如 GitHub 的 issuer URL / sub 条件）承担该角色。代码库即可透过 OIDC 联合身份取得临时凭证 assume role，是标准且最安全的做法。",
+      "B": "错误：IAM Roles Anywhere 是给「AWS 外部的工作负载」用 X.509 证书（搭配信任锚 trust anchor / 私有 CA）来取得临时凭证，并非以 OIDC 为基础；与题目「使用 OIDC」不符。",
+      "C": "错误：IAM Identity Center 主要用于管理人类使用者对帐户与应用的存取；把代码库设为客户托管 OIDC 应用并非让代码库 assume IAM 角色的正确机制。",
+      "D": "错误：AWS RAM 用于跨帐户共享资源（如子网、Transit Gateway），与 OIDC 联合身份验证无关，无法让外部代码库承担 IAM 角色。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
     "id": 317,
     "type": "multiple",
     "question": "一家公司有一个基于 PHP 的 Web 应用程序，该应用程序使用 Amazon S3 作为用户文件的对象存储。存储文件的 S3 存储桶配置了服务器端加密，使用 Amazon S3 管理的加密密钥 (SSE-S3)。根据新的安全要求，公司必须控制所有加密密钥。此外，S3 存储桶中的所有对象都必须使用公司控制的密钥进行加密。安全工程师必须采取哪些步骤组合才能满足这些要求？（选择三项。）",
@@ -12,7 +31,11 @@
       "E": "将 S3 存储桶上的 SSE-S3 配置更改为使用 AWS KMS 管理的加密密钥的服务器端加密 (SSE-KMS)。",
       "F": "将存储桶中的所有 S3 对象更改为使用新的加密密钥。"
     },
-    "answer": ["A", "E", "F"],
+    "answer": [
+      "A",
+      "E",
+      "F"
+    ],
     "explanations": {
       "A": "正确：在 AWS KMS 中创建客户管理密钥（Customer Managed Key），公司可以完全掌控密钥的生命周期，包括密钥轮换、密钥策略和访问控制。这对于满足「控制所有加密密钥」的要求至关重要。",
       "B": "错误：SSE-C 要求客户端在每次上传与下载时提供加密密钥。这把密钥管理负担转移到客户端（本例为 PHP 应用程序），没有使用 AWS KMS 进行集中管理，且与 SSE-KMS 相比安全性较低、管理更复杂，不符题意。",
@@ -20,6 +43,25 @@
       "D": "错误：AWS 托管密钥（aws/s3）由 AWS 代为管理，公司无法管理其轮换策略、金钥政策与生命周期，不符合「公司必须控制所有加密密钥」的要求。",
       "E": "正确：SSE-KMS 使用 AWS KMS 管理的密钥加密。把 S3 存储桶配置为 SSE-KMS 并指向选项 A 建立的客户管理密钥，之后新写入的所有对象都会用公司控制的密钥加密。",
       "F": "正确：把存储桶切到 SSE-KMS（以客户管理密钥）后，先前用 SSE-S3 加密的现有对象不会自动被新密钥重新加密。必须以重新上传或 S3 批量操作（Batch Operations）等方式，把所有现有对象重新加密为新的客户管理密钥，才能满足「桶中所有对象都使用公司控制的密钥」的要求。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 321,
+    "type": "single",
+    "question": "一家公司需要为其远程员工提供基于云的托管桌面解决方案。该公司希望确保员工只能使用公司提供的设备访问桌面。安全工程师必须设计一个能够最大限度降低成本和管理开销的解决方案。哪种解决方案能够满足这些要求？",
+    "options": {
+      "A": "部署自定义虚拟桌面基础架构 (VDI) 解决方案，并设置限制策略，仅允许从企业设备访问。",
+      "B": "部署一批 Amazon EC2 实例。为每位员工分配一个实例，并使用基于证书的设备身份验证，该身份验证使用 Windows Active Directory。",
+      "C": "部署 Amazon WorkSpaces。使用 AWS Identity and Access Management (IAM) 在身份验证网关上设置受信任设备策略和 IP 阻止。",
+      "D": "部署 Amazon WorkSpaces。创建客户端证书，并将其部署到受信任的设备。在目录级别启用受限访问。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "错误：自托管 VDI 需要自行建置与维运桌面基础架构，管理开销与成本都高，不符合「最大限度降低成本和管理开销」。",
+      "B": "错误：为每位员工各开一台 EC2 当桌面，成本高且需手动管理大量实例，管理开销大，也非托管桌面服务。",
+      "C": "错误：WorkSpaces 的设备存取限制并不是透过 IAM 在「身份验证网关」上设 IP 阻止来达成；这个做法不正确，也无法精确地「仅限公司设备」。",
+      "D": "正确：Amazon WorkSpaces 是全托管的 DaaS，成本与管理开销低。透过建立客户端证书并只部署到受信任的公司设备，再在目录层级启用受限访问，即可强制「只有持有有效证书的公司设备」才能存取 WorkSpaces，完全符合需求。"
     }
   },
   {
