@@ -104,6 +104,25 @@
   },
   {
     "exam": "SCS-C03 補充",
+    "id": 332,
+    "type": "single",
+    "question": "一家公司在 Amazon EC2 实例集群上运行一个应用程序。该公司可以从集群中移除实例而不会对应用程序造成任何风险。所有 EC2 实例都使用名为 ProdFleet 的同一套安全组。该公司 AWS 账户中已启用 Amazon GuardDuty 和 AWS Config。安全工程师需要提供一种解决方案，以防止 GuardDuty 生成加密货币发现事件时，EC2 实例发送出站流量。该安全工程师创建了一个名为 Isolate 的新安全组，其中不包含任何出站规则。然后，该安全工程师配置了一个 AWS Lambda 函数，用于将一个 EC2 实例从 ProdFleet 安全组中移除，并将其添加到 Isolate 安全组中。还需要采取哪些步骤才能满足这一要求？",
+    "options": {
+      "A": "配置 GuardDuty，使其在 GuardDuty 生成 CryptoCurrency:EC2/* 查找事件时直接调用 Lambda 函数。",
+      "B": "配置 AWS Config 规则，当 EC2 实例发生 CryptoCurrency:EC2/* 配置更改事件时，调用 Lambda 函数。",
+      "C": "配置 Amazon EventBridge 规则，如果 GuardDuty 生成 CryptoCurrency:EC2/* 查找事件，则调用 Lambda 函数。",
+      "D": "配置 Amazon EventBridge 规则，如果 AWS Config 检测到 EC2 实例的 CryptoCurrency:EC2/* 配置更改事件，则调用 Lambda 函数。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：GuardDuty 不会「直接」调用 Lambda 函数。GuardDuty 会把发现结果发布到 Amazon EventBridge，需透过 EventBridge 规则来触发 Lambda。",
+      "B": "错误：CryptoCurrency:EC2/* 是 GuardDuty 的「发现类型」，不是 AWS Config 的配置更改事件。AWS Config 监控的是资源组态变化，无法侦测加密货币挖矿这类威胁发现。",
+      "C": "正确：GuardDuty 会将发现结果送到 Amazon EventBridge。建立一条 EventBridge 规则，事件模式比对 GuardDuty 的 CryptoCurrency:EC2/* 发现类型，并以前述 Lambda 函数为目标，即可在偵測到加密货币挖矿发现时自动把该 EC2 实例移到无出站规则的 Isolate 安全组，阻断其出站流量。",
+      "D": "错误：CryptoCurrency:EC2/* 不是 AWS Config 的事件来源；AWS Config 不会产生这类发现，因此以 Config 为触发来源无法成立。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
     "id": 340,
     "type": "single",
     "question": "某公司的安全工程师正在调查 AWS 云中某个 Web 应用程序的可疑流量。该 Web 应用程序由位于 Amazon CloudFront 分发层后的应用负载均衡器 (ALB) 保护。ALB 关联了 AWS WAF Web 访问控制列表 (ACL)。该公司将 AWS WAF 日志存储在 Amazon S3 存储桶中。工程师注意到 AWS WAF 日志中所有传入请求都来自少数几个对应于 CloudFront 边缘节点的 IP 地址。安全工程师必须确定发起这些可疑请求的客户端的源 IP 地址。哪种方案能够满足这一要求？",
