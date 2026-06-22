@@ -153,5 +153,24 @@
     "explanations": {
       "_full": "本題對應 AWS Security Incident Response 框架中事件回應「準備（Prepare）」階段的四個關鍵要素：\n\n1) 釐清角色與職責 → RACI 權責分配表：RACI（Responsible/Accountable/Consulted/Informed）是針對「人／團隊」的責任界定工具。為每種事件類型製作 RACI 才能明確誰執行、誰拍板、誰諮詢、誰被告知。\n\n2) 提升團隊成員技能 → 針對相關 AWS 服務訓練利害關係人：教育訓練是提升技能最直接的手段，且要圍繞事件回應會用到的 AWS 服務（GuardDuty、Security Hub、Detective、IR Runbook…）。\n\n3) 將流程制度化／標準化 → 制定事件回應劇本（playbooks）：playbook 是把流程步驟、決策樹、Runbook 固化為可重複執行的標準文件，正是「流程制度化」的具體產出。\n\n4) 驗證公司準備工作的有效性 → 執行事件回應演練（simulations）：演練/Game Day 是壓力測試流程與人員的標準做法，能在真實事件之前找出缺口。\n\n未被配對的選項：「選擇並設定日誌」屬於「Detect」階段的基礎建設，不是準備階段四要素之一；「發展數位鑑識能力」雖重要，但對應的是「Analyze/Containment」階段而非本題四個情境。"
     }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 360,
+    "type": "single",
+    "question": "一家公司使用 AWS Organizations 中的一個組織來管理多個 AWS 帳戶。公司使用 AWS IAM Identity Center 來管理對這些帳戶的存取，並使用 AWS Directory Service 作為身分來源（identity source）。員工透過 AWS access portal（存取入口網站）存取 AWS 主控台與特定的 AWS 帳戶與權限。一名安全工程師在 IAM Identity Center 中建立了一個新的權限集（permissions set），並將它指派給組織中的其中一個成員帳戶。該工程師接著把這個權限集指派給一個名為 DevOps 的開發人員使用者群組（user group），這個群組屬於該成員帳戶。安全工程師預期所有開發人員都能在 AWS access portal 中看到這個新權限集列在該成員帳戶下。結果除了一位開發人員之外，其他所有人都看得到這個權限集。安全工程師必須確保「剩下那一位」開發人員也能在 AWS access portal 中看到這個權限集。哪一個方案能滿足這個需求？",
+    "options": {
+      "A": "將那位剩下的開發人員加入 Directory Service 中的 DevOps 群組。",
+      "B": "在成員帳戶中移除權限集後再重新加回。",
+      "C": "將「組織用的服務連結角色（service-linked role）」加入該成員帳戶。",
+      "D": "更新權限集，允許那位剩下的開發人員存取主控台。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：身分来源是 AWS Directory Service，而权限集是指派给「DevOps 群组」。其他开发人员都看得到，代表权限集本身、指派、设定都没问题——问题在那位开发人员「不在 DevOps 群组里」。把他在 Directory Service 中加入 DevOps 群组后，IAM Identity Center 会透过群组成员关系将权限集呈现给他。",
+      "B": "错误：其他开发人员都看得到这个权限集，代表权限集与帐户层的指派完全正常，没有任何需要「移除再加回」的状况；这只是徒劳。",
+      "C": "错误：service-linked role 是 IAM Identity Center 用来跨帐户操作的服务身分，与「单一使用者看不到权限集」无关；加入这个角色无法解决群组成员关系缺漏的问题。",
+      "D": "错误：权限集本身已经正确配置且其他成员都能使用，问题不在权限集；针对单一使用者去修改权限集既无效，也违反「以群组为单位授权」的最佳实践。"
+    }
   }
 ]
