@@ -256,27 +256,6 @@
   },
   {
     "exam": "SCS-C03 補充",
-    "id": 358,
-    "type": "ordering",
-    "question": "一家公司正在開發一套事件回應流程，用來隔離被惡意軟體感染的 Amazon EC2 主機。該公司使用 AWS Organizations 中的一個組織來管理多個 AWS 帳戶。公司在組織中設定了 AWS Security Hub，以接收來自多個帳戶、跨多個 AWS 區域的發現結果（findings）。一名安全工程師開發了一個 AWS Lambda 函數，用來移除任何「疑似被惡意軟體感染」的 EC2 實例所屬安全組中的所有規則。請從下列清單中選出正確的步驟並排序，以便將此 Lambda 函數部署為 Security Hub 中的自訂動作（custom action）並加以使用。每個步驟只能使用一次，或完全不使用。（選出三項並排序）",
-    "available_steps": [
-      "在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作（custom action）",
-      "對 Security Hub 中的 Amazon EventBridge 規則建立並套用一組篩選條件（filter set）",
-      "在 Amazon EventBridge 中定義一條規則",
-      "在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作",
-      "在 Security Hub 中，針對「安全組」的發現結果選取該自訂動作"
-    ],
-    "ordered_steps": [
-      "在 Amazon EventBridge 中定義一條規則",
-      "在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作（custom action）",
-      "在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作"
-    ],
-    "explanations": {
-      "_full": "Security Hub 自訂動作（Custom Action）的部署流程：\n\nStep 1：在 Amazon EventBridge 中定義一條規則 — 規則的事件模式 (event pattern) 為 `Security Hub Findings - Custom Action`，目標 (target) 設為前述 Lambda 函數。這條規則是把 Security Hub 自訂動作和 Lambda 串接起來的橋樑。\n\nStep 2：在 Security Hub 中建立一個使用該 Lambda 函數的自訂動作 — 自訂動作會產生一個 ARN，EventBridge 規則的事件模式會比對這個 ARN 才會觸發。\n\nStep 3：在 Security Hub 中，針對「EC2 主機」的發現結果選取該自訂動作 — 真正觸發隔離流程的步驟。題目場景是「移除被感染 EC2 的安全組規則」，因此要在 EC2 相關的發現上套用此自訂動作（而不是直接在安全組的發現上）。\n\n其他選項：「對 EventBridge 規則套用一組篩選條件」不是必要步驟（事件模式已含篩選）；「對安全組發現結果選取自訂動作」與題目場景（修補來自 EC2 感染的發現）不對應。"
-    }
-  },
-  {
-    "exam": "SCS-C03 補充",
     "id": 359,
     "type": "matching",
     "question": "一家電子商務公司正在強化其事件回應能力，以便更快速、更有效地處理潛在的服務中斷。請從下列清單中，為每一個使用情境選出正確的事件回應措施。每個措施只能使用一次，或完全不使用。",
