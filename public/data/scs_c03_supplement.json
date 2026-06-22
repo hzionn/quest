@@ -142,6 +142,25 @@
   },
   {
     "exam": "SCS-C03 補充",
+    "id": 345,
+    "type": "single",
+    "question": "一家公司必须捕获 AWS CloudTrail 数据事件，并将日志保留 7 年。日志必须不可更改，并且必须能够通过复杂的查询进行搜索。该公司还需要将日志中的数据可视化。哪种解决方案能够以最具成本效益的方式满足这些要求？",
+    "options": {
+      "A": "创建 CloudTrail Lake 数据存储。实现 CloudTrail Lake 控制面板，以可视化和查询结果。",
+      "B": "使用 AWS 管理控制台中的 CloudTrail 事件历史记录功能。在控制台中可视化和查询结果。",
+      "C": "将 CloudTrail 日志发送到 Amazon S3 存储桶。配置一个可访问该 S3 存储桶的持久性 Amazon EMR 集群。在 S3 存储桶上启用 S3 对象锁。使用 Apache Spark 执行查询。使用 Amazon QuickSight 进行可视化。",
+      "D": "将 CloudTrail 日志发送到 Amazon CloudWatch Logs 中的日志组。设置 CloudWatch Logs 流，将数据发送到 Amazon OpenSearch Service 域。为 OpenSearch Service 域启用冷存储。使用 OpenSearch 控制面板进行可视化和查询。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确：CloudTrail Lake 是一项全托管服务，专为长期存储、查询与可视化 CloudTrail 事件（含数据事件）而设计。原生支持长达 7 年（更长可到数年）的保留期、预设以不可变方式存储（保留期内不可修改/删除），内建类 SQL 查询与仪表板，无需额外的 S3/EMR/QuickSight 或 OpenSearch，最具成本效益。",
+      "B": "错误：CloudTrail 事件历史记录（Event history）只保留最近 90 天，且查询能力有限，无法满足保留 7 年与复杂查询的需求。",
+      "C": "错误：S3 + 持久性 EMR 集群 + Spark + QuickSight 的组合需自行维运多个服务，成本与管理开销都高，并非最具成本效益（虽然 S3 对象锁可达不可变）。",
+      "D": "错误：CloudTrail→CloudWatch Logs→OpenSearch（含冷存储）方案架构复杂、需长期维运 OpenSearch 域，成本较高，也非最简洁的做法。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
     "id": 357,
     "type": "matching",
     "question": "一家公司使用 AWS Organizations 中的一個組織來管理多個 AWS 帳戶。一名安全工程師需要監控整個組織中 AWS 資源的安全合規性。當任何 AWS 資源不符合公司的安全政策時，該工程師希望收到通知。請從下列清單中，為每一項需求選出正確的、以 AWS Config 為基礎的解決方案。每個解決方案只能使用一次。",
