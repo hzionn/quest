@@ -123,6 +123,25 @@
   },
   {
     "exam": "SCS-C03 補充",
+    "id": 336,
+    "type": "single",
+    "question": "安全工程师需要控制对使用 AWS Key Management Service (AWS KMS) 客户管理的密钥加密的数据的访问。该安全工程师还需要使用额外的身份验证数据 (AAD) 来防止篡改密文。哪种解决方案能够满足这些要求？",
+    "options": {
+      "A": "调用加密和解密 API 操作时，将密钥别名传递给 AWS KMS。",
+      "B": "使用 IAM 策略限制对加密和解密 API 操作的访问。",
+      "C": "在为客户管理的密钥定义 IAM 策略时，使用 kms:EncryptionContext 条件密钥。",
+      "D": "使用关键策略限制对相应 IAM 组的访问。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "错误：密钥别名只是指向某把 KMS 密钥的名称，无法用来做存取控制，也无法提供额外身份验证数据 (AAD) 来防止密文被篡改。",
+      "B": "错误：单纯用 IAM 策略限制 Encrypt/Decrypt API，只能控制「谁能呼叫」，无法把存取与特定的加密上下文 (AAD) 绑定，达不到「防止篡改密文」的要求。",
+      "C": "正确：在客户管理密钥的 IAM/金钥策略中使用 kms:EncryptionContext 条件键，可依特定键值对（即加密上下文 / AAD）来限制 KMS 加解密操作。加密上下文会与密文绑定并参与完整性校验，只有提供正确 AAD 的请求才能解密，从而既控制存取又防止密文被篡改。",
+      "D": "错误：用金钥策略限制 IAM 组的存取仅是存取控制的一种，并未涉及加密上下文 (AAD)，无法防止密文被篡改。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
     "id": 340,
     "type": "single",
     "question": "某公司的安全工程师正在调查 AWS 云中某个 Web 应用程序的可疑流量。该 Web 应用程序由位于 Amazon CloudFront 分发层后的应用负载均衡器 (ALB) 保护。ALB 关联了 AWS WAF Web 访问控制列表 (ACL)。该公司将 AWS WAF 日志存储在 Amazon S3 存储桶中。工程师注意到 AWS WAF 日志中所有传入请求都来自少数几个对应于 CloudFront 边缘节点的 IP 地址。安全工程师必须确定发起这些可疑请求的客户端的源 IP 地址。哪种方案能够满足这一要求？",
@@ -138,6 +157,25 @@
       "B": "正确：CloudFront 会向转发到源服务器（ALB）的请求加入 X-Forwarded-For (XFF) 标头，内容包含原始客户端 IP（以及任何中间代理 IP），格式如 X-Forwarded-For: client_ip, proxy1_ip, proxy2_ip。AWS WAF 可以记录 XFF 标头（如已在 Web ACL 中设定），检查日志中的 XFF 即可取得真实客户端 IP。",
       "C": "错误：禁用 ALB 连接重用并不会让 AWS WAF 日志中的 clientIp 字段变成原始客户端 IP；该字段仍是 CloudFront 边缘服务器的 IP。",
       "D": "错误：虽然技术上可行，但需要额外修改 CloudFront 分发设定，并且自定义 Client-IP 标头不能保证被 AWS WAF 记录。XFF 已是传递原始客户端 IP 的标准方式，没有必要自创标头。"
+    }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 342,
+    "type": "single",
+    "question": "一家公司在 us-east-1 区域拥有一个加密的 Amazon Aurora 数据库集群。该数据库集群使用 AWS Key Management Service (AWS KMS) 客户管理的密钥进行加密。为了满足合规性要求，该公司需要将数据库快照复制到 us-west-1 区域。但是，当该公司尝试将快照复制到 us-west-1 区域时，却无法访问用于加密原始数据库的密钥。公司应该如何设置 us-west-1 区域的快照并启用正确的加密？",
+    "options": {
+      "A": "使用 AWS Secrets Manager 将客户管理的密钥以 Secret 的形式存储在 us-west-1 目录中。使用此 Secret 对 us-west-1 目录中的快照进行加密。",
+      "B": "在 us-west-1 中创建一个新的客户管理密钥。使用此新密钥对 us-west-1 中的快照进行加密。",
+      "C": "创建一个 IAM 策略，允许客户访问 us-east-1 中的客户管理密钥。指定 arn:aws:kms:us-west-1:* 作为主体。",
+      "D": "创建一个 IAM 策略，允许访问 us-east-1 中的客户管理密钥。指定 arn:aws:rds:us-west-1:* 作为主体。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "错误：KMS 客户管理密钥不能以「Secret」形式存到 Secrets Manager 再拿去加密快照；这不是 KMS 金钥的运作方式，也无法解决跨区域加密问题。",
+      "B": "正确：AWS KMS 客户管理密钥是「区域特定」的——在 us-east-1 建立的 CMK 无法在 us-west-1 使用。跨区域复制加密快照时，目标区域必须有自己的金钥；因此要在 us-west-1 建立一把新的 CMK，并在复制操作期间指定它对 us-west-1 的快照重新加密。",
+      "C": "错误：KMS 金钥无法跨区域共用，单靠 IAM 策略「允许存取 us-east-1 的 CMK」并不能让 us-west-1 用该金钥加密；且把 arn:aws:kms:us-west-1:* 当作 principal 也不正确。",
+      "D": "错误：同样无法跨区域使用 us-east-1 的金钥；以 arn:aws:rds:us-west-1:* 作为 principal 的 IAM 策略写法亦不正确，无法解决目标区域缺少金钥的问题。"
     }
   },
   {
