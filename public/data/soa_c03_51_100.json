@@ -1,1 +1,982 @@
-[]
+[
+  {
+    "exam": "SOA-C03",
+    "id": 51,
+    "type": "single",
+    "question": "开发人员使用 Amazon Linux Amazon Machine Image (AMI) 启动一个 EC2 实例来托管第三方应用程序。该应用程序偶尔会变得不稳定。CloudOps 工程师需要一个解决方案，当利用率持续 15 分钟超过 90% 时自动重启该 EC2 实例，并通知开发人员。哪种方案能以最少的管理工作量满足这些要求？",
+    "options": {
+      "A": "配置一个 Amazon CloudWatch 警报来评估实例的 CPU 利用率。配置该警报在触发时调用一个 AWS Lambda 函数，向 Amazon Simple Notification Service (Amazon SNS) 主题发布消息。配置 Lambda 函数重启 EC2 实例。让开发人员订阅该 SNS 主题。",
+      "B": "创建一个 Amazon CloudWatch 警报来评估实例的 CPU 利用率。配置该警报向 Amazon Simple Notification Service (Amazon SNS) 主题发布通知，并执行 EC2 重启实例操作。让开发人员订阅该 SNS 主题。",
+      "C": "创建一个 Amazon CloudWatch 警报来评估实例的 CPU 利用率。配置该警报调用一个 AWS Systems Manager 操作来创建事件以通知开发人员并请求重启。",
+      "D": "创建一个 AWS Systems Manager runbook 脚本，向 Amazon Simple Notification Service (Amazon SNS) 主题发布消息并重启 EC2 实例。让开发人员订阅该 SNS 主题。配置一个 Amazon CloudWatch 警报，当实例的 CPU 利用率持续超过 15 分钟超过 90% 时运行该 Systems Manager runbook。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "增加了不必要的 Lambda 函数来完成 CloudWatch 原生即可完成的工作，要维护的组件更多。",
+      "B": "正确。CloudWatch 警报可以直接向 SNS 发布通知并触发内置的 EC2 重启操作，无需编写自定义代码。",
+      "C": "Systems Manager Incident Manager 用于事件响应，不是自动重启实例的最简单方式。",
+      "D": "需要编写并维护自定义 Systems Manager runbook，增加了运维负担。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 52,
+    "type": "single",
+    "question": "一家公司有一个微服务运行在一组 Amazon EC2 实例上。这些 EC2 实例在 Application Load Balancer (ALB) 后面运行。CloudOps 工程师必须使用 Amazon Route 53 创建一条记录，将 ALB URL 映射到 example.com。哪种类型的记录可以满足此要求？",
+    "options": {
+      "A": "A 记录",
+      "B": "AAAA 记录",
+      "C": "Alias 记录",
+      "D": "CNAME 记录"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "A 记录将名称映射到 IPv4 地址。ALB 端点是 DNS 名称，不是静态 IP。",
+      "B": "AAAA 记录映射到 IPv6 地址；同样不能直接用于 ALB 端点。",
+      "C": "正确。Route 53 别名 (alias) 记录可以将根域 (zone apex) 或任意记录映射到 ALB 等 AWS 资源，无需额外费用，并自动解析到 ALB 的 IP 地址。",
+      "D": "根据 DNS 标准，CNAME 不能用于根域 (example.com)；别名记录是 AWS 提供的解决方案。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 53,
+    "type": "single",
+    "question": "一个应用程序在 Application Load Balancer (ALB) 后面的 Amazon EC2 实例上运行。应用程序启动后最长需要 2 分钟才能填充本地缓存。在启动后几秒钟，应用程序就会在目标组健康检查中报告为健康。CloudOps 工程师发现，重启部分实例后，每个实例报告健康后会立即获得与其他实例相同份额的流量。应用程序需要在缓存填充期间逐步获得越来越多的流量。哪种方案可以满足此要求？",
+    "options": {
+      "A": "将目标组属性 slow_start.duration_seconds 设置为 120 秒。在重启实例之前，先从目标组取消注册；重启完成后再重新注册。",
+      "B": "将目标组的 HealthCheckTimeoutSeconds 参数设置为 120 秒。在重启实例之前先取消注册，重启完成后再注册。",
+      "C": "配置一个 Amazon CloudWatch 警报来监控健康检查状态。配置警报操作：当健康检查失败时重启 EC2 实例。将目标组的 loadbalancing.algorithm.type 属性改为 weighted_random。",
+      "D": "创建一个 Amazon EC2 Auto Scaling 组，将现有 EC2 实例附加到该组中。配置 EC2 Auto Scaling 生命周期钩子让正在启动的实例进入 Pending Wait 状态。更新应用程序，在本地缓存填充完毕后完成生命周期钩子。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。ALB 目标组的 slow start (慢启动) 特性可以在目标变为健康后，在指定时间内逐步将流量分配给该目标。",
+      "B": "HealthCheckTimeoutSeconds 控制等待健康检查响应的时间，不影响流量的渐进分配。",
+      "C": "在健康检查失败时重启实例并不能产生渐进升温的效果；weighted_random 与预热无关。",
+      "D": "生命周期钩子可以让实例停留在 Pending:Wait 状态，但一旦离开 Pending 仍会立即获得完整份额的流量。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 54,
+    "type": "single",
+    "question": "一家公司在 Amazon EC2 实例上运行一个应用程序。该应用程序从 Amazon Aurora PostgreSQL 数据库存取数据。开发人员意外地从数据库中删除了一张表，导致应用程序出错。两小时后，CloudOps 工程师需要恢复数据并使应用程序再次正常运行。哪种方案能够满足此要求？",
+    "options": {
+      "A": "使用 Aurora Backtrack 功能将数据库回溯到 2 小时前的指定时间点。",
+      "B": "对现有数据库执行时间点恢复 (PITR)，将其恢复到 2 小时前的指定时间点。",
+      "C": "执行时间点恢复并创建一个新数据库，将其恢复到 2 小时前的指定时间点。重新配置应用程序以使用新数据库端点。",
+      "D": "创建一个新的 Aurora 集群，选择 Restore data from S3 bucket 选项。选择截至 2 小时前故障时间之前的日志文件。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Aurora Backtrack 仅支持 Aurora MySQL，不支持 Aurora PostgreSQL。",
+      "B": "Aurora 的 PITR 总是恢复到一个 NEW 集群；不能就地覆盖现有集群。",
+      "C": "正确。对于 Aurora PostgreSQL，时间点恢复会创建一个新的 DB 集群并恢复到指定时间点；应用程序需要切换到新的端点。",
+      "D": "Restore from S3 用于从 S3 中的备份迁移数据，不适用于 Aurora 的时间点恢复。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 55,
+    "type": "single",
+    "question": "一家公司在 AWS 上运行多种工作负载。该公司在特定 AWS 区域确定了 5 个需要监控的 AWS Trusted Advisor 服务配额指标。每当某个服务配额使用率超过 60% 时，该公司希望收到电子邮件通知。哪种方案能满足这些要求？",
+    "options": {
+      "A": "为每个 Trusted Advisor 服务配额指标分别创建 5 个 Amazon CloudWatch 警报。配置一个 Amazon Simple Notification Service (Amazon SNS) 主题，当使用率超过任一服务配额的 60% 时通过邮件通知。",
+      "B": "为每个 Trusted Advisor 服务配额指标分别创建 5 个 Amazon CloudWatch 警报。配置一个 Amazon Simple Queue Service (Amazon SQS) 队列，当使用率超过任一服务配额的 60% 时通过邮件通知。",
+      "C": "使用 AWS Health Dashboard 监控每个 Trusted Advisor 服务配额指标。配置一个 Amazon SQS 队列，当使用率超过 60% 时通过邮件通知。",
+      "D": "使用 AWS Health Dashboard 监控每个 Trusted Advisor 服务配额指标。配置一个 Amazon SNS 主题，当使用率超过 60% 时通过邮件通知。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。基于 Trusted Advisor 服务配额指标的 CloudWatch 警报可在使用率超过 60% 时通过 SNS 发送邮件通知。",
+      "B": "SQS 本身不直接发送邮件；邮件通知应使用 SNS。",
+      "C": "AWS Health Dashboard 不能根据自定义阈值触发告警，且 SQS 不用于邮件通知。",
+      "D": "同样问题：AWS Health Dashboard 不提供基于阈值的 Trusted Advisor 指标通知能力。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 56,
+    "type": "single",
+    "question": "一名 CloudOps 工程师正在排查 Amazon CloudWatch Synthetics 的实施问题。CloudWatch Synthetics 的结果必须发送到一个 Amazon S3 存储桶。该 CloudOps 工程师复制了一个已附加 Internet Gateway 的 VPC 中正常运行的 canary 配置，但是无法让 canary 在无互联网访问的私有 VPC 中成功启动。该工程师该如何成功地在私有 VPC 中运行 canary？",
+    "options": {
+      "A": "确保 VPC 启用 DNS resolution 和 DNS hostnames 选项。为 VPC 添加 synthetics:GetCanaryRuns 权限。在 S3 存储桶中为 CloudWatch Synthetics 角色添加 IgnorePublicAcls 权限。",
+      "B": "确保 VPC 关闭 DNS resolution 和 DNS hostnames 选项。为 Amazon S3 创建一个 gateway VPC 端点。添加允许 CloudWatch Synthetics 使用 S3 端点的权限。",
+      "C": "确保 VPC 关闭 DNS resolution 和 DNS hostnames 选项。为 canary 添加一个安全组以允许出站 DNS 端口流量。添加允许 CloudWatch Synthetics 写入 S3 存储桶的权限。",
+      "D": "确保 VPC 启用 DNS resolution 和 DNS hostnames 选项。为 CloudWatch 创建一个 interface VPC 端点；为 Amazon S3 创建一个 gateway VPC 端点。添加允许 CloudWatch Synthetics 使用这两个端点的权限。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "synthetics:GetCanaryRuns 是 IAM 操作而非 VPC 权限；IgnorePublicAcls 与本场景无关。",
+      "B": "DNS resolution 和 DNS hostnames 必须是启用的，AWS 服务端点才能被解析。",
+      "C": "同样存在 DNS 关闭的问题；从私有子网仅放开 DNS 端口出站并不能提供到 CloudWatch 或 S3 的连接。",
+      "D": "正确。canary 需要开启 DNS、CloudWatch 的 interface 端点用于发布结果，以及 S3 的 gateway 端点用于写入结果文件。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 57,
+    "type": "multiple",
+    "question": "一家公司在一个具有 Internet Gateway 的 VPC 中部署了 AWS 基础设施。VPC 包含公有子网和私有子网。一个 Amazon RDS for MySQL DB 实例部署在私有子网中。一个 AWS Lambda 函数使用相同的私有子网连接到该 DB 实例查询数据。开发人员修改 Lambda 函数后，要求该函数向一个 Amazon Simple Queue Service (Amazon SQS) 队列发布消息。变更之后，该 Lambda 函数在尝试向 SQS 队列发布消息时超时。哪些方案可以解决该问题？（选择两项）",
+    "options": {
+      "A": "重新配置 Lambda 函数使其不再连接到 VPC。",
+      "B": "部署一个 RDS proxy。配置 Lambda 函数通过该代理连接到 DB 实例。",
+      "C": "部署一个 NAT gateway。更新私有子网的路由表，将所有流量路由到该 NAT gateway。",
+      "D": "在 VPC 中为 Amazon SQS 创建一个 interface endpoint。",
+      "E": "在 VPC 中为 Amazon SQS 创建一个 gateway endpoint。"
+    },
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanations": {
+      "A": "断开 Lambda 与 VPC 的连接会导致它无法访问私有子网中的 RDS 实例。",
+      "B": "RDS Proxy 解决的是到 RDS 的连接池问题，与 Lambda 访问 SQS 无关。",
+      "C": "正确。NAT gateway 让位于私有子网的 Lambda 可以访问公共的 SQS 端点。",
+      "D": "正确。SQS 的 interface VPC 端点 (PrivateLink) 让 Lambda 可以在不经过互联网的情况下私有地访问 SQS。",
+      "E": "SQS 只支持 interface (PrivateLink) 端点，没有 gateway 端点类型。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 58,
+    "type": "single",
+    "question": "一家公司的安全策略要求将入站 SSH 流量限制为一组特定地址。公司使用 AWS Config 规则检查安全组是否允许不受限的 SSH 入站流量。CloudOps 工程师发现一个不合规的资源并手动修复了安全组。该工程师希望对其他不合规资源也实现自动修复。哪种方案可以以最高的运维效率满足这一需求？",
+    "options": {
+      "A": "为 AWS Config 规则的状态指标创建一个 Amazon CloudWatch 警报。创建一个能从安全组中删除不合规规则的 AWS Lambda 函数。配置警报操作以调用该 Lambda 函数。",
+      "B": "在 AWS Config 规则上配置自动修复操作。指定 AWS-DisablePublicAccessForSecurityGroup (题目中拼作 AWS-DisablolncomingSSHOnPort22) 修复操作。",
+      "C": "为 AWS Config 配置项变更事件创建一个 Amazon EventBridge 规则。创建一个能从安全组中删除不合规规则的 Lambda 函数。配置规则以调用该 Lambda 函数。",
+      "D": "创建一个 AWS Lambda 函数，分析安全组的入站规则以检查是否存在不受限的 SSH 访问。配置该 Lambda 删除不合规规则。配置一个 EventBridge 规则每小时调用该 Lambda。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "在 AWS Config 已内置修复功能的情况下，再引入 Lambda 是多余的。",
+      "B": "正确。AWS Config 支持基于 SSM Automation 文档 (如 AWS-DisablePublicAccessForSecurityGroup) 的自动修复，无需自定义代码。",
+      "C": "需要编写并维护自定义 Lambda 函数，比 Config 自动修复运维负担更大。",
+      "D": "每小时轮询会引入不必要的延迟和定制代码；内置修复是事件驱动且更简洁。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 59,
+    "type": "multiple",
+    "question": "一名 CloudOps 工程师使用 Amazon CloudFront web 分发、Application Load Balancer (ALB)、Amazon RDS 和位于 VPC 中的 Amazon EC2 维护一个 Web 应用。所有服务都启用了日志记录。该工程师需要调查 Web 应用程序的 HTTP Layer 7 状态码。哪些日志源包含状态码？（选择两项）",
+    "options": {
+      "A": "VPC Flow Logs",
+      "B": "AWS CloudTrail 日志",
+      "C": "ALB 访问日志",
+      "D": "CloudFront 访问日志",
+      "E": "RDS 日志"
+    },
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanations": {
+      "A": "VPC Flow Logs 记录的是 IP 层流量 (5 元组、字节、操作)，不包含 HTTP/Layer 7 状态码。",
+      "B": "CloudTrail 记录的是 API 调用日志，不包含应用程序的 HTTP 响应。",
+      "C": "正确。ALB 访问日志包含 HTTP 请求详情，包括响应状态码。",
+      "D": "正确。CloudFront 访问日志包含返回给查看者的 HTTP 状态码。",
+      "E": "RDS 日志是数据库引擎日志 (查询、错误)，不包含 Web HTTP 状态码。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 60,
+    "type": "single",
+    "question": "一个异常进程会占用整个处理器并以 100% 负载运行。CloudOps 工程师希望在该问题持续超过 2 分钟时自动重启 Amazon EC2 实例。如何实现？",
+    "options": {
+      "A": "为 EC2 实例创建一个使用 basic monitoring 的 Amazon CloudWatch 警报，添加重启实例的操作。",
+      "B": "为 EC2 实例创建一个使用 detailed monitoring 的 Amazon CloudWatch 警报，添加重启实例的操作。",
+      "C": "创建一个每 2 分钟定时调用的 AWS Lambda 函数来重启该 EC2 实例。",
+      "D": "创建一个由 EC2 健康检查触发的 AWS Lambda 函数来重启该 EC2 实例。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Basic monitoring 每 5 分钟发布一次 CPU 指标，无法检测 2 分钟级别的事件。",
+      "B": "正确。Detailed monitoring 每 1 分钟发布一次指标，可以建立 2 分钟阈值的警报，再使用内置的 EC2 重启操作即可。",
+      "C": "每 2 分钟调度的 Lambda 并不会检测 CPU 状态，需要额外逻辑。",
+      "D": "EC2 健康检查检测的是实例可达性/系统状态，不是 CPU 利用率。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 61,
+    "type": "multiple",
+    "question": "一位 CloudOps 工程师希望通过将一个 IAM 策略附加到多个 IAM 用户来提供对 AWS 服务的访问。该工程师还希望能够更改策略并创建新版本。哪些操作的组合可以满足这些要求？（选择两项）",
+    "options": {
+      "A": "将用户添加到 IAM 服务关联角色中。将策略附加到该角色。",
+      "B": "将用户添加到 IAM 用户组中。将策略附加到该组。",
+      "C": "创建一个 AWS 托管策略。",
+      "D": "创建一个客户托管策略。",
+      "E": "创建一个内联策略。"
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "服务关联角色由 AWS 服务自身创建和管理，不能附加到用户。",
+      "B": "正确。将用户放入 IAM 用户组，然后将策略附加到该组一次即可。",
+      "C": "AWS 托管策略是只读的，不能编辑也不能创建新版本。",
+      "D": "正确。客户托管策略支持多版本、可编辑，并可附加到用户/组/角色上。",
+      "E": "内联策略绑定于单一主体，且没有版本历史。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 62,
+    "type": "single",
+    "question": "一家公司的应用程序运行在 Amazon EC2 Auto Scaling 组中的 EC2 实例上。由于启动脚本耗时较长，扩容 (scale-out) 操作完成需要很长时间。CloudOps 工程师必须实施一种方案，在不过度预置 Auto Scaling 组的前提下缩短扩容时间。哪种方案能满足这些要求？",
+    "options": {
+      "A": "更改启动配置使用更大的实例类型。",
+      "B": "提高 Auto Scaling 组中的最小实例数量。",
+      "C": "为 Auto Scaling 组添加 predictive scaling 策略。",
+      "D": "为 Auto Scaling 组添加 warm pool。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "更大的实例类型并不会显著加快自定义启动脚本的执行。",
+      "B": "提高最小实例数会过度预置，违反题目要求。",
+      "C": "Predictive scaling 会提前启动实例，但仍受长启动时间影响。",
+      "D": "正确。Auto Scaling warm pool 保留已预初始化的实例，可在极短时间内承接流量。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 63,
+    "type": "single",
+    "question": "一名 CloudOps 工程师创建了一个包含公有子网和私有子网的新 VPC。该工程师在私有子网中成功启动了 11 个 Amazon EC2 实例。当他尝试在同一子网中再启动一个 EC2 实例时，收到错误信息称没有足够的可用 IP 地址。该工程师必须如何操作才能部署更多 EC2 实例？",
+    "options": {
+      "A": "编辑私有子网，将其 CIDR 块改为 /27。",
+      "B": "编辑私有子网使其跨第二个可用区。",
+      "C": "为私有子网分配额外的 Elastic IP 地址。",
+      "D": "创建一个新的私有子网来容纳所需的 EC2 实例。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "改为 /27 (32 个地址) 反而可能比原始 CIDR 更小，可用 IP 反而更少。",
+      "B": "一个子网不能跨多个可用区。",
+      "C": "Elastic IP 是公有 IPv4 地址，不会增加私有 IP 容量。",
+      "D": "正确。在 VPC 中新建一个不同 CIDR 块的子网即可提供额外的私有 IP 地址。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 64,
+    "type": "single",
+    "question": "一名 CloudOps 工程师需要为一组应用程序自定义事件构建事件基础设施。事件必须发送给 AWS Lambda 函数进行处理。该工程师还必须能按事件类型或事件时间回放已记录的事件。哪种方案能满足这些要求？",
+    "options": {
+      "A": "创建一个 Amazon EventBridge 自定义事件总线。在该自定义事件总线上创建归档 (archive)。创建一条规则将自定义事件发送到 Lambda 函数。",
+      "B": "在 Amazon EventBridge 默认事件总线上创建归档。使用模式匹配记录自定义事件。创建一条规则将自定义事件发送到 Lambda 函数。",
+      "C": "在 Amazon EventBridge 默认事件总线上创建归档。创建一个 EventBridge pipe 用于摄入自定义事件并保存到归档中。创建一条规则将自定义事件发送到 Lambda 函数。",
+      "D": "在 Amazon CloudWatch Logs 中创建一个日志组。创建一条 Amazon EventBridge 规则将自定义事件发送到 Lambda 函数和日志组。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。自定义事件总线 + 归档 (archive)（可重放）加上指向 Lambda 的规则正好满足需求。",
+      "B": "自定义事件应使用自定义事件总线而非默认事件总线，并且仅靠模式匹配也不能按类型/时间重放。",
+      "C": "EventBridge Pipes 用于从 SQS/Kinesis 等源送入目标，本题不需要，且仍需在总线上配置归档。",
+      "D": "CloudWatch Logs 用于日志，并非可重放事件存档。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 65,
+    "type": "multiple",
+    "question": "一名 CloudOps 工程师有一个位于 us-west-2 的现有基础设施的 AWS CloudFormation 模板。他尝试使用该模板在 eu-west-1 启动一个新堆栈，但堆栈只能部分部署，收到错误后回滚。模板为何会部署失败？（选择两项）",
+    "options": {
+      "A": "模板引用了一个在 eu-west-1 中不可用的 IAM 用户。",
+      "B": "模板引用了一个在 eu-west-1 中不可用的 Amazon Machine Image (AMI)。",
+      "C": "模板没有足够的权限来部署所需资源。",
+      "D": "模板请求了一些在 eu-west-1 中不存在的服务。",
+      "E": "CloudFormation 模板只能用于更新现有服务。"
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "IAM 用户是全局资源，不区分 Region，因此在两个 Region 都可用。",
+      "B": "正确。AMI 是按 Region 隔离的；us-west-2 的 AMI ID 在 eu-west-1 中并不存在。",
+      "C": "权限问题会在部署一开始就失败，而不是部分部署后才报错。",
+      "D": "正确。某些 AWS 服务或功能不是在所有 Region 都可用，引用 eu-west-1 不存在的服务会失败。",
+      "E": "CloudFormation 既能创建也能更新资源。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 66,
+    "type": "single",
+    "question": "一家公司的网站运行在 Amazon EC2 Linux 实例上。该网站需要从一个 Amazon S3 存储桶提供 PDF 文件。该 S3 存储桶在账户级别已封锁了所有公共访问。公司必须允许网站用户下载 PDF 文件。哪种方案能以最少的管理工作量满足这些要求？",
+    "options": {
+      "A": "创建一个具有 s3:list* 和 s3:get* 权限的 IAM 角色，分配给 EC2 实例。安排员工将所请求的 PDF 文件下载到 EC2 实例并提供给用户。创建一个 Lambda 函数定期删除本地文件。",
+      "B": "创建一个使用 origin access control (OAC) 指向该 S3 存储桶的 Amazon CloudFront 分发。在存储桶上应用允许来自 CloudFront 分发连接的存储桶策略。当用户请求 PDF 时，提供包含分发 URL 和对象路径的下载 URL。",
+      "C": "更改 S3 存储桶权限以允许对源 S3 存储桶的公共访问，由员工在用户请求时提供 PDF URL。",
+      "D": "在公共子网中部署一个具有 IAM 实例配置文件的 EC2 实例。使用来自该 EC2 实例的签名 URL 临时访问 S3 存储桶。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "由员工手动下载并交付文件不具备扩展性，也并非低运维。",
+      "B": "正确。CloudFront 配合 OAC 可在保持 S3 存储桶私有的情况下安全交付内容。",
+      "C": "将存储桶设为公开违反了 Block Public Access 的要求。",
+      "D": "由 EC2 主机生成预签名 URL 增加了需要维护的基础设施，不符合“最少运维”要求。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 67,
+    "type": "single",
+    "question": "一家金融服务公司将客户图片存储在 us-east-1 区域的一个 Amazon S3 存储桶中。出于合规要求，公司必须把所有现有对象复制到第二个 AWS Region 的 S3 存储桶。如果对象复制失败，公司必须能够对该对象重试复制。哪种方案能够满足这些要求？",
+    "options": {
+      "A": "配置 Amazon S3 跨区域复制 (CRR)。使用 Amazon S3 live replication 复制现有对象。",
+      "B": "配置 Amazon S3 跨区域复制 (CRR)。使用 S3 Batch Replication 复制现有对象。",
+      "C": "配置 Amazon S3 跨区域复制 (CRR)。使用 S3 Replication Time Control (S3 RTC) 复制现有对象。",
+      "D": "使用 S3 Lifecycle 规则将对象移动到第二个 Region 的目标存储桶。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "S3 live replication (CRR 默认行为) 只复制新对象，不复制已有对象。",
+      "B": "正确。S3 Batch Replication 专为复制现有对象设计，并内置失败重试机制。",
+      "C": "S3 RTC 加速新对象的复制，但不处理已有对象。",
+      "D": "Lifecycle 规则用于在桶内进行迁移或过期，不能跨桶搬移对象。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 68,
+    "type": "single",
+    "question": "一家公司在网络负载均衡器 (NLB) 后使用内存优化的 Amazon EC2 实例运行应用程序。公司使用 AWS 提供的 Red Hat Enterprise Linux (RHEL) AMI 启动这些实例。CloudOps 工程师必须以 5 分钟为间隔监控 RAM 使用率，并确保 EC2 实例能根据入站流量适当地扩缩容。哪种方案能满足这些要求？",
+    "options": {
+      "A": "为 EC2 实例配置详细监控。在实例上配置 Amazon CloudWatch agent。基于 mem_active 指标创建 EC2 Auto Scaling 组和策略。",
+      "B": "为 EC2 实例配置详细监控。使用详细监控提供的 mem_used_percent 指标。创建允许 CloudWatch agent 上传数据的 IAM 角色。基于 mem_used_percent 创建 EC2 Auto Scaling 组和策略。",
+      "C": "为 EC2 实例配置基本监控。在实例上配置 Amazon CloudWatch agent。创建允许 CloudWatch agent 上传数据的 IAM 角色。基于 mem_used_percent 创建 EC2 Auto Scaling 组和策略。",
+      "D": "为 EC2 实例配置基本监控。使用标准的 mem_used_percent 指标进行监控。基于 mem_used_percent 创建 EC2 Auto Scaling 组和策略。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "CloudWatch agent 通常发布 mem_used_percent，而非 mem_active。",
+      "B": "详细监控为 1 分钟粒度，超过题目所需 5 分钟；内存指标必须通过 CloudWatch agent 提供，不是详细监控自带的。",
+      "C": "正确。内存不是 EC2 默认指标；需要 CloudWatch agent 加上合适的 IAM 角色来发布 mem_used_percent。基本监控的 5 分钟间隔符合题目要求。",
+      "D": "没有 CloudWatch agent，mem_used_percent 并非现成的标准指标。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 69,
+    "type": "single",
+    "question": "一家跨国公司使用 AWS Organizations 管理跨多个 AWS Region 的 200 多个成员账户。公司必须确保所有 AWS 资源满足特定安全要求：不得在 ap-southeast-2 部署 EC2 实例；必须完全阻止所有成员账户中根用户的操作；必须防止任何用户 (包括管理员) 删除 AWS CloudTrail 日志。公司需要一个集中管理的方案，能自动应用于所有现有和未来的账户。哪种方案能满足这些要求？",
+    "options": {
+      "A": "在每个账户中创建带修复操作的 AWS Config 规则以检测策略违规。对账户根用户实施 IAM 权限边界。",
+      "B": "在组织范围启用 AWS Security Hub。创建自定义安全标准来强制实施这些安全要求。使用 AWS CloudFormation StackSets 将标准部署到组织中所有账户。配置 Security Hub 的自动修复操作。",
+      "C": "使用 AWS Control Tower 进行账户治理。配置 Region deny controls。使用服务控制策略 (SCPs) 限制根用户访问。",
+      "D": "配置 AWS Firewall Manager 安全策略来满足这些安全要求。使用带组织范围 conformance packs 的 AWS Config 聚合器来检测安全策略违规。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "在每个账户中分别使用 Config 规则无法集中实施区域阻断或根用户限制，权限边界对根用户无效。",
+      "B": "Security Hub 用于汇总安全发现，不能强制实施区域或根用户限制。",
+      "C": "正确。AWS Control Tower 提供集中治理，内置 Region deny 控件、可用 SCP 限制根用户，并具有防止删除 CloudTrail 日志等护栏。",
+      "D": "Firewall Manager 面向 WAF/网络防火墙/安全组策略，不能强制实施这些账户级护栏。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 70,
+    "type": "single",
+    "question": "一家公司使用数百个 Amazon EC2 按需实例和 Spot 实例来运行生产和非生产工作负载。公司在 EC2 实例上安装并配置了 AWS Systems Manager Agent (SSM Agent)。在最近一次实例打补丁操作中，由于部分实例处于忙碌或宕机状态，未能成功打补丁。公司需要生成一份列出所有实例当前补丁版本的报告。哪种方案能以最高的运维效率满足这些要求？",
+    "options": {
+      "A": "使用 Systems Manager Inventory 收集补丁版本。生成所有实例的报告。",
+      "B": "使用 Systems Manager Run Command 远程收集补丁版本信息。生成所有实例的报告。",
+      "C": "使用 AWS Config 通过 SSM Agent 的输出来跟踪 EC2 实例的配置变化。创建一条自定义规则检查补丁版本。生成所有未打补丁实例的报告。",
+      "D": "使用 AWS Config 通过 SSM Agent 的输出来监控 EC2 实例的补丁状态。创建配置合规规则检查是否已安装补丁。生成所有实例的报告。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。Systems Manager Inventory 会自动从受管实例收集元数据 (包括补丁)，无需手动脚本即可生成报告。",
+      "B": "Run Command 需要在每台实例上手动运行脚本，远不如 Inventory 高效。",
+      "C": "AWS Config 用于跟踪配置变化；构建自定义补丁版本规则需要额外工作。",
+      "D": "AWS Config 合规规则并不是最直接的报告补丁版本的方式。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 71,
+    "type": "single",
+    "question": "一名 CloudOps 工程师正在使用 AWS Compute Optimizer 为一组 Amazon EC2 实例生成推荐。部分实例使用新发布的实例类型，其他实例使用较旧的实例类型。分析完成后，工程师注意到部分 EC2 实例没有出现在 Compute Optimizer 仪表板中。最可能的原因是什么？",
+    "options": {
+      "A": "缺失的实例没有足够的历史 Amazon CloudWatch 指标数据用于分析。",
+      "B": "Compute Optimizer 不支持那些缺失实例的实例类型。",
+      "C": "Compute Optimizer 已认为缺失的实例已经是优化状态。",
+      "D": "缺失的实例运行的是 Windows 操作系统。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "缺少指标也是一种可能，但题目特别强调了新发布和较旧的实例类型，更指向支持范围。",
+      "B": "正确。Compute Optimizer 并不支持所有实例类型，尤其是部分新发布的类型；不支持的类型不会出现在仪表板。",
+      "C": "已优化的实例仍会在仪表板中显示，并标记为 'Optimized'，不会被隐藏。",
+      "D": "Compute Optimizer 同时支持 Linux 和 Windows，操作系统不是排除原因。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 72,
+    "type": "single",
+    "question": "一家公司在 Amazon VPC 中运行工作负载，并为其配置了 Amazon CloudWatch Logs。该公司需要一种方案，自动检测其 AWS 账户中的异常 API 活动和安全事件。哪种方案可以满足该需求？",
+    "options": {
+      "A": "使用 Amazon Inspector 扫描 VPC flow logs。",
+      "B": "使用 Amazon GuardDuty 监控 CloudWatch 日志。",
+      "C": "实施 AWS CloudTrail Insights。",
+      "D": "使用 AWS Config 的自动异常检测。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Inspector 用于扫描软件漏洞 (CVE)，不是异常 API 活动。",
+      "B": "正确。Amazon GuardDuty 持续分析 CloudTrail、VPC Flow Logs 和 DNS 日志，检测异常 API 调用和安全事件。",
+      "C": "CloudTrail Insights 能发现异常 API 速率，但功能范围较窄；GuardDuty 覆盖更广的安全场景，是标准答案。",
+      "D": "AWS Config 没有自动异常检测功能。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 73,
+    "type": "single",
+    "question": "一家公司每天会生成数百张图片并上传到一个 Amazon S3 存储桶。公司目前手动将图片复制到一个始终开机的 Amazon EC2 实例进行处理。处理每张图片通常需要 30 到 120 秒。CloudOps 工程师希望自动化该方案，使图片到达 S3 存储桶后立即被处理。哪种方案能以最具成本效益的方式满足这些要求？",
+    "options": {
+      "A": "配置 S3 事件通知，在图片上传到 S3 时调用该 EC2 实例。在该 EC2 实例上运行图片处理程序。",
+      "B": "配置 S3 事件通知调用一个 Amazon EventBridge 规则。配置 EventBridge 规则启动一个预先配置好的 AWS Glue ETL 作业来处理图片。",
+      "C": "配置 S3 事件通知调用一个 AWS Lambda 函数，当新图片上传到源 S3 存储桶时运行图片处理逻辑。",
+      "D": "配置 S3 事件通知，在图片上传到 S3 时调用基于 EC2 的 Amazon Elastic Container Service (Amazon ECS) 任务。配置 ECS 任务处理图片。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "S3 事件通知不能直接调用 EC2 实例，且让 EC2 始终开机也不经济。",
+      "B": "Glue ETL 作业对于短时单图任务过于沉重，成本高于 Lambda。",
+      "C": "正确。30-120 秒的图片处理时间在 Lambda 限制之内，可自动伸缩并按调用计费。",
+      "D": "基于 EC2 的 ECS 还要管理实例，Lambda 对短任务更简洁经济。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 74,
+    "type": "single",
+    "question": "一家公司在 AWS Organizations 中使用一个组织管理多个 AWS 账户。公司需要将所有账户中的特定事件发送到一个新的接收账户，由 AWS Lambda 函数处理。CloudOps 工程师需要配置 Amazon EventBridge 将事件路由到新接收账户中 us-west-2 区域的目标事件总线。工程师在发送账户和接收账户都创建了匹配指定事件的规则，规则的事件模式中没有指定 account 参数。工程师在发送账户中创建了允许向目标事件总线执行 PutEvents 的 IAM 角色。来自 us-east-1 的首批测试事件未被接收账户的 Lambda 函数处理。最可能的原因是什么？",
+    "options": {
+      "A": "发送账户和接收账户都必须为 EventBridge 创建 interface VPC 端点。",
+      "B": "目标 Lambda 函数位于不同的 AWS Region，而 EventBridge 不支持跨区域。",
+      "C": "必须修改目标事件总线的资源策略，允许来自发送账户的 PutEvents API 调用。",
+      "D": "接收账户中的规则必须在事件模式中指定 {\"account\": [\"sender-account-id\"]}，并包含接收账户 ID。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "跨账户 EventBridge 不需要 VPC 端点。",
+      "B": "EventBridge 支持跨 Region 目标；问题在权限而非区域。",
+      "C": "正确。目标事件总线需要资源策略授权来自发送账户的 PutEvents。",
+      "D": "在接收账户规则中添加 account 过滤并不能启用跨账户事件转发。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 75,
+    "type": "single",
+    "question": "开发人员在一个 Amazon S3 存储桶上启用了版本控制。当开发人员尝试在该存储桶上执行写操作时，遇到 HTTP 404 NoSuchKey 错误。CloudOps 工程师必须解决此问题。哪种方案能满足此要求？",
+    "options": {
+      "A": "在 S3 存储桶上禁用版本控制并重试写操作。",
+      "B": "修改存储桶策略以允许对版本化对象的写操作。",
+      "C": "在启用版本控制后等待至少 15 分钟，然后执行写操作。",
+      "D": "在存储桶上启用 S3 Transfer Acceleration。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "禁用版本控制会失去该功能，真正问题在于时序。",
+      "B": "存储桶策略不会导致写操作的 404 NoSuchKey 错误。",
+      "C": "正确。在存储桶启用版本控制后，最长可能需要 15 分钟生效，应等待后再试。",
+      "D": "Transfer Acceleration 仅影响上传速度，与 404 无关。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 76,
+    "type": "single",
+    "question": "一名 CloudOps 工程师创建了一个新 VPC，包含一个私有子网、一个允许所有出站流量的安全组和一个位于私有子网中的 Amazon EC2 Instance Connect 端点。工程师将该安全组关联到 EC2 Instance Connect。工程师在私有子网的 Amazon Linux AMI 上启动了一个 EC2 实例，并使其使用与该安全组相同的子网。该 EC2 实例启动时未关联 SSH 密钥对。工程师尝试通过 EC2 Instance Connect 端点连接实例，但连接失败。CloudOps 工程师该如何连接该实例？",
+    "options": {
+      "A": "在安全组中创建一条入站规则，允许来自私有子网的 443 端口 HTTPS 流量。",
+      "B": "在安全组中创建一条入站规则，允许来自私有子网的 22 端口 SSH 流量。",
+      "C": "创建一个允许 AWS Systems Manager Session Manager 访问该 EC2 实例的 IAM 实例配置文件，并关联到该实例。",
+      "D": "重新创建该 EC2 实例并关联一个 SSH 密钥对。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "443 端口是服务间通信，但实例 SG 真正需要放行的是来自端点的 22 端口 SSH。",
+      "B": "正确。EC2 Instance Connect 端点会通过 SSH (22 端口) 隧道连接；实例的安全组必须允许来自端点 CIDR/SG 的入站 SSH。",
+      "C": "Session Manager 是另一条路径，但题目是要修复 EICE 连接。",
+      "D": "EC2 Instance Connect 不需要 SSH 密钥对，它通过 API 动态推送临时密钥。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 77,
+    "type": "single",
+    "question": "一家公司正在为其 Amazon S3 存储桶实施跨区域复制 (CRR)。S3 存储桶位于 us-east-1 区域。公司使用 Amazon S3 托管密钥的服务器端加密 (SSE-S3) 来保护存储桶中的数据。CloudOps 工程师创建了一个新的 AWS 账户用于存储备份的 S3 存储桶。所有备份存储桶位于 us-west-2 区域。该工程师在源存储桶和目标存储桶上启用了版本控制。工程师在源账户中为 s3.amazonaws.com 创建了一个 IAM 角色，并授予该角色对源存储桶的读权限、对目标存储桶的复制权限以及使用目标存储桶密钥的加密权限。目标存储桶策略允许该 IAM 角色执行复制和读操作。复制配置完成后，工程师发现对象未被复制。最可能的原因是什么？",
+    "options": {
+      "A": "IAM 角色和存储桶策略必须具有 ObjectOwnerOverrideToBucketOwner 权限。",
+      "B": "源存储桶和目标存储桶中的对象必须使用多区域 KMS 密钥加密。",
+      "C": "必须为源账户和目标账户创建 Amazon S3 的 Gateway VPC 端点。",
+      "D": "目标存储桶必须使用 AWS KMS 密钥的服务器端加密 (SSE-KMS)。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。跨账户复制时，若要让目标账户拥有副本，必须为复制角色和桶策略授予 s3:ObjectOwnerOverrideToBucketOwner 权限。",
+      "B": "CRR 并不强制使用多区域 KMS 密钥；可在每个区域使用各自独立的 KMS 密钥。",
+      "C": "S3 复制走 AWS 内部网络，不需要 Gateway VPC 端点。",
+      "D": "目标存储桶可以使用 SSE-S3，也可以使用 SSE-KMS，不强制要求 SSE-KMS。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 78,
+    "type": "single",
+    "question": "一家公司有一个 VPC，包含一个公有子网和一个私有子网。该公司在私有子网中部署了一个使用 Amazon Linux AMI 并已安装 AWS Systems Manager Agent (SSM Agent) 的 Amazon EC2 实例。该 EC2 实例位于一个仅允许出站流量的安全组中。CloudOps 工程师需要为一组特权管理员提供通过 SSH 连接该实例的能力，但不能将实例暴露到互联网。哪种方案能满足该要求？",
+    "options": {
+      "A": "在私有子网中创建一个 EC2 Instance Connect 端点。更新安全组以允许入站 SSH 流量。为特权管理员创建一个 IAM 组，并为该组分配 PowerUserAccess 托管策略。",
+      "B": "在私有子网中创建一个 Systems Manager 端点。更新安全组以允许来自 Systems Manager 端点所在私有网络的 SSH 流量。为特权管理员创建 IAM 组，并分配 PowerUserAccess 托管策略。",
+      "C": "在公有子网中创建一个 EC2 Instance Connect 端点。更新安全组以允许来自私有网络的 SSH 流量。为特权管理员创建 IAM 组，并分配 PowerUserAccess 托管策略。",
+      "D": "在公有子网中创建一个 Systems Manager 端点。为该 EC2 实例创建一个具有 AmazonSSMManagedInstanceCore 权限的 IAM 角色。为特权管理员创建 IAM 组，并分配 AmazonEC2ReadOnlyAccess IAM 策略。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。EC2 Instance Connect 端点允许在不将实例暴露到互联网的情况下通过 SSH 连接到私有子网的实例。",
+      "B": "没有 “Systems Manager 端点” 提供 SSH 这种用法；Session Manager 不直接使用 SSH，IAM 策略引用也错误。",
+      "C": "把端点放到公有子网会失去私有性优势；端点本身可以放在私有子网。",
+      "D": "Session Manager 不是 SSH；AmazonEC2ReadOnlyAccess 也无法授权连接。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 79,
+    "type": "single",
+    "question": "一家公司在 us-east-1 区域将一个基于 Web 的应用程序运行在 Application Load Balancer (ALB) 后面的 Amazon EC2 实例上。来自世界各地的用户访问该应用程序。北美以外的用户反映延迟高且性能不稳定。公司必须为所有全球用户改善延迟和应用程序性能。哪种方案能满足这些要求？",
+    "options": {
+      "A": "在 ALB 前面使用 AWS Global Accelerator。",
+      "B": "在 ALB 前面部署一个 Network Load Balancer (NLB)。",
+      "C": "用 Network Load Balancer (NLB) 替换 ALB。",
+      "D": "配置 Amazon Route 53 健康检查基于延迟阈值在 AWS Region 之间进行故障转移。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。AWS Global Accelerator 通过 AWS 全球骨干网将流量路由到最近的健康端点，可改善全球用户延迟。",
+      "B": "在 ALB 前面加一个 NLB 并不能改善全球延迟。",
+      "C": "用 NLB 替换 ALB 会失去 Layer 7 特性，且单独的 NLB 不能改善跨区域延迟。",
+      "D": "Route 53 延迟路由需要多 Region 部署，但此公司只有单个 Region。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 80,
+    "type": "single",
+    "question": "一名 CloudOps 工程师需要确保多个 AWS 账户中的资源都按一致的方式打标签。公司使用 AWS Organizations 集中管理这些账户。公司希望实施成本分配标签，准确跟踪分配给每个业务部门的成本。哪种方案能以最少的运维负担满足这些要求？",
+    "options": {
+      "A": "使用 Organizations 的 tag policies 对所有资源强制实施必需的标签。在 AWS Billing and Cost Management 控制台中启用成本分配标签。",
+      "B": "配置 AWS CloudTrail 事件触发 AWS Lambda 函数检测未打标签的资源，并根据预定义规则自动打标签。",
+      "C": "使用 AWS Config 评估标签合规性。使用 AWS Budgets 为成本分配应用标签。",
+      "D": "使用 AWS Service Catalog 仅预置已打标签的资源。使用 AWS Trusted Advisor 在整个组织中强制实施打标签。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。Organizations 的标签策略可在多个账户中强制标签规范，并在 Billing 中启用成本分配标签即可用于成本跟踪。",
+      "B": "自定义 Lambda 打标签运维负担更高，原生标签策略已足够。",
+      "C": "AWS Budgets 不能给资源打标签。",
+      "D": "Service Catalog 限制可预置内容，但 Trusted Advisor 不能强制打标签。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 81,
+    "type": "single",
+    "question": "一家公司有多台运行 Ubuntu 操作系统 (OS) 的 Amazon EC2 实例。公司必须定期为操作系统打补丁。CloudOps 工程师每周手动安装补丁。公司不断增加新的运行 Ubuntu 的 EC2 实例。该工程师需要自动化打补丁流程。哪种方案能以最高的运维效率满足此要求？",
+    "options": {
+      "A": "创建一个 AWS Lambda 函数，通过 SSH 连接到 EC2 实例并安装补丁。配置该 Lambda 函数每周运行一次。",
+      "B": "在 EC2 实例上安装 AWS Systems Manager Agent (SSM Agent)。配置 Systems Manager Patch Manager 每周为这些实例安装补丁。",
+      "C": "使用 AWS Systems Manager Inventory 识别未打补丁的 EC2 实例并安装 OS 补丁。",
+      "D": "创建一个使用 cron 表达式的 Amazon EventBridge 规则每周安装补丁。配置该 EventBridge 规则的目标为 EC2 实例。配置操作在目标实例上运行 OS 更新。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "维护自定义 Lambda + SSH 比原生 Patch Manager 工作量大得多。",
+      "B": "正确。Systems Manager Patch Manager (SSM Agent + Patch Baseline + Maintenance Window) 是低运维自动化打补丁的标准方案。",
+      "C": "Inventory 跟踪已安装内容，但不会执行打补丁。",
+      "D": "EventBridge 单独无法安装补丁，仍需要某种执行机制；SSM Patch Manager 更简洁。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 82,
+    "type": "single",
+    "question": "一家全球公司在 us-east-1 区域运行关键的主工作负载。公司希望在工作负载发生故障时确保最少停机时间的业务连续性。公司希望将工作负载复制到第二个 AWS 区域。CloudOps 工程师需要一种方案，恢复时间目标 (RTO) 小于 10 分钟，恢复点目标 (RPO) 为零，以满足服务等级协议。哪种方案能满足这些要求？",
+    "options": {
+      "A": "实施 pilot light 架构，在第二个区域提供实时数据复制。配置 Amazon Route 53 健康检查和自动 DNS 故障转移。",
+      "B": "实施 warm standby 架构，在第二个区域提供定期数据复制。配置 Amazon Route 53 健康检查和自动 DNS 故障转移。",
+      "C": "实施 active-active 架构，在两个区域提供实时数据复制。使用 Amazon Route 53 健康检查和加权路由策略。",
+      "D": "实施一个自定义脚本定期生成数据备份并存储在第二个区域的 S3 存储桶中。在工作负载故障时使用该备份在第二个区域启动应用程序。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Pilot light 需要较长时间扩容，无法实现 RPO=0。",
+      "B": "Warm standby 仍存在一定停机和复制延迟，不能达到 RPO=0。",
+      "C": "正确。多区域 active-active 部署 + 实时数据复制可实现接近零 RPO 与极小 RTO，Route 53 即可完成路由。",
+      "D": "S3 备份方式的 RPO 与 RTO 远远超过几分钟。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 83,
+    "type": "single",
+    "question": "一名 CloudOps 工程师希望为运行在 Amazon Elastic Kubernetes Service (Amazon EKS) 上的一个公共网站配置特定指标的可观测性。工程师希望观察延迟、流量、错误和饱和度指标，并希望定义服务级别目标 (SLOs) 并监控服务级别指标 (SLIs)。工程师还希望关联指标、日志和跟踪以加快问题解决。哪种方案能以最少的运维工作满足这些要求？",
+    "options": {
+      "A": "使用 Amazon CloudWatch Application Signals 自动收集并监控 EKS 工作负载的指定指标。",
+      "B": "为该网站配置 AWS Distro for OpenTelemetry 以生成指标。使用 Amazon Managed Service for Prometheus 收集指定指标。使用 Amazon Managed Grafana 可视化指标。",
+      "C": "配置 Amazon CloudWatch RUM 和 CloudWatch Synthetics canaries 自动收集并监控 EKS 工作负载的指定指标。",
+      "D": "配置 Amazon CloudWatch Application Insights 检测常见的应用程序性能问题和异常，并监控 EKS 工作负载的指定指标。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。Amazon CloudWatch Application Signals 自动收集四大黄金信号，支持 SLO/SLI，并能关联指标、日志和跟踪。",
+      "B": "OpenTelemetry + Managed Prometheus + Managed Grafana 虽可达成目标，但运维复杂度比 Application Signals 高很多。",
+      "C": "CloudWatch RUM 监控前端真实用户指标；Synthetics 探测端点；都没有原生 SLO 能力。",
+      "D": "Application Insights 偏向发现应用问题，没有原生 SLO/SLI 管理能力。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 84,
+    "type": "single",
+    "question": "一名 CloudOps 工程师需要禁用一个 Amazon RDS 实例的自动备份以优化成本。当该工程师尝试禁用备份时，收到错误信息称保留期必须介于 1 到 35 之间。最可能的原因是什么？",
+    "options": {
+      "A": "该 RDS 实例没有更改备份保留期的足够权限。",
+      "B": "该 RDS 实例配置了读取副本。",
+      "C": "该 RDS 实例使用了默认备份窗口。",
+      "D": "该 RDS 实例是 Multi-AZ 部署的一部分。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "权限错误会返回访问被拒，而非保留期范围信息。",
+      "B": "配置读取副本与备份保留范围不直接相关。",
+      "C": "默认备份窗口不限制保留期范围。",
+      "D": "正确。Multi-AZ 部署要求启用自动备份 (保留期 1-35) 以支持故障转移。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 85,
+    "type": "single",
+    "question": "一家公司在一组基于 Nitro 的 Amazon EC2 Linux 实例上托管一个电子商务网站。在最近一次促销活动中，部分客户报告了 HTTP 超时错误。为了找出错误的根本原因，CloudOps 工程师需要从 Elastic Network Adapter (ENA) 驱动获取更详细的网络指标。工程师必须获取 conntrack_allowance_available 和 conntrack_allowance_exceeded 指标。哪种方案能以最高的运维效率提供这些指标？",
+    "options": {
+      "A": "在实例上安装 Amazon CloudWatch agent。按 conntrack_allowance_available 和 conntrack_allowance_exceeded 指标过滤。",
+      "B": "在 EC2 实例上安装 collectd 守护进程和 Amazon CloudWatch agent。按 conntrack_allowance_available 和 conntrack_allowance_exceeded 指标过滤。",
+      "C": "启用 VPC Flow Logs。按 conntrack_allowance_available 和 conntrack_allowance_exceeded 指标过滤。",
+      "D": "为实例启用 Performance Insights。使用 Amazon CloudWatch 查看 conntrack_allowance_available 和 conntrack_allowance_exceeded 指标。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。CloudWatch agent 可采集 ENA 详细网络性能指标，包括 conntrack_allowance_available/exceeded。",
+      "B": "collectd 并非必要，仅靠 CloudWatch agent 即可获取这些指标。",
+      "C": "VPC Flow Logs 不包含 ENA 驱动级别的指标。",
+      "D": "Performance Insights 用于 RDS 性能，不适用于 EC2 网络指标。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 86,
+    "type": "single",
+    "question": "一名 CloudOps 工程师有一个 Amazon S3 存储桶和一个新的 AWS Lambda 函数。该工程师尝试通过 Lambda 控制台配置从 S3 存储桶到 Lambda 函数的新事件通知。配置失败并返回错误：“Unable to validate the following destination configurations.”工程师确认新 Lambda 函数及其 IAM 角色都已正确配置。该错误的原因是什么？",
+    "options": {
+      "A": "该 S3 存储桶的 S3 事件通知目标数量已达上限。",
+      "B": "S3 存储桶所有者需要通过资源策略授予 Lambda 函数显式的跨账户权限。",
+      "C": "新 Lambda 函数的资源策略缺少 Amazon S3 的 lambda:InvokeFunction 权限。",
+      "D": "S3 存储桶已存在一个指向已删除或权限不足资源的过期事件通知。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "S3 事件通知目标数量限制较高，通常不会产生这种验证错误。",
+      "B": "本场景是单账户，无需跨账户权限。",
+      "C": "若 Lambda 资源策略缺失，错误会提示主体或权限验证；题目已说明函数与角色配置正确。",
+      "D": "正确。“Unable to validate the following destination configurations” 通常意味着存储桶上有一条指向已删除或不可访问目标的过期通知配置，需先删除。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 87,
+    "type": "single",
+    "question": "一家公司的科学家将大数据对象作为分段上传上传到一个 Amazon S3 存储桶。由于客户端连接不佳，这些分段上传经常失败。公司希望优化与数据相关的存储成本。CloudOps 工程师必须实现一种方案，提供未完成上传的指标，并在 7 天后自动删除任何未完成的上传。哪种方案能满足这些要求？",
+    "options": {
+      "A": "在 S3 Storage Lens 仪表板中查看 Incomplete Multipart Upload Bytes 指标。创建 S3 生命周期策略在 7 天后自动删除任何未完成的分段上传。",
+      "B": "实施 S3 Intelligent-Tiering 在 7 天后将数据移至更低成本的存储类。创建 S3 Storage Lens 策略在 7 天后自动删除任何未完成的分段上传。",
+      "C": "访问 S3 控制台，在 Metrics 标签下查看未完成分段上传所占用的存储。创建一个 AWS Lambda 函数在 7 天后删除任何未完成的分段上传。",
+      "D": "使用 S3 analytics 存储类分析工具识别并衡量未完成的分段上传。配置 S3 存储桶策略强制限制分段上传以删除 7 天后未完成的分段上传。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。S3 Storage Lens 仪表板提供 Incomplete Multipart Upload Bytes 指标，加上生命周期策略 AbortIncompleteMultipartUpload (7 天) 即可原生清理。",
+      "B": "Intelligent-Tiering 是存储类优化，不会删除未完成的分段上传。",
+      "C": "自建 Lambda 删除比原生生命周期规则费力。",
+      "D": "存储类分析无法直接衡量未完成分段上传；桶策略也无法定时删除上传。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 88,
+    "type": "single",
+    "question": "一家公司使用 AWS Organizations 中的组织管理多账户 AWS 环境。该公司创建了一个新的基于 Amazon EBS 的 Amazon Machine Image (AMI)，并在整个组织中共享了该 AMI。员工必须使用该 AMI 启动组织中所有新的基于 Linux 的 Amazon EC2 实例。在公司的一个应用账户中，一名员工使用新 AMI 启动了一个新工作负载。EC2 实例启动后立即被终止。最可能的原因是什么？",
+    "options": {
+      "A": "启动实例的用户在应用账户中没有 ec2:RunInstances 权限。",
+      "B": "公司使用 AWS KMS 密钥加密了 AMI，而启动 EC2 实例的用户没有访问该密钥的权限。",
+      "C": "存在一个服务控制策略 (SCP) 拒绝启动 EC2 实例的用户在应用账户中启动实例。",
+      "D": "用户将 EC2 实例启动到一个没有访问互联网的子网中。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "缺少 ec2:RunInstances 权限会导致根本无法启动，而不是先启动再立即终止。",
+      "B": "正确。如果 AMI 使用了加密的 EBS 快照且用户无权访问 KMS 密钥，实例可启动但 EBS 卷无法挂载，于是被立即终止。",
+      "C": "SCP 拒绝会让请求一开始就失败，不会启动后再终止。",
+      "D": "缺乏互联网访问不会导致立即终止，实例仍能启动。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 89,
+    "type": "single",
+    "question": "一家公司启动了一个应用程序。公司将应用程序托管在 Amazon EC2 实例上。出于安全考虑，这些实例位于私有子网中。应用程序团队需要从办公室的企业桌面通过 SSH 访问这些实例。这些桌面已连接到互联网。哪种方案能提供该访问？",
+    "options": {
+      "A": "在公有子网中配置一个 NAT gateway。",
+      "B": "在本地网络与 VPC 之间创建一个 AWS Site-to-Site VPN 连接。",
+      "C": "配置一个互联网网关并将其附加到 VPC。",
+      "D": "创建允许来自本地网络的入站流量到达公有子网资源的安全组。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "NAT gateway 提供私有子网到互联网的出站访问，不能用于办公网到私有实例的入站 SSH。",
+      "B": "正确。AWS Site-to-Site VPN 将本地网络与 VPC 连接，使企业用户能直接到达私有子网。",
+      "C": "仅添加互联网网关并不能为企业桌面提供私有路径；将实例放到公有子网则会暴露它们。",
+      "D": "安全组可以放行流量，但本身无法建立从本地到私有子网的连通性。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 90,
+    "type": "single",
+    "question": "一名 CloudOps 工程师必须排查通过 Amazon CloudFront 提供的 Web 应用程序的性能问题。指标显示缓存命中率持续偏低，导致大量请求被转发到源站。哪种配置可以提高缓存命中率？",
+    "options": {
+      "A": "将源站的 Cache-Control 标头修改为 max-age=0。",
+      "B": "降低已缓存对象的 TTL。",
+      "C": "减少包含在缓存键中的请求标头、查询字符串和 Cookie 数量。",
+      "D": "配置已签名 URL 或已签名 Cookie 来限制内容访问。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "max-age=0 等于禁用缓存，命中率会更低。",
+      "B": "降低 TTL 会增加回源次数，使命中率更低。",
+      "C": "正确。让缓存键包含更少的标头、查询字符串和 Cookie，使更多请求能复用同一缓存条目。",
+      "D": "签名 URL/Cookie 控制访问，不影响命中率。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 91,
+    "type": "single",
+    "question": "一家公司计划在 Amazon Aurora MySQL DB 集群上部署一个数据库。该数据库将存储用于演示环境的数据。数据必须每天重置。哪种方案在运维效率最高？",
+    "options": {
+      "A": "在数据填充完毕后创建一个 DB 集群的手动快照。创建一条 Amazon EventBridge 规则每天调用一个 AWS Lambda 函数，配置函数恢复快照并删除之前的 DB 集群。",
+      "B": "在创建 DB 集群时启用 Backtrack 功能，指定 48 小时的目标 backtrack 窗口。创建一条 Amazon EventBridge 规则每天调用 Lambda 函数，配置函数执行 backtrack 操作。",
+      "C": "在数据填充完毕后将一个手动快照导出到 Amazon S3 存储桶。创建一条 Amazon EventBridge 规则每天调用 Lambda 函数，配置函数从 Amazon S3 恢复快照。",
+      "D": "将 DB 集群的备份保留期设置为 2 天。创建一条 Amazon EventBridge 规则每天调用 Lambda 函数，配置函数将 DB 集群恢复到某个时间点并删除之前的 DB 集群。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "每天用快照还原既慢，运维负担也大于 Backtrack。",
+      "B": "正确。Aurora MySQL Backtrack 能就地回退集群到指定时间，借助 EventBridge + Lambda 每天回退即可，快速且简单。",
+      "C": "导出再从 S3 恢复比 Backtrack 更重更慢。",
+      "D": "PITR 每次都会创建新集群，必须每天切换端点。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 92,
+    "type": "single",
+    "question": "一家公司的应用程序运行在 Application Load Balancer (ALB) 后面的 Amazon EC2 实例上。公司配置了一个 Amazon CloudWatch 警报来监控 HTTPCode_Target_5XX_Count 指标。该应用程序每隔几天会在工作时间崩溃，崩溃会触发 CloudWatch 警报并导致服务中断。崩溃原因是应用程序中的内存泄漏。开发人员正在修复问题期间，CloudOps 工程师需要实施一个临时方案。该方案必须每天自动重启 EC2 实例，并尽量减少在工作时间对应用的影响。哪种方案能满足这些要求？",
+    "options": {
+      "A": "创建一条计划在工作时间之外运行的 Amazon EventBridge 规则。配置规则在 EC2 实例上调用 StartInstances 操作。",
+      "B": "使用 AWS Systems Manager 创建一个工作时间之外的每日维护窗口。将 EC2 实例注册为目标。为维护窗口分配 AWS-RestartEC2Instance runbook。",
+      "C": "为 EC2 实例配置一个额外的 CloudWatch 警报来监控 StatusCheckFailed_System 指标。配置该警报触发 EC2 重启操作。",
+      "D": "配置一个额外的 CloudWatch 警报，在应用程序每次崩溃时触发。配置该警报在 EC2 实例上重启应用程序。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "StartInstances 只能启动已停止的实例，不能重启正在运行的实例。",
+      "B": "正确。在工作时间之外创建 Systems Manager 维护窗口，使用 AWS-RestartEC2Instance runbook 可可靠地每日重启实例且影响极小。",
+      "C": "StatusCheckFailed_System 是硬件层故障，不会因内存泄漏而触发。",
+      "D": "在每次崩溃时重启应用并不能满足“每天定时在非工作时间重启”的要求。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 93,
+    "type": "single",
+    "question": "一家公司有一个启用了 AWS KMS 密钥服务器端加密 (SSE-KMS) 的 Amazon S3 存储桶。多个应用程序读取该 S3 存储桶以进行每日报告。公司每周在数据移入数据仓库时清空 S3 存储桶。随着更多应用程序读取该存储桶，KMS 相关交易的成本不断上升。CloudOps 工程师需要在不取消 S3 加密且不失去对现有对象访问的前提下降低 KMS 成本。哪种方案能以最少的运维负担满足这些要求？",
+    "options": {
+      "A": "在 S3 存储桶上启用 S3 Bucket Keys。指定现有 KMS 密钥。",
+      "B": "将 S3 存储桶的加密类型更改为客户提供密钥的服务器端加密 (SSE-C)。",
+      "C": "使用 Amazon CloudFront 缓存 S3 存储桶中的对象并向应用程序提供这些对象。",
+      "D": "配置应用程序通过 S3 access point 连接到 S3 存储桶。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。S3 Bucket Keys 通过生成桶级密钥减少 KMS 调用次数，从而降低 KMS 费用，仍保留现有 KMS 密钥及访问。",
+      "B": "SSE-C 需要客户端在每次请求时提供密钥，运维变化巨大。",
+      "C": "在 S3 前加 CloudFront 改变了访问模型，也无法解决每个对象都要调用 KMS 的问题。",
+      "D": "S3 access points 不改变加密模型，也不会降低 KMS 成本。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 94,
+    "type": "single",
+    "question": "一家零售公司运行一个 Web 应用程序。该应用程序使用 Application Load Balancer (ALB) 在两个可用区的多台 Amazon EC2 实例之间分发流量。该应用程序在限时促销期间经历高流量。公司必须确保请求在所有健康实例之间均匀分布。此外，公司需要为购物车功能提供会话保持。哪种配置以最少的管理工作量满足这些要求？",
+    "options": {
+      "A": "将 ALB 目标组配置为使用轮询 (round robin) 算法。启用会话保持 (stickiness) 和跨可用区负载均衡。",
+      "B": "将 ALB 切换为 Network Load Balancer。修改目标组为使用最少未完成请求算法。启用会话保持。禁用跨可用区负载均衡。",
+      "C": "将 ALB 目标组配置为使用加权轮询算法。通过 AWS Lambda 函数将会话数据存储在 Amazon DynamoDB 中实现会话保持。",
+      "D": "为 ALB 监听器配置基于路径的路由，将购物车请求引导到具有 sticky sessions 的专用目标组。第二个目标组使用 round robin 且不启用会话保持。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。ALB 轮询 + 会话保持可让用户会话保持在同一目标，跨可用区负载均衡可在两个 AZ 之间均匀分布。",
+      "B": "NLB 不原生支持同等粒度的 HTTP 会话保持；禁用跨可用区会降低均衡度。",
+      "C": "用 Lambda + DynamoDB 维护会话状态比直接启用 ALB 会话保持更复杂。",
+      "D": "两个目标组并存的方式比一次启用会话保持更复杂。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 95,
+    "type": "single",
+    "question": "一家公司在 Application Load Balancer (ALB) 后面的 Amazon EC2 实例上运行一个 Web 应用程序。当应用程序返回 HTTP 500 状态码时，公司需要一个 AWS Lambda 函数对应用服务器执行自定义恢复程序。CloudOps 工程师需要设计一个方案，能够检测 HTTP 500 状态码，并在检测到错误时可靠地运行该 Lambda 函数。哪种方案能满足这些要求？",
+    "options": {
+      "A": "在 ALB 目标组的 HTTPCode_Target_5XX_Count 指标上配置 Amazon CloudWatch 警报。将警报操作设置为运行该 Lambda 函数。",
+      "B": "部署一个新的 Lambda 函数持续扫描 Amazon S3 中的 ALB 访问日志以检测 HTTP 500 状态码，然后调用现有 Lambda 函数。",
+      "C": "在应用实例上启用 AWS CloudTrail。配置 Amazon CloudWatch Logs 度量筛选器以检测 HTTP 500 状态码并运行 Lambda 函数。",
+      "D": "为所有 ALB 请求事件创建一条 Amazon EventBridge 规则调用该 Lambda 函数。配置 Lambda 函数在内部过滤 HTTP 500 状态码。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。在 HTTPCode_Target_5XX_Count 指标上设置 CloudWatch 警报，并将警报操作设为调用 Lambda，可在阈值越界时可靠触发恢复。",
+      "B": "用 Lambda 不断扫描 S3 中的 ALB 访问日志效率低且不实时。",
+      "C": "CloudTrail 不记录单请求的 HTTP 状态码，度量筛选器只针对日志组。",
+      "D": "EventBridge 不会收到每次 ALB 请求事件。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 96,
+    "type": "single",
+    "question": "一家公司使用 Amazon CloudFront 分发提供托管在 Amazon S3 存储桶上的静态网站。S3 存储桶是 CloudFront 分发的源站。该网站的用户遍布全球。公司更新了部分网站内容。更新之后，用户报告他们看到的是之前版本的内容。公司必须确保网站用户只看到最新内容。哪种方案能满足这一要求？",
+    "options": {
+      "A": "使用 Amazon S3 ACL 将新内容设为公开。",
+      "B": "重新上传新内容。在源 S3 存储桶上设置版本控制。",
+      "C": "将新内容上传到 CloudFront 分发所在的可用区。",
+      "D": "在上传新内容时使用 CloudFront invalidation (失效)。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "S3 ACL 不会影响 CloudFront 已缓存的内容。",
+      "B": "桶版本控制管理对象版本，但不会刷新 CloudFront 缓存。",
+      "C": "CloudFront 是全局服务，向特定可用区上传没有意义。",
+      "D": "正确。CloudFront invalidation 会移除边缘节点的缓存副本，让用户获取最新内容。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 97,
+    "type": "single",
+    "question": "一家公司使用默认设置创建了一个 AWS Lambda 函数。该函数需要访问位于一个 VPC 私有子网中的 Amazon RDS 数据库。该函数具有访问数据库的正确 IAM 权限。私有子网具有适当的路由配置，并且可以从 VPC 内部访问。然而，Lambda 函数无法连接到该 RDS 实例。最可能的原因是什么？",
+    "options": {
+      "A": "公司未在 Lambda 函数配置中将该 RDS 实例设为目标。",
+      "B": "Lambda 函数配置未将该函数部署在包含 RDS 实例的同一 VPC 中。",
+      "C": "部署 Lambda 函数的 VPC 与部署 RDS 实例的 VPC 未对等连接。",
+      "D": "Lambda 函数的安全组不允许出站访问该 RDS 实例。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Lambda 配置中并没有“设置 RDS 为目标”的选项。",
+      "B": "正确。默认 Lambda 不在 VPC 内运行；要访问私有子网中的 RDS，必须把 Lambda 部署到同一 VPC 的相应子网。",
+      "C": "VPC 对等连接是另一种方式，但只要 Lambda 在同一 VPC 内即可。",
+      "D": "安全组可能是原因之一，但题目已说明路由正常、VPC 内可访问；按默认设置最可能是 Lambda 不在 VPC 内。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 98,
+    "type": "multiple",
+    "question": "一名 CloudOps 工程师无法在 VPC 中启动 Amazon EC2 实例，因为 VPC 中没有可用的私有 IPv4 地址。该工程师必须采取哪两个操作的组合来启动这些实例？（选择两项）",
+    "options": {
+      "A": "为 VPC 关联一个次级 IPv4 CIDR 块。",
+      "B": "为 VPC 关联一个主 IPv6 CIDR 块。",
+      "C": "为该 VPC 创建一个新子网。",
+      "D": "修改 VPC 的 CIDR 块。",
+      "E": "修改与实例关联的子网的 CIDR 块。"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "正确。为 VPC 关联次级 IPv4 CIDR 块可扩展 IP 空间。",
+      "B": "IPv6 在本场景中无济于事，EC2 仍需要 IPv4 地址。",
+      "C": "正确。扩展 VPC CIDR 后，再用新 CIDR 创建子网并在其中启动实例。",
+      "D": "不允许修改正在使用的 VPC 主 CIDR 块；只能添加次级 CIDR 块。",
+      "E": "现有子网的 CIDR 块也不能修改。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 99,
+    "type": "multiple",
+    "question": "一家公司正在运行一个无状态应用程序。该应用程序包含一个 Web 服务器和一个 PostgreSQL 数据库，运行在单个 Amazon EC2 实例上。在应用程序高流量期间，该 EC2 实例过载，导致响应时间变慢。CloudOps 工程师需要实施一种方案来解决性能问题。方案必须能够适应用户数量持续增长带来的应用流量增加，并且必须使应用程序具有高可用性。哪种步骤组合能够满足这些要求？（选择两项）",
+    "options": {
+      "A": "创建一个 Amazon CloudFront 分发，将该 EC2 实例指定为源站。",
+      "B": "在 Application Load Balancer 后面配置一个 EC2 Auto Scaling 组用于 Web 服务器。",
+      "C": "将现有的 EC2 实例升级为拥有更多 CPU 和内存资源的更大实例类型。",
+      "D": "为数据库使用 Amazon RDS for PostgreSQL Multi-AZ 部署。将应用程序指向新端点。",
+      "E": "将 EC2 实例上的 PostgreSQL 数据库升级到更新版本。"
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "CloudFront 缓存静态内容，但不能扩展 Web 层，也不能提升数据库可用性。",
+      "B": "正确。将 Web 服务器置于 ALB 后的 EC2 Auto Scaling 组中可实现水平扩展和高可用。",
+      "C": "升级实例类型属于纵向扩展，无法实现高可用。",
+      "D": "正确。将数据库迁移到 Amazon RDS for PostgreSQL Multi-AZ 部署即可获得高可用与托管能力。",
+      "E": "在单个 EC2 上升级 PostgreSQL 既不解决扩展也不提供高可用。"
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 100,
+    "type": "single",
+    "question": "一名 CloudOps 工程师需要为一个读多写少的应用程序配置缓存层，该应用使用 Amazon RDS for PostgreSQL 数据库。该应用程序存在于三个 AWS Region。读和写活动发生在主 Region。在两个副 Region 中，仅在 RDS for PostgreSQL 跨区域读副本上执行只读活动。每个 Region 中的缓存必须包含相同的数据，以提供跨 Region 一致的用户体验。哪种缓存层方案能满足这些要求？",
+    "options": {
+      "A": "搭建一个 Amazon ElastiCache (Redis OSS) global datastore。在主 Region 包含一个读写集群。在每个副 Region 包含一个只读集群。",
+      "B": "搭建一个 Amazon ElastiCache (Memcached) global database。在主 Region 包含一个读写集群。在每个副 Region 包含一个只读集群。",
+      "C": "在主 Region 的 RDS for PostgreSQL 数据库上启用查询缓存。配置查询缓存复制到副 RDS 跨区域副本。",
+      "D": "在三个 Region 都搭建启用 cluster mode 的 Amazon ElastiCache (Memcached) 集群。配置 ElastiCache 跨区域复制，从主 Region 复制到副 Region。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正确。ElastiCache for Redis OSS 的 global datastore 支持跨区域复制：写入主 Region 集群后会复制到副 Region 的只读集群。",
+      "B": "Memcached 不支持 global datastore。",
+      "C": "RDS PostgreSQL 不提供可跨区域复制的内置查询缓存。",
+      "D": "Memcached 也不支持跨区域复制。"
+    }
+  }
+]
