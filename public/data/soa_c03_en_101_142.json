@@ -1,0 +1,810 @@
+[
+  {
+    "exam": "SOA-C03",
+    "id": 101,
+    "type": "single",
+    "question": "A company uses a large number of Linux based Amazon EC2 instances to run business operations such as ordering, fulfillment, and billing. The company uses AWS Systems Manager to manage the EC2 instances. The company wants to ensure that the Systems Manager Agent (SSM Agent) is always up to date with the latest version. Which solution will meet this requirement in the MOST operationally efficient way?",
+    "options": {
+      "A": "Enable the Auto update SSM Agent setting in Systems Manager Fleet Manager.",
+      "B": "Subscribe to SSM Agent notifications on Github. Configure the subscription events to invoke an Amazon SNS topic. Configure the SNS topic to run a custom AWS Lambda function to update the SSM Agent by using the Systems Manager Run Command API.",
+      "C": "Enable the Auto update SSM Agent setting in Systems Manager Patch Manager.",
+      "D": "Subscribe to SSM Agent notifications on Github. Configure the subscription events to invoke an Amazon SNS topic. Configure the topic to run a custom AWS Lambda function to update the SSM Agent by using a Systems Manager Automation document."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Enabling Auto update SSM Agent in Systems Manager Fleet Manager is a built-in, managed setting that keeps the agent updated automatically with no custom code or pipeline to maintain.",
+      "B": "Incorrect. Subscribing to GitHub notifications and building an SNS/Lambda/Run Command pipeline is operationally heavy and requires custom code and ongoing maintenance.",
+      "C": "Incorrect. Patch Manager focuses on OS and application patching, not on automatically keeping the SSM Agent itself current.",
+      "D": "Incorrect. Like option B, this requires custom subscriptions, an SNS topic, and a Lambda-driven Automation document — far more overhead than the built-in Fleet Manager setting."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 102,
+    "type": "single",
+    "question": "A CloudOps engineer needs to implement a monitoring system to collect instance metrics every minute for an application. The application runs on a highly available pair of Amazon EC2 instances. The monitoring system must send an email alert when the metrics exceed a predefined threshold. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use the AWS Health Dashboard to extract the instance metrics. Configure Amazon EventBridge to detect and react to changes in the metrics and to send email alerts.",
+      "B": "Use AWS CloudTrail to monitor the instances. Copy the logs to an Amazon S3 bucket. Configure an AWS Lambda function to send email alerts based on the logs from the S3 bucket.",
+      "C": "Use basic monitoring in Amazon CloudWatch for the instance metrics. Configure CloudWatch alarms that use Amazon SNS to send email alerts.",
+      "D": "Use detailed monitoring in Amazon CloudWatch for the instance metrics. Configure CloudWatch alarms that use Amazon SNS to send email alerts."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. AWS Health Dashboard reports service and account health events, not per-instance CPU/memory metrics; it cannot collect EC2 metrics every minute.",
+      "B": "Incorrect. CloudTrail records API calls, not instance performance metrics, so it cannot drive a metric-threshold alert.",
+      "C": "Incorrect. Basic monitoring in CloudWatch only reports EC2 metrics every 5 minutes, which does not satisfy the one-minute requirement.",
+      "D": "Correct. Detailed monitoring delivers EC2 metrics at 1-minute granularity, and CloudWatch alarms with an SNS topic provide the email notifications."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 103,
+    "type": "multiple",
+    "question": "A company is managing a website with a global user base hosted on Amazon EC2 with an Application Load Balancer (ALB). To reduce the load on the web servers, a CloudOps engineer configures an Amazon CloudFront distribution with the ALB as the origin. After a week of monitoring the solution, the CloudOps engineer notices that requests are still being served by the ALB and there is no change in the web server load. What are possible causes for this problem? (Choose two.)",
+    "options": {
+      "A": "CloudFront does not have the ALB configured as the origin access identity.",
+      "B": "The DNS is still pointing to the ALB instead of the CloudFront distribution.",
+      "C": "The ALB security group is not permitting inbound traffic from CloudFront.",
+      "D": "The default, minimum, and maximum Time to Live (TTL) are set to 0 seconds on the CloudFront distribution.",
+      "E": "The target groups associated with the ALB are configured for sticky sessions."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. Origin access identity (OAI) is an S3-only feature; it does not apply to ALB origins.",
+      "B": "Correct. If DNS still resolves to the ALB, client requests bypass CloudFront and hit the ALB directly, which is exactly the symptom described.",
+      "C": "Incorrect. A blocked security group would cause CloudFront-to-origin traffic to fail, not cause traffic to skip CloudFront.",
+      "D": "Correct. TTLs of 0 disable edge caching, so every request is forwarded to the origin and the ALB sees no load reduction.",
+      "E": "Incorrect. Sticky sessions affect target group selection behind the ALB; they do not control whether CloudFront caches responses."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 104,
+    "type": "single",
+    "question": "A company is undergoing an external audit of its systems, which run wholly on AWS. A CloudOps engineer must supply documentation of Payment Card Industry Data Security Standard (PCI DSS) compliance for the infrastructure managed by AWS. Which set of actions should the CloudOps engineer take to meet this requirement?",
+    "options": {
+      "A": "Download the applicable reports from the AWS Artifact portal and supply these to the auditors.",
+      "B": "Download complete copies of the AWS CloudTrail log files and supply these to the auditors.",
+      "C": "Download complete copies of the Amazon CloudWatch logs and supply these to the auditors.",
+      "D": "Provide the auditors with administrative access to the production AWS account so that the auditors can determine compliance."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Artifact is the self-service portal that provides AWS compliance reports such as PCI DSS attestations directly to customers.",
+      "B": "Incorrect. CloudTrail logs record account API activity, not the compliance posture of AWS-managed infrastructure.",
+      "C": "Incorrect. CloudWatch logs contain application and resource logs and do not constitute compliance documentation.",
+      "D": "Incorrect. Giving auditors administrative access violates least-privilege and is unnecessary because AWS already publishes compliance reports in Artifact."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 105,
+    "type": "single",
+    "question": "A CloudOps engineer has used AWS CloudFormation to deploy a serverless application into a production VPC. The application consists of an AWS Lambda function, an Amazon DynamoDB table, and an Amazon API Gateway API. The CloudOps engineer must delete the AWS CloudFormation stack without deleting the DynamoDB table. Which action should the CloudOps engineer take before deleting the AWS CloudFormation stack?",
+    "options": {
+      "A": "Add a Retain deletion policy to the DynamoDB resource in the AWS CloudFormation stack.",
+      "B": "Add a Snapshot deletion policy to the DynamoDB resource in the AWS CloudFormation stack.",
+      "C": "Enable termination protection on the AWS CloudFormation stack.",
+      "D": "Update the application's IAM policy with a Deny statement for the dynamodb:DeleteTable action."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. A DeletionPolicy of 'Retain' on the DynamoDB resource tells CloudFormation to leave the table intact when the stack is deleted.",
+      "B": "Incorrect. A Snapshot deletion policy preserves a snapshot but DynamoDB tables only support 'Retain' (and other resource-specific options); also a snapshot would not keep the live table.",
+      "C": "Incorrect. Stack termination protection blocks the delete operation entirely; it does not allow deleting the stack while keeping the DynamoDB table.",
+      "D": "Incorrect. An IAM Deny statement prevents the application from deleting the table, but CloudFormation's stack deletion uses the deployment role and will still try to delete the resource."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 106,
+    "type": "single",
+    "question": "A CloudOps engineer manages policies for many AWS member accounts in an AWS Organizations structure. Administrators on other teams have access to the account root user credentials of the member accounts. The CloudOps engineer must prevent all teams, including their administrators, from using Amazon DynamoDB. The solution must not affect the ability of the teams to access other AWS services. Which solution will meet these requirements?",
+    "options": {
+      "A": "In all member accounts, configure IAM policies that deny access to all DynamoDB resources for all users, including the root user.",
+      "B": "Create a service control policy (SCP) in the management account to deny all DynamoDB actions. Apply the SCP to the root of the organization.",
+      "C": "In all member accounts, configure IAM policies that deny AmazonDynamoDBFullAccess to all users, including the root user.",
+      "D": "Remove the default service control policy (SCP) in the management account. Create a replacement SCP that includes a single statement that denies all DynamoDB actions."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. IAM policies in member accounts cannot restrict the root user; the root user bypasses identity-based policies.",
+      "B": "Correct. A Service Control Policy at the root of the organization denies DynamoDB actions for every principal in every member account — including root users.",
+      "C": "Incorrect. Same problem as A: IAM policies do not restrict the account root user.",
+      "D": "Incorrect. Removing the default FullAWSAccess SCP and replacing it with a deny-only SCP would block almost all services, not just DynamoDB."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 107,
+    "type": "multiple",
+    "question": "A CloudOps engineer must create an IAM policy for a developer who needs access to specific AWS services. Based on the requirements, the CloudOps engineer creates the following policy: Which actions does this policy allow? (Choose two.)",
+    "options": {
+      "A": "Create an AWS Storage Gateway.",
+      "B": "Create an IAM role for an AWS Lambda function.",
+      "C": "Delete an Amazon SQS queue.",
+      "D": "Describe AWS load balancers.",
+      "E": "Invoke an AWS Lambda function."
+    },
+    "answer": [
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. The policy grants storagegateway:Describe* only, which does not include CreateGateway needed to create a Storage Gateway.",
+      "B": "Incorrect. The policy does not grant iam:* permissions, so it cannot be used to create an IAM role.",
+      "C": "Incorrect. The policy only grants sqs:List*, which does not include DeleteQueue.",
+      "D": "Correct. elasticloadbalancing:* grants all ELB actions including Describe* operations on load balancers.",
+      "E": "Correct. lambda:* grants all Lambda actions, including lambda:InvokeFunction."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 108,
+    "type": "single",
+    "question": "A development team wants to match events on Amazon EventBridge where the state of an Amazon EC2 machine is not \"terminated\". An example event is as follows: Which event pattern should the development team use to find relevant events?",
+    "options": {
+      "A": "{\"detail\": {\"state\": [\"not equals-ignore-case\": \"terminated\"]}}",
+      "B": "{\"detail\": {\"state\": [\"! equals-ignore-case\": \"terminated\"]}}",
+      "C": "{\"detail\": {\"state\": [\"equals-ignore-case\": \"terminated\"]}}",
+      "D": "{\"detail\": {\"state\": [{\"anything-but\": {\"equals-ignore-case\": \"terminated\"}}]}}"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. EventBridge event patterns do not support a 'not equals-ignore-case' keyword.",
+      "B": "Incorrect. EventBridge has no '!' operator for negation in patterns.",
+      "C": "Incorrect. This pattern matches events where state EQUALS 'terminated', the opposite of what is wanted.",
+      "D": "Correct. The 'anything-but' matching operator combined with 'equals-ignore-case' matches every state value except 'terminated'."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 109,
+    "type": "single",
+    "question": "A CloudOps engineer is working on cost savings for a company. The CloudOps engineer notices multiple unused Elastic IP addresses. The addresses are spread across different accounts and AWS Regions in an organization in AWS Organizations. The CloudOps engineer must administer and track the addresses based on security domains. The CloudOps engineer must be able to view the history of assigned addresses. Which solution will meet these requirements?",
+    "options": {
+      "A": "Enable AWS Config with an IP address tracking rule.",
+      "B": "Use Amazon CloudWatch with custom IP metrics to view addresses by account and Region.",
+      "C": "Enable Amazon VPC IP Address Manager for Organizations integrations.",
+      "D": "In AWS Systems Manager Inventory, enable a resource data sync to Amazon S3 for IP tracking."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. AWS Config does not provide a managed 'IP address tracking' rule for Elastic IPs.",
+      "B": "Incorrect. CloudWatch custom metrics do not track Elastic IP ownership history across accounts and Regions.",
+      "C": "Correct. Amazon VPC IP Address Manager (IPAM) integrates with AWS Organizations to centrally administer, track, and audit IP address usage across accounts and Regions, including assignment history.",
+      "D": "Incorrect. Systems Manager Inventory tracks managed instance inventory, not Elastic IP ownership history."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 110,
+    "type": "single",
+    "question": "A company has a software as a service (SaaS) application. The company has integrated the application with AWS services by using the AWS SDK and an IAM user's access key ID and secret access key. The company needs to implement the principle of least privilege for the IAM user. The company must avoid the usage of permanent credentials. Which solution will meet these requirements?",
+    "options": {
+      "A": "Migrate the application to use the AWS STS AssumeRoleWithSAML API operation.",
+      "B": "Migrate the application to use the AWS STS AssumeRole API operation. Allow the IAM user to call only AWS STS.",
+      "C": "Add a policy to the existing IAM user to scope the permissions to only the permissions that the user needs for the application.",
+      "D": "Add an IAM group to scope the permissions to only the permissions that the user needs for the application. Add the IAM user to the IAM group."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. AssumeRoleWithSAML requires a SAML 2.0 federated identity provider, which the SaaS application does not have.",
+      "B": "Correct. Restricting the IAM user to only call STS and using AssumeRole returns temporary credentials, eliminating long-lived access keys while granting least privilege through the assumed role.",
+      "C": "Incorrect. Scoping the user's own permissions still leaves a permanent access key in place, violating the no-permanent-credentials requirement.",
+      "D": "Incorrect. Adding the user to a scoped group still relies on a permanent access key."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 111,
+    "type": "single",
+    "question": "A company has many accounts in an organization in AWS Organizations. The company must automate resource provisioning from the organization's management account to the member accounts. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an AWS CloudFormation change set. Deploy the change set to all member accounts.",
+      "B": "Create an AWS CloudFormation nested stack. Deploy the nested stack to all member accounts.",
+      "C": "Create an AWS CloudFormation stack set. Deploy the stack set to all member accounts.",
+      "D": "Create an AWS SAM template. Deploy the template to all member accounts."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. CloudFormation change sets preview updates to a single stack; they do not deploy across accounts.",
+      "B": "Incorrect. Nested stacks group templates inside one stack; they do not provision resources across many accounts.",
+      "C": "Correct. CloudFormation StackSets deploy and manage stacks across many AWS accounts and Regions from a single management account.",
+      "D": "Incorrect. AWS SAM is a transform for serverless apps in a single stack and does not orchestrate multi-account deployments by itself."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 112,
+    "type": "single",
+    "question": "A company's VPC has connectivity to an on-premises data center through an AWS Site-to-Site VPN. The company needs Amazon EC2 instances in the VPC to send DNS queries for example.com to the DNS servers in the data center. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon Route 53 Resolver inbound endpoint. Create a conditional forwarding rule on the on-premises DNS servers to forward DNS requests for example.com to the inbound endpoints.",
+      "B": "Create an Amazon Route 53 Resolver inbound endpoint. Create a forwarding rule on the resolver that sends all queries for example.com to the on-premises DNS servers. Associate this rule with the VPC.",
+      "C": "Create an Amazon Route 53 Resolver outbound endpoint. Create a conditional forwarding rule on the on-premises DNS servers to forward DNS requests for example.com to the outbound endpoints.",
+      "D": "Create an Amazon Route 53 Resolver outbound endpoint. Create a forwarding rule on the resolver that sends all queries for example.com to the on-premises DNS servers. Associate this rule with the VPC."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Inbound endpoints accept DNS queries from on-premises into VPC resolvers, the opposite direction of what is needed.",
+      "B": "Incorrect. Inbound endpoints cannot host forwarding rules that send VPC queries to on-premises servers.",
+      "C": "Incorrect. The forwarding rule must live on the Route 53 Resolver, not on the on-premises DNS servers.",
+      "D": "Correct. An outbound endpoint plus a Resolver forwarding rule for example.com associated with the VPC sends matching DNS queries from EC2 to the on-premises DNS servers."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 113,
+    "type": "single",
+    "question": "To comply with regulations, a CloudOps engineer needs to back up an Amazon EC2 Amazon Machine Image (AMI) to an Amazon S3 bucket. If the CloudOps engineer restores the AMI from the bucket in the future, the AMI must use the same AMI image ID as the original AMI. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create a copy of the AMI. Specify the destination S3 bucket. Set the launch permissions to implicit.",
+      "B": "Archive the snapshot that is associated with the AMI. Specify the S3 bucket as the archive destination.",
+      "C": "Create a store image task. Specify the image ID and the destination S3 bucket.",
+      "D": "Use the AWS CLI copy-image command. Specify the image ID and the destination S3 bucket."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Copying an AMI produces a new AMI with a new image ID, so the original ID is not preserved.",
+      "B": "Incorrect. Archiving an EBS snapshot archives the underlying snapshot, not the AMI, and restoring it does not return the same AMI ID.",
+      "C": "Correct. The CreateStoreImageTask API stores the AMI as a single object in S3 and the corresponding RestoreImageFromS3 returns the AMI with its original AMI ID.",
+      "D": "Incorrect. There is no aws ec2 copy-image command that targets an S3 bucket; copy-image creates a new AMI in another Region with a new ID."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 114,
+    "type": "single",
+    "question": "A CloudOps engineer has blocked public access to all company Amazon S3 buckets. The CloudOps engineer wants to be notified when an S3 bucket becomes publicly readable in the future. What is the MOST operationally efficient way to meet this requirement?",
+    "options": {
+      "A": "Create an AWS Lambda function that periodically checks the public access settings for each S3 bucket. Set up Amazon SNS to send notifications.",
+      "B": "Create a cron script that uses the S3 API to check the public access settings for each S3 bucket. Set up Amazon SNS to send notifications.",
+      "C": "Enable S3 Event Notifications for each S3 bucket. Subscribe S3 Event Notifications to an Amazon SNS topic.",
+      "D": "Enable the s3-bucket-public-read-prohibited managed rule in AWS Config. Subscribe the AWS Config rule to an Amazon SNS topic."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. A custom Lambda that polls bucket settings adds operational overhead and is slower than a managed Config rule.",
+      "B": "Incorrect. Maintaining a cron script and S3 API logic is operationally heavy compared with a managed solution.",
+      "C": "Incorrect. S3 Event Notifications fire on object events, not on bucket configuration/public-access changes.",
+      "D": "Correct. The AWS Config managed rule s3-bucket-public-read-prohibited continuously evaluates bucket access settings, and noncompliant findings can publish directly to SNS — fully managed with the least overhead."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 115,
+    "type": "single",
+    "question": "A company runs a three-tier web application on AWS. The application includes web servers, application servers, and database servers. The application servers process requests from the web servers. The company wants to ensure high availability of the application. Therefore, the company needs to monitor the health of the application servers and route traffic only to healthy instances. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Application Load Balancer (ALB) in front of the application servers with health checks for the application servers.",
+      "B": "Create an Amazon Route 53 health check for the application servers. Attach a Network Load Balancer (NLB) in front of the application servers.",
+      "C": "Create an AWS Lambda function that restarts an application server. Configure an Amazon CloudWatch alarm to monitor the health of the application servers. Run the function when an application is unhealthy.",
+      "D": "Create an Amazon CloudWatch metric to monitor the health of the application servers. Route traffic by using a Network Load Balancer (NLB)."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. An ALB sits in front of the application servers, performs HTTP/HTTPS health checks, and only routes requests to healthy instances.",
+      "B": "Incorrect. Route 53 health checks are typically used to fail over endpoints, not to load balance among app servers; an NLB alone does not satisfy HTTP-level health checks as cleanly as an ALB.",
+      "C": "Incorrect. Restarting via Lambda is reactive and disruptive; it does not provide continuous traffic routing based on health.",
+      "D": "Incorrect. A CloudWatch metric does not control traffic routing on its own; the NLB does not perform application-aware health checking the way an ALB does."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 116,
+    "type": "single",
+    "question": "A company uses a custom Amazon Machine Image (AMI) as part of an EC2 Image Builder pipeline. A CloudOps engineer notices that the custom AMI will reach the end of its support lifespan in few months. The CloudOps engineer needs to update the EC2 Image Builder pipeline to use the latest AMI ID. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create a new version of the existing EC2 Image Builder recipe. Update the AMI ID details. Update the pipeline to use the new recipe version.",
+      "B": "Disable the AMI in the lifecycle rules for the existing AMI. Update the existing EC2 Image Builder recipe with the latest AMI ID details. Rerun the pipeline.",
+      "C": "Update the build component to use the latest AMI ID details.",
+      "D": "Replace the AMI ID in the launch template for the pipeline."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. EC2 Image Builder recipes are versioned. Creating a new recipe version with the updated parent AMI and pointing the pipeline at it is the supported way to refresh the base image.",
+      "B": "Incorrect. Lifecycle rules manage existing AMIs; updating the recipe in place is not the recommended way to roll out a new parent AMI.",
+      "C": "Incorrect. Build components install software; they do not control the parent AMI used by the recipe.",
+      "D": "Incorrect. Image Builder pipelines do not use a launch template for the parent AMI; the AMI is selected via the recipe."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 117,
+    "type": "single",
+    "question": "A company runs multiple Amazon EC2 instances that are distributed across multiple AWS Regions. The company uses AWS Systems Manager tools to manage the EC2 instances. The company needs to deploy an auditing software package onto every instance to record user logins and any actions that users take. A CloudOps engineer must implement a solution that automatically installs the auditing software on all existing EC2 instances. The solution also must automatically install the auditing software on any new EC2 instances when they are launched. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create a Systems Manager Distributor package that includes the auditing software. Store the package in an Amazon S3 bucket. Create a Systems Manager State Manager association in each Region to install the software package on all managed instances in the company's AWS account.",
+      "B": "Load the installer for the auditing software into an Amazon S3 bucket. Connect to every instance by using Systems Manager Fleet Manager Remote Desktop. Download the installer by using the AWS CLI. Run the installer manually.",
+      "C": "Create an AWS Lambda function that calls the software installer. Merge the auditing software into the Lambda function by using Lambda layers. Run the Lambda function from each instance by using a scheduled Amazon EventBridge rule.",
+      "D": "Create an Amazon EventBridge rule to react to Amazon EC2 RunInstances events. Configure the rule to modify the events to include a step that runs the software installer. Reboot all the instances."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. A Systems Manager Distributor package distributes software to managed instances, and a State Manager association in each Region enforces installation on existing and newly registered instances automatically.",
+      "B": "Incorrect. Manually downloading and running the installer on each instance via Fleet Manager is not automated and does not cover new instances.",
+      "C": "Incorrect. Running a Lambda 'from each instance' is unworkable; Lambda layers do not allow installing software on EC2 instances.",
+      "D": "Incorrect. EventBridge cannot modify RunInstances events to inject a software-install step, and rebooting all instances is disruptive."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 118,
+    "type": "single",
+    "question": "A company is attempting to manage its costs in the AWS Cloud. A CloudOps engineer needs specific company-defined tags that are assigned to resources to appear on the billing report. What should the CloudOps engineer do to meet this requirement?",
+    "options": {
+      "A": "Activate the tags as AWS generated cost allocation tags.",
+      "B": "Activate the tags as user-defined cost allocation tags.",
+      "C": "Create a new cost category. Select the account billing dimension.",
+      "D": "Create a new AWS Cost and Usage Report. Include the resource IDs."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. AWS generated cost allocation tags are tags created by AWS (like aws:createdBy), not company-defined tags.",
+      "B": "Correct. User-defined cost allocation tags must be activated in Billing before the keys/values appear on the cost report.",
+      "C": "Incorrect. Cost categories group spend, but they do not surface tag values on the billing report.",
+      "D": "Incorrect. The Cost and Usage Report can include resource IDs, but tag values still require activation as cost allocation tags first."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 119,
+    "type": "single",
+    "question": "A company uses AWS Systems Manager to automate tasks across AWS accounts. The company uses monitoring tools to detect issues. The company creates a Systems Manager Automation runbook that runs an AWS Lambda function to remediate the issues. Initially, the company runs the runbook manually. Now, the company wants to automate running the runbook whenever the monitoring tools detect issues. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure the monitoring tools to publish findings to Amazon EventBridge. Create an EventBridge rule that invokes the runbook in response to events from the monitoring tools.",
+      "B": "Configure the monitoring tools to send findings to an Amazon SNS topic. Subscribe the runbook to the SNS topic. Invoke the runbook when a message is received.",
+      "C": "Configure the monitoring tools to write findings to Amazon CloudWatch Logs. Create a CloudWatch Logs subscription filter that invokes the runbook when new log entries are detected.",
+      "D": "Configure AWS Config to assess the resources and publish configuration changes to Amazon EventBridge. Create a rule to invoke the runbook in response to configuration change events."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Sending monitoring findings to EventBridge and using an EventBridge rule to invoke the Systems Manager Automation runbook is the standard event-driven pattern for automatic remediation.",
+      "B": "Incorrect. Automation runbooks cannot be a direct SNS subscriber; SNS does not natively invoke runbooks.",
+      "C": "Incorrect. CloudWatch Logs subscription filters deliver log data to consumers like Lambda or Kinesis, not to Automation runbooks directly.",
+      "D": "Incorrect. AWS Config evaluates configuration items; it does not surface findings from third-party monitoring tools."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 120,
+    "type": "single",
+    "question": "A CloudOps engineer has created a VPC that contains a public subnet and a private subnet. Amazon EC2 instances that were launched in the private subnet cannot access the internet. The default network ACL is active on all subnets in the VPC, and all security groups allow all outbound traffic. Which solution will provide the EC2 instances in the private subnet with access to the internet?",
+    "options": {
+      "A": "Create a NAT gateway in the public subnet. Create a route from the private subnet to the NAT gateway.",
+      "B": "Create a NAT gateway in the public subnet. Create a route from the public subnet to the NAT gateway.",
+      "C": "Create a NAT gateway in the private subnet. Create a route from the public subnet to the NAT gateway.",
+      "D": "Create a NAT gateway in the private subnet. Create a route from the private subnet to the NAT gateway."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. A NAT gateway must reside in a public subnet (so it can reach the internet gateway). Adding a route 0.0.0.0/0 -> NAT gateway in the private subnet's route table gives private instances outbound internet access.",
+      "B": "Incorrect. The route must be in the private subnet's route table; routing public subnet traffic to the NAT gateway is wrong.",
+      "C": "Incorrect. A NAT gateway in a private subnet cannot reach the internet because it lacks a public route via an internet gateway.",
+      "D": "Incorrect. Same problem: a NAT gateway placed in a private subnet cannot egress to the internet."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 121,
+    "type": "single",
+    "question": "A CloudOps engineer monitors and maintains the availability of resources in an AWS environment. The CloudOps engineer notices that the CPU utilization of an Amazon EC2 instance that runs web server software peaks above 80% at various times during each day. The CPU spikes correlate with peak daily loads. The high CPU load has resulted in performance issues for customers. The CloudOps engineer needs to resolve the system performance issue without causing any service disruptions. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure an Amazon CloudWatch alarm that invokes an AWS Systems Manager Automation runbook to vertically scale the EC2 instance when the CPU utilization exceeds 80%.",
+      "B": "Configure an AWS Systems Manager Automation runbook to run a script that automatically restarts the application when CPU utilization exceeds 80%.",
+      "C": "Configure an Amazon EventBridge rule that invokes an AWS Systems Manager Automation document. Configure the document to increase the EC2 instance size when CPU utilization exceeds 80%.",
+      "D": "Set up an Auto Scaling group with an Amazon CloudWatch alarm that triggers a scaling policy to launch additional EC2 instances when the CPU utilization exceeds 80%."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Vertical scaling on a running instance generally requires stopping the instance, which causes service disruption.",
+      "B": "Incorrect. Restarting the application interrupts user requests and does not address sustained capacity needs.",
+      "C": "Incorrect. Resizing the EC2 instance requires a stop/start, which is disruptive and slow.",
+      "D": "Correct. An Auto Scaling group with a CloudWatch CPU alarm-driven scaling policy adds additional EC2 instances horizontally without service disruption."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 122,
+    "type": "single",
+    "question": "A company collects operating system logs in an Amazon CloudWatch Logs log group. The company wants a solution to automatically alert a support team if a specific exception appears in the logs more than 5 times within 10 minutes. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create a metric filter in the log group. Create an alarm based on the metric with a period of 10 minutes. Create an Amazon SNS topic. Point the alarm to the SNS topic. Subscribe the support team's email address to the SNS topic.",
+      "B": "Create a CloudWatch dashboard. Add a table widget to the dashboard. Populate the table with data from CloudWatch Logs Insights. Share the dashboard with the support team.",
+      "C": "Create an AWS Lambda subscription filter to send all logs that match the search pattern to a Lambda function. Create an Amazon SNS topic to receive notifications from the Lambda function. Subscribe the support team's email address to the SNS topic.",
+      "D": "Give the support team read-only access to the CloudWatch Logs log group so that the team can review the logs autonomously."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. A CloudWatch Logs metric filter converts matching log events into a metric. A CloudWatch alarm on that metric with a 10-minute period and a threshold of 5 sends notifications via SNS to the team's email.",
+      "B": "Incorrect. A dashboard is a manual visualization tool and does not deliver automatic alerts.",
+      "C": "Incorrect. Building a Lambda subscription filter that triggers SNS is more complex and unnecessary; the native metric-filter + alarm pattern covers the requirement.",
+      "D": "Incorrect. Granting read access does not generate alerts; the team still has to monitor logs manually."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 123,
+    "type": "single",
+    "question": "A company has a new security policy that requires all Amazon EBS volumes to be encrypted at rest. The company needs to use a custom key policy to manage access to the encryption keys. The company must rotate the keys once each year. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create AWS KMS symmetric customer managed keys. Enable automatic key rotation.",
+      "B": "Use AWS owned AWS KMS keys across the company's AWS environment.",
+      "C": "Create AWS KMS asymmetric customer managed keys. Enable automatic key rotation.",
+      "D": "Create AWS KMS symmetric customer managed keys by using imported key material. Rotate the keys on a yearly basis."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS KMS symmetric customer managed keys support custom key policies and automatic annual key rotation, providing least operational overhead.",
+      "B": "Incorrect. AWS owned keys are not visible to customers and cannot be controlled by a custom key policy.",
+      "C": "Incorrect. EBS does not encrypt with asymmetric KMS keys; symmetric keys are required.",
+      "D": "Incorrect. Imported key material does not support automatic rotation and requires manual rotation each year, increasing operational overhead."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 124,
+    "type": "single",
+    "question": "A school uses a web application to track student attendance. The application uses an Amazon API Gateway REST API and backend AWS Lambda functions. The application stores data in an Amazon DynamoDB table that is in on-demand capacity mode. Teachers report slow application performance at the same time every weekday. A CloudOps engineer notices that the performance problems happen only when the application demand suddenly increases. The application can handle the peak load if the load increases gradually. The CloudOps engineer must modify the application to resolve the performance issue. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure provisioned concurrency with scheduled auto scaling for the Lambda functions.",
+      "B": "Configure reserved concurrency with scheduled auto scaling for the Lambda functions.",
+      "C": "Change the DynamoDB table from on-demand capacity mode to provisioned capacity mode with auto scaling.",
+      "D": "Change the DynamoDB table from on-demand capacity mode to provisioned capacity mode. Set the provisioned capacity to match peak usage."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Lambda provisioned concurrency addresses cold starts of Lambda functions, not DynamoDB throughput.",
+      "B": "Incorrect. Reserved concurrency caps concurrency but does not increase throughput; the issue is DynamoDB scaling, not Lambda.",
+      "C": "Incorrect. Provisioned mode with auto scaling reacts to traffic but takes time to scale up, so it cannot absorb sudden bursts well.",
+      "D": "Correct. The application can handle peak load if it is gradually increased; switching DynamoDB to provisioned capacity sized for peak guarantees the capacity is always available when the daily burst hits."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 125,
+    "type": "single",
+    "question": "A company is hosting a public website on Amazon EC2 instances behind an Application Load Balancer (ALB). The company needs the website to support HTTPS connections. Which solution will meet this requirement?",
+    "options": {
+      "A": "Replace the ALB with a Network Load Balancer.",
+      "B": "Use AWS Certificate Manager (ACM) to issue a public SSL/TLS certificate. Configure the ALB to use the certificate.",
+      "C": "Import a public SSL/TLS certificate into AWS KMS. Configure the ALB to retrieve the certificate from AWS KMS.",
+      "D": "Attach a public SSL/TLS certificate to the target group that is associated with the ALB."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. An NLB supports TLS but does not terminate HTTPS for HTTP-based applications as transparently as an ALB; the ALB already meets HTTP/HTTPS needs.",
+      "B": "Correct. AWS Certificate Manager (ACM) issues free public SSL/TLS certificates that integrate directly with the ALB's HTTPS listener.",
+      "C": "Incorrect. AWS KMS does not store SSL/TLS certificates; certificates belong in ACM (or IAM).",
+      "D": "Incorrect. SSL/TLS certificates attach to ALB listeners, not to target groups."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 126,
+    "type": "single",
+    "question": "A CloudOps engineer needs to quickly resolve issues in an application that runs in a production environment on Amazon EC2 instances. The application uses an Amazon RDS database. To resolve the issues, the CloudOps engineer needs a centralized solution to collect and query logs for both the EC2 instances and the RDS database. Which solution will meet these requirements?",
+    "options": {
+      "A": "Install and configure the Amazon CloudWatch agent on the EC2 instances to forward ERROR log events to Amazon CloudWatch Logs. Configure the RDS database to export log events to CloudWatch Logs. Use CloudWatch Logs Insights to query the logs.",
+      "B": "Install and configure the Amazon CloudWatch agent on the EC2 instances to forward INFO log events to an Amazon S3 bucket. Install the CloudWatch agent on the RDS database. Forward ERROR log events to the S3 bucket. Configure S3 Event Notifications to invoke AWS Lambda functions to analyze the logs.",
+      "C": "Install and configure the Amazon CloudWatch agent on the EC2 instances to forward ERROR log events to Amazon CloudWatch Logs. Use the Logs & events menu to examine log events for the RDS database. Use CloudWatch Logs Insights to query logs only for the EC2 instances.",
+      "D": "Install and configure the AWS X-Ray agent on the EC2 instances to forward INFO, DEBUG, and latency log events to Amazon CloudWatch Logs. Configure the RDS database to export log events to Amazon CloudWatch Logs. Use CloudWatch Logs Insights to query the logs."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. The CloudWatch agent forwards EC2 log files to CloudWatch Logs, and RDS can publish engine logs to CloudWatch Logs as well. CloudWatch Logs Insights then queries both sources from one place.",
+      "B": "Incorrect. RDS does not run the CloudWatch agent and cannot ship logs to S3 directly; the design is overly complex.",
+      "C": "Incorrect. Using the RDS console's Logs & events page is not centralized querying; Logs Insights cannot then query both sources in a unified way.",
+      "D": "Incorrect. X-Ray collects traces, not arbitrary log events; it is the wrong service for log centralization."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 127,
+    "type": "single",
+    "question": "A company has business-critical resources in one of its AWS accounts. The company wants to receive an email notification every time an AWS Management Console root user sign-in event occurs in the account. Which solution will meet this requirement with the MOST operational efficiency?",
+    "options": {
+      "A": "Create an Amazon CloudWatch alarm that detects AWS Management Console root user sign-in events. Configure the alarm to send email notifications directly through AWS Trusted Advisor.",
+      "B": "Launch an Amazon EC2 instance. Schedule a script to run every hour to analyze AWS CloudTrail events. Configure the script to send email notifications to an Amazon SNS topic when AWS Management Console root user sign-in events occur.",
+      "C": "Create an Amazon EventBridge rule that reacts to AWS Management Console root user sign-in events. Configure the rule to send email notifications to an Amazon SQS queue.",
+      "D": "Create an Amazon EventBridge rule that reacts to AWS Management Console root user sign-in events. Configure the rule to send email notifications to an Amazon SNS topic."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. AWS Trusted Advisor does not send notifications directly from CloudWatch alarms.",
+      "B": "Incorrect. Running an EC2 instance with a scheduled script to parse CloudTrail is custom code and high overhead.",
+      "C": "Incorrect. SQS is a message queue, not an email service; subscribing a queue does not deliver email.",
+      "D": "Correct. An EventBridge rule that pattern-matches the AWS Console root user sign-in CloudTrail event and targets an SNS topic with an email subscription is the standard, low-overhead notification pattern."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 128,
+    "type": "single",
+    "question": "A company's developers deploy applications to multiple AWS accounts. The developers are able to create any AWS resource within the AWS accounts. A security team wants to audit the resources that the developers created in the company's AWS accounts. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an AWS account for the security team. Configure AWS Audit Manager in the security team's account. Create an Audit Manager assessment. Include the company's AWS accounts in the assessment scope. Generate an assessment report for the security team.",
+      "B": "Configure an AWS Config recorder in each AWS account. In the security team's AWS account, create an AWS Config aggregator. Authorize the aggregator in every AWS account. Use Amazon Quick Suite and Amazon Athena to generate a report for the security team.",
+      "C": "Create a trail in AWS CloudTrail in every AWS account. Create an Amazon RDS DB instance in the security team's account. Configure CloudTrail in every account to write logs to the DB instance. Use Amazon Quick Suite to query the DB instance and generate a report for the security team.",
+      "D": "Enable AWS Trusted Advisor in every AWS account. Create a scheduled Amazon EventBridge rule to periodically refresh the Trusted Advisor checks. Use the Trusted Advisor console to generate a report for the security team."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Audit Manager assesses controls and produces evidence reports for frameworks; it is not designed to give a continuous inventory of every developer-created resource across accounts.",
+      "B": "Correct. AWS Config recorders in each account, aggregated to an aggregator in the security account, give a centralized inventory of all resources. Athena and Quick Suite can query and visualize the data.",
+      "C": "Incorrect. CloudTrail does not write directly to an RDS instance, and CloudTrail records API calls, not a current resource inventory.",
+      "D": "Incorrect. Trusted Advisor provides checks on best practices and limits, not a resource-by-resource creation audit."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 129,
+    "type": "single",
+    "question": "A company experiences increased production incidents. A CloudOps engineer must provide developers with secure access to Amazon EC2 instances from the AWS Management Console. The developers must be able to successfully connect by using EC2 Instance Connect for real-time troubleshooting. The EC2 instances are based on the latest Amazon Linux 2023 AMIs. The EC2 instances are publicly accessible. The EC2 instances have been properly configured with security groups that allow inbound SSH traffic. The developers will use the default ec2-user account to access the instances from the console. Which step should the CloudOps engineer perform NEXT to ensure that the developers can successfully connect by using EC2 Instance Connect?",
+    "options": {
+      "A": "Create an IAM role with EC2 access. Attach the role to the EC2 instances.",
+      "B": "Download and install the EC2 Instance Connect agent on the production instances.",
+      "C": "Grant IAM permissions to the developers to use EC2 Instance Connect and describe the EC2 instances.",
+      "D": "Enable AWS CloudTrail logging. Create a VPC endpoint for EC2 Instance Connect."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. EC2 Instance Connect does not require an instance role to be attached.",
+      "B": "Incorrect. The EC2 Instance Connect agent is preinstalled on Amazon Linux 2023 AMIs by default.",
+      "C": "Correct. The remaining requirement is the developer's IAM permissions: ec2-instance-connect:SendSSHPublicKey (and ec2:DescribeInstances) so they can use the console to push a key and connect.",
+      "D": "Incorrect. A VPC endpoint for EC2 Instance Connect is only needed for private instances; these instances are publicly accessible. CloudTrail is unrelated to enabling connectivity."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 130,
+    "type": "single",
+    "question": "A company asks a CloudOps engineer to provision an additional environment for an application in four additional AWS Regions. The application is running on more than 100 Amazon EC2 instances in the us-east-1 Region, using fully configured Amazon Machine Images (AMIs). The company has an AWS CloudFormation template to deploy resources in us-east-1. What should the CloudOps engineer do to provision the application in the MOST operationally efficient manner?",
+    "options": {
+      "A": "Copy the AMI to each Region by using the aws ec2 copy-image command. Update the CloudFormation template to include mappings for the copied AMIs.",
+      "B": "Create a snapshot of the running instance. Copy the snapshot to the other Regions. Create an AMI from the snapshots. Update the CloudFormation template for each Region to use the new AMI.",
+      "C": "Run the existing CloudFormation template in each additional Region based on the success of the template that is used currently in us-east-1.",
+      "D": "Update the CloudFormation template to include the additional Regions in the Auto Scaling group. Update the existing stack in us-east-1."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AMIs are Region-specific. Copying the AMI to each target Region and updating CloudFormation Mappings to point to the appropriate Region's AMI ID is the most operationally efficient path to redeploy.",
+      "B": "Incorrect. Creating a snapshot and rebuilding the AMI per Region adds unnecessary steps and complexity compared with using copy-image.",
+      "C": "Incorrect. Simply rerunning the same template in another Region will fail because the AMI ID is unique to us-east-1.",
+      "D": "Incorrect. An Auto Scaling group is bounded to a single Region; you cannot 'include additional Regions' in one ASG."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 131,
+    "type": "single",
+    "question": "A CloudOps engineer maintains the security and compliance of a company's AWS account. To ensure the company's Amazon EC2 instances are following company policy, a CloudOps engineer wants to terminate any EC2 instances that do not contain a department tag. Noncompliant resources must be terminated in near real time. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an AWS Config rule with the required-tags managed rule to identify noncompliant resources. Configure automatic remediation to run the AWS-TerminateEC2Instance automation runbook to terminate noncompliant resources.",
+      "B": "Create a new Amazon EventBridge rule to monitor when new EC2 instances are created. Send the event to an Amazon SNS topic for automatic remediation.",
+      "C": "Ensure all users who can create EC2 instances also have the permissions to use the ec2:CreateTags and ec2:DescribeTags actions. Change the instance's shutdown behavior to terminate.",
+      "D": "Ensure AWS Systems Manager Compliance is configured to manage the EC2 instances. Call the AWS-StopEC2Instances automation runbook to stop noncompliant resources."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. The AWS Config managed rule 'required-tags' detects EC2 instances missing the required tag, and configuring automatic remediation with the AWS-TerminateEC2Instance SSM Automation runbook terminates noncompliant instances in near real time.",
+      "B": "Incorrect. Sending instance-create events to an SNS topic does not terminate noncompliant resources automatically.",
+      "C": "Incorrect. Changing shutdown behavior to terminate does not enforce tag policy; users can still launch untagged instances.",
+      "D": "Incorrect. AWS-StopEC2Instances stops rather than terminates instances, which does not satisfy the requirement."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 132,
+    "type": "single",
+    "question": "A company has an application that processes events sequentially by using an Amazon SQS FIFO queue. The company needs a solution that automatically sends notifications to the SQS queue when new objects are uploaded to an Amazon S3 bucket. The solution must maintain message ordering. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an AWS Lambda function that polls the objects by using the ListObjectsV2 command and detects new objects when the objects are added. Configure the Lambda function to add a message to the SQS queue when new objects are detected.",
+      "B": "Create an event notification on the S3 bucket. Use the FIFO delivery option. Route the notifications to the existing SQS queue.",
+      "C": "Create an Amazon SNS FIFO topic. Create an event notification on the S3 bucket. Configure the event to send messages to the SNS topic. Subscribe the existing SQS queue to the SNS topic.",
+      "D": "Create an access point in Amazon S3 Access Points. Configure the access point to send new items to the existing SQS queue."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Polling S3 with ListObjectsV2 is inefficient and event-loss prone; ordering is not guaranteed.",
+      "B": "Incorrect. S3 Event Notifications cannot deliver directly to an SQS FIFO queue.",
+      "C": "Correct. S3 event notifications can publish to an SNS FIFO topic, which fans out ordered messages to the SQS FIFO queue, preserving ordering with minimal operational work.",
+      "D": "Incorrect. S3 Access Points are an access-control concept; they do not send notifications to SQS."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 133,
+    "type": "single",
+    "question": "A company runs on-premises workloads that need to use AWS hosted DNS services. The company requires high availability for DNS queries to ensure continuous DNS resolution for critical applications. Which solution will meet these requirements?",
+    "options": {
+      "A": "Deploy Amazon Route 53 Resolver inbound endpoints to multiple Availability Zones. Configure on-premises DNS resolvers to use the endpoint IP addresses in a failover configuration.",
+      "B": "Use Amazon Route 53 latency-based routing to ensure that DNS queries from on-premises systems are directed to the closest resolver endpoint.",
+      "C": "Configure an Amazon Route 53 private hosted zone. Associate the private hosted zone with the on-premises network.",
+      "D": "Deploy Amazon Route 53 Resolver outbound endpoints to multiple Availability Zones. Associate the endpoints with the on- premises DNS resolvers."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Route 53 Resolver inbound endpoints accept DNS queries from on-premises. Deploying them across multiple Availability Zones and pointing on-premises resolvers at those endpoint IPs in a failover configuration provides high availability.",
+      "B": "Incorrect. Latency-based routing applies to Route 53 public hosted-zone records, not to forwarding from on-premises resolvers to Resolver endpoints.",
+      "C": "Incorrect. A private hosted zone alone does not make on-premises systems able to query AWS DNS.",
+      "D": "Incorrect. Outbound endpoints send DNS from VPC to on-premises, the opposite direction of what is needed."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 134,
+    "type": "single",
+    "question": "A company runs an application on a fleet of Amazon EC2 Windows instances in a Multi-AZ deployment. The company needs a solution that will give the instances access to shared files. The solution must be highly available, must use native Windows storage capabilities, and must maximize consistency for all file requests. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon FSx for Windows File Server Multi-AZ file system. Map file shares on the instances by using the file system's DNS name.",
+      "B": "Grant the instances access to a shared Amazon S3 bucket. Use Windows Task Scheduler to synchronize the contents of the S3 bucket locally to each instance periodically.",
+      "C": "Create an Amazon EFS file system that uses the EFS Standard storage class. Mount the file system to the instances by using the file system's DNS name and the EFS mount helper.",
+      "D": "Create a new Amazon EBS Multi-Attach volume. Attach the EBS volume as an additional drive to each instance."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Amazon FSx for Windows File Server is a native Windows SMB file system; Multi-AZ provides high availability with strong consistency for all clients.",
+      "B": "Incorrect. Syncing from S3 via Task Scheduler is not real-time and does not produce strong consistency across instances.",
+      "C": "Incorrect. EFS is NFS-based and primarily for Linux clients; it is not native Windows storage.",
+      "D": "Incorrect. EBS Multi-Attach is supported only on specific volume types and Linux; Windows clusters cannot share an EBS volume without a clustered file system."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 135,
+    "type": "single",
+    "question": "A CloudOps engineer is troubleshooting a VPC with public and private subnets that leverage custom network ACLs. Instances in the private subnet are unable to access the internet. There is an internet gateway attached to the public subnet. The private subnet has a route to a NAT gateway that is also attached to the public subnet. The Amazon EC2 instances are associated with the default security group for the VPC. What is causing the issue in this scenario?",
+    "options": {
+      "A": "There Is a network ACL on the private subnet set to deny all outbound traffic.",
+      "B": "There is no NAT gateway deployed in the private subnet of the VPC.",
+      "C": "The default security group for the VPC blocks all inbound traffic to the EC2 instances.",
+      "D": "The default security group for the VPC blocks all outbound traffic from the EC2 instances."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Custom network ACLs are explicitly stated to be in use. A NACL on the private subnet denying outbound traffic would block traffic destined for the NAT gateway and prevent internet access.",
+      "B": "Incorrect. NAT gateways must be in a public subnet (which this design already has), so it is correct that none is in the private subnet.",
+      "C": "Incorrect. The default security group allows all traffic between attached resources and all outbound traffic by default, so it does not block instance traffic in this scenario.",
+      "D": "Incorrect. The default security group allows all outbound traffic — the question states 'all security groups allow all outbound traffic' is not in this question; nevertheless the default SG behavior allows egress."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 136,
+    "type": "single",
+    "question": "A CloudOps engineer configured AWS Backup to capture snapshots from a single Amazon EC2 instance that has one Amazon EBS volume attached. On the first snapshot, the EBS volume has 10 GiB of data. On the second snapshot, the EBS volume still contains 10 GiB of data, but 4 GiB have changed. On the third snapshot, 2 GiB of data have been added to the volume, for a total of 12 GiB. How much total storage is required to store these snapshots?",
+    "options": {
+      "A": "12 GiB",
+      "B": "16 GiB",
+      "C": "26 GiB",
+      "D": "32 GiB"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 12 GiB is the current volume size, not the total backup storage consumed by incremental snapshots.",
+      "B": "Correct. EBS snapshots are incremental: first snapshot stores 10 GiB (initial data), second stores 4 GiB (changed blocks), third stores 2 GiB (new data) — total 16 GiB.",
+      "C": "Incorrect. 26 GiB would assume the third snapshot stores 14 GiB, which is not how incremental snapshots work.",
+      "D": "Incorrect. 32 GiB assumes each snapshot stores the full volume contents, ignoring the incremental nature of EBS snapshots."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 137,
+    "type": "single",
+    "question": "A company needs to deploy a MySQL database on AWS to support an application. The database must be highly available and recoverable. The database must meet a recovery time objective (RTO) of 15 minutes. The database must meet a recovery point objective (RPO) of 5 minutes. Which solution will meet these requirements in the MOST operationally effective manner?",
+    "options": {
+      "A": "Deploy a MySQL database in a single Availability Zone by using Amazon RDS. Enable automated backups.",
+      "B": "Deploy a MySQL database across two Availability Zones by using Amazon RDS with a Multi-AZ deployment. Enable point- in-time restore.",
+      "C": "Deploy a MySQL database across two Availability Zones by using Amazon EC2 instances. Configure database replication and Amazon EBS volume snapshots.",
+      "D": "Deploy a MySQL database across two Availability Zones by using Amazon RDS. Enable automated backups and database replication."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Single-AZ deployments do not give automatic failover or meet a 15-minute RTO under AZ failure.",
+      "B": "Correct. Amazon RDS Multi-AZ provides automatic failover (typically within minutes) and point-in-time restore satisfies a 5-minute RPO, with minimal operational overhead.",
+      "C": "Incorrect. Running MySQL on EC2 across two AZs with manual replication and snapshots is operationally heavy compared to managed RDS.",
+      "D": "Incorrect. Multi-AZ RDS already provides synchronous replication; layering 'database replication' on top is unnecessary and the question's RPO/RTO targets are met by Multi-AZ + PITR."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 138,
+    "type": "single",
+    "question": "A company runs a web application on Amazon EC2 instances in an Auto Scaling group behind an Application Load Balancer (ALB). A CloudOps engineer must implement deployments without any service interruptions. The company needs the ability to shift traffic between application versions and quickly revert to the previous version by redirecting traffic if issues occur. Which deployment approach will meet these requirements?",
+    "options": {
+      "A": "Use AWS CodeDeploy blue/green deployment with two ALB target groups. Deploy the new version to a separate fleet. Shift traffic gradually to the new target group. Maintain the original fleet for immediate rollback if necessary.",
+      "B": "Implement an in-place rolling update by using Auto Scaling instance refresh on the existing target group. Configure connection draining for each instance. Update the launch template. Rely on health checks during the replacement process.",
+      "C": "Create a new AMI by using the updated application. Modify the Auto Scaling launch template. Temporarily increase desired capacity to add new instances. Then terminate old instances while using ALB connection draining to manage the transition.",
+      "D": "Design an AWS Step Functions workflow that creates a parallel Auto Scaling group and updates monitoring configurations. Configure the workflow to change instance registrations on the ALB and automatically terminate the previous fleet after a verification period."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS CodeDeploy blue/green with two ALB target groups deploys the new version to a separate fleet, shifts traffic gradually, and lets you immediately reroute back to the original fleet if issues occur — meeting zero-downtime and quick-rollback needs.",
+      "B": "Incorrect. In-place rolling updates with instance refresh can drain connections but make rollback slower because the original instances are already gone.",
+      "C": "Incorrect. Simply increasing desired capacity with the new AMI and terminating old instances is essentially a rolling update without an easy rollback path.",
+      "D": "Incorrect. A custom Step Functions workflow is unnecessary overhead when CodeDeploy already provides built-in blue/green support."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 139,
+    "type": "single",
+    "question": "A company stores critical data in Amazon S3 buckets. A CloudOps engineer must build a solution to record all S3 API activity. Which action will meet this requirement?",
+    "options": {
+      "A": "Configure S3 bucket metrics to record object access logs.",
+      "B": "Create an AWS CloudTrail trail to log data events for all S3 objects.",
+      "C": "Enable S3 server access logging for each S3 bucket.",
+      "D": "Use AWS IAM Access Analyzer for Amazon S3 to store object access logs."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. S3 bucket metrics provide aggregate request and storage metrics, not detailed API audit logs.",
+      "B": "Correct. CloudTrail data events for S3 capture object-level API activity (GetObject, PutObject, DeleteObject, etc.), giving a full audit trail of S3 API activity.",
+      "C": "Incorrect. S3 server access logging records requests for objects but does not provide the structured CloudTrail audit-trail covering all S3 API actions.",
+      "D": "Incorrect. IAM Access Analyzer evaluates resource policies for unintended sharing; it does not log API activity."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 140,
+    "type": "single",
+    "question": "A healthcare company uses Amazon SageMaker within a VPC to build machine learning (ML) models that use data that is stored in Amazon S3 buckets. The company wants to ensure that SageMaker accesses the data securely without using public IP addresses. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create Amazon S3 gateway endpoints. Configure SageMaker to access the S3 buckets by using AWS PrivateLink.",
+      "B": "Provision a NAT gateway within the same VPC where the company runs SageMaker. Configure SageMaker to access the S3 buckets by using the NAT gateway.",
+      "C": "Configure an AWS Site-to-Site VPN connection to connect SageMaker to the S3 buckets.",
+      "D": "Configure AWS Transit Gateway to route traffic from SageMaker to the S3 buckets."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. An S3 gateway endpoint provides private routing from SageMaker (running in the VPC) to S3 without traversing public IPs; this is the standard private-access pattern.",
+      "B": "Incorrect. A NAT gateway still routes through public IPs/internet for S3, which violates the no-public-IP requirement.",
+      "C": "Incorrect. Site-to-Site VPN connects a VPC to on-premises networks, not to AWS service endpoints.",
+      "D": "Incorrect. Transit Gateway routes between VPCs and networks; it does not directly provide private S3 access."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 141,
+    "type": "single",
+    "question": "An ecommerce company hires a cybersecurity company to audit the ecommerce company's AWS account. The cybersecurity company requests read-only access to the account. The ecommerce company creates an IAM role, adds a trust relationship with the cybersecurity company's AWS account, and adds read-only permissions to the ecommerce company's account. An employee at the cybersecurity company unsuccessfully tries to assume the read-only role that the ecommerce company created. A CloudOps engineer at the ecommerce company must resolve the access issue. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure multi-factor authentication (MFA).",
+      "B": "Configure an identity provider by using OpenID Connect (OIDC).",
+      "C": "Create a policy that allows the sts:AssumeRole action. Add the policy to the cybersecurity employee's role. Ensure that the resource for the policy is the role that the employee needs to assume.",
+      "D": "Create a policy that allows the sts:SetSourceIdentity action. Add the policy to the cybersecurity employee's role. Ensure that the resource for the policy is in the ecommerce company's account."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. MFA is unrelated to whether a principal in another account can call sts:AssumeRole; the missing piece is identity-based permission to assume the role.",
+      "B": "Incorrect. OIDC is for federated web identities; the cybersecurity company's user is an IAM principal in another account.",
+      "C": "Correct. Cross-account role assumption requires both a trust policy on the target role (already in place) and an identity policy on the calling principal granting sts:AssumeRole on that role ARN.",
+      "D": "Incorrect. sts:SetSourceIdentity does not grant role-assumption permission; it controls whether the assumer can set a source-identity attribute."
+    }
+  },
+  {
+    "exam": "SOA-C03",
+    "id": 142,
+    "type": "single",
+    "question": "A company uses AWS Lambda to process files that users upload to an Amazon S3 bucket. When a user uploads a file to the S3 bucket, S3 Event Notifications invokes a Lambda function to process the file. The company wants to automatically invoke the Lambda function only for flies with a .txt extension that users upload to the S3 bucket. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure a Lambda function that is invoked by S3 PUT requests for .txt files in the S3 bucket.",
+      "B": "Configure a Lambda function that is invoked by S3 GET requests for .txt files in the S3 bucket.",
+      "C": "Configure an S3 bucket notification to send all object creation events to an Amazon SNS topic. Subscribe the Lambda function to the SNS topic. Apply a filter policy on the SNS topic for .txt file extensions.",
+      "D": "Modify the existing S3 Event Notifications configuration to send events for .txt file uploads to Amazon CloudWatch Logs to invoke the existing Lambda function."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. S3 Event Notifications support a suffix filter (.txt), so the Lambda function can be configured to be invoked only on s3:ObjectCreated:Put events for keys ending in .txt.",
+      "B": "Incorrect. GET requests are reads, not uploads; the trigger should be on object creation, not retrieval.",
+      "C": "Incorrect. SNS subscription filter policies operate on message attributes; S3 Event Notifications do not include message attributes that an SNS filter can use to match .txt extensions efficiently — and the design is unnecessarily complex.",
+      "D": "Incorrect. CloudWatch Logs cannot trigger a Lambda function based on an S3 upload event."
+    }
+  }
+]
