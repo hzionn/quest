@@ -172,5 +172,24 @@
       "C": "错误：service-linked role 是 IAM Identity Center 用来跨帐户操作的服务身分，与「单一使用者看不到权限集」无关；加入这个角色无法解决群组成员关系缺漏的问题。",
       "D": "错误：权限集本身已经正确配置且其他成员都能使用，问题不在权限集；针对单一使用者去修改权限集既无效，也违反「以群组为单位授权」的最佳实践。"
     }
+  },
+  {
+    "exam": "SCS-C03 補充",
+    "id": 361,
+    "type": "single",
+    "question": "一家公司使用 Amazon Cognito 使用者池（user pools）搭配託管 UI（hosted UI）來驗證其客戶。該公司的安全團隊偵測到針對 Amazon Cognito 端點的機器人活動（bot activity）激增，以及可疑流量。一名安全工程師必須實施一套安全方案來阻擋這些惡意請求，同時這些安全措施必須維持合法使用者的存取不中斷。哪一個方案能滿足這些需求？",
+    "options": {
+      "A": "在使用者池上啟用 Amazon Cognito 威脅防護（threat protection）。",
+      "B": "設定 Amazon Cognito 使用者池的應用程式用戶端（app client）設定，將存取限制為僅限已驗證的使用者。",
+      "C": "將一個 AWS WAF web ACL 關聯到 Amazon Cognito 使用者池。定義規則來過濾不需要的請求並管理機器人流量。",
+      "D": "使用 Amazon CloudWatch 來監控傳入的 Amazon Cognito 請求。建立一個身分池（identity pool）來阻擋可疑的 user agent。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤：Cognito Threat Protection（前 Advanced Security Features）主要針對「已通過或正在進行身分驗證流程」的風險（憑證填充、不可能的旅程、被洩漏密碼等），它不是一個邊緣防護層，無法在請求抵達 Cognito 端點之前直接阻擋大量機器人流量；對抵擋本題的端點層 bot 激增不是最直接的方案。",
+      "B": "錯誤：把存取限制為「僅限已驗證使用者」，會直接擋掉正在登入／註冊但尚未驗證的合法使用者，違反題目「維持合法使用者存取不中斷」的要求。",
+      "C": "正確：AWS WAF 現在可以直接關聯到 Amazon Cognito 使用者池，能在請求抵達 Cognito 之前透過 Bot Control、速率限制（rate-based rule）、IP 信譽、Managed Rules 等規則過濾機器人與可疑流量；合法使用者請求仍可正常通過，符合「阻擋惡意請求、不中斷合法存取」的需求。",
+      "D": "錯誤：CloudWatch 只能監控與告警，本身不會阻擋流量；身分池（identity pool）是給已驗證身分換取 AWS 臨時憑證的服務，與「阻擋可疑 user agent」無關。"
+    }
   }
 ]
