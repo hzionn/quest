@@ -10,7 +10,7 @@ import {
 import awsLogo from '/aws.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress } from './storage'
-import { GoogleSignInButton, SyncStatusPill, useGoogleSync } from './SyncControls'
+import { SyncStatusPill, useGoogleSync } from './SyncControls'
 import { isSyncConfigured } from './sync'
 
 // ── GitHub Config (admin only) ──
@@ -554,7 +554,7 @@ const SITE_PASSWORD = 'julia'
 const PASSWORD_HINT = '提示：什麼福利是雲力橘子有，其他公司沒有的？'
 const AUTH_KEY = 'quest_authenticated'
 
-function PasswordGate({ onAuth, onGoogleSignIn }) {
+function PasswordGate({ onAuth }) {
   const [pw, setPw] = useState('')
   const [error, setError] = useState(false)
   const handleSubmit = (e) => {
@@ -588,23 +588,9 @@ function PasswordGate({ onAuth, onGoogleSignIn }) {
           進入練習
         </button>
         {isSyncConfigured() && (
-          <>
-            <div className="flex items-center gap-3 my-5 text-gray-500 text-xs">
-              <div className="flex-1 h-px bg-gray-700" />
-              <span>跨裝置同步（選用）</span>
-              <div className="flex-1 h-px bg-gray-700" />
-            </div>
-            <div className="flex justify-center">
-              <GoogleSignInButton
-                onSuccess={(user) => {
-                  sessionStorage.setItem(AUTH_KEY, '1')
-                  onGoogleSignIn?.(user)
-                  onAuth()
-                }}
-              />
-            </div>
-            <p className="text-gray-500 text-[11px] mt-3">登入後，書籤/錯題/答對次數會跟著帳號跨裝置同步</p>
-          </>
+          <p className="text-gray-500 text-[11px] mt-4 leading-relaxed">
+            進入後可從頁面右上「登入同步」連結 Google 帳號，<br />讓進度跨裝置自動同步
+          </p>
         )}
       </form>
     </div>
@@ -807,7 +793,7 @@ export default function App() {
   const rootClass = state.darkMode ? 'dark' : ''
 
   if (!authenticated) {
-    return <PasswordGate onAuth={() => setAuthenticated(true)} onGoogleSignIn={setUser} />
+    return <PasswordGate onAuth={() => setAuthenticated(true)} />
   }
 
   // 登入後（非管理員）先選擇練習科別，再進入對應題目
