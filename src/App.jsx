@@ -10,6 +10,8 @@ import {
 import awsLogo from '/aws.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress } from './storage'
+import { GoogleSignInButton, SyncStatusPill, useGoogleSync } from './SyncControls'
+import { isSyncConfigured } from './sync'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -552,7 +554,7 @@ const SITE_PASSWORD = 'julia'
 const PASSWORD_HINT = '提示：什麼福利是雲力橘子有，其他公司沒有的？'
 const AUTH_KEY = 'quest_authenticated'
 
-function PasswordGate({ onAuth }) {
+function PasswordGate({ onAuth, onGoogleSignIn }) {
   const [pw, setPw] = useState('')
   const [error, setError] = useState(false)
   const handleSubmit = (e) => {
@@ -585,6 +587,25 @@ function PasswordGate({ onAuth }) {
         <button type="submit" className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
           進入練習
         </button>
+        {isSyncConfigured() && (
+          <>
+            <div className="flex items-center gap-3 my-5 text-gray-500 text-xs">
+              <div className="flex-1 h-px bg-gray-700" />
+              <span>跨裝置同步（選用）</span>
+              <div className="flex-1 h-px bg-gray-700" />
+            </div>
+            <div className="flex justify-center">
+              <GoogleSignInButton
+                onSuccess={(user) => {
+                  sessionStorage.setItem(AUTH_KEY, '1')
+                  onGoogleSignIn?.(user)
+                  onAuth()
+                }}
+              />
+            </div>
+            <p className="text-gray-500 text-[11px] mt-3">登入後，書籤/錯題/答對次數會跟著帳號跨裝置同步</p>
+          </>
+        )}
       </form>
     </div>
   )
@@ -696,8 +717,10 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
 export default function App() {
   const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
   const [subjectChosen, setSubjectChosen] = useState(false)
+  const [user, setUser] = useState(null)
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
+  const { signOut } = useGoogleSync(state, dispatch, user, setUser)
 
   // Load questions from static manifest on startup
   useEffect(() => {
@@ -784,7 +807,7 @@ export default function App() {
   const rootClass = state.darkMode ? 'dark' : ''
 
   if (!authenticated) {
-    return <PasswordGate onAuth={() => setAuthenticated(true)} />
+    return <PasswordGate onAuth={() => setAuthenticated(true)} onGoogleSignIn={setUser} />
   }
 
   // 登入後（非管理員）先選擇練習科別，再進入對應題目
@@ -840,6 +863,7 @@ export default function App() {
                 ))}
               </nav>
               <div className="w-px h-6 bg-white/10 mx-1 hidden md:block" />
+              <SyncStatusPill user={user} onSignedIn={setUser} onSignOut={signOut} />
               <button
                 onClick={() => dispatch({ type: 'TOGGLE_DARK' })}
                 className="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-orange-400 transition-all duration-200"
