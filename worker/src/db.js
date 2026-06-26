@@ -1,0 +1,98 @@
+// D1 access + the merge semantics for cross-device sync.
+//
+// Merge rules (per qkey):
+//   correct_count -> MAX(local, remote)        (answered-correctly count never regresses)
+//   ever_wrong    -> OR                         (once wrong, stays wrong)
+//   correct       -> last-write-wins by updated_at
+//   bookmark/review enabled -> last-write-wins by updated_at (supports un-toggle)
+
+export async function upsertUser(DB, g) {
+  const now = Date.now()
+  await DB.prepare(
+    `INSERT INTO users (google_sub, email, name, picture, created_at, last_seen)
+     VALUES (?, ?, ?, ?, ?, ?)
+     ON CONFLICT(google_sub) DO UPDATE SET
+       email = excluded.email, name = excluded.name,
+       picture = excluded.picture, last_seen = excluded.last_seen`
+  ).bind(g.sub, g.email ?? null, g.name ?? null, g.picture ?? null, now, now).run()
+
+  const row = await DB.prepare(
+    `SELECT id, google_sub, email, name, picture FROM users WHERE google_sub = ?`
+  ).bind(g.sub).first()
+  return row
+}
+
+// Read the full state for one user.
+export async function getState(DB, uid) {
+  const [progress, bookmarks, reviews, settings] = await Promise.all([
+    DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, ever_wrong, updated_at
+                FROM progress WHERE user_id = ?`).bind(uid).all(),
+    DB.prepare(`SELECT qkey, enabled, updated_at FROM bookmarks WHERE user_id = ?`).bind(uid).all(),
+    DB.prepare(`SELECT qkey, enabled, updated_at FROM reviews WHERE user_id = ?`).bind(uid).all(),
+    DB.prepare(`SELECT dark_mode, lang, updated_at FROM settings WHERE user_id = ?`).bind(uid).first(),
+  ])
+  return {
+    progress: progress.results || [],
+    bookmarks: bookmarks.results || [],
+    reviews: reviews.results || [],
+    settings: settings || null,
+  }
+}
+
+// Merge a delta payload from a client into D1, then return the merged state.
+// delta = { progress: [...], bookmarks: [...], reviews: [...], settings: {...} }
+export async function mergeState(DB, uid, delta) {
+  const stmts = []
+  const now = Date.now()
+
+  for (const p of delta.progress || []) {
+    stmts.push(
+      DB.prepare(
+        `INSERT INTO progress (user_id, qkey, exam, qid, correct, correct_count, ever_wrong, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(user_id, qkey) DO UPDATE SET
+           correct_count = MAX(correct_count, excluded.correct_count),
+           ever_wrong    = MAX(ever_wrong, excluded.ever_wrong),
+           correct       = CASE WHEN excluded.updated_at >= updated_at THEN excluded.correct ELSE correct END,
+           exam          = excluded.exam,
+           qid           = excluded.qid,
+           updated_at    = MAX(updated_at, excluded.updated_at)`
+      ).bind(
+        uid, p.qkey, p.exam ?? null, p.qid ?? null,
+        p.correct ? 1 : 0, p.correct_count ?? 0, p.ever_wrong ? 1 : 0,
+        p.updated_at ?? now
+      )
+    )
+  }
+
+  for (const [table, rows] of [['bookmarks', delta.bookmarks], ['reviews', delta.reviews]]) {
+    for (const b of rows || []) {
+      stmts.push(
+        DB.prepare(
+          `INSERT INTO ${table} (user_id, qkey, enabled, updated_at)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(user_id, qkey) DO UPDATE SET
+             enabled    = CASE WHEN excluded.updated_at >= updated_at THEN excluded.enabled ELSE enabled END,
+             updated_at = MAX(updated_at, excluded.updated_at)`
+        ).bind(uid, b.qkey, b.enabled ? 1 : 0, b.updated_at ?? now)
+      )
+    }
+  }
+
+  if (delta.settings) {
+    const s = delta.settings
+    stmts.push(
+      DB.prepare(
+        `INSERT INTO settings (user_id, dark_mode, lang, updated_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(user_id) DO UPDATE SET
+           dark_mode  = CASE WHEN excluded.updated_at >= updated_at THEN excluded.dark_mode ELSE dark_mode END,
+           lang       = CASE WHEN excluded.updated_at >= updated_at THEN excluded.lang ELSE lang END,
+           updated_at = MAX(updated_at, excluded.updated_at)`
+      ).bind(uid, s.dark_mode ? 1 : 0, s.lang ?? null, s.updated_at ?? now)
+    )
+  }
+
+  if (stmts.length) await DB.batch(stmts)
+  return await getState(DB, uid)
+}

@@ -1,0 +1,22 @@
+name = "quest-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Public (non-secret) vars. Override per-environment as needed.
+[vars]
+# Comma-separated list of allowed browser origins (CORS).
+ALLOWED_ORIGINS = "https://awsjin510.github.io,http://localhost:5173"
+# Session JWT lifetime in days.
+SESSION_TTL_DAYS = "30"
+
+# D1 binding. Create the DB once with:
+#   wrangler d1 create quest_db
+# then paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "quest_db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# Secrets are NOT stored here. Set them once with:
+#   wrangler secret put GOOGLE_CLIENT_ID     # the OAuth Web client ID
+#   wrangler secret put JWT_SECRET           # any long random string
