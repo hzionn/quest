@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
+import { loadLocalProgress, saveLocalProgress, clearLocalProgress } from './storage'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -493,7 +494,7 @@ function reducer(state, action) {
       return { ...state, githubError: action.error }
 
     case 'CLEAR_ALL_DATA':
-      try { localStorage.removeItem('quest-stats') } catch {}
+      clearLocalProgress()
       return { ...initialState, darkMode: state.darkMode }
 
     default:
@@ -744,28 +745,21 @@ export default function App() {
     load()
   }, [])
 
-  // Persist stats/bookmarks to localStorage (user-specific, not question data)
+  // Restore user progress (stats/bookmarks/reviews) via the storage adapter.
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('quest-stats')
-      if (saved) {
-        const data = JSON.parse(saved)
-        if (data.statsHistory) dispatch({ type: 'RESTORE_STATS', statsHistory: data.statsHistory })
-        if (data.bookmarked) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: data.bookmarked })
-        if (data.reviewMarked) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: data.reviewMarked })
-      }
-    } catch {}
+    const { statsHistory, bookmarked, reviewMarked } = loadLocalProgress()
+    if (Object.keys(statsHistory).length) dispatch({ type: 'RESTORE_STATS', statsHistory })
+    if (Object.keys(bookmarked).length) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked })
+    if (Object.keys(reviewMarked).length) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked })
   }, [])
 
   useEffect(() => {
     if (!Object.keys(state.statsHistory).length && !Object.keys(state.bookmarked).length) return
-    try {
-      localStorage.setItem('quest-stats', JSON.stringify({
-        statsHistory: state.statsHistory,
-        bookmarked: state.bookmarked,
-        reviewMarked: state.reviewMarked,
-      }))
-    } catch {}
+    saveLocalProgress({
+      statsHistory: state.statsHistory,
+      bookmarked: state.bookmarked,
+      reviewMarked: state.reviewMarked,
+    })
   }, [state.statsHistory, state.bookmarked, state.reviewMarked])
 
   // Timer for exam
