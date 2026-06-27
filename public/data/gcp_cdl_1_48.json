@@ -1,0 +1,916 @@
+[
+ {
+  "exam": "GCP-CDL",
+  "id": 1,
+  "type": "single",
+  "question": "您正在將工作負載遷移到雲端。此次遷移的目標是盡快為全球客戶提供服務。根據當地法規，某些資料必須儲存在特定地理區域內，但可以對全球提供服務。您需要為工作負載設計架構與部署方式。您應該怎麼做？",
+  "options": {
+   "A": "選擇一家僅在所需地理區域營運的公有雲供應商",
+   "B": "選擇一家在全球複寫資料儲存以加快資料存取的私有雲供應商",
+   "C": "選擇一家保證資料位置在所需地理區域內的公有雲供應商",
+   "D": "選擇一家僅在所需地理區域營運的私有雲供應商"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。僅在單一地理區域營運的供應商無法快速為全球客戶提供服務，而這正是此次遷移的主要目標。",
+   "B": "錯誤。在全球複寫資料會違反要求某些資料必須留在特定地理區域的資料落地（data residency）法規。",
+   "C": "正確。具備全球佈局，同時又能將資料固定在特定區域（資料落地）的公有雲供應商，可同時滿足法規的儲存要求與快速服務全球客戶的目標。",
+   "D": "錯誤。僅限單一地理區域的私有雲缺乏為全球客戶提供低延遲服務所需的全球覆蓋能力。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 2,
+  "type": "single",
+  "question": "您的組織在未來兩週內需要大量額外的運算能力。兩週之後，對額外資源的需求即會結束。哪一種做法最具成本效益？",
+  "options": {
+   "A": "使用承諾使用折扣（committed use discount）來保留一台非常強大的虛擬機器",
+   "B": "購買一台非常強大的實體電腦",
+   "C": "在不使用承諾使用折扣的情況下啟動一台非常強大的虛擬機器",
+   "D": "購買多台實體電腦並將工作負載分散到這些電腦上"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。承諾使用折扣（CUD）需要承諾 1 年或 3 年，因此對於僅持續兩週的需求並不符合成本效益。",
+   "B": "錯誤。購買實體硬體是一筆龐大的資本支出，對於僅需兩週的短期需求而言相當浪費。",
+   "C": "正確。隨需（按用量付費）虛擬機器可讓您啟動恰好所需的容量，並在兩週後關閉，只為實際使用付費且無需長期承諾。",
+   "D": "錯誤。購買多台實體電腦更為昂貴且佈建緩慢，且兩週後這些硬體將閒置不用。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 3,
+  "type": "single",
+  "question": "您的組織需要規劃其雲端基礎架構支出。您的組織應該怎麼做？",
+  "options": {
+   "A": "頻繁檢視雲端資源成本，因為成本會根據使用量而經常變動",
+   "B": "每年檢視一次雲端資源成本，作為組織整體預算規劃的一部分",
+   "C": "如果組織只使用雲端資源，基礎架構成本就不再屬於整體預算的一部分",
+   "D": "讓參與雲端資源規劃的人員少於組織過去進行地端資源規劃時的人數"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。雲端支出採用以使用量為基礎（按用量付費）的模式，因此成本會隨使用量變動，應頻繁檢視以察覺變化並最佳化支出。",
+   "B": "錯誤。對於可變動、以使用量為基礎的雲端成本而言，一年只檢視一次過於不頻繁，可能導致預算超出預期。",
+   "C": "錯誤。雲端基礎架構仍會產生營運成本，這些成本仍是整體預算的實際組成部分；支出不會因為轉到雲端就消失。",
+   "D": "錯誤。雲端成本管理受益於跨團隊的廣泛協作；減少參與人數會削弱治理與當責性。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 4,
+  "type": "single",
+  "question": "您組織中某些虛擬機器的作業系統可能存在安全漏洞。您的組織如何最有效地識別出所有未安裝最新安全更新的虛擬機器？",
+  "options": {
+   "A": "查看 Security Command Center 以識別執行有漏洞磁碟映像檔的虛擬機器",
+   "B": "查看 Compliance Reports Manager 以識別並下載近期的 PCI 稽核報告",
+   "C": "查看 Security Command Center 以識別啟動超過 2 週的虛擬機器",
+   "D": "查看 Compliance Reports Manager 以識別並下載近期的 SOC 1 稽核報告"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。Security Command Center 會掃描您的環境並呈現漏洞，包括執行含已知安全問題磁碟映像檔的 VM，這正是此處所需的功能。",
+   "B": "錯誤。Compliance Reports Manager 提供 Google 的第三方稽核報告（例如 PCI DSS）；它不會掃描個別 VM 是否缺少作業系統更新。",
+   "C": "錯誤。VM 自啟動以來的時間長短無法可靠地表示其作業系統是否缺少最新的安全更新。",
+   "D": "錯誤。SOC 1 稽核報告關注的是財務報告相關控制，並不能識別您環境中有漏洞的 VM。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 5,
+  "type": "single",
+  "question": "您目前管理執行於 Windows Server 上的工作負載，且公司擁有這些授權。您的工作負載僅在上班時間需要，因此可以在週末關閉執行個體。您的 Windows Server 授權將於一個月後到期續約，您希望最佳化授權成本。您應該怎麼做？",
+  "options": {
+   "A": "將授權再續約 3 年。將授權再續約 3 年。協商一個",
+   "B": "將授權再續約 2 年。透過承諾自動續約來協商降低成本",
+   "C": "以自帶授權（BYOL）模式將工作負載遷移到 Compute Engine",
+   "D": "以按用量付費（PAYG）模式將工作負載遷移到 Compute Engine"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。承諾新的多年期授權續約會鎖定成本，即使工作負載只在上班時間執行，仍錯失了最佳化的機會。",
+   "B": "錯誤。2 年期自動續約仍需為週末與閒置時段支付授權費用，對於間歇性使用的工作負載而言無法最佳化成本。",
+   "C": "錯誤。BYOL 通常需要為整個授權期付費，與使用量無關，因此無法獲得週末關閉執行個體所帶來的節省。",
+   "D": "正確。Compute Engine 按用量付費（PAYG）的 Windows 授權僅在執行個體執行時按秒計費，因此在週末關閉執行個體可直接降低授權成本。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 6,
+  "type": "single",
+  "question": "您的組織在 Compute Engine 虛擬機器上執行一個分散式應用程式。您的組織需要備援，但同時也需要在不同虛擬機器上的應用程式各部分之間進行極快速的通訊（低於 10 毫秒）。您的組織應該將這些虛擬機器放在哪裡？",
+  "options": {
+   "A": "放在單一區域（region）內的單一可用區（zone）",
+   "B": "放在單一區域（region）內的不同可用區（zone）",
+   "C": "放在多個區域（region），每個區域使用一個可用區（zone）",
+   "D": "放在多個區域（region），每個區域使用多個可用區（zone）"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。單一可用區雖然延遲最低，但無法提供備援，因為一旦該可用區故障，整個應用程式都會停擺。",
+   "B": "正確。將 VM 放在同一區域的不同可用區，可在防範單一可用區故障的同時，將跨可用區延遲維持得非常低（通常低於 10 毫秒）。",
+   "C": "錯誤。將 VM 分散到多個區域會引入跨區域網路延遲，通常會超過 10 毫秒的需求。",
+   "D": "錯誤。多區域搭配多可用區可最大化備援，但會增加顯著的跨區域延遲，違反低於 10 毫秒的通訊需求。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 7,
+  "type": "multiple",
+  "question": "某組織決定將其地端環境遷移到雲端。他們需要判斷哪些資源元件仍需指派擁有權。公有雲供應商擁有哪兩項功能？（請選擇兩項。）",
+  "options": {
+   "A": "硬體維護",
+   "B": "基礎架構架構設計",
+   "C": "基礎架構部署自動化",
+   "D": "硬體容量管理",
+   "E": "修復應用程式安全問題"
+  },
+  "answer": "AD",
+  "explanations": {
+   "A": "正確。在責任共擔模型下，雲端供應商擁有並維護實體硬體，因此硬體維護是供應商的責任。",
+   "B": "錯誤。客戶負責設計如何在供應商平台之上規劃自己的基礎架構，這仍屬客戶的責任。",
+   "C": "錯誤。將客戶自身基礎架構與應用程式的部署自動化，是由客戶設定並擁有。",
+   "D": "正確。供應商管理資料中心的實體容量，確保有可供擴充的硬體資源，因此硬體容量管理是供應商的責任。",
+   "E": "錯誤。在責任共擔模型下，應用程式安全以及修復客戶自身程式碼中的缺陷是客戶的責任。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 8,
+  "type": "single",
+  "question": "您是一家提供動畫工作室算圖軟體的軟體即服務（SaaS）公司的專案經理。您的團隊需要能夠隨意排程算圖場景，並可隨時中斷後稍後重新開始。任何單一場景的算圖都會在 12 小時內完成，且所有場景的完成時間沒有服務等級協議（SLA）。結果將儲存在一個全球性的 Cloud Storage 值區中。運算資源不受任何單一地理位置限制。此軟體需要以成本最佳化的方式在 Google Cloud 上執行。您應該怎麼做？",
+  "options": {
+   "A": "使用先佔（preemptible）執行個體在 Compute Engine 上部署應用程式",
+   "B": "開發應用程式使其能在非受管執行個體群組中執行",
+   "C": "為您將使用的最少 Compute Engine 執行個體數量建立保留（reservation）",
+   "D": "啟動較多但每台 vCPU 較少的執行個體，而非較少但每台 vCPU 較多的執行個體"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。先佔（Spot）VM 折扣幅度大且可隨時中斷；由於此工作負載可容錯、無 SLA，且每項作業在數小時內完成，因此它是最具成本最佳化的選擇。",
+   "B": "錯誤。使用非受管執行個體群組本身並不會降低運算成本；此處的成本節省來自定價模式，而非分組方式。",
+   "C": "錯誤。保留以標準隨需價格保證容量，並不提供折扣，因此對於可中斷的工作而言並非最具成本最佳化的選項。",
+   "D": "錯誤。改變執行個體與 vCPU 的比例並不會降低基本運算價格；它無法解決此可中斷工作負載的成本最佳化問題。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 9,
+  "type": "single",
+  "question": "您的主管希望限制所有虛擬機器與網際網路、與另一個網路中的資源、或與 Compute Engine 之外資源的通訊。預計未來不同團隊會建立新的資料夾與專案。您要如何限制所有虛擬機器擁有外部 IP 位址？",
+  "options": {
+   "A": "在根組織節點（root organization node）定義組織政策，以限制虛擬機器執行個體擁有外部 IP",
+   "B": "在所有現有資料夾上定義組織政策，以定義限制虛擬機器執行個體擁有（外部 IP）的限制條件",
+   "C": "在所有現有專案上定義組織政策，以限制虛擬機器執行個體擁有外部 IP 位址",
+   "D": "與不同團隊溝通並約定每次建立虛擬機器時，都必須設定為不具備（外部 IP）"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。套用在根組織節點的組織政策會被所有目前與未來的資料夾及專案繼承，因此該限制條件會自動涵蓋團隊將建立的新資源。",
+   "B": "錯誤。僅將政策套用於現有資料夾，無法涵蓋日後建立的新資料夾，導致執行上的漏洞。",
+   "C": "錯誤。僅將政策套用於現有專案，無法涵蓋團隊預計未來會建立的新專案。",
+   "D": "錯誤。依賴人工約定容易出錯且無法強制執行；要可靠地限制外部 IP，需要技術性的組織政策。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 10,
+  "type": "single",
+  "question": "您的跨國組織在全球各地的地端伺服器上執行關鍵任務工作負載。您希望能一致且集中地管理這些工作負載，並且不再管理基礎架構。您的組織應該怎麼做？",
+  "options": {
+   "A": "將工作負載遷移到公有雲",
+   "B": "將工作負載遷移到一棟中央辦公大樓",
+   "C": "將工作負載遷移到多個當地代管（co-location）設施",
+   "D": "將工作負載遷移到多個當地私有雲"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。公有雲讓跨國組織能透過單一平台一致且集中地管理工作負載，同時由供應商處理底層基礎架構，使您不再管理硬體。",
+   "B": "錯誤。集中到一棟辦公大樓仍需您自行擁有並管理所有實體基礎架構。",
+   "C": "錯誤。代管設施仍由您負責管理自己的伺服器與基礎架構，只是放在別人的建築物裡。",
+   "D": "錯誤。多個當地私有雲會增加管理負擔，也無法使您免於營運基礎架構。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 11,
+  "type": "single",
+  "question": "您的組織在地端儲存高度敏感的資料，這些資料不能透過公用網際網路傳送。這些資料必須在地端與雲端兩處進行處理。您的組織應該怎麼做？",
+  "options": {
+   "A": "在您的 Google Cloud VPC 網路中設定 Identity-Aware Proxy（IAP）",
+   "B": "在 Google Cloud 與您的資料中心之間建立 Cloud VPN 通道",
+   "C": "向您的網路服務供應商訂購 Partner Interconnect 連線",
+   "D": "在您的 Google Cloud VPC 網路中啟用 Private Google Access"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。Identity-Aware Proxy 根據身分控制使用者對應用程式的存取；它不提供可避開公用網際網路的私有網路路徑。",
+   "B": "錯誤。Cloud VPN 會加密流量，但仍透過公用網際網路傳送，這違反了資料不得經過公用網際網路的要求。",
+   "C": "正確。Partner Interconnect 透過服務供應商在您的地端網路與 Google Cloud 之間提供私有的專用連線，因此敏感資料完全不會經過公用網際網路。",
+   "D": "錯誤。Private Google Access 讓沒有外部 IP 的 VM 能存取 Google API；它不會在地端與雲端之間建立私有連線。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 12,
+  "type": "single",
+  "question": "您公司的開發團隊正在建置一個將部署於 Cloud Run 的應用程式。您正在設計 CI/CD 管線，以便能透過所設計的 CI/CD 管線，以最少的步驟部署任何新版本的應用程式。在管線的 CI 部分建置出應用程式映像檔之後，您需要為這些映像檔選擇一個儲存位置。您應該怎麼做？",
+  "options": {
+   "A": "建立一個包含應用程式的 Compute Engine 映像檔",
+   "B": "將映像檔儲存在 Container Registry 中",
+   "C": "將映像檔儲存在 Cloud Storage 中",
+   "D": "建立一個包含應用程式的 Compute Engine 磁碟"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。Compute Engine 機器映像檔是用於 VM，而非 Cloud Run 所部署的容器映像檔。",
+   "B": "正確。Container Registry（或 Artifact Registry）是容器映像檔的原生儲存庫，Cloud Run 可直接從中部署，使部署步驟最少。",
+   "C": "錯誤。Cloud Storage 儲存物件／檔案，而非 Cloud Run 能直接部署的容器映像檔格式，因此會增加額外步驟。",
+   "D": "錯誤。Compute Engine 磁碟存放的是 VM 資料，而非容器映像檔，Cloud Run 無法從中部署應用程式。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 13,
+  "type": "single",
+  "question": "三種雲端服務模型——基礎架構即服務（IaaS）、平台即服務（PaaS）與軟體即服務（SaaS）——各自在靈活性與雲端供應商和客戶之間的管理程度上提供不同的優點。為什麼 SaaS 會是正確的服務模型選擇？",
+  "options": {
+   "A": "您希望在客戶的靈活性與雲端供應商的管理程度之間取得平衡",
+   "B": "您希望將客戶的管理程度降到最低",
+   "C": "您希望將客戶的靈活性最大化。",
+   "D": "您希望能夠隨業務需求變化，在靈活性與雲端供應商管理之間調整重心"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。在靈活性與供應商管理之間取得平衡描述的是 PaaS，而非 SaaS。",
+   "B": "正確。SaaS 提供完全受管的應用程式，因此供應商處理一切，客戶的管理負擔降到最低。",
+   "C": "錯誤。將客戶靈活性最大化指向的是 IaaS，由客戶控制作業系統與執行環境，而非 SaaS。",
+   "D": "錯誤。SaaS 是固定、完全受管的服務，無法讓您動態調整靈活性與管理之間的平衡。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 14,
+  "type": "single",
+  "question": "隨著組織提高發布速度，基於 VM 的應用程式升級因作業系統開機時間而導致滾動更新耗時過長。您需要讓應用程式部署更快。您的組織應該怎麼做？",
+  "options": {
+   "A": "將您的 VM 遷移到雲端，並為它們增加更多資源",
+   "B": "將您的應用程式轉換為容器",
+   "C": "增加 VM 的資源",
+   "D": "將升級推出自動化"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。將 VM 移到雲端並增加資源並不能消除拖慢滾動更新的作業系統開機時間。",
+   "B": "正確。容器共用主機作業系統並能近乎即時啟動，消除了 VM 冗長的作業系統開機時間，使滾動部署快得多。",
+   "C": "錯誤。增加 CPU 或記憶體並不會顯著縮短作業系統開機時間，而這正是更新緩慢的根本原因。",
+   "D": "錯誤。將推出自動化有助於一致性，但由於每台 VM 仍須啟動其作業系統，個別更新仍會很慢。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 15,
+  "type": "single",
+  "question": "您的組織使用 Active Directory 來驗證使用者。當使用者的 Active Directory 帳戶被終止時，必須移除其 Google 帳戶的存取權。您的組織應如何滿足此需求？",
+  "options": {
+   "A": "在 Google 網域中設定雙重驗證",
+   "B": "從所有 IAM 政策中移除該 Google 帳戶",
+   "C": "在 Google 網域中設定 BeyondCorp 與 Identity-Aware Proxy",
+   "D": "在 Google 網域中設定單一登入（single sign-on）"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。雙重驗證可強化登入安全性，但無法將 Google 存取權與 Active Directory 帳戶的生命週期綁定。",
+   "B": "錯誤。手動從 IAM 政策中移除帳戶容易出錯，且不會在 AD 帳戶終止時自動發生。",
+   "C": "錯誤。BeyondCorp 與 Identity-Aware Proxy 強制執行情境感知的應用程式存取，但不會聯合身分以在 AD 帳戶終止時自動撤銷存取權。",
+   "D": "正確。設定單一登入（SSO）會將驗證聯合到 Active Directory，因此當 AD 帳戶被終止時，使用者便無法再登入 Google 服務。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 16,
+  "type": "single",
+  "question": "您的公司近期收購了位於三個不同國家、正在成長的三家新創公司。您希望降低基礎架構管理的負擔並維持低成本，同時不犧牲對客戶的安全性與服務品質。您應如何滿足這些需求？",
+  "options": {
+   "A": "將所有子公司的服務與您現有的服務一起代管在地端。",
+   "B": "將所有子公司的服務與您現有的服務一起代管在公有雲上。",
+   "C": "在每家子公司建立同質化的基礎架構，並投資訓練其工程師。",
+   "D": "在每家子公司建立同質化的基礎架構，並投資招募更多工程師。"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。將所有服務都代管在地端會增加資本成本與管理負擔，且難以跨多個國家輕鬆擴展。",
+   "B": "正確。將所有服務整合到公有雲可降低基礎架構管理負擔，透過按用量付費降低成本，並提供供應商內建的安全性與全球服務品質。",
+   "C": "錯誤。在每家子公司建立並配置各自的基礎架構會增加管理負擔與成本，而非降低。",
+   "D": "錯誤。招募更多工程師來營運各據點重複的基礎架構會提高成本與負擔，與目標背道而馳。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 17,
+  "type": "single",
+  "question": "Standard 與 Coldline 儲存空間之間有什麼差異？",
+  "options": {
+   "A": "Coldline 儲存空間適用於可接受較慢傳輸速率的資料。",
+   "B": "Standard 與 Coldline 儲存空間有不同的耐久性保證。",
+   "C": "Standard 與 Coldline 儲存空間使用不同的 API。",
+   "D": "Coldline 儲存空間適用於不常存取的資料。"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。所有 Cloud Storage 儲存類別都提供相同的低延遲、高輸送量存取；差異在於存取頻率與成本，而非傳輸速度。",
+   "B": "錯誤。所有 Cloud Storage 儲存類別都提供相同的 11 個 9 耐久性；耐久性在各類別之間並無不同。",
+   "C": "錯誤。所有儲存類別都使用相同的 Cloud Storage API；不同的只有定價與預期的存取模式。",
+   "D": "正確。Coldline 專為不常存取的資料設計，儲存成本較低但取回成本較高，而 Standard 則用於常存取（熱）資料。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 18,
+  "type": "single",
+  "question": "什麼可以在不需要您的組織採購並佈建新設備的情況下，提供近乎無限的運算資源可用性？",
+  "options": {
+   "A": "公有雲",
+   "B": "容器",
+   "C": "私有雲",
+   "D": "微服務"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。公有雲從供應商的資料中心提供隨需、近乎無限的容量，因此您無需購買或佈建自己的硬體即可擴展。",
+   "B": "錯誤。容器是一種封裝與執行技術；它們仍需要由某處提供底層運算容量。",
+   "C": "錯誤。私有雲在您自有的有限硬體上執行，仍須由您採購並佈建。",
+   "D": "錯誤。微服務是一種應用程式架構模式，本身並不提供運算容量。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 19,
+  "type": "single",
+  "question": "您是一個開發團隊的專案經理，該團隊正在建置一個事件驅動的應用程式，讓使用者可以追蹤彼此在 App 中的活動。每當使用者將自己加入為另一位使用者的追蹤者時，即時資料庫中就會發生一次寫入。開發人員將開發一段輕量程式碼，可回應資料庫寫入並產生通知，讓相關使用者得知他們獲得了新的追蹤者。這段程式碼應與 Pub/Sub、Firebase 與 Cloud API 等其他雲端服務整合，以簡化協調流程。此應用程式需要一個能自動管理底層基礎架構，並在無活動時縮減為零（scale to zero）的平台。在這些需求下，您的開發人員應選擇哪一種主要運算資源？",
+  "options": {
+   "A": "Google Kubernetes Engine",
+   "B": "Cloud Functions",
+   "C": "App Engine 彈性環境",
+   "D": "Compute Engine"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。GKE 需要您管理叢集與節點，且不會原生縮減為零，對於輕量的事件處理程式而言過於笨重。",
+   "B": "正確。Cloud Functions 是無伺服器、事件驅動的平台，可回應觸發事件（例如資料庫寫入）執行輕量程式碼，能與 Pub/Sub 及 Firebase 整合，並在閒置時縮減為零。",
+   "C": "錯誤。App Engine 彈性環境在 VM 上執行，且至少會保留一個執行個體執行，因此不會縮減為零。",
+   "D": "錯誤。Compute Engine 提供須由您管理的 VM，且不會自動縮減為零，與無伺服器需求相矛盾。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 20,
+  "type": "single",
+  "question": "您的組織正在開發一個應用程式，將從遍布全球的數百萬個不同感測器裝置擷取大量資料。您的組織需要一個適合在全球範圍、高速儲存大量非結構化資料的資料庫。您的組織應選擇哪一項 Google Cloud 產品？",
+  "options": {
+   "A": "Firestore",
+   "B": "Cloud Data Fusion",
+   "C": "Cloud SQL",
+   "D": "Cloud Bigtable"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。Firestore 是適合 App 資料與離線同步的文件資料庫，但並未針對此處所述極高輸送量的時間序列／IoT 擷取進行最佳化。",
+   "B": "錯誤。Cloud Data Fusion 是資料整合（ETL）服務，而非用於儲存大量感測器資料的資料庫。",
+   "C": "錯誤。Cloud SQL 是用於結構化資料的關聯式資料庫，無法擴展到此處所述大規模、高速的非結構化 IoT 工作負載。",
+   "D": "正確。Cloud Bigtable 是為極高寫入輸送量與大規模低延遲打造的寬欄式 NoSQL 資料庫，非常適合 IoT／感測器與時間序列資料。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 21,
+  "type": "single",
+  "question": "您的組織需要建置串流資料管線。您不想管理管線中執行資料處理的個別伺服器。相反地，您希望有一個受管服務，能隨著待處理的資料量自動擴展。您的組織應選擇哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Pub/Sub",
+   "B": "Dataflow",
+   "C": "Data Catalog",
+   "D": "Dataprep by Trifacta"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。Pub/Sub 是用於擷取與傳遞事件的訊息服務；它傳輸資料，但不會在管線中處理資料。",
+   "B": "正確。Dataflow 是完全受管、無伺服器的串流（與批次）資料處理服務，能隨資料量自動擴展，免除管理伺服器的需求。",
+   "C": "錯誤。Data Catalog 是中繼資料管理與資料探索服務，而非資料處理管線引擎。",
+   "D": "錯誤。Dataprep 用於以視覺化方式探索與準備／清理資料，而非建置可自動擴展的串流處理管線。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 22,
+  "type": "single",
+  "question": "您的組織正在建置一個在 Google Cloud 上執行的應用程式。目前軟體的建置、測試與定期部署都是手動進行，但您希望減少團隊的工作量。您的組織希望使用 Google Cloud 的受管解決方案，將建置、測試與部署流程自動化。您的組織應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Cloud Scheduler",
+   "B": "Cloud Code",
+   "C": "Cloud Build",
+   "D": "Cloud Deployment Manager"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。Cloud Scheduler 是用於觸發排程作業的受管 cron 服務，而非 CI/CD 建置與部署系統。",
+   "B": "錯誤。Cloud Code 提供 IDE 外掛程式協助開發人員撰寫與偵錯應用程式，而非將建置／測試／部署管線自動化。",
+   "C": "正確。Cloud Build 是 Google Cloud 的受管 CI/CD 服務，能自動建置、測試與部署應用程式，減少手動工作。",
+   "D": "錯誤。Deployment Manager 透過範本佈建基礎架構（基礎架構即程式碼）；它不會執行建置與測試的 CI/CD 管線。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 23,
+  "type": "single",
+  "question": "哪一項 Google Cloud 產品可在涵蓋多個專案的整個 Google Cloud 組織上回報並維持合規性？",
+  "options": {
+   "A": "Cloud Logging",
+   "B": "Identity and Access Management",
+   "C": "Google Cloud Armor",
+   "D": "Security Command Center"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。Cloud Logging 收集並儲存記錄，但本身不會回報或維持組織層級的合規態勢。",
+   "B": "錯誤。IAM 控制誰能對資源做什麼；它管理存取權，而非組織層級的合規回報。",
+   "C": "錯誤。Google Cloud Armor 保護應用程式免於 Web 攻擊與 DDoS；它不是合規回報工具。",
+   "D": "正確。Security Command Center 提供集中式可視性，並可在橫跨多個專案的整個組織上回報漏洞與合規狀況。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 24,
+  "type": "single",
+  "question": "您的組織需要在其地端網路與執行於 Google Cloud 的工作負載之間建立私有網路連線。您需要能夠盡快建立此連線。您應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Cloud Interconnect",
+   "B": "Direct Peering",
+   "C": "Cloud VPN",
+   "D": "Cloud CDN"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。Cloud Interconnect 提供專用的實體連線，但需要佈建實體電路，需時數週，因此無法盡快建立。",
+   "B": "錯誤。Direct Peering 連接到 Google 網路以存取公用服務，也需要實體佈建；它不是快速的私有 VPC 連線。",
+   "C": "正確。Cloud VPN 透過網際網路建立連到您 VPC 的加密 IPsec 通道，可快速設定，滿足盡快連線的需求。",
+   "D": "錯誤。Cloud CDN 為終端使用者快取並傳遞內容；它不提供地端與 Google Cloud 之間的私有連線。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 25,
+  "type": "single",
+  "question": "您的組織正在開發一個行動應用程式，並希望為其選擇一個功能完整、雲端式的運算平台。您的組織應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Google Kubernetes Engine",
+   "B": "Firebase",
+   "C": "Cloud Functions",
+   "D": "App Engine"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。GKE 是容器調度平台；它並非專為行動應用程式打造、功能完整的開發平台。",
+   "B": "正確。Firebase 是 Google 功能完整的行動與 Web 應用程式開發平台，提供資料庫、驗證、訊息傳遞與代管等專為行動應用程式量身打造的後端服務。",
+   "C": "錯誤。Cloud Functions 執行個別的事件驅動函式；它本身不是完整的行動應用程式平台。",
+   "D": "錯誤。App Engine 代管 Web 應用程式後端，但並非像 Firebase 那樣具備行動專屬服務的專用行動開發平台。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 26,
+  "type": "single",
+  "question": "您的公司一直使用一個共用設施進行資料儲存，現在將遷移到 Google Cloud。其中一個內部應用程式使用需要遷移的 Linux 自訂映像檔。您應使用哪一項 Google Cloud 產品來維護這些自訂映像檔？",
+  "options": {
+   "A": "App Engine 彈性環境",
+   "B": "Compute Engine",
+   "C": "App Engine 標準環境",
+   "D": "Google Kubernetes Engine"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。App Engine 彈性環境在 Google 受管的容器中執行您的程式碼；它不允許您匯入並維護自己的自訂 VM 磁碟映像檔。",
+   "B": "正確。Compute Engine 可讓您匯入、儲存並維護自訂的 Linux VM 映像檔，並從中啟動執行個體，這正是遷移後的應用程式所需。",
+   "C": "錯誤。App Engine 標準環境是沙箱化的執行環境，不支援自訂 VM 映像檔。",
+   "D": "錯誤。GKE 執行的是容器映像檔，而非自訂 VM 機器映像檔，因此不適合用於維護 Linux 自訂映像檔。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 27,
+  "type": "single",
+  "question": "您的組織想將其資料管理解決方案遷移到 Google Cloud，因為它需要動態地向上或向下擴展，並能對大規模的歷史資料執行交易式 SQL 查詢。您的組織應使用哪一項 Google Cloud 產品或服務？",
+  "options": {
+   "A": "BigQuery",
+   "B": "Cloud Bigtable",
+   "C": "Pub/Sub",
+   "D": "Cloud Spanner"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。BigQuery 是針對 OLAP 查詢最佳化的分析資料倉儲，而非用於大量交易式（OLTP）SQL 工作負載。",
+   "B": "錯誤。Cloud Bigtable 是 NoSQL 寬欄式儲存，不支援交易式關聯 SQL 查詢。",
+   "C": "錯誤。Pub/Sub 是訊息服務，而非交易式 SQL 資料庫。",
+   "D": "正確。Cloud Spanner 是可水平擴展、具備強一致性的關聯式資料庫，支援交易式 SQL，並可向上或向下擴展至幾乎無限的規模。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 28,
+  "type": "single",
+  "question": "您的組織需要使用機器學習對一大批靜態影像中的物件進行分類。您的組織應使用哪一項 Google Cloud 產品或服務？",
+  "options": {
+   "A": "BigQuery ML",
+   "B": "AutoML Video Intelligence",
+   "C": "Cloud Vision API",
+   "D": "AutoML Tables"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。BigQuery ML 使用 SQL 從結構化資料建立模型；它並非設計用來分類影像中的物件。",
+   "B": "錯誤。AutoML Video Intelligence 分析的是影片內容，而非靜態影像。",
+   "C": "正確。Cloud Vision API 是預先訓練的機器學習服務，可偵測並分類靜態影像中的物件、標籤與內容。",
+   "D": "錯誤。AutoML Tables 從表格／結構化資料建立模型，而非影像。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 29,
+  "type": "single",
+  "question": "您的組織在 Compute Engine 虛擬機器執行個體上執行所有工作負載。您的組織有一項安全需求：這些虛擬機器不得存取公用網際網路。在這些虛擬機器上執行的工作負載需要使用 BigQuery 與 Cloud Storage 的公開可存取介面來存取它們，且不得違反該安全需求。您的組織應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Identity-Aware Proxy",
+   "B": "Cloud NAT（網路位址轉譯）",
+   "C": "VPC 內部負載平衡器",
+   "D": "Private Google Access"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。Identity-Aware Proxy 控制使用者對應用程式的傳入存取；它不能讓沒有外部 IP 的 VM 存取 Google API。",
+   "B": "錯誤。Cloud NAT 啟用對公用網際網路的對外存取，這會違反 VM 不得存取網際網路的要求。",
+   "C": "錯誤。內部負載平衡器在 VPC 內分配流量；它不提供對 BigQuery 與 Cloud Storage 等 Google API 的存取。",
+   "D": "正確。Private Google Access 讓沒有外部 IP 位址的 VM 能透過 Google 的內部網路存取 Google API 與服務（例如 BigQuery 與 Cloud Storage），而不使用公用網際網路。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 30,
+  "type": "single",
+  "question": "哪一項 Google Cloud 產品旨在降低處理個人識別資訊（PII）的風險？",
+  "options": {
+   "A": "Cloud Storage",
+   "B": "Google Cloud Armor",
+   "C": "Cloud Data Loss Prevention",
+   "D": "Secret Manager"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。Cloud Storage 儲存物件，但本身不會探索或去識別化敏感的 PII。",
+   "B": "錯誤。Google Cloud Armor 保護 Web 應用程式免於 DDoS 與 Web 攻擊；它不處理 PII 的探索或遮蔽。",
+   "C": "正確。Cloud Data Loss Prevention（Cloud DLP／Sensitive Data Protection）可探索、分類並去識別化（遮蔽／編修）如 PII 等敏感資料，直接降低處理這些資料的風險。",
+   "D": "錯誤。Secret Manager 安全地儲存憑證與 API 金鑰；它並非設計用來在資料中尋找或去識別化 PII。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 31,
+  "type": "single",
+  "question": "您的組織正在遷移到 Google Cloud。作為其中一環，它需要將數 TB 的資料從地端檔案伺服器移到 Cloud Storage。您的組織希望遷移程序自動化並由 Google 管理。您的組織有一條現有的 Dedicated Interconnect 連線想要使用。您的組織應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Storage Transfer Service",
+   "B": "Migrate for Anthos",
+   "C": "BigQuery Data Transfer Service",
+   "D": "Transfer Appliance"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。Storage Transfer Service 是由 Google 管理、自動化的服務，可透過網路（利用現有的 Interconnect）將大量資料從地端檔案系統移到 Cloud Storage。",
+   "B": "錯誤。Migrate for Anthos 將 VM 工作負載現代化為容器；它不執行檔案資料到 Cloud Storage 的傳輸。",
+   "C": "錯誤。BigQuery Data Transfer Service 從特定來源將資料載入 BigQuery，而非將檔案伺服器資料載入 Cloud Storage。",
+   "D": "錯誤。Transfer Appliance 是在沒有良好網路連線時使用的實體寄送裝置；當已有 Dedicated Interconnect 可用時並不需要。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 32,
+  "type": "single",
+  "question": "您的組織需要分析資料以洞察其日常營運。您只想為所儲存的資料以及所執行的查詢付費。您的組織應為其資料分析倉儲選擇哪一項 Google Cloud 產品？",
+  "options": {
+   "A": "Cloud SQL",
+   "B": "Dataproc",
+   "C": "Cloud Spanner",
+   "D": "BigQuery"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。Cloud SQL 是依執行中執行個體計費的交易式關聯式資料庫，而非按查詢付費的分析倉儲。",
+   "B": "錯誤。Dataproc 執行受管的 Hadoop/Spark 叢集，您在叢集執行時付費；它不是無伺服器、按查詢付費的倉儲。",
+   "C": "錯誤。Cloud Spanner 是依佈建容量計費的交易式關聯式資料庫，而非以查詢為基礎的分析倉儲。",
+   "D": "正確。BigQuery 是無伺服器的資料倉儲，您只為使用的儲存空間以及查詢掃描的資料量付費，符合所述的成本模式。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 33,
+  "type": "single",
+  "question": "您的組織想在 Google Cloud 上執行一個以容器為基礎的應用程式。預期此應用程式的複雜度會增加。您有安全上的需求，要對容器之間的流量進行精細控制。您也有營運上的需求，要對應用程式的擴展政策進行精細控制。您的組織應使用哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "Google Kubernetes Engine 叢集",
+   "B": "App Engine",
+   "C": "Cloud Run",
+   "D": "Compute Engine 虛擬機器"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。GKE 對容器網路（Pod 之間的網路政策）與詳細的擴展政策（水平／垂直 Pod 及叢集自動擴展）提供精細控制，適合不斷成長且複雜的容器化應用程式。",
+   "B": "錯誤。App Engine 抽象化了底層基礎架構，無法對容器間流量或詳細的擴展政策提供精細控制。",
+   "C": "錯誤。Cloud Run 是較簡單的無伺服器容器平台，不提供 Kubernetes 般的精細網路與擴展控制。",
+   "D": "錯誤。純 Compute Engine VM 無法原生調度容器，也不提供所需的精細容器流量與擴展控制。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 34,
+  "type": "single",
+  "question": "哪一項 Google Cloud 產品或功能會根據安全風險與合規違規提出具體建議？",
+  "options": {
+   "A": "Google Cloud 防火牆",
+   "B": "Security Command Center",
+   "C": "Cloud Deployment Manager",
+   "D": "Google Cloud Armor"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。Google Cloud 防火牆執行網路流量規則；它不會分析風險或提出合規建議。",
+   "B": "正確。Security Command Center 會掃描您的資源，呈現安全風險與合規違規，並提供具體的修復建議。",
+   "C": "錯誤。Cloud Deployment Manager 從範本佈建基礎架構；它不評估安全或合規。",
+   "D": "錯誤。Google Cloud Armor 緩解 Web 攻擊與 DDoS；它不會在各項資源上提供安全風險與合規建議。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 35,
+  "type": "single",
+  "question": "哪一項 Google Cloud 產品為多雲端應用程式部署提供一致的平台，並將其他 Google Cloud 服務延伸到您組織的環境中？",
+  "options": {
+   "A": "Google Kubernetes Engine",
+   "B": "Virtual Public Cloud",
+   "C": "Compute Engine",
+   "D": "Anthos"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。GKE 在 Google Cloud 內管理 Kubernetes 叢集，但它本身並非所述的多雲端、混合管理平台。",
+   "B": "錯誤。Virtual Private Cloud 在 Google Cloud 內提供網路；它不是多雲端應用程式部署平台。",
+   "C": "錯誤。Compute Engine 在 Google Cloud 內提供 VM；它不提供一致的多雲端或地端管理平台。",
+   "D": "正確。Anthos 是 Google 的混合與多雲端平台，提供跨雲端與地端執行及管理應用程式的一致方式，同時將 Google Cloud 服務延伸到這些環境。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 36,
+  "type": "single",
+  "question": "您的組織正在開發一個應用程式，將管理遍布全球的付款與線上銀行帳戶。您資料庫最關鍵的需求是每筆交易都能被一致地處理。您的組織預期所儲存的資料量將近乎無限制地成長。您的組織應選擇哪一項 Google Cloud 產品？",
+  "options": {
+   "A": "Cloud SQL",
+   "B": "Cloud Storage",
+   "C": "Firestore",
+   "D": "Cloud Spanner"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。Cloud SQL 是區域性的關聯式資料庫，垂直擴展能力有限，無法提供全球性、近乎無限制的水平擴展。",
+   "B": "錯誤。Cloud Storage 是物件儲存，無法為金融交易強制執行交易一致性。",
+   "C": "錯誤。Firestore 是 NoSQL 文件資料庫；雖然可擴展，但它並非為高量金融交易設計、具備強一致性的全球關聯式 SQL 資料庫。",
+   "D": "正確。Cloud Spanner 是全球分散式的關聯式資料庫，為交易提供強（外部）一致性並具備幾乎無限制的水平擴展，非常適合全球金融系統。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 37,
+  "type": "single",
+  "question": "您的組織想要一個經濟實惠的解決方案來儲存檔案、圖形影像與影片等資料，並安全地存取與分享它們。您的組織應使用哪一項 Google Cloud 產品或服務？",
+  "options": {
+   "A": "Cloud Storage",
+   "B": "Cloud SQL",
+   "C": "Cloud Spanner",
+   "D": "BigQuery"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。Cloud Storage 是經濟實惠的物件儲存，非常適合檔案、影像與影片等非結構化資料，並具備安全的存取控制與便利的分享功能。",
+   "B": "錯誤。Cloud SQL 是用於結構化交易資料的關聯式資料庫，並非用於儲存大型二進位檔案與媒體。",
+   "C": "錯誤。Cloud Spanner 是用於結構化資料的關聯式資料庫，並非用於儲存檔案與影片的具成本效益物件儲存。",
+   "D": "錯誤。BigQuery 是用於結構化資料的分析倉儲，並非用於儲存與分享媒體檔案。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 38,
+  "type": "single",
+  "question": "您的組織想要預測其公開網站訪客的行為。為此，您決定建立一個機器學習模型。您的團隊具備資料庫相關技能，但機器學習技能僅屬基礎，且希望能運用這些資料庫技能。您的組織應選擇哪一項 Google Cloud 產品或功能？",
+  "options": {
+   "A": "BigQuery ML",
+   "B": "LookML",
+   "C": "TensorFlow",
+   "D": "Cloud SQL"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。BigQuery ML 讓團隊能在 BigQuery 中使用標準 SQL 建立並訓練機器學習模型，運用既有的資料庫／SQL 技能，而不需深厚的機器學習專業知識。",
+   "B": "錯誤。LookML 是 Looker BI 工具的建模語言；它用於定義業務指標，而非建立機器學習模型。",
+   "C": "錯誤。TensorFlow 是強大的機器學習框架，但需要團隊所缺乏的大量機器學習與程式設計專業知識。",
+   "D": "錯誤。Cloud SQL 是交易式關聯式資料庫，不提供內建的機器學習能力。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 39,
+  "type": "single",
+  "question": "您的組織需要限制對某個 Cloud Storage 值區的存取。只有位於加拿大的員工才能查看其內容。滿足此需求最有效且高效率的方式是什麼？",
+  "options": {
+   "A": "將 Cloud Storage 值區部署到加拿大的 Google Cloud 區域",
+   "B": "設定 Google Cloud Armor，只允許來自加拿大 IP 位址的存取該值區",
+   "C": "個別授予每位位於加拿大的員工存取該值區的權限",
+   "D": "建立一個由所有加拿大員工組成的群組，並授予該群組存取該值區的權限"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。值區儲存所在的區域控制的是資料落地，而非哪些員工可以查看其內容。",
+   "B": "錯誤。以 IP 位址限制相當脆弱（員工可能出差或使用 VPN），且 Cloud Armor 並非以 IAM 為基礎的值區存取控制機制。",
+   "C": "錯誤。逐一授予員工存取權既無效率，且隨員工異動而難以維護。",
+   "D": "正確。建立加拿大員工的 Google 群組並授予該群組存取權符合 IAM 最佳實務，使存取易於管理，並能隨成員變動輕鬆更新。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 40,
+  "type": "single",
+  "question": "您的組織正在將一個應用程式移到 Google Cloud。作為其中一環，它需要將該應用程式正在運作的資料庫從另一家雲端供應商遷移到 Cloud SQL。該資料庫執行於 MySQL 引擎上。遷移過程必須對使用者造成最小干擾。資料在傳輸過程中必須受到保護。您的組織應使用哪一項？",
+  "options": {
+   "A": "BigQuery Data Transfer Service",
+   "B": "MySQL 批次插入",
+   "C": "Database Migration Service",
+   "D": "Cloud Composer"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "錯誤。BigQuery Data Transfer Service 將資料載入 BigQuery 以供分析，而非將正在運作的 MySQL 資料庫遷移到 Cloud SQL。",
+   "B": "錯誤。手動的 MySQL 批次插入會造成停機，且缺乏最小干擾遷移所需的持續複寫。",
+   "C": "正確。Database Migration Service 可以最小停機、持續地將 MySQL 資料庫遷移到 Cloud SQL，並透過加密（傳輸中安全）連線進行。",
+   "D": "錯誤。Cloud Composer 調度工作流程（Apache Airflow）；它不是專為資料庫遷移打造的工具。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 41,
+  "type": "single",
+  "question": "您的組織正在 Google Cloud 上開發並部署一個應用程式。追蹤您的 Google Cloud 支出需要盡可能保持簡單。您應該怎麼做，以確保開發環境中的工作負載與正式環境的工作負載完全隔離？",
+  "options": {
+   "A": "為開發資源套用一個唯一的標籤（tag）",
+   "B": "將開發資源關聯到它們自己的網路",
+   "C": "將開發資源關聯到它們自己的帳單帳戶",
+   "D": "將開發資源放在它們自己的專案中"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。標籤／標記有助於成本追蹤，但無法在環境之間提供真正的資源隔離。",
+   "B": "錯誤。獨立的網路只隔離網路，而非在開發與正式環境之間隔離 IAM、配額或完整的資源邊界。",
+   "C": "錯誤。獨立的帳單帳戶能分隔帳單，但對於隔離而言並無必要，且會使支出追蹤更複雜，而非保持簡單。",
+   "D": "正確。將開發資源放在它們自己的專案中可提供完整隔離（獨立的 IAM、配額與資源），同時因為成本會按專案彙總而使支出追蹤保持簡單。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 42,
+  "type": "single",
+  "question": "您的公司在一個代管資料中心執行其大部分工作負載。這些工作負載執行於 hypervisor 之上的虛擬機器（VM）上，並使用 Linux 或 Windows 伺服器版本。作為公司轉型策略的一環，您需要藉由採用雲端原生技術，盡可能將工作負載現代化。您需要將這些工作負載遷移到 Google Cloud。您應該怎麼做？",
+  "options": {
+   "A": "將 VM 匯出為 VMDK 格式，並匯入到 Compute Engine",
+   "B": "將 VM 匯出為 VMDK 格式，並匯入到 Google Cloud VMware Engine",
+   "C": "使用 Migrate for Compute Engine 遷移工作負載",
+   "D": "使用 Migrate for Anthos 遷移工作負載"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "錯誤。將 VM 原樣匯入 Compute Engine 是一種直接搬遷（lift-and-shift），會讓工作負載維持為 VM，並未將其現代化為雲端原生技術。",
+   "B": "錯誤。Google Cloud VMware Engine 讓工作負載維持為 VMware VM，這是現代化程度最低的途徑，而非採用雲端原生。",
+   "C": "錯誤。Migrate for Compute Engine 將 VM 移到 Compute Engine VM（直接搬遷）；它不會將其現代化為容器。",
+   "D": "正確。Migrate for Anthos 將以 VM 為基礎的工作負載轉換為在 GKE/Anthos 上執行的容器，達成採用雲端原生技術的目標。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 43,
+  "type": "single",
+  "question": "您的組織在 hypervisor 之上的私有雲中執行所有工作負載。您的組織已決定要盡快移到 Google Cloud。您的組織希望對目前環境的變更最小，同時盡可能使用 Google 提供的最多受管服務。您的組織應該怎麼做？",
+  "options": {
+   "A": "將工作負載遷移到 Google Cloud VMware Engine",
+   "B": "將工作負載遷移到 Compute Engine",
+   "C": "將工作負載遷移到 Bare Metal Solution",
+   "D": "將工作負載遷移到 Google Kubernetes Engine"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。VMware Engine 最適合您想保留既有 VMware 技術堆疊的情況；相較於 Compute Engine，它能搭配的 Google 廣泛受管服務較少，且針對 VMware 專屬環境。",
+   "B": "正確。將以 hypervisor 為基礎的 VM 遷移到 Compute Engine 是一種變更最小的快速直接搬遷，同時將工作負載放在 Google Cloud 上，可運用最廣泛的 Google 受管服務。",
+   "C": "錯誤。Bare Metal Solution 適用於需要專用硬體的特殊工作負載（例如某些 Oracle 資料庫）；它提供的受管服務最少，並非一般的快速遷移選擇。",
+   "D": "錯誤。移到 GKE 需要將工作負載重新架構為容器，這是重大變更，與變更最小且快速的需求相矛盾。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 44,
+  "type": "single",
+  "question": "您的組織正在發布其在 Google Cloud 上第一個公開可用的應用程式。此應用程式對您的業務與客戶至關重要，並要求 2 小時的 SLA。您的組織應如何設定支援以將成本降到最低？",
+  "options": {
+   "A": "註冊 Premium Support",
+   "B": "註冊 Enhanced Support",
+   "C": "註冊 Standard Support",
+   "D": "註冊 Basic Support"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。Premium Support 提供最快的回應（關鍵案件約 15 分鐘），但成本最高，超過了滿足 2 小時目標所需。",
+   "B": "正確。Enhanced Support 提供的回應時間（關鍵 P1 案件約 1 小時）能滿足 2 小時的要求，且成本低於 Premium Support。",
+   "C": "錯誤。對於業務關鍵的應用程式而言，Standard Support 的回應時間太慢，無法可靠地滿足 2 小時的關鍵案件要求。",
+   "D": "錯誤。Basic Support 不包含具回應時間承諾的技術案件支援，因此無法滿足 2 小時 SLA。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 45,
+  "type": "single",
+  "question": "您的組織提供公開的行動應用程式與網站。您想遷移到以 Google Cloud 為基礎的解決方案，用於檢查與維護使用者的使用者名稱與密碼，並根據其身分控制他們對不同資源的存取。您的組織應選擇哪一項？",
+  "options": {
+   "A": "VPN 通道",
+   "B": "Identity Platform",
+   "C": "Compute Engine 防火牆規則",
+   "D": "Private Google Access"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。VPN 通道提供加密的網路連線；它不管理終端使用者的身分、使用者名稱或密碼。",
+   "B": "正確。Identity Platform 是客戶身分與存取管理（CIAM）服務，可驗證 App／網站使用者（使用者名稱、密碼、聯合登入）並根據其身分控制存取。",
+   "C": "錯誤。防火牆規則控制連到 VM 的網路流量；它們不驗證應用程式的終端使用者。",
+   "D": "錯誤。Private Google Access 讓 VM 無需外部 IP 即可存取 Google API；它與管理終端使用者身分無關。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 46,
+  "type": "single",
+  "question": "哪一項 Google Cloud 服務或功能可讓您使用標準 SQL 與資料倉儲中的資料來建立機器學習模型？",
+  "options": {
+   "A": "BigQuery ML",
+   "B": "TensorFlow",
+   "C": "AutoML Tables",
+   "D": "Cloud Bigtable ML"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。BigQuery ML 可讓您使用標準 SQL 直接在 BigQuery 資料倉儲中建立並執行機器學習模型。",
+   "B": "錯誤。TensorFlow 是程式化的機器學習框架，使用 Python，而非在資料倉儲內使用標準 SQL。",
+   "C": "錯誤。AutoML Tables 透過無程式碼介面在表格資料上建立模型；它並非資料倉儲內以 SQL 為基礎的功能。",
+   "D": "錯誤。並不存在 Cloud Bigtable ML 這項產品；Bigtable 是不具備內建 SQL 模型訓練的 NoSQL 資料庫。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 47,
+  "type": "single",
+  "question": "您的組織在 Google Cloud 的虛擬機器上執行一個應用程式。此應用程式處理傳入的影像。每張影像產生結果都需耗費數小時的活動。此應用程式的工作負載通常維持在某個基準水準，但會定期飆升到大得多的工作負載。您的組織需要控制執行此應用程式的成本。您的組織應該怎麼做？",
+  "options": {
+   "A": "為基準負載購買承諾使用折扣",
+   "B": "為預期的飆升負載購買承諾使用折扣",
+   "C": "為您的虛擬機器善用持續使用折扣（sustained use discounts）",
+   "D": "在先佔（preemptible）VM 執行個體上執行工作負載"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正確。基準負載會持續執行，因此以承諾使用折扣（CUD）為該容量做出承諾可帶來顯著節省，而飆升部分則可用隨需容量處理。",
+   "B": "錯誤。為飆升容量做出承諾會浪費金錢，因為該容量只是偶爾需要，其餘時間會付了費卻閒置。",
+   "C": "錯誤。持續使用折扣會自動套用且無需承諾，但相較於為已知的穩定基準負載做出承諾，它提供的節省較少。",
+   "D": "錯誤。先佔 VM 可能隨時被中斷，對於每張結果需耗費數小時的影像處理而言相當有風險，且可能遺失進行中的工作。"
+  }
+ },
+ {
+  "exam": "GCP-CDL",
+  "id": 48,
+  "type": "single",
+  "question": "您的組織正在制定遷移到 Google Cloud 的計畫。在最初設定您的 Google Cloud 環境時，什麼是最佳實務？",
+  "options": {
+   "A": "透過 Google Cloud 主控台為公司中每個部門各建立一個專案",
+   "B": "以最上層的組織節點（organization node）來定義您的資源階層",
+   "C": "根據團隊成員的要求建立專案",
+   "D": "讓公司的每位成員都成為專案擁有者"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "錯誤。在未先建立整體階層的情況下為每個部門建立專案，會導致資源雜亂且難以治理。",
+   "B": "正確。最佳實務是以最上層的組織節點來定義資源階層，這可在所有資料夾與專案間實現集中式政策、IAM 與帳單繼承。",
+   "C": "錯誤。依個別要求臨時建立專案會造成資源蔓延與治理薄弱，而非有規劃的結構。",
+   "D": "錯誤。讓每個人都成為專案擁有者違反最小權限原則，並造成嚴重的安全風險。"
+  }
+ }
+]
