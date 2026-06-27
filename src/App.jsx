@@ -606,7 +606,7 @@ const CLOUD_PROVIDERS = [
 // 各雲服務商已上線的考試代碼（用來在入口畫面分組）
 const PROVIDER_EXAMS = {
   aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'AIP-C01', 'MLA-C01'],
-  gcp: ['PCA'],
+  gcp: ['PCA', 'GCP-CDL'],
 }
 
 function getProviderForExam(exam) {
