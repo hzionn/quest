@@ -144,10 +144,46 @@ export function SyncStatusPill({ user, onSignedIn, onSignOut }) {
 //   3. After (2) completes, every subsequent change to statsHistory /
 //      bookmarked / reviewMarked debounce-pushes (3 s) to the server.
 //
+// Keys whose value changed between two maps (reference compare — the reducer
+// replaces entries immutably) plus keys that were removed.
+function diffKeys(a = {}, b = {}) {
+  const out = []
+  for (const k in b) if (b[k] !== a[k]) out.push(k)
+  for (const k in a) if (!(k in b)) out.push(k)
+  return out
+}
+
 export function useGoogleSync(state, dispatch, user, setUser) {
   const initialSyncedRef = useRef(false)
   const debounceRef = useRef(null)
   const lastPushAtRef = useRef(0)
+  // Delta tracking: accumulate changed qkeys per map; each push sends only
+  // those (removals go up as enabled:0). On success the pushed keys clear;
+  // keys dirtied mid-flight survive for the next push.
+  const prevMapsRef = useRef(null)
+  const mapsRef = useRef(null)
+  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set() })
+
+  const clearDirty = () => {
+    dirtyRef.current.stats.clear()
+    dirtyRef.current.bookmarks.clear()
+    dirtyRef.current.reviews.clear()
+  }
+
+  const pushDirty = () => {
+    const d = dirtyRef.current
+    const snap = { stats: new Set(d.stats), bookmarks: new Set(d.bookmarks), reviews: new Set(d.reviews) }
+    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size
+    if (!total || !mapsRef.current) return
+    pushMaps(mapsRef.current, snap)
+      .then(() => {
+        snap.stats.forEach((k) => d.stats.delete(k))
+        snap.bookmarks.forEach((k) => d.bookmarks.delete(k))
+        snap.reviews.forEach((k) => d.reviews.delete(k))
+        lastPushAtRef.current = Date.now()
+      })
+      .catch((e) => console.warn('[sync] push failed:', e?.message || e))
+  }
 
   // 1. Bootstrap: hydrate `user` from an existing session token.
   useEffect(() => {
@@ -159,7 +195,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 2. Initial fetch + merge + push, once per signed-in session.
+  // 2. Initial fetch + merge + full push, once per signed-in session.
   useEffect(() => {
     if (!isSyncConfigured() || !user || initialSyncedRef.current) return
     let cancelled = false
@@ -177,6 +213,9 @@ export function useGoogleSync(state, dispatch, user, setUser) {
         dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: merged.bookmarked })
         dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
         await pushMaps(merged).catch(() => {})
+        prevMapsRef.current = merged
+        mapsRef.current = merged
+        clearDirty()
         initialSyncedRef.current = true
         lastPushAtRef.current = Date.now()
       } catch (e) {
@@ -188,43 +227,51 @@ export function useGoogleSync(state, dispatch, user, setUser) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  // 3. Debounced push on state changes (after the initial sync).
+  // 3. Diff each state change into the dirty sets; debounce-push the delta.
   useEffect(() => {
     if (!isSyncConfigured() || !user || !initialSyncedRef.current) return
+    const cur = {
+      statsHistory: state.statsHistory,
+      bookmarked: state.bookmarked,
+      reviewMarked: state.reviewMarked,
+    }
+    mapsRef.current = cur
+    const prev = prevMapsRef.current
+    if (prev) {
+      const d = dirtyRef.current
+      diffKeys(prev.statsHistory, cur.statsHistory).forEach((k) => d.stats.add(k))
+      diffKeys(prev.bookmarked, cur.bookmarked).forEach((k) => d.bookmarks.add(k))
+      diffKeys(prev.reviewMarked, cur.reviewMarked).forEach((k) => d.reviews.add(k))
+    }
+    prevMapsRef.current = cur
+    const d = dirtyRef.current
+    if (!(d.stats.size + d.bookmarks.size + d.reviews.size)) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      pushMaps({
-        statsHistory: state.statsHistory,
-        bookmarked: state.bookmarked,
-        reviewMarked: state.reviewMarked,
-      }).then(() => { lastPushAtRef.current = Date.now() })
-        .catch((e) => console.warn('[sync] push failed:', e?.message || e))
-    }, 3000)
+    debounceRef.current = setTimeout(pushDirty, 3000)
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.statsHistory, state.bookmarked, state.reviewMarked, user])
 
   // 4. Best-effort flush on page hide.
   useEffect(() => {
     if (!isSyncConfigured() || !user) return
-    const flush = () => {
-      if (!initialSyncedRef.current) return
-      // Cancel any pending debounce so it doesn't fire after we send.
+    const onHide = () => {
+      if (document.visibilityState !== 'hidden' || !initialSyncedRef.current) return
       if (debounceRef.current) clearTimeout(debounceRef.current)
-      pushMaps({
-        statsHistory: state.statsHistory,
-        bookmarked: state.bookmarked,
-        reviewMarked: state.reviewMarked,
-      }).catch(() => {})
+      pushDirty()
     }
-    const onHide = () => { if (document.visibilityState === 'hidden') flush() }
     document.addEventListener('visibilitychange', onHide)
     return () => document.removeEventListener('visibilitychange', onHide)
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   const signOut = useCallback(() => {
     clearSessionToken()
     setUser(null)
     initialSyncedRef.current = false
+    prevMapsRef.current = null
+    mapsRef.current = null
+    clearDirty()
   }, [setUser])
 
   return { signOut }

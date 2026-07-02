@@ -8,10 +8,10 @@ import {
   Languages, LogOut
 } from 'lucide-react'
 import awsLogo from '/aws.png'
-import { extractTextFromPDF, parseExamDump } from './pdfParser'
-import { loadLocalProgress, saveLocalProgress, clearLocalProgress } from './storage'
+import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
 import { SyncStatusPill, useGoogleSync } from './SyncControls'
-import { isSyncConfigured } from './sync'
+import ErrorBoundary from './ErrorBoundary'
+import { isSyncConfigured, mergeMaps } from './sync'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -19,11 +19,39 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
-// Cache-bust token computed fresh on every page load (not at build time), so a
-// plain refresh always re-fetches the question bank from the network and can
-// never be served a stale copy by the browser or CDN. Combined with the
-// cache:'no-store' option on every data fetch below.
-const DATA_VERSION = String(Date.now())
+// Provider-neutral app icon (the bank now spans AWS + GCP)
+const cloudIcon = `${BASE_URL}cloud-icon.svg`
+// Cache-bust token fixed at BUILD time: within one deploy every visitor hits
+// the same URLs so the browser/CDN can cache the (immutable) JSON banks, and a
+// new deploy mints a new token which busts everything at once. Data edits go
+// through git → Pages rebuild, so "new data" always implies "new build id".
+const DATA_VERSION = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : String(Date.now())
+
+// ── Data fetch helpers (parallel, versioned URLs) ──
+async function fetchDataJson(path) {
+  const res = await fetch(`${BASE_URL}data/${path}?v=${DATA_VERSION}`)
+  if (!res.ok) throw new Error(`fetch ${path}: ${res.status}`)
+  return res.json()
+}
+const asQuestions = (data) => (Array.isArray(data) ? data : (data.questions || []))
+
+// Fetch many bank files concurrently; per-file failures are skipped so one
+// bad file can't take down the whole bank. onProgress(done, total) fires as
+// each file settles.
+async function loadBankFiles(files, onProgress) {
+  let done = 0
+  const results = await Promise.all(files.map(async (f) => {
+    try {
+      return asQuestions(await fetchDataJson(f))
+    } catch {
+      return []
+    } finally {
+      done++
+      onProgress?.(done, files.length)
+    }
+  }))
+  return results.flat()
+}
 
 // ── Check admin mode ──
 const isAdmin = new URLSearchParams(window.location.search).has('admin')
@@ -139,6 +167,7 @@ const initialState = {
 
   // Stats
   statsHistory: {},
+  dailyStats: {},   // { 'YYYY-MM-DD': { answered, correct } } — local-only 學習趨勢
 
   // Language
   lang: 'zh',        // 'zh' | 'en'
@@ -152,6 +181,18 @@ const initialState = {
   githubSyncing: false,
   githubBanks: [],  // [{ name, count, sha }]
   githubError: null,
+}
+
+// ── Helper: 今日日期 key（學習趨勢用，local 時區） ──
+function todayKey() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+// 累計 dailyStats：answered +n、correct +c
+function bumpDaily(dailyStats, answered, correct) {
+  const dk = todayKey()
+  const prev = dailyStats?.[dk] || { answered: 0, correct: 0 }
+  return { ...dailyStats, [dk]: { answered: prev.answered + answered, correct: prev.correct + correct } }
 }
 
 // ── Helper: 判斷一題作答是否正確（練習與自動跳題共用） ──
@@ -239,6 +280,23 @@ function reducer(state, action) {
       }
     }
 
+    case 'APPEND_QUESTIONS': {
+      // Background/lazy loads merge into the bank WITHOUT resetting the user's
+      // current practice list/index (unlike LOAD_QUESTIONS, which is only for
+      // the initial full load and admin uploads).
+      const map = new Map()
+      state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
+      action.questions.forEach(q => {
+        const k = `${q.exam}-${q.id}`
+        if (!map.has(k)) map.set(k, q)
+      })
+      return {
+        ...state,
+        questions: Array.from(map.values()).sort((a, b) => a.id - b.id),
+        questionsLoading: false,
+      }
+    }
+
     case 'SET_FILTER':
       return { ...state, [action.key]: action.value }
 
@@ -313,8 +371,9 @@ function reducer(state, action) {
         practiceResults: { ...state.practiceResults, [qKey]: correct },
         statsHistory: {
           ...state.statsHistory,
-          [qKey]: { correct, correctCount, everWrong, exam: q.exam, type: q.type, id: q.id, question: q }
-        }
+          [qKey]: { correct, correctCount, everWrong, exam: q.exam, type: q.type, id: q.id, question: q, _updatedAt: Date.now() }
+        },
+        dailyStats: bumpDaily(state.dailyStats, 1, correct ? 1 : 0),
       }
     }
 
@@ -334,14 +393,18 @@ function reducer(state, action) {
       return { ...state, examConfig: { ...state.examConfig, ...action.config } }
 
     case 'START_EXAM': {
-      let pool = [...state.questions]
-      if (state.examConfig.examFilter) pool = pool.filter(q => q.exam === state.examConfig.examFilter)
+      // action.pool（如錯題模擬考）可覆蓋預設題池；count/timeLimit 同理。
+      let pool = action.pool ? [...action.pool] : [...state.questions]
+      if (!action.pool && state.examConfig.examFilter) pool = pool.filter(q => q.exam === state.examConfig.examFilter)
       // Fisher-Yates shuffle
       for (let i = pool.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [pool[i], pool[j]] = [pool[j], pool[i]]
       }
-      const selected = pool.slice(0, Math.min(state.examConfig.count, pool.length))
+      const count = action.count ?? state.examConfig.count
+      const timeLimit = action.timeLimit ?? state.examConfig.timeLimit
+      const selected = pool.slice(0, Math.min(count, pool.length))
+      if (!selected.length) return state
       const ids = selected.map(q => `${q.exam}-${q.id}`)
       return {
         ...state,
@@ -349,10 +412,11 @@ function reducer(state, action) {
         examQuestionIds: ids,
         examIndex: 0,
         examAnswers: {},
-        examEndTime: Date.now() + state.examConfig.timeLimit * 60 * 1000,
-        examRemaining: state.examConfig.timeLimit * 60,
+        examEndTime: Date.now() + timeLimit * 60 * 1000,
+        examRemaining: timeLimit * 60,
         examSubmitted: false,
         examResults: null,
+        examConfig: { ...state.examConfig, timeLimit },
         activeTab: 'exam'
       }
     }
@@ -415,12 +479,13 @@ function reducer(state, action) {
         return { qKey, correct, question: q }
       })
       const newHistory = { ...state.statsHistory }
+      const submittedAt = Date.now()
       details.forEach(d => {
         const prevEntry = state.statsHistory[d.qKey]
         const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
         const correctCount = prevCount + (d.correct ? 1 : 0)
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
-        newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question }
+        newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question, _updatedAt: submittedAt }
       })
       return {
         ...state,
@@ -432,7 +497,8 @@ function reducer(state, action) {
           typeStats,
           details
         },
-        statsHistory: newHistory
+        statsHistory: newHistory,
+        dailyStats: bumpDaily(state.dailyStats, details.length, totalCorrect),
       }
     }
 
@@ -485,6 +551,9 @@ function reducer(state, action) {
     case 'RESTORE_REVIEWS':
       return { ...state, reviewMarked: action.reviewMarked }
 
+    case 'RESTORE_DAILY':
+      return { ...state, dailyStats: action.dailyStats }
+
     case 'SET_GITHUB_LOADING':
       return { ...state, githubLoading: action.value }
 
@@ -522,6 +591,51 @@ function getDisplayQuestion(q, lang, enMap) {
     if (enQ) return enQ
   }
   return q
+}
+
+// ── Keyboard shortcuts for answering (shared by practice & exam) ──
+// A–E / 1–9 pick an option (toggle for multiple-choice), Enter submits (or
+// advances), ←/→ navigate. Disabled while typing in a form control.
+function useAnswerHotkeys({ enabled, question, answer, submitted, allowChange, onAnswer, onPrev, onNext, onEnter }) {
+  useEffect(() => {
+    if (!enabled) return
+    const handler = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const tag = e.target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target?.isContentEditable) return
+      if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev?.(); return }
+      if (e.key === 'ArrowRight') { e.preventDefault(); onNext?.(); return }
+      if (e.key === 'Enter') { e.preventDefault(); onEnter?.(); return }
+      if (!question?.options) return
+      let key = null
+      if (/^[a-zA-Z]$/.test(e.key) && question.options[e.key.toUpperCase()] !== undefined) {
+        key = e.key.toUpperCase()
+      } else if (/^[1-9]$/.test(e.key)) {
+        key = Object.keys(question.options)[Number(e.key) - 1] ?? null
+      }
+      if (!key) return
+      if (submitted && !allowChange) return
+      if (question.type === 'single') {
+        onAnswer(key)
+      } else if (question.type === 'multiple') {
+        const sel = Array.isArray(answer) ? answer : []
+        onAnswer(sel.includes(key) ? sel.filter(s => s !== key) : [...sel, key])
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [enabled, question, answer, submitted, allowChange, onAnswer, onPrev, onNext, onEnter])
+}
+
+// 快捷鍵提示（桌機才顯示）
+function HotkeyHint() {
+  return (
+    <p className="hidden md:block text-center text-[11px] text-gray-400 dark:text-gray-500 mt-3">
+      鍵盤快捷鍵：<span className="font-semibold">A–E / 1–5</span> 選答案 ·{' '}
+      <span className="font-semibold">Enter</span> 提交／下一題 ·{' '}
+      <span className="font-semibold">←</span> <span className="font-semibold">→</span> 切換題目
+    </p>
+  )
 }
 
 // 案例研究背景：與實際問題分開顯示，預設收合避免冗長題幹蓋過問題本身
@@ -573,9 +687,9 @@ function PasswordGate({ onAuth }) {
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
       <form onSubmit={handleSubmit} className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700/80">
         <div className="flex justify-center mb-4">
-          <img src={awsLogo} alt="AWS" className="h-16" />
+          <img src={cloudIcon} alt="雲端證照" className="h-16 rounded-2xl" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">AWS 證照考試練習器</h2>
+        <h2 className="text-xl font-bold text-white mb-2">雲端證照考試練習器</h2>
         <p className="text-gray-400 text-sm mb-4">{PASSWORD_HINT}</p>
         <input
           type="password"
@@ -618,13 +732,25 @@ function getProviderForExam(exam) {
   return 'aws'
 }
 
-function SubjectSelect({ examTypes, questions, loading, onSelect }) {
+function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
     questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
+    // Lazy mode: counts come from the build-generated index before any
+    // questions are actually downloaded.
+    if (bankIndex?.exams) {
+      for (const [exam, info] of Object.entries(bankIndex.exams)) {
+        if (!m[exam]) m[exam] = info.count
+      }
+    }
     return m
-  }, [questions])
+  }, [questions, bankIndex])
+  const availableExams = useMemo(
+    () => new Set([...examTypes, ...Object.keys(bankIndex?.exams || {})]),
+    [examTypes, bankIndex]
+  )
+  const isLoadingSubject = !!loadProgress
   const isAws = provider === 'aws'
   const logoSrc = isAws ? awsLogo : `${BASE_URL}gcp-logo.png`
   const accent = isAws
@@ -632,7 +758,7 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
     : { hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400', hoverText: 'group-hover:text-blue-300', badgeHoverBg: 'group-hover:bg-blue-500/30', badgeHoverText: 'group-hover:text-blue-200' }
   // 只列出當前服務商下、題庫實際有的科別
   const providerExamCodes = PROVIDER_EXAMS[provider] || []
-  const visibleExams = providerExamCodes.filter(code => examTypes.includes(code))
+  const visibleExams = providerExamCodes.filter(code => availableExams.has(code))
   const providerTotal = visibleExams.reduce((sum, code) => sum + (counts[code] || 0), 0)
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
@@ -662,7 +788,18 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
           ))}
         </div>
 
-        {loading ? (
+        {isLoadingSubject ? (
+          <div className="flex flex-col items-center gap-4 py-10">
+            <Loader2 size={32} className="animate-spin text-orange-400" />
+            <span className="text-sm text-gray-300">題庫下載中… {loadProgress.done} / {loadProgress.total}</span>
+            <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-200"
+                style={{ width: `${loadProgress.total ? Math.round((loadProgress.done / loadProgress.total) * 100) : 0}%` }}
+              />
+            </div>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center gap-3 py-10 text-gray-400">
             <Loader2 size={32} className="animate-spin" />
             <span className="text-sm">題庫載入中...</span>
@@ -710,58 +847,125 @@ export default function App() {
   const fileInputRef = useRef(null)
   const { signOut } = useGoogleSync(state, dispatch, user, setUser)
 
-  // Load questions from static manifest on startup
+  // ── Lazy question-bank loading ──
+  // bankIndex (build-generated) maps exam → { count, files, enFiles } so the
+  // subject picker can show counts instantly and we only download the chosen
+  // subject's files up front; everything else streams in the background.
+  const [bankIndex, setBankIndex] = useState(null)
+  const [loadProgress, setLoadProgress] = useState(null) // { done, total } | null
+  const loadedFilesRef = useRef(new Set())
+  const backgroundStartedRef = useRef(false)
+
+  // Files not yet fetched, de-duped against everything already requested.
+  const takeUnloaded = (files) => {
+    const fresh = files.filter(f => !loadedFilesRef.current.has(f))
+    fresh.forEach(f => loadedFilesRef.current.add(f))
+    return fresh
+  }
+
+  // Stream the rest of the bank (all exams' ZH+EN) after the user is in.
+  const startBackgroundLoad = (index) => {
+    if (backgroundStartedRef.current || !index?.exams) return
+    backgroundStartedRef.current = true
+    const zhAll = [...new Set(Object.values(index.exams).flatMap(e => e.files))]
+    const enAll = [...new Set(Object.values(index.exams).flatMap(e => e.enFiles))]
+    ;(async () => {
+      const zhRest = takeUnloaded(zhAll)
+      if (zhRest.length) {
+        const qs = await loadBankFiles(zhRest)
+        if (qs.length) dispatch({ type: 'APPEND_QUESTIONS', questions: qs })
+      }
+      const enRest = takeUnloaded(enAll)
+      if (enRest.length) {
+        const qs = await loadBankFiles(enRest)
+        if (qs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: qs })
+      }
+    })()
+  }
+
+  // Boot: fetch the bank index (tiny). Admin mode — or a missing index —
+  // falls back to loading the whole bank up front (in parallel).
   useEffect(() => {
-    const load = async () => {
+    let cancelled = false
+    const boot = async () => {
+      let index = null
+      try { index = await fetchDataJson('bank-index.json') } catch { /* fallback below */ }
+      if (cancelled) return
+      if (index?.exams && !isAdmin) {
+        setBankIndex(index)
+        dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        return // questions load when a subject is picked
+      }
       try {
-        const manifestRes = await fetch(`${BASE_URL}data/manifest.json?v=${DATA_VERSION}`, { cache: 'no-store' })
-        if (!manifestRes.ok) throw new Error('無法載入題庫清單')
-        const manifest = await manifestRes.json()
-        const allQuestions = []
-        for (const file of manifest.files) {
-          try {
-            const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
-            if (!res.ok) continue
-            const data = await res.json()
-            const questions = Array.isArray(data) ? data : (data.questions || [])
-            allQuestions.push(...questions)
-          } catch { /* skip bad files */ }
-        }
-        if (allQuestions.length) {
-          dispatch({ type: 'LOAD_QUESTIONS', questions: allQuestions, filename: '靜態題庫' })
-        } else {
-          dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
-        }
-        // Load English question files
-        if (manifest.enFiles) {
-          const enQuestions = []
-          for (const file of manifest.enFiles) {
-            try {
-              const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
-              if (!res.ok) continue
-              const data = await res.json()
-              const questions = Array.isArray(data) ? data : (data.questions || [])
-              enQuestions.push(...questions)
-            } catch { /* skip bad files */ }
-          }
-          if (enQuestions.length) {
-            dispatch({ type: 'LOAD_EN_QUESTIONS', questions: enQuestions })
-          }
-        }
+        const manifest = await fetchDataJson('manifest.json')
+        const files = manifest.files || []
+        setLoadProgress({ done: 0, total: files.length })
+        takeUnloaded(files)
+        const qs = await loadBankFiles(files, (done, total) => { if (!cancelled) setLoadProgress({ done, total }) })
+        if (cancelled) return
+        if (qs.length) dispatch({ type: 'LOAD_QUESTIONS', questions: qs, filename: '靜態題庫' })
+        else dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        setLoadProgress(null)
+        const enFiles = takeUnloaded(manifest.enFiles || [])
+        const enQs = await loadBankFiles(enFiles)
+        if (!cancelled && enQs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: enQs })
       } catch (err) {
         console.error('載入題庫失敗:', err)
-        dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        if (!cancelled) {
+          dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+          setLoadProgress(null)
+        }
       }
     }
-    load()
+    boot()
+    return () => { cancelled = true }
   }, [])
 
-  // Restore user progress (stats/bookmarks/reviews) via the storage adapter.
+  // Subject picked: load just that subject's files (with progress), enter,
+  // then stream its EN files and the rest of the bank in the background.
+  const handleSelectSubject = async (exam) => {
+    if (loadProgress) return // a load is already in flight
+    if (bankIndex?.exams) {
+      const info = exam ? bankIndex.exams[exam] : null
+      const zhWanted = info
+        ? info.files
+        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.files))]
+      const enWanted = info
+        ? info.enFiles
+        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.enFiles))]
+      const zhFiles = takeUnloaded(zhWanted)
+      if (zhFiles.length) {
+        setLoadProgress({ done: 0, total: zhFiles.length })
+        const qs = await loadBankFiles(zhFiles, (done, total) => setLoadProgress({ done, total }))
+        setLoadProgress(null)
+        if (!qs.length) {
+          // Whole load failed (offline?) — release the files so retry works.
+          zhFiles.forEach(f => loadedFilesRef.current.delete(f))
+          alert('題庫載入失敗，請檢查網路後再試一次。')
+          return
+        }
+        dispatch({ type: 'APPEND_QUESTIONS', questions: qs })
+      }
+      ;(async () => {
+        const enFiles = takeUnloaded(enWanted)
+        if (enFiles.length) {
+          const qs = await loadBankFiles(enFiles)
+          if (qs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: qs })
+        }
+        startBackgroundLoad(bankIndex)
+      })()
+    }
+    dispatch({ type: 'SELECT_SUBJECT', exam })
+    setSubjectChosen(true)
+  }
+
+  // Restore user progress (stats/bookmarks/reviews/daily) via the storage adapter.
   useEffect(() => {
-    const { statsHistory, bookmarked, reviewMarked } = loadLocalProgress()
+    const { statsHistory, bookmarked, reviewMarked, dailyStats } = loadLocalProgress()
     if (Object.keys(statsHistory).length) dispatch({ type: 'RESTORE_STATS', statsHistory })
     if (Object.keys(bookmarked).length) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked })
     if (Object.keys(reviewMarked).length) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked })
+    if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
   }, [])
 
   useEffect(() => {
@@ -770,8 +974,9 @@ export default function App() {
       statsHistory: state.statsHistory,
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
+      dailyStats: state.dailyStats,
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats])
 
   // Timer for exam
   useEffect(() => {
@@ -804,11 +1009,10 @@ export default function App() {
       <SubjectSelect
         examTypes={examTypes}
         questions={state.questions}
+        bankIndex={bankIndex}
         loading={state.questionsLoading}
-        onSelect={(exam) => {
-          dispatch({ type: 'SELECT_SUBJECT', exam })
-          setSubjectChosen(true)
-        }}
+        loadProgress={loadProgress}
+        onSelect={handleSelectSubject}
       />
     )
   }
@@ -821,8 +1025,8 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex flex-col">
               <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2.5">
-                <img src={awsLogo} alt="AWS" className="h-9 md:h-10" />
-                <span className="hidden sm:inline text-orange-400 tracking-tight">證照考試練習器</span>
+                <img src={cloudIcon} alt="雲端證照" className="h-9 md:h-10 rounded-xl" />
+                <span className="hidden sm:inline text-orange-400 tracking-tight">雲端證照考試練習器</span>
                 <span className="sm:hidden text-orange-400 tracking-tight">考試練習</span>
               </h1>
               <p className="text-[10px] text-gray-600 dark:text-gray-700 ml-1 -mt-0.5 hidden sm:block">僅供練習使用，如有相同處，純屬巧合</p>
@@ -893,10 +1097,12 @@ export default function App() {
         {/* Content */}
         <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="animate-fade-in" key={state.activeTab}>
-            {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
-            {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-            {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-            {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            <ErrorBoundary resetKey={state.activeTab}>
+              {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
+              {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+              {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            </ErrorBoundary>
           </div>
         </main>
       </div>
@@ -1285,6 +1491,35 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const isSubmitted = qKey ? (practiceSubmitted[qKey] || state.showAnswers) : false
   const isCorrect = qKey ? (practiceSubmitted[qKey] ? practiceResults[qKey] : undefined) : undefined
 
+  // Submit the current answer (shared by the button and the Enter hotkey);
+  // when already submitted, Enter advances to the next question instead.
+  const submitCurrent = () => {
+    if (!currentQRaw) return
+    if (practiceSubmitted[qKey]) {
+      if (practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })
+      return
+    }
+    const ans = practiceAnswers[qKey]
+    if (!ans || (Array.isArray(ans) && ans.length === 0)) return
+    dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
+    // 答對自動進入下一題（答錯則停留以便查看解析）
+    if (computeCorrect(currentQRaw, ans) && practiceIndex < practiceFiltered.length - 1) {
+      setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
+    }
+  }
+
+  useAnswerHotkeys({
+    enabled: !!currentQRaw,
+    question: currentQ,
+    answer: qKey ? practiceAnswers[qKey] : undefined,
+    submitted: isSubmitted,
+    allowChange: false,
+    onAnswer: (ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans }),
+    onPrev: () => { if (practiceIndex > 0) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 }) },
+    onNext: () => { if (practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }) },
+    onEnter: submitCurrent,
+  })
+
   if (state.questions.length === 0) {
     if (state.questionsLoading) {
       return <EmptyState message="題庫載入中..." icon={Loader2} />
@@ -1424,13 +1659,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                   (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
                 ) && (
                   <button
-                    onClick={() => {
-                      dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
-                      // 答對自動進入下一題（答錯則停留以便查看解析）
-                      if (computeCorrect(currentQRaw, practiceAnswers[qKey]) && practiceIndex < practiceFiltered.length - 1) {
-                        setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
-                      }
-                    }}
+                    onClick={submitCurrent}
                     disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
                     className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
                   >
@@ -1447,6 +1676,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 下一題 <ChevronRight size={16} />
               </button>
             </div>
+            <HotkeyHint />
 
             {/* Answer area */}
             <QuestionInput
@@ -2147,6 +2377,23 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   const selectedExam = state.examConfig.examFilter
   const spec = EXAM_SPECS[selectedExam] || null
 
+  // Keyboard shortcuts during an active exam (hook must run before any
+  // early return). Enter advances only — submitting the exam stays a click.
+  const hkQRaw = state.examActive ? qMap.get(state.examQuestionIds[state.examIndex]) : null
+  const hkQ = getDisplayQuestion(hkQRaw, state.lang, state.questionsEn)
+  const hkKey = state.examActive ? state.examQuestionIds[state.examIndex] : null
+  useAnswerHotkeys({
+    enabled: !!(state.examActive && !state.examSubmitted && hkQRaw),
+    question: hkQ,
+    answer: hkKey ? state.examAnswers[hkKey] : undefined,
+    submitted: false,
+    allowChange: true,
+    onAnswer: (ans) => dispatch({ type: 'SET_EXAM_ANSWER', qKey: hkKey, answer: ans }),
+    onPrev: () => { if (state.examIndex > 0) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 }) },
+    onNext: () => { if (state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 }) },
+    onEnter: () => { if (state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 }) },
+  })
+
   // Config screen
   if (!state.examActive && !state.examSubmitted) {
     return (
@@ -2439,6 +2686,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                 下一題 <ChevronRight size={16} />
               </button>
             </div>
+            <HotkeyHint />
           </div>
         </div>
       )}
@@ -2513,6 +2761,115 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
 // ══════════════════════════════════════════
 // Stats Tab
 // ══════════════════════════════════════════
+// ── 學習趨勢：近 14 天每日作答量（答對＝綠、答錯＝中性灰 的堆疊長條） ──
+// Colors validated (dataviz six checks): lightness band + CVD ΔE 48 + ≥3:1
+// contrast on both the light (white) and dark (gray-800) card surfaces. The
+// gray is a deliberate neutral "remainder", identity carried by legend+tooltip.
+const TREND_COLORS = { correct: '#16a34a', wrong: '#64748b' }
+
+function DailyTrendChart({ dailyStats }) {
+  const [hover, setHover] = useState(null)
+  const days = useMemo(() => {
+    const out = []
+    const now = new Date()
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      const v = dailyStats?.[key] || { answered: 0, correct: 0 }
+      out.push({ key, label: `${d.getMonth() + 1}/${d.getDate()}`, answered: v.answered, correct: Math.min(v.correct, v.answered) })
+    }
+    return out
+  }, [dailyStats])
+
+  const total = days.reduce((s, d) => s + d.answered, 0)
+  const totalCorrect = days.reduce((s, d) => s + d.correct, 0)
+  if (!total) {
+    return <p className="text-sm text-gray-500 dark:text-gray-400">近 14 天尚無作答紀錄，開始練習後這裡會顯示每日趨勢。</p>
+  }
+
+  const W = 560, plotH = 150, labelH = 20, H = plotH + labelH
+  const slot = W / 14, barW = 24
+  const maxV = Math.max(...days.map(d => d.answered))
+  const ceil = Math.max(5, Math.ceil(maxV / 5) * 5)
+  const hOf = v => (v / ceil) * (plotH - 10)
+  // 頂端資料端 4px 圓角（只有最上面的分段有）
+  const topRound = (x, y0, w, h, r) => {
+    const rr = Math.max(0, Math.min(r, h / 2, w / 2))
+    return `M${x},${y0 + h} L${x},${y0 + rr} Q${x},${y0} ${x + rr},${y0} L${x + w - rr},${y0} Q${x + w},${y0} ${x + w},${y0 + rr} L${x + w},${y0 + h} Z`
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          近 14 天共 <span className="font-bold text-gray-700 dark:text-gray-200">{total}</span> 題，
+          正確率 <span className="font-bold text-gray-700 dark:text-gray-200">{Math.round((totalCorrect / total) * 100)}%</span>
+        </p>
+        <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300">
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: TREND_COLORS.correct }} />答對</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: TREND_COLORS.wrong }} />答錯</span>
+        </div>
+      </div>
+      <div className="relative">
+        {hover !== null && (
+          <div
+            className="absolute z-10 -top-2 -translate-y-full -translate-x-1/2 px-3 py-2 rounded-lg bg-gray-900 dark:bg-gray-700 text-white text-xs shadow-lg pointer-events-none whitespace-nowrap"
+            style={{ left: `${Math.min(92, Math.max(8, ((hover + 0.5) / 14) * 100))}%` }}
+          >
+            <div className="font-semibold mb-0.5">{days[hover].label}</div>
+            <div>答對 {days[hover].correct} · 答錯 {days[hover].answered - days[hover].correct} · 共 {days[hover].answered} 題</div>
+          </div>
+        )}
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto"
+          role="img"
+          aria-label={`近 14 天每日作答趨勢，共 ${total} 題，答對 ${totalCorrect} 題`}
+        >
+          {/* 基準格線（低調） */}
+          {[0.5, 1].map(f => (
+            <g key={f}>
+              <line x1={0} x2={W} y1={plotH - hOf(ceil * f)} y2={plotH - hOf(ceil * f)} className="stroke-gray-200 dark:stroke-gray-700" strokeWidth="1" />
+              <text x={0} y={plotH - hOf(ceil * f) - 3} className="fill-gray-400 dark:fill-gray-500" fontSize="10">{ceil * f}</text>
+            </g>
+          ))}
+          <line x1={0} x2={W} y1={plotH} y2={plotH} className="stroke-gray-300 dark:stroke-gray-600" strokeWidth="1" />
+          {days.map((d, i) => {
+            const x = i * slot + (slot - barW) / 2
+            const hC = hOf(d.correct)
+            const hA = hOf(d.answered)
+            const wrong = d.answered - d.correct
+            // 分段之間留 2px 表面間隙
+            const hW = wrong > 0 ? Math.max(0, hA - hC - 2) : 0
+            const dim = hover !== null && hover !== i ? 0.45 : 1
+            return (
+              <g key={d.key} opacity={dim} style={{ transition: 'opacity 120ms' }}>
+                {d.correct > 0 && (
+                  wrong > 0 && hW > 0
+                    ? <rect x={x} y={plotH - hC} width={barW} height={hC} fill={TREND_COLORS.correct} />
+                    : <path d={topRound(x, plotH - hC, barW, hC, 4)} fill={TREND_COLORS.correct} />
+                )}
+                {hW > 0 && (
+                  <path d={topRound(x, plotH - hA, barW, hW, 4)} fill={TREND_COLORS.wrong} />
+                )}
+                {i % 2 === 1 && (
+                  <text x={x + barW / 2} y={H - 5} textAnchor="middle" className="fill-gray-400 dark:fill-gray-500" fontSize="10">{d.label}</text>
+                )}
+                {/* 滑鼠/觸控目標：整個 slot 高度 */}
+                <rect
+                  x={i * slot} y={0} width={slot} height={H} fill="transparent"
+                  onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}
+                  onTouchStart={() => setHover(hover === i ? null : i)}
+                />
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+    </div>
+  )
+}
+
 function StatsTab({ state, dispatch, examTypes, qMap }) {
   const [activeSection, setActiveSection] = useState('overview')
   const history = state.statsHistory
@@ -2561,8 +2918,90 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
     .map(([k]) => rehydrate(k, history[k] || {}))
     .filter(Boolean)
 
+  // ── 進度備份／還原 ──
+  const exportProgress = () => {
+    const payload = {
+      app: 'quest-progress',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      statsHistory: stripQuestions(state.statsHistory),
+      bookmarked: state.bookmarked,
+      reviewMarked: state.reviewMarked,
+      dailyStats: state.dailyStats,
+    }
+    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `quest-progress-${todayKey()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const importProgress = (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result)
+        if (!data || typeof data.statsHistory !== 'object') throw new Error('不是進度備份檔')
+        const merged = mergeMaps(
+          { statsHistory: state.statsHistory, bookmarked: state.bookmarked, reviewMarked: state.reviewMarked },
+          { statsHistory: data.statsHistory || {}, bookmarked: data.bookmarked || {}, reviewMarked: data.reviewMarked || {} }
+        )
+        dispatch({ type: 'RESTORE_STATS', statsHistory: merged.statsHistory })
+        dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: merged.bookmarked })
+        dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
+        // dailyStats 逐日取較大值，重複匯入不會翻倍
+        const mergedDaily = { ...state.dailyStats }
+        for (const [day, v] of Object.entries(data.dailyStats || {})) {
+          const cur = mergedDaily[day] || { answered: 0, correct: 0 }
+          mergedDaily[day] = {
+            answered: Math.max(cur.answered, v?.answered || 0),
+            correct: Math.max(cur.correct, v?.correct || 0),
+          }
+        }
+        dispatch({ type: 'RESTORE_DAILY', dailyStats: mergedDaily })
+        alert(`匯入完成：${Object.keys(data.statsHistory || {}).length} 筆作答紀錄已合併。`)
+      } catch (err) {
+        alert(`匯入失敗：${err.message || '無法解析檔案'}`)
+      }
+    }
+    reader.readAsText(file)
+  }
+
+  const dataManageCard = (
+    <div className="surface-card p-6">
+      <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-2">
+        <Database size={16} className="text-orange-500" />資料管理
+      </h3>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          onClick={exportProgress}
+          className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors flex items-center gap-1.5"
+        >
+          <ArrowDown size={14} /> 匯出進度備份
+        </button>
+        <label className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer">
+          <ArrowUp size={14} /> 匯入備份（合併）
+          <input type="file" accept="application/json,.json" className="hidden" onChange={importProgress} />
+        </label>
+        <span className="text-xs text-gray-400 dark:text-gray-500">
+          匯出成 JSON 檔備份作答紀錄／書籤／複習標記；匯入時與現有進度合併（答對次數取較大值）。
+        </span>
+      </div>
+    </div>
+  )
+
   if (totalAnswered === 0) {
-    return <EmptyState message="尚無作答紀錄" icon={BarChart3} />
+    return (
+      <div className="space-y-6">
+        <EmptyState message="尚無作答紀錄" icon={BarChart3} />
+        {dataManageCard}
+      </div>
+    )
   }
 
   return (
@@ -2589,6 +3028,14 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
           <span className="text-xs text-gray-400 font-medium">及格線 70%</span>
           <span className="text-xs text-gray-400">100%</span>
         </div>
+      </div>
+
+      {/* 學習趨勢（近 14 天） */}
+      <div className="surface-card p-6">
+        <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
+          <BarChart3 size={16} className="text-orange-500" />學習趨勢
+        </h3>
+        <DailyTrendChart dailyStats={state.dailyStats} />
       </div>
 
       {/* Section tabs */}
@@ -2646,7 +3093,25 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
 
         {activeSection === 'wrong' && (
           <div>
-            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2"><XCircle size={18} className="text-red-500" />錯題清單</h3>
+            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <h3 className="text-lg font-semibold flex items-center gap-2"><XCircle size={18} className="text-red-500" />錯題清單</h3>
+              {wrongQuestions.length >= 3 && (
+                <button
+                  onClick={() => {
+                    const pool = wrongQuestions.map(w => w.question)
+                    const count = Math.min(pool.length, 65)
+                    // 每題約 1.5 分鐘，向上取 5 分鐘的倍數，至少 10 分鐘
+                    const timeLimit = Math.max(10, Math.ceil((count * 1.5) / 5) * 5)
+                    if (window.confirm(`以 ${count} 道錯題進行限時模擬考（${timeLimit} 分鐘）？`)) {
+                      dispatch({ type: 'START_EXAM', pool, count, timeLimit })
+                    }
+                  }}
+                  className="px-3.5 py-1.5 text-xs bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm"
+                >
+                  <Clock size={12} /> 錯題模擬考
+                </button>
+              )}
+            </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
               累計答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯不會歸零。
               {masteredCount > 0 && <span className="text-green-600 dark:text-green-400 font-medium"> 已學會 {masteredCount} 題。</span>}
@@ -2681,6 +3146,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
           </div>
         )}
       </div>
+
+      {/* 資料管理：進度備份／還原 */}
+      {dataManageCard}
     </div>
   )
 }
