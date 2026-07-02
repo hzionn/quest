@@ -570,6 +570,51 @@ function getDisplayQuestion(q, lang, enMap) {
   return q
 }
 
+// ── Keyboard shortcuts for answering (shared by practice & exam) ──
+// A–E / 1–9 pick an option (toggle for multiple-choice), Enter submits (or
+// advances), ←/→ navigate. Disabled while typing in a form control.
+function useAnswerHotkeys({ enabled, question, answer, submitted, allowChange, onAnswer, onPrev, onNext, onEnter }) {
+  useEffect(() => {
+    if (!enabled) return
+    const handler = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const tag = e.target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target?.isContentEditable) return
+      if (e.key === 'ArrowLeft') { e.preventDefault(); onPrev?.(); return }
+      if (e.key === 'ArrowRight') { e.preventDefault(); onNext?.(); return }
+      if (e.key === 'Enter') { e.preventDefault(); onEnter?.(); return }
+      if (!question?.options) return
+      let key = null
+      if (/^[a-zA-Z]$/.test(e.key) && question.options[e.key.toUpperCase()] !== undefined) {
+        key = e.key.toUpperCase()
+      } else if (/^[1-9]$/.test(e.key)) {
+        key = Object.keys(question.options)[Number(e.key) - 1] ?? null
+      }
+      if (!key) return
+      if (submitted && !allowChange) return
+      if (question.type === 'single') {
+        onAnswer(key)
+      } else if (question.type === 'multiple') {
+        const sel = Array.isArray(answer) ? answer : []
+        onAnswer(sel.includes(key) ? sel.filter(s => s !== key) : [...sel, key])
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [enabled, question, answer, submitted, allowChange, onAnswer, onPrev, onNext, onEnter])
+}
+
+// 快捷鍵提示（桌機才顯示）
+function HotkeyHint() {
+  return (
+    <p className="hidden md:block text-center text-[11px] text-gray-400 dark:text-gray-500 mt-3">
+      鍵盤快捷鍵：<span className="font-semibold">A–E / 1–5</span> 選答案 ·{' '}
+      <span className="font-semibold">Enter</span> 提交／下一題 ·{' '}
+      <span className="font-semibold">←</span> <span className="font-semibold">→</span> 切換題目
+    </p>
+  )
+}
+
 // 案例研究背景：與實際問題分開顯示，預設收合避免冗長題幹蓋過問題本身
 function CaseStudyBox({ text }) {
   const [open, setOpen] = useState(false)
@@ -1421,6 +1466,35 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const isSubmitted = qKey ? (practiceSubmitted[qKey] || state.showAnswers) : false
   const isCorrect = qKey ? (practiceSubmitted[qKey] ? practiceResults[qKey] : undefined) : undefined
 
+  // Submit the current answer (shared by the button and the Enter hotkey);
+  // when already submitted, Enter advances to the next question instead.
+  const submitCurrent = () => {
+    if (!currentQRaw) return
+    if (practiceSubmitted[qKey]) {
+      if (practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })
+      return
+    }
+    const ans = practiceAnswers[qKey]
+    if (!ans || (Array.isArray(ans) && ans.length === 0)) return
+    dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
+    // 答對自動進入下一題（答錯則停留以便查看解析）
+    if (computeCorrect(currentQRaw, ans) && practiceIndex < practiceFiltered.length - 1) {
+      setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
+    }
+  }
+
+  useAnswerHotkeys({
+    enabled: !!currentQRaw,
+    question: currentQ,
+    answer: qKey ? practiceAnswers[qKey] : undefined,
+    submitted: isSubmitted,
+    allowChange: false,
+    onAnswer: (ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans }),
+    onPrev: () => { if (practiceIndex > 0) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 }) },
+    onNext: () => { if (practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }) },
+    onEnter: submitCurrent,
+  })
+
   if (state.questions.length === 0) {
     if (state.questionsLoading) {
       return <EmptyState message="題庫載入中..." icon={Loader2} />
@@ -1560,13 +1634,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                   (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
                 ) && (
                   <button
-                    onClick={() => {
-                      dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
-                      // 答對自動進入下一題（答錯則停留以便查看解析）
-                      if (computeCorrect(currentQRaw, practiceAnswers[qKey]) && practiceIndex < practiceFiltered.length - 1) {
-                        setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
-                      }
-                    }}
+                    onClick={submitCurrent}
                     disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
                     className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
                   >
@@ -1583,6 +1651,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 下一題 <ChevronRight size={16} />
               </button>
             </div>
+            <HotkeyHint />
 
             {/* Answer area */}
             <QuestionInput
@@ -2283,6 +2352,23 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
   const selectedExam = state.examConfig.examFilter
   const spec = EXAM_SPECS[selectedExam] || null
 
+  // Keyboard shortcuts during an active exam (hook must run before any
+  // early return). Enter advances only — submitting the exam stays a click.
+  const hkQRaw = state.examActive ? qMap.get(state.examQuestionIds[state.examIndex]) : null
+  const hkQ = getDisplayQuestion(hkQRaw, state.lang, state.questionsEn)
+  const hkKey = state.examActive ? state.examQuestionIds[state.examIndex] : null
+  useAnswerHotkeys({
+    enabled: !!(state.examActive && !state.examSubmitted && hkQRaw),
+    question: hkQ,
+    answer: hkKey ? state.examAnswers[hkKey] : undefined,
+    submitted: false,
+    allowChange: true,
+    onAnswer: (ans) => dispatch({ type: 'SET_EXAM_ANSWER', qKey: hkKey, answer: ans }),
+    onPrev: () => { if (state.examIndex > 0) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 }) },
+    onNext: () => { if (state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 }) },
+    onEnter: () => { if (state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 }) },
+  })
+
   // Config screen
   if (!state.examActive && !state.examSubmitted) {
     return (
@@ -2575,6 +2661,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                 下一題 <ChevronRight size={16} />
               </button>
             </div>
+            <HotkeyHint />
           </div>
         </div>
       )}
