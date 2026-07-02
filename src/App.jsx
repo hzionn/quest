@@ -188,11 +188,20 @@ function todayKey() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
-// 累計 dailyStats：answered +n、correct +c
+// 累計 dailyStats：answered +n、correct +c（保留其他欄位如 seconds）
 function bumpDaily(dailyStats, answered, correct) {
   const dk = todayKey()
   const prev = dailyStats?.[dk] || { answered: 0, correct: 0 }
-  return { ...dailyStats, [dk]: { answered: prev.answered + answered, correct: prev.correct + correct } }
+  return { ...dailyStats, [dk]: { ...prev, answered: (prev.answered || 0) + answered, correct: (prev.correct || 0) + correct } }
+}
+
+// 秒數 → 人類可讀時數
+function formatDuration(sec) {
+  if (!sec || sec < 60) return '0 分鐘'
+  const h = sec / 3600
+  if (h >= 10) return `${Math.round(h)} 小時`
+  if (h >= 1) return `${h.toFixed(1)} 小時`
+  return `${Math.round(sec / 60)} 分鐘`
 }
 
 // ── Helper: 判斷一題作答是否正確（練習與自動跳題共用） ──
@@ -553,6 +562,16 @@ function reducer(state, action) {
 
     case 'RESTORE_DAILY':
       return { ...state, dailyStats: action.dailyStats }
+
+    case 'ADD_STUDY_TIME': {
+      // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
+      const dk = todayKey()
+      const prev = state.dailyStats?.[dk] || { answered: 0, correct: 0 }
+      return {
+        ...state,
+        dailyStats: { ...state.dailyStats, [dk]: { ...prev, seconds: (prev.seconds || 0) + action.seconds } },
+      }
+    }
 
     case 'SET_GITHUB_LOADING':
       return { ...state, githubLoading: action.value }
@@ -969,7 +988,11 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (!Object.keys(state.statsHistory).length && !Object.keys(state.bookmarked).length) return
+    if (
+      !Object.keys(state.statsHistory).length &&
+      !Object.keys(state.bookmarked).length &&
+      !Object.keys(state.dailyStats).length
+    ) return
     saveLocalProgress({
       statsHistory: state.statsHistory,
       bookmarked: state.bookmarked,
@@ -977,6 +1000,27 @@ export default function App() {
       dailyStats: state.dailyStats,
     })
   }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats])
+
+  // ── 學習時數計時器 ──
+  // 每 30 秒檢查一次：分頁可見、且最近 2 分鐘內有任何操作（點擊/按鍵/捲動/觸控）
+  // 才累加 30 秒 —— 掛網發呆或切去別的分頁都不會計入。
+  useEffect(() => {
+    if (!authenticated) return
+    let lastActivity = Date.now()
+    const bump = () => { lastActivity = Date.now() }
+    const events = ['pointerdown', 'keydown', 'touchstart', 'scroll']
+    events.forEach(e => window.addEventListener(e, bump, { passive: true }))
+    const TICK_SEC = 30
+    const interval = setInterval(() => {
+      if (document.visibilityState !== 'visible') return
+      if (Date.now() - lastActivity > 2 * 60 * 1000) return
+      dispatch({ type: 'ADD_STUDY_TIME', seconds: TICK_SEC })
+    }, TICK_SEC * 1000)
+    return () => {
+      events.forEach(e => window.removeEventListener(e, bump))
+      clearInterval(interval)
+    }
+  }, [authenticated])
 
   // Timer for exam
   useEffect(() => {
@@ -2776,13 +2820,14 @@ function DailyTrendChart({ dailyStats }) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       const v = dailyStats?.[key] || { answered: 0, correct: 0 }
-      out.push({ key, label: `${d.getMonth() + 1}/${d.getDate()}`, answered: v.answered, correct: Math.min(v.correct, v.answered) })
+      out.push({ key, label: `${d.getMonth() + 1}/${d.getDate()}`, answered: v.answered || 0, correct: Math.min(v.correct || 0, v.answered || 0), seconds: v.seconds || 0 })
     }
     return out
   }, [dailyStats])
 
   const total = days.reduce((s, d) => s + d.answered, 0)
   const totalCorrect = days.reduce((s, d) => s + d.correct, 0)
+  const totalSec14 = days.reduce((s, d) => s + d.seconds, 0)
   if (!total) {
     return <p className="text-sm text-gray-500 dark:text-gray-400">近 14 天尚無作答紀錄，開始練習後這裡會顯示每日趨勢。</p>
   }
@@ -2804,6 +2849,9 @@ function DailyTrendChart({ dailyStats }) {
         <p className="text-xs text-gray-500 dark:text-gray-400">
           近 14 天共 <span className="font-bold text-gray-700 dark:text-gray-200">{total}</span> 題，
           正確率 <span className="font-bold text-gray-700 dark:text-gray-200">{Math.round((totalCorrect / total) * 100)}%</span>
+          {totalSec14 >= 60 && (
+            <>，學習 <span className="font-bold text-gray-700 dark:text-gray-200">{formatDuration(totalSec14)}</span></>
+          )}
         </p>
         <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300">
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: TREND_COLORS.correct }} />答對</span>
@@ -2817,7 +2865,10 @@ function DailyTrendChart({ dailyStats }) {
             style={{ left: `${Math.min(92, Math.max(8, ((hover + 0.5) / 14) * 100))}%` }}
           >
             <div className="font-semibold mb-0.5">{days[hover].label}</div>
-            <div>答對 {days[hover].correct} · 答錯 {days[hover].answered - days[hover].correct} · 共 {days[hover].answered} 題</div>
+            <div>
+              答對 {days[hover].correct} · 答錯 {days[hover].answered - days[hover].correct} · 共 {days[hover].answered} 題
+              {days[hover].seconds >= 60 && <> · {formatDuration(days[hover].seconds)}</>}
+            </div>
           </div>
         )}
         <svg
@@ -2886,6 +2937,7 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
   const totalAnswered = entries.length
   const totalCorrect = entries.filter(([, v]) => v.correct).length
   const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
+  const totalStudySec = Object.values(state.dailyStats || {}).reduce((s, v) => s + (v?.seconds || 0), 0)
 
   // Per exam stats
   const examStats = useMemo(() => {
@@ -2959,8 +3011,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
         for (const [day, v] of Object.entries(data.dailyStats || {})) {
           const cur = mergedDaily[day] || { answered: 0, correct: 0 }
           mergedDaily[day] = {
-            answered: Math.max(cur.answered, v?.answered || 0),
-            correct: Math.max(cur.correct, v?.correct || 0),
+            answered: Math.max(cur.answered || 0, v?.answered || 0),
+            correct: Math.max(cur.correct || 0, v?.correct || 0),
+            seconds: Math.max(cur.seconds || 0, v?.seconds || 0),
           }
         }
         dispatch({ type: 'RESTORE_DAILY', dailyStats: mergedDaily })
@@ -3007,11 +3060,12 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
   return (
     <div className="space-y-6">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <StatCard label="已作答" value={totalAnswered} icon={CheckCircle} />
         <StatCard label="答對" value={totalCorrect} icon={Trophy} />
         <StatCard label="正確率" value={`${overallAccuracy}%`} icon={Target} />
         <StatCard label="錯題數" value={wrongQuestions.length} icon={XCircle} />
+        <StatCard label="學習總時數" value={formatDuration(totalStudySec)} icon={Clock} />
       </div>
 
       {/* Overall accuracy visual */}
