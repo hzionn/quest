@@ -20,6 +20,8 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
+// Provider-neutral app icon (the bank now spans AWS + GCP)
+const cloudIcon = `${BASE_URL}cloud-icon.svg`
 // Cache-bust token fixed at BUILD time: within one deploy every visitor hits
 // the same URLs so the browser/CDN can cache the (immutable) JSON banks, and a
 // new deploy mints a new token which busts everything at once. Data edits go
@@ -617,9 +619,9 @@ function PasswordGate({ onAuth }) {
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
       <form onSubmit={handleSubmit} className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700/80">
         <div className="flex justify-center mb-4">
-          <img src={awsLogo} alt="AWS" className="h-16" />
+          <img src={cloudIcon} alt="雲端證照" className="h-16 rounded-2xl" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">AWS 證照考試練習器</h2>
+        <h2 className="text-xl font-bold text-white mb-2">雲端證照考試練習器</h2>
         <p className="text-gray-400 text-sm mb-4">{PASSWORD_HINT}</p>
         <input
           type="password"
@@ -953,8 +955,8 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex flex-col">
               <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2.5">
-                <img src={awsLogo} alt="AWS" className="h-9 md:h-10" />
-                <span className="hidden sm:inline text-orange-400 tracking-tight">證照考試練習器</span>
+                <img src={cloudIcon} alt="雲端證照" className="h-9 md:h-10 rounded-xl" />
+                <span className="hidden sm:inline text-orange-400 tracking-tight">雲端證照考試練習器</span>
                 <span className="sm:hidden text-orange-400 tracking-tight">考試練習</span>
               </h1>
               <p className="text-[10px] text-gray-600 dark:text-gray-700 ml-1 -mt-0.5 hidden sm:block">僅供練習使用，如有相同處，純屬巧合</p>
