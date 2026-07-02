@@ -19,11 +19,37 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
-// Cache-bust token computed fresh on every page load (not at build time), so a
-// plain refresh always re-fetches the question bank from the network and can
-// never be served a stale copy by the browser or CDN. Combined with the
-// cache:'no-store' option on every data fetch below.
-const DATA_VERSION = String(Date.now())
+// Cache-bust token fixed at BUILD time: within one deploy every visitor hits
+// the same URLs so the browser/CDN can cache the (immutable) JSON banks, and a
+// new deploy mints a new token which busts everything at once. Data edits go
+// through git → Pages rebuild, so "new data" always implies "new build id".
+const DATA_VERSION = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : String(Date.now())
+
+// ── Data fetch helpers (parallel, versioned URLs) ──
+async function fetchDataJson(path) {
+  const res = await fetch(`${BASE_URL}data/${path}?v=${DATA_VERSION}`)
+  if (!res.ok) throw new Error(`fetch ${path}: ${res.status}`)
+  return res.json()
+}
+const asQuestions = (data) => (Array.isArray(data) ? data : (data.questions || []))
+
+// Fetch many bank files concurrently; per-file failures are skipped so one
+// bad file can't take down the whole bank. onProgress(done, total) fires as
+// each file settles.
+async function loadBankFiles(files, onProgress) {
+  let done = 0
+  const results = await Promise.all(files.map(async (f) => {
+    try {
+      return asQuestions(await fetchDataJson(f))
+    } catch {
+      return []
+    } finally {
+      done++
+      onProgress?.(done, files.length)
+    }
+  }))
+  return results.flat()
+}
 
 // ── Check admin mode ──
 const isAdmin = new URLSearchParams(window.location.search).has('admin')
@@ -236,6 +262,23 @@ function reducer(state, action) {
           count: newQs.length,
           timestamp: Date.now()
         }]
+      }
+    }
+
+    case 'APPEND_QUESTIONS': {
+      // Background/lazy loads merge into the bank WITHOUT resetting the user's
+      // current practice list/index (unlike LOAD_QUESTIONS, which is only for
+      // the initial full load and admin uploads).
+      const map = new Map()
+      state.questions.forEach(q => map.set(`${q.exam}-${q.id}`, q))
+      action.questions.forEach(q => {
+        const k = `${q.exam}-${q.id}`
+        if (!map.has(k)) map.set(k, q)
+      })
+      return {
+        ...state,
+        questions: Array.from(map.values()).sort((a, b) => a.id - b.id),
+        questionsLoading: false,
       }
     }
 
@@ -618,13 +661,25 @@ function getProviderForExam(exam) {
   return 'aws'
 }
 
-function SubjectSelect({ examTypes, questions, loading, onSelect }) {
+function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
     questions.forEach(q => { m[q.exam] = (m[q.exam] || 0) + 1 })
+    // Lazy mode: counts come from the build-generated index before any
+    // questions are actually downloaded.
+    if (bankIndex?.exams) {
+      for (const [exam, info] of Object.entries(bankIndex.exams)) {
+        if (!m[exam]) m[exam] = info.count
+      }
+    }
     return m
-  }, [questions])
+  }, [questions, bankIndex])
+  const availableExams = useMemo(
+    () => new Set([...examTypes, ...Object.keys(bankIndex?.exams || {})]),
+    [examTypes, bankIndex]
+  )
+  const isLoadingSubject = !!loadProgress
   const isAws = provider === 'aws'
   const logoSrc = isAws ? awsLogo : `${BASE_URL}gcp-logo.png`
   const accent = isAws
@@ -632,7 +687,7 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
     : { hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400', hoverText: 'group-hover:text-blue-300', badgeHoverBg: 'group-hover:bg-blue-500/30', badgeHoverText: 'group-hover:text-blue-200' }
   // 只列出當前服務商下、題庫實際有的科別
   const providerExamCodes = PROVIDER_EXAMS[provider] || []
-  const visibleExams = providerExamCodes.filter(code => examTypes.includes(code))
+  const visibleExams = providerExamCodes.filter(code => availableExams.has(code))
   const providerTotal = visibleExams.reduce((sum, code) => sum + (counts[code] || 0), 0)
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
@@ -662,7 +717,18 @@ function SubjectSelect({ examTypes, questions, loading, onSelect }) {
           ))}
         </div>
 
-        {loading ? (
+        {isLoadingSubject ? (
+          <div className="flex flex-col items-center gap-4 py-10">
+            <Loader2 size={32} className="animate-spin text-orange-400" />
+            <span className="text-sm text-gray-300">題庫下載中… {loadProgress.done} / {loadProgress.total}</span>
+            <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-200"
+                style={{ width: `${loadProgress.total ? Math.round((loadProgress.done / loadProgress.total) * 100) : 0}%` }}
+              />
+            </div>
+          </div>
+        ) : loading ? (
           <div className="flex flex-col items-center gap-3 py-10 text-gray-400">
             <Loader2 size={32} className="animate-spin" />
             <span className="text-sm">題庫載入中...</span>
@@ -710,51 +776,117 @@ export default function App() {
   const fileInputRef = useRef(null)
   const { signOut } = useGoogleSync(state, dispatch, user, setUser)
 
-  // Load questions from static manifest on startup
+  // ── Lazy question-bank loading ──
+  // bankIndex (build-generated) maps exam → { count, files, enFiles } so the
+  // subject picker can show counts instantly and we only download the chosen
+  // subject's files up front; everything else streams in the background.
+  const [bankIndex, setBankIndex] = useState(null)
+  const [loadProgress, setLoadProgress] = useState(null) // { done, total } | null
+  const loadedFilesRef = useRef(new Set())
+  const backgroundStartedRef = useRef(false)
+
+  // Files not yet fetched, de-duped against everything already requested.
+  const takeUnloaded = (files) => {
+    const fresh = files.filter(f => !loadedFilesRef.current.has(f))
+    fresh.forEach(f => loadedFilesRef.current.add(f))
+    return fresh
+  }
+
+  // Stream the rest of the bank (all exams' ZH+EN) after the user is in.
+  const startBackgroundLoad = (index) => {
+    if (backgroundStartedRef.current || !index?.exams) return
+    backgroundStartedRef.current = true
+    const zhAll = [...new Set(Object.values(index.exams).flatMap(e => e.files))]
+    const enAll = [...new Set(Object.values(index.exams).flatMap(e => e.enFiles))]
+    ;(async () => {
+      const zhRest = takeUnloaded(zhAll)
+      if (zhRest.length) {
+        const qs = await loadBankFiles(zhRest)
+        if (qs.length) dispatch({ type: 'APPEND_QUESTIONS', questions: qs })
+      }
+      const enRest = takeUnloaded(enAll)
+      if (enRest.length) {
+        const qs = await loadBankFiles(enRest)
+        if (qs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: qs })
+      }
+    })()
+  }
+
+  // Boot: fetch the bank index (tiny). Admin mode — or a missing index —
+  // falls back to loading the whole bank up front (in parallel).
   useEffect(() => {
-    const load = async () => {
+    let cancelled = false
+    const boot = async () => {
+      let index = null
+      try { index = await fetchDataJson('bank-index.json') } catch { /* fallback below */ }
+      if (cancelled) return
+      if (index?.exams && !isAdmin) {
+        setBankIndex(index)
+        dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        return // questions load when a subject is picked
+      }
       try {
-        const manifestRes = await fetch(`${BASE_URL}data/manifest.json?v=${DATA_VERSION}`, { cache: 'no-store' })
-        if (!manifestRes.ok) throw new Error('無法載入題庫清單')
-        const manifest = await manifestRes.json()
-        const allQuestions = []
-        for (const file of manifest.files) {
-          try {
-            const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
-            if (!res.ok) continue
-            const data = await res.json()
-            const questions = Array.isArray(data) ? data : (data.questions || [])
-            allQuestions.push(...questions)
-          } catch { /* skip bad files */ }
-        }
-        if (allQuestions.length) {
-          dispatch({ type: 'LOAD_QUESTIONS', questions: allQuestions, filename: '靜態題庫' })
-        } else {
-          dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
-        }
-        // Load English question files
-        if (manifest.enFiles) {
-          const enQuestions = []
-          for (const file of manifest.enFiles) {
-            try {
-              const res = await fetch(`${BASE_URL}data/${file}?v=${DATA_VERSION}`, { cache: 'no-store' })
-              if (!res.ok) continue
-              const data = await res.json()
-              const questions = Array.isArray(data) ? data : (data.questions || [])
-              enQuestions.push(...questions)
-            } catch { /* skip bad files */ }
-          }
-          if (enQuestions.length) {
-            dispatch({ type: 'LOAD_EN_QUESTIONS', questions: enQuestions })
-          }
-        }
+        const manifest = await fetchDataJson('manifest.json')
+        const files = manifest.files || []
+        setLoadProgress({ done: 0, total: files.length })
+        takeUnloaded(files)
+        const qs = await loadBankFiles(files, (done, total) => { if (!cancelled) setLoadProgress({ done, total }) })
+        if (cancelled) return
+        if (qs.length) dispatch({ type: 'LOAD_QUESTIONS', questions: qs, filename: '靜態題庫' })
+        else dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        setLoadProgress(null)
+        const enFiles = takeUnloaded(manifest.enFiles || [])
+        const enQs = await loadBankFiles(enFiles)
+        if (!cancelled && enQs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: enQs })
       } catch (err) {
         console.error('載入題庫失敗:', err)
-        dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+        if (!cancelled) {
+          dispatch({ type: 'SET_QUESTIONS_LOADING', value: false })
+          setLoadProgress(null)
+        }
       }
     }
-    load()
+    boot()
+    return () => { cancelled = true }
   }, [])
+
+  // Subject picked: load just that subject's files (with progress), enter,
+  // then stream its EN files and the rest of the bank in the background.
+  const handleSelectSubject = async (exam) => {
+    if (loadProgress) return // a load is already in flight
+    if (bankIndex?.exams) {
+      const info = exam ? bankIndex.exams[exam] : null
+      const zhWanted = info
+        ? info.files
+        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.files))]
+      const enWanted = info
+        ? info.enFiles
+        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.enFiles))]
+      const zhFiles = takeUnloaded(zhWanted)
+      if (zhFiles.length) {
+        setLoadProgress({ done: 0, total: zhFiles.length })
+        const qs = await loadBankFiles(zhFiles, (done, total) => setLoadProgress({ done, total }))
+        setLoadProgress(null)
+        if (!qs.length) {
+          // Whole load failed (offline?) — release the files so retry works.
+          zhFiles.forEach(f => loadedFilesRef.current.delete(f))
+          alert('題庫載入失敗，請檢查網路後再試一次。')
+          return
+        }
+        dispatch({ type: 'APPEND_QUESTIONS', questions: qs })
+      }
+      ;(async () => {
+        const enFiles = takeUnloaded(enWanted)
+        if (enFiles.length) {
+          const qs = await loadBankFiles(enFiles)
+          if (qs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: qs })
+        }
+        startBackgroundLoad(bankIndex)
+      })()
+    }
+    dispatch({ type: 'SELECT_SUBJECT', exam })
+    setSubjectChosen(true)
+  }
 
   // Restore user progress (stats/bookmarks/reviews) via the storage adapter.
   useEffect(() => {
@@ -804,11 +936,10 @@ export default function App() {
       <SubjectSelect
         examTypes={examTypes}
         questions={state.questions}
+        bankIndex={bankIndex}
         loading={state.questionsLoading}
-        onSelect={(exam) => {
-          dispatch({ type: 'SELECT_SUBJECT', exam })
-          setSubjectChosen(true)
-        }}
+        loadProgress={loadProgress}
+        onSelect={handleSelectSubject}
       />
     )
   }
