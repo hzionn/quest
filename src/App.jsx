@@ -437,9 +437,11 @@ function reducer(state, action) {
     }
 
     case 'GOTO_PRACTICE_QUESTION': {
-      const q = action.question
-      const questions = action.questions || [q]
-      const startIndex = action.startIndex ?? 0
+      // Drop any undefined questions (can happen if the bank isn't loaded yet)
+      // so building practiceFiltered never dereferences undefined and crashes.
+      const questions = (action.questions || [action.question]).filter(Boolean)
+      if (!questions.length) return state
+      const startIndex = Math.min(Math.max(action.startIndex ?? 0, 0), questions.length - 1)
       const newAnswers = { ...state.practiceAnswers }
       const newSubmitted = { ...state.practiceSubmitted }
       const newResults = { ...state.practiceResults }
@@ -894,7 +896,7 @@ export default function App() {
             {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
             {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
             {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-            {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} />}
+            {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
           </div>
         </main>
       </div>
@@ -2511,10 +2513,19 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
 // ══════════════════════════════════════════
 // Stats Tab
 // ══════════════════════════════════════════
-function StatsTab({ state, dispatch, examTypes }) {
+function StatsTab({ state, dispatch, examTypes, qMap }) {
   const [activeSection, setActiveSection] = useState('overview')
   const history = state.statsHistory
   const entries = Object.entries(history)
+  // Persisted/synced progress strips the heavy `question` object, so rehydrate
+  // it from the loaded question bank (keyed by `${exam}-${id}`). Items whose
+  // question isn't in the bank (not loaded yet / removed) are dropped so the
+  // practice launcher never receives an undefined question and crashes.
+  const rehydrate = (k, v) => {
+    const q = v?.question || qMap?.get(k)
+    if (!q) return null
+    return { key: k, ...v, question: q, exam: q.exam, id: q.id, type: q.type }
+  }
   const totalAnswered = entries.length
   const totalCorrect = entries.filter(([, v]) => v.correct).length
   const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
@@ -2533,21 +2544,22 @@ function StatsTab({ state, dispatch, examTypes }) {
   // Wrong questions: 答錯過且累計答對未達 MASTERY_THRESHOLD 次（尚未學會）的題目
   const wrongQuestions = entries
     .filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) < MASTERY_THRESHOLD)
-    .map(([k, v]) => ({ key: k, ...v }))
+    .map(([k, v]) => rehydrate(k, v))
+    .filter(Boolean)
   // 已學會（曾答錯，後來累計答對達標）的題目數，用於提示
   const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
 
-  // Bookmarked
-  const bookmarkedList = Object.entries(state.bookmarked).filter(([, v]) => v).map(([k]) => {
-    const h = history[k]
-    return h ? { key: k, ...h } : null
-  }).filter(Boolean)
+  // Bookmarked / review: rehydrate from the bank so entries show (and can be
+  // practiced) even if the question was never answered locally.
+  const bookmarkedList = Object.entries(state.bookmarked)
+    .filter(([, v]) => v)
+    .map(([k]) => rehydrate(k, history[k] || {}))
+    .filter(Boolean)
 
-  // Review marked
-  const reviewList = Object.entries(state.reviewMarked).filter(([, v]) => v).map(([k]) => {
-    const h = history[k]
-    return h ? { key: k, ...h } : null
-  }).filter(Boolean)
+  const reviewList = Object.entries(state.reviewMarked)
+    .filter(([, v]) => v)
+    .map(([k]) => rehydrate(k, history[k] || {}))
+    .filter(Boolean)
 
   if (totalAnswered === 0) {
     return <EmptyState message="尚無作答紀錄" icon={BarChart3} />
