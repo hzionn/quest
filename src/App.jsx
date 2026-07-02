@@ -11,6 +11,7 @@ import awsLogo from '/aws.png'
 import { extractTextFromPDF, parseExamDump } from './pdfParser'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress } from './storage'
 import { SyncStatusPill, useGoogleSync } from './SyncControls'
+import ErrorBoundary from './ErrorBoundary'
 import { isSyncConfigured } from './sync'
 
 // ── GitHub Config (admin only) ──
@@ -1024,10 +1025,12 @@ export default function App() {
         {/* Content */}
         <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="animate-fade-in" key={state.activeTab}>
-            {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
-            {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-            {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-            {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            <ErrorBoundary resetKey={state.activeTab}>
+              {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
+              {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+              {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+            </ErrorBoundary>
           </div>
         </main>
       </div>
