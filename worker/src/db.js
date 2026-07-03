@@ -42,6 +42,20 @@ export async function getState(DB, uid) {
   }
 }
 
+// Admin: per-user usage overview (user count is small; subselects are fine).
+export async function getAdminOverview(DB) {
+  const rows = await DB.prepare(
+    `SELECT u.id, u.email, u.name, u.created_at, u.last_seen,
+       (SELECT COUNT(*) FROM progress p WHERE p.user_id = u.id)                    AS questions_touched,
+       (SELECT COALESCE(SUM(d.answered), 0) FROM daily_stats d WHERE d.user_id = u.id) AS answered_total,
+       (SELECT COALESCE(SUM(d.seconds), 0)  FROM daily_stats d WHERE d.user_id = u.id) AS seconds_total,
+       (SELECT MAX(d.day) FROM daily_stats d WHERE d.user_id = u.id)               AS last_active_day
+     FROM users u
+     ORDER BY u.last_seen DESC`
+  ).all()
+  return { users: rows.results || [] }
+}
+
 // Merge a delta payload from a client into D1, then return the merged state.
 // delta = { progress: [...], bookmarks: [...], reviews: [...], settings: {...} }
 export async function mergeState(DB, uid, delta) {

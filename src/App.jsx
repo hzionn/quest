@@ -5,13 +5,13 @@ import {
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
-  Languages, LogOut
+  Languages, LogOut, Flame, Users
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
 import { SyncStatusPill, useGoogleSync } from './SyncControls'
 import ErrorBoundary from './ErrorBoundary'
-import { isSyncConfigured, mergeMaps } from './sync'
+import { isSyncConfigured, mergeMaps, fetchAdminOverview } from './sync'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -169,6 +169,7 @@ const initialState = {
   statsHistory: {},
   dailyStats: {},   // { 'YYYY-MM-DD': { answered, correct, seconds } } — 本裝置的每日計數
   dailyRemote: {},  // 其他裝置的每日計數總和（登入同步後由伺服器提供，僅供顯示疊加）
+  dailyGoal: 20,    // 每日目標題數（可調）
 
   // Language
   lang: 'zh',        // 'zh' | 'en'
@@ -360,13 +361,23 @@ function reducer(state, action) {
       const exam = action.exam || ''
       const filtered = (exam ? state.questions.filter(q => q.exam === exam) : [...state.questions])
         .sort((a, b) => a.id - b.id)
+      // 回到上次練習位置（依科別各自記憶）
+      let resumeIndex = 0
+      try {
+        const saved = JSON.parse(localStorage.getItem('quest-resume') || '{}')
+        const savedKey = saved[exam || '__all__']
+        if (savedKey) {
+          const i = filtered.findIndex(q => `${q.exam}-${q.id}` === savedKey)
+          if (i > 0) resumeIndex = i
+        }
+      } catch { /* ignore */ }
       return {
         ...state,
         filterExam: exam,
         filterType: '',
         filterSearch: '',
         practiceFiltered: filtered,
-        practiceIndex: 0,
+        practiceIndex: resumeIndex,
         activeTab: 'practice',
       }
     }
@@ -589,6 +600,9 @@ function reducer(state, action) {
 
     case 'SET_DAILY_REMOTE':
       return { ...state, dailyRemote: action.dailyRemote || {} }
+
+    case 'SET_DAILY_GOAL':
+      return { ...state, dailyGoal: Math.min(500, Math.max(1, Math.round(action.goal) || 20)) }
 
     case 'ADD_STUDY_TIME': {
       // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
@@ -1006,13 +1020,14 @@ export default function App() {
     setSubjectChosen(true)
   }
 
-  // Restore user progress (stats/bookmarks/reviews/daily) via the storage adapter.
+  // Restore user progress (stats/bookmarks/reviews/daily/prefs) via the storage adapter.
   useEffect(() => {
-    const { statsHistory, bookmarked, reviewMarked, dailyStats } = loadLocalProgress()
+    const { statsHistory, bookmarked, reviewMarked, dailyStats, prefs } = loadLocalProgress()
     if (Object.keys(statsHistory).length) dispatch({ type: 'RESTORE_STATS', statsHistory })
     if (Object.keys(bookmarked).length) dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked })
     if (Object.keys(reviewMarked).length) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked })
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
+    if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
   }, [])
 
   useEffect(() => {
@@ -1026,8 +1041,20 @@ export default function App() {
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
+      prefs: { dailyGoal: state.dailyGoal },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal])
+
+  // 記住目前練習位置（依科別），下次選同科別直接續刷
+  useEffect(() => {
+    const q = state.practiceFiltered[state.practiceIndex]
+    if (!q) return
+    try {
+      const saved = JSON.parse(localStorage.getItem('quest-resume') || '{}')
+      saved[state.filterExam || '__all__'] = `${q.exam}-${q.id}`
+      localStorage.setItem('quest-resume', JSON.stringify(saved))
+    } catch { /* ignore */ }
+  }, [state.practiceIndex, state.practiceFiltered, state.filterExam])
 
   // ── 學習時數計時器 ──
   // 每 30 秒檢查一次：分頁可見、且最近 2 分鐘內有任何操作（點擊/按鍵/捲動/觸控）
@@ -1600,6 +1627,24 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     onEnter: submitCurrent,
   })
 
+  // 手機左右滑動換題：水平位移夠大且明顯大於垂直，才不干擾捲動
+  const touchStartRef = useRef(null)
+  const onCardTouchStart = (e) => {
+    const t = e.touches[0]
+    touchStartRef.current = { x: t.clientX, y: t.clientY }
+  }
+  const onCardTouchEnd = (e) => {
+    const s = touchStartRef.current
+    touchStartRef.current = null
+    if (!s) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - s.x
+    const dy = t.clientY - s.y
+    if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 2) return
+    if (dx < 0 && practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })
+    else if (dx > 0 && practiceIndex > 0) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })
+  }
+
   if (state.questions.length === 0) {
     if (state.questionsLoading) {
       return <EmptyState message="題庫載入中..." icon={Loader2} />
@@ -1682,7 +1727,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Question card */}
       {currentQ && (
-        <div className="surface-card overflow-hidden animate-fade-in" key={qKey}>
+        <div className="surface-card overflow-hidden animate-fade-in" key={qKey} onTouchStart={onCardTouchStart} onTouchEnd={onCardTouchEnd}>
           {/* Color accent bar based on exam type */}
           <div className="h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
 
@@ -2505,6 +2550,24 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
     onEnter: () => { if (state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 }) },
   })
 
+  // 手機左右滑動換題（考試中）
+  const examTouchRef = useRef(null)
+  const onExamTouchStart = (e) => {
+    const t = e.touches[0]
+    examTouchRef.current = { x: t.clientX, y: t.clientY }
+  }
+  const onExamTouchEnd = (e) => {
+    const s = examTouchRef.current
+    examTouchRef.current = null
+    if (!s) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - s.x
+    const dy = t.clientY - s.y
+    if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 2) return
+    if (dx < 0 && state.examIndex < state.examQuestionIds.length - 1) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 })
+    else if (dx > 0 && state.examIndex > 0) dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 })
+  }
+
   // Config screen
   if (!state.examActive && !state.examSubmitted) {
     return (
@@ -2748,7 +2811,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Question */}
       {examQ && (
-        <div className="surface-card overflow-hidden">
+        <div className="surface-card overflow-hidden" onTouchStart={onExamTouchStart} onTouchEnd={onExamTouchEnd}>
           <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-5 flex-wrap">
@@ -2872,6 +2935,79 @@ function ExamReviewItem({ detail, index, examAnswers, lang, questionsEn }) {
 // ══════════════════════════════════════════
 // Stats Tab
 // ══════════════════════════════════════════
+// 連續學習天數：今天有練 +1；今天還沒練不算斷（從昨天往回數）
+function computeStreak(daily) {
+  const key = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+  const now = new Date()
+  let streak = (daily[key(now)]?.answered || 0) > 0 ? 1 : 0
+  for (let i = 1; i < 3650; i++) {
+    const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
+    if ((daily[key(dt)]?.answered || 0) > 0) streak++
+    else break
+  }
+  return streak
+}
+
+// ── 每日目標＋連續學習：單值進度環（軌道低調灰，達標轉綠） ──
+function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
+  const todayCount = combinedDaily[todayKey()]?.answered || 0
+  const streak = computeStreak(combinedDaily)
+  const pct = Math.min(1, dailyGoal > 0 ? todayCount / dailyGoal : 0)
+  const done = todayCount >= dailyGoal
+  const R = 30, C = 2 * Math.PI * R
+  const ringColor = done ? '#16a34a' : '#ec7211'
+  const editGoal = () => {
+    const v = window.prompt('設定每日目標題數（1–500）', String(dailyGoal))
+    if (v == null) return
+    const n = Number(v)
+    if (Number.isFinite(n) && n >= 1) dispatch({ type: 'SET_DAILY_GOAL', goal: n })
+  }
+  return (
+    <div className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex items-center gap-3">
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${streak > 0 ? 'bg-orange-50 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20' : 'bg-gray-100 dark:bg-gray-700'}`}>
+          <Flame size={24} className={streak > 0 ? 'text-orange-500' : 'text-gray-400'} fill={streak > 0 ? 'currentColor' : 'none'} />
+        </div>
+        <div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 leading-tight">
+            {streak > 0 ? `連續學習 ${streak} 天` : '今天還沒開始'}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            {done
+              ? '今日目標達成！繼續保持 🎉'
+              : todayCount > 0
+                ? `再 ${dailyGoal - todayCount} 題達成今日目標`
+                : '每天練一點，連續天數不中斷'}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="relative w-[76px] h-[76px]">
+          <svg viewBox="0 0 76 76" className="w-full h-full -rotate-90">
+            <circle cx="38" cy="38" r={R} fill="none" strokeWidth="7" className="stroke-gray-100 dark:stroke-gray-700" />
+            <circle
+              cx="38" cy="38" r={R} fill="none" strokeWidth="7" strokeLinecap="round"
+              stroke={ringColor} strokeDasharray={C} strokeDashoffset={C * (1 - pct)}
+              style={{ transition: 'stroke-dashoffset 400ms ease, stroke 400ms ease' }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-sm font-bold text-gray-900 dark:text-gray-50 leading-none">{todayCount}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">/ {dailyGoal} 題</span>
+          </div>
+        </div>
+        <button
+          onClick={editGoal}
+          className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          title="調整每日目標"
+        >
+          目標
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── 學習趨勢：近 14 天每日作答量（答對＝綠、答錯＝中性灰 的堆疊長條） ──
 // Colors validated (dataviz six checks): lightness band + CVD ΔE 48 + ≥3:1
 // contrast on both the light (white) and dark (gray-800) card surfaces. The
@@ -2983,6 +3119,55 @@ function DailyTrendChart({ dailyStats }) {
             )
           })}
         </svg>
+      </div>
+    </div>
+  )
+}
+
+// ── 管理端：使用者用量總覽（僅 ?admin 且 email 在 Worker 白名單時有資料） ──
+function AdminUsage() {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    let alive = true
+    fetchAdminOverview().then((d) => { if (alive) setData(d) })
+    return () => { alive = false }
+  }, [])
+  if (!data?.users?.length) return null
+  const fmtDay = (ms) => (ms ? new Date(ms).toLocaleDateString('zh-TW') : '—')
+  return (
+    <div className="surface-card p-6">
+      <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-2">
+        <Users size={16} className="text-orange-500" />使用者用量（管理）
+        <span className="text-xs font-normal text-gray-400">共 {data.users.length} 人</span>
+      </h3>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-gray-400 dark:text-gray-500 border-b border-gray-200 dark:border-gray-700">
+              <th className="py-2 pr-4 font-medium">使用者</th>
+              <th className="py-2 pr-4 font-medium text-right">碰過題數</th>
+              <th className="py-2 pr-4 font-medium text-right">總作答</th>
+              <th className="py-2 pr-4 font-medium text-right">學習時數</th>
+              <th className="py-2 pr-4 font-medium text-right">最後活躍</th>
+              <th className="py-2 font-medium text-right">加入</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.users.map((u) => (
+              <tr key={u.id} className="border-b border-gray-100 dark:border-gray-700/50 last:border-0">
+                <td className="py-2.5 pr-4">
+                  <div className="font-medium truncate max-w-[200px]">{u.name || '—'}</div>
+                  <div className="text-xs text-gray-400 truncate max-w-[200px]">{u.email}</div>
+                </td>
+                <td className="py-2.5 pr-4 text-right font-mono">{u.questions_touched}</td>
+                <td className="py-2.5 pr-4 text-right font-mono">{u.answered_total}</td>
+                <td className="py-2.5 pr-4 text-right whitespace-nowrap">{formatDuration(u.seconds_total)}</td>
+                <td className="py-2.5 pr-4 text-right whitespace-nowrap">{u.last_active_day || '—'}</td>
+                <td className="py-2.5 text-right whitespace-nowrap text-xs text-gray-400">{fmtDay(u.created_at)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )
@@ -3131,6 +3316,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
 
   return (
     <div className="space-y-6">
+      {/* 每日目標＋連續學習 */}
+      <DailyGoalCard combinedDaily={combinedDaily} dailyGoal={state.dailyGoal} dispatch={dispatch} />
+
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <StatCard label="已作答" value={totalAnswered} icon={CheckCircle} />
@@ -3275,6 +3463,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
 
       {/* 資料管理：進度備份／還原 */}
       {dataManageCard}
+
+      {/* 管理端用量（僅 ?admin） */}
+      {isAdmin && <AdminUsage />}
     </div>
   )
 }

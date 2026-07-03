@@ -3,7 +3,7 @@
 // Auth: Google ID token in -> our session JWT out (Bearer). Storage: D1.
 
 import { verifyGoogleIdToken, signSession, verifySession, bearer } from './auth.js'
-import { upsertUser, getState, mergeState } from './db.js'
+import { upsertUser, getState, mergeState, getAdminOverview } from './db.js'
 
 const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -86,6 +86,15 @@ export default {
         const delta = await request.json().catch(() => ({}))
         const merged = await mergeState(env.DB, me.uid, delta)
         return reply(merged)
+      }
+
+      // ── admin: per-user usage overview (email allowlist) ──
+      if (path === '/api/admin/overview' && request.method === 'GET') {
+        const admins = (env.ADMIN_EMAILS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)
+        if (!me.email || !admins.includes(String(me.email).toLowerCase())) {
+          return reply({ error: 'forbidden' }, 403)
+        }
+        return reply(await getAdminOverview(env.DB))
       }
 
       return reply({ error: 'not found' }, 404)

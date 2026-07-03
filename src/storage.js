@@ -18,7 +18,7 @@
 
 const LOCAL_KEY = 'quest-stats'
 
-const EMPTY = () => ({ statsHistory: {}, bookmarked: {}, reviewMarked: {}, dailyStats: {} })
+const EMPTY = () => ({ statsHistory: {}, bookmarked: {}, reviewMarked: {}, dailyStats: {}, prefs: {} })
 
 // Drop the bulky `question` object from a statsHistory map before persisting.
 export function stripQuestions(statsHistory) {
@@ -51,13 +51,14 @@ export function loadLocalProgress() {
       bookmarked: data.bookmarked || {},
       reviewMarked: data.reviewMarked || {},
       dailyStats: data.dailyStats || {},
+      prefs: data.prefs || {},
     }
   } catch {
     return EMPTY()
   }
 }
 
-export function saveLocalProgress({ statsHistory, bookmarked, reviewMarked, dailyStats }) {
+export function saveLocalProgress({ statsHistory, bookmarked, reviewMarked, dailyStats, prefs }) {
   try {
     localStorage.setItem(
       LOCAL_KEY,
@@ -66,6 +67,7 @@ export function saveLocalProgress({ statsHistory, bookmarked, reviewMarked, dail
         bookmarked,
         reviewMarked,
         dailyStats: dailyStats || {},
+        prefs: prefs || {},
       })
     )
   } catch {
