@@ -18,15 +18,28 @@
   --color-aws-blue: #146eb4;
 }
 
-/* Base typography */
+/* Base typography — Traditional Chinese first: the UI is zh-TW, so TC glyph
+   forms must win over SC (骨/過/黑 etc. render differently between the two). */
 html {
-  font-family: 'Inter', 'Noto Sans SC', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', 'Noto Sans TC', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth transitions for dark mode */
-* {
+/* Smooth dark-mode transition — scoped to the surfaces that matter instead of
+   `*`, which attached a transition to every DOM node and janked the theme
+   toggle on large pages / low-end phones. */
+body,
+.app-bg,
+.auth-bg,
+.surface-card,
+header,
+nav,
+button,
+input,
+select,
+textarea,
+label {
   transition-property: background-color, border-color;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -218,6 +231,14 @@ html {
 }
 .option-accent.incorrect::before {
   background: #ef4444;
+}
+/* Hover affordance: a soft tint so the whole row reads as clickable, not
+   just the border. (Selected/answered states override with their own bg.) */
+.option-accent:not(.selected):not(.correct):not(.incorrect):hover {
+  background-color: rgb(255 153 0 / 0.05);
+}
+.dark .option-accent:not(.selected):not(.correct):not(.incorrect):hover {
+  background-color: rgb(255 153 0 / 0.07);
 }
 
 /* Gradient text */
