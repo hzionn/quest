@@ -167,7 +167,8 @@ const initialState = {
 
   // Stats
   statsHistory: {},
-  dailyStats: {},   // { 'YYYY-MM-DD': { answered, correct } } — local-only 學習趨勢
+  dailyStats: {},   // { 'YYYY-MM-DD': { answered, correct, seconds } } — 本裝置的每日計數
+  dailyRemote: {},  // 其他裝置的每日計數總和（登入同步後由伺服器提供，僅供顯示疊加）
 
   // Language
   lang: 'zh',        // 'zh' | 'en'
@@ -193,6 +194,22 @@ function bumpDaily(dailyStats, answered, correct) {
   const dk = todayKey()
   const prev = dailyStats?.[dk] || { answered: 0, correct: 0 }
   return { ...dailyStats, [dk]: { ...prev, answered: (prev.answered || 0) + answered, correct: (prev.correct || 0) + correct } }
+}
+
+// 疊加本機與其他裝置的每日計數（顯示用）
+function combineDaily(own = {}, others = {}) {
+  const out = {}
+  for (const src of [own, others]) {
+    for (const [day, v] of Object.entries(src)) {
+      const cur = out[day] || { answered: 0, correct: 0, seconds: 0 }
+      out[day] = {
+        answered: cur.answered + (v?.answered || 0),
+        correct: cur.correct + (v?.correct || 0),
+        seconds: cur.seconds + (v?.seconds || 0),
+      }
+    }
+  }
+  return out
 }
 
 // 秒數 → 人類可讀時數
@@ -562,6 +579,9 @@ function reducer(state, action) {
 
     case 'RESTORE_DAILY':
       return { ...state, dailyStats: action.dailyStats }
+
+    case 'SET_DAILY_REMOTE':
+      return { ...state, dailyRemote: action.dailyRemote || {} }
 
     case 'ADD_STUDY_TIME': {
       // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
@@ -2937,7 +2957,12 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
   const totalAnswered = entries.length
   const totalCorrect = entries.filter(([, v]) => v.correct).length
   const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
-  const totalStudySec = Object.values(state.dailyStats || {}).reduce((s, v) => s + (v?.seconds || 0), 0)
+  // 每日統計 = 本裝置 + 其他裝置（登入同步後）
+  const combinedDaily = useMemo(
+    () => combineDaily(state.dailyStats, state.dailyRemote),
+    [state.dailyStats, state.dailyRemote]
+  )
+  const totalStudySec = Object.values(combinedDaily).reduce((s, v) => s + (v?.seconds || 0), 0)
 
   // Per exam stats
   const examStats = useMemo(() => {
@@ -3089,7 +3114,7 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
         <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
           <BarChart3 size={16} className="text-orange-500" />學習趨勢
         </h3>
-        <DailyTrendChart dailyStats={state.dailyStats} />
+        <DailyTrendChart dailyStats={combinedDaily} />
       </div>
 
       {/* Section tabs */}

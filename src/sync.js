@@ -9,7 +9,7 @@
 // backend exists.
 // ──────────────────────────────────────────────────────────────────────────
 
-import { stripQuestions } from './storage'
+import { stripQuestions, getDeviceId } from './storage'
 
 const API = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
@@ -77,7 +77,25 @@ function remoteToMaps(state) {
     for (const r of rows || []) if (r.enabled) m[r.qkey] = true
     return m
   }
-  return { statsHistory, bookmarked: toMap(state.bookmarks), reviewMarked: toMap(state.reviews) }
+  // Split the per-device daily rows: this device's own counters vs. the sum
+  // of every OTHER device (the "remote overlay" the UI adds on top of local).
+  const myDevice = getDeviceId()
+  const dailyOwn = {}
+  const dailyOthers = {}
+  for (const r of state.daily || []) {
+    const row = { answered: r.answered || 0, correct: r.correct || 0, seconds: r.seconds || 0 }
+    if (r.device_id === myDevice) {
+      dailyOwn[r.day] = row
+    } else {
+      const cur = dailyOthers[r.day] || { answered: 0, correct: 0, seconds: 0 }
+      dailyOthers[r.day] = {
+        answered: cur.answered + row.answered,
+        correct: cur.correct + row.correct,
+        seconds: cur.seconds + row.seconds,
+      }
+    }
+  }
+  return { statsHistory, bookmarked: toMap(state.bookmarks), reviewMarked: toMap(state.reviews), dailyOwn, dailyOthers }
 }
 
 // Build a delta payload from the app's current maps. With `dirty` (per-map
@@ -103,6 +121,26 @@ function mapsToDelta({ statsHistory, bookmarked, reviewMarked }, dirty = null) {
   return { progress, bookmarks: flags(bookmarked, dirty?.bookmarks), reviews: flags(reviewMarked, dirty?.reviews) }
 }
 
+// This device's daily counters as server rows (G-Counter contribution).
+// With `days` only those buckets are sent.
+export function dailyToRows(dailyStats, days = null) {
+  const now = Date.now()
+  const deviceId = getDeviceId()
+  return (days ? [...days] : Object.keys(dailyStats || {}))
+    .map((day) => {
+      const v = dailyStats?.[day]
+      if (!v) return null
+      return {
+        device_id: deviceId, day,
+        answered: v.answered || 0,
+        correct: v.correct || 0,
+        seconds: v.seconds || 0,
+        updated_at: now,
+      }
+    })
+    .filter(Boolean)
+}
+
 export async function fetchRemoteMaps() {
   const token = getSessionToken()
   if (!token) return null
@@ -112,7 +150,11 @@ export async function fetchRemoteMaps() {
 export async function pushMaps(maps, dirty = null) {
   const token = getSessionToken()
   if (!token) return null
-  const merged = await api('/api/state', { method: 'POST', token, body: mapsToDelta(maps, dirty) })
+  const body = mapsToDelta(maps, dirty)
+  // Attach this device's daily counters (all days on a full push, dirty days
+  // only on a delta push). MAX-merged server-side, so retries are safe.
+  body.daily = dailyToRows(maps.dailyStats, dirty ? dirty.daily : null)
+  const merged = await api('/api/state', { method: 'POST', token, body })
   return remoteToMaps(merged)
 }
 

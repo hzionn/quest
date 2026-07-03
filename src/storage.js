@@ -76,3 +76,22 @@ export function saveLocalProgress({ statsHistory, bookmarked, reviewMarked, dail
 export function clearLocalProgress() {
   try { localStorage.removeItem(LOCAL_KEY) } catch { /* ignore */ }
 }
+
+// ── Device identity ─────────────────────────────────────────────────────────
+// Stable per-browser id for the daily-stats G-Counter: each device syncs its
+// own monotonic counters and the server sums across devices. Survives
+// clearLocalProgress (separate key) so history isn't double-counted.
+const DEVICE_KEY = 'quest-device-id'
+
+export function getDeviceId() {
+  try {
+    let id = localStorage.getItem(DEVICE_KEY)
+    if (!id) {
+      id = (crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`)
+      localStorage.setItem(DEVICE_KEY, id)
+    }
+    return id
+  } catch {
+    return 'unknown-device'
+  }
+}
