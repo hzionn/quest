@@ -212,6 +212,13 @@ function combineDaily(own = {}, others = {}) {
   return out
 }
 
+// 正確率三段語意色：≥70 綠（及格）、55–69 琥珀（接近）、<55 紅
+function accuracyTone(pct) {
+  if (pct >= 70) return { text: 'text-green-600 dark:text-green-400', bar: 'linear-gradient(90deg, #22c55e, #16a34a)' }
+  if (pct >= 55) return { text: 'text-amber-600 dark:text-amber-500', bar: 'linear-gradient(90deg, #f59e0b, #d97706)' }
+  return { text: 'text-red-500', bar: 'linear-gradient(90deg, #ef4444, #dc2626)' }
+}
+
 // 秒數 → 人類可讀時數
 function formatDuration(sec) {
   if (!sec || sec < 60) return '0 分鐘'
@@ -860,9 +867,10 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
             {visibleExams.length > 1 && (
               <button
                 onClick={() => onSelect('')}
-                className="w-full mt-4 py-3 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white text-sm font-medium transition-colors"
+                className="w-full mt-4 py-3.5 rounded-xl bg-white/5 border border-gray-500/70 text-gray-100 font-semibold text-sm hover:bg-orange-500/15 hover:border-orange-400 hover:text-orange-200 transition-colors flex items-center justify-center gap-2"
               >
-                全部科別（{providerTotal} 題）
+                <Shuffle size={15} />
+                全部科別混合練習（{providerTotal} 題）
               </button>
             )}
           </>
@@ -1537,7 +1545,7 @@ function StatCard({ label, value, icon: Icon }) {
           <Icon size={18} className="text-orange-500 dark:text-orange-400" />
         </div>
       )}
-      <div className="text-2xl font-bold gradient-text animate-count">{value}</div>
+      <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 animate-count">{value}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</div>
     </div>
   )
@@ -1554,6 +1562,14 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const hasEnVersion = currentQRaw && Object.keys(state.questionsEn).length > 0 && !!state.questionsEn[`${currentQRaw.exam}-${currentQRaw.id}`]
   const isSubmitted = qKey ? (practiceSubmitted[qKey] || state.showAnswers) : false
   const isCorrect = qKey ? (practiceSubmitted[qKey] ? practiceResults[qKey] : undefined) : undefined
+  const hasAnswer = qKey
+    ? !!practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0)
+    : false
+  const canSubmit = !!currentQ && (
+    (currentQ.options && Object.keys(currentQ.options).length > 0) ||
+    (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
+    (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
+  )
 
   // Submit the current answer (shared by the button and the Enter hotkey);
   // when already submitted, Enter advances to the next question instead.
@@ -1609,23 +1625,26 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const correctCount = practiceFiltered.filter((q) => practiceResults[`${q.exam}-${q.id}`] === true).length
   const accuracyPct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0
 
+  const accTone = accuracyTone(accuracyPct)
+  const chipClass = (active, activeStyle) =>
+    `inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 border ${
+      active
+        ? activeStyle
+        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
+    }`
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-24 md:pb-0">
       <FilterBar state={state} dispatch={dispatch} examTypes={examTypes} showStart />
 
-      {/* Language toggle + Progress bar */}
-      <div className="surface-card p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">作答進度</span>
+      {/* 工具列＋進度（單列緊湊，手機不折行） */}
+      <div className="surface-card px-4 py-3">
+        <div className="flex items-center justify-between gap-x-3 gap-y-2 flex-wrap mb-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {hasEnVersion && (
               <button
                 onClick={() => dispatch({ type: 'SET_LANG', lang: state.lang === 'zh' ? 'en' : 'zh' })}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
-                  state.lang === 'en'
-                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
+                className={chipClass(state.lang === 'en', 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700')}
                 title="切換語言 / Switch Language"
               >
                 <Languages size={12} />
@@ -1634,11 +1653,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             )}
             <button
               onClick={() => dispatch({ type: 'TOGGLE_SHOW_ANSWERS' })}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
-                state.showAnswers
-                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
+              className={chipClass(state.showAnswers, 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700')}
               title="顯示/隱藏答案"
             >
               {state.showAnswers ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -1647,23 +1662,21 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             <button
               onClick={() => dispatch({ type: 'SHUFFLE_PRACTICE' })}
               disabled={practiceFiltered.length === 0}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-700 hover:bg-orange-200 dark:hover:bg-orange-800/40 disabled:opacity-40 disabled:cursor-not-allowed"
+              className={`${chipClass(false, '')} disabled:opacity-40 disabled:cursor-not-allowed`}
               title="隨機打亂題目順序"
             >
               <Shuffle size={12} /> 隨機練習
             </button>
           </div>
-          <span className="text-xs font-bold text-orange-500">{answeredCount} / {practiceFiltered.length} ({progressPct}%)</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            進度 <span className="font-bold text-gray-800 dark:text-gray-100">{answeredCount}/{practiceFiltered.length}</span>
+            {answeredCount > 0 && (
+              <> · 答對率 <span className={`font-bold ${accTone.text}`}>{accuracyPct}%</span></>
+            )}
+          </span>
         </div>
-        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div className="progress-bar h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${progressPct}%` }} />
-        </div>
-        <div className="flex items-center justify-between mt-2 mb-1">
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">答對率</span>
-          <span className="text-xs font-bold text-green-500">{correctCount} / {answeredCount} ({accuracyPct}%)</span>
-        </div>
-        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div className="progress-bar h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full" style={{ width: `${accuracyPct}%` }} />
         </div>
       </div>
 
@@ -1677,8 +1690,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             {/* Question header */}
             <div className="flex items-start justify-between mb-5">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{displayExam(currentQ.exam)}</span>
-                <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
+                <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{displayExam(currentQ.exam)}</span>
+                <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
                 {currentQ.officialNo && (
                   <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{currentQ.officialNo}</span>
@@ -1705,44 +1718,9 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 
             {/* Case study background (collapsible) + Question text */}
             <CaseStudyBox text={currentQ.caseStudy} />
-            <p className="text-base leading-relaxed mb-5 whitespace-pre-wrap break-words">{currentQ.question}</p>
+            <p className="text-base md:text-lg leading-relaxed mb-5 whitespace-pre-wrap break-words">{currentQ.question}</p>
 
-            {/* Navigation: prev, submit, next */}
-            <div className="flex items-center justify-between mb-5">
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
-                disabled={practiceIndex === 0}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                <ChevronLeft size={16} /> 上一題
-              </button>
-              <div className="flex items-center gap-2">
-                {!isSubmitted && (
-                  (currentQ.options && Object.keys(currentQ.options).length > 0) ||
-                  (currentQ.type === 'matching' && currentQ.available_options?.length > 0 && currentQ.matches?.length > 0) ||
-                  (currentQ.type === 'ordering' && currentQ.available_steps?.length > 0 && currentQ.ordered_steps?.length > 0)
-                ) && (
-                  <button
-                    onClick={submitCurrent}
-                    disabled={!practiceAnswers[qKey] || (Array.isArray(practiceAnswers[qKey]) && practiceAnswers[qKey].length === 0)}
-                    className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${practiceAnswers[qKey] && (!Array.isArray(practiceAnswers[qKey]) || practiceAnswers[qKey].length > 0) ? 'pulse-glow' : ''}`}
-                  >
-                    <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
-                    提交答案
-                  </button>
-                )}
-              </div>
-              <button
-                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
-                disabled={practiceIndex >= practiceFiltered.length - 1}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
-              >
-                下一題 <ChevronRight size={16} />
-              </button>
-            </div>
-            <HotkeyHint />
-
-            {/* Answer area */}
+            {/* Answer area — 緊貼題目，不被按鈕打斷 */}
             <QuestionInput
               question={currentQ}
               answer={practiceAnswers[qKey]}
@@ -1774,7 +1752,76 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
               </div>
             )}
+
+            {/* 桌機操作列（選項之後，閱讀動線不中斷） */}
+            <div className="hidden md:flex items-center justify-between mt-6 pt-5 border-t border-gray-100 dark:border-gray-700/60">
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+                disabled={practiceIndex === 0}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200"
+              >
+                <ChevronLeft size={16} /> 上一題
+              </button>
+              {canSubmit && !isSubmitted ? (
+                <button
+                  onClick={submitCurrent}
+                  disabled={!hasAnswer}
+                  className={`px-8 py-2.5 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-medium whitespace-nowrap transition-all duration-200 disabled:cursor-not-allowed shadow-sm hover:shadow-md ${hasAnswer ? 'pulse-glow' : ''}`}
+                >
+                  <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
+                  提交答案
+                </button>
+              ) : <span />}
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+                disabled={practiceIndex >= practiceFiltered.length - 1}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200"
+              >
+                下一題 <ChevronRight size={16} />
+              </button>
+            </div>
+            <HotkeyHint />
           </div>
+        </div>
+      )}
+
+      {/* 手機釘底操作列：選完答案不用回捲就能提交 */}
+      {currentQ && (
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 flex items-center gap-2 px-3 pt-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur border-t border-gray-200 dark:border-gray-700 shadow-[0_-4px_16px_rgb(0_0_0/0.08)]" style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}>
+          <button
+            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
+            disabled={practiceIndex === 0}
+            aria-label="上一題"
+            className="p-3 rounded-xl border border-gray-300 dark:border-gray-600 disabled:opacity-40 text-gray-600 dark:text-gray-300"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          {canSubmit && !isSubmitted ? (
+            <button
+              onClick={submitCurrent}
+              disabled={!hasAnswer}
+              className="flex-1 py-3 bg-gradient-to-r from-green-500 to-green-600 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-semibold text-sm whitespace-nowrap disabled:cursor-not-allowed"
+            >
+              <CheckCircle size={16} className="inline mr-1.5 -mt-0.5" />
+              提交答案
+            </button>
+          ) : (
+            <button
+              onClick={() => practiceIndex < practiceFiltered.length - 1 && dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+              disabled={practiceIndex >= practiceFiltered.length - 1}
+              className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-orange-600 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-600 dark:disabled:to-gray-600 text-white rounded-xl font-semibold text-sm whitespace-nowrap disabled:cursor-not-allowed"
+            >
+              下一題
+            </button>
+          )}
+          <button
+            onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })}
+            disabled={practiceIndex >= practiceFiltered.length - 1}
+            aria-label="下一題"
+            className="p-3 rounded-xl border border-gray-300 dark:border-gray-600 disabled:opacity-40 text-gray-600 dark:text-gray-300"
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
       )}
 
@@ -1935,7 +1982,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                 checked={selected}
                 onChange={() => !submitted && onAnswer(key)}
                 disabled={submitted && !examMode}
-                className="mt-0.5 accent-orange-500"
+                className="w-4 h-4 mt-0.5 shrink-0 accent-orange-500"
               />
               <OptionText label={key} text={text} />
             </label>
@@ -1979,7 +2026,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   onAnswer(newSel)
                 }}
                 disabled={submitted && !examMode}
-                className="mt-0.5 accent-orange-500"
+                className="w-4 h-4 mt-0.5 shrink-0 accent-orange-500"
               />
               <OptionText label={key} text={text} />
             </label>
@@ -2470,7 +2517,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               : <EmptyState message="題庫載入失敗，請重新整理頁面" icon={AlertCircle} />
         ) : (
           <div className="surface-card overflow-hidden max-w-lg mx-auto animate-slide-up">
-            <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500" />
+            <div className="h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
             <div className="p-8">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 dark:from-orange-900/30 dark:to-orange-900/10 flex items-center justify-center mx-auto mb-4">
@@ -2704,16 +2751,16 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
         <div className="surface-card overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
           <div className="p-6 md:p-8">
-            <div className="flex items-center gap-2 mb-5">
-              <span className="px-2.5 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg text-xs font-semibold">{displayExam(examQ.exam)}</span>
-              <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
+            <div className="flex items-center gap-2 mb-5 flex-wrap">
+              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{displayExam(examQ.exam)}</span>
+              <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
               {examQ.officialNo && (
                 <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{examQ.officialNo}</span>
               )}
             </div>
             <CaseStudyBox text={examQ.caseStudy} />
-            <p className="text-base leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>
+            <p className="text-base md:text-lg leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>
 
             <QuestionInput
               question={examQ}
@@ -2724,13 +2771,13 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
             />
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between gap-2 mt-6 pt-5 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex - 1 })}
                 disabled={state.examIndex === 0}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+                className="px-4 sm:px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200"
               >
-                <ChevronLeft size={16} /> 上一題
+                <ChevronLeft size={16} /><span className="hidden sm:inline">上一題</span>
               </button>
               <button
                 onClick={() => {
@@ -2738,16 +2785,16 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
                     dispatch({ type: 'SUBMIT_EXAM' })
                   }
                 }}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold transition-all duration-200 flex items-center gap-1.5 shadow-sm"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 shadow-sm"
               >
                 <Square size={14} /> 交卷
               </button>
               <button
                 onClick={() => dispatch({ type: 'SET_EXAM_INDEX', index: state.examIndex + 1 })}
                 disabled={state.examIndex >= state.examQuestionIds.length - 1}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium transition-all duration-200"
+                className="px-4 sm:px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-all duration-200"
               >
-                下一題 <ChevronRight size={16} />
+                <span className="hidden sm:inline">下一題</span><ChevronRight size={16} />
               </button>
             </div>
             <HotkeyHint />
@@ -3097,10 +3144,10 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
       <div className="surface-card p-6">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">整體正確率</span>
-          <span className={`text-2xl font-extrabold ${overallAccuracy >= 70 ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{overallAccuracy}%</span>
+          <span className={`text-2xl font-extrabold ${accuracyTone(overallAccuracy).text}`}>{overallAccuracy}%</span>
         </div>
         <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div className="progress-bar h-full rounded-full" style={{ width: `${overallAccuracy}%`, background: overallAccuracy >= 70 ? 'linear-gradient(90deg, #22c55e, #16a34a)' : 'linear-gradient(90deg, #ef4444, #dc2626)' }} />
+          <div className="progress-bar h-full rounded-full" style={{ width: `${overallAccuracy}%`, background: accuracyTone(overallAccuracy).bar }} />
         </div>
         <div className="flex justify-between mt-1.5">
           <span className="text-xs text-gray-400">0%</span>
@@ -3150,18 +3197,18 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
             <div className="space-y-4">
               {Object.entries(examStats).map(([exam, s]) => {
                 const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0
-                const passed = pct >= 70
+                const tone = accuracyTone(pct)
                 return (
                   <div key={exam} className="p-4 rounded-xl border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-sm">{displayExam(exam)}</span>
                       <div className="flex items-center gap-3 text-sm">
                         <span className="text-gray-500 dark:text-gray-400">{s.correct}/{s.total}</span>
-                        <span className={`font-bold ${passed ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>{pct}%</span>
+                        <span className={`font-bold ${tone.text}`}>{pct}%</span>
                       </div>
                     </div>
                     <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div className="progress-bar h-full rounded-full" style={{ width: `${pct}%`, background: passed ? 'linear-gradient(90deg, #22c55e, #16a34a)' : 'linear-gradient(90deg, #ef4444, #dc2626)' }} />
+                      <div className="progress-bar h-full rounded-full" style={{ width: `${pct}%`, background: tone.bar }} />
                     </div>
                   </div>
                 )
