@@ -105,3 +105,5 @@ JWT_SECRET=some-long-random-string
 
 Free tier: Workers 100k req/day, D1 5M rows read / 100k written per day. This
 app is nowhere near those limits.
+
+<!-- deploy retry: D1 transient "storage reset" error on previous run -->
