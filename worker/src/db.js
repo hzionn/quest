@@ -24,18 +24,21 @@ export async function upsertUser(DB, g) {
 
 // Read the full state for one user.
 export async function getState(DB, uid) {
-  const [progress, bookmarks, reviews, settings] = await Promise.all([
+  const [progress, bookmarks, reviews, settings, daily] = await Promise.all([
     DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, ever_wrong, updated_at
                 FROM progress WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM bookmarks WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM reviews WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT dark_mode, lang, updated_at FROM settings WHERE user_id = ?`).bind(uid).first(),
+    DB.prepare(`SELECT device_id, day, answered, correct, seconds, updated_at
+                FROM daily_stats WHERE user_id = ?`).bind(uid).all(),
   ])
   return {
     progress: progress.results || [],
     bookmarks: bookmarks.results || [],
     reviews: reviews.results || [],
     settings: settings || null,
+    daily: daily.results || [],
   }
 }
 
@@ -77,6 +80,31 @@ export async function mergeState(DB, uid, delta) {
         ).bind(uid, b.qkey, b.enabled ? 1 : 0, b.updated_at ?? now)
       )
     }
+  }
+
+  // Per-device daily counters: G-Counter merge — every field takes MAX, which
+  // is idempotent (safe on retries) because a device's own counts only grow.
+  const DAY_RE = /^\d{4}-\d{2}-\d{2}$/
+  for (const d of delta.daily || []) {
+    if (!d || typeof d.device_id !== 'string' || !d.device_id || d.device_id.length > 64) continue
+    if (typeof d.day !== 'string' || !DAY_RE.test(d.day)) continue
+    stmts.push(
+      DB.prepare(
+        `INSERT INTO daily_stats (user_id, device_id, day, answered, correct, seconds, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(user_id, device_id, day) DO UPDATE SET
+           answered   = MAX(answered, excluded.answered),
+           correct    = MAX(correct, excluded.correct),
+           seconds    = MAX(seconds, excluded.seconds),
+           updated_at = MAX(updated_at, excluded.updated_at)`
+      ).bind(
+        uid, d.device_id, d.day,
+        Math.max(0, Number(d.answered) || 0),
+        Math.max(0, Number(d.correct) || 0),
+        Math.max(0, Number(d.seconds) || 0),
+        d.updated_at ?? now
+      )
+    )
   }
 
   if (delta.settings) {

@@ -47,6 +47,21 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at INTEGER NOT NULL
 );
 
+-- Per-device daily study counters (G-Counter CRDT): each device's counts for
+-- a day only ever grow, so MAX-merge per (user, device, day) is idempotent and
+-- the user's true daily total is the SUM across devices. day = 'YYYY-MM-DD'.
+CREATE TABLE IF NOT EXISTS daily_stats (
+  user_id    INTEGER NOT NULL,
+  device_id  TEXT NOT NULL,
+  day        TEXT NOT NULL,
+  answered   INTEGER NOT NULL DEFAULT 0,
+  correct    INTEGER NOT NULL DEFAULT 0,
+  seconds    INTEGER NOT NULL DEFAULT 0,
+  updated_at INTEGER NOT NULL,
+  PRIMARY KEY (user_id, device_id, day)
+);
+
 CREATE INDEX IF NOT EXISTS idx_progress_user  ON progress(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON bookmarks(user_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_user   ON reviews(user_id);
+CREATE INDEX IF NOT EXISTS idx_daily_user     ON daily_stats(user_id);

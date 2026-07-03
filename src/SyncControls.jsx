@@ -162,25 +162,43 @@ export function useGoogleSync(state, dispatch, user, setUser) {
   // keys dirtied mid-flight survive for the next push.
   const prevMapsRef = useRef(null)
   const mapsRef = useRef(null)
-  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set() })
+  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set(), daily: new Set() })
+  const lastOthersJsonRef = useRef('')
 
   const clearDirty = () => {
     dirtyRef.current.stats.clear()
     dirtyRef.current.bookmarks.clear()
     dirtyRef.current.reviews.clear()
+    dirtyRef.current.daily.clear()
+  }
+
+  // Other devices' daily overlay: only dispatch when the content actually
+  // changed, so routine pushes don't cause pointless re-renders.
+  const applyDailyOthers = (others) => {
+    const json = JSON.stringify(others || {})
+    if (json === lastOthersJsonRef.current) return
+    lastOthersJsonRef.current = json
+    dispatch({ type: 'SET_DAILY_REMOTE', dailyRemote: others || {} })
   }
 
   const pushDirty = () => {
     const d = dirtyRef.current
-    const snap = { stats: new Set(d.stats), bookmarks: new Set(d.bookmarks), reviews: new Set(d.reviews) }
-    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size
+    const snap = {
+      stats: new Set(d.stats),
+      bookmarks: new Set(d.bookmarks),
+      reviews: new Set(d.reviews),
+      daily: new Set(d.daily),
+    }
+    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size + snap.daily.size
     if (!total || !mapsRef.current) return
     pushMaps(mapsRef.current, snap)
-      .then(() => {
+      .then((remote) => {
         snap.stats.forEach((k) => d.stats.delete(k))
         snap.bookmarks.forEach((k) => d.bookmarks.delete(k))
         snap.reviews.forEach((k) => d.reviews.delete(k))
+        snap.daily.forEach((k) => d.daily.delete(k))
         lastPushAtRef.current = Date.now()
+        if (remote) applyDailyOthers(remote.dailyOthers)
       })
       .catch((e) => console.warn('[sync] push failed:', e?.message || e))
   }
@@ -209,12 +227,28 @@ export function useGoogleSync(state, dispatch, user, setUser) {
           reviewMarked: state.reviewMarked,
         }
         const merged = mergeMaps(local, remote)
+        // Daily counters: reconcile OWN device per-day (field-wise max with
+        // the server's row for this device — restores after a cleared
+        // localStorage); other devices become the display overlay.
+        const ownDaily = {}
+        for (const day of new Set([...Object.keys(state.dailyStats || {}), ...Object.keys(remote.dailyOwn || {})])) {
+          const a = state.dailyStats?.[day] || {}
+          const b = remote.dailyOwn?.[day] || {}
+          ownDaily[day] = {
+            answered: Math.max(a.answered || 0, b.answered || 0),
+            correct: Math.max(a.correct || 0, b.correct || 0),
+            seconds: Math.max(a.seconds || 0, b.seconds || 0),
+          }
+        }
         dispatch({ type: 'RESTORE_STATS', statsHistory: merged.statsHistory })
         dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: merged.bookmarked })
         dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
-        await pushMaps(merged).catch(() => {})
-        prevMapsRef.current = merged
-        mapsRef.current = merged
+        dispatch({ type: 'RESTORE_DAILY', dailyStats: ownDaily })
+        applyDailyOthers(remote.dailyOthers)
+        const mergedWithDaily = { ...merged, dailyStats: ownDaily }
+        await pushMaps(mergedWithDaily).catch(() => {})
+        prevMapsRef.current = mergedWithDaily
+        mapsRef.current = mergedWithDaily
         clearDirty()
         initialSyncedRef.current = true
         lastPushAtRef.current = Date.now()
@@ -234,6 +268,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       statsHistory: state.statsHistory,
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
+      dailyStats: state.dailyStats,
     }
     mapsRef.current = cur
     const prev = prevMapsRef.current
@@ -242,15 +277,16 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       diffKeys(prev.statsHistory, cur.statsHistory).forEach((k) => d.stats.add(k))
       diffKeys(prev.bookmarked, cur.bookmarked).forEach((k) => d.bookmarks.add(k))
       diffKeys(prev.reviewMarked, cur.reviewMarked).forEach((k) => d.reviews.add(k))
+      diffKeys(prev.dailyStats, cur.dailyStats).forEach((k) => d.daily.add(k))
     }
     prevMapsRef.current = cur
     const d = dirtyRef.current
-    if (!(d.stats.size + d.bookmarks.size + d.reviews.size)) return
+    if (!(d.stats.size + d.bookmarks.size + d.reviews.size + d.daily.size)) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(pushDirty, 3000)
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, user])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, user])
 
   // 4. Best-effort flush on page hide.
   useEffect(() => {
@@ -272,6 +308,9 @@ export function useGoogleSync(state, dispatch, user, setUser) {
     prevMapsRef.current = null
     mapsRef.current = null
     clearDirty()
+    lastOthersJsonRef.current = ''
+    dispatch({ type: 'SET_DAILY_REMOTE', dailyRemote: {} })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUser])
 
   return { signOut }
