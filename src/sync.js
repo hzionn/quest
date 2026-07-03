@@ -141,6 +141,17 @@ export function dailyToRows(dailyStats, days = null) {
     .filter(Boolean)
 }
 
+// Admin-only usage overview; null when not signed in / not an admin.
+export async function fetchAdminOverview() {
+  const token = getSessionToken()
+  if (!token) return null
+  try {
+    return await api('/api/admin/overview', { token })
+  } catch {
+    return null
+  }
+}
+
 export async function fetchRemoteMaps() {
   const token = getSessionToken()
   if (!token) return null
