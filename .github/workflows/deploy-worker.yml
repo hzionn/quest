@@ -65,8 +65,17 @@ jobs:
           sed -i "s/REPLACE_WITH_D1_DATABASE_ID/$DB_ID/" wrangler.toml
           grep '^database_id' wrangler.toml
 
-      - name: Apply schema (idempotent)
-        run: npx wrangler d1 execute quest_db --remote --file=./schema.sql
+      - name: Apply schema (idempotent, retried; non-fatal on D1 admin-API outage)
+        run: |
+          set +e
+          for i in 1 2 3; do
+            npx wrangler d1 execute quest_db --remote --file=./schema.sql && exit 0
+            echo "schema apply failed (attempt $i), retrying in $((i*10))s..."
+            sleep $((i*10))
+          done
+          echo "::warning::Schema apply failed 3x (D1 admin API error). Continuing: schema.sql is idempotent and was fully applied by an earlier run. If THIS deploy adds tables/columns, re-run the workflow after D1 recovers."
+          echo "### ⚠️ Schema apply skipped this run (D1 admin API failing) — re-run if this deploy changed schema.sql" >> $GITHUB_STEP_SUMMARY
+          exit 0
 
       - name: Set JWT_SECRET
         if: env.JWT_SECRET_VAL != ''
