@@ -148,7 +148,8 @@
       "B": "使用 --auto-delete 标志并终止 VM 正确性分析: 此选项会导致持久磁盘在VM终止时被删除，无法保留状态。这与题目要求的“状态持久化\"相矛盾。结论: 错误。",
       "C": "应用 VM CPU 利用率标签并将其包含在 BigQuery 计费导出中正确性分析: 此选项可以提供CPU利用率的成本可视化，但题目要求的是“开发环境的成本可视化\"，而不是具体的CPU利用率。结论: 错误。",
       "D": "使用 Google BigQuery 计费导出和标签将成本与组关联正确性分析: 此选项通过BigQuery计费导出和标签实现成本可视化，满足题目要求的\"提供成本可视化\"。优点: 可以清晰地将成本与开发团队或资源组关联，方便财务部门分析。结论: 正确。",
-      "E": "将所有状态存储到本地 SSD，快照持久磁盘，并终止 VM 正确性分析: 本地SSD是临时存储，无法持久化状态，且快照持久磁盘并终止VM的操作复杂且成本较高。结论: 错误。F 将所有状态存储在 Google Cloud Storage，快照持久磁盘，并终止 VM 正确性分析: 将状态存储在Google Cloud Storage可以持久化数据，但题目没有明确要求使用Cloud Storage，且快照持久磁盘并终止VM的操作复杂。结论: 错误。"
+      "E": "将所有状态存储到本地 SSD，快照持久磁盘，并终止 VM 正确性分析: 本地SSD是临时存储，无法持久化状态，且快照持久磁盘并终止VM的操作复杂且成本较高。结论: 错误。F 将所有状态存储在 Google Cloud Storage，快照持久磁盘，并终止 VM 正确性分析: 将状态存储在Google Cloud Storage可以持久化数据，但题目没有明确要求使用Cloud Storage，且快照持久磁盘并终止VM的操作复杂。结论: 错误。",
+      "F": "Incorrect. Re-architecting the application to store all state in Cloud Storage before terminating the VM adds complexity; the simpler way to persist state across the frequent start/stop cycles is to keep the persistent disk with the --no-auto-delete flag and stop the VM."
     }
   },
   {
@@ -185,6 +186,7 @@
     "explanations": {
       "A": "确保存在一个防火墙规则，人允许 HTTP/HTTPS 的源流量到达负载均衡器。错误: 负载均衡器的源流量是由客户端发起的，而不是由负载均衡器本身发起的。此选项与问题中实例被频繁终止和重启的现象无关。",
       "B": "为每个实例分配一个公共 IP，并配置一个防火墙规则以允许负载均衡器访问实例的公共 IP, 错误: 负载均衡器与后端实例的通信是通过内部网络进行的，不需要公共IP地址。分配公共IP不仅增加了成本，还可能引发安全问题。5. 确保存在一个防火墙规则，人允许负载均衡器健康检查到达实例组中的实例。正确: 负载均衡器通过健康检查来确定后端实例是否可用。如果防火墙规则未允许健康检查流量到达实例，负载均衡器会认为实例不可用，从而导致实例被频繁终止和重启。D. 在每个实例上创建一个与负载均衡器名称相同的标签。配置一个防火墙规则，将负载均衡器名称作为源，将实例标签作为目标。错误: 虽然标签可以用于防火墙规则的目标，但负载均衡器的名称不能直接作为防火墙规则的源。此选项的描述不符合实际配置方式。",
+      "C": "Correct. Instances being terminated and re-launched every minute indicates failing health checks, so you must add a firewall rule allowing Google's load balancer health-check ranges (130.211.0.0/22 and 35.191.0.0/16) to reach the instances; otherwise the backend marks them unhealthy and recreates them.",
       "D": "在每个实例上创建一个与负载均衡器名称相同的标签。配置一个防火墙规则，将负载均衡器名称作为源，将实例标签作为目标。错误: 虽然标签可以用于防火墙规则的目标，但负载均衡器的名称不能直接作为防火墙规则的源。此选项的描述不符合实际配置方式。"
     }
   },
@@ -418,6 +420,7 @@
     "explanations": {
       "A": "捕获现有用户输入，并重放捕获的用户负载，直到所有层的自动扩展被触发。同时，终止其中一个区域的所有资源正确性分析: 捕获观有用户输入并重放负载是一个合理的负载测试方法，可以验证系统的自动扩展逻辑。但终止一个区域的所有资源可能会导致系统完全不可用，因为系统需要跨区域郊余来满足 99.99% 的 SLA. 结论: 此选项部分正确，但终止整个区域的资源可能过于激进，无法保证 SLA。",
       "B": "创建合成的随机用户输入，重放合成负载，直到至少一个层的自动扩展逻辑被触发，并通过终止两个区域的随机资源向系统引入“混乱” 正确性分析: 创建合成负载可以模拟未来用户的行为，验证自动扩展逻辑。通过随机终止资源引入“混乱\"是典型的故障注入测试方法，可以验证系统的弹性和恢复能力。结论: 此选项全面覆盖了负载测试和故障注入测试，是一个合理的策略。5. 将新系统暴露给更大的一组用户，并每天增加组的规模，直到所有层的自动扩展逻辑被触发。同时，终止两个区域的随机资源正确性分析: 逐步增加用户组规模可以验证系统的扩展能力，但这种方法可能需要较长时间，且无法模拟高峰负载。终止随机资源虽然是故障注入的一部分，但与逐步增加用户规模结合可能不够高效。结论: 此选项方法较慢，无法快速验证系统的弹性和扩展能力。D. 捕获现有用户输入，并重放捕获的用户负载，直到资源利用率超过 80%。此外，根据现有用户对应用的使用情况推导出估计的用户数量，并部署足够的资源以处理预期负载的 200% 正确性分析: 捕获观有用户输入并重放负载是合理的，但仅测试资源利用率超过 80%可能不足以验证自动扩展逻辑。此外，直接部署资源以处理 200% 的预期负载是静态扩展，无法验证动态扩展能力。结论: 此选项更偏向静态扩展，未充分测试自动扩展和故障恢复能力。",
+      "C": "Incorrect. Slowly ramping real users and increasing group size each day does not reliably or quickly trigger autoscaling under controlled conditions, and using live customers as the load risks their experience; resiliency testing should use synthetic load and controlled chaos rather than real users.",
       "D": "捕获现有用户输入，并重放捕获的用户负载，直到资源利用率超过 80%。此外，根据现有用户对应用的使用情况推导出估计的用户数量，并部署足够的资源以处理预期负载的 200% 正确性分析: 捕获观有用户输入并重放负载是合理的，但仅测试资源利用率超过 80%可能不足以验证自动扩展逻辑。此外，直接部署资源以处理 200% 的预期负载是静态扩展，无法验证动态扩展能力。结论: 此选项更偏向静态扩展，未充分测试自动扩展和故障恢复能力。"
     }
   },
@@ -498,6 +501,7 @@
     "explanations": {
       "A": "使用不同的数据库错误。更换数据库并不能直接解决故障转移的问题，问题的核心在于如何处理主数据库故障时的自动化机制，而不是数据库类型。除非当前数据库不支持故障转移功能，但题目并未提到这一点，因此此选项不适合解决问题。",
       "B": "为您的数据库选择更大的实例错误。选择更大的实例可能会提高性能，但无法解决主数据库故障时的故障转移问题。问题的核心是故障转移机制，而不是实例大小。5. 更频繁地创建数据库快照错误。快照主要用于备份和恢复数据，而不是用于故障转移。快照无法解决主数据库故障时的自动化处理问题。D. 实施定期安排的数据库故障转移正确。定期测试和实施故障转移机制可以确保在主数据库故障时，副本能够自动提升为主数据库。这是一种主动的高可用性设计策略，可以有效避免类似问题的发生。",
+      "C": "Incorrect. Taking snapshots more often only improves backup and restore points and does nothing to make the replica reliably promote to master during a failure; routinely testing scheduled failovers is what validates the failover mechanism.",
       "D": "实施定期安排的数据库故障转移正确。定期测试和实施故障转移机制可以确保在主数据库故障时，副本能够自动提升为主数据库。这是一种主动的高可用性设计策略，可以有效避免类似问题的发生。"
     }
   },
@@ -878,6 +882,7 @@
     "explanations": {
       "A": "利用免费层和持续使用折扣。为服务成本管理设置一个员工职位。正确性: 免费层和持续使用折扣是降低成本的有效方法，特别是在需求不确定的情况下。错误性: 设置一个专职员工职位可能会增加额外的固定成本，不符合\"最小化成本\"的要求。",
       "B": "利用免费层和持续使用折扣。为团队提供服务成本管理培训。正确性: 免费层和持续使用折扣适合需求不确定的场景，且团队培训成本较低，能够提高整体成本管理能力。错误性: 没有明显的错误，符合题目要求。5. 利用免费层和承诺使用折扣。为服务成本管理设置一个员工职位。正确性: 免费层可以降低初始成本。错误性: 承诺使用折扣需要对资源需求有明确预测，而题目明确指出需求不确定，因此不适用。此外，设置员工职位增加了固定成本。D. 利用免费层和承诺使用折扣。为团队提供服务成本管理培训。正确性: 免费层可以降低初始成本，团队培训有助于成本管理。错误性: 承诺使用折扣需要对资源需求有明确预测，而题目明确指出需求不确定，因此不适用。",
+      "C": "Incorrect. Because consumer demand is still unknown, committed use discounts lock in one- or three-year spend and are inappropriate, and provisioning a dedicated staff position adds unnecessary cost; sustained use discounts apply automatically and training the team is cheaper.",
       "D": "利用免费层和承诺使用折扣。为团队提供服务成本管理培训。正确性: 免费层可以降低初始成本，团队培训有助于成本管理。错误性: 承诺使用折扣需要对资源需求有明确预测，而题目明确指出需求不确定，因此不适用。"
     }
   },
@@ -991,6 +996,7 @@
     "explanations": {
       "A": "使用与本地相同的 IP 范围: 错误。原因: 如果Google Cloud和本地系统使用相同的|P范围，会导致|P地址冲突，无法通过Cloud VPN正常通信。这是网络设计中的常见错误，必须避免。",
       "B": "为主IP范围使用与本地相同的IP范围，并使用一个与本地范围不重亚的次要范围: 错误。RA: 主|P范围与本地相同仍然会导致冲突，次要范围无法解决主范围的冲突问题。主|P范围必须与本地范围完全不重亚。5. 使用一个与本地范围不重亚的IP范围: 正确。原因: 这是最佳实践，确保Google Cloud和本地系统的|P范围不重玛，可以避免冲突并确保通过Cloud VPN的正常通信。D. 为主IP范围使用一个与本地范围不重亚的IP范围，并使用一个与本地相同的次要范围: 错误。RA: 虽然主IP范围不重赤是正确的，但次要范围与本地相同仍然会导致冲突，影响通信的稳定性。",
+      "C": "Correct. During a hybrid migration over Cloud VPN the Google Cloud ranges must not overlap with the on-premises ranges, otherwise routing between the two environments is ambiguous and on-premises systems could become unreachable.",
       "D": "为主IP范围使用一个与本地范围不重亚的IP范围，并使用一个与本地相同的次要范围: 错误。RA: 虽然主IP范围不重赤是正确的，但次要范围与本地相同仍然会导致冲突，影响通信的稳定性。"
     }
   },
@@ -1313,6 +1319,7 @@
     "explanations": {
       "A": "使用f1-micro类型的机器创建托管实例组，这种机器资源非常有限 (0.2 CPU和614 MBA)，虽和然满足题目要求的资源需求，但不适合生产环境的高可靠性和扩展性。使用启动脚本来部署应用程序，这种方式较为原始，容易出错且难以维护，无法保证可靠的版本更新。重启实例来部署新版本，这种方法效率低下上且不符合现代化的CMVCD实践。综上，A选项不符合题目要求的\"可靠部署-和\"最大化机器利用率\"。",
       "B": "使用n1-standard-1类型的机器创建托管实例组，这种机器资源充足，但可能会导致资源浪费，因为题目中应用只需要0.1 CPU和128 MB内存。构建Compute Engine镜像并自动启动应用程序，这种方式比A选项更可靠，但镜像更新和实例模板更新的过程较为繁琐，可能会影响部署效率。重新构建镜像并更新实例模板来部署新版本，这种方法虽然可行，但不够灵活，无法快速响应生产环境的需求。综上，B选项虽然比A选项更好，但仍然不是最佳选择。选项分析: 使用n1-standard-1类型的机器创建GKE集群，这种机器资源充足，且GKE支持自动扩展，能够最大化机器利用率。构建Docker镜像并使用版本号标记，这种方式符合现代化的容器化部署最佳实践，能够确保版本管理的可靠性。在staging命名空间中测试后再推广到生产命名空间，这种方法符合CVCD流程，能够确保新版本的可靠性和稳定性。综上，5选项是最佳选择，既能最大化机器利用率，又能实现可靠的版本更新。D选项分析: 使用n1-standard-4类型的机器创建GKE集群，这种机器资源过于充足，可能会导致资源浪费，不符合题目中“最大化机器利用率\"的要求。使用\"atest \"标签标记镜像，这种方式容易导致版本混淆，不符合版本管理的最佳实践。将imagePullPolicy设置为\"Always“，每次都拉取最新镜像，这种方式可能会导致不必要的网络开销，且重启Pods来部署新版本效率较低。综上，D选项不符合题目要求的\"可靠部署'和\"最大化机器利用率\"。",
+      "C": "Correct. Packaging the small (0.1 CPU, 128 MB) app as a container on GKE lets you bin-pack many workloads onto nodes to maximize utilization, and using versioned image tags promoted from staging to production gives reliable, repeatable deployments.",
       "D": "使用n1-standard-4类型的机器创建GKE集群，这种机器资源过于充足，可能会导致资源浪费，不符合题目中“最大化机器利用率\"的要求。使用\"atest \"标签标记镜像，这种方式容易导致版本混淆，不符合版本管理的最佳实践。将imagePullPolicy设置为\"Always“，每次都拉取最新镜像，这种方式可能会导致不必要的网络开销，且重启Pods来部署新版本效率较低。综上，D选项不符合题目要求的\"可靠部署'和\"最大化机器利用率\"。"
     }
   },
@@ -1635,6 +1642,7 @@
     "explanations": {
       "A": "使用 Terraform 创建托管实例组，并使用启动脚本安装操作系统包依赖项。正确性分析: 使用启动脚本安装依赖项会增加 VM 启动时间，因为每次启动时都需要运行脚本并安装软件包。结论: 此选项不符合\"最小化启动时间\"的要求。",
       "B": "创建一个包含所有操作系统包依赖项的自定义虚拟机镜像。使用 Deployment Manager 使用该虚拟机镜像创建托管实例组。正确性分析: 预先创建自定义 VM 镜像可以显著减少启动时间，因为所有依赖项已经包含在镜像中，无需额外安装。结论: 此选项符合\"最小化启动时间\"的要求，是最佳选择。5. 使用 Puppet 创建托管实例组并安装操作系统包依赖项。正确性分析: Puppet 是一种配置管理工具，可以安装依赖项，但它需要在 VM 启动后运行，这会增加启动时间。结论: 此选项不符合\"最小化启动时间\"的要求。D. 使用 Deployment Manager 创建托管实例组，并使用 Ansible 安装操作系统包依赖项。正确性分析: Ansible 是一种配置管理工具，可以安装依赖项，但它需要在 VM 启动后运行，这会增加启动时间。结论: 此选项不符合\"最小化启动时间\"的要求。",
+      "C": "Incorrect. Installing many OS package dependencies at boot with Puppet lengthens VM startup time; baking the dependencies into a custom image is what minimizes startup time for new instances in the group.",
       "D": "使用 Deployment Manager 创建托管实例组，并使用 Ansible 安装操作系统包依赖项。正确性分析: Ansible 是一种配置管理工具，可以安装依赖项，但它需要在 VM 启动后运行，这会增加启动时间。结论: 此选项不符合\"最小化启动时间\"的要求。"
     }
   },
@@ -1767,6 +1775,7 @@
     "explanations": {
       "A": "创建一个优先级为 1000 的出口规则，拒绝所有实例的所有流量。创建另一个优先级为 100 的出口规则，人允许所有实例的 Active Directory 流量。优先级较低的规则 (1000) 会在优先级较高的规则 (100) 之后被评估。优先级为 100 的规则允许 Active Directory 流量，因此该流量会被放行。优先级为 1000 的规则拒绝所有流量，但由于优先级较低，它不会覆盖优先级为 100 的规则。此配置正确实现了人允许特定流量并拒绝其他流量的目标。",
       "B": "创建一个优先级为 100 的出口规则，拒绝所有实例的所有流量。创建另一个优先级为 1000 的出口规则，人允许所有实例的 Active Directory 流量。优先级为 100 的规则拒绝所有流量，这会导致后续的优先级为 1000 的规则无法生效。此配置会阻止所有流量，包括 Active Directory 流量，因此不符合题目要求。5. 创建一个优先级为 1000 的出口规则，人允许 Active Directory 流量。依赖优先级为 100 的隐含拒绝出口规则来阻止所有实例的所有流量。隐含拒绝规则的优先级实际上是最低的 (65535)，而不是 100。优先级为 1000 的规则允许 Active Directory 流量，但由于没有明确的拒绝规则，其他流量不会被阻止。此配置不符合题目要求，因为它没有明确拒绝其他流量。D. 创建一个优先级为 100 的出口规则，人允许 Active Directory 流量。依赖优先级为 1000 的隐含拒绝出口规则来阻止所有实例的所有流量。隐含拒绝规则的优先级是 65535，而不是 1000。优先级为 100 的规则允许 Active Directory 流量，但由于没有明确的拒绝规则，其他流量不会被阻止。此配置不符合题目要求，因为它没有明确拒绝其他流量。",
+      "C": "Incorrect. The implied deny egress rule has the lowest possible priority (65535) and cannot be assigned a value like 100, so you cannot rely on it; you must create an explicit deny-all egress rule and give the Active Directory allow rule a higher-priority (lower) number.",
       "D": "创建一个优先级为 100 的出口规则，人允许 Active Directory 流量。依赖优先级为 1000 的隐含拒绝出口规则来阻止所有实例的所有流量。隐含拒绝规则的优先级是 65535，而不是 1000。优先级为 100 的规则允许 Active Directory 流量，但由于没有明确的拒绝规则，其他流量不会被阻止。此配置不符合题目要求，因为它没有明确拒绝其他流量。"
     }
   },
@@ -1785,6 +1794,7 @@
     "explanations": {
       "A": "将 Cloud Machine Learning Engine 的性能指标从 Stackdriver 导出到 BigQuery，用于分析模型的效率。分析性能指标可以帮助了解模型的运行效率，但无法直接改善模型的预测质量。此选项关注的是模型的运行效率，而不是模型的预测结果质量，因此不符合题目要求。错误原因: 此选项未涉及如何改进模型的结果。",
       "B": "制定路线图，将机器学习模型训练从 Cloud GPUs 转移到 Cloud TPUs，以获得更好的结果。Cloud TPUs确实可以加速训练过程，但模型结果的质量主要取决于数据和算法，而不是硬件。此选项关注的是硬件性能提升，而不是如何改进模型的预测结果质量。错误原因: 硬件升级可能提高训练速度，但不能直接改善模型的结果质量。.监控 Compute Engine 的公告，了解更新的 CPU 架构的可用性，并在它们可用时立即将模型部署到这些架构上以获得额外的性能。更新的CPU架构可能提高计算性能，但与模型结果质量的改进无直接关系。此选项关注的是计算性能，而不是如何改进模型的预测结果质量。错误原因: 计算性能提升不能直接改善模型的结果质量。D. 将推荐历史和推荐结果保存到 BigQuery，用作训练数据。保存历史数据和结果可以为模型提供更多的训练数据，从而改进模型的预测质量。此选项直接涉及如何通过数据改进模型的结果质量，符合题目要求。正确原因: 利用历史数据作为训练数据是改进机器学习模型的常见方法。",
+      "C": "Incorrect. Newer CPU architectures might speed up training but do nothing to improve the quality or accuracy of the recommendations over time; model quality improves by retraining on more and better historical data.",
       "D": "将推荐历史和推荐结果保存到 BigQuery，用作训练数据。保存历史数据和结果可以为模型提供更多的训练数据，从而改进模型的预测质量。此选项直接涉及如何通过数据改进模型的结果质量，符合题目要求。正确原因: 利用历史数据作为训练数据是改进机器学习模型的常见方法。"
     }
   },
@@ -1895,6 +1905,11 @@
       "D": "Store the data in Cloud Storage and run a nightly batch script that deletes all expired data."
     },
     "answer": "C",
-    "explanations": {}
+    "explanations": {
+      "A": "Incorrect. Google Drive is a consumer productivity file store, not a system for programmatic retention of regulated medical data, and manual deletion of expiring records is error-prone and not reliably auditable.",
+      "B": "Incorrect. Anonymizing the data with the Cloud DLP API and keeping it indefinitely does not satisfy the policy to delete data as soon as regulations allow, and the records must be retained in identifiable form for the mandated period.",
+      "C": "Correct. Cloud Storage Object Lifecycle Management can automatically delete objects based on age, so records are securely retained and then deleted as soon as their retention period ends, with no custom code required.",
+      "D": "Incorrect. A custom nightly batch deletion script adds operational overhead and failure risk compared with the built-in lifecycle management that Cloud Storage runs automatically."
+    }
   }
 ]
