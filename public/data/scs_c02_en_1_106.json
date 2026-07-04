@@ -1010,8 +1010,8 @@
   "answer": "C",
   "explanations": {
    "A": "Incorrect. The IAM policy attached to the role in the identity account already allows the user to call the sts:AssumeRole action, with the resource specified as arn:aws:iam::*:role/JobFunctionRole, so permissions are already configured correctly. The problem is not with the identity account's IAM policy, but with the trust policy in the target account.",
-   "B": "Correct. The JobFunctionRole in the target account must trust the IdentityRole in the identity account so that users from the identity account can access the target account's resources via sts:AssumeRole. If the trust policy is not configured correctly, users cannot perform the cross-account access.",
-   "C": "Incorrect. The trust policy of the IdentityRole in the identity account is unrelated to this problem, because the issue lies in the trust policy configuration of the role in the target account.",
+   "B": "Incorrect. AWS Cost Anomaly Detection surfaces unusual spend, not which specific resources an actor deployed or reconfigured; it cannot answer the investigative question.",
+   "C": "Correct. AWS CloudTrail records the account's API calls, so filtering the last 30 days of event history (and querying it with Athena) reveals exactly which resources the former employee created or changed.",
    "D": "Incorrect. The IAM policy attached to the role in the target account controls the role's permissions, not its trust relationship. The core of the problem is the trust policy, not the IAM permissions policy."
   }
  },

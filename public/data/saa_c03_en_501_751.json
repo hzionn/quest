@@ -3614,22 +3614,25 @@
  {
   "exam": "SAA-C03",
   "id": 687,
-  "type": "single",
+  "type": "multiple",
   "question": "A company that uses AWS needs a solution to predict the resources needed for manufacturing processes each month. The solution must use historical values that are currently stored in an Amazon S3 bucket. The company has no machine learning (ML) experience and wants to use a managed service for the training and predictions. Which combination of steps will meet these requirements? (Choose two.)",
   "options": {
    "A": "Deploy an Amazon SageMaker model. Create a SageMaker endpoint for inference.",
    "B": "Use Amazon SageMakerto train a model by using the historical data in the S3 bucket.",
    "C": "Configure an AWS Lambda function with a function URL that uses Amazon SageMaker endpoints to create predictions based on the inputs.",
-   "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs.",
+   "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create predictions based on input.",
    "E": "Train an Amazon Forsecast predictor by using the historical data in the $3 bucket."
   },
-  "answer": "D",
+  "answer": [
+   "D",
+   "E"
+  ],
   "explanations": {
-   "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs. Amazon Forecast是一个托管服务，专门用于时间序列预测，且不需要用户具备机器学习经验。 此选项通过Lambda函数调用Amazon Forecast预测器生成预测，符合题目要求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。",
+   "D": "Correct. A Lambda function invoking a trained Amazon Forecast predictor produces predictions on demand — a fully managed path needing no ML expertise.",
    "A": "Incorrect. Deploying a SageMaker model and creating an inference endpoint is the SageMaker path, which requires ML experience; the company has none and should use the fully managed Amazon Forecast.",
    "B": "Incorrect. Training a model with SageMaker also requires ML experience, which does not meet the requirement that the company has no ML experience and wants a managed service.",
    "C": "Incorrect. This relies on a SageMaker endpoint for predictions, part of the SageMaker path that requires ML experience, so it does not meet the managed-prediction requirement.",
-   "E": "Correct. Training an Amazon Forecast predictor on the historical data in S3 is fully managed and requires no ML experience; combined with option D (a Lambda function URL that calls Forecast to create predictions) it satisfies both training and prediction."
+   "E": "Correct. Amazon Forecast is a fully managed time-series forecasting service; training a predictor on the historical data in S3 requires no machine-learning experience."
   }
  },
  {
