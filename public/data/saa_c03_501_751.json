@@ -443,7 +443,10 @@
   },
   "answer": "A",
   "explanations": {
-   "A": "AWS AppSync pipeline resolvers 4. 官方答案 官方答案: A 5. 比较与重新思考 我的答案与官方答案一致，都是A。 原因是AWS AppSync pipeline resolvers能够高效地从多个DynamoDB表中检索数据，并且操作效率最高，完全符合题目要求。"
+   "A": "AWS AppSync pipeline resolvers 4. 官方答案 官方答案: A 5. 比较与重新思考 我的答案与官方答案一致，都是A。 原因是AWS AppSync pipeline resolvers能够高效地从多个DynamoDB表中检索数据，并且操作效率最高，完全符合题目要求。",
+   "B": "错误。CloudFront + Lambda@Edge 面向边缘内容处理/CDN 场景，并不是从多个 DynamoDB 表检索数据的高效方式，会增加复杂度。",
+   "C": "错误。边缘优化 API Gateway + Lambda 可行，但需要编写并管理 Lambda 函数来聚合多个表的数据，运维效率低于 AppSync 管道解析器（pipeline resolvers）。",
+   "D": "错误。Athena 联合查询用于对多种数据源进行分析型 SQL 查询，延迟较高，会影响应用基线性能，不适合低延迟的数据检索。"
   }
  },
  {
@@ -3623,7 +3626,11 @@
   },
   "answer": "D",
   "explanations": {
-   "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs. Amazon Forecast是一个托管服务，专门用于时间序列预测，且不需要用户具备机器学习经验。 此选项通过Lambda函数调用Amazon Forecast预测器生成预测，符合题目要求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。"
+   "D": "Configure an AWS Lambda function with a function URL that uses an Amazon Forecast predictor to create a prediction based on the inputs. Amazon Forecast是一个托管服务，专门用于时间序列预测，且不需要用户具备机器学习经验。 此选项通过Lambda函数调用Amazon Forecast预测器生成预测，符合题目要求。 正确原因: 使用托管服务，符合'无机器学习经验\"的条件。",
+   "A": "错误。部署 SageMaker 模型并创建推理端点属于 SageMaker 路线，需要机器学习经验；公司没有 ML 经验，应使用完全托管的 Amazon Forecast。",
+   "B": "错误。使用 SageMaker 训练模型同样需要机器学习经验，不符合“公司没有 ML 经验、希望使用托管服务”的要求。",
+   "C": "错误。该方案依赖 SageMaker 端点进行预测，属于需要 ML 经验的 SageMaker 路线，不满足使用托管预测服务的要求。",
+   "E": "正确。使用 Amazon Forecast 通过 S3 中的历史数据训练预测器，是完全托管、无需机器学习经验的方式；与选项 D（用 Lambda 函数 URL 调用 Forecast 生成预测）配合即可满足训练与预测的需求。"
   }
  },
  {
@@ -4604,7 +4611,10 @@
   },
   "answer": "A",
   "explanations": {
-   "A": "1. 考察的知识点 本题考察的是 AWS 服务的集成能力，尤其是如何使用消息队列和事件驱动架构来实现消息分发和过滤。 涉及的服务包括 Amazon API Gateway, AWS Lambda, Amazon SNS. Amazon SQS、Amazon EventBridge 和 Amazon MSK。 重点在于选择一个具有最少运维开销的解决方案，同时满足消息过滤和分发的需求。 2. 独立分析每个选项 A. Send the requests from the API Gateway REST APl to an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe Amazon Simple Queue Service (Amazon SQS) queues to the SNS topic. Configure the target Lambda functions to poll the different SQS queues. Amazon SNS 是一个发布/订阅服务，可以将消息分发到多个订阅者 (如 SQs 队列) 。 通过将 SQS 队列订阅到 SNS 主题，可以实现消息过滤，因为 SNS 支持基于消息属性的过滤规则。 Lambda 函数可以轮询 SQs 队列以处理消息，但这种方式需要配置多个队列和轮询逻辑，增加了一些运维开销。 虽然可以满足需求，但运维开销不一定是最低的。 B. Send the requests from the API Gateway REST API to Amazon EventBridge. Configure EventBridge to invoke the target Lambda functions. Amazon EventBridge 是一个事件总线服务，支持事件路由和过滤，可以直接将事件发送到目标 Lambda 函数。 EventBridge 的事件过滤功能非常强大，可以基于事件模式定义规则，确保每个 Lambda 函数只接收需要的消息。 这种方式的运维开销非常低，因为不需要额外配置队列或轮询逻辑。 从功能和运维角度来看，这是一个更优的选择。 C. Send the requests from the API Gateway REST API to Amazon Managed Streaming for Apache Kafka (Amazon MSK). Configure Amazon MSK to publish the messages to the target Lambda functions. Amazon MSK 是一个托管的 Kafka 服务，适用于处理高吞吐量的实时流数据。 昌然 Kafka 支持消息分发，但配置和管理 Kafka 集群的运维开销较高，不符合\"最少运维开销\"的要求。 此外，Kafka 的消息过滤功能需要额外的开发工作，不如 EventBridge 或 SNS 原生支持过滤规则。 因此，这个选项不适合本题需求。 D. Send the requests from the API Gateway REST API to multiple Amazon Simple Queue Service (Amazon SQS) queues. Configure the target Lambda functions to poll the different SQS queues. 直接使用多个 SQs 队列可以实现消息分发，但无法实现消息过滤功能。 此外，配置多个队列和轮询逻辑会增加运维开销，不符合\"最少运维开销\"的要求。 因此，这个选项不符合题目需求。 3. 我的选择 我选择的答案是: B 4. 官方答案 官方答案是: A 5. 比较与重新思考 官方答案选择 A，可能是因为 SNS 和 SQS 的组合可以实现消息分发和过滤功能。 然而，A 的运维开销较高，因为需要配置多个 SQs 队列和轮询逻辑。 B 使用 EventBridge，可以直接实现消息过滤和分发，且运维开销最低。 综合考虑功能和运维开销，我认为 B 是更优的选择。"
+   "A": "1. 考察的知识点 本题考察的是 AWS 服务的集成能力，尤其是如何使用消息队列和事件驱动架构来实现消息分发和过滤。 涉及的服务包括 Amazon API Gateway, AWS Lambda, Amazon SNS. Amazon SQS、Amazon EventBridge 和 Amazon MSK。 重点在于选择一个具有最少运维开销的解决方案，同时满足消息过滤和分发的需求。 2. 独立分析每个选项 A. Send the requests from the API Gateway REST APl to an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe Amazon Simple Queue Service (Amazon SQS) queues to the SNS topic. Configure the target Lambda functions to poll the different SQS queues. Amazon SNS 是一个发布/订阅服务，可以将消息分发到多个订阅者 (如 SQs 队列) 。 通过将 SQS 队列订阅到 SNS 主题，可以实现消息过滤，因为 SNS 支持基于消息属性的过滤规则。 Lambda 函数可以轮询 SQs 队列以处理消息，但这种方式需要配置多个队列和轮询逻辑，增加了一些运维开销。 虽然可以满足需求，但运维开销不一定是最低的。 B. Send the requests from the API Gateway REST API to Amazon EventBridge. Configure EventBridge to invoke the target Lambda functions. Amazon EventBridge 是一个事件总线服务，支持事件路由和过滤，可以直接将事件发送到目标 Lambda 函数。 EventBridge 的事件过滤功能非常强大，可以基于事件模式定义规则，确保每个 Lambda 函数只接收需要的消息。 这种方式的运维开销非常低，因为不需要额外配置队列或轮询逻辑。 从功能和运维角度来看，这是一个更优的选择。 C. Send the requests from the API Gateway REST API to Amazon Managed Streaming for Apache Kafka (Amazon MSK). Configure Amazon MSK to publish the messages to the target Lambda functions. Amazon MSK 是一个托管的 Kafka 服务，适用于处理高吞吐量的实时流数据。 昌然 Kafka 支持消息分发，但配置和管理 Kafka 集群的运维开销较高，不符合\"最少运维开销\"的要求。 此外，Kafka 的消息过滤功能需要额外的开发工作，不如 EventBridge 或 SNS 原生支持过滤规则。 因此，这个选项不适合本题需求。 D. Send the requests from the API Gateway REST API to multiple Amazon Simple Queue Service (Amazon SQS) queues. Configure the target Lambda functions to poll the different SQS queues. 直接使用多个 SQs 队列可以实现消息分发，但无法实现消息过滤功能。 此外，配置多个队列和轮询逻辑会增加运维开销，不符合\"最少运维开销\"的要求。 因此，这个选项不符合题目需求。 3. 我的选择 我选择的答案是: B 4. 官方答案 官方答案是: A 5. 比较与重新思考 官方答案选择 A，可能是因为 SNS 和 SQS 的组合可以实现消息分发和过滤功能。 然而，A 的运维开销较高，因为需要配置多个 SQs 队列和轮询逻辑。 B 使用 EventBridge，可以直接实现消息过滤和分发，且运维开销最低。 综合考虑功能和运维开销，我认为 B 是更优的选择。",
+   "B": "错误。EventBridge 虽支持事件模式过滤，但直接调用 Lambda 时消息缺少 SQS 队列的缓冲与重试；且本题的 SNS+SQS 扇出结合消息过滤的组合更契合“将消息分发到多个目标 Lambda 并按需过滤”的要求。",
+   "C": "错误。Amazon MSK（Kafka）需要管理主题、分区与消费者，运维开销大，且不提供开箱即用的按订阅消息过滤，不符合“最少运维开销”。",
+   "D": "错误。直接向多个 SQS 队列发送请求需要在生产端自行决定投递到哪些队列，缺乏 SNS 主题级别的消息过滤能力，增加了实现复杂度。"
   }
  },
  {
