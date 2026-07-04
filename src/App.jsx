@@ -1783,32 +1783,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               onAnswer={(ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans })}
             />
 
-            {/* Result */}
-            {practiceSubmitted[qKey] && (
-              <div className={`mt-5 p-5 rounded-xl animate-correct-pop ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
-                <div className="flex items-center gap-2 mb-3">
-                  {isCorrect
-                    ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400 animate-icon-bounce" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
-                    : <><XCircle size={22} className="text-red-600 dark:text-red-400 animate-icon-bounce" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
-                  }
-                </div>
-                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
-              </div>
-            )}
-            {/* Show answer mode (not submitted yet) */}
-            {state.showAnswers && !practiceSubmitted[qKey] && (
-              <div className="mt-5 p-5 rounded-xl animate-scale-in bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <Eye size={18} className="text-purple-600 dark:text-purple-400" />
-                  <span className="font-bold text-purple-700 dark:text-purple-400 text-sm">
-                    正確答案：{Array.isArray(currentQ.answer) ? currentQ.answer.join(', ') : currentQ.answer}
-                  </span>
-                </div>
-                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
-              </div>
-            )}
-
-            {/* 桌機操作列（選項之後，閱讀動線不中斷） */}
+            {/* 桌機操作列（選項之後、詳解之上，方便切換上下題不必捲過長解析） */}
             <div className="hidden md:flex items-center justify-between mt-6 pt-5 border-t border-gray-100 dark:border-gray-700/60">
               <button
                 onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })}
@@ -1836,6 +1811,31 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
               </button>
             </div>
             <HotkeyHint />
+
+            {/* Result */}
+            {practiceSubmitted[qKey] && (
+              <div className={`mt-5 p-5 rounded-xl animate-correct-pop ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
+                <div className="flex items-center gap-2 mb-3">
+                  {isCorrect
+                    ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400 animate-icon-bounce" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
+                    : <><XCircle size={22} className="text-red-600 dark:text-red-400 animate-icon-bounce" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
+                  }
+                </div>
+                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
+              </div>
+            )}
+            {/* Show answer mode (not submitted yet) */}
+            {state.showAnswers && !practiceSubmitted[qKey] && (
+              <div className="mt-5 p-5 rounded-xl animate-scale-in bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Eye size={18} className="text-purple-600 dark:text-purple-400" />
+                  <span className="font-bold text-purple-700 dark:text-purple-400 text-sm">
+                    正確答案：{Array.isArray(currentQ.answer) ? currentQ.answer.join(', ') : currentQ.answer}
+                  </span>
+                </div>
+                <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
+              </div>
+            )}
           </div>
         </div>
       )}
