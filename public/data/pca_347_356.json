@@ -11,7 +11,12 @@
       "D": "Develop custom Cloud Run functions to automate the provisioning of new Google Cloud environments. Incorporate security measures and pre - defined configurations within the functions to ensure consistency and protection. •"
     },
     "answer": "A",
-    "explanations": {},
+    "explanations": {
+      "A": "正确。使用 Terraform 等基础设施即代码（IaC）工具来定义和管理基础设施配置，可自动化地为每个保险提供商一致地预配安全环境，保证配置统一、可重复且提供一致的用户体验。",
+      "B": "错误。GKE 的集群自动扩缩和节点自动预配解决的是工作负载的扩展问题，而不是自动化地为每个提供商一致地预配和管理整套安全环境。",
+      "C": "错误。通过 Google Cloud 控制台手动为每个新环境预配和配置资源既耗时又容易出错，无法保证一致性，也无法规模化。",
+      "D": "错误。用自定义 Cloud Run 函数自行实现环境预配相当于重复造轮子，代码维护成本高、易出错，不如使用成熟的 IaC 工具（如 Terraform）。"
+    },
     "officialNo": 61
   },
   {
@@ -26,7 +31,12 @@
       "D": "Deploy an OpenID Connect(OIDC) identity provider in GE, and integrate it with Active Directory for centralized authentication and fine - grained authorization controls. •"
     },
     "answer": "C",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。VPN 隧道和基于 IP/端口的防火墙规则属于网络层控制，无法解决因凭据泄露导致的身份认证问题。",
+      "B": "错误。为每个应用创建服务账号并把凭据分发到本地系统会继续使用容易泄露的静态密钥，正是本次安全事件的根源，属于反模式。",
+      "C": "正确。配置与 Active Directory 集成的 Workload Identity Federation，可让两个 Kubernetes 环境中的应用使用现有身份提供商进行无密钥的认证与授权，消除长期凭据泄露风险并满足合规要求。",
+      "D": "错误。在 GKE 中自建 OIDC 身份提供商再与 AD 集成会带来额外的运维负担，Workload Identity Federation 才是 Google 推荐的、与现有身份提供商联合的无密钥方案。"
+    },
     "officialNo": 62
   },
   {
@@ -41,7 +51,12 @@
       "D": "Set up database replication to Cloud SQL instances using native database tools, and incrementally switch applications to use the replicas. •"
     },
     "answer": "B",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。AlloyDB 兼容 PostgreSQL，不适合迁移 MySQL 等现有关系型数据库，且它本身并非迁移工具；应使用 Database Migration Service 迁移到 Cloud SQL。",
+      "B": "正确。使用 Database Migration Service（DMS）将 MySQL 数据库迁移到 Cloud SQL，是 Google 托管的低停机迁移方案，可在内部专业知识有限的情况下满足严格的正常运行时间要求。",
+      "C": "错误。备份再恢复到 Cloud SQL 的方式会产生明显停机，无法满足严格的正常运行时间要求。",
+      "D": "错误。使用原生数据库工具自行搭建复制并逐步切换需要较强的运维和数据库专业能力，而团队内部专业知识有限，不如使用托管的 DMS 简单可靠。"
+    },
     "officialNo": 63
   },
   {
@@ -56,7 +71,12 @@
       "D": "Design a migration plan to move all of Cymbal's data to Cloud Storage, and use Cloud Run functions for all business logic. Mark this item for later review. •"
     },
     "answer": "C",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。在单一窗口一次性迁移所有组件属于「大爆炸」式迁移，会放大中断和风险，不符合稳妥的变更管理要求。",
+      "B": "错误。将所有数据搬到 Cloud Storage 并用 Compute Engine 承载全部业务逻辑，既没有体现变更管理，也无法实现目录自动丰富和提升可发现性的目标。",
+      "C": "正确。采用分阶段迁移，先从某个具体产品类别的试点项目开始，验证成功后再逐步扩展到其他类别，可最大限度地降低对业务的中断和风险，符合 Google 推荐的变更管理实践。",
+      "D": "错误。将全部数据一次性迁到 Cloud Storage 并用 Cloud Run 函数承载所有逻辑，同样属于一次性大规模迁移，风险高且未体现渐进式变更管理。"
+    },
     "officialNo": 64
   },
   {
@@ -71,7 +91,12 @@
       "D": "Use Google Cloud's VPC peering to connect Cymbal's on - premises network to Google Cloud. •"
     },
     "answer": "A",
-    "explanations": {},
+    "explanations": {
+      "A": "正确。配置 Cloud VPN 网关并建立 VPN 隧道，再用防火墙规则按 IP 和端口限制访问，是 Google 推荐的在本地与云环境之间建立安全、可管理连接的方式。",
+      "B": "错误。堡垒主机（bastion host）用于安全地管理访问单台实例，并不能在本地网络与云网络之间建立站点到站点的安全通信。",
+      "C": "错误。使用 SSH 隧道搭建的静态 VPN 难以扩展和管理，也不是 Google 推荐的站点到站点连接方案。",
+      "D": "错误。VPC 对等连接（VPC Peering）用于连接 Google Cloud 内的两个 VPC，无法将本地网络连接到 Google Cloud。"
+    },
     "officialNo": 65
   },
   {
@@ -86,7 +111,12 @@
       "D": "Configure Cloud Build to call Al Applications(formerly Vertex Al Agent Builder). •"
     },
     "answer": "C",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。Cloud SQL 用于存储客户数据和产品目录，属于存储服务，并不是为 AI 虚拟客服提供可扩展计算资源的方案。",
+      "B": "错误。单个大型 Compute Engine 虚拟机无法自动扩展来应对波动的交互负载，且存在单点故障。",
+      "C": "正确。部署启用了自动扩缩的 Google Kubernetes Engine（GKE）集群，可根据 AI 虚拟客服的负载自动扩展计算资源，满足可伸缩性要求。",
+      "D": "错误。Cloud Build 是 CI/CD 构建工具，不用于运行可扩展的虚拟客服计算负载，用它调用 AI Applications 并不能提供所需的可扩展计算资源。"
+    },
     "officialNo": 66
   },
   {
@@ -101,7 +131,12 @@
       "D": "Migrate MySQL and SQL Server to Spanner, Redis to Memorystore, and MongoDB to Firestore. Use Cloud Storage Standard for image storage, and move images to Cloud Storage Nearline storage when products become less popular. •"
     },
     "answer": "C",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。将所有数据库都迁移到 Spanner 成本高且大材小用，无法针对多样化的数据库分别选择合适服务，也没有为图像设置分层生命周期以优化成本。",
+      "B": "错误。在 Compute Engine 上自管理所有数据库运维负担大且缺乏托管高可用，用持久磁盘存储图像的成本效益也不如 Cloud Storage。",
+      "C": "正确。将 MySQL、SQL Server 分别迁移到 Cloud SQL，Redis 迁到 Memorystore，MongoDB 迁到 Firestore，可为各数据库匹配合适的托管服务；图像先用 Cloud Storage Standard，随着访问变冷转到 Coldline，能同时优化成本与性能。",
+      "D": "错误。MySQL 和 SQL Server 迁移到 Spanner 需要大量重构且并不匹配；对于超过 90 天且访问越来越少的图像，Coldline 比 Nearline 更具成本效益，因此该方案不是最优。"
+    },
     "officialNo": 67
   },
   {
@@ -116,7 +151,12 @@
       "D": "Investigate if the project owner enabled a soft - delete policy on the bucket holding the video files. •"
     },
     "answer": "B",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。从双区域（dual-region）迁移到单区域（region）存储通常会降低而非提高存储成本，因此这不是本月 Standard 存储成本突然上升的原因。",
+      "B": "正确。存储桶的软删除（soft delete）策略会保留被删除或被覆盖的对象并按标准存储费率继续计费，是影响 Standard 存储成本的关键配置；排查该存储桶软删除策略的变更是定位本月成本突增的正确方向。",
+      "C": "错误。从多区域（multi-region）迁移到单区域（region）存储通常会降低成本，不会导致 Standard 存储成本突然上升。",
+      "D": "错误。本题成本上升应通过排查存储桶软删除策略的变更来确定（见选项 B），从这一角度判断并非正确的排查方向。"
+    },
     "officialNo": 68
   },
   {
@@ -131,7 +171,12 @@
       "D": "Use the Cloud Storage bucket in the same region as your virtual machines. Configure lifecycle policies to delete files after processing. •"
     },
     "answer": "B",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。性能型持久磁盘（persistent disk）通过网络访问，延迟高于本地 SSD；对于临时性、频繁读写的临时文件，本地 SSD 性能更优。",
+      "B": "正确。将本地 SSD（Local SSD）直接挂载到运行生成式 AI 模型的 VM，可为短暂、频繁访问和修改的临时文件提供最低延迟和最高性能，且成本合理，最适合这类临时暂存数据。",
+      "C": "错误。Filestore 是网络文件存储，延迟和成本都高于本地 SSD，不适合用于短暂的高性能临时文件暂存。",
+      "D": "错误。Cloud Storage 是对象存储，延迟较高，不适合频繁修改的临时文件；虽可用生命周期策略清理，但性能无法满足生成式 AI 临时文件的需求。"
+    },
     "officialNo": 69
   },
   {
@@ -146,7 +191,12 @@
       "D": "Use Cloud Storage for structured product data, and BigQuery for product images. •"
     },
     "answer": "C",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。Filestore 是网络文件共享，不适合作为承载结构化产品目录数据、需要查询和高可用的数据库。",
+      "B": "错误。Bigtable 是 NoSQL 宽列数据库，不适合存储产品图像等二进制大对象；且用 Spanner 承载该场景成本偏高、属于过度设计。",
+      "C": "正确。使用 AlloyDB（高性能、高可用的托管 PostgreSQL）承载结构化产品数据，用 Cloud Storage 存储产品图像，既能保证高效访问与高可用，又能降低运维成本。",
+      "D": "错误。Cloud Storage 不适合承载需要关系型查询的结构化数据，BigQuery 是分析型数据仓库，也不用于存储和分发产品图像。"
+    },
     "officialNo": 70
   }
 ]
