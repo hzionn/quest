@@ -947,7 +947,7 @@
     "id": 150,
     "question": "Amazon SageMarker AI一位機器學習工程師正在分析一個分類資料集，準備在中訓練模型。該工程師懷疑資料集的類別標籤存在顯著不平衡，這可能導致模型預測偏差。為了確認類別不平衡問題，此工程師需要選擇適當的預訓練偏誤指標。哪個指標能夠滿足此要求？",
     "explanations": {
-      "B": "✅ ( -標籤比例差異DPL)正確• 分析：DPL衡量的是某個敏感特徵（如性別或種族）的不同子集中，標籤分佈的差異。◦ 公式簡化表達： $DPL = \\frac{n_a^（1）（n_a） - \\frac{n_d^（1）（n_d}$$a$ $d$（其中 是受惠組， 是受損組）。• 為什麼正確：在SageMaker中，AI DPL正是專門用來確認數據集中是否存在類別標籤不平衡或分佈偏差的標準預訓練指標。",
+      "B": "✅ ( -標籤比例差異DPL)正確• 分析：DPL衡量的是某個敏感特徵（如性別或種族）的不同子集中，標籤分佈的差異。◦ 公式簡化表達： DPL = n_a^(1)/n_a − n_d^(1)/n_d（其中 a 是受惠組，d 是受損組）。• 為什麼正確：在SageMaker中，AI DPL正是專門用來確認數據集中是否存在類別標籤不平衡或分佈偏差的標準預訓練指標。",
       "C": "❌ ( -輪廓分數Silhouette Score)錯誤• (Clustering) K（Means分析：輪廓分數是用於評估分群 演算法（如 ）效果的指標。•為什麼不選：它衡量的是群內相似度與群間差異度，與分類標籤的比例平衡無關。",
       "D": "❌ ( -結構相似性指數SSIM)錯誤• 分析：SSIM是一種衡量兩張圖像相似度的指標。•為什麼不選：這通常用於電腦視覺領域（如影像壓縮、重建），完全無法用於分析分類資料集的標籤平衡問題。3.解題關鍵與總結• \"Pre-training bias metric\" \"\"關鍵字對應：看到Class或imbalance，應優先尋找SageMaker Clarify的相關指標，如DPL CI （Class Imbalance）、或JS （Jensen-Shannon Divergence）。•區分階段：◦ 訓練前 (Pre-training) ：分析數據集本身（如 DPL ）。◦ 訓練後 (Post-training) ：分析模型預測結果（如 DPPL （ Difference inPositive Proportions in Predicted Labels）。"
     },
@@ -1076,7 +1076,7 @@
     "id": 157,
     "question": "Amazon SageMaker AI一家公司正在訓練一個新的機器學習模型，以取代部署在即時端點上的現有模型。機器學習工程師需要確定新模型的延遲和準確率。該工程師必須在生產環境中評估新模型，且不能影響現有模型的使用者。哪種解決方案能夠滿足這些要求？",
     "explanations": {
-      "D": "✅ % -進行影子測試，流量抽樣百分比為100正確• 分析：影子測試會複製（Mirror）所有進入端點的請求。•為什麼正確：1.安全性：使用者的回應僅來自舊模型，新模型在「後台」默默運行。%全面性：2. 100的流量抽樣意味著工程師可以獲得最完整的測試數據，精確比較兩者在延遲和準確率上的差異。3.合規性：完全符合「不影響使用者」且「在生產環境評估」的雙重需求。3.解題關鍵與總結• \"No impact on existing users\" + \"Evaluate in關鍵字對應：看到production\" $\\rightarrow$ 唯一答案就是Shadow Testing。•考點延伸：◦ A/B Testing ：用於比較兩個模型的效果（如轉化率），使用者會看到不同的結果。◦ Blue/Green ：用於安全更換版本，通常配合切換策略減少停機時間。",
+      "D": "✅ % -進行影子測試，流量抽樣百分比為100正確• 分析：影子測試會複製（Mirror）所有進入端點的請求。•為什麼正確：1.安全性：使用者的回應僅來自舊模型，新模型在「後台」默默運行。%全面性：2. 100的流量抽樣意味著工程師可以獲得最完整的測試數據，精確比較兩者在延遲和準確率上的差異。3.合規性：完全符合「不影響使用者」且「在生產環境評估」的雙重需求。3.解題關鍵與總結• \"No impact on existing users\" + \"Evaluate in關鍵字對應：看到production\" → 唯一答案就是Shadow Testing。•考點延伸：◦ A/B Testing ：用於比較兩個模型的效果（如轉化率），使用者會看到不同的結果。◦ Blue/Green ：用於安全更換版本，通常配合切換策略減少停機時間。",
       "A": "❌ ( -執行藍綠部署，實現線性流量切換Linear Traffic Shifting)錯誤• %分析：線性切換是指分階段（例如每10分鐘增加10）將真實使用者導向新模型。•為什麼不選：雖然這種方法比一次性切換安全，但在切換過程中，仍有部分使用者會收到新模型的結果。如果新模型準確率不佳，會直接影響到這部分使用者，不符合題目要求。",
       "B": "❌ ( -執行藍綠部署，並進行金絲雀流量切換Canary Traffic Shifting)錯誤• %分析：金絲雀部署是先將一小部分流量（例如5）導向新模型。• 為什麼不選：與選項A類似，雖然受影響的人數較少，但它依然是讓真實使用者去測試未經驗證的模型。這違背了「不能影響現有模型使用者」的條件。",
       "C": "❌ 50% ( -以目前車隊規模的Rolling進行滾動部署Deployment)錯誤•分析：滾動部署會逐一替換實例。• %為什麼不選：在部署期間，負載均衡器會將50的使用者請求導向新實例（新模型）。這是風險最高的做法之一，因為一半的使用者會立即與新模型互動。"
@@ -1098,7 +1098,7 @@
       "A": "核心知識點：1. AWS Glue生態系統•  ( )爬蟲AWS Glue Crawler：這是實現「最少人工干預」的關鍵。它可以自S3 CSV, JSON, Parquet動掃描 中的檔案（如 ），識別檔案格式，並推斷其架構（Schema/模式）。•  ( )資料目錄AWS Glue Data Catalog：這是一個集中式的元資料儲存庫。它Athena, 存儲了數據的表定義、位置和模式資訊。這讓Redshift Spectrum和等服務能直接讀取SageMaker S3數據而不需要手動定義結構。• ：Serverless ETL AWS Glue是一個無伺服器環境，自動處理底層資源的擴展，工程師只需專注於轉換邏輯。2.選項獨立分析 -使用A.執行AWS Glue並將元資料儲存在資料目錄中ETL正確• 分析：AWS Glue是專門為此場景設計的。•為什麼正確：自動化：1. Glue Crawler可以自動發現數據模式。整合性：2.是儲存元資料的標準Glue Data Catalog AWS服務。低維運：它是3. Serverless服務，符合「最少人工干預」的要求。",
       "B": "❌ 建立Amazon SageMaker Data Wrangler流-錯誤• 分析：Data Wrangler是一個視覺化工具，旨在幫助工程師「手動」進行數據準備、特徵工程和視覺化。• 為什麼不選：雖然Data Wrangler很好用，但它主要用於互動式探索，而非大規模自動化ETL與全局元資料目錄管理。此外，它的元資料通常是流程的一部分，而不是像Glue Data Catalog那樣供全公司服務調用的全局目錄。",
       "C": "❌  -使用Athena和Step建立Functions管道ETL錯誤• 分析：這是一個「自建」方案。你需要寫Step Functions的狀態機邏輯，還要在Athena中編寫DDL SQL來定義表結構。•為什麼不選：這涉及大量的程式碼撰寫與元件整合，人工干預程度高，不符合題目「最少人工干預」的優先級。",
-      "D": "❌  -啟動EC2執行個體來執行ETL並儲存至Redshift錯誤•分析：這是最傳統、維運負擔最大的做法。•為什麼不選：高維運：需要管理1. EC2補丁、擴展與儲存。不匹配：2.用於建模而非scikit-learn ETL。成本高：為了存儲元資料而啟動3. Redshift（數據倉庫）是大材小用且成本極高。3.解題關鍵與總結•關鍵詞對應：◦ \"Discover data patterns\" ( 發現數據模式 ) $\\rightarrow$ AWS GlueCrawler。◦ \"Store metadata\" ( 儲存元資料 ) $\\rightarrow$ AWS Glue DataCatalog。◦ \"Minimal manual intervention\" ( 最少人工干預 ) $\\rightarrow$Serverless / Fully Managed services ( 如Glue)。"
+      "D": "❌  -啟動EC2執行個體來執行ETL並儲存至Redshift錯誤•分析：這是最傳統、維運負擔最大的做法。•為什麼不選：高維運：需要管理1. EC2補丁、擴展與儲存。不匹配：2.用於建模而非scikit-learn ETL。成本高：為了存儲元資料而啟動3. Redshift（數據倉庫）是大材小用且成本極高。3.解題關鍵與總結•關鍵詞對應：◦ \"Discover data patterns\" ( 發現數據模式 ) → AWS GlueCrawler。◦ \"Store metadata\" ( 儲存元資料 ) → AWS Glue DataCatalog。◦ \"Minimal manual intervention\" ( 最少人工干預 ) → Serverless / Fully Managed services ( 如Glue)。"
     },
     "type": "single",
     "options": {

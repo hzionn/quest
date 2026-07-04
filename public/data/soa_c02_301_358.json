@@ -103,14 +103,14 @@
       "A": "General Purpose SSD (gp3) Amazon Elastic Block Store (Amazon EBS) 卷",
       "B": "Provisioned IOPS SSD (io2) Amazon Elastic Block Store (Amazon EBS) 卷",
       "C": "Throughput Optimized HDD (st1) Amazon Elastic Block Store (Amazon EBS) 卷",
-      "D": ""
+      "D": "EC2 实例存储（EC2 instance store）"
     },
     "answer": "D",
     "explanations": {
       "A": "错误。虽然gp3 EBS卷提供了良好的性能和性价比，但它是持久性存储，适合需要数据持久化的场景，而题目明确指出缓存数据不 需要在实例重启后保留。",
       "B": "错误。io2 EBS卷提供了最高的IOPS性能，但它也是持久性存储，适合需要极高性能和持久化的场景。题目要求的是临时缓存，io2 不符合需求。",
       "C": "错误。st1 EBS卷是为高吞吐量的顺序读写设计的，但它的性能不如SSD选项，且仍然是持久性存储，不适合临时缓存场景。",
-      "D": ""
+      "D": "正确。EC2 实例存储（instance store）是物理连接到主机的临时块存储，提供最高的 I/O 性能。其数据在实例停止或终止后不会保留，非常适合存放频繁变化且无需持久化的临时缓存数据。"
     }
   },
   {
@@ -471,10 +471,10 @@
     "type": "single",
     "question": "一个 SysOps 管理员正在管理一个运行在 Amazon EC2 实例上的 Web 应用程序，这些实例位于一个 Application Load Balancer (ALB) 后面。实例运行在一个 EC2 Auto Scaling 组中。管理员希望设置一个警报，当与 ALB 关联的所有目标实例都处于不健康状态 时触发。 应该使用哪个条件来设置警报？",
     "options": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": ""
+      "A": "AWS/ApplicationELB HealthyHostCount <= 0",
+      "B": "AWS/ApplicationELB UnhealthyHostCount >= 1",
+      "C": "AWS/EC2 StatusCheckFailed <= 0",
+      "D": "AWS/EC2 StatusCheckFailed >= 1"
     },
     "answer": "A",
     "explanations": {
