@@ -19,8 +19,8 @@ const GITHUB_REPO = 'quest'
 const GITHUB_BRANCH = 'claude/aws-exam-practice-app-mSqvt'
 const DATA_PATH = 'public/data'
 const BASE_URL = import.meta.env.BASE_URL || '/quest/'
-// Provider-neutral app icon (the bank now spans AWS + GCP)
-const cloudIcon = `${BASE_URL}cloud-icon.svg`
+// App logo (user-supplied); used in the header and the password gate.
+const cloudIcon = `${BASE_URL}logo.png`
 // Cache-bust token fixed at BUILD time: within one deploy every visitor hits
 // the same URLs so the browser/CDN can cache the (immutable) JSON banks, and a
 // new deploy mints a new token which busts everything at once. Data edits go
