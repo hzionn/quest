@@ -756,7 +756,7 @@ function PasswordGate({ onAuth }) {
         <div className="flex justify-center mb-4">
           <img src={cloudIcon} alt="雲端證照" className="h-16 rounded-2xl" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">雲端證照考試練習器</h2>
+        <h2 className="text-xl font-semibold text-white mb-2 tracking-tight">雲端證照考試練習器</h2>
         <p className="text-gray-400 text-sm mb-4">{PASSWORD_HINT}</p>
         <input
           type="password"
@@ -833,7 +833,7 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
         <div className="flex justify-center mb-4 h-14">
           <img src={logoSrc} alt={provider.toUpperCase()} className="h-14 object-contain" />
         </div>
-        <h2 className="text-xl font-bold text-white text-center mb-1">請選擇練習科別</h2>
+        <h2 className="text-xl font-semibold text-white text-center mb-1 tracking-tight">請選擇練習科別</h2>
         <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
 
         {/* Cloud provider tabs */}
@@ -1130,7 +1130,7 @@ export default function App() {
         <header className="glass-header bg-aws-dark/95 dark:bg-aws-darker/95 shadow-lg sticky top-0 z-50 border-b border-white/5">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex flex-col">
-              <h1 className="text-lg md:text-xl font-bold text-white flex items-center gap-2.5">
+              <h1 className="text-lg md:text-xl font-semibold text-white flex items-center gap-2.5">
                 <img src={cloudIcon} alt="雲端證照" className="h-9 md:h-10 rounded-xl" />
                 <span className="hidden sm:inline text-orange-400 tracking-tight">雲端證照考試練習器</span>
                 <span className="sm:hidden text-orange-400 tracking-tight">考試練習</span>
@@ -1579,7 +1579,7 @@ function StatCard({ label, value, icon: Icon }) {
           <Icon size={18} className="text-orange-500 dark:text-orange-400" />
         </div>
       )}
-      <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 animate-count">{value}</div>
+      <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 animate-count tnum">{value}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</div>
     </div>
   )
@@ -1615,9 +1615,12 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     }
     const ans = practiceAnswers[qKey]
     if (!ans || (Array.isArray(ans) && ans.length === 0)) return
+    const correct = computeCorrect(currentQRaw, ans)
+    // Light haptic on phones: short tap for correct, double for wrong.
+    try { navigator.vibrate?.(correct ? 15 : [20, 40, 20]) } catch { /* unsupported */ }
     dispatch({ type: 'SUBMIT_ANSWER', question: currentQRaw })
     // 答對自動進入下一題（答錯則停留以便查看解析）
-    if (computeCorrect(currentQRaw, ans) && practiceIndex < practiceFiltered.length - 1) {
+    if (correct && practiceIndex < practiceFiltered.length - 1) {
       setTimeout(() => dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }), 900)
     }
   }
@@ -1736,7 +1739,7 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
       {currentQ && (
         <div className="surface-card overflow-hidden animate-fade-in" key={qKey} onTouchStart={onCardTouchStart} onTouchEnd={onCardTouchEnd}>
           {/* Color accent bar based on exam type */}
-          <div className="h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600" />
+          <div className="h-0.5 bg-gradient-to-r from-orange-400/70 to-orange-500/70" />
 
           <div className="p-6 md:p-8">
             {/* Question header */}
@@ -1782,11 +1785,11 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
 
             {/* Result */}
             {practiceSubmitted[qKey] && (
-              <div className={`mt-5 p-5 rounded-xl animate-scale-in ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
+              <div className={`mt-5 p-5 rounded-xl animate-correct-pop ${isCorrect ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
                 <div className="flex items-center gap-2 mb-3">
                   {isCorrect
-                    ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
-                    : <><XCircle size={22} className="text-red-600 dark:text-red-400" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
+                    ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400 animate-icon-bounce" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
+                    : <><XCircle size={22} className="text-red-600 dark:text-red-400 animate-icon-bounce" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
                   }
                 </div>
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
@@ -2793,7 +2796,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
             )}
           </div>
           <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-2 font-mono text-lg font-bold ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : ''}`}>
+            <div className={`flex items-center gap-2 font-mono text-lg font-bold tnum ${state.examRemaining < 300 ? 'text-red-600 dark:text-red-400 animate-pulse' : ''}`}>
               <Clock size={18} />
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </div>
@@ -2819,7 +2822,7 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
       {/* Question */}
       {examQ && (
         <div className="surface-card overflow-hidden" onTouchStart={onExamTouchStart} onTouchEnd={onExamTouchEnd}>
-          <div className="h-1 bg-gradient-to-r from-orange-400 to-orange-500" />
+          <div className="h-0.5 bg-gradient-to-r from-orange-400/70 to-orange-500/70" />
           <div className="p-6 md:p-8">
             <div className="flex items-center gap-2 mb-5 flex-wrap">
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{displayExam(examQ.exam)}</span>
@@ -2956,13 +2959,53 @@ function computeStreak(daily) {
 }
 
 // ── 每日目標＋連續學習：單值進度環（軌道低調灰，達標轉綠） ──
+// 連續天數里程碑：達 100/30/7 天時進度環轉金色並顯示徽章
+function streakMilestone(streak) {
+  if (streak >= 100) return { at: 100, gold: true, label: '百日達人' }
+  if (streak >= 30) return { at: 30, gold: true, label: '30 天里程碑' }
+  if (streak >= 7) return { at: 7, gold: true, label: '一週連續' }
+  return null
+}
+
+// 一次性彩帶（每日目標達成時觸發）
+function ConfettiBurst() {
+  const colors = ['#ec7211', '#22c55e', '#3b82f6', '#eab308', '#ef4444']
+  const pieces = Array.from({ length: 18 }, (_, i) => ({
+    left: `${(i * 5.4 + (i % 3) * 4) % 100}%`,
+    bg: colors[i % colors.length],
+    delay: `${(i % 6) * 60}ms`,
+  }))
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {pieces.map((p, i) => (
+        <span key={i} className="confetti-piece" style={{ left: p.left, top: 0, background: p.bg, animationDelay: p.delay }} />
+      ))}
+    </div>
+  )
+}
+
 function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
   const todayCount = combinedDaily[todayKey()]?.answered || 0
   const streak = computeStreak(combinedDaily)
   const pct = Math.min(1, dailyGoal > 0 ? todayCount / dailyGoal : 0)
-  const done = todayCount >= dailyGoal
+  const done = todayCount >= dailyGoal && dailyGoal > 0
+  const milestone = streakMilestone(streak)
   const R = 30, C = 2 * Math.PI * R
-  const ringColor = done ? '#16a34a' : '#ec7211'
+  const ringColor = milestone?.gold ? '#eab308' : done ? '#16a34a' : '#ec7211'
+  // 彩帶只在「本次剛達標」那一刻放一次（每天一次），用 localStorage 記日期
+  const [celebrate, setCelebrate] = useState(false)
+  useEffect(() => {
+    if (!done) return
+    try {
+      const key = 'quest-goal-celebrated'
+      if (localStorage.getItem(key) !== todayKey()) {
+        localStorage.setItem(key, todayKey())
+        setCelebrate(true)
+        const t = setTimeout(() => setCelebrate(false), 1100)
+        return () => clearTimeout(t)
+      }
+    } catch { /* ignore */ }
+  }, [done])
   const editGoal = () => {
     const v = window.prompt('設定每日目標題數（1–500）', String(dailyGoal))
     if (v == null) return
@@ -2970,14 +3013,22 @@ function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
     if (Number.isFinite(n) && n >= 1) dispatch({ type: 'SET_DAILY_GOAL', goal: n })
   }
   return (
-    <div className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap">
+    <div className="surface-card relative p-5 flex items-center justify-between gap-4 flex-wrap overflow-hidden">
+      {celebrate && <ConfettiBurst />}
       <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${streak > 0 ? 'bg-orange-50 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20' : 'bg-gray-100 dark:bg-gray-700'}`}>
-          <Flame size={24} className={streak > 0 ? 'text-orange-500' : 'text-gray-400'} fill={streak > 0 ? 'currentColor' : 'none'} />
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+          milestone?.gold
+            ? 'bg-yellow-50 dark:bg-yellow-500/10 ring-1 ring-yellow-200 dark:ring-yellow-500/30'
+            : streak > 0 ? 'bg-orange-50 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20' : 'bg-gray-100 dark:bg-gray-700'
+        }`}>
+          <Flame size={24} className={milestone?.gold ? 'text-yellow-500' : streak > 0 ? 'text-orange-500' : 'text-gray-400'} fill={streak > 0 ? 'currentColor' : 'none'} />
         </div>
         <div>
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 leading-tight">
-            {streak > 0 ? `連續學習 ${streak} 天` : '今天還沒開始'}
+          <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 leading-tight flex items-center gap-2">
+            <span className="tnum">{streak > 0 ? `連續學習 ${streak} 天` : '今天還沒開始'}</span>
+            {milestone && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-500/15 text-yellow-700 dark:text-yellow-400 whitespace-nowrap">🏆 {milestone.label}</span>
+            )}
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             {done
@@ -2999,8 +3050,8 @@ function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-sm font-bold text-gray-900 dark:text-gray-50 leading-none">{todayCount}</span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">/ {dailyGoal} 題</span>
+            <span className="text-sm font-bold text-gray-900 dark:text-gray-50 leading-none tnum">{todayCount}</span>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 tnum">/ {dailyGoal} 題</span>
           </div>
         </div>
         <button
@@ -3605,10 +3656,17 @@ function QuestionList({ items, dispatch, showMastery = false, defaultCollapsed =
 // Empty State
 // ══════════════════════════════════════════
 function EmptyState({ message, icon: Icon, action, actionLabel }) {
+  const spinning = Icon === Loader2
   return (
     <div className="surface-card p-16 text-center animate-fade-in">
-      <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-5">
-        <Icon size={36} className="text-gray-300 dark:text-gray-500" />
+      {/* Soft layered "scene": concentric rings behind the icon give the empty
+          state a bit more presence than a bare square. */}
+      <div className="relative w-28 h-28 mx-auto mb-6">
+        <div className="absolute inset-0 rounded-full bg-orange-100/50 dark:bg-orange-500/5" />
+        <div className="absolute inset-3 rounded-full bg-orange-100/70 dark:bg-orange-500/10" />
+        <div className="absolute inset-6 rounded-2xl bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center ring-1 ring-orange-100 dark:ring-orange-500/20">
+          <Icon size={30} className={`text-orange-400 dark:text-orange-300/80 ${spinning ? 'animate-spin' : ''}`} />
+        </div>
       </div>
       <p className="text-gray-500 dark:text-gray-400 mb-5 text-base">{message}</p>
       {action && (
