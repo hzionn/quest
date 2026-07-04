@@ -2168,7 +2168,10 @@
   },
   "answer": "B",
   "explanations": {
-   "B": "1. 考察的知识点 本题考察的是AWS的事件驱动架构，特别是如何保证事件的顺序性以及如何将事件分发到多个服务。 涉及的服务包括Amazon EventBridge、Amazon SNS (FIFO和标准主题) 、以及Amazon SQS (FIFO队列) 。"
+   "B": "1. 考察的知识点 本题考察的是AWS的事件驱动架构，特别是如何保证事件的顺序性以及如何将事件分发到多个服务。 涉及的服务包括Amazon EventBridge、Amazon SNS (FIFO和标准主题) 、以及Amazon SQS (FIFO队列) 。",
+   "A": "Incorrect. An EventBridge event bus does not guarantee ordered delivery of events, so it cannot meet the ordering requirement.",
+   "C": "Incorrect. SNS standard topics provide only best-effort ordering (with possible out-of-order or duplicate delivery) and do not guarantee message order.",
+   "D": "Incorrect. SQS FIFO queues preserve order but are point-to-point; they cannot fan the same event out simultaneously to the leaderboard, matchmaking, and authentication services the way an SNS FIFO topic can."
   }
  },
  {
@@ -2723,7 +2726,10 @@
   },
   "answer": "A",
   "explanations": {
-   "A": "1. 考察的知识点 安全组的配置与使用: 如何正确配置安全组以确保应用的安全性和可访问性。 网络安全: 如何限制数据库的访问权限，仅允许来自特定来源的流量。 全球访问: 如何允许动态 |P 地址的客户访问公共 Web 应用。 2. 选项分析 A: Web 服务器安全组允许来自 0.0.0.0/0 的端口 443 入站流量: 正确，因为这是一个公共 Web 应用，全球客户需要访问，且客户的 IP 是动态的，因此需要允许所有 IP 地址访问。 数据库安全组允许来自 Web 服务器安全组的端口 3306 入站流量: 正确，因为数据库应该仅允许来自 Web 服务器的流量，而不是 直接暴露给外部。 B: Web 服务器安全组允许来自客户 IP 地址的端口 443 入站流量: 错误，因为客户的 IP 地址是动态的，无法提前确定具体的 IP 范 围。 数据库安全组允许来自 Web 服务器安全组的端口 3306 入站流量: 正确，但由于 Web 服务器的配置错误，整体方案不可行。 C: Web 服务器安全组允许来自客户 IP 地址的端口 443 入站流量: 错误，因为客户的 IP 地址是动态的，无法提前确定具体的 IP 范 围。 数据库安全组允许来自客户 IP 地址的端口 3306 入站流量: 错误，因为数据库不应该直接暴露给客户，而是仅允许来自 Web 服务 器的流量。 D: Web 服务器安全组允许来自 0.0.0.0/0 的端口 443 入站流量: 正确，因为这是一个公共 Web 应用，全球客户需要访问。 数据库安全组允许来自 0.0.0.0/0 的端口 3306 入站流量: 错误，因为数据库不应该暴露给所有 IP 地址，这会导致严重的安全问题。 3. 我选的答案 A 4. 官方答案 A 5. 与官方答案比较 我的答案与官方答案一致，没有差异。"
+   "A": "1. 考察的知识点 安全组的配置与使用: 如何正确配置安全组以确保应用的安全性和可访问性。 网络安全: 如何限制数据库的访问权限，仅允许来自特定来源的流量。 全球访问: 如何允许动态 |P 地址的客户访问公共 Web 应用。 2. 选项分析 A: Web 服务器安全组允许来自 0.0.0.0/0 的端口 443 入站流量: 正确，因为这是一个公共 Web 应用，全球客户需要访问，且客户的 IP 是动态的，因此需要允许所有 IP 地址访问。 数据库安全组允许来自 Web 服务器安全组的端口 3306 入站流量: 正确，因为数据库应该仅允许来自 Web 服务器的流量，而不是 直接暴露给外部。 B: Web 服务器安全组允许来自客户 IP 地址的端口 443 入站流量: 错误，因为客户的 IP 地址是动态的，无法提前确定具体的 IP 范 围。 数据库安全组允许来自 Web 服务器安全组的端口 3306 入站流量: 正确，但由于 Web 服务器的配置错误，整体方案不可行。 C: Web 服务器安全组允许来自客户 IP 地址的端口 443 入站流量: 错误，因为客户的 IP 地址是动态的，无法提前确定具体的 IP 范 围。 数据库安全组允许来自客户 IP 地址的端口 3306 入站流量: 错误，因为数据库不应该直接暴露给客户，而是仅允许来自 Web 服务 器的流量。 D: Web 服务器安全组允许来自 0.0.0.0/0 的端口 443 入站流量: 正确，因为这是一个公共 Web 应用，全球客户需要访问。 数据库安全组允许来自 0.0.0.0/0 的端口 3306 入站流量: 错误，因为数据库不应该暴露给所有 IP 地址，这会导致严重的安全问题。 3. 我选的答案 A 4. 官方答案 A 5. 与官方答案比较 我的答案与官方答案一致，没有差异。",
+   "B": "Incorrect. The web tier must be reachable by global clients with dynamic IPs and cannot be limited to specific client IPs, so port 443 must allow 0.0.0.0/0; restricting to client IPs would block some users.",
+   "C": "Incorrect. Besides wrongly restricting the web tier to specific client IPs, it opens database port 3306 to client IPs; the database should never be directly exposed to clients, violating least privilege.",
+   "D": "Incorrect. Allowing 0.0.0.0/0 on the web tier is correct, but opening database port 3306 to 0.0.0.0/0 exposes the database to the entire internet, a serious risk; the database should only allow traffic from the web server security group."
   }
  },
  {
@@ -4369,7 +4375,10 @@
   },
   "answer": "D",
   "explanations": {
-   "D": "1. 考察的知识点 IAM策略的结构与权限管理。 Amazon S3的权限模型，包括针对桶和对象的权限。 理解资源”的定义和如何正确指定权限。 2. 选项分析 A: 未提供具体选项内容，无法分析。 B: 未提供具体选项内容，无法分析。 C: 未提供具体选项内容，无法分析。 D: 未提供具体选项内容，无法分析。 3. 我选的答案 答案: D 4. 官方的答案 答案: D 5. 与官方答案的比较 我的答案与官方答案一致。 RA: 根据题目描述，IAM策略中缺少对对象资源的正确权限定义。S3的权限需要分别针对桶 (ListBucket) 和对象 (DeleteObject) 进行授权。当前策略仅对桶资源进行了授权，而未对对象资源进行授权，因此需要添加针对对象的权限。"
+   "D": "1. 考察的知识点 IAM策略的结构与权限管理。 Amazon S3的权限模型，包括针对桶和对象的权限。 理解资源”的定义和如何正确指定权限。 2. 选项分析 A: 未提供具体选项内容，无法分析。 B: 未提供具体选项内容，无法分析。 C: 未提供具体选项内容，无法分析。 D: 未提供具体选项内容，无法分析。 3. 我选的答案 答案: D 4. 官方的答案 答案: D 5. 与官方答案的比较 我的答案与官方答案一致。 RA: 根据题目描述，IAM策略中缺少对对象资源的正确权限定义。S3的权限需要分别针对桶 (ListBucket) 和对象 (DeleteObject) 进行授权。当前策略仅对桶资源进行了授权，而未对对象资源进行授权，因此需要添加针对对象的权限。",
+   "A": "Incorrect. This option does not provide a valid Allow statement scoped to the object-level resource ARN (arn:aws:s3:::bucket-name/*), so it cannot grant permission to delete objects (s3:DeleteObject) in the bucket.",
+   "B": "Incorrect. Its resource ARN or statement structure does not correctly apply the delete action to objects inside the bucket, so it still does not fix the inability to delete objects.",
+   "C": "Incorrect. The resource ARN is missing the object-level \"/*\" suffix (e.g. written as arn:aws:s3:::bucket-name*), so the delete action does not match objects within the bucket and the permission still fails."
   }
  },
  {

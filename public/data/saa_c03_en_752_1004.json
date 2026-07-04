@@ -974,7 +974,10 @@
   },
   "answer": "D",
   "explanations": {
-   "D": "1. 考察的知识点 无服务器架构 (Serverless Architecture) AWsS服务集成: Amazon API Gateway, AWS Lambda, Amazon ECS, AWS Fargate 最小化运维开销 (Least Operational Overhead) 事件驱动架构 (Event-Driven Architecture) 2. 选项分析 A: 使用Amazon SQS和Amazon EventBridge进行消息处理是合理的，但后端应用程序部署在Amazon EKS Anywhere需要用户管理基础 设施 (独立集群) ，这增加了运维开销。 错误原因: Amazon EKS Anywhere并非完全托管服务，违反了\"最小化运维开销”的要求。 B: 使用Amazon API Gateway和AWS Step Functions进行消息处理是合理的，但后端应用程序部署在Amazon EKS (自管理节点) 需要 用户管理节点和集群，增加了运维开销。 错误原因: EKS自管理节点需要用户负责节点的维护，违反了\"最小化运维开销\"的要求。 C: 使用Amazon SQS和Amazon EventBridge进行消息处理是合理的，但后端应用程序部署在Amazon EC2 Spot Instances需要用户管理 实例和Spot Fleet，增加了运维开销。 错误原因: EC2 Spot Instances需要用户负责实例管理，违反了\"最小化运维开销\"的要求。 D: 使用Amazon API Gateway和AWS Lambda进行消息处理是合理的，后端应用程序部署在Amazon ECS (使用AWS Fargate启动类型) 是完全托管的解决方案，符合'最小化运维开销\"的要求。 正确原因: AWS Fargate是无服务器计算引擎，用户无需管理底层基础设施，完全符合题目要求。 3. 我选的答案 D 4. 官方答案 D 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+   "D": "1. 考察的知识点 无服务器架构 (Serverless Architecture) AWsS服务集成: Amazon API Gateway, AWS Lambda, Amazon ECS, AWS Fargate 最小化运维开销 (Least Operational Overhead) 事件驱动架构 (Event-Driven Architecture) 2. 选项分析 A: 使用Amazon SQS和Amazon EventBridge进行消息处理是合理的，但后端应用程序部署在Amazon EKS Anywhere需要用户管理基础 设施 (独立集群) ，这增加了运维开销。 错误原因: Amazon EKS Anywhere并非完全托管服务，违反了\"最小化运维开销”的要求。 B: 使用Amazon API Gateway和AWS Step Functions进行消息处理是合理的，但后端应用程序部署在Amazon EKS (自管理节点) 需要 用户管理节点和集群，增加了运维开销。 错误原因: EKS自管理节点需要用户负责节点的维护，违反了\"最小化运维开销\"的要求。 C: 使用Amazon SQS和Amazon EventBridge进行消息处理是合理的，但后端应用程序部署在Amazon EC2 Spot Instances需要用户管理 实例和Spot Fleet，增加了运维开销。 错误原因: EC2 Spot Instances需要用户负责实例管理，违反了\"最小化运维开销\"的要求。 D: 使用Amazon API Gateway和AWS Lambda进行消息处理是合理的，后端应用程序部署在Amazon ECS (使用AWS Fargate启动类型) 是完全托管的解决方案，符合'最小化运维开销\"的要求。 正确原因: AWS Fargate是无服务器计算引擎，用户无需管理底层基础设施，完全符合题目要求。 3. 我选的答案 D 4. 官方答案 D 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。",
+   "A": "Incorrect. An EventBridge rule cannot itself receive payment notifications from mobile devices, and Amazon EKS Anywhere runs on on-premises infrastructure that you must manage, which conflicts with not wanting to manage infrastructure.",
+   "B": "Incorrect. An EKS cluster with self-managed nodes requires you to manage and maintain the nodes, adding operational overhead and not meeting the no-infrastructure-management requirement.",
+   "C": "Incorrect. EC2 Spot Instances can be interrupted and are unsuitable for long-running backend processing, and you must manage the Spot Fleet and instances, which is high operational overhead."
   }
  },
  {
@@ -3338,7 +3341,10 @@
   },
   "answer": "B",
   "explanations": {
-   "B": "A 选项: 配置仅使用 Fargate 的容量提供程序 + 第三方压测 + CloudWatch 中 rightsizing 优点: rightsizing 有助于降低资源浪费; 压测能帮助评估容量需求。 问题: 没有引入任何突发期的成本优化手段 (例如 Spot) 。在短时高流量下只能通过按需 Fargate 扩容，尖峰成本更高。 结论: 能满足可用性，但不满足\"MOST cost-effectively (最具成本效益) “。 B 选项: 稳态使用 Fargate，突发流量使用 Fargate Spot 的容量提供程序 优点: 稳态容量使用不可中断的 Fargate，满足 7x24 与高可用的基本要求。 突发扩容使用更便宜的 Fargate Spot，在短时尖峰时显著降低成本。 容量提供程序可帮助服务在扩缩时按策略在两种容量间分配任务。 风险与可接受性: Fargate Spot 可能被回收，但用于\"突发容量“通常可接受 稳态仍由 Fargate 承担，整体仍可保持高可用。 Sit: 同时满足高可用与突发弹性，并且最省钱。 C 选项: 稳态使用 Fargate Spot，突发使用 Fargate 问题: FSI Spot 上意味着核心 7x24 容量可能随时被中断，不符合\"必须高可用/持续可用\"的要求。 成本逻辑也不优: 把更贵的 Fargate 用在突发 (短时) 上，把可中断 Spot 用在稳态 (长期) 上，会引入可用性风险; 即便省钱也不 满足可用性前提。 结论: 不满足高可用与持续可用的关键约束。 D 选项: 配置仅使用 Fargate 的容量提供程序 + 用 Compute Optimizer rightsizing 优点: Compute Optimizer 可能提供更系统的规格优化建议，减少浪费。 问题: 仍然没有利用 Spot 来降低“突发扩容\"的单位成本，对于'短时高流量突发\"，仅 rightsizing 通常不如'按需+Spot混合\"节省。 结论: 可改进成本但通常不是“最具成本效益\"的方案。 4. 我选择的答案 B 5. 官方答案 B 6. 与官方答案对比与复盘 我的答案: B 官方答案: B 对比结果: 一致。 复盘原因: 稳态必须用不可中断的 Fargate 保证 7x24 与高可用; 突发部分用 Fargate Spot 降低峰值成本，是满足所有约束下最经 济的组合。"
+   "B": "A 选项: 配置仅使用 Fargate 的容量提供程序 + 第三方压测 + CloudWatch 中 rightsizing 优点: rightsizing 有助于降低资源浪费; 压测能帮助评估容量需求。 问题: 没有引入任何突发期的成本优化手段 (例如 Spot) 。在短时高流量下只能通过按需 Fargate 扩容，尖峰成本更高。 结论: 能满足可用性，但不满足\"MOST cost-effectively (最具成本效益) “。 B 选项: 稳态使用 Fargate，突发流量使用 Fargate Spot 的容量提供程序 优点: 稳态容量使用不可中断的 Fargate，满足 7x24 与高可用的基本要求。 突发扩容使用更便宜的 Fargate Spot，在短时尖峰时显著降低成本。 容量提供程序可帮助服务在扩缩时按策略在两种容量间分配任务。 风险与可接受性: Fargate Spot 可能被回收，但用于\"突发容量“通常可接受 稳态仍由 Fargate 承担，整体仍可保持高可用。 Sit: 同时满足高可用与突发弹性，并且最省钱。 C 选项: 稳态使用 Fargate Spot，突发使用 Fargate 问题: FSI Spot 上意味着核心 7x24 容量可能随时被中断，不符合\"必须高可用/持续可用\"的要求。 成本逻辑也不优: 把更贵的 Fargate 用在突发 (短时) 上，把可中断 Spot 用在稳态 (长期) 上，会引入可用性风险; 即便省钱也不 满足可用性前提。 结论: 不满足高可用与持续可用的关键约束。 D 选项: 配置仅使用 Fargate 的容量提供程序 + 用 Compute Optimizer rightsizing 优点: Compute Optimizer 可能提供更系统的规格优化建议，减少浪费。 问题: 仍然没有利用 Spot 来降低“突发扩容\"的单位成本，对于'短时高流量突发\"，仅 rightsizing 通常不如'按需+Spot混合\"节省。 结论: 可改进成本但通常不是“最具成本效益\"的方案。 4. 我选择的答案 B 5. 官方答案 B 6. 与官方答案对比与复盘 我的答案: B 官方答案: B 对比结果: 一致。 复盘原因: 稳态必须用不可中断的 Fargate 保证 7x24 与高可用; 突发部分用 Fargate Spot 降低峰值成本，是满足所有约束下最经 济的组合。",
+   "A": "Incorrect. Using a third-party load-testing tool and manually rightsizing in CloudWatch adds operational effort and does not use Fargate Spot to reduce the cost of traffic bursts, so it is less cost-effective than a capacity provider using Fargate for steady state and Fargate Spot for bursts.",
+   "C": "Incorrect. Placing the steady-state load on Fargate Spot risks Spot capacity reclamation, harming 24/7 high availability; steady state should use on-demand Fargate and only bursts should use Fargate Spot.",
+   "D": "Incorrect. Using Fargate alone with Compute Optimizer rightsizing cannot handle short bursts as cheaply as Fargate Spot, making it less cost-effective."
   }
  },
  {
@@ -3848,7 +3854,10 @@
   },
   "answer": "C",
   "explanations": {
-   "C": "在现有的 S3 bucket 上配置 CRR，使用 Amazon S3 managed keys (SSE-S3) 进行服务器端加密，使用 Amazon Athena 查询 数据。 6. 与官方答案比较 我的答案与官方答案一致。原因如下: Amazon Athena 是无服务器查询服务，符合无服务器架构的要求。 直接使用现有的 S3 bucket，避免额外的操作开销。 SSE-S3 提供基本的加密功能，满足题目要求。 CRR 实现跨区域复制，满足题目要求。 因此，答案是正确的，无需更改。"
+   "C": "在现有的 S3 bucket 上配置 CRR，使用 Amazon S3 managed keys (SSE-S3) 进行服务器端加密，使用 Amazon Athena 查询 数据。 6. 与官方答案比较 我的答案与官方答案一致。原因如下: Amazon Athena 是无服务器查询服务，符合无服务器架构的要求。 直接使用现有的 S3 bucket，避免额外的操作开销。 SSE-S3 提供基本的加密功能，满足题目要求。 CRR 实现跨区域复制，满足题目要求。 因此，答案是正确的，无需更改。",
+   "A": "Incorrect. The requirement is least operational overhead, so creating a new bucket and loading data is unnecessary, and SSE-KMS multi-Region keys add key management overhead compared with SSE-S3 on the existing bucket.",
+   "B": "Incorrect. Besides needlessly creating a new bucket and loading data, Amazon RDS is not serverless and cannot run SQL directly against data in S3; Amazon Athena should be used.",
+   "D": "Incorrect. Amazon RDS cannot query data directly in S3 and is not serverless, so it cannot meet the requirement to analyze S3 data with SQL."
   }
  },
  {
@@ -3902,7 +3911,10 @@
   },
   "answer": "A",
   "explanations": {
-   "A": "1. 考察的知识点 灾难恢复 (Disaster Recovery) 策略，包括主动-被动和主动-主动架构。 Amazon Aurora全球数据库的功能和使用场景。 Amazon Route 53的故障切换配置 (Active-Passive和Active-Active) 。 Auto Scaling组的容量设置及其在灾难恢复中的作用。 2. 选项分析 A: 正确: 在第二个AWS区域中部署DR基础设施，并将Auto Scaling组的目标容量和最大容量设置为最小值，确保资源不会浪费。 正确: 将Aurora MySQL DB集群转换为Aurora全球数据库，支持跨区域复制，满足灾难恢复需求。 正确: 使用Amazon Route 53配置主动-被动故障切换，确保在主区域故障时能够快速切换到备区域。 B: 错误: 主动-主动故障切换不符合题目要求，因为题目明确指出DR解决方案不需要在主基础设施健康时支持客户使用。 正确: Aurora全球数据库支持跨区域复制，满足灾难恢复需求。 C: 错误: 使用AWS Backup备份Aurora MySQL DB集群数据并在灾难发生时恢复，可能无法满足30分钟的恢复时间要求。 错误: 主动-主动故障切换不符合题目要求。 D: 错误: 备份基础设施配置并在灾难发生时创建所需的基础设施，可能无法满足30分钟的恢复时间要求。 正确: Aurora全球数据库支持跨区域复制，满足灾难恢复需求。 正确: 主动-被动故障切换符合题目要求。 3. 我选的答案 A 4. 官方答案 A 5. 与官方答案的比较 我的答案与官方答案一致，无需重新思考。"
+   "A": "1. 考察的知识点 灾难恢复 (Disaster Recovery) 策略，包括主动-被动和主动-主动架构。 Amazon Aurora全球数据库的功能和使用场景。 Amazon Route 53的故障切换配置 (Active-Passive和Active-Active) 。 Auto Scaling组的容量设置及其在灾难恢复中的作用。 2. 选项分析 A: 正确: 在第二个AWS区域中部署DR基础设施，并将Auto Scaling组的目标容量和最大容量设置为最小值，确保资源不会浪费。 正确: 将Aurora MySQL DB集群转换为Aurora全球数据库，支持跨区域复制，满足灾难恢复需求。 正确: 使用Amazon Route 53配置主动-被动故障切换，确保在主区域故障时能够快速切换到备区域。 B: 错误: 主动-主动故障切换不符合题目要求，因为题目明确指出DR解决方案不需要在主基础设施健康时支持客户使用。 正确: Aurora全球数据库支持跨区域复制，满足灾难恢复需求。 C: 错误: 使用AWS Backup备份Aurora MySQL DB集群数据并在灾难发生时恢复，可能无法满足30分钟的恢复时间要求。 错误: 主动-主动故障切换不符合题目要求。 D: 错误: 备份基础设施配置并在灾难发生时创建所需的基础设施，可能无法满足30分钟的恢复时间要求。 正确: Aurora全球数据库支持跨区域复制，满足灾难恢复需求。 正确: 主动-被动故障切换符合题目要求。 3. 我选的答案 A 4. 官方答案 A 5. 与官方答案的比较 我的答案与官方答案一致，无需重新思考。",
+   "B": "Incorrect. Adding the second Region’s EC2 instances to the same Auto Scaling group with active-active failover keeps standby capacity serving customers continuously, which exceeds the requirement that DR need not serve customers while primary is healthy, and costs more.",
+   "C": "Incorrect. Restoring the Aurora cluster from backup significantly increases recovery time and struggles to meet the 30-minute RTO, and active-active configuration still serves traffic during normal operation, exceeding the requirement.",
+   "D": "Incorrect. Using AWS Backup and recreating all infrastructure during a disaster lengthens recovery time and is unlikely to complete within 30 minutes; provisioning a minimal standby environment (as in option A) is more reliable."
   }
  },
  {

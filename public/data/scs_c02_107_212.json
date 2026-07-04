@@ -724,7 +724,9 @@
   "answer": "D",
   "explanations": {
    "A": "在两个账户中,创建一个 transit gateway 和每个可用区子网中的 VPC 附件。更新 VPC 路由表。错误: Transit Gateway 适用于复杂的多 VPC 连接场景,但在本题中仅涉及两个 VPC 之间的通信,使用 Transit Gateway 过于复杂且成本较高。此外, Transit Gateway 并不直接解决 S3 访问问题。",
-   "B": "在账户 A 中部署一个软件 VPN 设备。创建一个软件 VPN 设备与账户 B 中的虚拟私有网关之间的 VPN 连接。错误: VPN 连接通常用于跨区域或跨网络的通信,但本题明确说明应用和 S3 桶在同一区域内,因此不需要 VPN 。此外, VPN 连接的设置复杂且不适合直接访问 S3 。 C. 在账户 A 的 VPC 和账户 B 的 VPC 之间创建一个 VPC 对等连接。更新 VPC 路由表、网络 ACL 和安全组,以允许对等 IP 范围之间的网络流量。错误: VPC Peering 适用于 VPC 之间的通信,但 S3 是区域级服务,不依赖 VPC Peering 。此外, S3 访问可以通过 VPC Endpoint 直接实现, 无需 VPC Peering 。 D. 在账户 A 中,为 Amazon S3 创建一个 gateway VPC endpoint 。更新账户 A 中的 VPC 路由表。正确: Gateway VPC Endpoint 是专 ⻔ 为 S3 和 DynamoDB 设计的,可以通过私有网络直接访问 S3 , 而无需通过公共互联网。此解决方案简单、成本低,并完全满足题目要求。"
+   "B": "在账户 A 中部署一个软件 VPN 设备。创建一个软件 VPN 设备与账户 B 中的虚拟私有网关之间的 VPN 连接。错误: VPN 连接通常用于跨区域或跨网络的通信,但本题明确说明应用和 S3 桶在同一区域内,因此不需要 VPN 。此外, VPN 连接的设置复杂且不适合直接访问 S3 。 C. 在账户 A 的 VPC 和账户 B 的 VPC 之间创建一个 VPC 对等连接。更新 VPC 路由表、网络 ACL 和安全组,以允许对等 IP 范围之间的网络流量。错误: VPC Peering 适用于 VPC 之间的通信,但 S3 是区域级服务,不依赖 VPC Peering 。此外, S3 访问可以通过 VPC Endpoint 直接实现, 无需 VPC Peering 。 D. 在账户 A 中,为 Amazon S3 创建一个 gateway VPC endpoint 。更新账户 A 中的 VPC 路由表。正确: Gateway VPC Endpoint 是专 ⻔ 为 S3 和 DynamoDB 设计的,可以通过私有网络直接访问 S3 , 而无需通过公共互联网。此解决方案简单、成本低,并完全满足题目要求。",
+   "C": "错误。VPC 对等连接用于打通两个 VPC 的私有网络，但 Amazon S3 是区域级服务、并不位于账户 B 的 VPC 内，因此无法通过 VPC 对等连接访问 S3，方案不适用。",
+   "D": "正确。在账户 A 的 VPC 中为 Amazon S3 创建网关 VPC 终端节点（gateway VPC endpoint）并更新路由表，可使流量经 AWS 私有网络访问 S3，无需经过公共互联网；由于应用已具备写入账户 B 存储桶的权限且处于同一区域，此方案满足要求且成本低。"
   }
  },
  {
@@ -1214,7 +1216,9 @@
    "A": "正确性分析 :AWS Config 可以检测资源配置的变化,但题目要求“避免对 SCP 进行更改” , 而 AWS Config 规则的创建并不直接满足题目中提到的“Security Hub”和“EventBridge”的集成需求。错误原因 : 虽然 AWS Config 可以检测配置变化,但它不是题目中要求的最佳解决方案,且没有直接提到与 Security Hub 的集成。结论 : 错误。",
    "B": "正确性分析 :AWS Systems Manager Change Manager 主要用于变更管理, 而不是实时响应和修复不符合安全标准的资源。错误原因 : 题目要求“实时响应和修复” , 而 Change Manager 的功能更偏向于变更跟踪和管理,不符合题目需求。结论 : 错误。",
    "C": "正确性分析 :Security Hub 的自定义操作可以与 EventBridge 集成, 用于触发事件规则并实现自动化响应。正确原因 : 此选项直接满足题目中提到的“Security Hub”和“EventBridge”的集成需求, 且支持实时响应。结论 : 正确。",
-   "D": "正确性分析 :EventBridge 事件规则可以触发 Lambda 函数以对资源进行操作,满足实时响应和修复的需求。正确原因 : 此选项直接支持题目中提到的“实时响应和修复” ,且与 Security Hub 集成非常适合。结论 : 正确。"
+   "D": "正确性分析 :EventBridge 事件规则可以触发 Lambda 函数以对资源进行操作,满足实时响应和修复的需求。正确原因 : 此选项直接支持题目中提到的“实时响应和修复” ,且与 Security Hub 集成非常适合。结论 : 正确。",
+   "E": "错误。让 EventBridge 调用 Lambda 去“评估一组 API 请求的资源配置并创建发现”与 AWS Config 检测配置更改的职责重复且实现复杂，不属于本题所选的近实时修复组合（A、C、D）。",
+   "F": "错误。按计划（定时）调用 Lambda 评估特定 AWS Config 规则属于周期性评估，无法实现近实时响应，也不如 A、C、D 组合可扩展、经济，因此不选。"
   }
  },
  {
@@ -1873,7 +1877,8 @@
   "explanations": {
    "B": "直接使用 Amazon EventBridge 规则匹配 Security Hub 的高严重性发现事件，简化了流程。错误：通过 SNS 发送通知，订阅邮箱即可接收告警，符合“最少运维开销”的要求，但本题要求是“最少运维开销”，因此使用 EventBridge + SNS 是合理的；选项 B 通过 Lambda 与 EventBridge 处理 Security Hub 的高严重性发现事件，简化了流程，这是正确的做法。",
    "C": "错误 :AWS Control Tower 主要用于账户治理, 而不是直接处理安全事件。错误 : 匹配 Control Tower 事件无法满足题目要求的“高严重性安全发现”条件。",
-   "D": "错误 : 托管 EC2 实例运行应用程序增加了运维开销和成本。错误 : 需要手动管理应用程序和 API 调用 ,违背了“最少运维开销”的要求。"
+   "D": "错误 : 托管 EC2 实例运行应用程序增加了运维开销和成本。错误 : 需要手动管理应用程序和 API 调用 ,违背了“最少运维开销”的要求。",
+   "A": "错误。为 GuardDuty、IAM Access Analyzer 和 Macie 分别编写 Lambda 调用各自的公共 API 并按计划轮询检索高严重性发现，运维开销大；由于已启用 Security Hub 并集成了所有服务，直接用 EventBridge 匹配 Security Hub 的高严重性发现事件更简单，因此 A 不符合“最少运维开销”。"
   }
  },
  {
