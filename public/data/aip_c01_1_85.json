@@ -234,9 +234,9 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "正确点：Amazon Comprehend（含医疗相关能力）可做实体抽取、分类，有助于对输出进行结构化检查与一定程度的质量信号（例如实体是否缺失）。Step Functions + CloudWatch可用于自动化与监控。关键不足：无法直接覆盖'幻觉识别'核心：实体识别置信度高并不代表内容事实正确；模型可能'自信地胡说'。对检索准确性（retrieval accuracy/precision）覆盖不足：Comprehend主要做NLP抽取与分类，不是RAG检索评估框架。会产生'看似量化、但不等于于事实性/检索准确性'的指标追踪风险。结论：不满足'识别幻觉+高准确检索评估'的核心要求，整体不如混合评估体系。",
-      "B": "正确点：LLM-based evaluation / LLM-as-a-judge可以更直接评估相关性与事实性（若设计为基于检索证据对齐的评审提示词/打分标准）。Lambda并行化 + CloudWatch指标：在工程上可行，有利于规模化自动评估与持续监控。'医疗微调专用评估模型'在领域准确性上可能更强。关键不足：没有明确'减少人工审核成本'的策略：虽然自动化评估本身能减少人审，但题目强调'降低人工审核成本'通常需要'自动筛查+仅对边缘/高风险案例做人审'的明确闭环。没有明确覆盖检索层指标：它'评估所有responses'，更偏生成答案质量；但'高准确 patient information retrievals'通常需要对检索结果（命中文档/段落、precision、grounding）进行专项评估。仅靠LLM judge评估所有响应，存在在评估成本与稳定性问题（评估本身也会产生推理成本/偏差）。结论：方向接近，但对'检索评估'和'人审优化闭环'描述不够完整。",
-      "C": "正确点：用CloudWatch Synthetics做定时'已知答案'的合成回归测试，可监控端到端成功率与回归漂移。关键不足：不擅长幻觉识别：合成测试能发现部分错误；但无法系统性度量幻觉率、证据对齐、事实性。不擅长检索准确性分解：更多是黑盒可用性/成功率监控，而非RAG检索precision/grounding的专项评估。不能直接降低人工审核成本：它是监控方案+抽检策略。结论：只能做一部分回归监控，不满足题目三大要求的综合方案。",
+      "A": "错误。Amazon Comprehend 的实体抽取只反映 NLP 置信度，无法度量检索准确性或识别生成内容中的幻觉，不能满足题目对幻觉检测与降低人工审核成本的要求。",
+      "B": "错误。为评估每一条响应而微调并运行专用模型成本高，且未建立“自动筛查加仅对边缘案例人工审核”的闭环，也缺少内置的检索精确率与幻觉率跟踪，难以有效降低人工审核成本。",
+      "C": "错误。CloudWatch Synthetics 用于端点可用性的金丝雀测试，无法系统性地评估 RAG 的检索准确性或识别生成内容中的幻觉。",
       "D": "正确点：混合评估体系：先用自动化LLM-as-a-judge初筛，再对边缘案例做定向人工复核，直接对应'降低人工审核成本'。明确提到跟踪retrieval precision与hallucination rates：这与题目'高准确检索+识别幻觉'强匹配。使用Bedrock内置evaluation的表述，符合'在Bedrock上构建RAG并做评估'的考试语境：用原生评估/指标体系更贴题。可能的眼症/争议点：'SageMaker Feature Store维护evaluation datasets'并非最常见选择：评估集通常会用S3/Glue/Athena或专用数据管理；Feature Store更偏特征管理。但这不影响该选项核心：有评估数据集管理+自动评估+人审兜底+指标跟踪。结论：最完整覆盖三项要求，是四个选项中最契合的一项。"
     }
   },
@@ -672,10 +672,10 @@
     ],
     "explanations": {
       "A": "正确性判断：偏正确（在给定选项里更贴近正确做法）。原因：把数据集放到 S3 并用 IAM 授权，是 Bedrock 托管评估读取自定义数据集的基础要求。问题点：CORS 主要用于浏览器跨域访问 S3（前端直连 S3）场景；Bedrock 评估作业从服务端读取 S3 对象通常不需要 CORS。为何仍可选：在 A/B 两个\"导入到 S3 + IAM\"的选项里，A 的额外要求比 VPC endpoint 更少维护。",
-      "B": "正确性判断：不优/不正确（不符合最小运维开销，且通常不必要）。原因：VPC Endpoint（S3 Gateway Endpoint / Interface Endpoint）用于让在你VPC内的资源私网访问 S3；而 Bedrock 托管的模型评估作业并不在你的 VPC 内运行，一般也不依赖你配置 VPC endpoint。结论：引入不必要的网络配置，增加运维复杂度，不符合题目\"LEAST operational overhead\"。",
+      "B": "错误。Bedrock 托管的模型评估作业通过 IAM 权限（在控制台中还需 CORS）访问 S3 数据集，配置 VPC 端点既非必需又增加了不必要的运维开销。",
       "C": "正确性判断：正确（且是选项中最贴近\"用Bedrock托管评估\"的实现）。原因：明确使用 Amazon Bedrock model evaluation jobs，运维负担低于自建评估框架；指标选择：RWK 适用于文本生成能力评估；BERT Score 常用于摘要/生成质量评估，符合\"accuracy metrics for text generation and summarization\"。以 S3 URI 作为标准化评估输入，符合题意\"custom ecommerce datasets\"。问题点：两段 Lambda + 自建 Logs Insights Dashboard 不是绝对必要（如果平台/控制台本身可展示），但相比 D/E 仍明显更省运维。",
-      "D": "正确性判断：错误。原因：Clarify主要用于偏差/可解释性/模型监控相关，并非 Bedrock 托管 FM 的标准评估路径，整体更偏自建流程，运维开销更高。指标不匹配：WER（词错误率）主要用于语音识别/转写类；\"毒性\"是安全性指标，不是摘要\"准确性\"指标。",
-      "E": "正确性判断：不满足\"最小运维开销\"，且指标部分不匹配。原因：Notebook job + 自写代码 + 框架集成 + 指标上报 = 明显更高运维复杂度（调度、依赖、运行环境、失败重试、扩缩容、成本治理等）。指标不匹配：摘要用\"toxicity\"不是\"accuracy metric\"。（可作为额外安全指标，但题目强调 accuracy metrics。）"
+      "D": "错误。SageMaker Clarify 加开源框架属于自建流程，运维开销更大，且词错误率（WER）和毒性（toxicity）并非衡量文本生成与摘要准确性的合适指标。",
+      "E": "错误。编写并维护自定义 notebook 与 Python 评估代码（调度、依赖、重试等）的运维开销明显高于直接使用 Bedrock 内置的模型评估作业。"
     }
   },
   {
@@ -1507,10 +1507,10 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "正确点：VPC endpoints：有助于将 Bedrock API 调用限制在私网路径，提升网络层安全。Bedrock Guardrails：能对提示/响应进行策略约束（内容安全/合规）。S3 + SSE-KMS：对提示与输出进行静态加密，满足'secure model I/O'的一部分。不足/错误点：\"control foundation model access patterns\"不完整：仅有 VPC endpoint + guardrails，并未体现通过 IAM 条件强制'只能用特定ModelId/特定 Guardrail'之类的访问模式控制（谁调用什么模型、必须用哪个护栏）。审计 who/what/when 不充分：Bedrock trace events更偏\"调用链追踪/可观测性\"，并不等同于合规审计所需的统一、可查询的身份级别 API 审计（尤其要覆盖 Rekognition、S3、KMS 等）。将 traces 导出到 CloudWatch Logs 作为审计记录：可用但不是最标准的'谁在何时调用了哪些 AWS API/访问了哪些对象'的审计主干；CloudTrail/CloudTrail Lake 更符合题干'audit of who accessed what and when'。结论：有部分要素，但对'访问模式控制 + 标准审计链路'覆盖不足，难称最优。",
+      "A": "错误。此方案缺少通过 IAM 条件键强制限定可用模型与护栏的访问模式控制，且 Bedrock trace events 属于可观测性而非身份级别的合规审计，无法完整回答“谁在何时访问了什么”。",
       "B": "正确点（覆盖题干三大要求最完整）：控制 FM 访问模式：IAM + ABAC：按部门/属性映射权限，满足隐私标准常见的'按组织/职责隔离'。VPC endpoints：限定 Bedrock 模型 API 调用路径，可叠加端点策略/路由实现更强约束。IAM condition keys 强制 GuardrailIdentifier 和 ModelId：这是'控制 FM 访问模式'的核心做法（只能调用被批准的模型，且必须使用指定护栏）。secure model I/O（题干语义更偏'输入输出受控且可审计'）：CloudTrail 捕获 S3 对象与 KMS 使用的管理/数据事件：能审计提示、输出、视频对象（如存于 S3）的访问与加解密行为。（虽未显式写 SSE-KMS，但已将 KMS 使用审计纳入，并与隐私标准强相关；实际落地通常会配合 SSE-KMS/加密策略。）审计 who/what/when：CloudTrail（含 S3 数据事件、KMS 事件）+ CloudTrail Lake：提供可查询、集中化的审计存储与检索能力，满足'谁在何时访问了什么'。S3 server access logging：补充对象级访问记录（尽管很多场景 CloudTrail 数据事件已足够，但作为'详细 file-level interactions'的补强合理）。监控告警：CloudWatch alarms 对 Bedrock/Rekognition/KMS 异常活动告警：满足合规与安全运营需要（检测并响应非预期访问）。可能的瑕疵/注意点：选项未明确写'对提示/输出 S3 存储使用 SSE-KMS'，但它已审计 KMS 与 S3 数据访问；在题目是'Which solution will meet requirements'的语境下，B 的控制与审计闭环最完整。结论：最符合'访问模式控制 + 安全 I/O + who/what/when 审计'的组合要求。",
-      "C": "正确点：VPC endpoint policies：可限制通过端点访问服务的权限范围（网络与端点侧控制）。AWS Config：可做资源合规与变更跟踪。SSE-KMS：静态加密。S3 分桶存储模型 I/O + S3 access logging：有一定的隔离与访问记录能力。不足/错误点：缺少'控制 FM 访问模式'的关键 IAM 约束：没有体现按用户/部门限制可用 ModelId、强制 Guardrails 等。审计 who/what/when 不完整：AWS Config 关注'资源配置状态与漂移'，不等价于'谁访问了什么数据/何时调用了什么 API'。缺少 CloudTrail/CloudTrail Lake 主审计链路。结论：更偏配置合规与静态加密，达不到题干对 FM 访问模式控制与审计的要求。",
-      "D": "正确点：CloudTrail Insights：适合异常检测（调用模式异常）。CloudTrail 捕获 KMS API：有一定审计能力。EventBridge + CloudWatch alarms：可做自动化告警与响应。SSE-KMS：静态加密。不足/错误点：\"control FM access patterns\"缺失：主要是'检测异常'，不是'强制约束只能用哪些模型/必须用护栏/按部门授权'。审计 who/what/when 不完整：强调 Insights（异常分析）而非 CloudTrail Lake/数据事件层面的可查询审计闭环；仅提 KMS 也不足以覆盖 Bedrock/Rekognition/S3 的'谁访问了什么'。Macie 用于 S3 数据发现与分类，但对'视频归档'的隐私识别不一定直接有效；它不解决 Bedrock 访问控制与模型调用审计主诉求。结论：偏安全检测与分类，不满足'强制访问模式控制 + 完整审计'的核心要求。"
+      "C": "错误。AWS Config 跟踪的是资源配置状态与漂移，而非按身份记录的 API 访问，缺少 CloudTrail 主审计链路，也没有用 IAM 条件键控制基础模型的访问模式。",
+      "D": "错误。CloudTrail Insights 侧重异常检测而非强制访问模式控制，Macie 面向 S3 敏感数据发现而非模型 I/O 访问控制，整体无法满足对基础模型访问控制与完整审计的要求。"
     }
   },
   {
@@ -1590,7 +1590,7 @@
       "A": "优点：边界可以限制角色调用 Bedrock 时必须满足条件；SCP 可做组织级模型限制。关键问题：该组合没有解决'Guardrail 资源如何在多账号落地/一致部署'的问题（题目强调跨多个账号使用 Bedrock）。仅靠'要求 guardrailIdentifier'并不等于 Guardrail 已在各账号可用/已创建。结论：不满足完整要求（缺少 Guardrail 的集中创建/分发）。",
       "B": "正确点：SCP 非常适合做跨账号强制治理：1）仅允许批准模型（可通过对 Bedrock 相关 API 的资源/条件限制实现）2）强制请求携带 guardrailIdentifier（强制指定 Guardrail ID）不足：B 本身不负责'创建/部署 Guardrail'，因此仍需与 D 或 E 搭配。结论：作为'强制使用仅批准模型'的组织级管控手段，B 是正确方向（但再选一个部署 Guardrail 的选项）。",
       "C": "可行点：SCP 用于强制 Guardrail，边界用于约束模型白名单，技术上可行。主要问题：1）'仅允许批准模型'做到每个员工 IAM 角色都要正确绑定，治理面更分散；题目强调使用 Organizations 管理多账号，通常优先选 SCP 做全局强制更符合治理最佳实践。2）同样没有给出 Guardrail 跨账号的实际部署方式（\"centrally deployed guardrail identifier\"是描述，但该选项未提供部署机制）。结论：不如'B +（D/E）'组合完整、直接，且缺少部署落地方案。",
-      "D": "正确点：解决了'Guardrail 跨账号一致创建/部署'的问题。不足：不负责'仅允许批准模型'与'准调用时必须携带'的强制约束；仅部署 Guardrail 并不代表员工一定会使用它。策略适配性：block 会直接拒绝包含敏感信息/违规内容的请求，可能比 mask 更'硬'。题干说'prevent … from being included'，block 符合字面，但会降低可用性。结论：单独不够，需要 B/C/A 之一组合才能满足全部要求；在 D 与 E 的取舍上，更倾向 E。",
+      "D": "错误。本题选定的部署方案（选项 E）使用带掩码（mask）过滤策略的护栏对提示中的专有信息进行脱敏；block 策略会直接拒绝请求而非脱敏，并非此处所选，且仅部署护栏也无法强制员工只使用经批准的模型。",
       "E": "正确点：同样解决了 Guardrail 的跨账号一致部署。为什么 mask 更匹配：专有信息更常见是'允许继续推理但对敏感内容脱敏/掩码'，从而不把原始专有信息发送给模型。不足：与 D 一样，本身不负责'强制必须用 Guardrail / 只能用批准模型'，需要与 B 搭配。结论：作为'防止专有信息进入模型'的落地方案之一，E 正确。"
     }
   },

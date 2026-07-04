@@ -296,9 +296,9 @@
   "answer": "C",
   "explanations": {
    "A": "激活 Amazon GuardDuty 是正确的，因为它是专门用于检测和响应安全威胁的服务。错误点：GuardDuty 无法直接调用 AWS Lambda 函数进行自动化响应，必须通过 Amazon EventBridge 来实现事件驱动的自动化流程。",
-   "B": "正确性:激活 AWS Security Hub 可以汇总安全发现,但它主要用于集中管理和合规性检查, 而不是实时检测和响应。错误点: AWS Config 和 AWS Systems Manager 虽然可以用于合规性和自动化管理,但它们不是最佳选择来处理实时安全事件。",
+   "B": "错误。Security Hub 只是汇总安全发现的服务，主动检测可疑行为应使用 Amazon GuardDuty；且用 AWS Config 加 Systems Manager 并非事件驱动的自动修复方案，不能很好地满足近实时监控与修复的要求。",
    "C": "正确性:激活 Amazon GuardDuty 是正确的,因为它可以检测安全威胁。正确性:使用 Amazon EventBridge 从 GuardDuty 发现中触发 AWS Lambda 函数是正确的,因为 EventBridge 可以实现事件驱动的自动化响应。正确性:配置 Lambda 函数发布通知到 SNS 主题是正确的,因为 SNS 可以用于通知机制。",
-   "D": "正确性:激活 AWS Security Hub 是正确的,但它主要用于合规性检查和集中管理, 而不是实时检测和响应。错误点:虽然可以使用 Amazon EventBridge 触发 Lambda 函数,但 Security Hub 不是最佳选择来处理实时安全事件。"
+   "D": "错误。虽然 EventBridge 加 Lambda 的修复模式正确，但 Security Hub 只是发现聚合服务，主动检测可疑行为需依赖持续威胁检测的 Amazon GuardDuty，因此本题应以 GuardDuty 作为来源。"
   }
  },
  {
