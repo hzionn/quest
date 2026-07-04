@@ -6,7 +6,8 @@
     "explanations": {
       "D": "✅ Amazon SageMaker Model Registry Amazon正確。是專門設計用於管理和版本控制SageMaker Model Registry模型的服務。它支持自動創建模型版本並記錄模型的元數據ML，完全符合題目要求。",
       "B": "❌ Model packages from Amazon SageMaker MarketplaceSageMaker Marketplace錯誤。 提供預訓練模型和算法的市場，但它主要用於模型的分發和購買，而不是用於自動創建模型版本。",
-      "C": "❌ Amazon SageMaker ML Lineage TrackingSageMaker ML Lineage Tracking錯誤。 用於跟蹤機器學習工作流中的數據、模型和訓練過程的關係，但它不負責自動創建模型版本。"
+      "C": "❌ Amazon SageMaker ML Lineage TrackingSageMaker ML Lineage Tracking錯誤。 用於跟蹤機器學習工作流中的數據、模型和訓練過程的關係，但它不負責自動創建模型版本。",
+      "A": "错误。Amazon ECR用于存储容器镜像并依赖手动标签，无法在创建模型时自动生成模型版本；自动版本控制应使用SageMaker Model Registry。"
     },
     "type": "single",
     "options": {
@@ -40,7 +41,8 @@
     "explanations": {
       "B": "✅ Asynchronous inference異步推理正確。異步推理適用於處理較大的推理請求（如100 MB到300 MB），",
       "C": "❌ 實時推理錯誤。實時推理適用於低延遲場景，通常要求推理請求在毫秒或秒級完成。由於推理請求的大小較大且處理時間較长，實時推理不適合此場景Real-time inference。",
-      "D": "❌ 批量轉換錯誤。批量轉換適用於離線批量處理場景，而不是在線推理場景。題目要求的是生產推理，因此批量轉換不符合要求Batch transform。"
+      "D": "❌ 批量轉換錯誤。批量轉換適用於離線批量處理場景，而不是在線推理場景。題目要求的是生產推理，因此批量轉換不符合要求Batch transform。",
+      "A": "错误。无服务器推理的负载大小和处理时长有限制（负载约几MB、超时较短），无法处理100 MB到300 MB的负载和长达数十分钟的处理；应使用可处理大负载和长处理时间的异步推理。"
     },
     "type": "single",
     "options": {
@@ -58,7 +60,8 @@
     "explanations": {
       "C": "對數據集應用隨機過採樣。正確：隨機過採樣是解決類別不平衡問題的常用方法，通過增加少數類別的樣本數量，使類別分佈更加均衡。這種方法可以有效提高模型對少數類別的預測性能Apply random oversampling on the dataset.。",
       "B": "❌ 對數據集中的一些圖像進行轉換。部分正確：數據增強（如圖像轉換）可以增加少數類別的樣本數量，但題目沒有明確說明是針對少數類別進行增強，因此不完全解決類別不平衡問題。數據增強通常是輔助方法，而不是直接解決類別不平衡的主要手段Transform some of the images in the dataset.。",
-      "D": "❌ 對數據集應用隨機數據拆分。錯誤：隨機數據拆分是用於劃分訓練集、驗證集和測試集的方法，與解決類別不平衡問題無關。隨機拆分可能會導致少數類別樣本在訓練集中進一步減少，加劇類別不平衡問題Apply random data splitting on the dataset.。"
+      "D": "❌ 對數據集應用隨機數據拆分。錯誤：隨機數據拆分是用於劃分訓練集、驗證集和測試集的方法，與解決類別不平衡問題無關。隨機拆分可能會導致少數類別樣本在訓練集中進一步減少，加劇類別不平衡問題Apply random data splitting on the dataset.。",
+      "A": "错误。减少数据集规模不能解决类别不平衡问题，反而会丢失数据；应通过对少数类别进行过采样来平衡类别分布。"
     },
     "type": "single",
     "options": {
@@ -76,7 +79,8 @@
     "explanations": {
       "B": "✅ 正確性分析：AWS Glue提供了內置的敏感數據檢測功能，可以直接用於發現和屏蔽敏感數據。這種方法利用了Glue的託管服務，減少了開發和管理的複雜性。正確原因：此選項直接使用AWS的功能，開發工作量最少，符合題目要求Glue。",
       "C": "❌ ✅ 正確性分析：使用正則表達式可以實現敏感數據的查找和屏蔽，但需要手動編寫代碼，增加了開發工作量。AWS Glue錯誤原因：雖然可以實現功能，但與 的內置敏感數據檢測功“ ”能相比，開發工作量更大，不符合 最少開發工作量 的要求 。",
-      "D": "❌ ✅ 正確性分析：在EC2實例上運行Apache Spark代碼可以實現敏感數據的查找和屏蔽，但需要手動管理EC2實例和編寫代碼，開發工作量和運維成本較高。錯誤原因：與AWS相比，此方法需要更多的開發和管理工作，不符合題目要求Glue。"
+      "D": "❌ ✅ 正確性分析：在EC2實例上運行Apache Spark代碼可以實現敏感數據的查找和屏蔽，但需要手動管理EC2實例和編寫代碼，開發工作量和運維成本較高。錯誤原因：與AWS相比，此方法需要更多的開發和管理工作，不符合題目要求Glue。",
+      "A": "错误。Amazon Macie可以发现并分类S3中的敏感数据（如信用卡号），但它只做检测和告警，不会对数据进行屏蔽/脱敏；具备检测并屏蔽功能的是AWS Glue敏感数据检测。"
     },
     "type": "single",
     "options": {
@@ -94,7 +98,8 @@
     "explanations": {
       "B": "✅ Amazon Comprehend Medical正確原因： 是一個專門用於處理醫療文本的託管服務，可以快速提取醫療信息（如藥物、診斷、治療等），無需額外開發工作。這是最符合題目要求的解決方案 。",
       "C": "❌ Amazon Kendra錯誤原因： 是一個智能搜索服務，適用於構建搜索“工具，但它並不適合直接處理和總結醫療文本數據。題目要求的是 總” “ ”結數據 ，而不是 查詢數據 。",
-      "D": "❌ 錯誤原因：雖然seq2seq Amazon算法可以用於文本摘要，但使用SageMaker進行模型訓練和部署仍然需要較多的開發工作。這與題目“ ”要求的 最少開發工作 不符 。"
+      "D": "❌ 錯誤原因：雖然seq2seq Amazon算法可以用於文本摘要，但使用SageMaker進行模型訓練和部署仍然需要較多的開發工作。這與題目“ ”要求的 最少開發工作 不符 。",
+      "A": "错误。使用SageMaker从零构建RNN来总结数据需要大量的开发和训练工作，而Amazon Comprehend Medical是托管服务，能以最少开发工作量从医疗文本中获得洞察。"
     },
     "type": "single",
     "options": {
@@ -150,7 +155,8 @@
     "explanations": {
       "B": "✅ 正確性分析：AWS Glue是一個託管的ETL Apache服務，支持引擎，並且可以通過Spark DynamicFrame高效處理和轉換數據。作業可以定期運行，且無需管理底層基礎設施，運營開銷最低。結論：滿足需求且運營開銷最低，是最佳選擇Glue。",
       "C": "❌ ✅ 正確性分析：AWS Lambda不支持直接運行Apache Spark代碼。適合處理小規模任務，但不適合處理數百萬條記錄的大規模數據處理。結論：技術上不可行，錯誤選項Lambda。",
-      "D": "❌ ✅ 正確性分析：AWS Batch可以運行大規模計算任務，但需要管理實例的配置和資源分配，增加了運營開銷。結論：雖然可以實現需求，但運營開銷較高，不是最佳選擇EC2。"
+      "D": "❌ ✅ 正確性分析：AWS Batch可以運行大規模計算任務，但需要管理實例的配置和資源分配，增加了運營開銷。結論：雖然可以實現需求，但運營開銷較高，不是最佳選擇EC2。",
+      "A": "错误。每周创建临时EMR集群并运行Spark作业仍需管理集群配置和资源，运营开销高于完全托管、无需管理基础设施的AWS Glue作业。"
     },
     "type": "single",
     "options": {
@@ -168,7 +174,8 @@
     "explanations": {
       "C": "✅ ModelSetupTime SageMaker正確： 是 提供的一個專門指標，用於衡量模型啟動時間。通過觀察該指標，可以確認或否定模型啟動時間是否是導致延遲的原因 。",
       "B": "❌ 錯誤：雖然啟用CloudWatch Model可以提供一些性能指標，但的主要功能仍然是監控模型質量，而不是直接診斷模型啟動時間問題Monitor。",
-      "D": "❌ ModelLoadingWaitTime錯誤： 是另一個相關指標，但它主要用於衡量模型加載到內存的等待時間，而不是模型啟動時間。題目明確提“ ”到需要診斷 模型啟動時間 ，因此該選項不符合要求。"
+      "D": "❌ ModelLoadingWaitTime錯誤： 是另一個相關指標，但它主要用於衡量模型加載到內存的等待時間，而不是模型啟動時間。題目明確提“ ”到需要診斷 模型啟動時間 ，因此該選項不符合要求。",
+      "A": "错误。SageMaker Model Monitor监控的是数据与模型质量，无法用于诊断端点的模型启动时间；应启用CloudWatch并观察SageMaker命名空间中的ModelSetupTime指标。"
     },
     "type": "single",
     "options": {
@@ -243,7 +250,8 @@
     "explanations": {
       "C": "正確性分析：Use可以檢測和屏蔽Amazon Comprehend to detect and mask the PII beforethe data is used for model training. Use Amazon ComprehendMedical to detect and mask the PHI before the data is used formodel training.Amazon Comprehend PII Amazon，而專門用於處理醫療數據中的Comprehend Medical PHI。這兩個服務結合使用可以直接滿足要求。結論：此選項是正確答案。",
       "B": "❌ 正確性分析：Upload的the clinical data to an Amazon Redshift database.Use built-in SQL stored procedures to automatically classifyand mask the PII and PHI before the data is used for modeltraining.Amazon Redshift SQL存儲過程可以處理數據，但它並沒有內置功能專門用於檢測和屏蔽PII和PHI。需要額外的開發工作。結論：此選項不夠直接，無法滿足要求。",
-      "D": "❌ 正確性分析：加密數據並保存到Create並不能屏蔽an和AWS Lambda function to encrypt the PII and PHI.Program the Lambda function to save the encrypted data to anAmazon S3 bucket for model training.S3 PII PHI，且加密後的數據仍然無法直接用於模型訓練。結論：此選項不符合要求。"
+      "D": "❌ 正確性分析：加密數據並保存到Create並不能屏蔽an和AWS Lambda function to encrypt the PII and PHI.Program the Lambda function to save the encrypted data to anAmazon S3 bucket for model training.S3 PII PHI，且加密後的數據仍然無法直接用於模型訓練。結論：此選項不符合要求。",
+      "A": "错误。AWS Glue DataBrew是通用数据准备工具，虽能屏蔽部分PII，但无法准确识别医疗领域的受保护健康信息（PHI）；PII和PHI的检测与屏蔽应分别使用Amazon Comprehend和Amazon Comprehend Medical。"
     },
     "type": "single",
     "options": {
@@ -261,7 +269,8 @@
     "explanations": {
       "B": "構建一個包含所需庫的自定義Docker容器。將容器托管在中。在Amazon ECR任務和管道中使用SageMaker ECR鏡像。優點：通過構建自定義Docker容器，可以一次性打包所有所需的庫，ECR托管在 中後可重複使用，適合處理任務、訓練任務和管道。實現自動化，減少重複工作。缺點：需要初次構建容器，但後續使用非常高效。“ ”結論：正確。此方法符合 最少實現努力 的要求。",
       "C": "❌ 創建一個SageMaker notebook AWS實例來托管任務。創建一個函數，在Lambda notebook實例啟動時安裝這些庫。配置任務和管道在SageMaker notebook實例上運行。優點：可以動態安裝庫，適合小規模任務。缺點：需要額外創建Lambda函數和notebook實例，增加複雜性。Notebook實例並不適合大規模管道任務，且動態安裝庫可能導致啟動時間延长。“ ”結論：錯誤。此方法複雜度較高，不符合 最少實現努力 的要求。",
-      "D": "❌ 在Amazon EC2實例上外部運行這些庫的代碼。將結果存儲在中。在Amazon S3 SageMaker任務和管道中導入這些結果。優點：可以利用EC2實例運行代碼並存儲結果。缺點：需要額外管理EC2實例和S3存儲，無法直接在SageMaker中運行自定義庫，增加了操作複雜性。此方法效率低且不適合直接集成到SageMaker管道中。“ ”結論：錯誤。此方法複雜度較高，不符合 最少實現努力 的要求。"
+      "D": "❌ 在Amazon EC2實例上外部運行這些庫的代碼。將結果存儲在中。在Amazon S3 SageMaker任務和管道中導入這些結果。優點：可以利用EC2實例運行代碼並存儲結果。缺點：需要額外管理EC2實例和S3存儲，無法直接在SageMaker中運行自定義庫，增加了操作複雜性。此方法效率低且不適合直接集成到SageMaker管道中。“ ”結論：錯誤。此方法複雜度較高，不符合 最少實現努力 的要求。",
+      "A": "错误。在SageMaker容器中手动安装库无法复现，且需要在处理、训练和管道的每个任务中重复安装，工作量大；应构建包含所需库的自定义Docker镜像并托管在ECR中重复使用。"
     },
     "type": "single",
     "options": {
@@ -279,7 +288,8 @@
     "explanations": {
       "C": "✅ 正確性分析：SageMaker Model Monitor是專門設計用於監控生產環境中數據質量的工具。它可以檢測數據漂移、缺失值等問題，並通過與CloudWatch集成發送警報。這是解決問題的最佳方案。結論：此選項正確。",
       "B": "❌ ✅ 正確性分析：SageMaker Clarify是用於檢測模型偏差和解釋性分析的工具，而不是專門用於監控數據質量問題。雖然可以通過設置警報，但CloudWatch Clarify並不適合直接用於生產環境中的數據質量監控。結論：此選項不正確。",
-      "D": "❌ ✅ 正確性分析：SageMaker Data Wrangler是用於數據預處理和特徵工程的工具，而不是用於生產環境中的數據質量監控。此選項與題目要求不符。結論：此選項不正確。"
+      "D": "❌ ✅ 正確性分析：SageMaker Data Wrangler是用於數據預處理和特徵工程的工具，而不是用於生產環境中的數據質量監控。此選項與題目要求不符。結論：此選項不正確。",
+      "A": "错误。仅在标准端点指标上配置CloudWatch告警无法检测数据质量问题（数据漂移）；需要SageMaker Model Monitor监控数据质量并与CloudWatch集成来发出告警。"
     },
     "type": "single",
     "options": {
@@ -354,7 +364,8 @@
     "explanations": {
       "B": "使用AWS PrivateLink通過接口VPC Amazon端點訪問Bedrock。正確：AWS PrivateLink允許通過接口VPC端點安全地訪問AWS服務（如Amazon Bedrock），而無需暴露流量到公共互聯網。是專門為解決私有子網訪問PrivateLink AWS服務而設計的，符合題目“EC2 ”中 實例必須保持私有 的要求。",
       "C": "❌ 配置Amazon Bedrock使用部署EC2實例的私有子網。錯誤：Amazon Bedrock是一個託管服務，無法直接配置為使用特定的私有子網。 服務通常通過AWS VPC端點或公共網絡訪問，而不是直接部署到用户的子網中。",
-      "D": "❌ 通過使用AWS連接將現有Direct Connect VPC Amazon鏈接到Bedrock。錯誤：AWS主要用於建立本地數據中心與Direct Connect AWS之間的專線連接，而不是用於在VPC內訪問AWS服務。不適用於解決私有子網與Direct Connect Amazon Bedrock之間的連接問題。"
+      "D": "❌ 通過使用AWS連接將現有Direct Connect VPC Amazon鏈接到Bedrock。錯誤：AWS主要用於建立本地數據中心與Direct Connect AWS之間的專線連接，而不是用於在VPC內訪問AWS服務。不適用於解決私有子網與Direct Connect Amazon Bedrock之間的連接問題。",
+      "A": "错误。修改安全组只能放行流量，并不能为私有子网中的实例建立到Amazon Bedrock的私有连接；应使用AWS PrivateLink通过接口VPC端点进行私有访问。"
     },
     "type": "single",
     "options": {
@@ -406,7 +417,8 @@
       "C": "創建一個前端HTML Amazon API Gateway界面，該界面使用和WebSocket API AWS Lambda函數來處理用户交互。API Gateway Lambda和 的結合可以實現無服務器架構，簡化了用户交互的處理流程，降低了運維複雜性。“ ”此選項正確，因為它符合 最小操作開銷 的要求。",
       "B": "❌ LLM .zip LLM GPU Amazon EC2下載 為 文件。將 部署在基於 的實例上。此選項需要手動下載模型、配置環境、管理實例和監控性能，操作開銷較高。“ ”雖然可以實現目標，但與題目要求的 最小操作開銷 不符，因此此選項錯誤。",
       "D": "❌ 使用Amazon QuickSight創建一個UI來處理用户交互。Amazon QuickSight主要用於數據可視化和商業智能分析，不適合用於創建交互式UI來處理用户問題。此選項錯誤，因為它與題目要求的功能不符。",
-      "E": "❌ 使用Amazon Lex創建一個UI來處理用户交互。Amazon Lex是一個構建對話式接口的服務，適合處理用户交互，但它LLM通常用於基於語音或文本的聊天機器人，而不是直接與 集成。“ ”此選項雖然可以實現部分功能，但與題目要求的 最小操作開銷 不完全匹配，因此此選項錯誤。"
+      "E": "❌ 使用Amazon Lex創建一個UI來處理用户交互。Amazon Lex是一個構建對話式接口的服務，適合處理用户交互，但它LLM通常用於基於語音或文本的聊天機器人，而不是直接與 集成。“ ”此選項雖然可以實現部分功能，但與題目要求的 最小操作開銷 不完全匹配，因此此選項錯誤。",
+      "A": "正确。使用Amazon SageMaker JumpStart可一键部署流行的开源大型语言模型，无需自行管理底层基础设施，运营开销最小。"
     },
     "type": "multiple",
     "options": {
@@ -447,7 +459,8 @@
     "explanations": {
       "D": "創建一個新的AWS Key Management Service （AWS KMS）密鑰。使用AWS並引用新的Encryption CLI KMS密鑰來加密文件。正確：AWS KMS是專門用於管理加密密鑰的服務，可以創建新的KMS密鑰來加密數據。支持與AWS集成，可以使用Encryption CLI KMS KMS密鑰對文件進行加密。此選項完全符合題目要求：加密數據並控制應用對加密密鑰的訪問。",
       "B": "❌ 創建一個新的API密鑰。使用AWS CLI並引用新的API密鑰來加密文件。錯誤：API密鑰用於授權API AWS CLI調用，而不是用於加密數據。 無法使用API密鑰進行加密操作。",
-      "C": "❌ 創建一個新的IAM AWS Key Management角色。附加一個允許的Service （AWS KMS） GenerateDataKey操作的策略。使用該角色來加密文件。部分正確：IAM角色可以授予權限以使用AWS KMS生成數據密鑰，但本題要求的是直接加密文件，而不是生成數據密鑰後再進行加密。此外，IAM角色本身並不是加密工具，無法直接用於加密文件。"
+      "C": "❌ 創建一個新的IAM AWS Key Management角色。附加一個允許的Service （AWS KMS） GenerateDataKey操作的策略。使用該角色來加密文件。部分正確：IAM角色可以授予權限以使用AWS KMS生成數據密鑰，但本題要求的是直接加密文件，而不是生成數據密鑰後再進行加密。此外，IAM角色本身並不是加密工具，無法直接用於加密文件。",
+      "A": "错误。SSH访问密钥用于服务器登录，并非用于管理数据加密密钥及控制哪些应用可访问密钥；应创建AWS KMS密钥来加密数据并控制访问。"
     },
     "type": "single",
     "options": {
@@ -483,7 +496,9 @@
     "question": "一家公司正在開發一個新的在線應用程序，用於收集客户信息。 一位機器學習工程師開發了一個新的機器學習模型，該模型將為每位客户確定一個評分。 該模型將使用評分來決定向客户展示哪個產品。 機器學習工程師需要盡量減少模型的響應時間延遲。機器學習工程師應該如何在Amazon SageMaker中部署該應用程序以滿足這些要求？",
     "explanations": {
       "B": "Configure a real-time inference endpoint.配置實時推理端點。實時推理端點專為低延遲場景設計，能夠在接收到請求後立即返回推理結果。對於需要快速響應的在線應用，這是最合適的選擇。因此此選項正確。",
-      "C": "❌ Configure a serverless inference endpoint.配置無服務器推理端點。無服務器推理端點適用於間歇性或低流量的推理場景，雖然可以提供實時響應，但在高流量或需要極低延遲的場景下可能不如專用的實時推理端點表現穩定。因此此選項不如B合適。D. Configure an asynchronous inference endpoint.配置異步推理端點。異步推理端點適用於處理需要較长時間的推理任務，通常用於非實時場景。客户提交請求後，系統會異步處理並返回結果，無法滿足低延遲的實時響應需求，因此此選項錯誤。"
+      "C": "❌ Configure a serverless inference endpoint.配置無服務器推理端點。無服務器推理端點適用於間歇性或低流量的推理場景，雖然可以提供實時響應，但在高流量或需要極低延遲的場景下可能不如專用的實時推理端點表現穩定。因此此選項不如B合適。D. Configure an asynchronous inference endpoint.配置異步推理端點。異步推理端點適用於處理需要較长時間的推理任務，通常用於非實時場景。客户提交請求後，系統會異步處理並返回結果，無法滿足低延遲的實時響應需求，因此此選項錯誤。",
+      "A": "错误。批量转换是离线批处理，延迟较高，不适合需要最小化响应延迟的在线实时应用。",
+      "D": "错误。异步推理端点通过队列处理大负载或长时间请求，会引入额外延迟，无法满足最小化实时响应延迟的要求。"
     },
     "type": "single",
     "options": {
@@ -501,7 +516,8 @@
     "explanations": {
       "C": "使用Feature Store Spark connector Spark將數據作為DataFrames導入，同時啟用在線存儲和離線存儲。Feature Store Spark Connector支持批量數據處理，可以同時更新在線存儲和離線存儲。此選項滿足題目要求：實時數據更新在線存儲，同時維護完整的離線存儲。此選項正確。",
       "B": "❌ 使用Feature Store中的Runtime PutRecord API將所有數據導入離線存儲。PutRecord API不支持直接寫入離線存儲，離線存儲通常通過批處理方式更新。此選項不符合Feature Store的設計邏輯，因此錯誤。",
-      "D": "❌ 使用Feature Store Spark connector Spark將數據作為DataFrames導入，僅啟用在線存儲。此選項僅更新在線存儲，無法滿足題目要求的離線存儲維護需求。因此此選項錯誤。"
+      "D": "❌ 使用Feature Store Spark connector Spark將數據作為DataFrames導入，僅啟用在線存儲。此選項僅更新在線存儲，無法滿足題目要求的離線存儲維護需求。因此此選項錯誤。",
+      "A": "错误。使用Runtime PutRecord API逐条写入在线存储对大型历史数据集效率很低，且该选项仅面向在线存储，无法同时维护用于批处理的完整离线存储。"
     },
     "type": "single",
     "options": {
@@ -519,7 +535,8 @@
     "explanations": {
       "B": "創建一個SageMaker多容器端點多容器端點允許在一個端點中部署多個容器，每個容器可以運行不同的框架和模型。“ ” “ ”這種方法可以滿足題目中 不同框架 和 單一端點調用 的需求。此選項正確。",
       "C": "❌ 創建多個SageMaker單模型端點單模型端點適用於每個端點只運行一個模型的情況。雖然可以滿足不同框架的需求，但需要創建多個端點，增加了成本和管理複雜性。此選項不夠成本效益，因此錯誤。",
-      "D": "❌ 運行一個SparkML作業以生成多個端點SparkML通常用於分佈式機器學習任務，而不是直接用於部署端點。此選項與題目要求不符，因為題目要求使用SageMaker端點進行推理。此選項錯誤。"
+      "D": "❌ 運行一個SparkML作業以生成多個端點SparkML通常用於分佈式機器學習任務，而不是直接用於部署端點。此選項與題目要求不符，因為題目要求使用SageMaker端點進行推理。此選項錯誤。",
+      "A": "错误。SageMaker多模型端点要求所有模型使用相同的框架/容器，而本题的四个模型基于不同框架构建，应使用多容器端点。"
     },
     "type": "single",
     "options": {
@@ -556,7 +573,8 @@
     "explanations": {
       "B": "在Create and use an internal workforce in Amazon SageMakerGround Truth. Amazon SageMaker Ground Truth中創建並使用內部勞動力。Amazon SageMaker Ground Truth正確。 提供了創建內部勞動力的功能，允許公司註冊自己的標註人員並分配任務。這是最適合題目需求的選項，因為公司希望使用自己的標註專家完成任務。",
       "C": "❌ Create and use Amazon Mechanical Turk entities in anAmazon SageMaker human loop. Amazon SageMaker在中創建並使用human loop Amazon Mechanical Turk實體。Amazon Mechanical Turk錯誤。 是一個眾包平台，適合公開招募標Amazon註人員，而題目要求的是公司自己的標註專家。此外，SageMaker human loop是用於處理模型預測結果的人工審查工作流，與題目需求不完全匹配。",
-      "D": "❌ Use the Amazon Mechanical Turk website. Amazon使用Mechanical Turk網站。Amazon Mechanical Turk錯誤。 網站是一個公開平台，適合招募外部標註人員，而題目明確要求公司自己的標註專家。"
+      "D": "❌ Use the Amazon Mechanical Turk website. Amazon使用Mechanical Turk網站。Amazon Mechanical Turk錯誤。 網站是一個公開平台，適合招募外部標註人員，而題目明確要求公司自己的標註專家。",
+      "A": "错误。AWS Data Exchange用于查找和订阅第三方数据集，并非用于注册标注劳动力；注册自有标注专家应在SageMaker Ground Truth中创建并使用内部（私有）劳动力。"
     },
     "type": "single",
     "options": {
@@ -574,7 +592,8 @@
     "explanations": {
       "B": "無服務器推理端點適用於間歇性流量場景，因為它按請求計費，無流量時不會產生成本。通過配置預置並發量，可以在工作時間內滿足流量需求，同時在非工作時間避免額外成本。“ ”此選項符合 最具成本效益 的要求。正確。",
       "C": "❌ 異步推理端點適用於需要處理大批量請求且對延遲要求較低的場景。雖然可以通過自動擴展策略在非工作時間縮減到零，但異步推理端點的設計並不適合實時預測場景。“ ”此選項不符合題目中 實時預測 的要求。錯誤。",
-      "D": "❌ 實時端點無法通過Lambda函數完全關閉或激活，實時端點的實例會持續運行並產生成本，即使沒有流量。“ ”此選項無法實現 最具成本效益 的目標。錯誤。"
+      "D": "❌ 實時端點無法通過Lambda函數完全關閉或激活，實時端點的實例會持續運行並產生成本，即使沒有流量。“ ”此選項無法實現 最具成本效益 的目標。錯誤。",
+      "A": "错误。实时端点会持续运行实例，即使在无流量的非工作时间也会产生费用，无法缩减到零；对于工作时间内间歇性、非工作时间无流量的场景，按请求计费的无服务器推理更具成本效益。"
     },
     "type": "single",
     "options": {
@@ -593,7 +612,8 @@
       "C": "使用Amazon SageMaker Ground Truth創建一個註釋任務，指定標註任務和要求。正確：Amazon SageMaker Ground Truth是一種專門用於數據標籤的服務，可以創建高質量的標籤任務。它允許用户定義標籤任務的具體要求，並支持多種標籤工作流。",
       "B": "❌ 直接在原始數據上訓練深度學習模型，讓模型自行推斷標籤。錯誤：監督學習需要標籤數據集作為輸入，直接在未標籤數據上訓練模型無法滿足監督學習的要求。此外，模型自行推斷標籤屬於無監督學習或半監督學習的範疇，與題目要求不符。",
       "D": "❌ Amazon設置工作團隊以訪問一個私有工作團隊，運行並審核由SageMaker Ground Truth創建的註釋任務。正確：設置私有工作團隊可以確保數據僅供員工訪問，符合題目中關於數據隱私的要求。私有工作團隊可以提高標籤質量，因為團隊成員可以根據具體要求進行審核和標籤。",
-      "E": "❌ 使用Amazon Mechanical Turk Amazon SageMaker完成由Ground Truth創建的註釋任務。錯誤：Amazon Mechanical Turk是一種眾包平台，適合公開數據集的標籤任務。題目要求數據僅供員工訪問，而Mechanical Turk的工作團隊是公開的，無法滿足數據隱私要求。"
+      "E": "❌ 使用Amazon Mechanical Turk Amazon SageMaker完成由Ground Truth創建的註釋任務。錯誤：Amazon Mechanical Turk是一種眾包平台，適合公開數據集的標籤任務。題目要求數據僅供員工訪問，而Mechanical Turk的工作團隊是公開的，無法滿足數據隱私要求。",
+      "A": "错误。Amazon Rekognition的自动标注对特定领域图像的准确性有限，而本题要求以尽可能高的准确性标注；应使用带私有工作团队的SageMaker Ground Truth进行人工标注。"
     },
     "type": "multiple",
     "options": {
@@ -615,7 +635,8 @@
     "explanations": {
       "B": "✅ 正確性分析：DataBrew支持通過S3路徑創建數據集，這是正確Recipe Job的。 是專門用於清理和規範化數據的作業類型，因此這個選項完全符合要求。結論：正確。",
       "C": "❌ ✅ 正確性分析：S3並不支持通過JDBC連接來訪問數據，因此這個選項在創建數據集的方式上是錯誤的。此外，Profile Job也不適合用於清理和規範化數據。結論：錯誤。",
-      "D": "❌ ✅ 正確性分析：同樣，S3並不支持通過JDBC連接來訪問數據，因此這個選項在創建數據集的方式上是錯誤的。雖然Recipe Job適合清理和規範化數據，但由於數據集創建方式錯誤，整體選項仍然是錯誤的。結論：錯誤。"
+      "D": "❌ ✅ 正確性分析：同樣，S3並不支持通過JDBC連接來訪問數據，因此這個選項在創建數據集的方式上是錯誤的。雖然Recipe Job適合清理和規範化數據，但由於數據集創建方式錯誤，整體選項仍然是錯誤的。結論：錯誤。",
+      "A": "错误。DataBrew支持通过S3路径创建数据集，但profile作业用于生成数据画像/统计信息，并不执行清理和规范化；清理与规范化应使用recipe作业。"
     },
     "type": "single",
     "options": {
@@ -652,7 +673,8 @@
     "explanations": {
       "D": "使用SageMaker Experiments跟踪每次迭代的特性和結果。SageMaker Experiments是專門設計用於記錄和管理機器學習實驗的工具，可以輕鬆記錄每次迭代的特性和結果。它支持自動化記錄、可視化和分析實驗數據，完全符合題目要求。“ ”此選項實現起來最簡單，符合 最少實現努力 的要求。正確。",
       "B": "❌ 將每次迭代的特性寫入Amazon S3的日誌中。使用AWS Glue和Amazon Athena搜索日誌。S3 Glue Athena將數據寫入 並使用 和 進行查詢是一個通用的數據管理解決方案，但它並不是專門為機器學習實驗設計的。這種方法需要額外的開發工作來實現數據記錄、查詢和分析，複雜度較高。“ ”此選項不符合 最少實現努力 的要求。錯誤。",
-      "C": "❌ 使用SageMaker Model Registry跟踪每次迭代的特性和結果。SageMaker Model Registry主要用於管理和部署機器學習模型，而不是記錄實驗的特性和結果。雖然可以間接使用Model Registry存儲模型相關信息，但它並不適合記錄實驗的詳細特性和結果。此選項不符合題目要求。錯誤。"
+      "C": "❌ 使用SageMaker Model Registry跟踪每次迭代的特性和結果。SageMaker Model Registry主要用於管理和部署機器學習模型，而不是記錄實驗的特性和結果。雖然可以間接使用Model Registry存儲模型相關信息，但它並不適合記錄實驗的詳細特性和結果。此選項不符合題目要求。錯誤。",
+      "A": "错误。手动为每次迭代创建CloudWatch自定义指标工作量大，且并非为记录实验特性和结果而设计；跟踪每次迭代的特性和结果应使用专门的SageMaker Experiments，实现工作量最少。"
     },
     "type": "single",
     "options": {
@@ -671,7 +693,9 @@
       "E": "使用Amazon S3存儲桶存儲向量數據庫轉儲和嵌入。Amazon S3是一種無服務器的對象存儲服務，適合存儲靜態文件和數據，包括向量數據庫轉儲和嵌入。此選項正確。使用F. Amazon RDS for MySQL存儲向量數據庫轉儲和嵌入。Amazon RDS是一種託管數據庫服務，但它並非無服務器架構，因為需要管理數據庫實例。此選項錯誤。",
       "B": "❌ 設置Amazon SageMaker JumpStart並使用Llama基礎模型。Amazon SageMaker JumpStart是一個機器學習服務，支持使用預訓練模型（如Llama）。SageMaker然而， 並非完全無服務器，它需要配置和管理底層計算資“ ”源（如實例），不符合題目要求的 無服務器 架構。此選項錯誤。",
       "C": "❌ 使用Amazon EC2實例和Amazon API Gateway調用模型API。Amazon EC2是一種虛擬服務器服務，需要手動管理實例，顯然不符“ ”合 無服務器 架構的要求。此選項錯誤。",
-      "D": "使用AWS Lambda函數和Amazon API Gateway調用模型API。AWS Lambda是一種無服務器計算服務，能夠自動擴展並按使用量計費，非常適合無服務器架構。可以用來創建和管理Amazon API Gateway，結合API Lambda可以實現無服務器的API調用。此選項正確。"
+      "D": "使用AWS Lambda函數和Amazon API Gateway調用模型API。AWS Lambda是一種無服務器計算服務，能夠自動擴展並按使用量計費，非常適合無服務器架構。可以用來創建和管理Amazon API Gateway，結合API Lambda可以實現無服務器的API調用。此選項正確。",
+      "A": "正确。Amazon Bedrock是无服务器服务，可直接使用Anthropic Claude基础模型而无需管理底层基础设施，符合无服务器的要求。",
+      "F": "错误。Amazon RDS for MySQL不是无服务器架构，需要预置和管理数据库实例；无服务器地存储向量数据库转储和嵌入应使用Amazon S3。"
     },
     "type": "multiple",
     "options": {
@@ -695,7 +719,8 @@
     "explanations": {
       "C": "✅ 正確性分析：SageMaker異步推理端點專為长時間推理任務設計，支持處理大數據量請求（如100 MB），並且可以通過異步隊列機制降低操作複雜性。正確原因：完全符合題目要求，既支持长時間推理，又降低了操作複雜性。",
       "B": "❌ ✅ 正確性分析：SageMaker實時端點適合低延遲的實時推理場景，但本題中模型推理時間較长（幾分鐘），實時端點不適合處理這種高延遲任務。錯誤原因：實時端點無法有效處理长時間推理任務，可能會導致超時問題。",
-      "D": "❌ ✅ 正確性分析：將模型打包為容器並部署到ECS可以提供靈活性，但需要手動管理容器的配置、任務調度和EC2實例，操作複雜性較高。錯誤原因：雖然可以滿足性能需求，但操作複雜性高，不符合題目要“”求的LEAST operational overhead。"
+      "D": "❌ ✅ 正確性分析：將模型打包為容器並部署到ECS可以提供靈活性，但需要手動管理容器的配置、任務調度和EC2實例，操作複雜性較高。錯誤原因：雖然可以滿足性能需求，但操作複雜性高，不符合題目要“”求的LEAST operational overhead。",
+      "A": "错误。将模型部署到Auto Scaling组和ALB后的EC2实例需要自行管理服务器和负载均衡，运营开销较高；对于耗时数分钟、单次请求可达100 MB的推理，托管的异步推理端点开销最小。"
     },
     "type": "single",
     "options": {
@@ -768,7 +793,8 @@
     "explanations": {
       "B": "Factorization MachinesFactorization Machines是一種專門設計用於處理高維稀疏數據的算法，特別適合推薦系統。它通過矩陣分解的方式捕捉特徵之間的交互關係，能夠有效處理稀疏數據並生成準確的預測。這是推薦系統中處理高維稀疏數據的最佳選擇。正確",
       "C": "❌ Principal component analysis （PCA）PCA是一種降維算法，主要用於數據預處理和特徵提取。雖然它可以處理高維數據，但它的目標是降低維度，而不是直接用於推薦系統的預測任務。因此，PCA不適合用於推薦系統中的高維稀疏數據預測。錯誤",
-      "D": "❌ Sequence-to-Sequence (seq2seq)Seq2Seq是一種用於處理序列數據的深度學習模型，通常用於機器翻譯、文本生成等任務。它不適合處理推薦系統中的高維稀疏數據。因此，Seq2Seq不是正確的選擇。錯誤"
+      "D": "❌ Sequence-to-Sequence (seq2seq)Seq2Seq是一種用於處理序列數據的深度學習模型，通常用於機器翻譯、文本生成等任務。它不適合處理推薦系統中的高維稀疏數據。因此，Seq2Seq不是正確的選擇。錯誤",
+      "A": "错误。k-NN不擅长处理高维稀疏数据，且预测时计算开销大，不适合推荐场景；处理高维稀疏数据的推荐应使用Factorization Machines。"
     },
     "type": "single",
     "options": {
@@ -824,7 +850,8 @@
     "explanations": {
       "D": "結論： 此選項是一個可行的解決方案，但相比 選項，操作複雜度更高。正確性分析：D.Shadow此選項採用影子變體（Variant）進行測試，影子變體會對生產流量進行採樣，但不會影響生產環境的實際輸出。 的輸出被收集到v2中進行分析。優點：Amazon S3完全避免了生產流量中斷，測試過程對用户透明，且可以v2全面評估 的性能。缺點： 需要額外的資源來運行影子變體，但這是一個合理的成本，能夠確保生產環境的安全性。結論： 此選項符合題目要求，是最佳方案。",
       "B": "❌ ✅ A 10% v2正確性分析： 此選項與 類似，只是將 的流量分配給 。這種方案增加了測試流量，但也增加了生產環境受到影響的風險。v2缺點： 同樣會將實際用户流量暴露給可能存在問題的 模型，無法完全避免生產流量中斷。“ ”結論： 此選項不符合 防止生產流量中斷 的要求，因此不正確。",
-      "C": "❌ ✅ v2正確性分析： 此選項採用創建一個新的端點來運行 ，並使用腳本將所有輸入數據傳遞給v2進行測試。這種方案可以完全避免對生產流量的影響。v2優點： 生產流量不會直接暴露給 ，測試過程完全獨立於生產環境。缺點： 需要額外的資源來運行新端點，並且需要編寫腳本來實現數據傳遞，增加了複雜性。"
+      "C": "❌ ✅ v2正確性分析： 此選項採用創建一個新的端點來運行 ，並使用腳本將所有輸入數據傳遞給v2進行測試。這種方案可以完全避免對生產流量的影響。v2優點： 生產流量不會直接暴露給 ，測試過程完全獨立於生產環境。缺點： 需要額外的資源來運行新端點，並且需要編寫腳本來實現數據傳遞，增加了複雜性。",
+      "A": "错误。为v2创建第二个生产变体并将1%的流量分给v2，仍会让部分真实生产流量暴露于可能产生错误输出的v2，无法完全避免风险；影子变体可在不影响生产响应的情况下采样请求。"
     },
     "type": "single",
     "options": {
@@ -842,7 +869,8 @@
     "explanations": {
       "C": "關閉SageMaker域中的設置以共享控制台作業的元數據。通過或AWS CLI AWS SDK提交的每個訓練作業選擇退出元數據收集。SageMaker正確： 此選項明確提到關閉 域中的設置以禁用元數據收集，並且通過CLI或SDK提交的訓練作業也可以選擇退出元數據收集。這是符合要求的解決方案。",
       "B": "❌ 向SageMaker域添加一個IAM Amazon角色以拒絕CloudWatch報告元數據的權限。A CloudWatch錯誤： 與選項 類似，限制 權限並不能阻止收集元數據。元數據收集是SageMaker SageMaker的默認行為，必須通過特定的設置來禁用。",
-      "D": "❌ 為通過AWS CLI、Boto3或SageMaker Python SDK提交的每個訓練作業設置一個參數以選擇退出元數據收集。CLI Boto3 SDK部分正確： 此選項提到通過 、 或 設置參數來選擇退出元數據收集，但沒有提到如何處理SageMaker域的元數據共享設置，因此不夠全面。"
+      "D": "❌ 為通過AWS CLI、Boto3或SageMaker Python SDK提交的每個訓練作業設置一個參數以選擇退出元數據收集。CLI Boto3 SDK部分正確： 此選項提到通過 、 或 設置參數來選擇退出元數據收集，但沒有提到如何處理SageMaker域的元數據共享設置，因此不夠全面。",
+      "A": "错误。将SageMaker域关联到拒绝CloudWatch日志的IAM角色并不能阻止SageMaker收集使用情况和错误的元数据；必须通过关闭域中的元数据共享设置并对每个训练作业选择退出来实现。"
     },
     "type": "single",
     "options": {
@@ -860,7 +888,8 @@
     "explanations": {
       "B": "欠採樣正類（Undersample到the positive class for the age range of 40 to45.40 45歲年齡範圍）可以減少該年齡段的正類樣本數DPL （量，從而降低數據不平衡問題。 值為0.9，表明該年齡段的正類比例遠高於其他年齡段，欠採樣可以使數據分佈更加均勻，減少模型偏差。因此此選項正確。",
       "C": "❌ 對除Undersample到the positive class for all age ranges except 40to 45.40 45歲年齡範圍外的所有年齡範圍的正類進行欠採樣會進一步減少其他年齡段的正類樣本數量，從而加劇數據不平衡問題。這與解決數據不平衡的目標相悖，因此此選項錯誤。",
-      "D": "❌ 對除Oversample到the negative class for all age ranges except 40to 45.40 45歲年齡範圍外的所有年齡範圍的負類進行過採樣雖然可以增加負類樣本數量，但無法直接解決40到45歲年齡段的正類比例過高的問題。因此此選項錯誤。"
+      "D": "❌ 對除Oversample到the negative class for all age ranges except 40to 45.40 45歲年齡範圍外的所有年齡範圍的負類進行過採樣雖然可以增加負類樣本數量，但無法直接解決40到45歲年齡段的正類比例過高的問題。因此此選項錯誤。",
+      "A": "错误。40到45岁年龄段的正类比例本已过高（DPL较高），对其进行过采样会进一步加剧不平衡；应对该年龄段的正类进行欠采样。"
     },
     "type": "single",
     "options": {
@@ -878,7 +907,8 @@
     "explanations": {
       "C": "(Enable inter-container traffic啟用容器間流量加密encryption) -正確分析：這是AWS的原生功能。在SageMaker API調用（如 ）或SageMaker Python SDKCreateTrainingJob中，可以將encrypt_inter_container_traffic 參數設定為 True 。為什麼正確：這正是專為滿足「分散式作業中實例間通訊加密」需求而設計的功能。它會自動在集群節點之間建立安全的TLS通道。",
       "B": "❌ (Configure traffic encryption使用安全群組設定流量加密using security groups) -錯誤分析：安全群組（Security）的作用是防火牆（Groups Firewall），用來控制哪些連接埠（Port）和IP地址可以進出流量。為什麼不選：安全群組僅能「允許」或「拒絕」流量，它本身不具備加密流量的功能。",
-      "D": "❌ VPC ( -啟用Enable流日誌VPC Flow Logs)錯誤分析：VPC是用來監控與記錄Flow Logs VPC Network網路介面（）進出的Interface IP流量資訊。為什麼不選：流日誌是用於「審計」和「疑難排解」的工具，它無法加密正在傳輸中的數據。3.解題關鍵與總結\"Encrypt network communication between關鍵字對應：當題目提到instances\" \"Distributed jobs\" \"搭配Inter-時，標準答案幾乎總是container traffic encryption\"。注意陷阱：題目提到的「私有VPC」是為了干擾考生，讓考生誤以為要從層級（如VPC或Security Group VPN SageMaker）來解決，但實際上已經在應用層提供了專門的開關。"
+      "D": "❌ VPC ( -啟用Enable流日誌VPC Flow Logs)錯誤分析：VPC是用來監控與記錄Flow Logs VPC Network網路介面（）進出的Interface IP流量資訊。為什麼不選：流日誌是用於「審計」和「疑難排解」的工具，它無法加密正在傳輸中的數據。3.解題關鍵與總結\"Encrypt network communication between關鍵字對應：當題目提到instances\" \"Distributed jobs\" \"搭配Inter-時，標準答案幾乎總是container traffic encryption\"。注意陷阱：題目提到的「私有VPC」是為了干擾考生，讓考生誤以為要從層級（如VPC或Security Group VPN SageMaker）來解決，但實際上已經在應用層提供了專門的開關。",
+      "A": "错误。启用网络隔离会切断容器的外部网络访问，但并不加密实例之间的通信；要加密分布式作业中节点之间的网络通信应启用容器间流量加密。"
     },
     "type": "single",
     "options": {
@@ -895,7 +925,9 @@
     "question": "一個機器學習模型已部署到生產環境。此模型運作良好，數月以來一直達到各項指標閾值。一位負責監控此模型的機器學習工程師發現其效能突然下降，各項效能指標均低於閾值。造成效能下降的原因可能是什麼？",
     "explanations": {
       "B": "(Drift in production data生產數據分佈的漂移distribution) -正確分析：這是模型在生產環境中效能突然或逐漸下降的最典型原因。例如：電商推薦模型因為季節更換、或是金融風控模型因為市場環境劇變，導致輸入數據的統計特性改變。為什麼正確：只有外部環境或數據分佈的改變，會讓一個原本表現優異的模型在「不更動程式碼」的情況下效能衰退。",
-      "C": "❌ ( -計算資源約束Computational resource constraints)錯誤分析：資源約束（如CPU/Memory不足、網路延遲）通常會導致延遲（Latency）增加、吞吐量（Throughput）下降或系統崩潰（5xx錯誤）。為什麼不選：題目強調的是「效能指標（Performance metrics）」（如Accuracy, F1-score, RMSE）下降，這通常指預測的「質量」問題，而非系統的「響應速度」問題。"
+      "C": "❌ ( -計算資源約束Computational resource constraints)錯誤分析：資源約束（如CPU/Memory不足、網路延遲）通常會導致延遲（Latency）增加、吞吐量（Throughput）下降或系統崩潰（5xx錯誤）。為什麼不選：題目強調的是「效能指標（Performance metrics）」（如Accuracy, F1-score, RMSE）下降，這通常指預測的「質量」問題，而非系統的「響應速度」問題。",
+      "A": "错误。模型已良好运行数月后才突然下降，训练数据量在训练时已固定，不是造成生产环境中性能突然下降的原因。",
+      "D": "错误。过拟合会在训练/验证阶段一开始就表现为对新数据泛化差，而不会在数月良好表现后突然导致性能骤降；本题的原因是生产数据分布漂移。"
     },
     "type": "single",
     "options": {
@@ -913,7 +945,8 @@
     "explanations": {
       "D": "✅  -使用gzip將檔案轉換為Apache Parquet格式並壓縮檔案正確分析：格式正確：DeepAR官方支援 application/x-parquet 格式。壓縮正確：Gzip在Parquet中被廣泛支援，且能提供優異的壓縮比例，直接符合題目要求的「優化儲存成本」。相容性：Glue轉換為AWS Glue並指定Parquet Gzip壓縮是標準的最佳實踐（Best Practice）。3.解題關鍵與總結關鍵記憶點：DeepAR （ 或JSON Lines Parquet。（考題常考這兩者的區別，RecordIO是這題的最大陷阱）。(如果要「優化儲存成本Optimize」，通常傾向選擇cost) Gzip；如果(要「優化讀寫效能Optimize performance)」，通常傾向選擇Snappy。實務延伸：在SageMaker訓練時，如果使用Parquet格式，DeepAR可(以利用「管道模式Pipe Mode)」或是更高效的數據流，這對於處理大規模時間序列數據非常重要。",
       "B": "❌ 使用XZ將檔案轉換為RecordIO-Protobuf格式並壓縮檔案-錯誤RecordIO（分析：同樣的錯誤，Protobuf不適用於DeepAR XZ。此外，雖然壓縮率高，但在分散式訓練中解壓縮速度較慢，不常用於此情境。",
-      "C": "❌  -使用XZ將檔案轉換為Apache Parquet格式並壓縮檔案錯誤分析：格式（Parquet）雖然正確，但XZ並非Parquet常見或推薦的壓縮編碼。在AWS Glue的轉換任務中，Parquet通常與Snappy Gzip或搭配。 會消耗過多的XZ CPU資源來進行壓縮與解壓縮，反而可能增加Glue運算成本。"
+      "C": "❌  -使用XZ將檔案轉換為Apache Parquet格式並壓縮檔案錯誤分析：格式（Parquet）雖然正確，但XZ並非Parquet常見或推薦的壓縮編碼。在AWS Glue的轉換任務中，Parquet通常與Snappy Gzip或搭配。 會消耗過多的XZ CPU資源來進行壓縮與解壓縮，反而可能增加Glue運算成本。",
+      "A": "错误。DeepAR不支持RecordIO-Protobuf格式（它支持JSON Lines和Parquet），因此使用Snappy转换为RecordIO-Protobuf的格式不适用于DeepAR。"
     },
     "type": "single",
     "options": {
@@ -931,7 +964,8 @@
     "explanations": {
       "C": "✅ AWS Glue ETL .使用csv將Apache轉換為Parquet格式-正確分析：效能優化：Parquet是列式存儲，且內建壓縮，是AWS數據湖的最佳Athena, Glue, 實踐，能顯著提升查詢（如SageMaker）的速度。低維運開銷：AWS Glue ETL是一個託管服務，你只需要定義來源與目的地，AWS會負責所有的運算資源管理。為什麼正確：這同時滿足了「提高效能」與「最低維運開銷」這兩個核心要求。",
       "B": "❌  -使用AWS刪除具有字串類型值的資料列Glue錯誤(分析：這是在做「數據清理Data Cleaning)」，而非「效能優化」。為什麼不選：直接刪除數據會導致資訊丟失，且這完全無法解決因資料量龐大導致的查詢緩慢問題。",
-      "D": "❌  -配置Amazon叢集來處理資料EMR錯誤分析：EMR雖然可以非常高效地處理PB級數據。為什麼不選：與AWS Glue相比，EMR要求工程師負責叢集的大小調整、版本管理、任務排程等工作。題目要求將維運開銷降至最低，在這種情況下，Serverless的Glue通常優於EMR。3.解題關鍵與總結S3 （ CSV + Parquet ORC看到「 查詢慢」：反射動作應尋找 或 等列式格式。(看到「最低維運開銷Minimum Operational Overhead)」：優先考慮Serverless ( ) Glue Athena EMR無伺服器 服務，如 或 ，而非 。"
+      "D": "❌  -配置Amazon叢集來處理資料EMR錯誤分析：EMR雖然可以非常高效地處理PB級數據。為什麼不選：與AWS Glue相比，EMR要求工程師負責叢集的大小調整、版本管理、任務排程等工作。題目要求將維運開銷降至最低，在這種情況下，Serverless的Glue通常優於EMR。3.解題關鍵與總結S3 （ CSV + Parquet ORC看到「 查詢慢」：反射動作應尋找 或 等列式格式。(看到「最低維運開銷Minimum Operational Overhead)」：優先考慮Serverless ( ) Glue Athena EMR無伺服器 服務，如 或 ，而非 。",
+      "A": "错误。用Lambda将CSV拆分为更小的对象并不能从根本上提升查询性能（仍是行式CSV、仍需扫描全部数据），且Lambda对大数据处理有运行时限制；转换为列式Parquet才能提升性能。"
     },
     "type": "single",
     "options": {
@@ -949,7 +983,8 @@
     "explanations": {
       "B": "✅ ( -標籤比例差異DPL)正確• 分析：DPL衡量的是某個敏感特徵（如性別或種族）的不同子集中，標籤分佈的差異。◦ 公式簡化表達： DPL = n_a^(1)/n_a − n_d^(1)/n_d（其中 a 是受惠組，d 是受損組）。• 為什麼正確：在SageMaker中，AI DPL正是專門用來確認數據集中是否存在類別標籤不平衡或分佈偏差的標準預訓練指標。",
       "C": "❌ ( -輪廓分數Silhouette Score)錯誤• (Clustering) K（Means分析：輪廓分數是用於評估分群 演算法（如 ）效果的指標。•為什麼不選：它衡量的是群內相似度與群間差異度，與分類標籤的比例平衡無關。",
-      "D": "❌ ( -結構相似性指數SSIM)錯誤• 分析：SSIM是一種衡量兩張圖像相似度的指標。•為什麼不選：這通常用於電腦視覺領域（如影像壓縮、重建），完全無法用於分析分類資料集的標籤平衡問題。3.解題關鍵與總結• \"Pre-training bias metric\" \"\"關鍵字對應：看到Class或imbalance，應優先尋找SageMaker Clarify的相關指標，如DPL CI （Class Imbalance）、或JS （Jensen-Shannon Divergence）。•區分階段：◦ 訓練前 (Pre-training) ：分析數據集本身（如 DPL ）。◦ 訓練後 (Post-training) ：分析模型預測結果（如 DPPL （ Difference inPositive Proportions in Predicted Labels）。"
+      "D": "❌ ( -結構相似性指數SSIM)錯誤• 分析：SSIM是一種衡量兩張圖像相似度的指標。•為什麼不選：這通常用於電腦視覺領域（如影像壓縮、重建），完全無法用於分析分類資料集的標籤平衡問題。3.解題關鍵與總結• \"Pre-training bias metric\" \"\"關鍵字對應：看到Class或imbalance，應優先尋找SageMaker Clarify的相關指標，如DPL CI （Class Imbalance）、或JS （Jensen-Shannon Divergence）。•區分階段：◦ 訓練前 (Pre-training) ：分析數據集本身（如 DPL ）。◦ 訓練後 (Post-training) ：分析模型預測結果（如 DPPL （ Difference inPositive Proportions in Predicted Labels）。",
+      "A": "错误。均方误差（MSE）是回归模型的性能评估指标，并非用于检测类别标签不平衡的预训练偏差指标；确认类别不平衡应使用标签比例差异（DPL）。"
     },
     "type": "single",
     "options": {
@@ -967,7 +1002,8 @@
     "explanations": {
       "B": "✅ ( -為所有模型建立多模型推理端點MME)正確分析：MME允許你在單個端點後方託管數千個模型。為什麼正確：它提供了最高的整合度。所有模型共享一組實例資源，且只有在被呼叫時才會佔用記憶體，這是託管多個模型時最具成本效益的標準解決方案。",
       "C": "❌ -為順序呼叫建立多容器推理端點 錯誤分析：這被稱為Inference Pipeline（推理管道）。它的運作方式是將數據傳給Container，處理完傳給A。+為什麼不選：這是為了完成「單個」預測流程的步驟（如：預處理Container B預測），而不是為了「分開託管多個獨立模型」。這不符合題目優化多個模型推理成本的需求。",
-      "D": "❌ -為每個模型建立多個單模型推理端點 錯誤分析：這是最傳統的做法，每個模型都有自己專屬的實例（Instances）。為什麼不選：這是最昂貴的方案。如果每個模型都配備一個實例，即使模型沒人在用，你還是得支付全額的實例費用，完全不符合成本優化。3.解題關鍵與總結\"Multiple models\" \"\"關鍵字對應：當題目出現Cost-effective且要求時，答案首選Multi-Model Endpoints （MME）。補充考點：的限制：所有模型必須使用相同的MME ML Serving框架（相同的Container），或者使用支援多模型的自定義容器。Serverless Inference：如果模型調用頻率極低且對延遲不敏感，SageMaker Serverless Inference也是一個成本優化的選項，但它通常針對單個模型。"
+      "D": "❌ -為每個模型建立多個單模型推理端點 錯誤分析：這是最傳統的做法，每個模型都有自己專屬的實例（Instances）。為什麼不選：這是最昂貴的方案。如果每個模型都配備一個實例，即使模型沒人在用，你還是得支付全額的實例費用，完全不符合成本優化。3.解題關鍵與總結\"Multiple models\" \"\"關鍵字對應：當題目出現Cost-effective且要求時，答案首選Multi-Model Endpoints （MME）。補充考點：的限制：所有模型必須使用相同的MME ML Serving框架（相同的Container），或者使用支援多模型的自定義容器。Serverless Inference：如果模型調用頻率極低且對延遲不敏感，SageMaker Serverless Inference也是一個成本優化的選項，但它通常針對單個模型。",
+      "A": "错误。为每个模型的推理框架分别创建独立端点会各自占用实例，成本最高；在共享实例上托管多个模型的多模型端点（MME）最具成本效益。"
     },
     "type": "single",
     "options": {
@@ -1004,7 +1040,8 @@
     "explanations": {
       "D": "✅ 使用Amazon SageMaker Clarify監控模型和特徵歸因偏差-正確分析：SageMaker Clarify與Model Monitor深度整合。當模型表現下降時，往往是因為某些特徵（Features）的權重發生了偏移（例如某個原本不重要的特徵突然變得極具影響力）。(為什麼正確：監控「特徵歸因偏差Feature Attribution Drift)」是識別模型預測邏輯失效的關鍵。透過Clarify的持續監控，可以自動檢測到模型何時「不再以正確的邏輯」做預測，並藉此「指導模型重新訓練」，這是最精準的自動化緩解方案。3.解題關鍵與總結關鍵詞對應：\"Performance degrades over time\" ( ) = Drift (效能隨時間下降 漂)移 。\"Automated solution\" ( ) = SageMaker Model Monitor自動化方案/ Clarify。解題心法：在AWS考試中，處理生產環境模型「準確度」問題，首選家族。若選項中沒有直接列出Model Monitor Model Monitor，則選擇其核心元件Clarify。",
       "B": "❌  -使用AWS監控X-Ray端點的效能SageMaker AI錯誤AWS X（Ray (分析：Tracing)是一個應用程式追蹤API工具，用於分析請求的延遲、路徑與錯誤率。X（為什麼不選：Ray監控的是系統效能（如HTTP 200/500錯誤、響應時間），它完全無法得知模型預測的「邏輯正確性」或「數據分佈」是否發生偏移。",
-      "C": "❌ 使用Amazon SageMaker Ground Truth整理高品質資料-集 錯誤Ground Truth (Labeling)分析： 是一個資料標註 服務。為什麼不選：雖然重訓模型確實需要新標註的數據，但題目要求的是一個Ground Truth「长期且自動化的解決方案」來「緩解」效能下降。 本身不會主動「監控」模型效能，它只是數據準備階段的一個環節，無法滿足自動化監控與觸發的要求。"
+      "C": "❌ 使用Amazon SageMaker Ground Truth整理高品質資料-集 錯誤Ground Truth (Labeling)分析： 是一個資料標註 服務。為什麼不選：雖然重訓模型確實需要新標註的數據，但題目要求的是一個Ground Truth「长期且自動化的解決方案」來「緩解」效能下降。 本身不會主動「監控」模型效能，它只是數據準備階段的一個環節，無法滿足自動化監控與觸發的要求。",
+      "A": "错误。SageMaker Debugger用于训练阶段的调试（张量、梯度等），并非用于长期监控生产模型的性能衰退；应使用SageMaker Clarify监控模型和特征归因偏差以指导重新训练。"
     },
     "type": "single",
     "options": {
@@ -1060,7 +1097,8 @@
     "explanations": {
       "B": "✅  -應用交叉驗證和正規化，使用SageMaker Experiments正確•分析：◦ 手段正確：正規化與交叉驗證是處理過擬合（訓練好、預測差）的教科書式解決方案。◦ 工具正確： SageMaker Experiments 讓工程師能有條理地對比「有正規化」與「沒正規化」的模型指標，選出一般化能力最強的版本。• 為什麼正確：它從理論（解決過擬合）與工具（AWS管理實踐）兩方面都給出了最優解。",
       "C": "❌  -直接部署到生產環境，使用SageMaker Clarify錯誤•分析：將一個已知在測試集表現很差的模型部署到生產環境是非常危險的行為。• 為什麼不選：SageMaker Clarify用於偵測偏誤（Bias）與模型可解釋性（Explainability），它無法修復模型的一般化（Generalization）問題。",
-      "D": "❌ ✅ -增加訓練資料規模，產生混淆矩陣 錯誤•分析：◦ 手段部分正確：增加數據確實有助於緩解過擬合。◦ 邏輯錯誤：題目明確指出這是一個 ** 「線性迴歸 ( **」LinearRegression)模型。• (為什麼不選：混淆矩陣Confusion Matrix)用於「分類模型」（如判斷MSE RMSE $R^2$是不是貓），而迴歸模型應該使用 、 或 等指標。因此，這個選項在技術細節上是錯誤的。3.解題關鍵與延伸建議• 關鍵陷阱：選項D的「混淆矩陣」是專門設計來坑沒注意到「線性迴歸」這四個字的考生的。• $\\$解題心法：看到「訓練集好、測試集差」rightarrow反射動作找Regularization ( ) Drop out ( )正規化 或 針對神經網路 。"
+      "D": "❌ ✅ -增加訓練資料規模，產生混淆矩陣 錯誤•分析：◦ 手段部分正確：增加數據確實有助於緩解過擬合。◦ 邏輯錯誤：題目明確指出這是一個 ** 「線性迴歸 ( **」LinearRegression)模型。• (為什麼不選：混淆矩陣Confusion Matrix)用於「分類模型」（如判斷MSE RMSE $R^2$是不是貓），而迴歸模型應該使用 、 或 等指標。因此，這個選項在技術細節上是錯誤的。3.解題關鍵與延伸建議• 關鍵陷阱：選項D的「混淆矩陣」是專門設計來坑沒注意到「線性迴歸」這四個字的考生的。• $\\$解題心法：看到「訓練集好、測試集差」rightarrow反射動作找Regularization ( ) Drop out ( )正規化 或 針對神經網路 。",
+      "A": "错误。模型在训练集表现好而在新数据上表现差属于过拟合，增加模型复杂度只会加剧过拟合；应采用正则化和交叉验证等技术来提升泛化能力。"
     },
     "type": "single",
     "options": {
@@ -1455,7 +1493,12 @@
     "exam": "MLA-C01",
     "id": 177,
     "question": "一家公司建構、訓練並調優了兩個新的機器學習模型：模型A基於IP位址、位置和使用者憑證偵測交易是否有詐欺。每次發生交易時都會呼叫此模型。模型B基於歷史銷售資料預測下個月的銷售總額。每月會呼叫此模型一次。該公司必須使用Amazon SageMaker AI將這兩個車型部署到生產環境。為了滿足這些要求，該公司應該使用哪種模型託管解決方案？",
-    "explanations": {},
+    "explanations": {
+      "A": "错误。模型A每次交易都需实时低延迟调用，模型B每月才调用一次，两者调用模式差异很大；将二者放在同一个始终在线的实时端点会为月度模型浪费资源，也不合适。",
+      "B": "错误。每笔交易的欺诈检测需要实时低延迟响应，不适合异步端点；而每月一次的销售预测使用实时端点则会造成资源浪费，应使用批量转换。",
+      "C": "正确。模型A每次交易实时调用，适合使用实时端点提供低延迟响应；模型B每月批量运行一次，使用批量转换无需维护常驻端点，最具成本效益。",
+      "D": "错误。每笔交易的欺诈检测需要实时响应，无法用批量转换；而每月一次的销售预测也不需要异步端点，方案不匹配。"
+    },
     "type": "single",
     "options": {
       "A": "將兩個模型託管在同一個容器中，並使用同一個即時端點。",
