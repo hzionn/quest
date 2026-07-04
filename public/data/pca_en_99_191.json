@@ -88,10 +88,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "正确点: 定义迁移计划是迁移的第一步，符合最佳实践。错误点: 直接使用Migrate for Compute Engine单独迁移所有虚拟机，缺乏评估步骤和RunBook;侍备，可能导致迁移失败或遗漏关键依赖。结论: 此选项不完整，错误。",
-      "B": "正确点: 评估虚拟机是迁移的必要步骤。错误点: 创建磁盘镜像并导入到Compute Engine的方式较为繁琐，目不符合Google推荐的使用Migrate for Compute Engine工具的结论: 此选项方法不符合Google推荐的迁移流程，错误。",
+      "A": "Incorrect. This skips the assessment of the existing VMware environment and does not prepare a migration RunBook, so it does not follow Google's recommended assess, plan, then execute migration process.",
+      "B": "Incorrect. Manually creating disk images and importing them is tedious and error-prone; Google recommends using Migrate for Compute Engine to automate the lift-and-shift migration rather than importing disks manually.",
       "C": "正确点: 评估虚拟机、定义迁移计划、准备RunBook并执行迁移，完全符合Google推荐的迁移流程。错误点: 无明显错误。结论: 此选项完整目符合最佳实践，正确。",
-      "D": "正确点: 评估虚拟机是迁移的必要步骤。错误点: 安装第三方代理并迁移虚拟机的方式不符合Google推荐的使用Migrate for Compute Engine工具的最佳实践。结论: 此选项方法不符合Google推荐的迁移流程，错误。"
+      "D": "Incorrect. Installing a third-party agent is not the Google-recommended approach; Migrate for Compute Engine should be used, and this option also omits the assessment-based migration plan and RunBook."
     }
   },
   {
@@ -1029,8 +1029,8 @@
     },
     "answer": "D",
     "explanations": {
-      "A": "正确性: 使用Linux shasum计算哈希值是可行的，但下载文件后再计算哈希值并比较，增加了额外的下载成本和时间，效率较低。错误原因: 此方法需要下载所有文件，增加了网络流量和时间成本，不是最优解。",
-      "B": "正确性: 开发自定义Java应用程序计算CRC32C哈希值是可行的，但开发应用程序需要额外的时间和资源，增加了复杂性。错误原因: 此方法复杂度较高，不符合\"最小化成本和努力\"的要求。5选项: 正确性: 使用Linux difft比较文件内容是可行的，但需要下载所有文件，增加了额外的下载成本和时间。错误原因: 此方法需要下载所有文件，效率较低，不是最优解。D选项: 正确性: 使用gsutil hash -c计算本地文件的CRC32C哈希值，并使用gsutills -L收集Cloud storage文件的CRC32C哈希值进行比较，是一种高效且低成本的方法。正确原因: 此方法直接比较哈希值，无需下载文件，符合\"最小化成本和努力\"的要求。",
+      "A": "Incorrect. Downloading the files again to compute shasum incurs extra egress cost and time, whereas gsutil already provides CRC32C checksums for comparison without any download.",
+      "B": "Incorrect. Developing a custom Java application to compute CRC32C is unnecessary effort; the gsutil hash command already generates CRC32C checksums for local files.",
       "C": "Incorrect. Downloading every uploaded file back and diffing the contents doubles the data transfer and cost; the cheaper approach is to compare CRC32C hashes, which Cloud Storage already stores, against locally computed hashes without re-downloading.",
       "D": "正确性: 使用gsutil hash -c计算本地文件的CRC32C哈希值，并使用gsutills -L收集Cloud storage文件的CRC32C哈希值进行比较，是一种高效且低成本的方法。正确原因: 此方法直接比较哈希值，无需下载文件，符合\"最小化成本和努力\"的要求。"
     }
@@ -1509,9 +1509,9 @@
     "answer": "A",
     "explanations": {
       "A": "正确性分析: 安装Cloud Logging agent可以自动收集日志，减少手动操作的复杂性。通过sink将日志导出到Cloud Storage是推荐的日志存储方式，尤其是当需要长期存储时。使用Object Lifecycle规则将文件移动到Coldline存储可以显著降低存储成本，同时满足30天后仅用于审计的需求。Bucket锁定确保数据保留策略符合合规要求，防止数据被意外删除。结论: 选项A是一个符合Google推荐实践的解决方案，满足成本优化和合规性要求。",
-      "B": "正确性分析: 使用cron job手动上传日志增加了复杂性和维护成本，不是最佳实践。昌然后续步骤 (sink和生命周期规则) 与选项A类似，但第一步的设计不够自动化，可能导致操作错误或不一致。结论: 选项B不符合Google推荐的自动化和简化操作的原则。",
-      "C": "正确性分析: 将日志导出到BigQuery表适合需要频繁查询的场景，但不适合长期存储，因为BigQuery的存储成本较高。设置time_partitioning_expiration为30天后，数据会被删除，不符合两年保留的合规要求。结论: 选项C不符合长期存储和成本优化的要求。",
-      "D": "正确性分析: 使用cron job手动上传日志增加了复杂性和维护成本，不是最佳实践。BigQuery的存储成本较高，不适合长期存储需求。设置time_partitioning_expiration为30天后，数据会被删除，不符合两年保留的合规要求。结论: 选项D不符合长期存储和成本优化的要求。"
+      "B": "Incorrect. Writing a custom cron job to upload logs duplicates the Cloud Logging agent and sink and adds maintenance overhead, and it lacks a bucket lock retention policy to meet the compliance requirement that logs not be deletable.",
+      "C": "Incorrect. Setting a 30-day partition expiration deletes the logs after one month, failing the two-year compliance retention requirement, and BigQuery is more costly than Coldline for long-term storage.",
+      "D": "Incorrect. As with option C, the 30-day partition expiration deletes the logs and fails the two-year retention requirement, and the custom cron job adds operational overhead while BigQuery storage is costly."
     }
   },
   {
@@ -1565,10 +1565,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "正确性分析: 此选项建议创建普通视图以排除PIl，并分配项目级IAM角色。虽然普通视图可以有效地隐藏Pll，但没有提到创建单独的数据集，也没有明确授权视图访问源数据集，这可能导致权限问题。错误原因: 没有创建单独的数据集来隔离数据科学团队的访问权限，且未提到授权视图访问源数据集的步骤。",
-      "B": "正确性分析: 此选项建议创建物化视图以排除PII，并分配项目级IAM角色。物化视图虽然可以提高查询性能，但它会增加存储成本，不符合题目要求的\"最小化成本\"。错误原因: 物化视图不适合用于简单的Pll数据隔离场景，因为它会增加存储成本。此外，与选项A一样，没有提到授权视图访问源数据集的步又。",
+      "A": "Incorrect. Creating the views in the source dataset does not isolate the data science team from the PII-containing source data; the correct approach is a separate dataset with an authorized view to the source.",
+      "B": "Incorrect. Materialized views add storage cost and do not minimize cost, and creating them in the source dataset also fails to provide the isolation of a separate dataset with an authorized view.",
       "C": "正确性分析: 此选项建议创建单独的数据集用于数据科学团队，创建普通视图以排除PII，并明确授权视图访问源数据集。这种方法既能保护PII，又能确保数据科学团队访问所需数据，同时避免额外的存储成本。正确原因: 创建单独的数据集可以更好地管理访问权限; 普通视图不会增加存储成本;授权视图访问源数据集确保数据科学团队能够访问所需数据。",
-      "D": "正确性分析: 此选项建议创建物化视图并创建单独的数据集。虽然创建单独的数据集是正确的，但物化视图会增加存储成本，不符合题目要求的\"最小化成本\"。错误原因: 物化视图不适合用于简单的Pll数据隔离场景，因为它会增加存储成本。"
+      "D": "Incorrect. Although it creates a separate dataset, using materialized views adds unnecessary storage cost; a standard authorized view meets the requirement at lower cost."
     }
   },
   {

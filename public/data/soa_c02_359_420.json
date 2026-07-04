@@ -758,7 +758,7 @@
    "A": "此选项使用AWSConfig托管规则来检测未关联的ElasticIP地址，并通过自动修复功能调用AWSSystemsManagerAutomation执行手册进行释放。这是一个自动化程度高且操作效率高的解决方案，符合题目要求。正确。",
    "B": "此选项使用自定义Lambda函数和EventBridge规则来释放ElasticIP地址，但事件类型选择为“AllEvents”，这会导致不必要的触发，效率较低。此外，AWSTrustedAdvisor作为目标与题目要求不符。错误。",
    "C": "此选项使用EventBridge规则和Lambda函数来处理ElasticIP地址，但依赖于InstanceState-changeNotification事件，这与释放未关联的ElasticIP地址的需求不完全匹配。使用AWSCloudFormation来释放地址增加了复杂性，操作效率较低。错误。",
-   "D": "正确答案：A分析：此选项使用自定义Lambda函数和EventBridge规则来释放ElasticIP地址，但依赖于InstanceState-changeNotification事件，这与释放未关联的ElasticIP地址的需求不完全匹配。虽然比选项B更接近需求，但仍然不如选项A的自动化程度高。错误。"
+   "D": "错误。自建并维护 Lambda 函数的运维开销高于使用托管的 eip-attached AWS Config 规则搭配 AWS 提供的 AWS-ReleaseElasticIP Automation 修复手册，且实例状态变更事件并不能直接识别哪些 Elastic IP 已处于未关联状态。"
   }
  },
  {

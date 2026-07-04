@@ -90,7 +90,7 @@
   "explanations": {
    "A": "❌ 监控等。 B. Patching of DynamoDB: 错误。DynamoDB是托管服务，AWS负责管理和维护底层基础设施，包括补丁更新。",
    "B": "❌ . Access to DynamoDB tables: 正确。客户负责管理对DynamoDB表的访问权限，包括配置IAM策略和访问控制。",
-   "C": "✅ D. Encryption of data at rest in DynamoDB: 错误。DynamoDB默认启用静态数据加密，客户无需负责此项，但客户可以选 择管理自己的加密密钥（如使用AWS KMS）。",
+   "C": "正确。在 AWS 共享责任模型下，客户负责管理对 DynamoDB 表的访问权限，包括配置 IAM 策略和访问控制。",
    "D": "错误。作为完全托管服务，DynamoDB 默认对静态数据进行加密且由 AWS 负责底层加密实现，客户的主要责任是管理对表和数据的访问权限。"
   }
  },
@@ -107,7 +107,7 @@
   },
   "answer": "C",
   "explanations": {
-   "A": "❌ B. Performance efficiency 性能效率: 错误。性能效率也是AWS Well-Architected Framework中的一个支柱，而不是AWS CAF的视角。",
+   "A": "错误。可持续性是 AWS Well-Architected Framework 的支柱，而非 AWS CAF 的视角；AWS CAF 的六个视角为业务、人员、治理、平台、安全和运营。",
    "B": "❌ CAF的视角。 C. Governance 治理: 正确。治理是AWS CAF的一个核心视角，属于“组织能力”类别，旨在帮助企业建立云治理框架和政 策。",
    "C": "✅ 策。 D. Reliability 可靠性: 错误。可靠性是AWS Well-Architected Framework中的一个支柱，而不是AWS CAF的视角。",
    "D": "错误。可靠性是 AWS Well-Architected Framework 的支柱，而非 AWS CAF 的视角；AWS CAF 的六个视角为业务、人员、治理、平台、安全和运营。"
@@ -171,7 +171,7 @@
    "A": "✅ 的使用模式和潜在的节约机会。 B. AWS Billing Conductor: 错误。AWS Billing Conductor主要用于管理和分配账单费用，不涉及资源优化或识别EC2实例的 适配性。",
    "B": "❌ 适配性。 C. Amazon CodeGuru: 错误。Amazon CodeGuru是一个代码分析工具，用于优化代码性能和安全性，与EC2实例的资源优 化无关。",
    "C": "❌ 化无关。 D. Amazon SageMaker: 错误。Amazon SageMaker是一个机器学习服务，与EC2实例的资源优化无关。",
-   "D": "❌ E. AWS Compute Optimizer: 正确。AWS Compute Optimizer专门用于分析资源使用情况并提供优化建议，包括EC2实例的 适配性建议。",
+   "D": "错误。Amazon SageMaker 是机器学习服务，用于构建和训练模型，与识别 Amazon EC2 实例的规模调整机会无关。",
    "E": "正确。AWS Compute Optimizer 通过分析历史利用率指标为 Amazon EC2 实例推荐最佳实例类型和规模，帮助识别适当调整规模的机会。"
   }
  },
@@ -408,7 +408,7 @@
   "answer": "A",
   "explanations": {
    "A": "✅ 接起来。这种连接提供更高的带宽、更低的延迟，并且绕过公共互联网。 B. VPC peering: 错误。VPC Peering用于连接两个AWS VPC（虚拟私有云），而不是连接本地数据中心与AWS云。",
-   "B": "❌ C. AWS VPN: 错误。AWS VPN提供的是基于互联网的加密连接，而不是专用网络连接。虽然它可以连接本地数据中心与 AWS云，但它不是专用连接。",
+   "B": "错误。VPC peering 用于连接两个 AWS VPC，而非在本地数据中心与 AWS 云之间建立专用网络连接；该需求应使用 AWS Direct Connect。",
    "C": "❌ AWS云，但它不是专用连接。 D. Amazon Route 53: 错误。Amazon Route 53是一个DNS服务，用于域名解析，与网络连接无关。",
    "D": "错误。Amazon Route 53 是可扩展的 DNS 与域名注册服务，不提供本地数据中心到 AWS 的专用网络连接；该需求应使用 AWS Direct Connect。"
   }
@@ -426,9 +426,9 @@
   },
   "answer": "B",
   "explanations": {
-   "A": "❌ B. AWS Region: 正确。AWS Region是AWS全球基础设施的物理位置之一，代表一个地理区域，包含多个可用区 （Availability Zones）。",
+   "A": "错误。AWS DataSync 是一种数据传输服务，用于在存储系统之间迁移数据，并非 AWS 全球基础设施的物理位置；物理位置指的是 AWS 区域（Region）。",
    "B": "✅ （Availability Zones）。 C. Amazon Connect: 错误。Amazon Connect是一项服务，用于构建云联络中心，但它不是物理位置。",
-   "C": "❌ D. AWS Organizations: 错误。AWS Organizations是一项服务，用于管理多个AWS账户，但它不是物理位置。",
+   "C": "错误。Amazon Connect 是用于构建云联络中心的服务，并非 AWS 全球基础设施的物理位置。",
    "D": "错误。AWS Organizations 用于集中管理多个 AWS 账户，并非 AWS 全球基础设施的物理位置；物理位置指的是 AWS 区域（Region）。"
   }
  },
@@ -592,10 +592,10 @@
    "E"
   ],
   "explanations": {
-   "A": "❌ B. Reliability 可靠性: 正确。可靠性是AWS Well-Architected Framework的五大支柱之一，旨在确保系统能够从故障中恢复 并满足需求。",
+   "A": "错误。可用性不是 AWS Well-Architected Framework 的支柱；其支柱包括卓越运营、安全性、可靠性、性能效率、成本优化和可持续性。",
    "B": "✅ 并满足需求。 C. Scalability 可扩展性: 错误。可扩展性是设计系统时的重要考虑因素，但它不是Well-Architected Framework的支柱之 一。",
    "C": "❌ 一。 D. Responsive design 响应式设计: 错误。响应式设计是前端开发中的概念，与AWS Well-Architected Framework无关。",
-   "D": "❌ E. Operational excellence 卓越运营: 正确。卓越运营是AWS Well-Architected Framework的五大支柱之一，关注运行和监 控系统以持续改进流程和支持业务目标。",
+   "D": "错误。响应式设计是前端开发中的概念，与 AWS Well-Architected Framework 的支柱无关。",
    "E": "正确。卓越运营（Operational Excellence）是 AWS Well-Architected Framework 的六大支柱之一。"
   }
  },
@@ -694,7 +694,7 @@
   "answer": "A",
   "explanations": {
    "A": "✅ 注入和跨站脚本攻击）的服务。它允许用户创建规则来过滤恶意流量。 B. AWS Shield: 错误。AWS Shield主要用于保护应用程序免受DDoS攻击，而不是针对SQL注入攻击的防护。",
-   "B": "❌ C. Network ACLs: 错误。网络ACL（Access Control List）是用于控制子网级别的入站和出站流量的工具，但它无法检测 或阻止SQL注入攻击，因为它不分析应用层数据。",
+   "B": "错误。AWS Shield 主要用于防护 DDoS 攻击，无法检测或阻止 SQL 注入等应用层攻击；应使用 AWS WAF。",
    "C": "❌ 或阻止SQL注入攻击，因为它不分析应用层数据。",
    "D": "错误。安全组是实例级别的有状态防火墙，基于端口、协议和 IP 控制流量，无法检测或阻止应用层的 SQL 注入攻击；应使用 AWS WAF。"
   }
@@ -752,7 +752,7 @@
   "explanations": {
    "A": "✅ 括应用软件许可证的成本。这是客户的直接责任。 B. Cost of the hardware infrastructure on AWS - 错误。AWS负责管理和维护其硬件基础设施，客户无需直接承担硬件成 本。",
    "B": "❌ 本。 C. Cost of power for the AWS servers - 错误。AWS负责其数据中心的电力供应和管理，客户无需直接支付电力成本。",
-   "C": "❌ D. Cost of physical security for the AWS data center - 错误。AWS负责其数据中心的物理安全，包括监控、访问控制等， 客户无需承担这部分成本。",
+   "C": "错误。AWS 数据中心服务器的电力供应和管理由 AWS 负责，客户不直接为其电力成本付费。",
    "D": "错误。数据中心的物理安全属于 AWS 的责任并已包含在服务费用中，客户不直接为此付费。"
   }
  },
@@ -1165,8 +1165,8 @@
   "explanations": {
    "A": "✅ . Security groups: 正确。Security groups是实例级别的虚拟防火墙，可以允许或拒绝入站和出站流量。",
    "B": "❌ 接阻止流量。 C. Network ACLs: 正确。Network ACLs是子网级别的防火墙，可以允许或拒绝入站和出站流量。",
-   "C": "✅ D. Amazon CloudWatch: 错误。CloudWatch是监控和管理服务，不能直接用于阻止网络流量。",
-   "D": "❌ E. AWS CloudTrail: 错误。CloudTrail用于记录API调用和活动日志，不能直接阻止网络流量。",
+   "C": "正确。Network ACL 是子网级别的无状态防火墙，可以设置允许或拒绝规则来阻止进出实例的网络流量。",
+   "D": "错误。Amazon CloudWatch 是监控和管理服务，无法直接用于阻止网络流量。",
    "E": "错误。AWS CloudTrail 记录账户的 API 调用用于审计，无法阻止实例的网络流量；阻止流量应使用安全组或网络 ACL。"
   }
  },
@@ -1347,7 +1347,7 @@
    "A": "❌ . EC2 Reserved Instances: 错误。Reserved Instances是用于节省成本的定价选项，与灾难恢复无关。",
    "B": "✅ 的一部分。 C. Amazon Elastic Block Store (Amazon EBS) snapshots: 正确。EBS快照是存储卷的备份，可以用于恢复数据，支持灾难 恢复。",
    "C": "✅ 恢复。 D. AWS Shield: 错误。AWS Shield是用于保护应用免受DDoS攻击的服务，与灾难恢复无关。",
-   "D": "❌ E. Amazon GuardDuty: 错误。GuardDuty是威胁检测服务，用于识别潜在的安全问题，与灾难恢复无关。",
+   "D": "错误。AWS Shield 是 DDoS 防护服务，用于抵御分布式拒绝服务攻击，与 Amazon EC2 实例的灾难恢复无关。",
    "E": "错误。Amazon GuardDuty 是威胁检测服务，不提供 EC2 灾难恢复能力；灾难恢复可通过 AMI 和 EBS 快照实现。"
   }
  },
@@ -1440,7 +1440,7 @@
   },
   "answer": "C",
   "explanations": {
-   "A": "❌ B. Amazon Macie: 错误。Amazon Macie 是一个数据安全服务，用于识别和保护敏感数据，不能用于创建私有连接。 D (23%)",
+   "A": "错误。Amazon Route 53 是 DNS 服务，用于域名解析，无法在本地工作负载与 AWS 云之间创建私有连接；该需求应使用 AWS Direct Connect。",
    "B": "❌ D (23%) C. AWS Direct Connect: 正确。AWS Direct Connect 是一种网络服务，可用于在本地数据中心和AWS之间创建专用网络连 接，提供高带宽和低延迟的私有连接。",
    "C": "✅ 接，提供高带宽和低延迟的私有连接。 D. AWS PrivateLink: 错误。AWS PrivateLink 是一种服务间的私有连接解决方案，主要用于在VPC之间或服务之间创建私 有连接，而不是用于连接本地工作负载和AWS云工作负载。",
    "D": "❌ 有连接，而不是用于连接本地工作负载和AWS云工作负载。 3. 我的答案 我的选择是：C. AWS Direct Connect 4. 官方答案 官方正确答案是：C. AWS Direct Connect"
@@ -1479,7 +1479,7 @@
   "answer": "A",
   "explanations": {
    "A": "✅ 资源。它完全符合题目中“通过web界面管理AWS资源”的要求。 B. AWS CLI: 错误。AWS CLI是一个命令行工具，用户通过命令行界面管理AWS资源，而不是通过web界面。",
-   "B": "❌ C. AWS SDK: 错误。AWS SDK是一个开发工具包，主要用于通过编程方式与AWS服务交互，而不是直接提供web界面管 理资源的功能。",
+   "B": "错误。AWS CLI 是命令行工具，通过命令行以编程方式管理资源，并非网页界面；提供网页界面的是 AWS Management Console。",
    "C": "❌ 理资源的功能。 D. AWS Cloud9: 错误。AWS Cloud9是一个基于云的集成开发环境（IDE），主要用于编写、运行和调试代码，而不是用 于管理AWS资源。",
    "D": "错误。AWS Cloud9 是基于云的集成开发环境（IDE），用于编写和调试代码，而通过网页界面管理 AWS 资源的是 AWS Management Console。"
   }
@@ -1597,7 +1597,7 @@
   },
   "answer": "C",
   "explanations": {
-   "A": "❌ B. Elastic Load Balancing: 错误。Elastic Load Balancing用于分发流量到多个目标（如EC2实例），不适用于应用间消息 传递。",
+   "A": "错误。AWS Auto Scaling 用于根据需求自动调整资源容量，无法用于应用程序之间发送消息；该需求应使用 Amazon SQS。",
    "B": "❌ 传递。 C. Amazon Simple Queue Service (Amazon SQS): 正确。Amazon SQS是一个完全托管的消息队列服务，专门设计用于应用 之间的消息传递和解耦。",
    "C": "✅ 之间的消息传递和解耦。 D. Amazon Kinesis Data Streams: 错误。Amazon Kinesis Data Streams用于实时处理和分析数据流，不适合应用间的消息 传递需求。",
    "D": "错误。Amazon Kinesis Data Streams 用于实时流数据的采集和处理，而在应用程序间发送消息、实现解耦应使用 Amazon SQS 消息队列。"
@@ -1623,7 +1623,7 @@
    "A": "✅ 本。 B. A minimal additional fee for use (使用的额外费用极少) - 错误。合并计费本身不涉及额外费用，AWS不会因为使用合 并计费功能而收取额外费用。",
    "B": "❌ 并计费功能而收取额外费用。 C. One bill for multiple accounts (多个账户的一张账单) - 正确。合并计费的主要优势之一是可以将多个账户的费用整合 到一张账单中，简化账单管理。",
    "C": "✅ 到一张账单中，简化账单管理。 D. Installment payment options (分期付款选项) - 错误。AWS不提供分期付款选项，这与合并计费功能无关。",
-   "D": "❌ E. Custom cost and usage budget creation (创建自定义成本和使用预算) - 错误。虽然AWS提供预算功能，但这与合并计 费功能无直接关联。",
+   "D": "错误。合并计费不提供分期付款选项；其主要好处是将多个账户的费用合并为一张账单并可享受批量折扣。",
    "E": "错误。创建自定义成本和使用预算是 AWS Budgets 的功能，而不是合并计费本身的好处；合并计费的好处包括单一账单和批量折扣。"
   }
  },
@@ -1735,8 +1735,8 @@
   },
   "answer": "D",
   "explanations": {
-   "A": "❌ B. Database software patches: 错误。数据库软件补丁也是客户的责任，因为客户负责管理和维护其数据库软件。",
-   "B": "❌ C. Operating system patches: 错误。操作系统补丁是客户的责任，因为客户控制运行在EC2实例上的操作系统。 社区投票分发 D (60%) C (36%) A",
+   "A": "错误。在 Amazon EC2 上自行托管数据库时，操作系统的安装由客户负责，而非 AWS。",
+   "B": "错误。在 Amazon EC2 上自行托管数据库时，数据库备份由客户负责，而非 AWS。",
    "C": "❌ 社区投票分发 D (60%) C (36%) A D. Operating system installations: 正确。AWS负责提供EC2实例的基础设施，包括操作系统的安装，确保实例可以正常运 行。",
    "D": "正确。根据共享责任模型，AWS 负责修补底层主机操作系统和虚拟化基础设施（云的安全）。"
   }
@@ -1935,9 +1935,9 @@
   },
   "answer": "B",
   "explanations": {
-   "A": "❌ B. IAM role: 正确。IAM角色可以通过信任策略授予其他账户的用户或服务访问权限，是实现跨账户访问的推荐方式。",
-   "B": "✅ C. IAM tag: 错误。IAM标签用于标记IAM资源以便于管理，但它与权限管理无关，不能用于跨账户访问。",
-   "C": "❌ D. IAM Access Analyzer: 错误。IAM Access Analyzer用于分析权限并识别资源的潜在访问风险，但它不能直接授予跨账 户访问权限。",
+   "A": "错误。IAM 组用于在同一账户内组织用户并统一授予权限，无法用于跨账户授予对另一个账户资源的访问权限。",
+   "B": "正确。IAM 角色可通过信任策略授予其他 AWS 账户的用户临时访问权限，是实现跨账户访问的推荐方式。",
+   "C": "错误。IAM 标签用于标记 IAM 资源以便管理，与跨账户访问授权无关。",
    "D": "错误。IAM Access Analyzer 用于识别与外部实体共享的资源，而授予一个账户的用户访问另一个账户资源应使用 IAM 角色（跨账户角色）。"
   }
  },
