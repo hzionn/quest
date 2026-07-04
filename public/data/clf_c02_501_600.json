@@ -14,7 +14,7 @@
   "explanations": {
    "A": "❌ 供详细的成本跟踪功能。 B. Cost allocation tags: 正确。Cost allocation tags是AWS提供的功能，可以通过为资源分配标签来实现详细的成本跟 踪。标签可以按部门、项目等维度分类，从而实现精确的成本分配。",
    "B": "✅ 踪。标签可以按部门、项目等维度分类，从而实现精确的成本分配。 C. AWS Marketplace: 错误。AWS Marketplace是一个在线商店，用于购买第三方软件和服务，与成本跟踪无关。",
-   "C": "❌ D. AWS Budgets: 错误。AWS Budgets用于设置预算和监控成本，但它不能实现详细的成本分配和跟踪。",
+   "C": "错误。AWS Marketplace 是购买和部署第三方软件的在线商店，而按部门和项目对云成本进行详细跟踪应使用成本分配标签（Cost allocation tags）。",
    "D": "错误。AWS Budgets 用于设置预算和超支告警，而按部门和项目对成本进行详细跟踪分类应使用成本分配标签（Cost allocation tags）。"
   }
  },
@@ -52,7 +52,7 @@
   "explanations": {
    "A": "✅ 用户无需管理底层的硬件、操作系统或数据库软件，AWS会自动处理备份、补丁和监控。 B. Amazon Neptune: 错误。Amazon Neptune 是一个专门用于图数据库的服务，不适用于托管关系型数据库（如 MariaDB）。",
    "B": "❌ MariaDB）。 C. Amazon S3: 错误。Amazon S3 是一个对象存储服务，适合存储文件和数据对象，但不适合托管关系型数据库。",
-   "C": "❌ D. Amazon DynamoDB: 错误。Amazon DynamoDB 是一个NoSQL数据库服务，适合键值对和文档存储，不支持关系型数据 库（如 MariaDB）。",
+   "C": "错误。Amazon S3 是对象存储服务，适合存储文件和对象，而以最少运维开销托管 MariaDB 关系型数据库应使用 Amazon RDS。",
    "D": "错误。Amazon DynamoDB 是 NoSQL 键值数据库，而以最少运维开销托管 MariaDB（关系型）数据库应使用 Amazon RDS。"
   }
  },
@@ -165,7 +165,7 @@
   "answer": "A",
   "explanations": {
    "A": "✅ 应用程序。 B. AWS Config: 错误。AWS Config 是用于资源配置管理和合规性检查的服务，与用户身份验证无关。",
-   "B": "❌ C. Amazon GuardDuty: 错误。Amazon GuardDuty 是一种威胁检测服务，用于保护AWS账户和工作负载安全，与用户注册 和身份验证无关。",
+   "B": "错误。AWS Config 用于评估和记录资源配置及合规性，而为 Web 和移动应用提供用户注册与身份验证应使用 Amazon Cognito。",
    "C": "❌ 和身份验证无关。 D. AWS Systems Manager: 错误。AWS Systems Manager 是用于管理和操作AWS资源的服务，与用户身份验证无关。",
    "D": "错误。AWS Systems Manager 用于运营和管理 AWS 资源，而为 Web 和移动应用提供用户注册与身份验证应使用 Amazon Cognito。"
   }
@@ -279,7 +279,7 @@
   "answer": "A",
   "explanations": {
    "A": "✅ 定义的AMIs。客户可以通过AWS Marketplace轻松购买和使用这些产品。 B. AWS Data Exchange: 错误。AWS Data Exchange主要用于共享和订阅第三方数据集，而不是用于分发AMIs。",
-   "B": "❌ C. Amazon EC2: 错误。Amazon EC2是一个计算服务，虽然可以创建和使用AMIs，但它本身并不提供分享或分发AMIs的 功能。",
+   "B": "错误。AWS Data Exchange 用于查找、订阅和分发第三方数据集，而向潜在客户交付和分享自定义 Amazon Machine Images (AMIs) 应使用 AWS Marketplace。",
    "C": "❌ 功能。 D. AWS Organizations: 错误。AWS Organizations用于管理多个AWS账户的权限和资源共享，与分发AMIs无关。",
    "D": "错误。AWS Organizations 用于集中管理多个账户，而向潜在客户交付和分享自定义 AMI 应使用 AWS Marketplace。"
   }
@@ -297,9 +297,9 @@
   },
   "answer": "D",
   "explanations": {
-   "A": "❌ B. VPC endpoint: 错误。VPC端点用于私有连接到AWS服务（如S3或DynamoDB），不涉及互联网访问。",
-   "B": "❌ C. VPN connection: 错误。VPN连接用于安全地连接本地网络到AWS VPC，不能直接启用互联网访问。",
-   "C": "❌ D. Internet gateway: 正确。互联网网关是一个VPC组件，允许入站和出站的互联网流量。它是实现互联网访问的必要条 件。",
+   "A": "错误。NAT gateway 允许私有子网中的实例发起出站互联网访问，但不提供入站互联网访问；启用入站互联网访问需要附加 Internet gateway（互联网网关）。",
+   "B": "错误。VPC endpoint 用于在 VPC 与 AWS 服务之间建立私有连接，不涉及互联网访问；启用入站互联网访问需要 Internet gateway（互联网网关）。",
+   "C": "错误。VPN connection 用于在本地网络与 VPC 之间建立安全的加密连接，而为 VPC 启用入站互联网访问需要附加 Internet gateway（互联网网关）。",
    "D": "正确。互联网网关必须附加到 VPC，才能为 VPC 中的资源启用与互联网之间的入站和出站访问。"
   }
  },
@@ -556,7 +556,7 @@
   "explanations": {
    "A": "❌ 能够根据需求动态调整资源，而不是解决地理位置问题。 B. Global footprint 全球覆盖: 正确。AWS的全球覆盖通过多个区域（Regions）和可用区（Availability Zones）提供服 务，允许用户选择特定的地理位置来部署应用，从而满足地理位置相关的合规性要求。",
    "B": "✅ 务，允许用户选择特定的地理位置来部署应用，从而满足地理位置相关的合规性要求。 C. Availability 可用性: 错误。可用性指的是AWS服务的可靠性和持续运行能力，与地理位置的选择无直接关系。",
-   "C": "❌ D. Performance 性能: 错误。性能指的是AWS服务的速度和效率，与地理位置的合规性要求无直接关联。",
+   "C": "错误。可用性关注服务的可靠性和持续运行能力，而在特定地理区域托管应用以满足法规要求利用的是 AWS 全球基础设施的全球覆盖（区域选择）能力。",
    "D": "错误。性能与延迟和响应速度相关，而在特定地理区域托管应用以满足数据驻留和法规要求利用的是 AWS 全球基础设施的全球覆盖（区域选择）能力。"
   }
  },
@@ -578,8 +578,8 @@
   ],
   "explanations": {
    "A": "❌ 景下。 B. Security (安全性): 错误。安全性是AWS的核心优势之一，但它与成本效益无直接关联。",
-   "B": "❌ C. Elasticity (弹性): 正确。弹性允许用户根据需求动态调整资源使用，避免资源浪费，从而降低成本。",
-   "C": "✅ D. Pay-as-you-go resource (按需付费资源): 正确。按需付费模式使用户只需为实际使用的资源付费，特别适合动态工 作负载，显著提高成本效益。",
+   "B": "错误。安全性是 AWS 的核心优势，但与针对动态使用模式的成本效益没有直接关系；此处具成本效益的优势是弹性和按需付费资源。",
+   "C": "正确。弹性使用户能够根据需求动态扩缩资源，避免为闲置容量付费，非常适合高度动态的工作负载，从而具有成本效益。",
    "D": "✅ 作负载，显著提高成本效益。 E. High availability (高可用性): 错误。高可用性是AWS的一个重要特性，但它与成本效益无直接关系。",
    "E": "错误。高可用性关注系统持续可用，虽然重要但不是此处针对动态使用模式的成本效益优势；针对动态负载具成本效益的是弹性和按需付费资源。"
   }
@@ -659,9 +659,9 @@
   ],
   "explanations": {
    "A": "✅ 相关权限。 B. AWS Key Management Service (AWS KMS): 错误。AWS KMS用于管理加密密钥，与IAM用户密码管理无关。",
-   "B": "❌ C. AWS Management Console: 正确。用户可以通过AWS Management Console的“我的安全凭证”页面来更改自己的IAM用 户密码。",
+   "B": "错误。AWS Key Management Service (AWS KMS) 用于创建和管理加密密钥，与更改 IAM 用户密码无关；用户可通过 AWS Management Console 或 AWS CLI 更改密码。",
    "C": "✅ 户密码。 D. AWS Resource Access Manager (AWS RAM): 错误。AWS RAM用于共享资源，与IAM用户密码管理无关。",
-   "D": "❌ E. AWS Secrets Manager: 错误。AWS Secrets Manager用于管理应用程序的密钥和凭证，与IAM用户密码管理无关。",
+   "D": "错误。AWS Resource Access Manager (AWS RAM) 用于在账户之间共享资源，与更改 IAM 用户密码无关；用户可通过 AWS Management Console 或 AWS CLI 更改密码。",
    "E": "错误。AWS Secrets Manager 用于存储和轮换应用程序密钥或凭证，而用户更改自己的 IAM 密码可通过 AWS 管理控制台或 AWS CLI 完成。"
   }
  },
@@ -680,7 +680,7 @@
   "explanations": {
    "A": "✅ 管理和维护其部署在AWS上的资源，包括EC2实例的操作系统补丁和更新。 B. Control physical access to an AWS data center. 错误。AWS负责管理其数据中心的物理安全，包括访问控制。这属于 AWS的责任。",
    "B": "❌ AWS的责任。 C. Control access to AWS underlying hardware. 错误。AWS负责管理底层硬件的安全性和访问控制。这也是AWS的责任。",
-   "C": "❌ D. Patch a host operating system that is deployed on Amazon S3. 错误。Amazon S3是一个托管服务，客户无需管理或修补 底层主机操作系统。这属于AWS的责任。",
+   "C": "错误。控制对底层硬件的访问是 AWS 的责任，而不是客户的责任；根据共享责任模型，客户负责修补部署在 Amazon EC2 实例上的客户操作系统。",
    "D": "错误。Amazon S3 是托管服务，其底层主机操作系统的修补由 AWS 负责而非客户；客户负责修补部署在 EC2 上的客户机操作系统。"
   }
  },
@@ -818,7 +818,7 @@
   "explanations": {
    "A": "✅ Amazon EC2 实例或其他目标资源。它支持 HTTP 和 HTTPS 协议，非常适合电子商务网站的流量分发需求。 B. AWS WAF: 错误。AWS WAF 是一种 Web 应用程序防火墙，用于保护 Web 应用免受恶意流量攻击，但它不负责流量分 发。",
    "B": "❌ 发。 C. AWS CloudHSM: 错误。AWS CloudHSM 是一种硬件安全模块，用于加密密钥管理，与流量分发无关。",
-   "C": "❌ D. AWS Direct Connect: 错误。AWS Direct Connect 是一种网络服务，用于建立本地数据中心与 AWS 云之间的专用网络连 接，与流量分发无关。",
+   "C": "错误。AWS CloudHSM 是用于加密密钥管理的硬件安全模块，与流量分发无关；在多个 Amazon EC2 实例之间分配流量应使用 Application Load Balancer。",
    "D": "错误。AWS Direct Connect 提供本地到 AWS 的专用连接，而在多个 EC2 实例之间分配流量应使用 Application Load Balancer。"
   }
  },
@@ -841,8 +841,8 @@
   "explanations": {
    "A": "✅ 用性和容错能力。 B. Amazon ElastiCache: 错误。Amazon ElastiCache是一个服务，用于缓存数据以提高应用程序性能，但它不是AWS全球 基础设施的一部分。",
    "B": "❌ 基础设施的一部分。 C. AWS Regions AWS区域: 正确。AWS区域是AWS全球基础设施的核心组成部分，每个区域包含多个可用区。",
-   "C": "✅ D. Amazon S3: 错误。Amazon S3是一个存储服务，而不是AWS全球基础设施的一部分。",
-   "D": "❌ E. Amazon VPC: 错误。Amazon VPC是一个虚拟网络服务，用于隔离资源，但它不是AWS全球基础设施的一部分。",
+   "C": "正确。AWS 区域（AWS Regions）是 AWS 在全球部署的地理区域，是 AWS 云全球基础设施的核心组成部分。",
+   "D": "错误。Amazon S3 是对象存储服务，而不是构成 AWS 云全球基础设施的组成部分；全球基础设施由 AWS 区域和可用区等构成。",
    "E": "错误。Amazon VPC 是区域内的隔离虚拟网络，属于账户级资源，而构成 AWS 全球基础设施的核心是区域（Region）和可用区（Availability Zone）。"
   }
  },
@@ -883,9 +883,9 @@
   },
   "answer": "B",
   "explanations": {
-   "A": "❌ B. The company: 正确。根据AWS共享责任模型，客户负责管理数据加密，包括数据库和备份的加密。",
-   "B": "✅ C. AWS Marketplace partners: 错误。AWS Marketplace合作伙伴可能提供加密工具，但最终责任仍然在客户手中。",
-   "C": "❌ D. Third-party partners: 错误。第三方合作伙伴可能提供加密服务，但根据AWS共享责任模型，客户仍需负责加密的管 理。",
+   "A": "错误。根据 AWS 共享责任模型，管理数据（包括数据库集群和数据库快照）的加密属于“云中的安全”，是公司（客户）的责任，而不是 AWS 的责任。",
+   "B": "正确。根据 AWS 共享责任模型，客户负责“云中的安全”，包括对 Amazon Aurora 数据库集群和数据库快照启用并管理加密。",
+   "C": "错误。AWS Marketplace 合作伙伴可能提供加密相关工具，但根据共享责任模型，管理数据库集群和快照加密的责任在于公司（客户）。",
    "D": "错误。第三方合作伙伴不负责客户的数据库加密，而根据共享责任模型，管理 Aurora 数据库集群和快照的加密（云中的安全）是公司（客户）的责任。"
   }
  },
@@ -923,7 +923,7 @@
   "explanations": {
    "A": "❌ 误。 B. AWS Direct Connect: AWS Direct Connect提供专用的网络连接，能够实现更高的带宽和更稳定的网络体验。此选项正 确。 C. Amazon Connect: Amazon Connect是一个云联络中心服务，与网络连接无关。此选项错误。",
    "B": "✅ 确。 C. Amazon Connect: Amazon Connect是一个云联络中心服务，与网络连接无关。此选项错误。",
-   "C": "❌ D. Amazon CloudFront: Amazon CloudFront是一个内容分发网络（CDN）服务，用于加速内容交付，但它不能提供专用网 络连接。此选项错误。",
+   "C": "错误。Amazon Connect 是云联络中心服务，用于客户支持，与网络连接无关；提供比公共互联网更一致的专用网络连接应使用 AWS Direct Connect。",
    "D": "❌ 络连接。此选项错误。"
   }
  },
@@ -942,7 +942,7 @@
   "explanations": {
    "A": "❌ 项错误。",
    "B": "✅ 务的需求。因此此选项正确。",
-   "C": "❌ D. Reserved Instances: Reserved实例需要长期承诺，适合稳定的工作负载，不适合临时性、可变性工作负载。因此此选 项错误。",
+   "C": "错误。Savings Plans 需要 1 年或 3 年的用量承诺，适合稳定且可预测的工作负载，而临时、可变且不能被中断的短时工作负载最适合使用按需实例（On-Demand Instances）。",
    "D": "❌ 项错误。"
   }
  },
@@ -1037,7 +1037,7 @@
   "explanations": {
    "A": "✅ Billing），满足财务团队希望接收一个账单的需求。 B. AWS Trusted Advisor: 错误。AWS Trusted Advisor是一个优化工具，用于检查账户的安全性、成本效率、性能等，但 它不提供统一计费功能。",
    "B": "❌ 它不提供统一计费功能。",
-   "C": "❌ D. AWS Budgets: 错误。AWS Budgets用于设置预算和监控成本，但它不提供统一计费功能。",
+   "C": "错误。Cost Explorer 用于可视化和分析成本与使用趋势，而将多个账户合并为一份统一账单应使用 AWS Organizations（合并计费）。",
    "D": "错误。AWS Budgets 用于设置预算和超支告警，而为所有公司账户提供统一账单（合并计费）应使用 AWS Organizations。"
   }
  },
@@ -1054,7 +1054,7 @@
   },
   "answer": "D",
   "explanations": {
-   "A": "❌ B. AWS WAF: 错误。AWS WAF主要用于保护Web应用程序免受常见的网络攻击（如SQL注入和跨站脚本攻击），而不是 用于控制EC2实例的网络流量。",
+   "A": "错误。Network ACL 作用于子网级别，会影响同一子网中的所有实例，而只控制到单个 Amazon EC2 实例的网络连接应使用安全组（Security group）。",
    "B": "❌ 用于控制EC2实例的网络流量。 C. Route table: 错误。Route table用于定义子网或VPC的路由规则，控制流量的去向，但无法直接控制单个EC2实例的网 络连接。",
    "C": "❌ 络连接。 D. Security group: 正确。Security group是实例级别的虚拟防火墙，可以精确控制单个EC2实例的入站和出站流量。",
    "D": "正确。安全组在实例级别充当有状态虚拟防火墙，可控制单个 EC2 实例的入站和出站流量，而不影响同一子网中的其他实例。"
@@ -1250,7 +1250,7 @@
   "answer": "C",
   "explanations": {
    "A": "❌ 的选项。 B. 2年: AWS EC2 Reserved Instances并未提供2年的承诺期限选项，因此此选项是错误的。",
-   "B": "❌ C. 3年: 3年的承诺期限是AWS EC2 Reserved Instances中节约成本最多的选项。用户通过更长时间的承诺可以获得更大的 折扣，因此此选项是正确的。",
+   "B": "错误。Amazon EC2 预留实例仅提供 1 年和 3 年两种期限承诺，并不提供 2 年期限；其中 3 年承诺提供最大的成本节省。",
    "C": "✅ 折扣，因此此选项是正确的。",
    "D": "错误。Amazon EC2 预留实例仅提供 1 年和 3 年两种期限承诺，没有 5 年选项；3 年期承诺可提供最大的成本节省。"
   }
@@ -1401,9 +1401,9 @@
   },
   "answer": "A",
   "explanations": {
-   "A": "✅ B. Cost Explorer: 错误。Cost Explorer主要用于分析和可视化成本数据，但它不提供预算通知功能。",
-   "B": "❌ C. Cost allocation tags: 错误。成本分配标签用于标记和分类成本，但它不能直接通知用户超出预算。",
-   "C": "❌ D. Cost categories: 错误。成本类别用于组织和分类成本，但它不具备预算通知功能。",
+   "A": "正确。AWS Budgets 允许按月设置预算，并在实际或预测支出超过预算阈值时发送通知，满足在支出超过计划金额时提醒团队的需求。",
+   "B": "错误。Cost Explorer 用于分析和可视化成本与使用趋势，但不提供在支出超过预算时发送通知的功能；该需求应使用 AWS Budgets。",
+   "C": "错误。成本分配标签用于标记资源以便分类和跟踪成本，但不能在支出超过计划金额时发送通知；该需求应使用 AWS Budgets。",
    "D": "错误。成本类别（Cost categories）用于将成本按自定义规则分组归类，而在支出超过计划预算金额时通知团队应使用 AWS Budgets。"
   }
  },
@@ -1426,7 +1426,7 @@
   "explanations": {
    "A": "❌ 化现有EC2资源的功能。 B. AWS Cost Explorer: 正确。AWS Cost Explorer可以帮助用户分析和优化成本，包括EC2实例的使用情况，从而间接支持 优化资源。",
    "B": "✅ 优化资源。 C. Amazon Detective: 错误。Amazon Detective是一个安全分析服务，用于调查潜在的安全问题，与优化EC2资源无关。",
-   "C": "❌ D. AWS Compute Optimizer: 正确。AWS Compute Optimizer专门用于分析和优化EC2实例的配置和使用情况，是直接相关 的服务。",
+   "C": "错误。Amazon Detective 用于分析和调查安全问题的根本原因，与优化 Amazon EC2 资源无关；优化现有 EC2 资源应使用 AWS Cost Explorer 和 AWS Compute Optimizer。",
    "D": "✅ 的服务。 E. AWS Billing Conductor: 错误。AWS Billing Conductor是一个计费管理工具，用于组织和分配账单，与优化EC2资源无 关。",
    "E": "错误。AWS Billing Conductor 用于自定义计费和分摊，而优化现有 EC2 资源（适当规模化）应使用 AWS Cost Explorer 的规模建议和 AWS Compute Optimizer。"
   }
@@ -1543,10 +1543,10 @@
    "C"
   ],
   "explanations": {
-   "A": "✅ B. Swift: 错误。Swift不是AWS CDK当前支持的编程语言。",
-   "B": "❌ C. TypeScript: 正确。TypeScript是AWS CDK的主要支持语言之一。",
-   "C": "✅ D. Ruby: 错误。Ruby不是AWS CDK当前支持的编程语言。",
-   "D": "❌ E. PHP: 错误。PHP不是AWS CDK当前支持的编程语言。",
+   "A": "正确。Python 是 AWS Cloud Development Kit (AWS CDK) 当前支持的编程语言之一。",
+   "B": "错误。Swift 不是 AWS CDK 当前支持的编程语言；CDK 支持 TypeScript、JavaScript、Python、Java、C# 和 Go 等语言。",
+   "C": "正确。TypeScript 是 AWS CDK 当前支持的主要编程语言之一。",
+   "D": "错误。Ruby 不是 AWS CDK 当前支持的编程语言；CDK 支持 TypeScript、JavaScript、Python、Java、C# 和 Go 等语言。",
    "E": "错误。AWS CDK 目前不支持 PHP，其支持的语言包括 TypeScript、JavaScript、Python、Java、C#/.NET 和 Go。"
   }
  },
@@ -1582,7 +1582,7 @@
   },
   "answer": "C",
   "explanations": {
-   "A": "❌ B. Availability Zones: 错误。可用区（Availability Zones）是AWS区域中的物理数据中心，但它们并不提供逻辑隔离功 能。",
+   "A": "错误。AWS VPN 用于在本地网络与 AWS 之间建立安全的加密连接，而在 AWS 云中拥有自己逻辑隔离的部分应使用 Amazon Virtual Private Cloud (Amazon VPC)。",
    "B": "❌ 能。 C. Amazon Virtual Private Cloud (Amazon VPC): 正确。Amazon VPC允许用户在AWS云中创建一个逻辑隔离的网络环境， 用户可以完全控制其网络配置。",
    "C": "✅ 用户可以完全控制其网络配置。 D. AWS Regions: 错误。AWS区域（Regions）是地理位置上的分布，但它们并不提供逻辑隔离功能。",
    "D": "错误。AWS 区域是全球的地理位置集合，而在 AWS 云中拥有自己逻辑隔离的网络部分应使用 Amazon VPC。"
@@ -1683,8 +1683,8 @@
   "answer": "B",
   "explanations": {
    "A": "❌ 源创建的事件历史。 B. AWS CloudTrail: 正确。AWS CloudTrail记录与AWS账户相关的所有API调用和事件历史，包括资源创建的详细信息。",
-   "B": "✅ C. Amazon Aurora: 错误。Amazon Aurora是一个关系数据库服务，与事件历史记录无关。",
-   "C": "❌ D. Amazon EventBridge: 错误。Amazon EventBridge是一个事件总线服务，用于连接应用程序和触发事件，但它不记录资 源创建的历史。",
+   "B": "正确。AWS CloudTrail 记录 AWS 账户中的 API 调用和资源事件历史，可用于查看所创建 AWS 资源的事件历史。",
+   "C": "错误。Amazon Aurora 是关系型数据库服务，与记录 AWS 资源的事件历史无关；查看资源事件历史应使用 AWS CloudTrail。",
    "D": "错误。Amazon EventBridge 是事件总线，用于路由事件以触发操作，而记录并查看创建 AWS 资源的 API 事件历史应使用 AWS CloudTrail。"
   }
  },
