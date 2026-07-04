@@ -33,7 +33,14 @@ async function fetchDataJson(path) {
   if (!res.ok) throw new Error(`fetch ${path}: ${res.status}`)
   return res.json()
 }
-const asQuestions = (data) => (Array.isArray(data) ? data : (data.questions || []))
+const asQuestions = (data) => {
+  const list = Array.isArray(data) ? data : (data.questions || [])
+  // 防禦性正規化：多選答案若是字串（如 "AD"）轉成陣列，否則計分永遠判錯
+  for (const q of list) {
+    if (q && q.type === 'multiple' && typeof q.answer === 'string') q.answer = q.answer.split('')
+  }
+  return list
+}
 
 // Fetch many bank files concurrently; per-file failures are skipped so one
 // bad file can't take down the whole bank. onProgress(done, total) fires as
