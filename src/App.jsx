@@ -14,6 +14,7 @@ import ErrorBoundary from './ErrorBoundary'
 import { isSyncConfigured, mergeMaps, fetchAdminOverview } from './sync'
 import {
   computeXP, levelInfo, evaluateAchievements, titleForLevel,
+  GROUPS as ACHIEVEMENT_GROUPS,
   XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
 } from './gamify'
 
@@ -186,6 +187,8 @@ const initialState = {
   combo: 0,
   bestCombo: 0,
   lastXpGain: null, // { amount, correct, at } — 供作答後的 +XP 動畫
+  examHistory: [],  // [{ at, exam, total, correct, pct, passed }] — 模擬考成就用
+  flags: {},        // 隱藏成就旗標：earlyBird/nightOwl/weekend/lunch/lang/dark/export/hotkey/swipe
 
   // Language
   lang: 'zh',        // 'zh' | 'en'
@@ -236,6 +239,18 @@ function accuracyTone(pct) {
   return { text: 'text-red-500', bar: 'linear-gradient(90deg, #ef4444, #dc2626)' }
 }
 
+// 目前作答時段的隱藏成就旗標
+function currentTimeFlags() {
+  const d = new Date()
+  const h = d.getHours(), day = d.getDay()
+  const f = {}
+  if (h < 6) f.earlyBird = true
+  if (h >= 0 && h < 4) f.nightOwl = true
+  if (day === 0 || day === 6) f.weekend = true
+  if (h === 12) f.lunch = true
+  return f
+}
+
 // 秒數 → 人類可讀時數
 function formatDuration(sec) {
   if (!sec || sec < 60) return '0 分鐘'
@@ -277,10 +292,10 @@ function computeCorrect(q, userAns) {
 function reducer(state, action) {
   switch (action.type) {
     case 'TOGGLE_DARK':
-      return { ...state, darkMode: !state.darkMode }
+      return { ...state, darkMode: !state.darkMode, flags: { ...state.flags, dark: true } }
 
     case 'SET_LANG':
-      return { ...state, lang: action.lang }
+      return { ...state, lang: action.lang, flags: { ...state.flags, lang: true } }
 
     case 'TOGGLE_SHOW_ANSWERS':
       return { ...state, showAnswers: !state.showAnswers }
@@ -442,8 +457,12 @@ function reducer(state, action) {
         combo,
         bestCombo: Math.max(state.bestCombo, combo),
         lastXpGain: { amount: xpGain, correct, qKey, at: Date.now() },
+        flags: { ...state.flags, ...currentTimeFlags(), ...(action.viaHotkey ? { hotkey: true } : {}) },
       }
     }
+
+    case 'SET_FLAG':
+      return state.flags[action.flag] ? state : { ...state, flags: { ...state.flags, [action.flag]: true } }
 
     case 'TOGGLE_BOOKMARK': {
       const b = { ...state.bookmarked }
@@ -555,18 +574,26 @@ function reducer(state, action) {
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
         newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question, _updatedAt: submittedAt }
       })
+      const examTotal = state.examQuestionIds.length
+      const examPct = examTotal > 0 ? Math.round((totalCorrect / examTotal) * 100) : 0
+      const examExam = state.examConfig?.examFilter || '（全部科別）'
       return {
         ...state,
         examActive: false,
         examSubmitted: true,
         examResults: {
-          total: state.examQuestionIds.length,
+          total: examTotal,
           correct: totalCorrect,
           typeStats,
           details
         },
         statsHistory: newHistory,
         dailyStats: bumpDaily(state.dailyStats, details.length, totalCorrect),
+        // 保留最近 100 場模擬考結果（成就用）
+        examHistory: [
+          ...(state.examHistory || []),
+          { at: submittedAt, exam: examExam, total: examTotal, correct: totalCorrect, pct: examPct, passed: examPct >= 70 },
+        ].slice(-100),
       }
     }
 
@@ -630,6 +657,13 @@ function reducer(state, action) {
 
     case 'RESTORE_BEST_COMBO':
       return { ...state, bestCombo: Math.max(state.bestCombo, action.bestCombo || 0) }
+
+    case 'RESTORE_GAMIFY':
+      return {
+        ...state,
+        examHistory: (action.examHistory?.length ? action.examHistory : state.examHistory),
+        flags: { ...state.flags, ...(action.flags || {}) },
+      }
 
     case 'ADD_STUDY_TIME': {
       // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
@@ -1056,6 +1090,7 @@ export default function App() {
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
     if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
     if (prefs?.bestCombo) dispatch({ type: 'RESTORE_BEST_COMBO', bestCombo: prefs.bestCombo })
+    if (prefs?.examHistory?.length || prefs?.flags) dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags })
   }, [])
 
   useEffect(() => {
@@ -1069,9 +1104,9 @@ export default function App() {
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
-      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo },
+      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.examHistory, state.flags])
 
   // 記住目前練習位置（依科別），下次選同科別直接續刷
   useEffect(() => {
@@ -1683,10 +1718,10 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     answer: qKey ? practiceAnswers[qKey] : undefined,
     submitted: isSubmitted,
     allowChange: false,
-    onAnswer: (ans) => dispatch({ type: 'SET_ANSWER', qKey, answer: ans }),
+    onAnswer: (ans) => { dispatch({ type: 'SET_ANSWER', qKey, answer: ans }); dispatch({ type: 'SET_FLAG', flag: 'hotkey' }) },
     onPrev: () => { if (practiceIndex > 0) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 }) },
     onNext: () => { if (practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }) },
-    onEnter: submitCurrent,
+    onEnter: () => { dispatch({ type: 'SET_FLAG', flag: 'hotkey' }); submitCurrent() },
   })
 
   // 手機左右滑動換題：水平位移夠大且明顯大於垂直，才不干擾捲動
@@ -1703,8 +1738,8 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
     const dx = t.clientX - s.x
     const dy = t.clientY - s.y
     if (Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 2) return
-    if (dx < 0 && practiceIndex < practiceFiltered.length - 1) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 })
-    else if (dx > 0 && practiceIndex > 0) dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 })
+    if (dx < 0 && practiceIndex < practiceFiltered.length - 1) { dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex + 1 }); dispatch({ type: 'SET_FLAG', flag: 'swipe' }) }
+    else if (dx > 0 && practiceIndex > 0) { dispatch({ type: 'SET_PRACTICE_INDEX', index: practiceIndex - 1 }); dispatch({ type: 'SET_FLAG', flag: 'swipe' }) }
   }
 
   if (state.questions.length === 0) {
@@ -3389,6 +3424,54 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
   const gxp = useMemo(() => computeXP(history), [history])
   const glevel = useMemo(() => levelInfo(gxp), [gxp])
   const streak = computeStreak(combinedDaily)
+
+  // 單科深度（≥100 題且高正確率）＋單科最大題數
+  const examDepth = useMemo(() => {
+    let bestAcc100 = 0, maxAnswered = 0, expert = false
+    for (const s of Object.values(examStats)) {
+      maxAnswered = Math.max(maxAnswered, s.total)
+      if (s.total >= 100) {
+        const acc = Math.round((s.correct / s.total) * 100)
+        bestAcc100 = Math.max(bestAcc100, acc)
+        if (acc >= 90) expert = true
+      }
+    }
+    return { bestAcc100, maxAnswered, expert }
+  }, [examStats])
+
+  // 每日目標達成統計（用目前目標套用整段歷史，近似）
+  const goalMetrics = useMemo(() => {
+    const goal = state.dailyGoal || 20
+    const days = Object.keys(combinedDaily).sort()
+    let goalDays = 0, maxDay = 0, run = 0, bestRun = 0, prev = null
+    const oneDay = 86400000
+    for (const d of days) {
+      const a = combinedDaily[d]?.answered || 0
+      maxDay = Math.max(maxDay, a)
+      const met = a >= goal
+      if (met) goalDays++
+      if (met) {
+        const t = new Date(d).getTime()
+        run = (prev !== null && t - prev === oneDay) ? run + 1 : 1
+        bestRun = Math.max(bestRun, run)
+        prev = t
+      } else { run = 0; prev = null }
+    }
+    return { goalDays, maxDay, goalStreak: bestRun }
+  }, [combinedDaily, state.dailyGoal])
+
+  // 模擬考統計
+  const examMetrics = useMemo(() => {
+    const h = state.examHistory || []
+    let bestPct = 0, passStreak = 0, cur = 0
+    const passedExams = new Set()
+    for (const e of h) {
+      bestPct = Math.max(bestPct, e.pct || 0)
+      if (e.passed) { cur++; passStreak = Math.max(passStreak, cur); passedExams.add(e.exam) } else cur = 0
+    }
+    return { count: h.length, bestPct, passStreak, passedCount: passedExams.size }
+  }, [state.examHistory])
+
   const achievements = useMemo(() => evaluateAchievements({
     answered: totalAnswered,
     correct: totalCorrect,
@@ -3402,7 +3485,21 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
     bestCombo: state.bestCombo,
     level: glevel.level,
     xp: gxp,
-  }), [totalAnswered, totalCorrect, overallAccuracy, masteredCount, examStats, examTypes.length, state.bookmarked, streak, totalStudySec, state.bestCombo, glevel.level, gxp])
+    // A: 深度 / 每日
+    expertExam: examDepth.expert,
+    bestExamAcc100: examDepth.bestAcc100,
+    maxExamAnswered: examDepth.maxAnswered,
+    goalDays: goalMetrics.goalDays,
+    goalStreak: goalMetrics.goalStreak,
+    maxDayAnswered: goalMetrics.maxDay,
+    dailyGoal: state.dailyGoal || 20,
+    // B: 模擬考
+    examCount: examMetrics.count,
+    examBestPct: examMetrics.bestPct,
+    examPassStreak: examMetrics.passStreak,
+    // C: 隱藏旗標
+    flags: state.flags || {},
+  }), [totalAnswered, totalCorrect, overallAccuracy, masteredCount, examStats, examTypes.length, state.bookmarked, streak, totalStudySec, state.bestCombo, glevel.level, gxp, examDepth, goalMetrics, examMetrics, state.dailyGoal, state.flags])
   const unlockedCount = achievements.filter(a => a.done).length
 
   // Bookmarked / review: rehydrate from the bank so entries show (and can be
@@ -3435,6 +3532,7 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
     a.download = `quest-progress-${todayKey()}.json`
     a.click()
     URL.revokeObjectURL(url)
+    dispatch({ type: 'SET_FLAG', flag: 'export' })
   }
 
   const importProgress = (e) => {
@@ -3576,43 +3674,61 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
             <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
               <Award size={18} className="text-orange-500" />成就徽章
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-5">已解鎖 {unlockedCount} / {achievements.length} 個。灰色為未達成，會顯示進度。</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {achievements.map(a => {
-                const pct = a.goal > 0 ? Math.min(1, a.cur / a.goal) : 0
-                return (
-                  <div
-                    key={a.id}
-                    className={`relative p-4 rounded-xl border text-center transition-all ${
-                      a.done
-                        ? 'border-orange-200 dark:border-orange-800/60 bg-gradient-to-b from-orange-50 to-white dark:from-orange-900/20 dark:to-gray-800'
-                        : 'border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40'
-                    }`}
-                    title={a.desc}
-                  >
-                    <div className={`w-11 h-11 mx-auto mb-2 rounded-2xl flex items-center justify-center ${
-                      a.done ? 'bg-orange-100 dark:bg-orange-500/20 ring-1 ring-orange-200 dark:ring-orange-500/30' : 'bg-gray-200/70 dark:bg-gray-700'
-                    }`}>
-                      <a.icon size={22} className={a.done ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500'} />
-                    </div>
-                    <div className={`text-sm font-semibold ${a.done ? 'text-gray-900 dark:text-gray-50' : 'text-gray-500 dark:text-gray-400'}`}>{a.name}</div>
-                    <div className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 leading-tight">{a.desc}</div>
-                    {a.done ? (
-                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-orange-500">
-                        <CheckCircle size={12} /> 已解鎖
-                      </div>
-                    ) : (
-                      <div className="mt-2">
-                        <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div className="h-full bg-orange-400/70 rounded-full" style={{ width: `${pct * 100}%` }} />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-5">已解鎖 {unlockedCount} / {achievements.length} 個。灰色為未達成（會顯示進度），隱藏成就要達成後才會揭曉。</p>
+            {ACHIEVEMENT_GROUPS.map(g => {
+              const items = achievements.filter(a => a.group === g.key)
+              if (!items.length) return null
+              const got = items.filter(a => a.done).length
+              return (
+                <div key={g.key} className="mb-6 last:mb-0">
+                  <h4 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3 flex items-center gap-2">
+                    {g.label}
+                    <span className="text-xs font-normal text-gray-400 tnum">{got}/{items.length}</span>
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {items.map(a => {
+                      const secret = a.group === 'hidden' && !a.done
+                      const pct = a.goal > 0 ? Math.min(1, a.cur / a.goal) : 0
+                      return (
+                        <div
+                          key={a.id}
+                          className={`relative p-4 rounded-xl border text-center transition-all ${
+                            a.done
+                              ? 'border-orange-200 dark:border-orange-800/60 bg-gradient-to-b from-orange-50 to-white dark:from-orange-900/20 dark:to-gray-800'
+                              : 'border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40'
+                          }`}
+                          title={secret ? '隱藏成就' : a.desc}
+                        >
+                          <div className={`w-11 h-11 mx-auto mb-2 rounded-2xl flex items-center justify-center ${
+                            a.done ? 'bg-orange-100 dark:bg-orange-500/20 ring-1 ring-orange-200 dark:ring-orange-500/30' : 'bg-gray-200/70 dark:bg-gray-700'
+                          }`}>
+                            {secret
+                              ? <Lock size={20} className="text-gray-400 dark:text-gray-500" />
+                              : <a.icon size={22} className={a.done ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500'} />}
+                          </div>
+                          <div className={`text-sm font-semibold ${a.done ? 'text-gray-900 dark:text-gray-50' : 'text-gray-500 dark:text-gray-400'}`}>{secret ? '???' : a.name}</div>
+                          <div className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 leading-tight">{secret ? '達成後揭曉' : a.desc}</div>
+                          {a.done ? (
+                            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-orange-500">
+                              <CheckCircle size={12} /> 已解鎖
+                            </div>
+                          ) : !secret && a.progress ? (
+                            <div className="mt-2">
+                              <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div className="h-full bg-orange-400/70 rounded-full" style={{ width: `${pct * 100}%` }} />
+                              </div>
+                              <div className="text-[10px] text-gray-400 mt-1 tnum">{a.cur}{a.unit} / {a.goal}{a.unit}</div>
+                            </div>
+                          ) : (
+                            <div className="mt-2 text-[10px] text-gray-400">尚未解鎖</div>
+                          )}
                         </div>
-                        <div className="text-[10px] text-gray-400 mt-1 tnum">{a.cur}{a.unit} / {a.goal}{a.unit}</div>
-                      </div>
-                    )}
+                      )
+                    })}
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
         )}
         {activeSection === 'overview' && (
