@@ -28,10 +28,10 @@ export function computeXP(statsHistory) {
   return xp
 }
 
-// Cloud-career ladder: 100 levels, flat 2,000 XP per level (≈ 200 answered
-// questions at typical accuracy — the user-requested pacing), and a new title
+// Cloud-career ladder: 100 levels, flat 1,500 XP per level (≈ 150 answered
+// questions at ~10 XP/question — the user-requested pacing), and a new title
 // every 5 levels (20 titles total).
-export const XP_PER_LEVEL = 2000
+export const XP_PER_LEVEL = 1500
 export const MAX_LEVEL = 100
 
 // One title per 5-level band: levels 1–5 → [0], 6–10 → [1], … 96–100 → [19].
