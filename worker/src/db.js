@@ -56,6 +56,37 @@ export async function getAdminOverview(DB) {
   return { users: rows.results || [] }
 }
 
+// Level leaderboard. XP is DERIVED from the same progress rows the client uses
+// (mirrors gamify.js computeXP): correct_count*10, +3 if ever_wrong, +25 mastery
+// bonus when ever_wrong && correct_count >= 3. Computing it server-side keeps a
+// single source of truth — no separate score to push, sync or tamper with.
+// Only public identity (name/picture) is exposed; email is never returned.
+export async function getLeaderboard(DB, uid, limit = 20) {
+  const rows = await DB.prepare(
+    `SELECT u.id, u.name, u.picture,
+       COALESCE(SUM(
+         p.correct_count * 10
+         + (CASE WHEN p.ever_wrong = 1 THEN 3 ELSE 0 END)
+         + (CASE WHEN p.ever_wrong = 1 AND p.correct_count >= 3 THEN 25 ELSE 0 END)
+       ), 0) AS xp,
+       COUNT(p.qkey) AS answered
+     FROM users u
+     LEFT JOIN progress p ON p.user_id = u.id
+     GROUP BY u.id
+     ORDER BY xp DESC, answered DESC, u.id ASC`
+  ).all()
+  const all = rows.results || []
+  // Standard competition ranking (1, 2, 2, 4): equal XP shares a rank.
+  let rank = 0, prevXp = null, seen = 0
+  const ranked = all.map((r) => {
+    seen++
+    if (r.xp !== prevXp) { rank = seen; prevXp = r.xp }
+    return { rank, id: r.id, name: r.name, picture: r.picture, xp: r.xp, answered: r.answered }
+  })
+  const me = ranked.find((r) => r.id === uid) || null
+  return { top: ranked.slice(0, limit), me, total: ranked.length }
+}
+
 // Merge a delta payload from a client into D1, then return the merged state.
 // delta = { progress: [...], bookmarks: [...], reviews: [...], settings: {...} }
 export async function mergeState(DB, uid, delta) {

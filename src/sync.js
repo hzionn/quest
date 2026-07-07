@@ -141,6 +141,18 @@ export function dailyToRows(dailyStats, days = null) {
     .filter(Boolean)
 }
 
+// Level leaderboard: { top:[{rank,id,name,picture,xp,answered}], me, total }.
+// null when not signed in or on any error (UI treats null as "unavailable").
+export async function fetchLeaderboard(limit = 20) {
+  const token = getSessionToken()
+  if (!token) return null
+  try {
+    return await api(`/api/leaderboard?limit=${limit}`, { token })
+  } catch {
+    return null
+  }
+}
+
 // Admin-only usage overview; null when not signed in / not an admin.
 export async function fetchAdminOverview() {
   const token = getSessionToken()

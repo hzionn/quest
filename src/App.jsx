@@ -1,4 +1,4 @@
-import { useState, useReducer, useEffect, useMemo, useRef } from 'react'
+import { useState, useReducer, useEffect, useMemo, useRef, useCallback } from 'react'
 import {
   Upload, FileJson, CheckCircle, XCircle, Sun, Moon, Star, Flag,
   ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ArrowUp, ArrowDown, Play, Square,
@@ -9,9 +9,9 @@ import {
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
-import { SyncStatusPill, useGoogleSync } from './SyncControls'
+import { SyncStatusPill, GoogleSignInButton, useGoogleSync } from './SyncControls'
 import ErrorBoundary from './ErrorBoundary'
-import { isSyncConfigured, mergeMaps, fetchAdminOverview } from './sync'
+import { isSyncConfigured, mergeMaps, fetchAdminOverview, fetchLeaderboard } from './sync'
 import {
   computeXP, levelInfo, evaluateAchievements, titleForLevel,
   GROUPS as ACHIEVEMENT_GROUPS,
@@ -1268,7 +1268,7 @@ export default function App() {
               {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
               {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
               {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
+              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} user={user} setUser={setUser} />}
             </ErrorBoundary>
           </div>
         </main>
@@ -3378,7 +3378,161 @@ function AdminUsage() {
   )
 }
 
-function StatsTab({ state, dispatch, examTypes, qMap }) {
+// ── 等級排行榜 ────────────────────────────────────────────────────────────
+// XP/名次由後端從已同步的 progress 直接推導（與 gamify.computeXP 同公式），
+// 前端只負責顯示；未設定同步或未登入時給登入提示。前三名獎牌、highlight 自己。
+const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' }
+
+function LeaderRow({ row, isMe }) {
+  const lv = levelInfo(row.xp || 0)
+  const name = row.name || '匿名學習者'
+  const medal = RANK_MEDAL[row.rank]
+  return (
+    <div className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-colors ${
+      isMe
+        ? 'border-orange-300 dark:border-orange-700/70 bg-orange-50/80 dark:bg-orange-900/20 ring-1 ring-orange-200 dark:ring-orange-800'
+        : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'
+    }`}>
+      <div className="w-7 shrink-0 text-center">
+        {medal
+          ? <span className="text-lg leading-none">{medal}</span>
+          : <span className="text-sm font-bold text-gray-400 dark:text-gray-500 tnum">{row.rank}</span>}
+      </div>
+      {row.picture
+        ? <img src={row.picture} alt="" referrerPolicy="no-referrer" className="w-9 h-9 rounded-full shrink-0 ring-1 ring-black/5 dark:ring-white/10" />
+        : <div className="w-9 h-9 rounded-full shrink-0 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white text-sm font-bold">{name.slice(0, 1).toUpperCase()}</div>}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <span className="font-semibold text-sm truncate text-gray-900 dark:text-gray-50">{name}</span>
+          {isMe && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500 text-white font-semibold shrink-0">你</span>}
+        </div>
+        <div className="text-[11px] text-gray-400 dark:text-gray-500 truncate">Lv.{lv.level} · {lv.name} · {row.answered} 題</div>
+      </div>
+      <div className="text-right shrink-0">
+        <div className="text-sm font-bold text-orange-500 tnum">{(row.xp || 0).toLocaleString()}</div>
+        <div className="text-[10px] text-gray-400 dark:text-gray-500">XP</div>
+      </div>
+    </div>
+  )
+}
+
+function Leaderboard({ user, setUser }) {
+  const [data, setData] = useState(null)
+  const [status, setStatus] = useState('idle') // idle | loading | error
+
+  const load = useCallback(() => {
+    setStatus('loading')
+    fetchLeaderboard(20)
+      .then((d) => { if (d) { setData(d); setStatus('idle') } else setStatus('error') })
+      .catch(() => setStatus('error'))
+  }, [])
+
+  useEffect(() => { if (user) load() }, [user, load])
+
+  const header = (
+    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <h3 className="text-lg font-semibold flex items-center gap-2">
+        <Trophy size={18} className="text-orange-500" />等級排行榜
+      </h3>
+      {user && (
+        <button
+          onClick={load}
+          disabled={status === 'loading'}
+          className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+        >
+          <RefreshCw size={12} className={status === 'loading' ? 'animate-spin' : ''} /> 更新
+        </button>
+      )}
+    </div>
+  )
+
+  // 同步未啟用（本 build 未帶 API/OAuth 設定）
+  if (!isSyncConfigured()) {
+    return (
+      <div>
+        {header}
+        <p className="text-sm text-gray-500 dark:text-gray-400">排行榜需要雲端同步功能，此版本尚未啟用。</p>
+      </div>
+    )
+  }
+
+  // 未登入：引導登入（登入本身仍是選用的同步功能，不影響進站）
+  if (!user) {
+    return (
+      <div>
+        {header}
+        <div className="flex flex-col items-center text-center gap-4 py-6">
+          <div className="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-500/15 flex items-center justify-center">
+            <Trophy size={26} className="text-orange-500" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-50">登入即可查看排行榜並上榜</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-xs">用 Google 登入後，你的等級與 XP 會跨裝置同步，並和其他學習者一起排名。</p>
+          </div>
+          <GoogleSignInButton onSuccess={(u) => setUser?.(u)} />
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'loading' && !data) {
+    return (
+      <div>
+        {header}
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-gray-400">
+          <Loader2 size={16} className="animate-spin" /> 載入排行榜…
+        </div>
+      </div>
+    )
+  }
+
+  if (status === 'error') {
+    return (
+      <div>
+        {header}
+        <div className="text-center py-8">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">排行榜載入失敗，請稍後再試。</p>
+          <button onClick={load} className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">重新載入</button>
+        </div>
+      </div>
+    )
+  }
+
+  const top = data?.top || []
+  const me = data?.me || null
+  const meInTop = me && top.some((r) => r.id === me.id)
+
+  return (
+    <div>
+      {header}
+      <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+        依 XP 由已同步的作答紀錄計算，共 {data?.total || 0} 位學習者。多練題、精通錯題就能往上爬。
+      </p>
+      {top.length === 0 ? (
+        <p className="text-sm text-gray-500 dark:text-gray-400 py-6 text-center">還沒有人上榜，快去練題搶頭香！</p>
+      ) : (
+        <div className="space-y-1">
+          {top.map((row) => (
+            <LeaderRow key={row.id} row={row} isMe={me?.id === row.id} />
+          ))}
+        </div>
+      )}
+      {/* 自己不在前 20：附一條分隔＋自己的名次 */}
+      {me && !meInTop && (
+        <>
+          <div className="flex items-center gap-2 my-2 px-3">
+            <div className="flex-1 border-t border-dashed border-gray-200 dark:border-gray-700" />
+            <span className="text-[10px] text-gray-400">你的名次</span>
+            <div className="flex-1 border-t border-dashed border-gray-200 dark:border-gray-700" />
+          </div>
+          <LeaderRow row={me} isMe />
+        </>
+      )}
+    </div>
+  )
+}
+
+function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
   const [activeSection, setActiveSection] = useState('overview')
   const history = state.statsHistory
   const entries = Object.entries(history)
@@ -3648,6 +3802,7 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
         {[
           { key: 'overview', label: '各科正確率', icon: Target },
           { key: 'achieve', label: `成就 (${unlockedCount}/${achievements.length})`, icon: Award },
+          ...(isSyncConfigured() ? [{ key: 'leaderboard', label: '排行榜', icon: Trophy }] : []),
           { key: 'wrong', label: `錯題清單 (${wrongQuestions.length})`, icon: XCircle },
           { key: 'bookmark', label: `書籤 (${bookmarkedList.length})`, icon: Star },
           { key: 'review', label: `複習 (${reviewList.length})`, icon: Flag },
@@ -3730,6 +3885,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
               )
             })}
           </div>
+        )}
+        {activeSection === 'leaderboard' && (
+          <Leaderboard user={user} setUser={setUser} />
         )}
         {activeSection === 'overview' && (
           <div>

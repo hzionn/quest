@@ -3,7 +3,7 @@
 // Auth: Google ID token in -> our session JWT out (Bearer). Storage: D1.
 
 import { verifyGoogleIdToken, signSession, verifySession, bearer } from './auth.js'
-import { upsertUser, getState, mergeState, getAdminOverview } from './db.js'
+import { upsertUser, getState, mergeState, getAdminOverview, getLeaderboard } from './db.js'
 
 const json = (data, status = 200, headers = {}) =>
   new Response(JSON.stringify(data), {
@@ -86,6 +86,12 @@ export default {
         const delta = await request.json().catch(() => ({}))
         const merged = await mergeState(env.DB, me.uid, delta)
         return reply(merged)
+      }
+
+      // ── level leaderboard (any signed-in user) ──
+      if (path === '/api/leaderboard' && request.method === 'GET') {
+        const limit = Math.min(50, Math.max(1, Number(url.searchParams.get('limit')) || 20))
+        return reply(await getLeaderboard(env.DB, me.uid, limit))
       }
 
       // ── admin: per-user usage overview (email allowlist) ──
