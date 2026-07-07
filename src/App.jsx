@@ -5,13 +5,17 @@ import {
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
-  Languages, LogOut, Flame, Users
+  Languages, LogOut, Flame, Users, Zap, Award, Sparkles, Lock
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
 import { SyncStatusPill, useGoogleSync } from './SyncControls'
 import ErrorBoundary from './ErrorBoundary'
 import { isSyncConfigured, mergeMaps, fetchAdminOverview } from './sync'
+import {
+  computeXP, levelInfo, evaluateAchievements,
+  XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
+} from './gamify'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -177,6 +181,11 @@ const initialState = {
   dailyStats: {},   // { 'YYYY-MM-DD': { answered, correct, seconds } } — 本裝置的每日計數
   dailyRemote: {},  // 其他裝置的每日計數總和（登入同步後由伺服器提供，僅供顯示疊加）
   dailyGoal: 20,    // 每日目標題數（可調）
+
+  // Gamification (連對)：combo 為本次連續答對數（session），bestCombo 持久化
+  combo: 0,
+  bestCombo: 0,
+  lastXpGain: null, // { amount, correct, at } — 供作答後的 +XP 動畫
 
   // Language
   lang: 'zh',        // 'zh' | 'en'
@@ -416,6 +425,11 @@ function reducer(state, action) {
       const correctCount = prevCount + (correct ? 1 : 0)
       // 一旦答錯過就視為錯題；累計答對 MASTERY_THRESHOLD 次後才算學會並移出清單
       const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !correct
+      const wasMastered = prevEntry && (prevEntry.everWrong ?? !prevEntry.correct) && (prevEntry.correctCount ?? 0) >= MASTERY_THRESHOLD
+      const nowMastered = everWrong && correctCount >= MASTERY_THRESHOLD
+      // 本次獲得的 XP：答對 10／答錯 3，首次精通錯題再 +25
+      const xpGain = (correct ? XP_PER_CORRECT : XP_PER_WRONG) + (nowMastered && !wasMastered ? XP_MASTER_BONUS : 0)
+      const combo = correct ? state.combo + 1 : 0
       return {
         ...state,
         practiceSubmitted: { ...state.practiceSubmitted, [qKey]: true },
@@ -425,6 +439,9 @@ function reducer(state, action) {
           [qKey]: { correct, correctCount, everWrong, exam: q.exam, type: q.type, id: q.id, question: q, _updatedAt: Date.now() }
         },
         dailyStats: bumpDaily(state.dailyStats, 1, correct ? 1 : 0),
+        combo,
+        bestCombo: Math.max(state.bestCombo, combo),
+        lastXpGain: { amount: xpGain, correct, qKey, at: Date.now() },
       }
     }
 
@@ -610,6 +627,9 @@ function reducer(state, action) {
 
     case 'SET_DAILY_GOAL':
       return { ...state, dailyGoal: Math.min(500, Math.max(1, Math.round(action.goal) || 20)) }
+
+    case 'RESTORE_BEST_COMBO':
+      return { ...state, bestCombo: Math.max(state.bestCombo, action.bestCombo || 0) }
 
     case 'ADD_STUDY_TIME': {
       // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
@@ -1035,6 +1055,7 @@ export default function App() {
     if (Object.keys(reviewMarked).length) dispatch({ type: 'RESTORE_REVIEWS', reviewMarked })
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
     if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
+    if (prefs?.bestCombo) dispatch({ type: 'RESTORE_BEST_COMBO', bestCombo: prefs.bestCombo })
   }, [])
 
   useEffect(() => {
@@ -1048,7 +1069,7 @@ export default function App() {
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
-      prefs: { dailyGoal: state.dailyGoal },
+      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo },
     })
   }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal])
 
@@ -1102,6 +1123,10 @@ export default function App() {
     state.questions.forEach(q => m.set(`${q.exam}-${q.id}`, q))
     return m
   }, [state.questions])
+
+  // Gamification: XP/level derived from stats (retroactive)
+  const xp = useMemo(() => computeXP(state.statsHistory), [state.statsHistory])
+  const level = useMemo(() => levelInfo(xp), [xp])
 
   const rootClass = state.darkMode ? 'dark' : ''
 
@@ -1161,6 +1186,7 @@ export default function App() {
                 ))}
               </nav>
               <div className="w-px h-6 bg-white/10 mx-1 hidden md:block" />
+              <LevelBadge level={level} onClick={() => dispatch({ type: 'SET_TAB', tab: 'stats' })} />
               <SyncStatusPill user={user} onSignedIn={setUser} onSignOut={signOut} />
               <button
                 onClick={() => dispatch({ type: 'TOGGLE_DARK' })}
@@ -1585,6 +1611,32 @@ function StatCard({ label, value, icon: Icon }) {
   )
 }
 
+// 等級徽章（header）：Lv + 名稱 + XP 進度環，點擊跳統計成就頁
+function LevelBadge({ level, onClick }) {
+  const R = 11, C = 2 * Math.PI * R
+  return (
+    <button
+      onClick={onClick}
+      title={`等級 ${level.level} · ${level.name} · ${level.xp} XP${level.isMax ? '（滿級）' : ` · 距下一級 ${level.toNext} XP`}`}
+      className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+    >
+      <span className="relative w-7 h-7 shrink-0">
+        <svg viewBox="0 0 28 28" className="w-7 h-7 -rotate-90">
+          <circle cx="14" cy="14" r={R} fill="none" strokeWidth="3" className="stroke-white/15" />
+          <circle cx="14" cy="14" r={R} fill="none" strokeWidth="3" strokeLinecap="round"
+            stroke="#ff9900" strokeDasharray={C} strokeDashoffset={C * (1 - level.pct)}
+            style={{ transition: 'stroke-dashoffset 500ms ease' }} />
+        </svg>
+        <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-orange-400 tnum">{level.level}</span>
+      </span>
+      <span className="hidden lg:flex flex-col items-start leading-none">
+        <span className="text-[11px] font-semibold text-gray-200">{level.name}</span>
+        <span className="text-[9px] text-gray-500 tnum">{level.xp} XP</span>
+      </span>
+    </button>
+  )
+}
+
 // ══════════════════════════════════════════
 // Practice Tab
 // ══════════════════════════════════════════
@@ -1752,6 +1804,21 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                   <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{currentQ.officialNo}</span>
                 )}
                 <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
+                {state.combo >= 2 && (
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold animate-icon-bounce ${
+                      state.combo >= 10
+                        ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm'
+                        : state.combo >= 5
+                          ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300'
+                          : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+                    }`}
+                    key={state.combo}
+                    title="連續答對"
+                  >
+                    <Flame size={12} fill="currentColor" /> {state.combo} 連對{state.combo >= 10 ? '！' : ''}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-0.5">
                 <button
@@ -1820,6 +1887,11 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                     ? <><CheckCircle size={22} className="text-green-600 dark:text-green-400 animate-icon-bounce" /><span className="font-bold text-green-700 dark:text-green-400 text-lg">正確！</span></>
                     : <><XCircle size={22} className="text-red-600 dark:text-red-400 animate-icon-bounce" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
                   }
+                  {state.lastXpGain?.qKey === qKey && state.lastXpGain.amount > 0 && (
+                    <span className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 text-sm font-bold animate-correct-pop tnum">
+                      <Zap size={13} fill="currentColor" /> +{state.lastXpGain.amount} XP
+                    </span>
+                  )}
                 </div>
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
               </div>
@@ -2984,6 +3056,43 @@ function ConfettiBurst() {
   )
 }
 
+// 等級卡（統計頁頂）：大等級環 + 稱號 + XP 進度 + 成就/最佳連對摘要
+function LevelCard({ level, unlocked, total, bestCombo }) {
+  const R = 34, C = 2 * Math.PI * R
+  return (
+    <div className="surface-card p-5 flex items-center gap-5 flex-wrap">
+      <div className="relative w-24 h-24 shrink-0">
+        <svg viewBox="0 0 88 88" className="w-24 h-24 -rotate-90">
+          <circle cx="44" cy="44" r={R} fill="none" strokeWidth="7" className="stroke-gray-100 dark:stroke-gray-700" />
+          <circle cx="44" cy="44" r={R} fill="none" strokeWidth="7" strokeLinecap="round"
+            stroke="#ec7211" strokeDasharray={C} strokeDashoffset={C * (1 - level.pct)}
+            style={{ transition: 'stroke-dashoffset 500ms ease' }} />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-[10px] text-gray-400 dark:text-gray-500 leading-none">LV</span>
+          <span className="text-2xl font-extrabold text-orange-500 leading-none tnum">{level.level}</span>
+        </div>
+      </div>
+      <div className="flex-1 min-w-[180px]">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xl font-bold text-gray-900 dark:text-gray-50">{level.name}</span>
+          <Sparkles size={16} className="text-orange-400" />
+        </div>
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 tnum">
+          {level.xp} XP{level.isMax ? '（已達最高等級）' : ` · 距 ${level.next} XP 升級還差 ${level.toNext}`}
+        </div>
+        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${level.pct * 100}%`, transition: 'width 500ms ease' }} />
+        </div>
+        <div className="flex gap-4 mt-3 text-xs">
+          <span className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300"><Award size={13} className="text-orange-400" /> 成就 <span className="font-bold tnum">{unlocked}/{total}</span></span>
+          <span className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300"><Flame size={13} className="text-orange-400" fill="currentColor" /> 最佳連對 <span className="font-bold tnum">{bestCombo}</span></span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
   const todayCount = combinedDaily[todayKey()]?.answered || 0
   const streak = computeStreak(combinedDaily)
@@ -3273,6 +3382,26 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
   // 已學會（曾答錯，後來累計答對達標）的題目數，用於提示
   const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
 
+  // ── 遊戲化：等級 + 成就（皆由現有資料回溯計算） ──
+  const gxp = useMemo(() => computeXP(history), [history])
+  const glevel = useMemo(() => levelInfo(gxp), [gxp])
+  const streak = computeStreak(combinedDaily)
+  const achievements = useMemo(() => evaluateAchievements({
+    answered: totalAnswered,
+    correct: totalCorrect,
+    accuracy: overallAccuracy,
+    mastered: masteredCount,
+    examsTouched: Object.keys(examStats).length,
+    examsTotal: examTypes.length,
+    bookmarks: Object.values(state.bookmarked || {}).filter(Boolean).length,
+    streak,
+    studyHours: totalStudySec / 3600,
+    bestCombo: state.bestCombo,
+    level: glevel.level,
+    xp: gxp,
+  }), [totalAnswered, totalCorrect, overallAccuracy, masteredCount, examStats, examTypes.length, state.bookmarked, streak, totalStudySec, state.bestCombo, glevel.level, gxp])
+  const unlockedCount = achievements.filter(a => a.done).length
+
   // Bookmarked / review: rehydrate from the bank so entries show (and can be
   // practiced) even if the question was never answered locally.
   const bookmarkedList = Object.entries(state.bookmarked)
@@ -3374,6 +3503,9 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
 
   return (
     <div className="space-y-6">
+      {/* 等級 + XP */}
+      <LevelCard level={glevel} unlocked={unlockedCount} total={achievements.length} bestCombo={state.bestCombo} />
+
       {/* 每日目標＋連續學習 */}
       <DailyGoalCard combinedDaily={combinedDaily} dailyGoal={state.dailyGoal} dispatch={dispatch} />
 
@@ -3414,6 +3546,7 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
       <div className="flex gap-2 overflow-x-auto pb-1">
         {[
           { key: 'overview', label: '各科正確率', icon: Target },
+          { key: 'achieve', label: `成就 (${unlockedCount}/${achievements.length})`, icon: Award },
           { key: 'wrong', label: `錯題清單 (${wrongQuestions.length})`, icon: XCircle },
           { key: 'bookmark', label: `書籤 (${bookmarkedList.length})`, icon: Star },
           { key: 'review', label: `複習 (${reviewList.length})`, icon: Flag },
@@ -3435,6 +3568,50 @@ function StatsTab({ state, dispatch, examTypes, qMap }) {
 
       {/* Section content */}
       <div className="surface-card p-6 animate-fade-in" key={activeSection}>
+        {activeSection === 'achieve' && (
+          <div>
+            <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+              <Award size={18} className="text-orange-500" />成就徽章
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-5">已解鎖 {unlockedCount} / {achievements.length} 個。灰色為未達成，會顯示進度。</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {achievements.map(a => {
+                const pct = a.goal > 0 ? Math.min(1, a.cur / a.goal) : 0
+                return (
+                  <div
+                    key={a.id}
+                    className={`relative p-4 rounded-xl border text-center transition-all ${
+                      a.done
+                        ? 'border-orange-200 dark:border-orange-800/60 bg-gradient-to-b from-orange-50 to-white dark:from-orange-900/20 dark:to-gray-800'
+                        : 'border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40'
+                    }`}
+                    title={a.desc}
+                  >
+                    <div className={`w-11 h-11 mx-auto mb-2 rounded-2xl flex items-center justify-center ${
+                      a.done ? 'bg-orange-100 dark:bg-orange-500/20 ring-1 ring-orange-200 dark:ring-orange-500/30' : 'bg-gray-200/70 dark:bg-gray-700'
+                    }`}>
+                      <a.icon size={22} className={a.done ? 'text-orange-500' : 'text-gray-400 dark:text-gray-500'} />
+                    </div>
+                    <div className={`text-sm font-semibold ${a.done ? 'text-gray-900 dark:text-gray-50' : 'text-gray-500 dark:text-gray-400'}`}>{a.name}</div>
+                    <div className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 leading-tight">{a.desc}</div>
+                    {a.done ? (
+                      <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-orange-500">
+                        <CheckCircle size={12} /> 已解鎖
+                      </div>
+                    ) : (
+                      <div className="mt-2">
+                        <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div className="h-full bg-orange-400/70 rounded-full" style={{ width: `${pct * 100}%` }} />
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-1 tnum">{a.cur}{a.unit} / {a.goal}{a.unit}</div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
         {activeSection === 'overview' && (
           <div>
             <h3 className="text-lg font-semibold mb-5 flex items-center gap-2">
