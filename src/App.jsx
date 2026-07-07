@@ -5,7 +5,8 @@ import {
   BarChart3, BookOpen, Clock, Filter, Search, Plus, Minus, RotateCcw,
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
-  Languages, LogOut, Flame, Users, Zap, Award, Sparkles, Lock
+  Languages, LogOut, Flame, Users, Zap, Award, Sparkles, Lock,
+  Gauge, CalendarClock, Share2, TrendingUp, TrendingDown, PartyPopper, Crown, Repeat,
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
@@ -17,6 +18,8 @@ import {
   GROUPS as ACHIEVEMENT_GROUPS,
   XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
 } from './gamify'
+import { isDue, overdueBy, inReviewPool } from './srs'
+import { shareScoreCard } from './sharecard'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -186,8 +189,10 @@ const initialState = {
   // Gamification (連對)：combo 為本次連續答對數（session），bestCombo 持久化
   combo: 0,
   bestCombo: 0,
-  lastXpGain: null, // { amount, correct, at } — 供作答後的 +XP 動畫
+  lastXpGain: null, // { amount, base, bonus, mult, correct, at } — 作答後的 +XP 動畫
+  bonusXp: 0,       // Fever 連對加成累計（本機；等級顯示 = computeXP + bonusXp）
   examHistory: [],  // [{ at, exam, total, correct, pct, passed }] — 模擬考成就用
+  examDates: {},    // { [exam]: 'YYYY-MM-DD' } — 各科目標考期（倒數＋配速用）
   flags: {},        // 隱藏成就旗標：earlyBird/nightOwl/weekend/lunch/lang/dark/export/hotkey/swipe
 
   // Language
@@ -443,8 +448,11 @@ function reducer(state, action) {
       const wasMastered = prevEntry && (prevEntry.everWrong ?? !prevEntry.correct) && (prevEntry.correctCount ?? 0) >= MASTERY_THRESHOLD
       const nowMastered = everWrong && correctCount >= MASTERY_THRESHOLD
       // 本次獲得的 XP：答對 10／答錯 3，首次精通錯題再 +25
-      const xpGain = (correct ? XP_PER_CORRECT : XP_PER_WRONG) + (nowMastered && !wasMastered ? XP_MASTER_BONUS : 0)
+      const baseXp = (correct ? XP_PER_CORRECT : XP_PER_WRONG) + (nowMastered && !wasMastered ? XP_MASTER_BONUS : 0)
       const combo = correct ? state.combo + 1 : 0
+      // Fever 連對加成：連對 ≥5 給 ×1.2、≥10 給 ×1.5 的 XP（只對答對生效）
+      const mult = combo >= 10 ? 1.5 : combo >= 5 ? 1.2 : 1
+      const bonus = correct && mult > 1 ? Math.round(baseXp * (mult - 1)) : 0
       return {
         ...state,
         practiceSubmitted: { ...state.practiceSubmitted, [qKey]: true },
@@ -456,7 +464,8 @@ function reducer(state, action) {
         dailyStats: bumpDaily(state.dailyStats, 1, correct ? 1 : 0),
         combo,
         bestCombo: Math.max(state.bestCombo, combo),
-        lastXpGain: { amount: xpGain, correct, qKey, at: Date.now() },
+        bonusXp: (state.bonusXp || 0) + bonus,
+        lastXpGain: { amount: baseXp + bonus, base: baseXp, bonus, mult, correct, qKey, at: Date.now() },
         flags: { ...state.flags, ...currentTimeFlags(), ...(action.viaHotkey ? { hotkey: true } : {}) },
       }
     }
@@ -663,7 +672,16 @@ function reducer(state, action) {
         ...state,
         examHistory: (action.examHistory?.length ? action.examHistory : state.examHistory),
         flags: { ...state.flags, ...(action.flags || {}) },
+        bonusXp: Math.max(state.bonusXp || 0, action.bonusXp || 0),
+        examDates: { ...(action.examDates || {}), ...state.examDates },
       }
+
+    case 'SET_EXAM_DATE': {
+      const next = { ...state.examDates }
+      if (action.date) next[action.exam] = action.date
+      else delete next[action.exam]
+      return { ...state, examDates: next }
+    }
 
     case 'ADD_STUDY_TIME': {
       // 學習時數：由 App 的活躍偵測計時器每 30 秒累加一次
@@ -961,6 +979,83 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
   )
 }
 
+// Shared gamification facts — derived from state, used both for the App-level
+// achievement toasts and the stats page. Keeping it in one place stops the two
+// from disagreeing about what's unlocked.
+function computeGamifyFacts(state, examTypes, combinedDaily) {
+  const history = state.statsHistory || {}
+  const entries = Object.entries(history)
+  const totalAnswered = entries.length
+  const totalCorrect = entries.filter(([, v]) => v.correct).length
+  const overallAccuracy = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0
+
+  const examStats = {}
+  for (const [, v] of entries) {
+    if (!examStats[v.exam]) examStats[v.exam] = { total: 0, correct: 0, everWrong: 0, mastered: 0 }
+    const s = examStats[v.exam]
+    s.total++
+    if (v.correct) s.correct++
+    const ew = v.everWrong ?? !v.correct
+    const cc = v.correctCount ?? v.correctStreak ?? 0
+    if (ew) { s.everWrong++; if (cc >= MASTERY_THRESHOLD) s.mastered++ }
+  }
+  const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
+
+  let bestAcc100 = 0, maxAnswered = 0, expert = false
+  for (const s of Object.values(examStats)) {
+    maxAnswered = Math.max(maxAnswered, s.total)
+    if (s.total >= 100) {
+      const acc = Math.round((s.correct / s.total) * 100)
+      bestAcc100 = Math.max(bestAcc100, acc)
+      if (acc >= 90) expert = true
+    }
+  }
+
+  const streak = computeStreak(combinedDaily)
+  const totalStudySec = Object.values(combinedDaily).reduce((s, v) => s + (v?.seconds || 0), 0)
+
+  const goal = state.dailyGoal || 20
+  const days = Object.keys(combinedDaily).sort()
+  let goalDays = 0, maxDay = 0, run = 0, bestRun = 0, prev = null
+  const oneDay = 86400000
+  for (const d of days) {
+    const a = combinedDaily[d]?.answered || 0
+    maxDay = Math.max(maxDay, a)
+    if (a >= goal) {
+      goalDays++
+      const t = new Date(d).getTime()
+      run = (prev !== null && t - prev === oneDay) ? run + 1 : 1
+      bestRun = Math.max(bestRun, run)
+      prev = t
+    } else { run = 0; prev = null }
+  }
+
+  const h = state.examHistory || []
+  let bestPct = 0, passStreak = 0, cur = 0
+  for (const e of h) {
+    bestPct = Math.max(bestPct, e.pct || 0)
+    if (e.passed) { cur++; passStreak = Math.max(passStreak, cur) } else cur = 0
+  }
+
+  const xp = computeXP(history) + (state.bonusXp || 0)
+  const glevel = levelInfo(xp)
+
+  return {
+    answered: totalAnswered, correct: totalCorrect, accuracy: overallAccuracy,
+    mastered: masteredCount, examsTouched: Object.keys(examStats).length, examsTotal: examTypes.length,
+    bookmarks: Object.values(state.bookmarked || {}).filter(Boolean).length,
+    streak, studyHours: totalStudySec / 3600, bestCombo: state.bestCombo,
+    level: glevel.level, xp,
+    expertExam: expert, bestExamAcc100: bestAcc100, maxExamAnswered: maxAnswered,
+    goalDays, goalStreak: bestRun, maxDayAnswered: maxDay, dailyGoal: goal,
+    examCount: h.length, examBestPct: bestPct, examPassStreak: passStreak,
+    flags: state.flags || {},
+    // extras (not achievement facts, but handy for the stats cards)
+    _examStats: examStats, _totalStudySec: totalStudySec, _glevel: glevel,
+    _totalAnswered: totalAnswered, _totalCorrect: totalCorrect, _overallAccuracy: overallAccuracy, _masteredCount: masteredCount,
+  }
+}
+
 export default function App() {
   const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
   const [subjectChosen, setSubjectChosen] = useState(false)
@@ -1090,7 +1185,9 @@ export default function App() {
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
     if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
     if (prefs?.bestCombo) dispatch({ type: 'RESTORE_BEST_COMBO', bestCombo: prefs.bestCombo })
-    if (prefs?.examHistory?.length || prefs?.flags) dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags })
+    if (prefs?.examHistory?.length || prefs?.flags || prefs?.bonusXp || prefs?.examDates) {
+      dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags, bonusXp: prefs.bonusXp, examDates: prefs.examDates })
+    }
   }, [])
 
   useEffect(() => {
@@ -1104,9 +1201,9 @@ export default function App() {
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
-      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags },
+      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.examHistory, state.flags])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.examHistory, state.flags, state.bonusXp, state.examDates])
 
   // 記住目前練習位置（依科別），下次選同科別直接續刷
   useEffect(() => {
@@ -1159,9 +1256,60 @@ export default function App() {
     return m
   }, [state.questions])
 
-  // Gamification: XP/level derived from stats (retroactive)
-  const xp = useMemo(() => computeXP(state.statsHistory), [state.statsHistory])
+  // Gamification: XP/level derived from stats (retroactive) + Fever bonus
+  const xp = useMemo(() => computeXP(state.statsHistory) + (state.bonusXp || 0), [state.statsHistory, state.bonusXp])
   const level = useMemo(() => levelInfo(xp), [xp])
+
+  const combinedDaily = useMemo(
+    () => combineDaily(state.dailyStats, state.dailyRemote),
+    [state.dailyStats, state.dailyRemote]
+  )
+  const facts = useMemo(
+    () => computeGamifyFacts(state, examTypes, combinedDaily),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.statsHistory, state.bonusXp, state.bestCombo, state.examHistory, state.flags, state.dailyGoal, state.bookmarked, combinedDaily, examTypes]
+  )
+  const achievements = useMemo(() => evaluateAchievements(facts), [facts])
+
+  // Celebrations are "armed" ~2.5s after mount so the initial restore + first
+  // sync merge (which land as one big XP/achievement jump) are absorbed
+  // silently instead of firing a phantom level-up / toast flood on load.
+  const celebrateArmedRef = useRef(false)
+  useEffect(() => {
+    const t = setTimeout(() => { celebrateArmedRef.current = true }, 2500)
+    return () => clearTimeout(t)
+  }, [])
+
+  // ── Level-up celebration (item 10) ──
+  // Only a clean +1 after arming is a real level-up (one answer can't cross a
+  // 1,500-XP boundary twice); restore/sync jumps just update the ref silently.
+  const [levelUp, setLevelUp] = useState(null)
+  const prevLevelRef = useRef(null)
+  useEffect(() => {
+    const lv = level.level
+    const prev = prevLevelRef.current
+    prevLevelRef.current = lv
+    if (!celebrateArmedRef.current || prev == null || lv !== prev + 1) return
+    const newTitle = titleForLevel(lv)
+    setLevelUp({ level: lv, title: newTitle, isNewTitle: newTitle !== titleForLevel(prev) })
+  }, [level.level])
+
+  // ── Achievement unlock toasts (item 11) ──
+  // Capped per batch too, so a large post-arm sync merge is absorbed silently.
+  const [toasts, setToasts] = useState([])
+  const unlockedRef = useRef(null)
+  const toastSeq = useRef(0)
+  useEffect(() => {
+    const done = new Set(achievements.filter(a => a.done).map(a => a.id))
+    const prev = unlockedRef.current
+    unlockedRef.current = done
+    if (!celebrateArmedRef.current || prev == null) return
+    const fresh = achievements.filter(a => a.done && !prev.has(a.id))
+    if (fresh.length && fresh.length <= 4) {
+      setToasts(t => [...t, ...fresh.map(a => ({ ...a, _tid: ++toastSeq.current }))])
+    }
+  }, [achievements])
+  const dismissToast = useCallback((tid) => setToasts(t => t.filter(x => x._tid !== tid)), [])
 
   const rootClass = state.darkMode ? 'dark' : ''
 
@@ -1268,11 +1416,13 @@ export default function App() {
               {state.activeTab === 'upload' && isAdmin && <UploadTab state={state} dispatch={dispatch} fileInputRef={fileInputRef} examTypes={examTypes} />}
               {state.activeTab === 'practice' && <PracticeTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
               {state.activeTab === 'exam' && <ExamTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} />}
-              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} user={user} setUser={setUser} />}
+              {state.activeTab === 'stats' && <StatsTab state={state} dispatch={dispatch} examTypes={examTypes} qMap={qMap} user={user} setUser={setUser} bankIndex={bankIndex} facts={facts} achievements={achievements} combinedDaily={combinedDaily} />}
             </ErrorBoundary>
           </div>
         </main>
       </div>
+      <AchievementToasts toasts={toasts} onDismiss={dismissToast} />
+      {levelUp && <LevelUpModal info={levelUp} onClose={() => setLevelUp(null)} />}
     </div>
   )
 }
@@ -1923,8 +2073,15 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                     : <><XCircle size={22} className="text-red-600 dark:text-red-400 animate-icon-bounce" /><span className="font-bold text-red-700 dark:text-red-400 text-lg">錯誤</span></>
                   }
                   {state.lastXpGain?.qKey === qKey && state.lastXpGain.amount > 0 && (
-                    <span className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 text-sm font-bold animate-correct-pop tnum">
-                      <Zap size={13} fill="currentColor" /> +{state.lastXpGain.amount} XP
+                    <span className="ml-auto inline-flex items-center gap-1.5">
+                      {state.lastXpGain.mult > 1 && (
+                        <span className="inline-flex items-center gap-0.5 px-2 py-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-extrabold animate-correct-pop">
+                          <Flame size={12} fill="currentColor" /> ×{state.lastXpGain.mult}
+                        </span>
+                      )}
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 text-sm font-bold animate-correct-pop tnum">
+                        <Zap size={13} fill="currentColor" /> +{state.lastXpGain.amount} XP
+                      </span>
                     </span>
                   )}
                 </div>
@@ -3091,11 +3248,98 @@ function ConfettiBurst() {
   )
 }
 
+// ── 升級慶祝 modal（item 10）──
+function LevelUpModal({ info, onClose }) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 6000)
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => { clearTimeout(t); window.removeEventListener('keydown', onKey) }
+  }, [onClose])
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+      <div className="relative surface-card overflow-hidden max-w-sm w-full p-8 text-center animate-scale-in" onClick={(e) => e.stopPropagation()}>
+        <ConfettiBurst />
+        <div className="relative">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-300 text-xs font-bold mb-4">
+            <PartyPopper size={14} /> 升級囉！
+          </div>
+          <div className="mx-auto w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex flex-col items-center justify-center shadow-lg mb-4 animate-icon-bounce">
+            <span className="text-[11px] text-white/80 font-semibold leading-none">LEVEL</span>
+            <span className="text-5xl font-extrabold text-white leading-none tnum">{info.level}</span>
+          </div>
+          {info.isNewTitle ? (
+            <>
+              <div className="flex items-center justify-center gap-1.5 text-lg font-bold text-gray-900 dark:text-gray-50">
+                <Crown size={18} className="text-yellow-500" /> {info.title}
+              </div>
+              <p className="text-xs text-orange-500 font-semibold mt-1">解鎖全新稱號！</p>
+            </>
+          ) : (
+            <>
+              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">{info.title}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">繼續保持，向下一級邁進！</p>
+            </>
+          )}
+          <button onClick={onClose} className="mt-6 w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-colors">
+            太棒了
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── 成就解鎖 toast（item 11）──
+function AchievementToast({ toast, onDismiss }) {
+  useEffect(() => {
+    const t = setTimeout(() => onDismiss(toast._tid), 4500)
+    return () => clearTimeout(t)
+  }, [toast._tid, onDismiss])
+  const Icon = toast.icon || Award
+  return (
+    <div
+      className="pointer-events-auto flex items-center gap-3 pr-4 pl-3 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800/60 shadow-lg animate-slide-up max-w-[300px] cursor-pointer"
+      role="status"
+      onClick={() => onDismiss(toast._tid)}
+    >
+      <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-500/20 flex items-center justify-center shrink-0">
+        <Icon size={20} className="text-orange-500" />
+      </div>
+      <div className="min-w-0">
+        <div className="text-[11px] font-semibold text-orange-500 flex items-center gap-1"><Sparkles size={11} /> 成就解鎖</div>
+        <div className="text-sm font-bold text-gray-900 dark:text-gray-50 truncate">{toast.name}</div>
+        <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{toast.desc}</div>
+      </div>
+    </div>
+  )
+}
+
+function AchievementToasts({ toasts, onDismiss }) {
+  if (!toasts.length) return null
+  return (
+    <div className="fixed top-4 right-4 z-[90] flex flex-col gap-2 pointer-events-none">
+      {toasts.map((t) => <AchievementToast key={t._tid} toast={t} onDismiss={onDismiss} />)}
+    </div>
+  )
+}
+
 // 等級卡（統計頁頂）：大等級環 + 稱號 + XP 進度 + 成就/最佳連對摘要
-function LevelCard({ level, unlocked, total, bestCombo }) {
+function LevelCard({ level, unlocked, total, bestCombo, onShare, sharing }) {
   const R = 34, C = 2 * Math.PI * R
   return (
-    <div className="surface-card p-5 flex items-center gap-5 flex-wrap">
+    <div className="surface-card relative p-5 flex items-center gap-5 flex-wrap">
+      {onShare && (
+        <button
+          onClick={onShare}
+          disabled={sharing}
+          className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 hover:border-orange-300 dark:hover:border-orange-700 transition-colors disabled:opacity-50"
+          title="產生成績卡圖片"
+        >
+          {sharing ? <Loader2 size={13} className="animate-spin" /> : <Share2 size={13} />}
+          <span className="hidden sm:inline">分享成績卡</span>
+        </button>
+      )}
       <div className="relative w-24 h-24 shrink-0">
         <svg viewBox="0 0 88 88" className="w-24 h-24 -rotate-90">
           <circle cx="44" cy="44" r={R} fill="none" strokeWidth="7" className="stroke-gray-100 dark:stroke-gray-700" />
@@ -3127,6 +3371,177 @@ function LevelCard({ level, unlocked, total, bestCombo }) {
           <span className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300"><Flame size={13} className="text-orange-400" fill="currentColor" /> 最佳連對 <span className="font-bold tnum">{bestCombo}</span></span>
         </div>
       </div>
+    </div>
+  )
+}
+
+// ── SRS 待複習卡（item 13）──
+function ReviewDueCard({ items, dispatch }) {
+  const startReview = () => {
+    const pool = items.map((i) => i.question).filter(Boolean)
+    if (pool.length) dispatch({ type: 'GOTO_PRACTICE_QUESTION', questions: pool, startIndex: 0 })
+  }
+  return (
+    <div className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap border-l-4 border-l-orange-400">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20 flex items-center justify-center">
+          <Repeat size={24} className="text-orange-500" />
+        </div>
+        <div>
+          <div className="text-lg font-bold text-gray-900 dark:text-gray-50">今日待複習 <span className="text-orange-500 tnum">{items.length}</span> 題</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">依遺忘曲線排程回鍋的錯題，趁記憶還在鞏固起來</div>
+        </div>
+      </div>
+      <button
+        onClick={startReview}
+        className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5"
+      >
+        <Play size={15} fill="currentColor" /> 開始複習
+      </button>
+    </div>
+  )
+}
+
+// ── 考試準備度 + 倒數配速（items 7、8）──
+function ReadinessCard({ examStats, bankIndex, examDates, dispatch }) {
+  const exams = Object.keys(examStats)
+  if (!exams.length) return null
+  const setDate = (exam) => {
+    const cur = examDates?.[exam] || ''
+    const v = window.prompt(`設定「${displayExam(exam)}」目標考期（YYYY-MM-DD，留空可清除）`, cur)
+    if (v == null) return
+    const d = v.trim()
+    if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) { alert('日期格式需為 YYYY-MM-DD'); return }
+    dispatch({ type: 'SET_EXAM_DATE', exam, date: d })
+  }
+  return (
+    <div className="surface-card p-6">
+      <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
+        <Gauge size={16} className="text-orange-500" />考試準備度
+      </h3>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">綜合題庫覆蓋率、近期正確率、錯題精通率；70% 為建議應考門檻。設定考期後顯示倒數與每日配速。</p>
+      <div className="space-y-4">
+        {exams.map((exam) => {
+          const s = examStats[exam]
+          const total = bankIndex?.exams?.[exam]?.count || s.total
+          const coverage = total > 0 ? Math.min(1, s.total / total) : 0
+          const accuracy = s.total > 0 ? s.correct / s.total : 0
+          const masteryRate = s.everWrong > 0 ? s.mastered / s.everWrong : 1
+          const score = Math.round(100 * (0.35 * coverage + 0.45 * accuracy + 0.20 * masteryRate))
+          const tone = accuracyTone(score)
+          const date = examDates?.[exam]
+          let pacing = null
+          if (date) {
+            const days = Math.ceil((new Date(date + 'T00:00:00').getTime() - Date.now()) / 86400000)
+            const remaining = Math.max(0, total - s.total)
+            pacing = days > 0 ? { days, perDay: Math.ceil(remaining / Math.max(1, days)), remaining } : { over: true }
+          }
+          return (
+            <div key={exam} className="p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                <span className="font-semibold text-sm">{displayExam(exam)}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-lg font-extrabold ${tone.text}`}>{score}%</span>
+                  <button onClick={() => setDate(exam)} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 text-[11px] text-gray-500 dark:text-gray-400 hover:text-orange-500 hover:border-orange-300 transition-colors">
+                    <CalendarClock size={12} /> {date ? '改考期' : '設考期'}
+                  </button>
+                </div>
+              </div>
+              <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="progress-bar h-full rounded-full" style={{ width: `${score}%`, background: tone.bar }} />
+              </div>
+              <div className="mt-1.5 text-[11px] text-gray-400 dark:text-gray-500 tnum">
+                覆蓋 {s.total}/{total}（{Math.round(coverage * 100)}%） · 正確率 {Math.round(accuracy * 100)}%
+                {s.everWrong > 0 && <> · 錯題精通 {s.mastered}/{s.everWrong}</>}
+              </div>
+              {pacing && (
+                <div className="mt-2 text-xs flex items-center gap-1.5">
+                  {pacing.over ? (
+                    <span className="text-gray-500 dark:text-gray-400"><CalendarClock size={12} className="inline -mt-0.5" /> 考期已到／已過（{date}）</span>
+                  ) : (
+                    <span className="text-orange-600 dark:text-orange-400 font-medium">
+                      <CalendarClock size={12} className="inline -mt-0.5" /> 距考試 {pacing.days} 天 · 尚有 {pacing.remaining} 題 · 建議每日 {pacing.perDay} 題
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ── 本週回顧卡（item 14）──
+function WeeklyReportCard({ combinedDaily }) {
+  const report = useMemo(() => {
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const t0 = today.getTime()
+    const DAY = 86400000
+    const tw = { answered: 0, correct: 0, sec: 0, days: 0 }
+    const lw = { answered: 0, correct: 0, sec: 0, days: 0 }
+    for (const [k, v] of Object.entries(combinedDaily || {})) {
+      const t = new Date(k + 'T00:00:00').getTime()
+      if (Number.isNaN(t)) continue
+      const age = Math.round((t0 - t) / DAY)
+      const a = v?.answered || 0
+      const bucket = age >= 0 && age <= 6 ? tw : age >= 7 && age <= 13 ? lw : null
+      if (!bucket) continue
+      bucket.answered += a
+      bucket.correct += v?.correct || 0
+      bucket.sec += v?.seconds || 0
+      if (a > 0) bucket.days++
+    }
+    const twAcc = tw.answered ? Math.round((tw.correct / tw.answered) * 100) : 0
+    const lwAcc = lw.answered ? Math.round((lw.correct / lw.answered) * 100) : 0
+    return { tw, lw, twAcc, lwAcc, accDelta: twAcc - lwAcc, ansDelta: tw.answered - lw.answered }
+  }, [combinedDaily])
+
+  if (report.tw.answered === 0 && report.lw.answered === 0) return null
+
+  const enc =
+    report.tw.answered === 0 ? '本週還沒開始，來刷幾題暖身吧！'
+      : report.ansDelta > 0 && report.accDelta >= 0 ? '題數與正確率同步成長，狀態極佳 🚀'
+        : report.accDelta > 0 ? '正確率提升，穩紮穩打 👍'
+          : report.ansDelta > 0 ? '練習量增加，保持節奏 💪'
+            : '本週步調稍緩，明天再衝一波 🔥'
+
+  const Delta = ({ v, unit = '' }) => {
+    if (!v) return <span className="text-[11px] text-gray-400">持平</span>
+    const up = v > 0
+    return (
+      <span className={`text-[11px] font-semibold inline-flex items-center gap-0.5 ${up ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+        {up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}{up ? '+' : ''}{v}{unit}
+      </span>
+    )
+  }
+
+  const tiles = [
+    { label: '本週題數', value: report.tw.answered, delta: <Delta v={report.ansDelta} /> },
+    { label: '本週正確率', value: `${report.twAcc}%`, delta: <Delta v={report.accDelta} unit="%" /> },
+    { label: '學習天數', value: `${report.tw.days} 天`, delta: null },
+    { label: '學習時間', value: formatDuration(report.tw.sec), delta: null },
+  ]
+
+  return (
+    <div className="surface-card p-6">
+      <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-2">
+        <TrendingUp size={16} className="text-orange-500" />本週回顧
+        <span className="text-xs font-normal text-gray-400">近 7 天 vs. 前 7 天</span>
+      </h3>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {tiles.map((t) => (
+          <div key={t.label} className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700">
+            <div className="text-[11px] text-gray-400 dark:text-gray-500 mb-1">{t.label}</div>
+            <div className="text-xl font-extrabold text-gray-900 dark:text-gray-50 tnum">{t.value}</div>
+            {t.delta && <div className="mt-0.5">{t.delta}</div>}
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 flex items-center gap-1.5">
+        <Sparkles size={13} className="text-orange-400" />{enc}
+      </p>
     </div>
   )
 }
@@ -3532,7 +3947,7 @@ function Leaderboard({ user, setUser }) {
   )
 }
 
-function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
+function StatsTab({ state, dispatch, examTypes, qMap, user, setUser, bankIndex, facts, achievements, combinedDaily }) {
   const [activeSection, setActiveSection] = useState('overview')
   const history = state.statsHistory
   const entries = Object.entries(history)
@@ -3545,116 +3960,46 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
     if (!q) return null
     return { key: k, ...v, question: q, exam: q.exam, id: q.id, type: q.type }
   }
-  const totalAnswered = entries.length
-  const totalCorrect = entries.filter(([, v]) => v.correct).length
-  const overallAccuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
-  // 每日統計 = 本裝置 + 其他裝置（登入同步後）
-  const combinedDaily = useMemo(
-    () => combineDaily(state.dailyStats, state.dailyRemote),
-    [state.dailyStats, state.dailyRemote]
-  )
-  const totalStudySec = Object.values(combinedDaily).reduce((s, v) => s + (v?.seconds || 0), 0)
-
-  // Per exam stats
-  const examStats = useMemo(() => {
-    const map = {}
-    entries.forEach(([, v]) => {
-      if (!map[v.exam]) map[v.exam] = { total: 0, correct: 0 }
-      map[v.exam].total++
-      if (v.correct) map[v.exam].correct++
-    })
-    return map
-  }, [entries])
+  // 統計數字全部取自共用的 computeGamifyFacts（與標頭等級、成就 toast 同一份資料）
+  const totalAnswered = facts.answered
+  const totalCorrect = facts.correct
+  const overallAccuracy = facts.accuracy
+  const totalStudySec = facts._totalStudySec
+  const examStats = facts._examStats
+  const masteredCount = facts._masteredCount
+  const gxp = facts.xp
+  const glevel = facts._glevel
+  const streak = facts.streak
+  const unlockedCount = achievements.filter(a => a.done).length
 
   // Wrong questions: 答錯過且累計答對未達 MASTERY_THRESHOLD 次（尚未學會）的題目
   const wrongQuestions = entries
     .filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) < MASTERY_THRESHOLD)
     .map(([k, v]) => rehydrate(k, v))
     .filter(Boolean)
-  // 已學會（曾答錯，後來累計答對達標）的題目數，用於提示
-  const masteredCount = entries.filter(([, v]) => (v.everWrong ?? !v.correct) && (v.correctCount ?? v.correctStreak ?? 0) >= MASTERY_THRESHOLD).length
 
-  // ── 遊戲化：等級 + 成就（皆由現有資料回溯計算） ──
-  const gxp = useMemo(() => computeXP(history), [history])
-  const glevel = useMemo(() => levelInfo(gxp), [gxp])
-  const streak = computeStreak(combinedDaily)
+  // SRS 待複習（item 13）：到期的錯題，最逾期的排前面
+  const reviewDue = entries
+    .filter(([, v]) => isDue(v))
+    .map(([k, v]) => ({ item: rehydrate(k, v), over: overdueBy(v) }))
+    .filter((x) => x.item)
+    .sort((a, b) => b.over - a.over)
+    .map((x) => x.item)
 
-  // 單科深度（≥100 題且高正確率）＋單科最大題數
-  const examDepth = useMemo(() => {
-    let bestAcc100 = 0, maxAnswered = 0, expert = false
-    for (const s of Object.values(examStats)) {
-      maxAnswered = Math.max(maxAnswered, s.total)
-      if (s.total >= 100) {
-        const acc = Math.round((s.correct / s.total) * 100)
-        bestAcc100 = Math.max(bestAcc100, acc)
-        if (acc >= 90) expert = true
-      }
+  // 分享成績卡（item 12）
+  const [sharing, setSharing] = useState(false)
+  const doShare = async () => {
+    setSharing(true)
+    try {
+      await shareScoreCard({
+        level: glevel.level, title: glevel.name, xp: glevel.xp, pct: glevel.pct,
+        answered: totalAnswered, accuracy: overallAccuracy, streak, bestCombo: state.bestCombo,
+        name: user?.name || '', dateStr: new Date().toLocaleDateString('zh-TW'),
+      })
+    } catch { /* 使用者取消或環境不支援，忽略 */ } finally {
+      setSharing(false)
     }
-    return { bestAcc100, maxAnswered, expert }
-  }, [examStats])
-
-  // 每日目標達成統計（用目前目標套用整段歷史，近似）
-  const goalMetrics = useMemo(() => {
-    const goal = state.dailyGoal || 20
-    const days = Object.keys(combinedDaily).sort()
-    let goalDays = 0, maxDay = 0, run = 0, bestRun = 0, prev = null
-    const oneDay = 86400000
-    for (const d of days) {
-      const a = combinedDaily[d]?.answered || 0
-      maxDay = Math.max(maxDay, a)
-      const met = a >= goal
-      if (met) goalDays++
-      if (met) {
-        const t = new Date(d).getTime()
-        run = (prev !== null && t - prev === oneDay) ? run + 1 : 1
-        bestRun = Math.max(bestRun, run)
-        prev = t
-      } else { run = 0; prev = null }
-    }
-    return { goalDays, maxDay, goalStreak: bestRun }
-  }, [combinedDaily, state.dailyGoal])
-
-  // 模擬考統計
-  const examMetrics = useMemo(() => {
-    const h = state.examHistory || []
-    let bestPct = 0, passStreak = 0, cur = 0
-    const passedExams = new Set()
-    for (const e of h) {
-      bestPct = Math.max(bestPct, e.pct || 0)
-      if (e.passed) { cur++; passStreak = Math.max(passStreak, cur); passedExams.add(e.exam) } else cur = 0
-    }
-    return { count: h.length, bestPct, passStreak, passedCount: passedExams.size }
-  }, [state.examHistory])
-
-  const achievements = useMemo(() => evaluateAchievements({
-    answered: totalAnswered,
-    correct: totalCorrect,
-    accuracy: overallAccuracy,
-    mastered: masteredCount,
-    examsTouched: Object.keys(examStats).length,
-    examsTotal: examTypes.length,
-    bookmarks: Object.values(state.bookmarked || {}).filter(Boolean).length,
-    streak,
-    studyHours: totalStudySec / 3600,
-    bestCombo: state.bestCombo,
-    level: glevel.level,
-    xp: gxp,
-    // A: 深度 / 每日
-    expertExam: examDepth.expert,
-    bestExamAcc100: examDepth.bestAcc100,
-    maxExamAnswered: examDepth.maxAnswered,
-    goalDays: goalMetrics.goalDays,
-    goalStreak: goalMetrics.goalStreak,
-    maxDayAnswered: goalMetrics.maxDay,
-    dailyGoal: state.dailyGoal || 20,
-    // B: 模擬考
-    examCount: examMetrics.count,
-    examBestPct: examMetrics.bestPct,
-    examPassStreak: examMetrics.passStreak,
-    // C: 隱藏旗標
-    flags: state.flags || {},
-  }), [totalAnswered, totalCorrect, overallAccuracy, masteredCount, examStats, examTypes.length, state.bookmarked, streak, totalStudySec, state.bestCombo, glevel.level, gxp, examDepth, goalMetrics, examMetrics, state.dailyGoal, state.flags])
-  const unlockedCount = achievements.filter(a => a.done).length
+  }
 
   // Bookmarked / review: rehydrate from the bank so entries show (and can be
   // practiced) even if the question was never answered locally.
@@ -3758,8 +4103,11 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
 
   return (
     <div className="space-y-6">
-      {/* 等級 + XP */}
-      <LevelCard level={glevel} unlocked={unlockedCount} total={achievements.length} bestCombo={state.bestCombo} />
+      {/* 等級 + XP（含分享成績卡） */}
+      <LevelCard level={glevel} unlocked={unlockedCount} total={achievements.length} bestCombo={state.bestCombo} onShare={doShare} sharing={sharing} />
+
+      {/* SRS 待複習（item 13）：有到期錯題才顯示 */}
+      {reviewDue.length > 0 && <ReviewDueCard items={reviewDue} dispatch={dispatch} />}
 
       {/* 每日目標＋連續學習 */}
       <DailyGoalCard combinedDaily={combinedDaily} dailyGoal={state.dailyGoal} dispatch={dispatch} />
@@ -3789,6 +4137,9 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
         </div>
       </div>
 
+      {/* 考試準備度 + 倒數配速（items 7、8） */}
+      <ReadinessCard examStats={examStats} bankIndex={bankIndex} examDates={state.examDates} dispatch={dispatch} />
+
       {/* 學習趨勢（近 14 天） */}
       <div className="surface-card p-6">
         <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
@@ -3796,6 +4147,9 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser }) {
         </h3>
         <DailyTrendChart dailyStats={combinedDaily} />
       </div>
+
+      {/* 本週回顧（item 14） */}
+      <WeeklyReportCard combinedDaily={combinedDaily} />
 
       {/* Section tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
