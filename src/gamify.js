@@ -28,36 +28,60 @@ export function computeXP(statsHistory) {
   return xp
 }
 
-// Cloud-career ladder. Thresholds are cumulative XP.
-export const LEVELS = [
-  { min: 0,     name: '雲端見習生' },
-  { min: 120,   name: '雲端學徒' },
-  { min: 350,   name: '助理工程師' },
-  { min: 800,   name: '雲端工程師' },
-  { min: 1600,  name: 'SysOps 工程師' },
-  { min: 3000,  name: '解決方案架構師' },
-  { min: 5200,  name: '資深架構師' },
-  { min: 8500,  name: '首席雲端架構師' },
-  { min: 13000, name: '雲端大師' },
-  { min: 20000, name: '雲端傳奇' },
+// Cloud-career ladder: 100 levels, flat 2,000 XP per level (≈ 200 answered
+// questions at typical accuracy — the user-requested pacing), and a new title
+// every 5 levels (20 titles total).
+export const XP_PER_LEVEL = 2000
+export const MAX_LEVEL = 100
+
+// One title per 5-level band: levels 1–5 → [0], 6–10 → [1], … 96–100 → [19].
+export const TITLES = [
+  '雲端見習生',    // 1–5
+  '雲端學徒',      // 6–10
+  '助理工程師',    // 11–15
+  '雲端工程師',    // 16–20
+  '資深工程師',    // 21–25
+  'SysOps 專家',   // 26–30
+  'DevOps 達人',   // 31–35
+  '安全守護者',    // 36–40
+  '解決方案架構師', // 41–45
+  '資深架構師',    // 46–50
+  '首席架構師',    // 51–55
+  '雲端顧問',      // 56–60
+  '技術佈道師',    // 61–65
+  '領域專家',      // 66–70
+  '雲端大師',      // 71–75
+  '一代宗師',      // 76–80
+  '雲端傳奇',      // 81–85
+  '傳奇宗師',      // 86–90
+  '雲界巨擘',      // 91–95
+  '雲端之神',      // 96–100
 ]
 
+export function titleForLevel(level) {
+  return TITLES[Math.min(TITLES.length - 1, Math.floor((level - 1) / 5))]
+}
+
 export function levelInfo(xp) {
-  let i = 0
-  for (let k = 0; k < LEVELS.length; k++) if (xp >= LEVELS[k].min) i = k
-  const isMax = i === LEVELS.length - 1
-  const floor = LEVELS[i].min
-  const next = isMax ? null : LEVELS[i + 1].min
-  const pct = isMax ? 1 : (xp - floor) / (next - floor)
+  const level = Math.min(MAX_LEVEL, Math.floor(xp / XP_PER_LEVEL) + 1)
+  const isMax = level >= MAX_LEVEL && xp >= (MAX_LEVEL - 1) * XP_PER_LEVEL
+  const floor = (level - 1) * XP_PER_LEVEL
+  const next = isMax ? null : level * XP_PER_LEVEL
+  const pct = isMax ? 1 : (xp - floor) / XP_PER_LEVEL
   return {
-    level: i + 1,
-    name: LEVELS[i].name,
+    level,
+    name: titleForLevel(level),
     xp,
     floor,
     next,
     toNext: isMax ? 0 : next - xp,
     pct: Math.max(0, Math.min(1, pct)),
     isMax,
+    // 距離下一個稱號（每 5 級一換）；最後一個稱號帶（96–100）之後沒有新稱號
+    nextTitleLevel: (() => {
+      const nt = Math.floor((level - 1) / 5) * 5 + 6
+      return level >= MAX_LEVEL || nt > MAX_LEVEL ? null : nt
+    })(),
   }
 }
 
@@ -78,8 +102,10 @@ export const ACHIEVEMENTS = [
   { id: 'study10',  name: '十時馬拉松', desc: '累計學習 10 小時',     icon: Clock,    unlocked: f => f.studyHours >= 10, progress: f => ({ cur: Math.floor(f.studyHours), goal: 10, unit: 'h' }) },
   { id: 'combo10',  name: '十連對',   desc: '一口氣連續答對 10 題',  icon: Zap,      unlocked: f => f.bestCombo >= 10, progress: f => ({ cur: f.bestCombo, goal: 10 }) },
   { id: 'combo20',  name: '廿連對',   desc: '一口氣連續答對 20 題',  icon: Zap,      unlocked: f => f.bestCombo >= 20, progress: f => ({ cur: f.bestCombo, goal: 20 }) },
-  { id: 'level5',   name: '嶄露頭角', desc: '達到等級 5',            icon: Medal,    unlocked: f => f.level >= 5,   progress: f => ({ cur: f.level, goal: 5 }) },
-  { id: 'level8',   name: '登峰造極', desc: '達到等級 8',            icon: Award,    unlocked: f => f.level >= 8,   progress: f => ({ cur: f.level, goal: 8 }) },
+  { id: 'level10',  name: '嶄露頭角', desc: '達到等級 10',           icon: Medal,    unlocked: f => f.level >= 10,  progress: f => ({ cur: f.level, goal: 10 }) },
+  { id: 'level25',  name: '漸入佳境', desc: '達到等級 25',           icon: Medal,    unlocked: f => f.level >= 25,  progress: f => ({ cur: f.level, goal: 25 }) },
+  { id: 'level50',  name: '半百征途', desc: '達到等級 50',           icon: Award,    unlocked: f => f.level >= 50,  progress: f => ({ cur: f.level, goal: 50 }) },
+  { id: 'level100', name: '登峰造極', desc: '達到等級 100（滿級）',  icon: Crown,    unlocked: f => f.level >= 100, progress: f => ({ cur: f.level, goal: 100 }) },
 ]
 
 export function evaluateAchievements(facts) {
