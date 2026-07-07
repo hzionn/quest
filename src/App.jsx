@@ -13,7 +13,7 @@ import { SyncStatusPill, useGoogleSync } from './SyncControls'
 import ErrorBoundary from './ErrorBoundary'
 import { isSyncConfigured, mergeMaps, fetchAdminOverview } from './sync'
 import {
-  computeXP, levelInfo, evaluateAchievements,
+  computeXP, levelInfo, evaluateAchievements, titleForLevel,
   XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
 } from './gamify'
 
@@ -1627,7 +1627,7 @@ function LevelBadge({ level, onClick }) {
             stroke="#ff9900" strokeDasharray={C} strokeDashoffset={C * (1 - level.pct)}
             style={{ transition: 'stroke-dashoffset 500ms ease' }} />
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-orange-400 tnum">{level.level}</span>
+        <span className={`absolute inset-0 flex items-center justify-center font-bold text-orange-400 tnum ${level.level >= 100 ? 'text-[8px]' : 'text-[11px]'}`}>{level.level}</span>
       </span>
       <span className="hidden lg:flex flex-col items-start leading-none">
         <span className="text-[11px] font-semibold text-gray-200">{level.name}</span>
@@ -3079,7 +3079,10 @@ function LevelCard({ level, unlocked, total, bestCombo }) {
           <Sparkles size={16} className="text-orange-400" />
         </div>
         <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 tnum">
-          {level.xp} XP{level.isMax ? '（已達最高等級）' : ` · 距 ${level.next} XP 升級還差 ${level.toNext}`}
+          {level.xp} XP{level.isMax ? '（已達最高等級）' : ` · 再 ${level.toNext} XP 升 Lv.${level.level + 1}`}
+          {!level.isMax && level.nextTitleLevel && (
+            <span className="text-gray-400 dark:text-gray-500"> · Lv.{level.nextTitleLevel} 晉升「{titleForLevel(level.nextTitleLevel)}」</span>
+          )}
         </div>
         <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full" style={{ width: `${level.pct * 100}%`, transition: 'width 500ms ease' }} />
