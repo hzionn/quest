@@ -347,19 +347,19 @@
     "exam": "SOA-C02",
     "id": 439,
     "type": "single",
-    "question": "一名 SysOps 管理员负责公司 AWS 账户的安全。公司有一项政策，规定用户只有在使用多重身份验证（MFA）设备进行身份验证后，才能停止或终止 Amazon EC2 实例。SysOps 管理员应应用哪项策略来满足此要求？ （题目包含图表）",
+    "question": "一名 SysOps 管理员负责公司 AWS 账户的安全。公司有一项政策，规定用户只有在使用多重身份验证（MFA）设备进行身份验证后，才能停止或终止 Amazon EC2 实例。SysOps 管理员应应用哪项 IAM 策略来满足此要求？",
     "options": {
-      "A": "（图片选项）",
-      "B": "（图片选项）",
-      "C": "（图片选项）",
-      "D": "（图片选项）"
+      "A": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": [\n      \"ec2:StopInstances\",\n      \"ec2:TerminateInstances\"\n    ],\n    \"Resource\": \"*\",\n    \"Condition\": {\"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"}}\n  }]\n}",
+      "B": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Allow\",\n    \"Action\": [\n      \"ec2:StopInstances\",\n      \"ec2:TerminateInstances\"\n    ],\n    \"Resource\": \"*\"\n  }]\n}",
+      "C": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"NotAction\",\n    \"Action\": [\n      \"ec2:StopInstances\",\n      \"ec2:TerminateInstances\"\n    ],\n    \"Resource\": \"*\",\n    \"Condition\": {\"Bool\": {\"aws:MultiFactorAuthPresent\": \"true\"}}\n  }]\n}",
+      "D": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"Action\": [\n      \"ec2:StopInstances\",\n      \"ec2:TerminateInstances\"\n    ],\n    \"Resource\": \"*\",\n    \"Condition\": {\"StringNotEqualsIfExists\": {\"PrincipalServiceName\": \"ec2.amazonaws.com\"}}\n  }]\n}"
     },
     "answer": "A",
     "explanations": {
-      "A": "正确。此选项的 IAM 策略通过条件强制要求用户在执行停止或终止 EC2 实例操作时必须使用 MFA 进行身份验证，满足题目要求。",
-      "B": "错误。此选项未正确实现 MFA 验证条件或未正确限制停止/终止 EC2 实例的权限，因此无法满足要求。",
-      "C": "错误。此选项涉及其他权限或条件，但未能满足题目中关于停止/终止 EC2 实例需 MFA 验证的具体要求。",
-      "D": "错误。此选项未能正确实现题目所要求的 MFA 强制条件，因此不正确。"
+      "A": "正确。Allow 效果搭配 Condition Bool aws:MultiFactorAuthPresent = true，只有当用户已通过 MFA 验证时才允许 ec2:StopInstances 与 ec2:TerminateInstances，正好满足「使用 MFA 后才能停止或终止 EC2」的要求。",
+      "B": "错误。此策略虽然允许停止／终止实例，但没有任何 MFA 条件，任何情况下都能操作，无法强制要求 MFA。",
+      "C": "错误。IAM 策略语句中 \"Effect\" 的合法值只有 \"Allow\" 或 \"Deny\"；此处写成 \"NotAction\" 并非有效的 Effect（NotAction 是与 Action 并列的元素，不能当作 Effect 的值），策略无效，无法达成要求。",
+      "D": "错误。使用 Deny 搭配 StringNotEqualsIfExists／PrincipalServiceName 条件，判断的是发起请求的「服务主体（service principal）」而非用户是否通过 MFA，与题目「用户需 MFA 才能停止／终止 EC2」的要求无关。"
     }
   },
   {
@@ -370,12 +370,14 @@
     "options": {
       "A": "在 S3 存储桶上启用 S3 Transfer Acceleration。更改移动应用程序，使其使用 S3 Transfer Acceleration 端点进行上传。",
       "B": "在全球多个 AWS 区域为该 S3 存储桶创建 S3 接入点。更改移动应用程序，使其使用 S3 接入点端点进行上传。",
+      "C": "在 S3 存储桶上使用 S3 Select。更改移动应用程序，使其使用 S3 Select 全球端点进行上传。",
       "D": "在全球多个 AWS 区域创建新的公共 Network Load Balancer (NLB)。将 S3 存储桶指定为这些 NLB 的目标。更改移动应用程序，使其使用最近的 NLB 进行上传。"
     },
     "answer": "A",
     "explanations": {
       "A": "正确。S3 Transfer Acceleration 利用 AWS 全球的边缘节点和优化的网络路径，让远距离用户先上传到最近的边缘位置，再通过 AWS 专用网络快速传输到目标 S3 存储桶，从而提高远距离上传速度。",
       "B": "错误。S3 接入点主要用于简化对 S3 存储桶的访问管理，无法优化跨区域的上传速度。",
+      "C": "错误。S3 Select 用于从单个 S3 对象中检索（查询）部分数据，与优化「上传」速度无关，无法解决远距离用户上传缓慢的问题。",
       "D": "错误。Network Load Balancer 用于将流量分发到后端服务，无法将 S3 存储桶作为目标，也无法优化 S3 上传速度。"
     }
   },
