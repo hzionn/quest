@@ -19,6 +19,7 @@ import {
   XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
 } from './gamify'
 import { isDue, overdueBy } from './srs'
+import { buildDailyStudyPlan } from './studyPlan'
 import { shareScoreCard } from './sharecard'
 
 // ── GitHub Config (admin only) ──
@@ -888,7 +889,7 @@ const PROVIDER_EXAMS = {
   gcp: ['PCA', 'GCP-CDL'],
 }
 
-function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue }) {
+function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue, studyPlan, onStartPlan }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
@@ -925,14 +926,39 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
         <h2 className="text-xl font-semibold text-white text-center mb-1 tracking-tight">請選擇練習科別</h2>
         <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
 
+        {studyPlan?.focusExam && (
+          <div className="mb-5 rounded-2xl border border-orange-400/50 bg-gradient-to-br from-orange-500/20 to-amber-500/5 p-5 text-left shadow-lg shadow-orange-950/20">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <div className="flex items-center gap-2 text-orange-200 font-bold"><Sparkles size={17} /> 今日學習計畫</div>
+                <p className="text-xs text-gray-300 mt-1">{studyPlan.reason}</p>
+              </div>
+              <span className="shrink-0 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-semibold text-orange-100">約 {studyPlan.minutes} 分鐘</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="rounded-xl bg-gray-900/35 px-3 py-2 text-center"><div className="text-lg font-extrabold text-white">{studyPlan.targetCount}</div><div className="text-[10px] text-gray-400">今日題數</div></div>
+              <div className="rounded-xl bg-gray-900/35 px-3 py-2 text-center"><div className="text-lg font-extrabold text-orange-300">{studyPlan.reviewCount}</div><div className="text-[10px] text-gray-400">到期複習</div></div>
+              <div className="rounded-xl bg-gray-900/35 px-3 py-2 text-center"><div className="text-lg font-extrabold text-blue-300">{studyPlan.practiceCount}</div><div className="text-[10px] text-gray-400">弱項練習</div></div>
+            </div>
+            <button
+              onClick={onStartPlan}
+              disabled={isLoadingSubject}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <Play size={16} fill="currentColor" /> 開始今日計畫 · {displayExam(studyPlan.focusExam)}
+            </button>
+            <p className="text-[10px] text-gray-500 text-center mt-2">今日已完成 {studyPlan.answeredToday}/{studyPlan.dailyGoal} 題</p>
+          </div>
+        )}
+
         {dueCount > 0 && (
           <button
             onClick={onStartDue}
             disabled={isLoadingSubject}
             className="w-full mb-5 px-4 py-3.5 rounded-xl bg-orange-500/15 border border-orange-400/50 text-orange-100 hover:bg-orange-500/25 transition-colors flex items-center justify-between disabled:opacity-50"
           >
-            <span className="flex items-center gap-2 font-semibold"><Repeat size={17} /> 今日待複習</span>
-            <span className="text-sm bg-orange-500/25 px-2.5 py-1 rounded-lg">{dueCount} 題 · 立即開始</span>
+            <span className="flex items-center gap-2 font-semibold"><Repeat size={17} /> 全部到期錯題</span>
+            <span className="text-sm bg-orange-500/25 px-2.5 py-1 rounded-lg">{dueCount} 題 · 專注複習</span>
           </button>
         )}
 
@@ -1088,6 +1114,8 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
   const [subjectChosen, setSubjectChosen] = useState(false)
   const [user, setUser] = useState(null)
+  const [planToday] = useState(todayKey)
+  const [planNow] = useState(Date.now)
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
   const { signOut, authReady } = useGoogleSync(state, dispatch, user, setUser)
@@ -1168,14 +1196,16 @@ export default function App() {
 
   // Subject picked: load just that subject's files (with progress), enter,
   // then stream its EN files and the rest of the bank in the background.
-  const handleSelectSubject = async (exam, reviewKeys = null) => {
+  const handleSelectSubject = async (exam, session = null) => {
     if (loadProgress) return // a load is already in flight
     let loadedNow = []
+    const sessionKeys = session?.keys || null
     if (bankIndex?.exams) {
       const info = exam ? bankIndex.exams[exam] : null
-      const reviewExams = reviewKeys
-        ? new Set(reviewKeys.map(k => state.statsHistory[k]?.exam).filter(Boolean))
+      const reviewExams = sessionKeys
+        ? new Set(sessionKeys.map(k => state.statsHistory[k]?.exam).filter(Boolean))
         : null
+      if (session?.focusExam) reviewExams?.add(session.focusExam)
       const reviewInfos = reviewExams
         ? [...reviewExams].map(code => bankIndex.exams[code]).filter(Boolean)
         : null
@@ -1209,10 +1239,26 @@ export default function App() {
       })()
     }
     dispatch({ type: 'SELECT_SUBJECT', exam })
-    if (reviewKeys?.length) {
+    if (session) {
       const merged = new Map()
       ;[...state.questions, ...loadedNow].forEach(q => merged.set(`${q.exam}-${q.id}`, q))
-      const pool = reviewKeys.map(k => merged.get(k)).filter(Boolean)
+      const selected = new Set()
+      const pool = (sessionKeys || []).map(k => merged.get(k)).filter(Boolean)
+      pool.forEach(q => selected.add(`${q.exam}-${q.id}`))
+      const score = (q) => {
+        const entry = state.statsHistory[`${q.exam}-${q.id}`]
+        if (!entry) return 1
+        if ((entry.everWrong ?? !entry.correct) && (entry.correctCount || 0) < MASTERY_THRESHOLD) return 0
+        return 2
+      }
+      const focusCandidates = [...merged.values()]
+        .filter(q => (!session.focusExam || q.exam === session.focusExam) && !selected.has(`${q.exam}-${q.id}`))
+        .sort((a, b) => score(a) - score(b))
+      const targetCount = session.targetCount || pool.length
+      for (const q of focusCandidates) {
+        if (pool.length >= targetCount) break
+        pool.push(q)
+      }
       if (pool.length) dispatch({ type: 'GOTO_PRACTICE_QUESTION', questions: pool, startIndex: 0 })
     }
     setSubjectChosen(true)
@@ -1296,6 +1342,15 @@ export default function App() {
     () => Object.entries(state.statsHistory).filter(([, entry]) => isDue(entry)).map(([key]) => key),
     [state.statsHistory]
   )
+  const studyPlan = useMemo(() => buildDailyStudyPlan({
+    statsHistory: state.statsHistory,
+    dailyStats: state.dailyStats,
+    dailyGoal: state.dailyGoal,
+    examDates: state.examDates,
+    availableExams: Object.keys(bankIndex?.exams || {}),
+    today: planToday,
+    now: planNow,
+  }), [state.statsHistory, state.dailyStats, state.dailyGoal, state.examDates, bankIndex, planToday, planNow])
   const qMap = useMemo(() => {
     const m = new Map()
     state.questions.forEach(q => m.set(`${q.exam}-${q.id}`, q))
@@ -1378,7 +1433,13 @@ export default function App() {
         loadProgress={loadProgress}
         onSelect={handleSelectSubject}
         dueCount={dueKeys.length}
-        onStartDue={() => handleSelectSubject('', dueKeys)}
+        onStartDue={() => handleSelectSubject('', { keys: dueKeys, targetCount: dueKeys.length })}
+        studyPlan={studyPlan}
+        onStartPlan={() => handleSelectSubject(studyPlan.focusExam, {
+          keys: studyPlan.dueKeys,
+          focusExam: studyPlan.focusExam,
+          targetCount: studyPlan.targetCount,
+        })}
       />
     )
   }
