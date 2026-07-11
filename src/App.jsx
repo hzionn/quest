@@ -18,7 +18,7 @@ import {
   GROUPS as ACHIEVEMENT_GROUPS,
   XP_PER_CORRECT, XP_PER_WRONG, XP_MASTER_BONUS,
 } from './gamify'
-import { isDue, overdueBy, inReviewPool } from './srs'
+import { isDue, overdueBy } from './srs'
 import { shareScoreCard } from './sharecard'
 
 // ── GitHub Config (admin only) ──
@@ -441,9 +441,9 @@ function reducer(state, action) {
       const correct = computeCorrect(q, userAns)
       const prevEntry = state.statsHistory[qKey]
       const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
-      // 累計答對次數：答對 +1，答錯不歸零
-      const correctCount = prevCount + (correct ? 1 : 0)
-      // 一旦答錯過就視為錯題；累計答對 MASTERY_THRESHOLD 次後才算學會並移出清單
+      // SRS 階段採連續答對：答對前進一階，答錯回到第一階段。
+      const correctCount = correct ? prevCount + 1 : 0
+      // 一旦答錯過就視為錯題；連續答對 MASTERY_THRESHOLD 次後才算學會並移出清單
       const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !correct
       const wasMastered = prevEntry && (prevEntry.everWrong ?? !prevEntry.correct) && (prevEntry.correctCount ?? 0) >= MASTERY_THRESHOLD
       const nowMastered = everWrong && correctCount >= MASTERY_THRESHOLD
@@ -579,7 +579,7 @@ function reducer(state, action) {
       details.forEach(d => {
         const prevEntry = state.statsHistory[d.qKey]
         const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
-        const correctCount = prevCount + (d.correct ? 1 : 0)
+        const correctCount = d.correct ? prevCount + 1 : 0
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
         newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question, _updatedAt: submittedAt }
       })
@@ -719,8 +719,8 @@ const typeLabels = { single: '單選題', multiple: '多選題', matching: '配�
 // ── Helper: Exam code display name (data keys stay as the short code) ──
 const EXAM_DISPLAY_NAMES = { 'PCA': 'GCP-PCA' }
 const displayExam = code => EXAM_DISPLAY_NAMES[code] || code
-// 錯題清單：需累計答對這麼多次才算「學會」並移出清單（答錯不會歸零）
-const MASTERY_THRESHOLD = 3
+// 錯題清單：需連續答對這麼多次才算「學會」並移出清單（答錯重置）
+const MASTERY_THRESHOLD = 5
 
 // ── Helper: Get display question based on language ──
 function getDisplayQuestion(q, lang, enMap) {
@@ -842,12 +842,36 @@ function PasswordGate({ onAuth }) {
         <button type="submit" className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
           進入練習
         </button>
-        {isSyncConfigured() && (
-          <p className="text-gray-500 text-[11px] mt-4 leading-relaxed">
-            進入後可從頁面右上「登入同步」連結 Google 帳號，<br />讓進度跨裝置自動同步
-          </p>
-        )}
+        <p className="text-gray-500 text-[11px] mt-4 leading-relaxed">
+          通過密碼後，仍需使用 Google／Gmail 帳號登入
+        </p>
       </form>
+    </div>
+  )
+}
+
+function GoogleAuthGate({ user, authReady, onSignedIn }) {
+  if (user) return null
+  return (
+    <div className="min-h-screen auth-bg flex items-center justify-center p-4">
+      <div className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-700/80">
+        <div className="flex justify-center mb-4">
+          <img src={cloudIcon} alt="雲端證照" className="h-16 rounded-2xl" />
+        </div>
+        <h2 className="text-xl font-semibold text-white mb-2 tracking-tight">使用 Google 帳號登入</h2>
+        <p className="text-gray-400 text-sm mb-6">完成 Gmail／Google 驗證後才能進入題庫，進度也會自動跨裝置同步。</p>
+        {!authReady ? (
+          <div className="flex items-center justify-center gap-2 py-3 text-sm text-gray-300">
+            <Loader2 size={18} className="animate-spin" /> 驗證登入狀態…
+          </div>
+        ) : isSyncConfigured() ? (
+          <GoogleSignInButton onSuccess={onSignedIn} />
+        ) : (
+          <div className="rounded-xl border border-red-800/70 bg-red-950/30 px-4 py-3 text-sm text-red-300">
+            Google 登入尚未設定，請聯絡管理員。
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -864,14 +888,7 @@ const PROVIDER_EXAMS = {
   gcp: ['PCA', 'GCP-CDL'],
 }
 
-function getProviderForExam(exam) {
-  for (const [provider, codes] of Object.entries(PROVIDER_EXAMS)) {
-    if (codes.includes(exam)) return provider
-  }
-  return 'aws'
-}
-
-function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect }) {
+function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
@@ -907,6 +924,17 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
         </div>
         <h2 className="text-xl font-semibold text-white text-center mb-1 tracking-tight">請選擇練習科別</h2>
         <p className="text-gray-400 text-sm text-center mb-6">選擇後將直接進入該科別的題目</p>
+
+        {dueCount > 0 && (
+          <button
+            onClick={onStartDue}
+            disabled={isLoadingSubject}
+            className="w-full mb-5 px-4 py-3.5 rounded-xl bg-orange-500/15 border border-orange-400/50 text-orange-100 hover:bg-orange-500/25 transition-colors flex items-center justify-between disabled:opacity-50"
+          >
+            <span className="flex items-center gap-2 font-semibold"><Repeat size={17} /> 今日待複習</span>
+            <span className="text-sm bg-orange-500/25 px-2.5 py-1 rounded-lg">{dueCount} 題 · 立即開始</span>
+          </button>
+        )}
 
         {/* Cloud provider tabs */}
         <div className="flex gap-1 bg-gray-900/60 rounded-xl p-1 mb-6 border border-gray-700/60">
@@ -1062,7 +1090,7 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
-  const { signOut } = useGoogleSync(state, dispatch, user, setUser)
+  const { signOut, authReady } = useGoogleSync(state, dispatch, user, setUser)
 
   // ── Lazy question-bank loading ──
   // bankIndex (build-generated) maps exam → { count, files, enFiles } so the
@@ -1140,16 +1168,23 @@ export default function App() {
 
   // Subject picked: load just that subject's files (with progress), enter,
   // then stream its EN files and the rest of the bank in the background.
-  const handleSelectSubject = async (exam) => {
+  const handleSelectSubject = async (exam, reviewKeys = null) => {
     if (loadProgress) return // a load is already in flight
+    let loadedNow = []
     if (bankIndex?.exams) {
       const info = exam ? bankIndex.exams[exam] : null
-      const zhWanted = info
-        ? info.files
-        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.files))]
-      const enWanted = info
-        ? info.enFiles
-        : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.enFiles))]
+      const reviewExams = reviewKeys
+        ? new Set(reviewKeys.map(k => state.statsHistory[k]?.exam).filter(Boolean))
+        : null
+      const reviewInfos = reviewExams
+        ? [...reviewExams].map(code => bankIndex.exams[code]).filter(Boolean)
+        : null
+      const zhWanted = reviewInfos
+        ? [...new Set(reviewInfos.flatMap(e => e.files))]
+        : info ? info.files : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.files))]
+      const enWanted = reviewInfos
+        ? [...new Set(reviewInfos.flatMap(e => e.enFiles))]
+        : info ? info.enFiles : [...new Set(Object.values(bankIndex.exams).flatMap(e => e.enFiles))]
       const zhFiles = takeUnloaded(zhWanted)
       if (zhFiles.length) {
         setLoadProgress({ done: 0, total: zhFiles.length })
@@ -1161,6 +1196,7 @@ export default function App() {
           alert('題庫載入失敗，請檢查網路後再試一次。')
           return
         }
+        loadedNow = qs
         dispatch({ type: 'APPEND_QUESTIONS', questions: qs })
       }
       ;(async () => {
@@ -1173,6 +1209,12 @@ export default function App() {
       })()
     }
     dispatch({ type: 'SELECT_SUBJECT', exam })
+    if (reviewKeys?.length) {
+      const merged = new Map()
+      ;[...state.questions, ...loadedNow].forEach(q => merged.set(`${q.exam}-${q.id}`, q))
+      const pool = reviewKeys.map(k => merged.get(k)).filter(Boolean)
+      if (pool.length) dispatch({ type: 'GOTO_PRACTICE_QUESTION', questions: pool, startIndex: 0 })
+    }
     setSubjectChosen(true)
   }
 
@@ -1203,7 +1245,7 @@ export default function App() {
       dailyStats: state.dailyStats,
       prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.examHistory, state.flags, state.bonusXp, state.examDates])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.bestCombo, state.examHistory, state.flags, state.bonusXp, state.examDates])
 
   // 記住目前練習位置（依科別），下次選同科別直接續刷
   useEffect(() => {
@@ -1250,6 +1292,10 @@ export default function App() {
 
   // Derived data
   const examTypes = useMemo(() => [...new Set(state.questions.map(q => q.exam))], [state.questions])
+  const dueKeys = useMemo(
+    () => Object.entries(state.statsHistory).filter(([, entry]) => isDue(entry)).map(([key]) => key),
+    [state.statsHistory]
+  )
   const qMap = useMemo(() => {
     const m = new Map()
     state.questions.forEach(q => m.set(`${q.exam}-${q.id}`, q))
@@ -1317,6 +1363,10 @@ export default function App() {
     return <PasswordGate onAuth={() => setAuthenticated(true)} />
   }
 
+  if (!user) {
+    return <GoogleAuthGate user={user} authReady={authReady} onSignedIn={setUser} />
+  }
+
   // 登入後（非管理員）先選擇練習科別，再進入對應題目
   if (!subjectChosen && !isAdmin) {
     return (
@@ -1327,6 +1377,8 @@ export default function App() {
         loading={state.questionsLoading}
         loadProgress={loadProgress}
         onSelect={handleSelectSubject}
+        dueCount={dueKeys.length}
+        onStartDue={() => handleSelectSubject('', dueKeys)}
       />
     )
   }
@@ -1825,7 +1877,7 @@ function LevelBadge({ level, onClick }) {
 // ══════════════════════════════════════════
 // Practice Tab
 // ══════════════════════════════════════════
-function PracticeTab({ state, dispatch, examTypes, qMap }) {
+function PracticeTab({ state, dispatch, examTypes }) {
   const { practiceFiltered, practiceIndex, practiceAnswers, practiceSubmitted, practiceResults, bookmarked, reviewMarked } = state
   const currentQRaw = practiceFiltered[practiceIndex]
   const currentQ = getDisplayQuestion(currentQRaw, state.lang, state.questionsEn)
@@ -1916,6 +1968,11 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
   const progressPct = practiceFiltered.length > 0 ? Math.round((answeredCount / practiceFiltered.length) * 100) : 0
   const correctCount = practiceFiltered.filter((q) => practiceResults[`${q.exam}-${q.id}`] === true).length
   const accuracyPct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0
+  const navPageSize = 50
+  const navPage = Math.floor(practiceIndex / navPageSize)
+  const navPageCount = Math.ceil(practiceFiltered.length / navPageSize)
+  const navStart = navPage * navPageSize
+  const navQuestions = practiceFiltered.slice(navStart, navStart + navPageSize)
 
   const accTone = accuracyTone(accuracyPct)
   const chipClass = (active, activeStyle) =>
@@ -2020,6 +2077,16 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
                 >
                   <Flag size={18} fill={reviewMarked[qKey] ? 'currentColor' : 'none'} />
                 </button>
+                <a
+                  href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(`[題目回報] ${currentQ.exam} #${currentQ.id}`)}&body=${encodeURIComponent(`科別：${currentQ.exam}\n題號：${currentQ.id}\n\n問題描述：\n`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                  title="回報題目問題"
+                  aria-label="回報題目問題"
+                >
+                  <AlertCircle size={18} />
+                </a>
               </div>
             </div>
 
@@ -2151,9 +2218,27 @@ function PracticeTab({ state, dispatch, examTypes, qMap }) {
             <ListChecks size={14} />
             題目導覽
           </h4>
+          {navPageCount > 1 && (
+            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: Math.max(0, navStart - navPageSize) })}
+                disabled={navPage === 0}
+                className="p-1 rounded disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="上一組題目"
+              ><ChevronLeft size={15} /></button>
+              <span>{navStart + 1}–{Math.min(navStart + navPageSize, practiceFiltered.length)} / {practiceFiltered.length}</span>
+              <button
+                onClick={() => dispatch({ type: 'SET_PRACTICE_INDEX', index: Math.min(practiceFiltered.length - 1, navStart + navPageSize) })}
+                disabled={navPage >= navPageCount - 1}
+                className="p-1 rounded disabled:opacity-30 hover:bg-gray-100 dark:hover:bg-gray-700"
+                aria-label="下一組題目"
+              ><ChevronRight size={15} /></button>
+            </div>
+          )}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {practiceFiltered.map((q, i) => {
+          {navQuestions.map((q, offset) => {
+            const i = navStart + offset
             const k = `${q.exam}-${q.id}`
             const submitted = practiceSubmitted[k]
             const correct = practiceResults[k]
@@ -2699,15 +2784,15 @@ function zhExplanation(text) {
   return text.slice(idx).trim()
 }
 
-function ExplanationView({ question, userAnswer }) {
+function ExplanationView({ question }) {
   const q = question
-  if (!q.explanations) return null
-
   const correctKeys = Array.isArray(q.answer) ? q.answer : [q.answer]
-  const allOptionKeys = q.options ? Object.keys(q.options) : Object.keys(q.explanations)
+  const allOptionKeys = q.options ? Object.keys(q.options) : Object.keys(q.explanations || {})
   // Default to first correct answer that has explanation, or first key with explanation
-  const defaultKey = correctKeys.find(k => q.explanations[k]) || allOptionKeys.find(k => q.explanations[k]) || allOptionKeys[0]
+  const defaultKey = correctKeys.find(k => q.explanations?.[k]) || allOptionKeys.find(k => q.explanations?.[k]) || allOptionKeys[0] || ''
   const [selectedKey, setSelectedKey] = useState(defaultKey)
+
+  if (!q.explanations) return null
 
   const selectedText = q.explanations[selectedKey]
 
@@ -3404,6 +3489,7 @@ function ReviewDueCard({ items, dispatch }) {
 
 // ── 考試準備度 + 倒數配速（items 7、8）──
 function ReadinessCard({ examStats, bankIndex, examDates, dispatch }) {
+  const [now] = useState(Date.now)
   const exams = Object.keys(examStats)
   if (!exams.length) return null
   const setDate = (exam) => {
@@ -3432,7 +3518,7 @@ function ReadinessCard({ examStats, bankIndex, examDates, dispatch }) {
           const date = examDates?.[exam]
           let pacing = null
           if (date) {
-            const days = Math.ceil((new Date(date + 'T00:00:00').getTime() - Date.now()) / 86400000)
+            const days = Math.ceil((new Date(date + 'T00:00:00').getTime() - now) / 86400000)
             const remaining = Math.max(0, total - s.total)
             pacing = days > 0 ? { days, perDay: Math.ceil(remaining / Math.max(1, days)), remaining } : { over: true }
           }
@@ -3474,6 +3560,16 @@ function ReadinessCard({ examStats, bankIndex, examDates, dispatch }) {
 }
 
 // ── 本週回顧卡（item 14）──
+function WeeklyDelta({ v, unit = '' }) {
+  if (!v) return <span className="text-[11px] text-gray-400">持平</span>
+  const up = v > 0
+  return (
+    <span className={`text-[11px] font-semibold inline-flex items-center gap-0.5 ${up ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+      {up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}{up ? '+' : ''}{v}{unit}
+    </span>
+  )
+}
+
 function WeeklyReportCard({ combinedDaily }) {
   const report = useMemo(() => {
     const today = new Date(); today.setHours(0, 0, 0, 0)
@@ -3502,24 +3598,15 @@ function WeeklyReportCard({ combinedDaily }) {
 
   const enc =
     report.tw.answered === 0 ? '本週還沒開始，來刷幾題暖身吧！'
-      : report.ansDelta > 0 && report.accDelta >= 0 ? '題數與正確率同步成長，狀態極佳 🚀'
+      : report.lw.answered === 0 ? `本週已完成 ${report.tw.answered} 題，累積更多資料後就能比較趨勢`
+        : report.ansDelta > 0 && report.accDelta >= 0 ? '題數與正確率同步成長，狀態極佳 🚀'
         : report.accDelta > 0 ? '正確率提升，穩紮穩打 👍'
           : report.ansDelta > 0 ? '練習量增加，保持節奏 💪'
             : '本週步調稍緩，明天再衝一波 🔥'
 
-  const Delta = ({ v, unit = '' }) => {
-    if (!v) return <span className="text-[11px] text-gray-400">持平</span>
-    const up = v > 0
-    return (
-      <span className={`text-[11px] font-semibold inline-flex items-center gap-0.5 ${up ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
-        {up ? <TrendingUp size={11} /> : <TrendingDown size={11} />}{up ? '+' : ''}{v}{unit}
-      </span>
-    )
-  }
-
   const tiles = [
-    { label: '本週題數', value: report.tw.answered, delta: <Delta v={report.ansDelta} /> },
-    { label: '本週正確率', value: `${report.twAcc}%`, delta: <Delta v={report.accDelta} unit="%" /> },
+    { label: '本週題數', value: report.tw.answered, delta: <WeeklyDelta v={report.ansDelta} /> },
+    { label: '本週正確率', value: `${report.twAcc}%`, delta: <WeeklyDelta v={report.accDelta} unit="%" /> },
     { label: '學習天數', value: `${report.tw.days} 天`, delta: null },
     { label: '學習時間', value: formatDuration(report.tw.sec), delta: null },
   ]
@@ -3562,9 +3649,9 @@ function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
       const key = 'quest-goal-celebrated'
       if (localStorage.getItem(key) !== todayKey()) {
         localStorage.setItem(key, todayKey())
-        setCelebrate(true)
-        const t = setTimeout(() => setCelebrate(false), 1100)
-        return () => clearTimeout(t)
+        const start = setTimeout(() => setCelebrate(true), 0)
+        const stop = setTimeout(() => setCelebrate(false), 1100)
+        return () => { clearTimeout(start); clearTimeout(stop) }
       }
     } catch { /* ignore */ }
   }, [done])
@@ -3842,7 +3929,11 @@ function Leaderboard({ user, setUser }) {
       .catch(() => setStatus('error'))
   }, [])
 
-  useEffect(() => { if (user) load() }, [user, load])
+  useEffect(() => {
+    if (!user) return
+    const timer = setTimeout(load, 0)
+    return () => clearTimeout(timer)
+  }, [user, load])
 
   const header = (
     <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -3947,7 +4038,7 @@ function Leaderboard({ user, setUser }) {
   )
 }
 
-function StatsTab({ state, dispatch, examTypes, qMap, user, setUser, bankIndex, facts, achievements, combinedDaily }) {
+function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achievements, combinedDaily }) {
   const [activeSection, setActiveSection] = useState('overview')
   const history = state.statsHistory
   const entries = Object.entries(history)
@@ -3967,7 +4058,6 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser, bankIndex, 
   const totalStudySec = facts._totalStudySec
   const examStats = facts._examStats
   const masteredCount = facts._masteredCount
-  const gxp = facts.xp
   const glevel = facts._glevel
   const streak = facts.streak
   const unlockedCount = achievements.filter(a => a.done).length
@@ -4293,7 +4383,7 @@ function StatsTab({ state, dispatch, examTypes, qMap, user, setUser, bankIndex, 
               )}
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-              累計答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯不會歸零。
+              連續答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯會回到第一階段。
               {masteredCount > 0 && <span className="text-green-600 dark:text-green-400 font-medium"> 已學會 {masteredCount} 題。</span>}
             </p>
             {wrongQuestions.length === 0 ? (

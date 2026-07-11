@@ -62,7 +62,7 @@ export function GoogleSignInButton({ onSuccess, theme = 'filled_black' }) {
           try {
             const user = await loginWithGoogle(resp.credential)
             onSuccess?.(user)
-          } catch (e) {
+          } catch {
             setError('登入失敗，請再試一次')
           } finally {
             setBusy(false)
@@ -153,7 +153,9 @@ function diffKeys(a = {}, b = {}) {
   return out
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useGoogleSync(state, dispatch, user, setUser) {
+  const [authReady, setAuthReady] = useState(!isSyncConfigured())
   const initialSyncedRef = useRef(false)
   const debounceRef = useRef(null)
   const lastPushAtRef = useRef(0)
@@ -207,7 +209,10 @@ export function useGoogleSync(state, dispatch, user, setUser) {
   useEffect(() => {
     if (!isSyncConfigured() || user) return
     let alive = true
-    fetchMe().then((u) => { if (alive && u) setUser(u) }).catch(() => {})
+    fetchMe()
+      .then((u) => { if (alive && u) setUser(u) })
+      .catch(() => {})
+      .finally(() => { if (alive) setAuthReady(true) })
     return () => { alive = false }
     // run once
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -304,6 +309,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
   const signOut = useCallback(() => {
     clearSessionToken()
     setUser(null)
+    setAuthReady(true)
     initialSyncedRef.current = false
     prevMapsRef.current = null
     mapsRef.current = null
@@ -313,5 +319,5 @@ export function useGoogleSync(state, dispatch, user, setUser) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setUser])
 
-  return { signOut }
+  return { signOut, authReady }
 }

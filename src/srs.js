@@ -14,8 +14,8 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 // Interval (days) before the next review, indexed by correctCount (0, 1, 2).
-// MASTERY_THRESHOLD = 3 in App.jsx, so correctCount ≥ 3 is out of the pool.
-export const SRS_INTERVALS_DAYS = [1, 3, 7]
+// MASTERY_THRESHOLD = 5 in App.jsx, so correctCount ≥ 5 is out of the pool.
+export const SRS_INTERVALS_DAYS = [1, 3, 7, 14, 30]
 const DAY = 86400000
 
 function stageInterval(correctCount) {

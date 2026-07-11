@@ -57,8 +57,6 @@ export async function fetchMe() {
 }
 
 // ── shape conversion: server rows <-> the app's maps ──
-const qkey = (exam, id) => `${exam}-${id}`
-
 function remoteToMaps(state) {
   const statsHistory = {}
   for (const p of state.progress || []) {

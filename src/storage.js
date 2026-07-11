@@ -24,7 +24,8 @@ const EMPTY = () => ({ statsHistory: {}, bookmarked: {}, reviewMarked: {}, daily
 export function stripQuestions(statsHistory) {
   const out = {}
   for (const [k, v] of Object.entries(statsHistory || {})) {
-    const { question, ...rest } = v
+    const rest = { ...v }
+    delete rest.question
     out[k] = rest
   }
   return out
