@@ -21,6 +21,7 @@ import {
 import { isDue, overdueBy } from './srs'
 import { buildDailyStudyPlan } from './studyPlan'
 import { CERTIFICATIONS, getExcludedExams, isCertificationEarned } from './certifications'
+import { buildExamProgressReport, createMemoryAnchor } from './learningInsights'
 import { shareScoreCard } from './sharecard'
 
 // ── GitHub Config (admin only) ──
@@ -196,6 +197,7 @@ const initialState = {
   examHistory: [],  // [{ at, exam, total, correct, pct, passed }] — 模擬考成就用
   examDates: {},    // { [exam]: 'YYYY-MM-DD' } — 各科目標考期（倒數＋配速用）
   earnedCertifications: {}, // { [certId]: { enabled, earnedAt, _updatedAt } }
+  missionRewards: {}, // { 'YYYY-MM-DD': true } — 每日三任務全完成獎勵
   flags: {},        // 隱藏成就旗標：earlyBird/nightOwl/weekend/lunch/lang/dark/export/hotkey/swipe
 
   // Language
@@ -589,6 +591,8 @@ function reducer(state, action) {
       const examTotal = state.examQuestionIds.length
       const examPct = examTotal > 0 ? Math.round((totalCorrect / examTotal) * 100) : 0
       const examExam = state.examConfig?.examFilter || '（全部科別）'
+      const repeatedWrong = details.filter(d => !d.correct && state.statsHistory[d.qKey]?.everWrong).length
+      const progressReport = buildExamProgressReport(state.examHistory, examExam, examPct, repeatedWrong)
       return {
         ...state,
         examActive: false,
@@ -597,7 +601,8 @@ function reducer(state, action) {
           total: examTotal,
           correct: totalCorrect,
           typeStats,
-          details
+          details,
+          progressReport,
         },
         statsHistory: newHistory,
         dailyStats: bumpDaily(state.dailyStats, details.length, totalCorrect),
@@ -678,7 +683,17 @@ function reducer(state, action) {
         bonusXp: Math.max(state.bonusXp || 0, action.bonusXp || 0),
         examDates: { ...(action.examDates || {}), ...state.examDates },
         earnedCertifications: { ...state.earnedCertifications, ...(action.earnedCertifications || {}) },
+        missionRewards: { ...state.missionRewards, ...(action.missionRewards || {}) },
       }
+
+    case 'CLAIM_DAILY_MISSIONS': {
+      if (!action.day || state.missionRewards[action.day]) return state
+      return {
+        ...state,
+        bonusXp: (state.bonusXp || 0) + 50,
+        missionRewards: { ...state.missionRewards, [action.day]: true },
+      }
+    }
 
     case 'RESTORE_CERTIFICATIONS':
       return { ...state, earnedCertifications: action.earnedCertifications || {} }
@@ -912,7 +927,7 @@ const PROVIDER_EXAMS = {
   gcp: ['PCA', 'GCP-CDL'],
 }
 
-function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue, studyPlan, onStartPlan }) {
+function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue, studyPlan, onStartPlan, dailyMissions, onClaimMissions }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
     const m = {}
@@ -972,6 +987,10 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
             </button>
             <p className="text-[10px] text-gray-500 text-center mt-2">今日已完成 {studyPlan.answeredToday}/{studyPlan.dailyGoal} 題</p>
           </div>
+        )}
+
+        {dailyMissions && (
+          <DailyMissionsCard missions={dailyMissions} onClaim={onClaimMissions} />
         )}
 
         {dueCount > 0 && (
@@ -1296,8 +1315,8 @@ export default function App() {
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
     if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
     if (prefs?.bestCombo) dispatch({ type: 'RESTORE_BEST_COMBO', bestCombo: prefs.bestCombo })
-    if (prefs?.examHistory?.length || prefs?.flags || prefs?.bonusXp || prefs?.examDates || prefs?.earnedCertifications) {
-      dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags, bonusXp: prefs.bonusXp, examDates: prefs.examDates, earnedCertifications: prefs.earnedCertifications })
+    if (prefs?.examHistory?.length || prefs?.flags || prefs?.bonusXp || prefs?.examDates || prefs?.earnedCertifications || prefs?.missionRewards) {
+      dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags, bonusXp: prefs.bonusXp, examDates: prefs.examDates, earnedCertifications: prefs.earnedCertifications, missionRewards: prefs.missionRewards })
     }
   }, [])
 
@@ -1313,9 +1332,9 @@ export default function App() {
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
-      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates, earnedCertifications: state.earnedCertifications },
+      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates, earnedCertifications: state.earnedCertifications, missionRewards: state.missionRewards },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.bestCombo, state.examHistory, state.flags, state.bonusXp, state.examDates, state.earnedCertifications])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.bestCombo, state.examHistory, state.flags, state.bonusXp, state.examDates, state.earnedCertifications, state.missionRewards])
 
   // 記住目前練習位置（依科別），下次選同科別直接續刷
   useEffect(() => {
@@ -1391,6 +1410,13 @@ export default function App() {
     () => combineDaily(state.dailyStats, state.dailyRemote),
     [state.dailyStats, state.dailyRemote]
   )
+  const todayMissionStats = combinedDaily[planToday] || {}
+  const dailyMissions = {
+    answered: todayMissionStats.answered || 0,
+    correct: todayMissionStats.correct || 0,
+    dailyGoal: state.dailyGoal,
+    claimed: !!state.missionRewards[planToday],
+  }
   const facts = useMemo(
     () => computeGamifyFacts(state, examTypes, combinedDaily),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1466,6 +1492,8 @@ export default function App() {
           focusExam: studyPlan.focusExam,
           targetCount: studyPlan.targetCount,
         })}
+        dailyMissions={dailyMissions}
+        onClaimMissions={() => dispatch({ type: 'CLAIM_DAILY_MISSIONS', day: planToday })}
       />
     )
   }
@@ -2055,6 +2083,7 @@ function PracticeTab({ state, dispatch, examTypes }) {
   const progressPct = practiceFiltered.length > 0 ? Math.round((answeredCount / practiceFiltered.length) * 100) : 0
   const correctCount = practiceFiltered.filter((q) => practiceResults[`${q.exam}-${q.id}`] === true).length
   const accuracyPct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0
+  const sessionComplete = practiceFiltered.length > 0 && answeredCount === practiceFiltered.length
   const navPageSize = 50
   const navPage = Math.floor(practiceIndex / navPageSize)
   const navPageCount = Math.ceil(practiceFiltered.length / navPageSize)
@@ -2254,6 +2283,30 @@ function PracticeTab({ state, dispatch, examTypes }) {
                 <ExplanationView question={currentQ} userAnswer={practiceAnswers[qKey]} />
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {sessionComplete && (
+        <div className="surface-card overflow-hidden animate-slide-up">
+          <div className="h-1 bg-gradient-to-r from-green-400 to-emerald-500" />
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h3 className="text-xl font-bold flex items-center gap-2"><PartyPopper size={21} className="text-orange-500" /> 本輪練習完成</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">先看成果，再決定下一步。</p>
+              </div>
+              <span className={`text-3xl font-extrabold ${accuracyTone(accuracyPct).text}`}>{accuracyPct}%</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3 my-5">
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/60 p-3 text-center"><div className="text-xl font-bold">{practiceFiltered.length}</div><div className="text-xs text-gray-500">完成題數</div></div>
+              <div className="rounded-xl bg-green-50 dark:bg-green-900/20 p-3 text-center"><div className="text-xl font-bold text-green-600 dark:text-green-400">{correctCount}</div><div className="text-xs text-gray-500">答對</div></div>
+              <div className="rounded-xl bg-red-50 dark:bg-red-900/20 p-3 text-center"><div className="text-xl font-bold text-red-500">{answeredCount - correctCount}</div><div className="text-xs text-gray-500">待加強</div></div>
+            </div>
+            <div className="flex gap-3 flex-wrap">
+              <button onClick={() => dispatch({ type: 'SET_TAB', tab: 'stats' })} className="flex-1 min-w-32 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 font-semibold text-sm hover:bg-gray-50 dark:hover:bg-gray-700">查看學習分析</button>
+              <button onClick={() => dispatch({ type: 'START_PRACTICE' })} className="flex-1 min-w-32 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm">再練一輪</button>
+            </div>
           </div>
         </div>
       )}
@@ -2882,6 +2935,7 @@ function ExplanationView({ question }) {
   if (!q.explanations) return null
 
   const selectedText = q.explanations[selectedKey]
+  const memoryAnchor = createMemoryAnchor(q, zhExplanation(selectedText))
 
   if (q.type === 'single' || q.type === 'multiple') {
     return (
@@ -2905,6 +2959,15 @@ function ExplanationView({ question }) {
           </select>
           <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
         </div>
+        {memoryAnchor && (
+          <div className="rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3">
+            <div className="flex items-center gap-1.5 text-sm font-bold text-amber-700 dark:text-amber-300 mb-1"><Sparkles size={15} /> 記憶錨點</div>
+            <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">{memoryAnchor.anchor}</p>
+            {memoryAnchor.services.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">{memoryAnchor.services.map(service => <span key={service} className="px-2 py-0.5 rounded-full bg-white/80 dark:bg-gray-800 text-[11px] font-semibold text-amber-700 dark:text-amber-300">{service}</span>)}</div>
+            )}
+          </div>
+        )}
         {selectedText ? (
           <div className={`rounded-lg border px-3 py-3 text-sm whitespace-pre-wrap leading-relaxed ${
             correctKeys.includes(selectedKey)
@@ -3176,6 +3239,29 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
             </button>
           </div>
         </div>
+
+        {r.progressReport && (
+          <div className="surface-card p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h3 className="text-lg font-semibold flex items-center gap-2"><TrendingUp size={18} className="text-orange-500" /> 模擬考進步報告</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{r.progressReport.message}</p>
+              </div>
+              {r.progressReport.delta != null && (
+                <span className={`text-2xl font-extrabold ${r.progressReport.delta > 0 ? 'text-green-600 dark:text-green-400' : r.progressReport.delta < 0 ? 'text-red-500' : 'text-gray-500'}`}>
+                  {r.progressReport.delta > 0 ? '+' : ''}{r.progressReport.delta}%
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-5">
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/60 p-4"><div className="text-xs text-gray-500">上次正確率</div><div className="text-xl font-bold mt-1">{r.progressReport.previousPct == null ? '首次基準' : `${r.progressReport.previousPct}%`}</div></div>
+              <div className="rounded-xl bg-orange-50 dark:bg-orange-900/20 p-4"><div className="text-xs text-gray-500">重複錯題</div><div className="text-xl font-bold text-orange-600 dark:text-orange-400 mt-1">{r.progressReport.repeatedWrong} 題</div></div>
+            </div>
+            <p className="mt-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+              下一步：{r.progressReport.repeatedWrong > 0 ? `先複習 ${r.progressReport.repeatedWrong} 道重複錯題` : pct < 70 ? '優先練習本次錯題' : '保持節奏，安排下一場模擬考'}
+            </p>
+          </div>
+        )}
 
         {/* Detail review */}
         <div className="surface-card p-6">
@@ -3718,6 +3804,55 @@ function WeeklyReportCard({ combinedDaily }) {
       </p>
     </div>
   )
+}
+
+function DailyMissionsCard({ missions, onClaim }) {
+  const tasks = [
+    { label: '完成暖身', value: missions.answered, target: 5 },
+    { label: '答對 5 題', value: missions.correct, target: 5 },
+    { label: '達成今日目標', value: missions.answered, target: missions.dailyGoal },
+  ]
+  const allDone = tasks.every(task => task.value >= task.target)
+
+  return (
+    <div className="mb-5 rounded-2xl border border-violet-400/40 bg-violet-500/10 p-5 text-left">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <div className="flex items-center gap-2 font-bold text-violet-200"><Target size={17} /> 今日三任務</div>
+          <p className="text-xs text-gray-400 mt-1">完成三項任務，領取額外 50 XP</p>
+        </div>
+        <span className="text-xs font-bold text-violet-200">{tasks.filter(task => task.value >= task.target).length}/3</span>
+      </div>
+      <div className="space-y-3">
+        {tasks.map(task => {
+          const done = task.value >= task.target
+          const progress = Math.min(100, Math.round((task.value / Math.max(1, task.target)) * 100))
+          return (
+            <div key={task.label}>
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className={`flex items-center gap-1.5 ${done ? 'text-green-300' : 'text-gray-300'}`}>
+                  {done ? <CheckCircle size={13} /> : <CircleProgressIcon />}{task.label}
+                </span>
+                <span className="text-gray-400">{Math.min(task.value, task.target)}/{task.target}</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-gray-900/40 overflow-hidden"><div className={`h-full rounded-full ${done ? 'bg-green-400' : 'bg-violet-400'}`} style={{ width: `${progress}%` }} /></div>
+            </div>
+          )
+        })}
+      </div>
+      <button
+        onClick={onClaim}
+        disabled={!allDone || missions.claimed}
+        className="w-full mt-4 py-2.5 rounded-xl bg-violet-500 text-white text-sm font-bold disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+      >
+        {missions.claimed ? '今日獎勵已領取' : allDone ? '領取 +50 XP' : '完成三任務後領取'}
+      </button>
+    </div>
+  )
+}
+
+function CircleProgressIcon() {
+  return <span className="inline-block w-[13px] h-[13px] rounded-full border border-gray-500" aria-hidden="true" />
 }
 
 function DailyGoalCard({ combinedDaily, dailyGoal, dispatch }) {
