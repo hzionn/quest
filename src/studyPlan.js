@@ -12,9 +12,11 @@ export function buildDailyStudyPlan({
   dailyGoal = 20,
   examDates = {},
   availableExams = [],
+  excludedExams = [],
   today,
   now = Date.now(),
 }) {
+  const eligibleExams = availableExams.filter(exam => !excludedExams.includes(exam))
   const answeredToday = dailyStats[today]?.answered || 0
   const remainingGoal = Math.max(0, dailyGoal - answeredToday)
   const targetCount = clamp(remainingGoal || 5, 5, 20)
@@ -22,7 +24,7 @@ export function buildDailyStudyPlan({
   const due = Object.entries(statsHistory)
     .filter(([, entry]) => isDue(entry, now))
     .map(([key, entry]) => ({ key, entry, exam: examFromKey(key, entry), overdue: overdueBy(entry, now) }))
-    .filter(item => availableExams.includes(item.exam))
+    .filter(item => eligibleExams.includes(item.exam))
     .sort((a, b) => b.overdue - a.overdue)
 
   const examStats = {}
@@ -41,7 +43,7 @@ export function buildDailyStudyPlan({
   const dueFocus = Object.entries(dueByExam).sort((a, b) => b[1] - a[1])[0]?.[0]
 
   const weakest = Object.entries(examStats)
-    .filter(([exam, stat]) => availableExams.includes(exam) && stat.answered >= 3)
+    .filter(([exam, stat]) => eligibleExams.includes(exam) && stat.answered >= 3)
     .sort((a, b) => {
       const accA = a[1].correct / a[1].answered
       const accB = b[1].correct / b[1].answered
@@ -49,10 +51,10 @@ export function buildDailyStudyPlan({
     })[0]?.[0]
 
   const closestExam = Object.entries(examDates)
-    .filter(([exam, date]) => availableExams.includes(exam) && new Date(`${date}T00:00:00`).getTime() >= now)
+    .filter(([exam, date]) => eligibleExams.includes(exam) && new Date(`${date}T00:00:00`).getTime() >= now)
     .sort((a, b) => new Date(`${a[1]}T00:00:00`) - new Date(`${b[1]}T00:00:00`))[0]?.[0]
 
-  const focusExam = dueFocus || weakest || closestExam || availableExams[0] || ''
+  const focusExam = dueFocus || weakest || closestExam || eligibleExams[0] || ''
   const reviewCount = Math.min(due.length, targetCount)
   const practiceCount = Math.max(0, targetCount - reviewCount)
   const minutes = Math.max(5, Math.ceil(reviewCount * 2 + practiceCount * 1.5))

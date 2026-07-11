@@ -57,3 +57,13 @@ test('daily plan falls back to the closest exam date for a new learner', () => {
   assert.equal(plan.focusExam, 'AIP-C01')
   assert.equal(plan.targetCount, 20)
 })
+
+test('daily plan never recommends an earned certification', () => {
+  const plan = buildDailyStudyPlan({
+    availableExams: ['SCS-C02', 'SAA-C03'],
+    excludedExams: ['SCS-C02'],
+    today: '2026-07-11',
+    now,
+  })
+  assert.equal(plan.focusExam, 'SAA-C03')
+})

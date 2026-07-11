@@ -6,7 +6,7 @@ import {
   AlertCircle, Trophy, Target, ListChecks, Shuffle, X, Database,
   Github, Key, RefreshCw, Trash2, Eye, EyeOff, FileText, Shield, Loader2,
   Languages, LogOut, Flame, Users, Zap, Award, Sparkles, Lock,
-  Gauge, CalendarClock, Share2, TrendingUp, TrendingDown, PartyPopper, Crown, Repeat,
+  Gauge, CalendarClock, Share2, TrendingUp, TrendingDown, PartyPopper, Crown, Repeat, BadgeCheck,
 } from 'lucide-react'
 import awsLogo from '/aws.png'
 import { loadLocalProgress, saveLocalProgress, clearLocalProgress, stripQuestions } from './storage'
@@ -20,6 +20,7 @@ import {
 } from './gamify'
 import { isDue, overdueBy } from './srs'
 import { buildDailyStudyPlan } from './studyPlan'
+import { CERTIFICATIONS, getExcludedExams, isCertificationEarned } from './certifications'
 import { shareScoreCard } from './sharecard'
 
 // ── GitHub Config (admin only) ──
@@ -194,6 +195,7 @@ const initialState = {
   bonusXp: 0,       // Fever 連對加成累計（本機；等級顯示 = computeXP + bonusXp）
   examHistory: [],  // [{ at, exam, total, correct, pct, passed }] — 模擬考成就用
   examDates: {},    // { [exam]: 'YYYY-MM-DD' } — 各科目標考期（倒數＋配速用）
+  earnedCertifications: {}, // { [certId]: { enabled, earnedAt, _updatedAt } }
   flags: {},        // 隱藏成就旗標：earlyBird/nightOwl/weekend/lunch/lang/dark/export/hotkey/swipe
 
   // Language
@@ -675,7 +677,28 @@ function reducer(state, action) {
         flags: { ...state.flags, ...(action.flags || {}) },
         bonusXp: Math.max(state.bonusXp || 0, action.bonusXp || 0),
         examDates: { ...(action.examDates || {}), ...state.examDates },
+        earnedCertifications: { ...state.earnedCertifications, ...(action.earnedCertifications || {}) },
       }
+
+    case 'RESTORE_CERTIFICATIONS':
+      return { ...state, earnedCertifications: action.earnedCertifications || {} }
+
+    case 'TOGGLE_CERTIFICATION': {
+      const previous = state.earnedCertifications[action.certId]
+      const enabled = !isCertificationEarned(previous)
+      const now = Date.now()
+      return {
+        ...state,
+        earnedCertifications: {
+          ...state.earnedCertifications,
+          [action.certId]: {
+            enabled,
+            earnedAt: enabled ? (previous?.earnedAt || now) : (previous?.earnedAt || null),
+            _updatedAt: now,
+          },
+        },
+      }
+    }
 
     case 'SET_EXAM_DATE': {
       const next = { ...state.examDates }
@@ -1273,8 +1296,8 @@ export default function App() {
     if (Object.keys(dailyStats).length) dispatch({ type: 'RESTORE_DAILY', dailyStats })
     if (prefs?.dailyGoal) dispatch({ type: 'SET_DAILY_GOAL', goal: prefs.dailyGoal })
     if (prefs?.bestCombo) dispatch({ type: 'RESTORE_BEST_COMBO', bestCombo: prefs.bestCombo })
-    if (prefs?.examHistory?.length || prefs?.flags || prefs?.bonusXp || prefs?.examDates) {
-      dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags, bonusXp: prefs.bonusXp, examDates: prefs.examDates })
+    if (prefs?.examHistory?.length || prefs?.flags || prefs?.bonusXp || prefs?.examDates || prefs?.earnedCertifications) {
+      dispatch({ type: 'RESTORE_GAMIFY', examHistory: prefs.examHistory, flags: prefs.flags, bonusXp: prefs.bonusXp, examDates: prefs.examDates, earnedCertifications: prefs.earnedCertifications })
     }
   }, [])
 
@@ -1282,16 +1305,17 @@ export default function App() {
     if (
       !Object.keys(state.statsHistory).length &&
       !Object.keys(state.bookmarked).length &&
-      !Object.keys(state.dailyStats).length
+      !Object.keys(state.dailyStats).length &&
+      !Object.keys(state.earnedCertifications).length
     ) return
     saveLocalProgress({
       statsHistory: state.statsHistory,
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
-      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates },
+      prefs: { dailyGoal: state.dailyGoal, bestCombo: state.bestCombo, examHistory: state.examHistory, flags: state.flags, bonusXp: state.bonusXp, examDates: state.examDates, earnedCertifications: state.earnedCertifications },
     })
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.bestCombo, state.examHistory, state.flags, state.bonusXp, state.examDates])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, state.dailyGoal, state.bestCombo, state.examHistory, state.flags, state.bonusXp, state.examDates, state.earnedCertifications])
 
   // 記住目前練習位置（依科別），下次選同科別直接續刷
   useEffect(() => {
@@ -1338,9 +1362,10 @@ export default function App() {
 
   // Derived data
   const examTypes = useMemo(() => [...new Set(state.questions.map(q => q.exam))], [state.questions])
+  const excludedExams = useMemo(() => getExcludedExams(state.earnedCertifications), [state.earnedCertifications])
   const dueKeys = useMemo(
-    () => Object.entries(state.statsHistory).filter(([, entry]) => isDue(entry)).map(([key]) => key),
-    [state.statsHistory]
+    () => Object.entries(state.statsHistory).filter(([, entry]) => isDue(entry) && !excludedExams.has(entry.exam)).map(([key]) => key),
+    [state.statsHistory, excludedExams]
   )
   const studyPlan = useMemo(() => buildDailyStudyPlan({
     statsHistory: state.statsHistory,
@@ -1348,9 +1373,10 @@ export default function App() {
     dailyGoal: state.dailyGoal,
     examDates: state.examDates,
     availableExams: Object.keys(bankIndex?.exams || {}),
+    excludedExams: [...excludedExams],
     today: planToday,
     now: planNow,
-  }), [state.statsHistory, state.dailyStats, state.dailyGoal, state.examDates, bankIndex, planToday, planNow])
+  }), [state.statsHistory, state.dailyStats, state.dailyGoal, state.examDates, excludedExams, bankIndex, planToday, planNow])
   const qMap = useMemo(() => {
     const m = new Map()
     state.questions.forEach(q => m.set(`${q.exam}-${q.id}`, q))
@@ -4118,6 +4144,8 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
   const overallAccuracy = facts.accuracy
   const totalStudySec = facts._totalStudySec
   const examStats = facts._examStats
+  const excludedExams = getExcludedExams(state.earnedCertifications)
+  const activeExamStats = Object.fromEntries(Object.entries(examStats).filter(([exam]) => !excludedExams.has(exam)))
   const masteredCount = facts._masteredCount
   const glevel = facts._glevel
   const streak = facts.streak
@@ -4131,7 +4159,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
 
   // SRS 待複習（item 13）：到期的錯題，最逾期的排前面
   const reviewDue = entries
-    .filter(([, v]) => isDue(v))
+    .filter(([, v]) => isDue(v) && !excludedExams.has(v.exam))
     .map(([k, v]) => ({ item: rehydrate(k, v), over: overdueBy(v) }))
     .filter((x) => x.item)
     .sort((a, b) => b.over - a.over)
@@ -4174,6 +4202,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
       dailyStats: state.dailyStats,
+      earnedCertifications: state.earnedCertifications,
     }
     const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -4201,6 +4230,9 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
         dispatch({ type: 'RESTORE_STATS', statsHistory: merged.statsHistory })
         dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: merged.bookmarked })
         dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
+        if (data.earnedCertifications && typeof data.earnedCertifications === 'object') {
+          dispatch({ type: 'RESTORE_CERTIFICATIONS', earnedCertifications: { ...state.earnedCertifications, ...data.earnedCertifications } })
+        }
         // dailyStats 逐日取較大值，重複匯入不會翻倍
         const mergedDaily = { ...state.dailyStats }
         for (const [day, v] of Object.entries(data.dailyStats || {})) {
@@ -4237,20 +4269,11 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
           <input type="file" accept="application/json,.json" className="hidden" onChange={importProgress} />
         </label>
         <span className="text-xs text-gray-400 dark:text-gray-500">
-          匯出成 JSON 檔備份作答紀錄／書籤／複習標記；匯入時與現有進度合併（答對次數取較大值）。
+          匯出成 JSON 檔備份作答紀錄／書籤／複習標記／已取得證照；匯入時與現有進度合併。
         </span>
       </div>
     </div>
   )
-
-  if (totalAnswered === 0) {
-    return (
-      <div className="space-y-6">
-        <EmptyState message="尚無作答紀錄" icon={BarChart3} />
-        {dataManageCard}
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
@@ -4289,7 +4312,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
       </div>
 
       {/* 考試準備度 + 倒數配速（items 7、8） */}
-      <ReadinessCard examStats={examStats} bankIndex={bankIndex} examDates={state.examDates} dispatch={dispatch} />
+      <ReadinessCard examStats={activeExamStats} bankIndex={bankIndex} examDates={state.examDates} dispatch={dispatch} />
 
       {/* 學習趨勢（近 14 天） */}
       <div className="surface-card p-6">
@@ -4311,6 +4334,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
           { key: 'wrong', label: `錯題清單 (${wrongQuestions.length})`, icon: XCircle },
           { key: 'bookmark', label: `書籤 (${bookmarkedList.length})`, icon: Star },
           { key: 'review', label: `複習 (${reviewList.length})`, icon: Flag },
+          { key: 'certifications', label: `已取得證照 (${Object.values(state.earnedCertifications).filter(isCertificationEarned).length})`, icon: BadgeCheck },
         ].map(s => (
           <button
             key={s.key}
@@ -4476,6 +4500,14 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
             )}
           </div>
         )}
+
+        {activeSection === 'certifications' && (
+          <CertificationShelf
+            earnedCertifications={state.earnedCertifications}
+            bankIndex={bankIndex}
+            dispatch={dispatch}
+          />
+        )}
       </div>
 
       {/* 資料管理：進度備份／還原 */}
@@ -4483,6 +4515,48 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
 
       {/* 管理端用量（僅 ?admin） */}
       {isAdmin && <AdminUsage />}
+    </div>
+  )
+}
+
+function CertificationShelf({ earnedCertifications, bankIndex, dispatch }) {
+  const available = CERTIFICATIONS.filter(cert => cert.exams.some(exam => bankIndex?.exams?.[exam]))
+  const sorted = [...available].sort((a, b) => Number(isCertificationEarned(earnedCertifications[b.id])) - Number(isCertificationEarned(earnedCertifications[a.id])))
+  const earnedCount = sorted.filter(cert => isCertificationEarned(earnedCertifications[cert.id])).length
+
+  return (
+    <div>
+      <div className="flex items-start justify-between gap-3 mb-5 flex-wrap">
+        <div>
+          <h3 className="text-lg font-semibold flex items-center gap-2"><BadgeCheck size={19} className="text-orange-500" />已取得證照</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">標記後仍可手動練習，但今日學習計畫不會再推薦該證照的考科版本。</p>
+        </div>
+        <span className="px-3 py-1.5 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-bold">{earnedCount} / {sorted.length}</span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sorted.map(cert => {
+          const entry = earnedCertifications[cert.id]
+          const earned = isCertificationEarned(entry)
+          return (
+            <div key={cert.id} className={`relative rounded-2xl border p-4 transition-all ${earned ? 'border-orange-300 dark:border-orange-700 bg-gradient-to-b from-orange-50 to-white dark:from-orange-950/30 dark:to-gray-800 shadow-sm' : 'border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/40'}`}>
+              {earned && <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-green-100 dark:bg-green-900/40 px-2 py-1 text-[10px] font-bold text-green-700 dark:text-green-300"><CheckCircle size={11} /> 已取得</span>}
+              <div className="h-28 flex items-center justify-center mb-3">
+                <img src={`${BASE_URL}${cert.badge}`} alt={cert.name} className={`max-h-28 max-w-[150px] object-contain transition-all ${earned ? '' : 'grayscale opacity-45'}`} />
+              </div>
+              <div className="text-[10px] font-bold tracking-widest text-orange-500 mb-1">{cert.provider}</div>
+              <div className="text-sm font-bold text-gray-900 dark:text-gray-50 leading-snug min-h-10">{cert.name}</div>
+              <div className="text-[11px] text-gray-400 mt-1 mb-3">{cert.exams.filter(exam => bankIndex?.exams?.[exam]).join(' / ')}</div>
+              <button
+                onClick={() => dispatch({ type: 'TOGGLE_CERTIFICATION', certId: cert.id })}
+                className={`w-full py-2 rounded-xl text-xs font-semibold transition-colors ${earned ? 'border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-red-300 hover:text-red-500' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
+              >
+                {earned ? '取消已取得標記' : '標記為已取得'}
+              </button>
+              {earned && entry?.earnedAt && <div className="text-[10px] text-gray-400 text-center mt-2">標記日期：{new Date(entry.earnedAt).toLocaleDateString('zh-TW')}</div>}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

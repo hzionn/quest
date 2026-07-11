@@ -24,12 +24,13 @@ export async function upsertUser(DB, g) {
 
 // Read the full state for one user.
 export async function getState(DB, uid) {
-  const [progress, bookmarks, reviews, settings, daily] = await Promise.all([
+  const [progress, bookmarks, reviews, settings, certifications, daily] = await Promise.all([
     DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, ever_wrong, updated_at
                 FROM progress WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM bookmarks WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM reviews WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT dark_mode, lang, updated_at FROM settings WHERE user_id = ?`).bind(uid).first(),
+    DB.prepare(`SELECT cert_id, enabled, earned_at, updated_at FROM earned_certifications WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT device_id, day, answered, correct, seconds, updated_at
                 FROM daily_stats WHERE user_id = ?`).bind(uid).all(),
   ])
@@ -38,6 +39,7 @@ export async function getState(DB, uid) {
     bookmarks: bookmarks.results || [],
     reviews: reviews.results || [],
     settings: settings || null,
+    certifications: certifications.results || [],
     daily: daily.results || [],
   }
 }
@@ -125,6 +127,20 @@ export async function mergeState(DB, uid, delta) {
         ).bind(uid, b.qkey, b.enabled ? 1 : 0, b.updated_at ?? now)
       )
     }
+  }
+
+  for (const cert of delta.certifications || []) {
+    if (!cert || typeof cert.cert_id !== 'string' || !cert.cert_id || cert.cert_id.length > 64) continue
+    stmts.push(
+      DB.prepare(
+        `INSERT INTO earned_certifications (user_id, cert_id, enabled, earned_at, updated_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(user_id, cert_id) DO UPDATE SET
+           enabled    = CASE WHEN excluded.updated_at >= updated_at THEN excluded.enabled ELSE enabled END,
+           earned_at  = CASE WHEN excluded.updated_at >= updated_at THEN excluded.earned_at ELSE earned_at END,
+           updated_at = MAX(updated_at, excluded.updated_at)`
+      ).bind(uid, cert.cert_id, cert.enabled ? 1 : 0, cert.earned_at ?? null, cert.updated_at ?? now)
+    )
   }
 
   // Per-device daily counters: G-Counter merge — every field takes MAX, which

@@ -93,14 +93,22 @@ function remoteToMaps(state) {
       }
     }
   }
-  return { statsHistory, bookmarked: toMap(state.bookmarks), reviewMarked: toMap(state.reviews), dailyOwn, dailyOthers }
+  const earnedCertifications = {}
+  for (const cert of state.certifications || []) {
+    earnedCertifications[cert.cert_id] = {
+      enabled: !!cert.enabled,
+      earnedAt: cert.earned_at || null,
+      _updatedAt: cert.updated_at || 0,
+    }
+  }
+  return { statsHistory, bookmarked: toMap(state.bookmarks), reviewMarked: toMap(state.reviews), earnedCertifications, dailyOwn, dailyOthers }
 }
 
 // Build a delta payload from the app's current maps. With `dirty` (per-map
 // sets of qkeys) only those keys are sent — a much smaller payload than the
 // full maps, and un-toggled bookmarks/reviews go up as enabled:0 so removals
 // sync too (the server upserts enabled with last-write-wins).
-function mapsToDelta({ statsHistory, bookmarked, reviewMarked }, dirty = null) {
+function mapsToDelta({ statsHistory, bookmarked, reviewMarked, earnedCertifications }, dirty = null) {
   const now = Date.now()
   const stripped = stripQuestions(statsHistory)
   const statKeys = dirty ? [...dirty.stats].filter((k) => stripped[k]) : Object.keys(stripped)
@@ -116,7 +124,17 @@ function mapsToDelta({ statsHistory, bookmarked, reviewMarked }, dirty = null) {
   })
   const flags = (m, keys) =>
     (keys ? [...keys] : Object.keys(m || {})).map((k) => ({ qkey: k, enabled: m?.[k] ? 1 : 0, updated_at: now }))
-  return { progress, bookmarks: flags(bookmarked, dirty?.bookmarks), reviews: flags(reviewMarked, dirty?.reviews) }
+  const certKeys = dirty ? [...dirty.certifications] : Object.keys(earnedCertifications || {})
+  const certifications = certKeys.map((certId) => {
+    const cert = earnedCertifications?.[certId] || {}
+    return {
+      cert_id: certId,
+      enabled: cert.enabled ? 1 : 0,
+      earned_at: cert.earnedAt || null,
+      updated_at: cert._updatedAt || now,
+    }
+  })
+  return { progress, bookmarks: flags(bookmarked, dirty?.bookmarks), reviews: flags(reviewMarked, dirty?.reviews), certifications }
 }
 
 // This device's daily counters as server rows (G-Counter contribution).
@@ -183,7 +201,7 @@ export async function pushMaps(maps, dirty = null) {
 // Mirrors the server semantics: correctCount=max, everWrong=OR, rest LWW.
 export function mergeMaps(local, remote) {
   if (!remote) return local
-  const out = { statsHistory: {}, bookmarked: { ...local.bookmarked }, reviewMarked: { ...local.reviewMarked } }
+  const out = { statsHistory: {}, bookmarked: { ...local.bookmarked }, reviewMarked: { ...local.reviewMarked }, earnedCertifications: { ...local.earnedCertifications } }
   const keys = new Set([...Object.keys(local.statsHistory || {}), ...Object.keys(remote.statsHistory || {})])
   for (const k of keys) {
     const a = local.statsHistory?.[k]
@@ -204,5 +222,9 @@ export function mergeMaps(local, remote) {
   // bookmarks/reviews: union on load (server is authoritative via LWW on push)
   for (const k of Object.keys(remote.bookmarked || {})) out.bookmarked[k] = true
   for (const k of Object.keys(remote.reviewMarked || {})) out.reviewMarked[k] = true
+  for (const [certId, remoteCert] of Object.entries(remote.earnedCertifications || {})) {
+    const localCert = out.earnedCertifications[certId]
+    if (!localCert || (remoteCert._updatedAt || 0) >= (localCert._updatedAt || 0)) out.earnedCertifications[certId] = remoteCert
+  }
   return out
 }

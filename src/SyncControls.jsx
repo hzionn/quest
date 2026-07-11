@@ -164,13 +164,14 @@ export function useGoogleSync(state, dispatch, user, setUser) {
   // keys dirtied mid-flight survive for the next push.
   const prevMapsRef = useRef(null)
   const mapsRef = useRef(null)
-  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set(), daily: new Set() })
+  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set(), certifications: new Set(), daily: new Set() })
   const lastOthersJsonRef = useRef('')
 
   const clearDirty = () => {
     dirtyRef.current.stats.clear()
     dirtyRef.current.bookmarks.clear()
     dirtyRef.current.reviews.clear()
+    dirtyRef.current.certifications.clear()
     dirtyRef.current.daily.clear()
   }
 
@@ -189,15 +190,17 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       stats: new Set(d.stats),
       bookmarks: new Set(d.bookmarks),
       reviews: new Set(d.reviews),
+      certifications: new Set(d.certifications),
       daily: new Set(d.daily),
     }
-    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size + snap.daily.size
+    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size + snap.certifications.size + snap.daily.size
     if (!total || !mapsRef.current) return
     pushMaps(mapsRef.current, snap)
       .then((remote) => {
         snap.stats.forEach((k) => d.stats.delete(k))
         snap.bookmarks.forEach((k) => d.bookmarks.delete(k))
         snap.reviews.forEach((k) => d.reviews.delete(k))
+        snap.certifications.forEach((k) => d.certifications.delete(k))
         snap.daily.forEach((k) => d.daily.delete(k))
         lastPushAtRef.current = Date.now()
         if (remote) applyDailyOthers(remote.dailyOthers)
@@ -230,6 +233,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
           statsHistory: state.statsHistory,
           bookmarked: state.bookmarked,
           reviewMarked: state.reviewMarked,
+          earnedCertifications: state.earnedCertifications,
         }
         const merged = mergeMaps(local, remote)
         // Daily counters: reconcile OWN device per-day (field-wise max with
@@ -248,6 +252,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
         dispatch({ type: 'RESTORE_STATS', statsHistory: merged.statsHistory })
         dispatch({ type: 'RESTORE_BOOKMARKS', bookmarked: merged.bookmarked })
         dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
+        dispatch({ type: 'RESTORE_CERTIFICATIONS', earnedCertifications: merged.earnedCertifications })
         dispatch({ type: 'RESTORE_DAILY', dailyStats: ownDaily })
         applyDailyOthers(remote.dailyOthers)
         const mergedWithDaily = { ...merged, dailyStats: ownDaily }
@@ -273,6 +278,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       statsHistory: state.statsHistory,
       bookmarked: state.bookmarked,
       reviewMarked: state.reviewMarked,
+      earnedCertifications: state.earnedCertifications,
       dailyStats: state.dailyStats,
     }
     mapsRef.current = cur
@@ -282,16 +288,17 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       diffKeys(prev.statsHistory, cur.statsHistory).forEach((k) => d.stats.add(k))
       diffKeys(prev.bookmarked, cur.bookmarked).forEach((k) => d.bookmarks.add(k))
       diffKeys(prev.reviewMarked, cur.reviewMarked).forEach((k) => d.reviews.add(k))
+      diffKeys(prev.earnedCertifications, cur.earnedCertifications).forEach((k) => d.certifications.add(k))
       diffKeys(prev.dailyStats, cur.dailyStats).forEach((k) => d.daily.add(k))
     }
     prevMapsRef.current = cur
     const d = dirtyRef.current
-    if (!(d.stats.size + d.bookmarks.size + d.reviews.size + d.daily.size)) return
+    if (!(d.stats.size + d.bookmarks.size + d.reviews.size + d.certifications.size + d.daily.size)) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(pushDirty, 3000)
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.dailyStats, user])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.earnedCertifications, state.dailyStats, user])
 
   // 4. Best-effort flush on page hide.
   useEffect(() => {
