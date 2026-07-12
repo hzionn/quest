@@ -2935,7 +2935,9 @@ function ExplanationView({ question }) {
   if (!q.explanations) return null
 
   const selectedText = q.explanations[selectedKey]
-  const memoryAnchor = createMemoryAnchor(q, zhExplanation(selectedText))
+  // 記憶錨點固定萃取「正確答案」的解析核心句，不隨瀏覽的選項切換
+  const correctExpKey = correctKeys.find(k => q.explanations?.[k])
+  const memoryAnchor = correctExpKey ? createMemoryAnchor(q, zhExplanation(q.explanations[correctExpKey])) : null
 
   if (q.type === 'single' || q.type === 'multiple') {
     return (
