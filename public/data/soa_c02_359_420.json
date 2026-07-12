@@ -250,19 +250,19 @@
   "exam": "SOA-C02",
   "id": 372,
   "type": "single",
-  "question": "一位 SysOps 管理员需要在 AWS CloudFormation 模板中将一个 Amazon S3 bucket 创建为资源。该 bucket 的名称必须随机生成，并且必须加密。模板中的其他资源将引用该 bucket。SysOps 管理员应使用哪种 CloudFormation 资源定义来满足这些要求？（题目包含图表）",
+  "question": "一位 SysOps 管理员需要在 AWS CloudFormation 模板中将一个 Amazon S3 bucket 创建为资源。该 bucket 的名称必须随机生成，并且必须加密。模板中的其他资源将引用该 bucket。SysOps 管理员应使用哪种 CloudFormation 资源定义来满足这些要求？",
   "options": {
-   "A": "Option A (CloudFormation template snippet — see PDF image)",
-   "B": "Option B (CloudFormation template snippet — see PDF image)",
-   "C": "Option C (CloudFormation template snippet — see PDF image)",
-   "D": "Option D (CloudFormation template snippet — see PDF image)"
+   "A": "Bucket:\n  Type: AWS::S3::Bucket\n  Properties:\n    BucketName: \"DOC-EXAMPLE-BUCKET\"\n    BucketEncryption:\n      ServerSideEncryptionConfiguration:\n        - ServerSideEncryptionByDefault:\n            SSEAlgorithm: AES256",
+   "B": "Bucket:\n  Type: AWS::S3::Bucket\n  Properties:\n    BucketEncryption:\n      ServerSideEncryptionConfiguration:\n        - ServerSideEncryptionByDefault:\n            SSEAlgorithm: AES256",
+   "C": "Bucket:\n  Type: AWS::S3::Bucket\n  Properties:\n    BucketName: \"DOC-EXAMPLE-BUCKET\"",
+   "D": "Bucket:\n  Type: AWS::S3::Bucket\n  Properties:"
   },
   "answer": "B",
   "explanations": {
-   "A": "错误。此选项未能随机生成桶名称，或未正确配置加密属性，因此不满足要求。",
-   "B": "正确。此选项符合题目要求：不显式指定桶名称从而让 CloudFormation 随机生成名称，并正确配置了加密属性，同时允许其他资源引用该桶。",
-   "C": "错误。此选项缺少加密配置，或未正确处理资源之间的引用关系，因此不满足要求。",
-   "D": "错误。此选项未正确实现桶名称的随机生成，或加密配置不完整，因此不满足要求。"
+   "A": "错误。此选项显式指定了 BucketName（\"DOC-EXAMPLE-BUCKET\"），桶名称是固定值而非随机生成，不满足「名称必须随机生成」的要求（虽然已正确配置加密）。",
+   "B": "正确。此选项没有指定 BucketName，CloudFormation 会为该桶自动生成随机且唯一的物理名称；同时正确配置了 BucketEncryption（SSEAlgorithm: AES256），满足随机命名与加密两项要求。",
+   "C": "错误。此选项同样显式指定了固定的 BucketName，不满足随机生成的要求；且完全没有配置 BucketEncryption，加密要求也不满足。",
+   "D": "错误。此选项虽未指定 BucketName（能满足随机命名），但 Properties 中完全没有配置 BucketEncryption，不满足「必须加密」的要求。"
   }
  },
  {
