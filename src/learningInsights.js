@@ -7,36 +7,56 @@ const SERVICE_RE = /\b(?:AWS|Amazon|Aurora|S3|EC2|Lambda|IAM|CloudWatch|CloudFro
 // old first-sentence anchor degenerated to just "正确。".
 const VERDICT_RE = /^(?:[A-E][.、:：]?\s*)?(?:[✓✗√×]\s*)?(?:此[选選]项|[该該][选選]项|[这這][个個][选選]项)?(?:是)?(?:正[确確]|[错錯][误誤]|不正[确確]|[对對]|[错錯])(?:的)?(?:答案|[选選]项|做法)?\s*[。．.:：，,！!]?\s*/
 
-// Reasoning connectives: a sentence explaining WHY is worth anchoring.
-const REASON_RE = /因[为為]|由于|由於|[通透][过過]|可以|能[够夠]|用[于於]|[适適]合|提供|支[持援]|[实實][现現]|[确確]保|避免|[满滿]足|降低|减少|減少|提高|自[动動]|无需|無需|最佳|首[选選]|[专專][为為]|[设設][计計]/
+// Outcome words: a clause stating the EFFECT ("解决连通性问题") is the judgment
+// worth remembering.
+const BENEFIT_RE = /解[决決]|[满滿]足|加[速快]|[扩擴]展|提[高升]|降低|[减減]少|避免|[确確]保|保持|[实實][现現]|[优優]化|支[持援]|无需|無需|不需|安全|成本|效能|性能|可用性|延[迟遲]|容[错錯]|高可用|最佳/
+// Leading connectives to trim off the benefit clause（既/又/即可/從而…）.
+const CONNECTIVE_RE = /^(?:既|又|且|并且|並且|同[时時]|即可|[从從]而|因此|所以|[这這][样樣]|可以|能[够夠]|[进進]而)/
 
-// Distil a one-liner worth remembering out of an explanation. Returns null when
-// there is nothing substantive to anchor (short/boilerplate explanations) so
-// the UI hides the box instead of showing junk.
+// Distil a SHORT "action → effect" takeaway out of an explanation — a judgment
+// plus keywords, NOT a copy of the explanation shown right below it. Returns
+// null whenever the anchor wouldn't be meaningfully shorter than the
+// explanation itself (short explanations are their own anchor).
 export function createMemoryAnchor(question, explanation) {
   const raw = String(explanation || '').replace(/\s+/g, ' ').trim()
   if (!raw) return null
   const text = raw.replace(VERDICT_RE, '').trim()
-  // A short explanation IS its own anchor — a highlight box would just repeat it.
-  if (text.length < 20) return null
+  // Short explanations read in one glance — an anchor box would just repeat them.
+  if (text.length < 50) return null
 
-  const sentences = text.split(/(?<=[。！？.!?])\s*/).map(s => s.trim()).filter(s => s.length >= 8)
-  if (!sentences.length) return null
+  // Clause polish: balanced parentheticals go, then any unbalanced tail/head
+  // left by clause-splitting, leading emoji/tick symbols, and a trailing
+  // mid-text verdict（「X 正确」的格式）.
+  const polish = (c) => c
+    .replace(/[（(][^）)]*[）)]/g, '')
+    .replace(/[（(][^）)]*$/, '')
+    .replace(/^[^（(]*[）)]/, '')
+    .replace(/^[✅❌✔️✳️☑️✓✗√×•·\-\s]+/, '')
+    .replace(/(?:正[确確]|[错錯][误誤])[:：]?$/, '')
+    .trim()
 
-  // Score: service mention +2, reasoning connective +2, comfortable length +1.
-  // Earlier sentences win ties (they usually state the core point).
-  let best = sentences[0], bestScore = -1
-  for (const s of sentences) {
-    let score = 0
-    if (SERVICE_RE.test(s)) score += 2
-    SERVICE_RE.lastIndex = 0
-    if (REASON_RE.test(s)) score += 2
-    if (s.length >= 15 && s.length <= 120) score += 1
-    if (score > bestScore) { bestScore = score; best = s }
+  // Colons separate clauses too（「服務：說明」的格式很常見）.
+  const clauses = text.split(/[，、；。！？:：,;.!?]\s*/).map(c => polish(c)).filter(c => c.length >= 4)
+  if (!clauses.length) return null
+
+  // Action = the first clause naming a service (else the first clause).
+  let actionIdx = clauses.findIndex(c => { const hit = SERVICE_RE.test(c); SERVICE_RE.lastIndex = 0; return hit })
+  if (actionIdx < 0) actionIdx = 0
+  let action = clauses[actionIdx]
+  if (action.length > 40) action = `${action.slice(0, 38)}…`
+
+  // Effect = the first later clause stating an outcome, trimmed of connectives.
+  let benefit = ''
+  for (const c of clauses.slice(actionIdx + 1)) {
+    if (!BENEFIT_RE.test(c)) continue
+    benefit = c.replace(CONNECTIVE_RE, '').trim()
+    if (benefit.length > 24) benefit = `${benefit.slice(0, 22)}…`
+    break
   }
 
-  const anchor = best.length > 150 ? `${best.slice(0, 147)}…` : best
-  if (anchor.length < 10) return null
+  const anchor = benefit ? `${action} → ${benefit}` : action
+  // Only show when it genuinely compresses: never ≥70% of the explanation.
+  if (anchor.length < 10 || anchor.length >= text.length * 0.7) return null
   const services = [...new Set((raw.match(SERVICE_RE) || []).map(s => s.replace(/\s+/g, ' ')))].slice(0, 5)
   return { anchor, services, exam: question?.exam || '' }
 }
