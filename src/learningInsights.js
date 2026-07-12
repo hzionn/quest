@@ -9,7 +9,7 @@ const VERDICT_RE = /^(?:[A-E][.、:：]?\s*)?(?:[✓✗√×]\s*)?(?:此[选選]
 
 // Outcome words: a clause stating the EFFECT ("解决连通性问题") is the judgment
 // worth remembering.
-const BENEFIT_RE = /解[决決]|[满滿]足|加[速快]|[扩擴]展|提[高升]|降低|[减減]少|避免|[确確]保|保持|[实實][现現]|[优優]化|支[持援]|无需|無需|不需|安全|成本|效能|性能|可用性|延[迟遲]|容[错錯]|高可用|最佳/
+const BENEFIT_RE = /解[决決]|[满滿]足|加[速快]|[扩擴]展|提[高升]|降低|[减減]少|避免|[确確]保|保持|[实實][现現]|[优優]化|支[持援]|无需|無需|不需|安全(?![组組])|成本|效能|性能|可用性|延[迟遲]|容[错錯]|高可用|最佳|定位|排查|[诊診][断斷]|判[断斷]/
 // Leading connectives to trim off the benefit clause（既/又/即可/從而…）.
 const CONNECTIVE_RE = /^(?:既|又|且|并且|並且|同[时時]|即可|[从從]而|因此|所以|[这這][样樣]|可以|能[够夠]|[进進]而)/
 
@@ -45,17 +45,20 @@ export function createMemoryAnchor(question, explanation) {
   let action = clauses[actionIdx]
   if (action.length > 40) action = `${action.slice(0, 38)}…`
 
-  // Effect = the first later clause stating an outcome, trimmed of connectives.
+  // Effect = the SHORTEST later clause stating an outcome (short effects are
+  // punchier anchors), trimmed of connectives.
   let benefit = ''
   for (const c of clauses.slice(actionIdx + 1)) {
     if (!BENEFIT_RE.test(c)) continue
-    benefit = c.replace(CONNECTIVE_RE, '').trim()
-    if (benefit.length > 24) benefit = `${benefit.slice(0, 22)}…`
-    break
+    const cand = c.replace(CONNECTIVE_RE, '').trim()
+    if (!benefit || cand.length < benefit.length) benefit = cand
   }
+  if (benefit.length > 24) benefit = `${benefit.slice(0, 22)}…`
 
-  const anchor = benefit ? `${action} → ${benefit}` : action
-  // Only show when it genuinely compresses: never ≥70% of the explanation.
+  // Prefer action → effect; when that isn't a real compression of a compact
+  // explanation, fall back to the action alone before giving up.
+  let anchor = benefit ? `${action} → ${benefit}` : action
+  if (anchor.length >= text.length * 0.7) anchor = action
   if (anchor.length < 10 || anchor.length >= text.length * 0.7) return null
   const services = [...new Set((raw.match(SERVICE_RE) || []).map(s => s.replace(/\s+/g, ' ')))].slice(0, 5)
   return { anchor, services, exam: question?.exam || '' }
