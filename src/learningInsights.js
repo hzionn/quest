@@ -31,7 +31,7 @@ export function createMemoryAnchor(question, explanation) {
     .replace(/[（(][^）)]*[）)]/g, '')
     .replace(/[（(][^）)]*$/, '')
     .replace(/^[^（(]*[）)]/, '')
-    .replace(/^[✅❌✔️✳️☑️✓✗√×•·\-\s]+/, '')
+    .replace(/^(?:[\u2705\u274C\u2714\u2733\u2611\u2713\u2717\u221A\u00D7\u2022\u00B7\-\s]|\uFE0F)+/, '')
     .replace(/(?:正[确確]|[错錯][误誤])[:：]?$/, '')
     .trim()
 
