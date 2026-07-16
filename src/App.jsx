@@ -448,6 +448,9 @@ function reducer(state, action) {
       const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
       // SRS 階段採連續答對：答對前進一階，答錯回到第一階段。
       const correctCount = correct ? prevCount + 1 : 0
+      // 終身總答對次數：只增不減，供 XP／等級計算使用，不受 SRS 階段重置影響
+      // （避免答錯導致 correctCount 歸零時，等級跟著現場倒退）。
+      const totalCorrect = (prevEntry?.totalCorrect ?? prevCount) + (correct ? 1 : 0)
       // 一旦答錯過就視為錯題；連續答對 MASTERY_THRESHOLD 次後才算學會並移出清單
       const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !correct
       const wasMastered = prevEntry && (prevEntry.everWrong ?? !prevEntry.correct) && (prevEntry.correctCount ?? 0) >= MASTERY_THRESHOLD
@@ -464,7 +467,7 @@ function reducer(state, action) {
         practiceResults: { ...state.practiceResults, [qKey]: correct },
         statsHistory: {
           ...state.statsHistory,
-          [qKey]: { correct, correctCount, everWrong, exam: q.exam, type: q.type, id: q.id, question: q, _updatedAt: Date.now() }
+          [qKey]: { correct, correctCount, totalCorrect, everWrong, exam: q.exam, type: q.type, id: q.id, question: q, _updatedAt: Date.now() }
         },
         dailyStats: bumpDaily(state.dailyStats, 1, correct ? 1 : 0),
         combo,
@@ -585,8 +588,10 @@ function reducer(state, action) {
         const prevEntry = state.statsHistory[d.qKey]
         const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
         const correctCount = d.correct ? prevCount + 1 : 0
+        // 終身總答對次數：只增不減，供 XP／等級計算使用（見 SUBMIT_ANSWER 註解）。
+        const totalCorrect = (prevEntry?.totalCorrect ?? prevCount) + (d.correct ? 1 : 0)
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
-        newHistory[d.qKey] = { correct: d.correct, correctCount, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question, _updatedAt: submittedAt }
+        newHistory[d.qKey] = { correct: d.correct, correctCount, totalCorrect, everWrong, exam: d.question.exam, type: d.question.type, id: d.question.id, question: d.question, _updatedAt: submittedAt }
       })
       const examTotal = state.examQuestionIds.length
       const examPct = examTotal > 0 ? Math.round((totalCorrect / examTotal) * 100) : 0
@@ -649,7 +654,7 @@ function reducer(state, action) {
         if (!everWrong) return
         const count = v.correctCount ?? v.correctStreak ?? 0
         if (count >= MASTERY_THRESHOLD) return
-        newHistory[k] = { ...v, correctCount: MASTERY_THRESHOLD }
+        newHistory[k] = { ...v, correctCount: MASTERY_THRESHOLD, totalCorrect: Math.max(v.totalCorrect ?? count, MASTERY_THRESHOLD) }
       })
       return { ...state, statsHistory: newHistory }
     }

@@ -11,7 +11,9 @@ import {
   Download, Sparkles, ClipboardCheck,
 } from 'lucide-react'
 
-export const MASTERY = 3
+// Keep in sync with MASTERY_THRESHOLD in App.jsx (both describe "how many
+// corrects counts as truly learned").
+export const MASTERY = 5
 export const XP_PER_CORRECT = 10
 export const XP_PER_WRONG = 3
 export const XP_MASTER_BONUS = 25
@@ -19,7 +21,12 @@ export const XP_MASTER_BONUS = 25
 export function computeXP(statsHistory) {
   let xp = 0
   for (const v of Object.values(statsHistory || {})) {
-    const cc = v.correctCount ?? v.correctStreak ?? 0
+    // totalCorrect is a lifetime, never-decreasing counter — prefer it over
+    // correctCount, which resets to 0 on a wrong answer to drive the SRS
+    // review stage (src/srs.js) and stays intentionally reset-prone.
+    // Falling back to correctCount keeps XP correct for entries recorded
+    // before totalCorrect existed.
+    const cc = v.totalCorrect ?? v.correctCount ?? v.correctStreak ?? 0
     const ew = v.everWrong ?? !v.correct
     xp += cc * XP_PER_CORRECT
     if (ew) xp += XP_PER_WRONG
