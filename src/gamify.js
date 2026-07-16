@@ -11,9 +11,13 @@ import {
   Download, Sparkles, ClipboardCheck,
 } from 'lucide-react'
 
-// Keep in sync with MASTERY_THRESHOLD in App.jsx (both describe "how many
-// corrects counts as truly learned").
-export const MASTERY = 5
+// Deliberately independent of MASTERY_THRESHOLD in App.jsx (which gates when
+// a question leaves the wrong-question list) — this only gates the one-time
+// XP mastery bonus. Raising it retroactively REVOKES already-earned XP from
+// every entry sitting between the old and new threshold, so it must only
+// ever change with an explicit, disclosed one-time migration — never as an
+// incidental "keep constants in sync" tweak.
+export const MASTERY = 3
 export const XP_PER_CORRECT = 10
 export const XP_PER_WRONG = 3
 export const XP_MASTER_BONUS = 25

@@ -31,3 +31,12 @@ test('a legacy entry with no totalCorrect falls back to correctCount', () => {
   const xp = computeXP({ q: { correctCount: 6, everWrong: true } })
   assert.equal(xp, 6 * XP_PER_CORRECT + XP_PER_WRONG + XP_MASTER_BONUS)
 })
+
+test('MASTERY stays low enough that it never retroactively revokes already-earned bonus XP', () => {
+  // A prior change bumped MASTERY from 3 to 5 "to match MASTERY_THRESHOLD in
+  // App.jsx" — but every already-recorded entry sitting at totalCorrect 3 or 4
+  // instantly lost its +25 bonus, causing a real, persistent level drop (not
+  // the transient one this file's other tests guard). MASTERY must only ever
+  // move via an explicit, disclosed migration — this pins the safe value.
+  assert.equal(MASTERY, 3)
+})
