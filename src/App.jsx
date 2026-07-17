@@ -764,7 +764,7 @@ const typeLabels = { single: '單選題', multiple: '多選題', matching: '配�
 const EXAM_DISPLAY_NAMES = { 'PCA': 'GCP-PCA' }
 const displayExam = code => EXAM_DISPLAY_NAMES[code] || code
 // 錯題清單：需連續答對這麼多次才算「學會」並移出清單（答錯重置）
-const MASTERY_THRESHOLD = 5
+const MASTERY_THRESHOLD = 3
 
 // ── Helper: Get display question based on language ──
 function getDisplayQuestion(q, lang, enMap) {
