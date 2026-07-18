@@ -798,12 +798,28 @@
   {
     "exam": "SOA-C02",
     "id": 340,
-    "type": "single",
-    "question": "模拟题 - 说明。如果您的 AWS Management Console 浏览器未显示已登录到某个 AWS 账户，请关闭浏览器并通过 VM 桌面上的 AWS Management Console 快捷方式重新启动控制台。如果您的环境中复制粘贴功能无法使用，请参阅 VM 桌面上的说明文件，并使用 Ctrl+C、Ctrl+V 或 Command-C、Command-V。请创建一个解决方案，使用 Amazon Data Lifecycle Manager 自动执行 Amazon EBS 卷快照。1. 所有资源均使用 us-east-2 区域。2. 除下文另有说明外，使用默认配置设置。3. 为名为 OriginalVolume 的现有 EBS 卷创建一个快照。4. 从该快照创建一个 1 GB 的 EBS 卷，并使用默认加密。5. 为新 EBS 卷添加标签 Snapshot: true。6. 确保对所有带有 Snapshot:true 标签的卷每 6 小时创建一次快照并保留 90 天。不要使用 cron 表达式。确保这是唯一存在的生命周期策略。使用名为 DLMRole 的 IAM 角色。重要提示：单击“Next”按钮以完成本实验并继续下一个实验。一旦单击“Next”按钮，您将无法返回本实验。",
-    "options": {},
-    "answer": "",
-    "explanations": {},
-    "anchor": "DLM生命周期策略 → 按标签Snapshot:true每6小时快照留90天"
+    "type": "ordering",
+    "question": "模擬實作題。請使用 Amazon Data Lifecycle Manager (DLM) 建立一個自動化 Amazon EBS 卷快照的解決方案。要求：所有資源使用 us-east-2 區域；除另有說明外使用預設配置；為名為 OriginalVolume 的現有 EBS 卷建立快照；從該快照建立一個 1 GB 且使用預設加密的新 EBS 卷；為新卷加上標籤 Snapshot: true；確保所有帶 Snapshot:true 標籤的卷每 6 小時建立一次快照並保留 90 天（不要使用 cron 運算式，且這是唯一的生命週期策略），使用 IAM 角色 DLMRole。\n\n請從以下步驟中選擇並按正確順序排列，以完成此任務。每個步驟選擇一次或完全不選。",
+    "explanations": {
+      "_full": "此為 Amazon Data Lifecycle Manager (DLM) 自動化 EBS 快照的實作題，正確順序為：\n1. 先為現有的 OriginalVolume 建立快照——後續的新卷要從這個快照還原，所以必須先有快照。\n2. 從該快照建立 1 GB 的新 EBS 卷並啟用預設加密（EBS 加密使用帳戶預設 KMS 金鑰）。\n3. 為新卷加上標籤 Snapshot: true——DLM 策略是靠此標籤挑選目標卷，因此必須先打標籤。\n4. 在 DLM 建立 EBS 快照生命週期策略，目標資源標籤設為 Snapshot: true，並指派 IAM 角色 DLMRole。\n5. 將排程設為每 6 小時一次（用「間隔排程 interval」而非 cron 運算式，這是題目明確要求）、保留 90 天，並確保這是唯一的策略後啟用。\n\n干擾項：以 cron 運算式設定排程違反「不要使用 cron」的要求；直接在單一卷上手動排程則無法對「所有帶 Snapshot:true 標籤的卷」自動化，且不符合以 DLM 標籤式管理的目標。"
+    },
+    "anchor": "DLM生命周期策略 → 按标签Snapshot:true每6小时快照留90天",
+    "available_steps": [
+      "為新建立的 EBS 卷加上標籤 Snapshot: true。",
+      "使用 cron 運算式將快照計畫設定為每 6 小時執行一次。",
+      "在 us-east-2 區域，為現有 EBS 卷 OriginalVolume 建立一個快照。",
+      "在 Amazon Data Lifecycle Manager 中建立一個 EBS 快照生命週期策略，目標資源標籤設為 Snapshot: true，並指派 IAM 角色 DLMRole。",
+      "直接在 OriginalVolume 卷上手動設定定期快照，而不使用生命週期策略。",
+      "從該快照建立一個 1 GB 的新 EBS 卷，並啟用預設加密。",
+      "將該生命週期策略的計畫設為每 6 小時（間隔排程，非 cron）執行一次、保留 90 天，然後啟用策略。"
+    ],
+    "ordered_steps": [
+      "在 us-east-2 區域，為現有 EBS 卷 OriginalVolume 建立一個快照。",
+      "從該快照建立一個 1 GB 的新 EBS 卷，並啟用預設加密。",
+      "為新建立的 EBS 卷加上標籤 Snapshot: true。",
+      "在 Amazon Data Lifecycle Manager 中建立一個 EBS 快照生命週期策略，目標資源標籤設為 Snapshot: true，並指派 IAM 角色 DLMRole。",
+      "將該生命週期策略的計畫設為每 6 小時（間隔排程，非 cron）執行一次、保留 90 天，然後啟用策略。"
+    ]
   },
   {
     "exam": "SOA-C02",
