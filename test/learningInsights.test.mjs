@@ -19,6 +19,13 @@ test('memory anchor strips the leading verdict word', () => {
   assert.match(result.anchor, /Aurora/)
 })
 
+test('a curated question.anchor wins over the clause heuristic', () => {
+  const q = { exam: 'SOA-C02', anchor: 'GenerateSecretString + RotationSchedule → CloudFormation 自动生成并每 90 天轮换密码' }
+  const result = createMemoryAnchor(q, '正确。AWS::SecretsManager::Secret 配合 GenerateSecretString 和 RotationSchedule，可让 CloudFormation 生成密码、存入 Secrets Manager 并每 90 天自动轮换，是最安全的方法。')
+  assert.equal(result.anchor, q.anchor)
+  assert.ok(result.services.includes('Secrets Manager'))
+})
+
 test('memory anchor hides for boilerplate or short explanations', () => {
   assert.equal(createMemoryAnchor({ exam: 'SAA-C03' }, '正确。'), null)
   assert.equal(createMemoryAnchor({ exam: 'SAA-C03' }, '错误。此选项不正确。'), null)

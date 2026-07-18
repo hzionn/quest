@@ -16,7 +16,8 @@
       "B": "正确。CloudWatch 警报可以直接向 SNS 发布通知并触发内置的 EC2 重启操作，无需编写自定义代码。",
       "C": "Systems Manager Incident Manager 用于事件响应，不是自动重启实例的最简单方式。",
       "D": "需要编写并维护自定义 Systems Manager runbook，增加了运维负担。"
-    }
+    },
+    "anchor": "CloudWatch alarm 触发 SNS 通知 + 内置 EC2 Reboot 动作"
   },
   {
     "exam": "SOA-C03",
@@ -35,7 +36,8 @@
       "B": "AAAA 记录映射到 IPv6 地址；同样不能直接用于 ALB 端点。",
       "C": "正确。Route 53 别名 (alias) 记录可以将根域 (zone apex) 或任意记录映射到 ALB 等 AWS 资源，无需额外费用，并自动解析到 ALB 的 IP 地址。",
       "D": "根据 DNS 标准，CNAME 不能用于根域 (example.com)；别名记录是 AWS 提供的解决方案。"
-    }
+    },
+    "anchor": "Route 53 Alias 记录 → 免费映射 ALB DNS 名称"
   },
   {
     "exam": "SOA-C03",
@@ -54,7 +56,8 @@
       "B": "HealthCheckTimeoutSeconds 控制等待健康检查响应的时间，不影响流量的渐进分配。",
       "C": "在健康检查失败时重启实例并不能产生渐进升温的效果；weighted_random 与预热无关。",
       "D": "生命周期钩子可以让实例停留在 Pending:Wait 状态，但一旦离开 Pending 仍会立即获得完整份额的流量。"
-    }
+    },
+    "anchor": "目标组 slow_start.duration_seconds → 渐进引流"
   },
   {
     "exam": "SOA-C03",
@@ -73,7 +76,8 @@
       "B": "Aurora 的 PITR 总是恢复到一个 NEW 集群；不能就地覆盖现有集群。",
       "C": "正确。对于 Aurora PostgreSQL，时间点恢复会创建一个新的 DB 集群并恢复到指定时间点；应用程序需要切换到新的端点。",
       "D": "Restore from S3 用于从 S3 中的备份迁移数据，不适用于 Aurora 的时间点恢复。"
-    }
+    },
+    "anchor": "Aurora PostgreSQL PITR → 建新集群，需切换端点"
   },
   {
     "exam": "SOA-C03",
@@ -92,7 +96,8 @@
       "B": "SQS 本身不直接发送邮件；邮件通知应使用 SNS。",
       "C": "AWS Health Dashboard 不能根据自定义阈值触发告警，且 SQS 不用于邮件通知。",
       "D": "同样问题：AWS Health Dashboard 不提供基于阈值的 Trusted Advisor 指标通知能力。"
-    }
+    },
+    "anchor": "Trusted Advisor 配额指标 CloudWatch alarm → SNS 邮件"
   },
   {
     "exam": "SOA-C03",
@@ -111,7 +116,8 @@
       "B": "DNS resolution 和 DNS hostnames 必须是启用的，AWS 服务端点才能被解析。",
       "C": "同样存在 DNS 关闭的问题；从私有子网仅放开 DNS 端口出站并不能提供到 CloudWatch 或 S3 的连接。",
       "D": "正确。canary 需要开启 DNS、CloudWatch 的 interface 端点用于发布结果，以及 S3 的 gateway 端点用于写入结果文件。"
-    }
+    },
+    "anchor": "私有VPC canary → 启用DNS+CloudWatch/S3双VPC端点"
   },
   {
     "exam": "SOA-C03",
@@ -135,7 +141,8 @@
       "C": "正确。NAT gateway 让位于私有子网的 Lambda 可以访问公共的 SQS 端点。",
       "D": "正确。SQS 的 interface VPC 端点 (PrivateLink) 让 Lambda 可以在不经过互联网的情况下私有地访问 SQS。",
       "E": "SQS 只支持 interface (PrivateLink) 端点，没有 gateway 端点类型。"
-    }
+    },
+    "anchor": "Lambda访问SQS → NAT gateway 或 SQS interface端点"
   },
   {
     "exam": "SOA-C03",
@@ -154,7 +161,8 @@
       "B": "正确。AWS Config 支持基于 SSM Automation 文档 (如 AWS-DisablePublicAccessForSecurityGroup) 的自动修复，无需自定义代码。",
       "C": "需要编写并维护自定义 Lambda 函数，比 Config 自动修复运维负担更大。",
       "D": "每小时轮询会引入不必要的延迟和定制代码；内置修复是事件驱动且更简洁。"
-    }
+    },
+    "anchor": "AWS Config 自动修复 → SSM document 关闭SG公开SSH"
   },
   {
     "exam": "SOA-C03",
@@ -178,7 +186,8 @@
       "C": "正确。ALB 访问日志包含 HTTP 请求详情，包括响应状态码。",
       "D": "正确。CloudFront 访问日志包含返回给查看者的 HTTP 状态码。",
       "E": "RDS 日志是数据库引擎日志 (查询、错误)，不包含 Web HTTP 状态码。"
-    }
+    },
+    "anchor": "HTTP状态码 → ALB访问日志 + CloudFront访问日志"
   },
   {
     "exam": "SOA-C03",
@@ -197,7 +206,8 @@
       "B": "正确。Detailed monitoring 每 1 分钟发布一次指标，可以建立 2 分钟阈值的警报，再使用内置的 EC2 重启操作即可。",
       "C": "每 2 分钟调度的 Lambda 并不会检测 CPU 状态，需要额外逻辑。",
       "D": "EC2 健康检查检测的是实例可达性/系统状态，不是 CPU 利用率。"
-    }
+    },
+    "anchor": "Detailed monitoring(1分钟) → CPU alarm 2分钟后重启"
   },
   {
     "exam": "SOA-C03",
@@ -221,7 +231,8 @@
       "C": "AWS 托管策略是只读的，不能编辑也不能创建新版本。",
       "D": "正确。客户托管策略支持多版本、可编辑，并可附加到用户/组/角色上。",
       "E": "内联策略绑定于单一主体，且没有版本历史。"
-    }
+    },
+    "anchor": "IAM用户组 + customer managed policy → 可编辑多版本"
   },
   {
     "exam": "SOA-C03",
@@ -240,7 +251,8 @@
       "B": "提高最小实例数会过度预置，违反题目要求。",
       "C": "Predictive scaling 会提前启动实例，但仍受长启动时间影响。",
       "D": "正确。Auto Scaling warm pool 保留已预初始化的实例，可在极短时间内承接流量。"
-    }
+    },
+    "anchor": "Auto Scaling warm pool → 预初始化实例缩短扩容时间"
   },
   {
     "exam": "SOA-C03",
@@ -259,7 +271,8 @@
       "B": "一个子网不能跨多个可用区。",
       "C": "Elastic IP 是公有 IPv4 地址，不会增加私有 IP 容量。",
       "D": "正确。在 VPC 中新建一个不同 CIDR 块的子网即可提供额外的私有 IP 地址。"
-    }
+    },
+    "anchor": "私有子网IP不足 → 新建子网(现有CIDR不可改)"
   },
   {
     "exam": "SOA-C03",
@@ -278,7 +291,8 @@
       "B": "自定义事件应使用自定义事件总线而非默认事件总线，并且仅靠模式匹配也不能按类型/时间重放。",
       "C": "EventBridge Pipes 用于从 SQS/Kinesis 等源送入目标，本题不需要，且仍需在总线上配置归档。",
       "D": "CloudWatch Logs 用于日志，并非可重放事件存档。"
-    }
+    },
+    "anchor": "EventBridge 自定义总线+archive → 支持按类型/时间回放"
   },
   {
     "exam": "SOA-C03",
@@ -302,7 +316,8 @@
       "C": "权限问题会在部署一开始就失败，而不是部分部署后才报错。",
       "D": "正确。某些 AWS 服务或功能不是在所有 Region 都可用，引用 eu-west-1 不存在的服务会失败。",
       "E": "CloudFormation 既能创建也能更新资源。"
-    }
+    },
+    "anchor": "AMI按Region隔离+服务未上线该Region → 部署失败"
   },
   {
     "exam": "SOA-C03",
@@ -321,7 +336,8 @@
       "B": "正确。CloudFront 配合 OAC 可在保持 S3 存储桶私有的情况下安全交付内容。",
       "C": "将存储桶设为公开违反了 Block Public Access 的要求。",
       "D": "由 EC2 主机生成预签名 URL 增加了需要维护的基础设施，不符合“最少运维”要求。"
-    }
+    },
+    "anchor": "CloudFront + OAC → S3保持私有安全分发PDF"
   },
   {
     "exam": "SOA-C03",
@@ -340,7 +356,8 @@
       "B": "正确。S3 Batch Replication 专为复制现有对象设计，并内置失败重试机制。",
       "C": "S3 RTC 加速新对象的复制，但不处理已有对象。",
       "D": "Lifecycle 规则用于在桶内进行迁移或过期，不能跨桶搬移对象。"
-    }
+    },
+    "anchor": "S3 Batch Replication → 复制现有对象+失败自动重试"
   },
   {
     "exam": "SOA-C03",
@@ -359,7 +376,8 @@
       "B": "详细监控为 1 分钟粒度，超过题目所需 5 分钟；内存指标必须通过 CloudWatch agent 提供，不是详细监控自带的。",
       "C": "正确。内存不是 EC2 默认指标；需要 CloudWatch agent 加上合适的 IAM 角色来发布 mem_used_percent。基本监控的 5 分钟间隔符合题目要求。",
       "D": "没有 CloudWatch agent，mem_used_percent 并非现成的标准指标。"
-    }
+    },
+    "anchor": "CloudWatch agent 采集 mem_used_percent + IAM role"
   },
   {
     "exam": "SOA-C03",
@@ -378,7 +396,8 @@
       "B": "Security Hub 用于汇总安全发现，不能强制实施区域或根用户限制。",
       "C": "正确。AWS Control Tower 提供集中治理，内置 Region deny 控件、可用 SCP 限制根用户，并具有防止删除 CloudTrail 日志等护栏。",
       "D": "Firewall Manager 面向 WAF/网络防火墙/安全组策略，不能强制实施这些账户级护栏。"
-    }
+    },
+    "anchor": "Control Tower → Region deny controls + SCP限root"
   },
   {
     "exam": "SOA-C03",
@@ -397,7 +416,8 @@
       "B": "Run Command 需要在每台实例上手动运行脚本，远不如 Inventory 高效。",
       "C": "AWS Config 用于跟踪配置变化；构建自定义补丁版本规则需要额外工作。",
       "D": "AWS Config 合规规则并不是最直接的报告补丁版本的方式。"
-    }
+    },
+    "anchor": "SSM Inventory → 自动收集全实例补丁版本报告"
   },
   {
     "exam": "SOA-C03",
@@ -416,7 +436,8 @@
       "B": "正确。Compute Optimizer 并不支持所有实例类型，尤其是部分新发布的类型；不支持的类型不会出现在仪表板。",
       "C": "已优化的实例仍会在仪表板中显示，并标记为 'Optimized'，不会被隐藏。",
       "D": "Compute Optimizer 同时支持 Linux 和 Windows，操作系统不是排除原因。"
-    }
+    },
+    "anchor": "Compute Optimizer 不支持部分新实例类型 → 未出现仪表板"
   },
   {
     "exam": "SOA-C03",
@@ -435,7 +456,8 @@
       "B": "正确。Amazon GuardDuty 持续分析 CloudTrail、VPC Flow Logs 和 DNS 日志，检测异常 API 调用和安全事件。",
       "C": "CloudTrail Insights 能发现异常 API 速率，但功能范围较窄；GuardDuty 覆盖更广的安全场景，是标准答案。",
       "D": "AWS Config 没有自动异常检测功能。"
-    }
+    },
+    "anchor": "GuardDuty → 分析CloudTrail/Flow Logs检测异常API"
   },
   {
     "exam": "SOA-C03",
@@ -454,7 +476,8 @@
       "B": "Glue ETL 作业对于短时单图任务过于沉重，成本高于 Lambda。",
       "C": "正确。30-120 秒的图片处理时间在 Lambda 限制之内，可自动伸缩并按调用计费。",
       "D": "基于 EC2 的 ECS 还要管理实例，Lambda 对短任务更简洁经济。"
-    }
+    },
+    "anchor": "S3事件通知 → 触发Lambda处理图片，按调用计费"
   },
   {
     "exam": "SOA-C03",
@@ -473,7 +496,8 @@
       "B": "EventBridge 支持跨 Region 目标；问题在权限而非区域。",
       "C": "正确。目标事件总线需要资源策略授权来自发送账户的 PutEvents。",
       "D": "在接收账户规则中添加 account 过滤并不能启用跨账户事件转发。"
-    }
+    },
+    "anchor": "跨账户EventBridge → 目标总线resource policy放行PutEvents"
   },
   {
     "exam": "SOA-C03",
@@ -492,7 +516,8 @@
       "B": "存储桶策略不会导致写操作的 404 NoSuchKey 错误。",
       "C": "正确。在存储桶启用版本控制后，最长可能需要 15 分钟生效，应等待后再试。",
       "D": "Transfer Acceleration 仅影响上传速度，与 404 无关。"
-    }
+    },
+    "anchor": "S3启用版本控制后 → 等待≤15分钟再写入避免404"
   },
   {
     "exam": "SOA-C03",
@@ -511,7 +536,8 @@
       "B": "正确。EC2 Instance Connect 端点会通过 SSH (22 端口) 隧道连接；实例的安全组必须允许来自端点 CIDR/SG 的入站 SSH。",
       "C": "Session Manager 是另一条路径，但题目是要修复 EICE 连接。",
       "D": "EC2 Instance Connect 不需要 SSH 密钥对，它通过 API 动态推送临时密钥。"
-    }
+    },
+    "anchor": "EIC Endpoint连接 → 实例SG需放行来自端点的22端口SSH"
   },
   {
     "exam": "SOA-C03",
@@ -530,7 +556,8 @@
       "B": "CRR 并不强制使用多区域 KMS 密钥；可在每个区域使用各自独立的 KMS 密钥。",
       "C": "S3 复制走 AWS 内部网络，不需要 Gateway VPC 端点。",
       "D": "目标存储桶可以使用 SSE-S3，也可以使用 SSE-KMS，不强制要求 SSE-KMS。"
-    }
+    },
+    "anchor": "跨账户CRR → 需授予ObjectOwnerOverrideToBucketOwner"
   },
   {
     "exam": "SOA-C03",
@@ -549,7 +576,8 @@
       "B": "没有 “Systems Manager 端点” 提供 SSH 这种用法；Session Manager 不直接使用 SSH，IAM 策略引用也错误。",
       "C": "把端点放到公有子网会失去私有性优势；端点本身可以放在私有子网。",
       "D": "Session Manager 不是 SSH；AmazonEC2ReadOnlyAccess 也无法授权连接。"
-    }
+    },
+    "anchor": "私有子网EIC Endpoint+放行SSH → 免暴露公网"
   },
   {
     "exam": "SOA-C03",
@@ -568,7 +596,8 @@
       "B": "在 ALB 前面加一个 NLB 并不能改善全球延迟。",
       "C": "用 NLB 替换 ALB 会失去 Layer 7 特性，且单独的 NLB 不能改善跨区域延迟。",
       "D": "Route 53 延迟路由需要多 Region 部署，但此公司只有单个 Region。"
-    }
+    },
+    "anchor": "AWS Global Accelerator → 走全球骨干网降低延迟"
   },
   {
     "exam": "SOA-C03",
@@ -587,7 +616,8 @@
       "B": "自定义 Lambda 打标签运维负担更高，原生标签策略已足够。",
       "C": "AWS Budgets 不能给资源打标签。",
       "D": "Service Catalog 限制可预置内容，但 Trusted Advisor 不能强制打标签。"
-    }
+    },
+    "anchor": "Organizations tag policies → 强制标签+Billing成本分配标签"
   },
   {
     "exam": "SOA-C03",
@@ -606,7 +636,8 @@
       "B": "正确。Systems Manager Patch Manager (SSM Agent + Patch Baseline + Maintenance Window) 是低运维自动化打补丁的标准方案。",
       "C": "Inventory 跟踪已安装内容，但不会执行打补丁。",
       "D": "EventBridge 单独无法安装补丁，仍需要某种执行机制；SSM Patch Manager 更简洁。"
-    }
+    },
+    "anchor": "SSM Patch Manager → 自动为Ubuntu实例打补丁"
   },
   {
     "exam": "SOA-C03",
@@ -625,7 +656,8 @@
       "B": "Warm standby 仍存在一定停机和复制延迟，不能达到 RPO=0。",
       "C": "正确。多区域 active-active 部署 + 实时数据复制可实现接近零 RPO 与极小 RTO，Route 53 即可完成路由。",
       "D": "S3 备份方式的 RPO 与 RTO 远远超过几分钟。"
-    }
+    },
+    "anchor": "Active-active多区域实时复制 → RTO<10min RPO=0"
   },
   {
     "exam": "SOA-C03",
@@ -644,7 +676,8 @@
       "B": "OpenTelemetry + Managed Prometheus + Managed Grafana 虽可达成目标，但运维复杂度比 Application Signals 高很多。",
       "C": "CloudWatch RUM 监控前端真实用户指标；Synthetics 探测端点；都没有原生 SLO 能力。",
       "D": "Application Insights 偏向发现应用问题，没有原生 SLO/SLI 管理能力。"
-    }
+    },
+    "anchor": "CloudWatch Application Signals→自动SLO/SLI+关联日志跟踪"
   },
   {
     "exam": "SOA-C03",
@@ -663,7 +696,8 @@
       "B": "配置读取副本与备份保留范围不直接相关。",
       "C": "默认备份窗口不限制保留期范围。",
       "D": "正确。Multi-AZ 部署要求启用自动备份 (保留期 1-35) 以支持故障转移。"
-    }
+    },
+    "anchor": "RDS Multi-AZ部署 → 强制备份保留期1-35天"
   },
   {
     "exam": "SOA-C03",
@@ -682,7 +716,8 @@
       "B": "collectd 并非必要，仅靠 CloudWatch agent 即可获取这些指标。",
       "C": "VPC Flow Logs 不包含 ENA 驱动级别的指标。",
       "D": "Performance Insights 用于 RDS 性能，不适用于 EC2 网络指标。"
-    }
+    },
+    "anchor": "CloudWatch agent → 采集ENA conntrack_allowance指标"
   },
   {
     "exam": "SOA-C03",
@@ -701,7 +736,8 @@
       "B": "本场景是单账户，无需跨账户权限。",
       "C": "若 Lambda 资源策略缺失，错误会提示主体或权限验证；题目已说明函数与角色配置正确。",
       "D": "正确。“Unable to validate the following destination configurations” 通常意味着存储桶上有一条指向已删除或不可访问目标的过期通知配置，需先删除。"
-    }
+    },
+    "anchor": "S3存在过期事件通知配置 → 需先删除再新增目标"
   },
   {
     "exam": "SOA-C03",
@@ -720,7 +756,8 @@
       "B": "Intelligent-Tiering 是存储类优化，不会删除未完成的分段上传。",
       "C": "自建 Lambda 删除比原生生命周期规则费力。",
       "D": "存储类分析无法直接衡量未完成分段上传；桶策略也无法定时删除上传。"
-    }
+    },
+    "anchor": "Storage Lens指标+AbortIncompleteMultipartUpload规则"
   },
   {
     "exam": "SOA-C03",
@@ -739,7 +776,8 @@
       "B": "正确。如果 AMI 使用了加密的 EBS 快照且用户无权访问 KMS 密钥，实例可启动但 EBS 卷无法挂载，于是被立即终止。",
       "C": "SCP 拒绝会让请求一开始就失败，不会启动后再终止。",
       "D": "缺乏互联网访问不会导致立即终止，实例仍能启动。"
-    }
+    },
+    "anchor": "AMI用KMS加密EBS快照，用户缺密钥权限 → 启动后即终止"
   },
   {
     "exam": "SOA-C03",
@@ -758,7 +796,8 @@
       "B": "正确。AWS Site-to-Site VPN 将本地网络与 VPC 连接，使企业用户能直接到达私有子网。",
       "C": "仅添加互联网网关并不能为企业桌面提供私有路径；将实例放到公有子网则会暴露它们。",
       "D": "安全组可以放行流量，但本身无法建立从本地到私有子网的连通性。"
-    }
+    },
+    "anchor": "Site-to-Site VPN → 本地办公网直连私有子网SSH"
   },
   {
     "exam": "SOA-C03",
@@ -777,7 +816,8 @@
       "B": "降低 TTL 会增加回源次数，使命中率更低。",
       "C": "正确。让缓存键包含更少的标头、查询字符串和 Cookie，使更多请求能复用同一缓存条目。",
       "D": "签名 URL/Cookie 控制访问，不影响命中率。"
-    }
+    },
+    "anchor": "精简缓存键(header/查询串/cookie) → 提高CloudFront命中率"
   },
   {
     "exam": "SOA-C03",
@@ -796,7 +836,8 @@
       "B": "正确。Aurora MySQL Backtrack 能就地回退集群到指定时间，借助 EventBridge + Lambda 每天回退即可，快速且简单。",
       "C": "导出再从 S3 恢复比 Backtrack 更重更慢。",
       "D": "PITR 每次都会创建新集群，必须每天切换端点。"
-    }
+    },
+    "anchor": "Aurora MySQL Backtrack → 每日快速回退集群，免重建"
   },
   {
     "exam": "SOA-C03",
@@ -815,7 +856,8 @@
       "B": "正确。在工作时间之外创建 Systems Manager 维护窗口，使用 AWS-RestartEC2Instance runbook 可可靠地每日重启实例且影响极小。",
       "C": "StatusCheckFailed_System 是硬件层故障，不会因内存泄漏而触发。",
       "D": "在每次崩溃时重启应用并不能满足“每天定时在非工作时间重启”的要求。"
-    }
+    },
+    "anchor": "SSM维护窗口+AWS-RestartEC2Instance → 非高峰重启"
   },
   {
     "exam": "SOA-C03",
@@ -834,7 +876,8 @@
       "B": "SSE-C 需要客户端在每次请求时提供密钥，运维变化巨大。",
       "C": "在 S3 前加 CloudFront 改变了访问模型，也无法解决每个对象都要调用 KMS 的问题。",
       "D": "S3 access points 不改变加密模型，也不会降低 KMS 成本。"
-    }
+    },
+    "anchor": "启用S3 Bucket Keys → 减少KMS调用降低成本"
   },
   {
     "exam": "SOA-C03",
@@ -853,7 +896,8 @@
       "B": "NLB 不原生支持同等粒度的 HTTP 会话保持；禁用跨可用区会降低均衡度。",
       "C": "用 Lambda + DynamoDB 维护会话状态比直接启用 ALB 会话保持更复杂。",
       "D": "两个目标组并存的方式比一次启用会话保持更复杂。"
-    }
+    },
+    "anchor": "ALB round robin+stickiness+跨AZ均衡 → 会话保持"
   },
   {
     "exam": "SOA-C03",
@@ -872,7 +916,8 @@
       "B": "用 Lambda 不断扫描 S3 中的 ALB 访问日志效率低且不实时。",
       "C": "CloudTrail 不记录单请求的 HTTP 状态码，度量筛选器只针对日志组。",
       "D": "EventBridge 不会收到每次 ALB 请求事件。"
-    }
+    },
+    "anchor": "HTTPCode_Target_5XX_Count alarm → 直接触发Lambda恢复"
   },
   {
     "exam": "SOA-C03",
@@ -891,7 +936,8 @@
       "B": "桶版本控制管理对象版本，但不会刷新 CloudFront 缓存。",
       "C": "CloudFront 是全局服务，向特定可用区上传没有意义。",
       "D": "正确。CloudFront invalidation 会移除边缘节点的缓存副本，让用户获取最新内容。"
-    }
+    },
+    "anchor": "上传新内容配合CloudFront invalidation → 刷新边缘缓存"
   },
   {
     "exam": "SOA-C03",
@@ -910,7 +956,8 @@
       "B": "正确。默认 Lambda 不在 VPC 内运行；要访问私有子网中的 RDS，必须把 Lambda 部署到同一 VPC 的相应子网。",
       "C": "VPC 对等连接是另一种方式，但只要 Lambda 在同一 VPC 内即可。",
       "D": "安全组可能是原因之一，但题目已说明路由正常、VPC 内可访问；按默认设置最可能是 Lambda 不在 VPC 内。"
-    }
+    },
+    "anchor": "Lambda默认不在VPC内 → 需配置到RDS同VPC子网"
   },
   {
     "exam": "SOA-C03",
@@ -934,7 +981,8 @@
       "C": "正确。扩展 VPC CIDR 后，再用新 CIDR 创建子网并在其中启动实例。",
       "D": "不允许修改正在使用的 VPC 主 CIDR 块；只能添加次级 CIDR 块。",
       "E": "现有子网的 CIDR 块也不能修改。"
-    }
+    },
+    "anchor": "VPC secondary CIDR+新建子网 → 扩展私有IP不足"
   },
   {
     "exam": "SOA-C03",
@@ -958,7 +1006,8 @@
       "C": "升级实例类型属于纵向扩展，无法实现高可用。",
       "D": "正确。将数据库迁移到 Amazon RDS for PostgreSQL Multi-AZ 部署即可获得高可用与托管能力。",
       "E": "在单个 EC2 上升级 PostgreSQL 既不解决扩展也不提供高可用。"
-    }
+    },
+    "anchor": "ALB+Auto Scaling(Web)+RDS Multi-AZ(DB) → 扩展与高可用"
   },
   {
     "exam": "SOA-C03",
@@ -977,6 +1026,7 @@
       "B": "Memcached 不支持 global datastore。",
       "C": "RDS PostgreSQL 不提供可跨区域复制的内置查询缓存。",
       "D": "Memcached 也不支持跨区域复制。"
-    }
+    },
+    "anchor": "ElastiCache Redis OSS global datastore → 跨区域复制缓存"
   }
 ]

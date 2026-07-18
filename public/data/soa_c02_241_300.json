@@ -16,7 +16,8 @@
       "B": "Partition Placement Group主要用于分布式和容错性较高的应用场景，实例分布在多个分区中以减少单点故障的影响。虽然支持跨多个可用区，但其设计目标并非优化网络延迟和吞吐量，因此不适合HPC工作负载。此选项不符合题目要求，错误。",
       "C": "Partition Placement Group的设计目标仍然是容错性，而非优化网络性能。即使限制在一个可用区内，也无法提供Cluster Placement Group的低延迟和高吞吐量特性。此选项不符合题目要求，错误。",
       "D": "Spread Placement Group的设计目标是将实例分散到多个底层硬件上，以提高容错性。Spread Placement Group不适合需要低延迟和高吞吐量的HPC工作负载。此选项不符合题目要求，错误。"
-    }
+    },
+    "anchor": "cluster placement group 单AZ → 低延迟高吞吐 HPC"
   },
   {
     "exam": "SOA-C02",
@@ -35,7 +36,8 @@
       "B": "正确：详细监控的粒度是1分钟，可以满足题目中2分钟的监控需求。CloudWatch报警可以直接配置操作，例如重启EC2实例。",
       "C": "错误：虽然Lambda可以定期执行操作，但这种方法并不直接解决问题，因为它无法基于CPU使用率触发。题目要求基于CPU使用率自动触发，而不是定时触发。",
       "D": "错误：EC2健康检查主要用于检测实例的网络连通性或系统状态，而不是CPU使用率。题目要求基于CPU使用率触发，而不是健康检查触发。"
-    }
+    },
+    "anchor": "详细监控(1分钟) → CloudWatch 告警自动重启 EC2"
   },
   {
     "exam": "SOA-C02",
@@ -54,7 +56,8 @@
       "B": "正确。S3 Inventory 可以生成定期报告，其中包含每个对象的加密状态（EncryptionStatus）字段，是大规模验证加密状态运维效率最高的方式。",
       "C": "错误。授予存储桶读取权限只能让团队看到对象，但本身并不会报告哪些对象已加密，仍需手动逐个检查。",
       "D": "错误。AWS CLI 可以列出对象，但不会直接报告每个对象的加密状态，还需要为每个对象进行额外调用。"
-    }
+    },
+    "anchor": "S3 Inventory 加密状态字段 → 批量核查对象加密"
   },
   {
     "exam": "SOA-C02",
@@ -73,7 +76,8 @@
       "B": "错误：Cold HDD (sc1)卷是为低吞吐量和低频访问设计的，性能远低于gp2和gp3，不适合需要高性能的数据库工作负载。",
       "C": "错误：题目中没有提到内存瓶颈问题，问题的核心是EBS卷的性能不足，而不是实例的内存配置。",
       "D": "错误：激活无限模式可以解决CPU性能限制问题，但题目中没有提到CPU性能瓶颈，问题的核心是EBS卷性能不足。"
-    }
+    },
+    "anchor": "VolumeReadOps 骤降=burst耗尽 → gp2 转 gp3"
   },
   {
     "exam": "SOA-C02",
@@ -92,7 +96,8 @@
       "B": "错误。Convertible Reserved Instances 仅适用于 EC2，并且需要按基线进行承诺，对用量多变的工作负载较难准确预估。",
       "C": "错误。EC2 Instance Savings Plans 只对特定实例系列和区域内的 EC2 提供折扣，且不覆盖 Lambda 的使用。",
       "D": "错误。Standard Reserved Instances 仅适用于 EC2，灵活性较低，且不覆盖 Lambda 的成本。"
-    }
+    },
+    "anchor": "Compute Savings Plans → 覆盖 Lambda+EC2 跨区域用量"
   },
   {
     "exam": "SOA-C02",
@@ -111,7 +116,8 @@
       "B": "正确。ALB 健康检查支持可配置的 HTTP 路径；将该路径指向应用特定的端点是实现自定义健康检查最简单、最高效的方式。",
       "C": "错误。ElastiCache 是缓存服务，ALB 不会使用它来执行健康检查。",
       "D": "错误。API Gateway 并不是 ALB 后端 EC2 实例的健康检查机制，引入它只会增加复杂性。"
-    }
+    },
+    "anchor": "ALB Health Check Path 自定义 → 实现自定义健康检查"
   },
   {
     "exam": "SOA-C02",
@@ -130,7 +136,8 @@
       "B": "错误。CloudTrail 记录的是 API 活动，而不是操作系统级别的磁盘空间指标。",
       "C": "正确。CloudWatch agent 可以收集操作系统级别的指标（如 Windows 上的逻辑磁盘可用空间百分比），将其与 CloudWatch 告警和 SNS 主题配合用于电子邮件通知，是标准解决方案。",
       "D": "错误。Trusted Advisor 不提供针对单个实例的磁盘空间告警。"
-    }
+    },
+    "anchor": "CloudWatch agent 采集磁盘可用空间 → SNS 邮件告警"
   },
   {
     "exam": "SOA-C02",
@@ -149,7 +156,8 @@
       "B": "正确原因：在AWS中，用户定义的标签必须在AWS Billing and Cost Management控制台中手动激活，才能用于成本分配和过滤。如果标签未激活，则无法在Cost Explorer中使用它们进行过滤。",
       "C": "错误原因：创建AWS Cost and Usage Report与标签的激活无关。即使没有创建报告，标签仍然可以用于Cost Explorer中的过滤。因此此选项错误。",
       "D": "错误原因：创建预算与标签的使用无关。预算是用于监控和管理成本，而不是用于标签过滤。因此此选项错误。"
-    }
+    },
+    "anchor": "Cost Explorer 标签过滤前需先激活 cost allocation tags"
   },
   {
     "exam": "SOA-C02",
@@ -168,7 +176,8 @@
       "B": "错误。CloudWatch Logs 搜索不支持 groupby 关键字，该语法属于 Logs Insights。",
       "C": "错误。Athena 可以查询导出后的日志，但需要额外的管道工作来导出并编目数据。",
       "D": "错误。RDS 不能原生查询 CloudWatch Logs 中的日志数据。"
-    }
+    },
+    "anchor": "Logs Insights stats+count() → 跨日志组统计错误类型"
   },
   {
     "exam": "SOA-C02",
@@ -187,7 +196,8 @@
       "B": "正确：AWS Compute Optimizer是专门用于分析和推荐资源配置的服务，包括对Lambda函数的优化建议。",
       "C": "错误：AWS Organizations用于管理多个账户的权限和策略，而CloudTrail Insights用于检测异常活动。它们不提供Lambda函数的优化建议。",
       "D": "错误：AWS Trusted Advisor提供账户级别的建议，例如安全性、成本优化等，但它不专门针对Lambda函数的资源配置优化。"
-    }
+    },
+    "anchor": "AWS Compute Optimizer → 导出 Lambda 资源配置推荐"
   },
   {
     "exam": "SOA-C02",
@@ -206,7 +216,8 @@
       "B": "错误。CloudFormation macros 在部署时对模板进行转换，但并不直接用于建模共享组件。",
       "C": "正确。Nested stacks 可以将公共组件在子模板中定义一次，再由父模板复用，从而消除重复声明，并支持各自独立的参数和条件。",
       "D": "错误。StackSets 用于将同一模板跨多个账户或区域部署，无法解决模板中组件重复声明的问题。"
-    }
+    },
+    "anchor": "CloudFormation nested stacks → 复用公共组件各自参数"
   },
   {
     "exam": "SOA-C02",
@@ -225,7 +236,8 @@
       "B": "更新密钥策略以授予所有相关账户对用于加密快照的 AWS KMS 加密密钥的权限，然后与这些账户共享快照。正确：这是AWS推荐的方式。通过更新KMS密钥策略，允许其他账户访问加密密钥，然后使用RDS的共享快照功能将快照共享给其他账户。",
       "C": "基于快照创建一个 Amazon EC2 实例，然后将该实例的 Amazon EBS 卷保存为快照并与其他账户共享。要求每个账户所有者从该快照创建一个新的卷并对其进行加密。错误：此方法复杂且不符合题目要求。题目要求直接共享RDS快照，而不是通过EC2实例和EBS卷间接实现。",
       "D": "从加密的快照创建一个新的未加密 RDS 实例，使用 SSH/RDP 连接到该实例，将数据库内容导出到一个文件中，然后与其他账户共享此文件。错误：此方法不符合题目要求，因为它绕过了RDS快照的共享机制，并且导出文件的方式可能会导致数据泄露风险。"
-    }
+    },
+    "anchor": "共享 KMS 密钥策略给账户 → 跨账户共享加密 RDS 快照"
   },
   {
     "exam": "SOA-C02",
@@ -244,7 +256,8 @@
       "B": "错误。在安全组中允许出站 TCP/80 到 0.0.0.0/0 无济于事，因为没有互联网路由，且经由 gateway endpoint 的 S3 流量必须遵循前缀列表路由。",
       "C": "正确。子网路由表中必须包含指向 gateway endpoint 的 S3 前缀列表路由；否则私有子网中的流量无法到达 S3。",
       "D": "错误。S3 存储桶策略并不是阻碍访问的原因；从公有子网已可访问该存储桶，因此问题在于路由。"
-    }
+    },
+    "anchor": "子网路由表加 S3 prefix list 路由 → gateway endpoint 生效"
   },
   {
     "exam": "SOA-C02",
@@ -268,7 +281,8 @@
       "C": "正确。S3 Transfer Acceleration 利用 CloudFront 边缘站点加速跨区域上传到 S3，对来自远端办公室的大文件而言成本效益高。",
       "D": "错误。Global Accelerator 用于优化通用应用程序的 TCP/UDP 流量，不是直接上传到 S3 的推荐优化路径。",
       "E": "正确。Multipart upload 可并行上传多个分段，显著提升大文件的吞吐量，且不产生额外服务费用。"
-    }
+    },
+    "anchor": "Transfer Acceleration+multipart upload → 加速跨区上传"
   },
   {
     "exam": "SOA-C02",
@@ -287,7 +301,8 @@
       "B": "错误。将密码作为 CloudFormation 参数接受会在模板状态中暴露密码，且没有配置自动轮换。",
       "C": "错误。SSM Parameter Store 的 SecureString 不像 Secrets Manager 那样内置数据库凭证的定时轮换能力。",
       "D": "错误。将密码存储为普通 SSM 字符串不安全，它未加密且不会轮换。"
-    }
+    },
+    "anchor": "GenerateSecretString+RotationSchedule → 自动生成轮换密码"
   },
   {
     "exam": "SOA-C02",
@@ -306,7 +321,8 @@
       "B": "错误。Network Load Balancer 没有安全组，因此该选项在技术上不成立。",
       "C": "错误。本地环境的 ACL 不在本题所述 AWS 侧连接问题的范围内。",
       "D": "正确。当 NLB 保留客户端 IP 且目标位于同一子网时，返回流量使用临时端口；子网的网络 ACL 必须允许临时端口的出站流量，响应才能发出。"
-    }
+    },
+    "anchor": "NACL 出站放行临时端口 → NLB 同子网响应流量放行"
   },
   {
     "exam": "SOA-C02",
@@ -325,7 +341,8 @@
       "B": "错误。放弃 Multi-AZ 会降低高可用性，与要求相反。",
       "C": "错误。跨区域只读副本增加的是灾难恢复能力，无法解决现有应用程序的连接管理问题。",
       "D": "正确。Amazon RDS Proxy 可对数据库连接进行池化和复用，平滑扩展实例带来的连接峰值，从而提升可用性。"
-    }
+    },
+    "anchor": "RDS Proxy 连接池化 → 平滑 Auto Scaling 连接风暴"
   },
   {
     "exam": "SOA-C02",
@@ -344,7 +361,8 @@
       "B": "错误：入站端点的主要功能是接收来自外部（如本地数据中心）的DNS查询，而不是将VPC中的查询发送到外部DNS服务器。此选项混淆了入站端点的用途。",
       "C": "错误：出站端点用于将VPC中的DNS查询发送到外部DNS服务器，而不是接收来自本地数据中心的查询。此选项错误地将出站端点与本地DNS服务器的条件转发规则结合。",
       "D": "正确：出站端点的功能是将VPC中的DNS查询发送到外部DNS服务器。通过创建转发规则并将其与VPC关联，可以满足题目要求。"
-    }
+    },
+    "anchor": "Route 53 Resolver 出站端点+转发规则 → 查询发往本地DNS"
   },
   {
     "exam": "SOA-C02",
@@ -368,7 +386,8 @@
       "C": "Migrate the database from RDS to Amazon DynamoDB: 错误。DynamoDB是一个NoSQL数据库，与RDS的关系型数据库不同，迁移到DynamoDB需要对应用程序进行重大修改，并不适合解决当前问题。",
       "D": "Migrate the database to Amazon EC2 with enhanced networking enabled: 错误。将数据库迁移到EC2并启用增强型网络虽然可以提供更高的网络性能，但并不能直接解决读流量过高的问题。",
       "E": "Upgrade the database to a Multi-AZ deployment: 错误。Multi-AZ部署主要用于提高数据库的可用性和容错能力，而不是优化性能。"
-    }
+    },
+    "anchor": "读副本分担读流量+ElastiCache 缓存 → 缓解 RDS 读压力"
   },
   {
     "exam": "SOA-C02",
@@ -387,7 +406,8 @@
       "B": "此选项提到创建客户管理的 KMS 密钥并修改其策略，同时创建 AMI 的副本并使用 KMS 密钥重新加密。然后修改副本的权限以指定共享账户。这种方法完全符合公司要求：使用 KMS 密钥加密 AMI，并确保只有授权账户可以访问。正确。",
       "C": "此选项提到创建客户管理的 KMS 密钥并修改其策略，同时创建 AMI 的副本并使用 KMS 密钥重新加密。但它将副本的权限设置为“公开”，这与公司要求的“仅授权账户可以访问”相违背。错误。",
       "D": "此选项提到修改 AWS 管理密钥的策略，但 AWS 管理密钥的策略无法直接修改。此外，它没有提到创建 AMI 的副本并重新加密，因此无法满足公司要求的“所有 AMIs 必须使用 KMS 密钥加密”的条件。错误。"
-    }
+    },
+    "anchor": "复制 AMI 并指定 KMS 密钥重新加密 → 限定共享账户权限"
   },
   {
     "exam": "SOA-C02",
@@ -406,7 +426,8 @@
       "B": "正确。Amazon FSx for Windows File Server Multi-AZ 提供原生的 Windows 文件共享访问，在可用区故障或维护期间仍然可用，并支持 SMB 协议和 Windows ACL。",
       "C": "错误。ALB 不能对 SMB/文件网关流量进行负载均衡，这不是受支持的架构。",
       "D": "错误。两个 Single-AZ FSx 文件系统加 DFSR 更复杂且需要客户自行管理复制，在已有 Multi-AZ FSx 的情况下没有必要。"
-    }
+    },
+    "anchor": "FSx for Windows Multi-AZ → SMB+ACL 高可用共享"
   },
   {
     "exam": "SOA-C02",
@@ -425,7 +446,8 @@
       "B": "错误原因：AWS Systems Manager Agent（SSM Agent）用于管理和操作EC2实例，而不是用于收集EBS卷的性能指标。此选项与题目要求无关。",
       "C": "正确原因：DiskReadBytes和DiskWriteBytes是EC2实例级别的指标，而VolumeReadBytes和VolumeWriteBytes是EBS卷级别的指标。题目明确要求监控EBS卷的读写性能，因此需要使用VolumeReadBytes和VolumeWriteBytes指标。",
       "D": "错误原因：VolumeReadBytes和VolumeWriteBytes是针对EBS卷的指标，而不是EC2实例的指标。此选项混淆了指标的适用范围。"
-    }
+    },
+    "anchor": "EBS 卷级指标用 VolumeReadBytes/WriteBytes 而非 Disk*"
   },
   {
     "exam": "SOA-C02",
@@ -444,7 +466,8 @@
       "B": "正确原因：这是正确的步骤。需要手动安装和配置CloudWatch Agent以收集内存和磁盘空间数据。同时，IAM角色是推荐的方式，用于授权EC2实例将数据写入CloudWatch。",
       "C": "错误原因：IAM用户不适合直接附加到EC2实例。最佳实践是使用IAM角色，因为角色可以直接与实例关联，并提供临时凭证。",
       "D": "错误原因：安全组用于控制网络流量，而不是授权实例写入CloudWatch。授权需要通过IAM角色完成。"
-    }
+    },
+    "anchor": "CloudWatch agent + IAM role → 采集内存/磁盘自定义指标"
   },
   {
     "exam": "SOA-C02",
@@ -463,7 +486,8 @@
       "B": "错误原因：Throughput Optimized HDD (st1)卷适用于高吞吐量的工作负载（如大数据和日志处理），但IOPS性能仍然不足以支持10,000 IOPS的需求。",
       "C": "正确原因：General Purpose SSD (gp3)卷支持高达16,000 IOPS，并且成本较低。设置IOPS为10,000完全满足性能需求，同时提供最低成本的解决方案。",
       "D": "错误原因：Provisioned IOPS SSD (io2)卷虽然可以支持10,000 IOPS，但其成本远高于gp3卷，不符合“最低成本”的要求。"
-    }
+    },
+    "anchor": "gp3 卷设 IOPS=10000 → 低成本满足高读性能"
   },
   {
     "exam": "SOA-C02",
@@ -482,7 +506,8 @@
       "B": "正确：此选项结合了目标跟踪扩展策略和计划扩展策略。目标跟踪策略确保CPU使用率保持在50%以下，而计划扩展策略确保在流量高峰时段（09:00到17:00）有足够的实例可用，并在非高峰时段缩减实例数量。",
       "C": "错误：此选项仅设置了固定数量的实例（2个），并使用计划扩展策略在09:00启动。这无法动态调整实例数量以满足流量需求，也没有考虑到CPU使用率的目标。",
       "D": "错误：此选项仅使用了计划扩展策略，没有目标跟踪策略来确保CPU使用率保持在50%以下。这可能导致在非高峰时段资源浪费或高峰时段资源不足。"
-    }
+    },
+    "anchor": "目标跟踪(CPU 50%) + 两条 scheduled scaling → 匹配每日高峰"
   },
   {
     "exam": "SOA-C02",
@@ -501,7 +526,8 @@
       "B": "在 AWS Config 中使用 s3-bucket-logging-enabled 规则配置自动修复。AWS Config 提供了 s3-bucket-logging-enabled 规则，可以自动检查 S3 存储桶是否启用了日志记录。可以配置自动修复功能，确保所有新建和现有的 S3 存储桶都符合要求。此选项是最优解，因为它最符合题目要求并且操作效率最高。",
       "C": "配置 AWS Trusted Advisor 以监控日志记录配置并在必要时启用访问日志记录。Trusted Advisor 提供了多种检查功能，但它无法直接监控 S3 存储桶的日志记录状态。Trusted Advisor 也不支持自动修复功能，因此无法满足题目要求。此选项错误。",
       "D": "使用 Amazon CloudWatch 指标跟踪日志信息并启动 AWS Lambda 函数进行修复。CloudWatch 主要用于监控资源的性能指标，而不是直接监控 S3 的日志记录状态。虽然可以通过 Lambda 函数实现修复，但需要额外的逻辑和配置，操作效率较低。此选项不是最优解。"
-    }
+    },
+    "anchor": "AWS Config s3-bucket-logging-enabled 规则 → 自动修复"
   },
   {
     "exam": "SOA-C02",
@@ -520,7 +546,8 @@
       "B": "错误。将终止策略设为 OldestInstance 只是选择最老的实例来终止，并不能保护当前正在处理消息的实例。",
       "C": "错误。OldestLaunchConfiguration 与 B 存在相同问题，它无法识别每个实例的处理状态。",
       "D": "错误。为整个组暂停 Launch 和 Terminate 会禁用扩缩容，做法过于粗放。"
-    }
+    },
+    "anchor": "实例级 scale-in protection → 处理中实例免被终止"
   },
   {
     "exam": "SOA-C02",
@@ -539,7 +566,8 @@
       "B": "错误。Amazon Inspector 不执行 CIS Foundations Benchmark 检查，该能力属于 Security Hub。",
       "C": "错误。GuardDuty 用于威胁检测，而不是评估 CIS Foundations Benchmark。",
       "D": "正确。通过 Organizations 指定 Security Hub 委派管理员账户、自动纳入新账户并启用 CIS AWS Foundations Benchmark 标准，是原生且可扩展的方法。"
-    }
+    },
+    "anchor": "Security Hub 委派管理员+组织自动加入 → CIS Benchmark 扫描"
   },
   {
     "exam": "SOA-C02",
@@ -558,7 +586,8 @@
       "B": "错误。可用区不是通过 Support 添加到 Site-to-Site VPN 的，VGW 已经支持整个 VPC。",
       "C": "错误。为每个可用区创建第二个 VPN 连接没有必要，VGW 也不是这样工作的。",
       "D": "错误。Direct Connect 是另一项独立的服务决策，仅为跨可用区扩展并不需要它。"
-    }
+    },
+    "anchor": "新子网路由表添加指向 VGW 的本地路由 → 打通本地通信"
   },
   {
     "exam": "SOA-C02",
@@ -577,7 +606,8 @@
       "B": "使用Amazon Linux包管理器安装CloudWatch agent：错误：虽然可以通过包管理器安装CloudWatch agent，但需要手动在每个实例上安装和配置，操作开销较高。此方法缺乏集中化管理能力。",
       "C": "使用AWS Systems Manager安装CloudWatch agent并使用配置向导：错误：虽然使用AWS Systems Manager可以简化安装过程，但仍需要在每个实例上手动创建配置，操作开销较高。此方法没有利用Parameter Store的集中化配置管理功能。",
       "D": "使用AWS Systems Manager Parameter Store存储CloudWatch agent配置：正确：此方法利用了AWS Systems Manager的集中化管理功能，可以通过Parameter Store存储配置并自动应用到所有实例。操作开销最低，因为安装和配置过程可以自动化。"
-    }
+    },
+    "anchor": "Parameter Store 存 agent 配置+SSM 批量安装 → 低运维收集日志"
   },
   {
     "exam": "SOA-C02",
@@ -601,7 +631,8 @@
       "C": "错误。在 DR 区域配置与主区域相同的稳态容量，会在该区域平时无流量时造成浪费。",
       "D": "正确。在 DR 区域预先创建 ALB 并将 Auto Scaling 组容量设为最小（如 1），可让基础设施处于随时可在故障转移时扩容的状态，同时避免持续的实例成本。",
       "E": "错误。在故障转移期间用 CloudFormation 临时构建全部资源会拖慢恢复速度，并在事故期间带来风险。"
-    }
+    },
+    "anchor": "Aurora Global Database 低延迟复制 + DR区域ASG最小容量预置"
   },
   {
     "exam": "SOA-C02",
@@ -620,7 +651,8 @@
       "B": "错误。安全组是有状态的，不需要为返回流量单独创建出站规则。",
       "C": "错误。弹性 IP 不会自行更改。",
       "D": "错误。一个子网一次只能关联一个网络 ACL，因此该情形不可能发生。"
-    }
+    },
+    "anchor": "新 NACL 缺临时端口出站规则 → 无状态致响应被丢弃"
   },
   {
     "exam": "SOA-C02",
@@ -639,7 +671,8 @@
       "B": "错误。通过 DataSync 进行跨区域复制是用于复制，而不是单个文件的时间点恢复。",
       "C": "错误。AWS Backup 不直接将 EFS 备份到 Glacier 保管库，它使用备份保管库并支持部分恢复。",
       "D": "正确。AWS Backup 支持将 EFS 文件系统备份到备份保管库，并允许执行部分恢复以取回单个文件，能快速、经济地恢复个别文件。"
-    }
+    },
+    "anchor": "AWS Backup 备份到 vault → partial restore 单文件恢复"
   },
   {
     "exam": "SOA-C02",
@@ -663,7 +696,8 @@
       "C": "Assume a role that has the s3:BypassGovernanceRetention permission. 假设一个具有 s3:BypassGovernanceRetention 权限的角色。正确。在治理模式下，拥有 s3:BypassGovernanceRetention 权限的角色可以绕过保留限制并删除对象。",
       "D": "Include the x-amz-bypass-governance-retention:true header in the request when issuing the delete command. 在发出删除命令时，在请求中包含 x-amz-bypass-governance-retention:true 标头。正确。在治理模式下，使用 x-amz-bypass-governance-retention:true 请求头可以绕过保留限制并删除对象。",
       "E": "Include the x-amz-bypass-legal-retention:true header in the request when issuing the delete command. 在发出删除命令时，在请求中包含 x-amz-bypass-legal-retention:true 标头。错误。x-amz-bypass-legal-retention:true 是用于绕过法律模式（Compliance Mode）的请求头，而题目中提到的是治理模式（Governance Mode），因此此选项不适用。"
-    }
+    },
+    "anchor": "BypassGovernanceRetention 权限/标头 → 绕过治理删除"
   },
   {
     "exam": "SOA-C02",
@@ -682,7 +716,8 @@
       "B": "错误：SCP用于管理AWS账户的权限，限制或允许特定操作。它不能用于扫描或识别安全组的配置问题。",
       "C": "错误：IAM Access Analyzer主要用于分析资源的访问权限（如S3桶、IAM角色等），而不是用于检查安全组的端口配置。",
       "D": "正确：AWS Trusted Advisor提供安全检查功能，可以识别安全组是否对特定端口（如3389）开放到互联网。"
-    }
+    },
+    "anchor": "AWS Trusted Advisor → 检查安全组 3389 端口开放"
   },
   {
     "exam": "SOA-C02",
@@ -706,7 +741,8 @@
       "C": "正确。在数据库子网的网络 ACL 上允许来自第三个 Web 子网的 3306 端口入站规则，可使新的 Web 层访问数据库。",
       "D": "正确。由于网络 ACL 是无状态的，需要在数据库子网上设置允许 TCP 临时端口返回第三个 Web 子网的出站规则，响应才能返回。",
       "E": "错误。从数据库网络 ACL 出站使用端口 3306 是错误的，响应使用的是临时端口而不是 3306。"
-    }
+    },
+    "anchor": "数据库子网 NACL 入站放行新Web子网3306+出站放行临时端口"
   },
   {
     "exam": "SOA-C02",
@@ -725,7 +761,8 @@
       "B": "正确：此命令用于为经典负载均衡器的监听器设置SSL证书。参数解释：--load-balancer-name：指定负载均衡器的名称。--load-balancer-port：指定监听器的端口（443表示HTTPS）。--ssl-certificate-id：指定SSL证书的ARN。",
       "C": "错误：此命令不存在。EC2服务不直接管理负载均衡器的SSL证书。",
       "D": "错误：此命令不存在。ACM（AWS Certificate Manager）用于管理证书，但不直接用于配置负载均衡器的监听器。"
-    }
+    },
+    "anchor": "set-load-balancer-listener-ssl-certificate 换证书"
   },
   {
     "exam": "SOA-C02",
@@ -744,7 +781,8 @@
       "B": "正确性分析： 手动安装应用程序和依赖项，然后创建AMI是一种可行的方法，但它需要人工干预，无法实现自动化更新，且操作效率低。结论： 不符合“最操作效率”的要求。",
       "C": "正确性分析： EC2 Image Builder 是AWS提供的服务，可以自动化创建和更新AMI。通过自定义配方，可以安装应用程序及其依赖项，并且可以集成漏洞扫描功能。这种方法操作效率高，且完全符合题目要求。结论： 符合“最操作效率”的要求，是正确答案。",
       "D": "正确性分析： 使用EventBridge定期调用CreateImage API可以自动创建AMI，但无法直接安装应用程序和依赖项，也无法集成漏洞扫描功能。结论： 不符合题目要求。"
-    }
+    },
+    "anchor": "EC2 Image Builder 自定义配方 → 自动化构建AMI并集成漏洞扫描"
   },
   {
     "exam": "SOA-C02",
@@ -763,7 +801,8 @@
       "B": "错误。手动触发的 Lambda 容易出错，且与堆栈生命周期事件不对齐。",
       "C": "正确。将 RDS 资源的 CloudFormation DeletionPolicy 属性设为 Snapshot，会在删除堆栈时自动创建最终快照。",
       "D": "错误。相比内置的 DeletionPolicy，使用单独的备份模板增加了运维复杂性。"
-    }
+    },
+    "anchor": "DeletionPolicy: Snapshot → 删堆栈保留 RDS 快照"
   },
   {
     "exam": "SOA-C02",
@@ -782,7 +821,8 @@
       "B": "错误。引入 Kinesis、Lambda 和 Glue 的开发量远超必要。",
       "C": "错误。SNS 不能转换消息负载，因此无法将事件重塑为工单系统所需的 JSON 格式。",
       "D": "错误。对于简单的 HTTP webhook 集成，使用包含 Lambda 和 Glue 的 Step Functions 工作流过于复杂。"
-    }
+    },
+    "anchor": "API destinations+input transformer → 转HTTPS工单"
   },
   {
     "exam": "SOA-C02",
@@ -801,7 +841,8 @@
       "B": "错误：多样化策略（diversified strategy）会将实例分散到多个不同的实例池中，以提高容错性，但它并不保证实例来自具有最多可用容量的池。题目要求的是选择具有最多可用容量的池，而不是分散实例。",
       "C": "正确：容量优化策略（capacity optimized strategy）会优先选择具有最多可用容量的实例池，从而满足题目要求。这是AWS推荐的策略，特别是在需要高可用性时。",
       "D": "错误：Spot Instance Advisor是一个工具，用于提供建议和指导，但它并不是一种分配策略。题目要求的是具体的解决方案，而不是使用工具来选择策略。"
-    }
+    },
+    "anchor": "Spot 分配策略 capacity-optimized → 选容量最多的实例池"
   },
   {
     "exam": "SOA-C02",
@@ -820,7 +861,8 @@
       "B": "错误。将AMI设置为公开只会使其他用户能够在创建区域中使用该AMI，无法解决跨区域使用的问题。",
       "C": "错误。共享AMI是针对账户间的共享，而不是区域间的共享。共享AMI不会自动复制到其他区域。",
       "D": "错误。AMI的跨区域使用不需要手动复制到S3存储桶。AWS提供了直接复制AMI到其他区域的功能。"
-    }
+    },
+    "anchor": "AMI 是区域资源 → 需 copy AMI 到目标区域使用"
   },
   {
     "exam": "SOA-C02",
@@ -839,7 +881,8 @@
       "B": "错误。Nested stack 是在单次部署内组合模板，而不是跨多个成员账户部署。",
       "C": "正确。CloudFormation StackSets 可从管理账户将堆栈跨多个账户和区域部署，是满足此要求的原生自动化方式。",
       "D": "错误。SAM 用于无服务器应用程序的打包，而不是用于组织范围的部署。"
-    }
+    },
+    "anchor": "CloudFormation StackSets → 管理账户批量预置成员账户"
   },
   {
     "exam": "SOA-C02",
@@ -858,7 +901,8 @@
       "B": "错误。SSE-S3 虽然会加密数据，但客户无法控制密钥；公司希望集中控制并具备可审计性。",
       "C": "错误。SSE-C 要求客户在每次请求时提供密钥，这正是公司想要避免的。",
       "D": "正确。SSE-KMS 让 AWS 在 KMS 中管理密钥，同时公司仍可通过密钥策略和 CloudTrail 对密钥使用情况进行审计和控制。"
-    }
+    },
+    "anchor": "SSE-KMS → 密钥使用留 CloudTrail 审计无需自管密钥"
   },
   {
     "exam": "SOA-C02",
@@ -882,7 +926,8 @@
       "C": "分析：CloudFormation模板中创建S3 Bucket需要s3:CreateBucket权限。如果用户没有此权限，堆栈创建会失败。结论：正确。",
       "D": "分析：s3:ListBucket权限用于列出现有的S3 Bucket，而题目中仅涉及创建S3 Bucket，未提到列出操作。结论：错误。",
       "E": "分析：s3:PutObject权限用于向S3 Bucket中上传对象，而题目中仅涉及创建S3 Bucket，未提到上传操作。结论：错误。"
-    }
+    },
+    "anchor": "缺 CreateStack/CreateBucket 权限 → 堆栈创建失败"
   },
   {
     "exam": "SOA-C02",
@@ -906,7 +951,8 @@
       "C": "正确。将只读副本提升为独立集群可创建一个数据与提升时刻保持一致的独立集群，满足 24 小时要求。",
       "D": "错误。AWS DMS 用于异构引擎之间的持续迁移，远比需要的复杂。",
       "E": "错误。pg_dump/pg_restore 是手动的导出/导入路径，过于复杂。"
-    }
+    },
+    "anchor": "恢复最近自动快照/提升只读副本 → 24小时内数据建新集群"
   },
   {
     "exam": "SOA-C02",
@@ -930,7 +976,8 @@
       "C": "错误。要使缓存本身正常工作，ALB 的安全组规则不需要专门允许 CloudFront（尽管可以将其限制为 CloudFront）。",
       "D": "正确。TTL 为 0 会使 CloudFront 将每个请求都转发到源而不进行缓存，从而失去了该分配的意义。",
       "E": "错误。粘性会话只影响 ALB 的目标选择，与 CloudFront 是否缓存无关。"
-    }
+    },
+    "anchor": "DNS 未指向 CloudFront+TTL 全设0 → 请求仍打源站未缓存"
   },
   {
     "exam": "SOA-C02",
@@ -954,7 +1001,8 @@
       "C": "正确：Alias记录是Route 53的特有功能，可以直接指向AWS资源（如ALB）。这是推荐的方式，因为Alias记录支持Zone Apex（裸域名，如example.com）。",
       "D": "正确：Alias记录可以指向另一个Route 53记录（如example.com），从而实现www.example.com与example.com的解析一致性。",
       "E": "错误：不能为Zone Apex（裸域名，如example.com）配置CNAME记录，因为这会违反DNS规范。必须使用Alias记录。"
-    }
+    },
+    "anchor": "Alias 记录指向 ALB/指向另一记录 → zone apex 不可用 CNAME"
   },
   {
     "exam": "SOA-C02",
@@ -973,7 +1021,8 @@
       "B": "错误：出站终端节点用于将VPC内的DNS查询转发到外部DNS服务器，而不是用于从外部访问AWS的私有托管区域。此选项与题目要求不符，因为题目要求的是从本地数据中心解析AWS的私有托管区域。",
       "C": "错误：TXT记录是用于存储文本信息的DNS记录，与DNS解析无关。此选项无法实现从本地数据中心解析私有托管区域的功能。“VPC CIDR IPv4网络范围的基地址加二”并不是有效的DNS解析方法。",
       "D": "错误：PTR记录用于反向DNS解析（IP地址到域名的映射），与题目要求的正向解析无关。同样，“VPC CIDR IPv4网络范围的基地址加二”并不是有效的DNS解析方法。"
-    }
+    },
+    "anchor": "Route 53 Resolver 入站端点 → 本地DNS转发解析私有区域"
   },
   {
     "exam": "SOA-C02",
@@ -992,7 +1041,8 @@
       "B": "错误。单纯的 TCP 运行状况检查只能确认端口打开，无法在应用层验证网站是否正常。",
       "C": "错误。别名记录用于 AWS 资源目标，本地服务器不是有效的别名目标。",
       "D": "错误。与 C 相同，别名记录无法指向本地服务器。"
-    }
+    },
+    "anchor": "A 记录关联 HTTP health check → failover 路由主备本地服务器"
   },
   {
     "exam": "SOA-C02",
@@ -1011,7 +1061,8 @@
       "B": "创建一个具有 IAM 策略的 IAM 用户，并将 IAM 用户的访问密钥和秘密访问密钥导出为 EC2 实例上的环境变量。正确性：虽然可以实现功能，但仍然使用了IAM用户的访问密钥和秘密密钥。安全性：环境变量中的凭证可能被其他进程或用户访问，存在安全隐患。结论：错误。",
       "C": "创建并关联一个允许 EC2 实例调用 AWS 服务的 IAM 角色，并附加一个允许对适当队列执行 sqs:* 权限的 IAM 策略。正确性：使用IAM角色是正确的方式，但授予sqs:*权限过于宽泛，违反最小权限原则。安全性：最小权限原则要求仅授予必要的权限，而不是所有权限。结论：错误。",
       "D": "创建并关联一个允许 EC2 实例调用 AWS 服务的 IAM 角色，并附加一个允许对适当队列执行 sqs:SendMessage、sqs:ReceiveMessage 和 sqs:DeleteMessage 权限的 IAM 策略。正确性：使用IAM角色是正确的方式，并且仅授予必要的权限，符合最小权限原则。安全性：避免了硬编码凭证，同时遵循了最小权限原则。结论：正确。"
-    }
+    },
+    "anchor": "EC2 IAM role 最小权限 SendMessage/Receive/Delete"
   },
   {
     "exam": "SOA-C02",
@@ -1030,7 +1081,8 @@
       "B": "分析：虽然S3支持静态网站托管，但启用静态网站托管会使S3桶公开访问。此选项不符合公司要求，即S3桶不能公开。此选项是错误的。",
       "C": "分析：ALB无法直接将流量转发到S3桶，因为S3桶不是ALB支持的目标类型。此选项技术上不可行。此选项是错误的。",
       "D": "分析：AWS Global Accelerator主要用于加速全球范围内的流量，但它无法直接将流量转发到S3桶。此选项技术上不可行。此选项是错误的。"
-    }
+    },
+    "anchor": "CloudFront+OAI → S3 桶保持非公开访问"
   },
   {
     "exam": "SOA-C02",
@@ -1054,7 +1106,8 @@
       "C": "正确。在分配上添加 www.example.com 作为备用域名并选择由 ACM 颁发的自定义 SSL 证书，可使该主机名上的 HTTPS 正常工作。",
       "D": "错误。AWS WAF 检查请求，但不加密流量。",
       "E": "错误。Origin Shield 提升缓存效率，但不加密查看者流量。"
-    }
+    },
+    "anchor": "Viewer Protocol Policy 强制HTTPS+备用域名自定义证书 → 全程加密"
   },
   {
     "exam": "SOA-C02",
@@ -1073,7 +1126,8 @@
       "B": "错误。弹性 IP 无法同时与多个实例共享。",
       "C": "错误。通过 NLB 的私有 IP 发送出站互联网流量并不是互联网出口的工作方式。",
       "D": "错误。让所有互联网流量经由每个实例上的独立弹性 IP 需要公有子网，且无法在数百个实例上扩展。"
-    }
+    },
+    "anchor": "每可用区部署 NAT gateway+弹性IP → 提供固定出口静态IP"
   },
   {
     "exam": "SOA-C02",
@@ -1092,7 +1146,8 @@
       "B": "错误。SCP 加 EventBridge 计划并不能原生地在组织范围内管理 EBS 的每日增量备份。",
       "C": "正确。AWS Backup 可基于资源标签创建并管理计划备份，并在 AWS Organizations 中支持跨账户、跨区域的备份管理。",
       "D": "错误。为每个 EC2 实例创建每日 AMI 比 EBS 快照备份更重、更慢，也不是题目所要求的。"
-    }
+    },
+    "anchor": "AWS Backup 按标签(Lifecycle:Production)每日备份 → 组织级管理"
   },
   {
     "exam": "SOA-C02",
@@ -1111,7 +1166,8 @@
       "B": "分析：Amazon FSx for Windows File Server是专为Windows环境设计的文件系统，支持多可用区部署，并提供共享文件访问功能。此解决方案完全符合题目要求。结论：正确。",
       "C": "分析：Amazon EBS Multi-Attach允许多个EC2实例同时挂载一个EBS卷，但它不支持文件级共享，且需要额外的管理工作来实现文件访问同步，操作效率较低。结论：错误。",
       "D": "分析：配置两个FSx文件系统并使用DFS复制虽然可以实现文件共享，但增加了复杂性和管理开销，不是最优的解决方案。结论：错误。"
-    }
+    },
+    "anchor": "FSx for Windows Multi-AZ → 共享文件并发访问"
   },
   {
     "exam": "SOA-C02",
@@ -1130,7 +1186,8 @@
       "B": "错误。interface endpoint 使用 ENI 和 PrivateLink，比 gateway endpoint 成本更高，对于同区域的 S3 而言并无必要。",
       "C": "错误。NAT 网关提供互联网出口并产生数据处理费用，成本效益不如 gateway endpoint。",
       "D": "错误。自行管理的代理运维负担重，且成本效益不高。"
-    }
+    },
+    "anchor": "S3 gateway endpoint(默认策略) → 私有子网免公网访问同区S3"
   },
   {
     "exam": "SOA-C02",
@@ -1149,7 +1206,8 @@
       "B": "正确。在源处为对象设置 Cache-Control: max-age，可让 CloudFront 对该特定对象遵循相应的 TTL，从而实现按对象的缓存控制。",
       "C": "错误。no-cache 会完全禁用该响应的缓存，不符合要求。",
       "D": "错误。通过 CloudFront Functions 在 viewer response 中添加 Expires，影响的是客户端看到的内容，而不是 CloudFront 的缓存决策。"
-    }
+    },
+    "anchor": "源端设置 Cache-Control: max-age → 按对象自定义 TTL"
   },
   {
     "exam": "SOA-C02",
@@ -1168,7 +1226,8 @@
       "B": "错误。预先运行 100 个实例即使空闲时也会产生全额成本，这也不是 warm pool 的设计用途。",
       "C": "错误。增大预热时间会使扩展变慢，而不是更快。",
       "D": "错误。预测式扩展需要稳定、可预测的模式；由电视广告引发的突发性激增不适合预测式扩展。"
-    }
+    },
+    "anchor": "Auto Scaling warm pool(Stopped预热) → 消除突增启动延迟"
   },
   {
     "exam": "SOA-C02",
@@ -1187,6 +1246,7 @@
       "B": "错误。与 A 相同，自定义的轮询 Lambda 属于不必要的开销。",
       "C": "正确。Service Quotas 可以在使用量接近配额时发布 CloudWatch 告警；将告警配置为 EC2 配额的 70% 以上并配合 SNS 通知，是在配额耗尽前发出告警的最简单方式。",
       "D": "错误。CPU 利用率衡量的是负载而不是配额消耗，该告警无法满足此要求。"
-    }
+    },
+    "anchor": "Service Quotas 控制台设 CloudWatch 告警(70%) → SNS 通知"
   }
 ]

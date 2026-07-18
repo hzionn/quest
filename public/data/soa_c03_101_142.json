@@ -16,7 +16,8 @@
       "B": "错误。订阅 GitHub 通知并构建 SNS/Lambda/Run Command 流水线操作繁重，需要自定义代码并持续维护。",
       "C": "错误。Patch Manager 主要用于操作系统和应用程序补丁管理，并不专门用于自动保持 SSM Agent 最新。",
       "D": "错误。与 B 类似，需要自定义订阅、SNS 主题以及 Lambda 触发的 Automation 文档，开销远大于内置的 Fleet Manager 设置。"
-    }
+    },
+    "anchor": "Fleet Manager 启用 Auto update SSM Agent→自动更新代理"
   },
   {
     "exam": "SOA-C03",
@@ -35,7 +36,8 @@
       "B": "错误。CloudTrail 记录的是 API 调用，而不是实例性能指标，无法驱动指标阈值告警。",
       "C": "错误。CloudWatch 基础监控仅每 5 分钟采集一次 EC2 指标，无法满足每分钟一次的要求。",
       "D": "正确。详细监控以 1 分钟粒度输出 EC2 指标，配合 CloudWatch 告警和 SNS 主题即可实现邮件通知。"
-    }
+    },
+    "anchor": "CloudWatch 详细监控(1分钟)+告警→SNS 邮件告警"
   },
   {
     "exam": "SOA-C03",
@@ -59,7 +61,8 @@
       "C": "错误。安全组阻塞会导致 CloudFront 到源的流量失败，但不会让请求绕过 CloudFront。",
       "D": "正确。TTL 为 0 会禁用边缘缓存，每个请求都会被转发到源，ALB 负载因此没有降低。",
       "E": "错误。粘性会话影响 ALB 后端目标组的选择行为，与 CloudFront 是否缓存无关。"
-    }
+    },
+    "anchor": "DNS 未切到 CloudFront+TTL=0→无缓存,ALB负载不降"
   },
   {
     "exam": "SOA-C03",
@@ -78,7 +81,8 @@
       "B": "错误。CloudTrail 日志记录的是 API 调用，不能证明 AWS 托管基础设施的合规性。",
       "C": "错误。CloudWatch Logs 是应用和资源日志，并非合规文档。",
       "D": "错误。向审计方授予管理员权限违反最小权限原则，且毫无必要——AWS 已通过 Artifact 提供合规报告。"
-    }
+    },
+    "anchor": "AWS Artifact 门户下载→获取 PCI DSS 合规报告"
   },
   {
     "exam": "SOA-C03",
@@ -97,7 +101,8 @@
       "B": "错误。Snapshot 删除策略仅保留一份快照，而 DynamoDB 表只支持 Retain（及部分资源专属选项），且快照无法保留正在使用的表。",
       "C": "错误。终止保护会完全阻止堆栈删除，无法满足“删除堆栈但保留 DynamoDB 表”的需求。",
       "D": "错误。IAM Deny 仅阻止应用程序删除该表，但 CloudFormation 堆栈删除时使用的是部署角色，仍然会尝试删除该资源。"
-    }
+    },
+    "anchor": "DynamoDB 设 DeletionPolicy: Retain→删堆栈留表"
   },
   {
     "exam": "SOA-C03",
@@ -116,7 +121,8 @@
       "B": "正确。在组织根挂载一个拒绝 DynamoDB 操作的 SCP，可以对所有成员账户中的所有主体（包括根用户）强制生效。",
       "C": "错误。与 A 相同，IAM 策略无法限制账户根用户。",
       "D": "错误。删除默认的 FullAWSAccess SCP 并替换为仅拒绝的 SCP 会阻止几乎所有服务，而不仅是 DynamoDB。"
-    }
+    },
+    "anchor": "组织根挂载拒绝DynamoDB的SCP→连根用户也受限"
   },
   {
     "exam": "SOA-C03",
@@ -140,7 +146,8 @@
       "C": "错误。策略仅授予 sqs:List*，不包含 DeleteQueue 权限。",
       "D": "正确。elasticloadbalancing:* 授予所有 ELB 操作，包括 Describe* 类操作。",
       "E": "正确。lambda:* 授予所有 Lambda 操作，包括 lambda:InvokeFunction。"
-    }
+    },
+    "anchor": "elasticloadbalancing:*/lambda:*→全操作含Invoke"
   },
   {
     "exam": "SOA-C03",
@@ -159,7 +166,8 @@
       "B": "错误。EventBridge 模式中不支持使用 \"!\" 作为否定符。",
       "C": "错误。该模式匹配 state 等于 \"terminated\" 的事件，与题意相反。",
       "D": "正确。\"anything-but\" 与 \"equals-ignore-case\" 组合可匹配除 \"terminated\" 以外的所有状态值。"
-    }
+    },
+    "anchor": "anything-but 配合 equals-ignore-case→排除terminated"
   },
   {
     "exam": "SOA-C03",
@@ -178,7 +186,8 @@
       "B": "错误。CloudWatch 自定义指标无法跨账户和区域记录 Elastic IP 的归属历史。",
       "C": "正确。Amazon VPC IP Address Manager (IPAM) 与 AWS Organizations 集成，可跨账户和区域集中管理、跟踪和审计 IP 地址使用情况，包括分配历史。",
       "D": "错误。Systems Manager Inventory 用于跟踪托管实例清单，不是 Elastic IP 归属历史。"
-    }
+    },
+    "anchor": "VPC IP Address Manager(IPAM)→跨账户区域追踪EIP历史"
   },
   {
     "exam": "SOA-C03",
@@ -197,7 +206,8 @@
       "B": "正确。仅允许该用户调用 STS，并通过 AssumeRole 获取临时凭证，可消除长期访问密钥，同时通过承担的角色实现最小权限。",
       "C": "错误。即使限制用户自身权限，仍然存在长期访问密钥，不符合“避免永久凭证”的要求。",
       "D": "错误。将用户加入受限组依旧依赖永久访问密钥。"
-    }
+    },
+    "anchor": "仅允许调用STS的AssumeRole→消除永久密钥最小权限"
   },
   {
     "exam": "SOA-C03",
@@ -216,7 +226,8 @@
       "B": "错误。嵌套堆栈是把多个模板组合在同一个堆栈中，不用于跨账户预置资源。",
       "C": "正确。CloudFormation StackSets 可从单个管理账户跨多个 AWS 账户和区域部署并管理堆栈。",
       "D": "错误。AWS SAM 是单堆栈的无服务器应用转换器，不直接处理跨账户部署。"
-    }
+    },
+    "anchor": "CloudFormation StackSets→跨账户区域自动预置资源"
   },
   {
     "exam": "SOA-C03",
@@ -235,7 +246,8 @@
       "B": "错误。入站端点不能承载将 VPC 查询转发到本地服务器的转发规则。",
       "C": "错误。转发规则必须在 Route 53 Resolver 上，而不是在本地 DNS 服务器上。",
       "D": "正确。出站端点加上为 example.com 配置并关联到 VPC 的 Resolver 转发规则，可将 EC2 的匹配 DNS 查询发往本地 DNS 服务器。"
-    }
+    },
+    "anchor": "Resolver出站端点+转发规则关联VPC→查询转发本地DNS"
   },
   {
     "exam": "SOA-C03",
@@ -254,7 +266,8 @@
       "B": "错误。归档的是 EBS 快照而不是 AMI，恢复后也不会返回相同的 AMI ID。",
       "C": "正确。CreateStoreImageTask 将 AMI 作为单个对象保存在 S3 中，使用对应的 RestoreImageFromS3 恢复时会得到原始 AMI ID。",
       "D": "错误。aws ec2 copy-image 并不支持以 S3 存储桶为目标，它会在另一个区域生成新的 AMI 及新 ID。"
-    }
+    },
+    "anchor": "CreateStoreImageTask→RestoreImageFromS3保留原AMI ID"
   },
   {
     "exam": "SOA-C03",
@@ -273,7 +286,8 @@
       "B": "错误。维护 cron 脚本与 S3 API 调用相比托管方案过于繁重。",
       "C": "错误。S3 事件通知针对对象事件，无法捕获存储桶公共访问配置变化。",
       "D": "正确。AWS Config 托管规则 s3-bucket-public-read-prohibited 会持续评估存储桶访问设置，不合规的事件可直接发送到 SNS，是完全托管且最省心的方案。"
-    }
+    },
+    "anchor": "Config托管规则s3-bucket-public-read-prohibited→SNS告警"
   },
   {
     "exam": "SOA-C03",
@@ -292,7 +306,8 @@
       "B": "错误。Route 53 健康检查更多用于端点故障转移，而 NLB 本身不能像 ALB 那样基于应用层健康检查路由流量。",
       "C": "错误。通过 Lambda 重启属于事后被动响应，无法基于健康状态持续路由流量。",
       "D": "错误。CloudWatch 指标本身不会控制流量路由，NLB 也不具备 ALB 那样的应用层健康检查能力。"
-    }
+    },
+    "anchor": "ALB 健康检查→只路由流量到健康实例"
   },
   {
     "exam": "SOA-C03",
@@ -311,7 +326,8 @@
       "B": "错误。生命周期规则用于管理已存在的 AMI，不应通过原地更新配方来切换父 AMI。",
       "C": "错误。构建组件用于安装软件，不控制配方中使用的父 AMI。",
       "D": "错误。Image Builder 管道并不通过启动模板选择父 AMI，父 AMI 由配方指定。"
-    }
+    },
+    "anchor": "Image Builder 配方新版本+新AMI→管道指向新配方"
   },
   {
     "exam": "SOA-C03",
@@ -330,7 +346,8 @@
       "B": "错误。通过 Fleet Manager 远程桌面在每台实例上手动下载并执行安装程序不属于自动化，也覆盖不到新实例。",
       "C": "错误。Lambda 无法“从每台实例上”运行，Lambda 层也不能向 EC2 实例安装软件。",
       "D": "错误。EventBridge 无法修改 RunInstances 事件以插入软件安装步骤，重启全部实例还会造成中断。"
-    }
+    },
+    "anchor": "Distributor包+State Manager关联→新旧实例自动装软件"
   },
   {
     "exam": "SOA-C03",
@@ -349,7 +366,8 @@
       "B": "正确。用户自定义的成本分配标签必须在账单控制台激活后，键/值才会显示在成本报告中。",
       "C": "错误。成本类别用于聚合成本，并不会把标签值显示在账单报告中。",
       "D": "错误。Cost and Usage Report 可包含资源 ID，但标签字段仍需先激活为成本分配标签才会出现。"
-    }
+    },
+    "anchor": "激活 user-defined cost allocation tags→标签显示账单"
   },
   {
     "exam": "SOA-C03",
@@ -368,7 +386,8 @@
       "B": "错误。SNS 不能直接订阅 Automation runbook，不存在原生的“SNS -> runbook”集成。",
       "C": "错误。CloudWatch Logs 订阅过滤器把数据传给 Lambda、Kinesis 等下游，并不能直接触发 Automation runbook。",
       "D": "错误。AWS Config 评估的是 AWS 资源配置项，无法呈现第三方监控工具的 findings。"
-    }
+    },
+    "anchor": "监控工具发布EventBridge事件→规则调用Automation runbook"
   },
   {
     "exam": "SOA-C03",
@@ -387,7 +406,8 @@
       "B": "错误。该路由应加在私有子网路由表中，而不是公有子网。",
       "C": "错误。NAT 网关如果位于私有子网，本身无法通过互联网网关出网。",
       "D": "错误。同上，NAT 网关放在私有子网无法出公网。"
-    }
+    },
+    "anchor": "NAT Gateway 建在公有子网→私有子网路由表指向它出网"
   },
   {
     "exam": "SOA-C03",
@@ -406,7 +426,8 @@
       "B": "错误。重启应用会中断用户请求，且无法应对持续的容量需求。",
       "C": "错误。调整 EC2 实例规格需要 stop/start，影响服务且较慢。",
       "D": "正确。通过 Auto Scaling 组配合 CloudWatch CPU 告警驱动的扩容策略，可水平添加 EC2 实例，对服务无中断。"
-    }
+    },
+    "anchor": "Auto Scaling组+CloudWatch CPU告警→水平扩容零中断"
   },
   {
     "exam": "SOA-C03",
@@ -425,7 +446,8 @@
       "B": "错误。仪表板属于手动查看的可视化工具，不会自动告警。",
       "C": "错误。借助 Lambda 订阅过滤器再触发 SNS 比原生“指标过滤器 + 告警”复杂得多，没必要。",
       "D": "错误。只读访问无法自动告警，团队仍需人工查看日志。"
-    }
+    },
+    "anchor": "Metric filter(10分钟5次)+告警→SNS邮件通知支持团队"
   },
   {
     "exam": "SOA-C03",
@@ -444,7 +466,8 @@
       "B": "错误。AWS 拥有的密钥对客户不可见，也无法应用自定义密钥策略。",
       "C": "错误。EBS 不支持使用非对称 KMS 密钥加密，必须使用对称密钥。",
       "D": "错误。导入密钥材料的 KMS 密钥不支持自动轮换，需要每年手动操作，开销更高。"
-    }
+    },
+    "anchor": "KMS对称CMK+自定义密钥策略→启用自动密钥每年轮换"
   },
   {
     "exam": "SOA-C03",
@@ -463,7 +486,8 @@
       "B": "错误。预留并发只是限制 Lambda 并发上限，不能提升吞吐；问题在 DynamoDB 上，而非 Lambda。",
       "C": "错误。带自动扩展的预置容量响应需要时间，无法很好吸收突发流量。",
       "D": "正确。题目指明逐渐增长时应用没问题；将 DynamoDB 改为按峰值预置容量，可在每日突发到来时始终具备所需容量。"
-    }
+    },
+    "anchor": "DynamoDB 预置容量设为峰值用量→吸收每日突发流量"
   },
   {
     "exam": "SOA-C03",
@@ -482,7 +506,8 @@
       "B": "正确。ACM 可免费签发公共 SSL/TLS 证书，并直接挂载在 ALB 的 HTTPS 监听器上。",
       "C": "错误。AWS KMS 不存放 SSL/TLS 证书，证书应放在 ACM（或 IAM）里。",
       "D": "错误。SSL/TLS 证书绑定在 ALB 监听器上，而不是目标组上。"
-    }
+    },
+    "anchor": "ACM 签发公共证书→挂载到ALB HTTPS监听器"
   },
   {
     "exam": "SOA-C03",
@@ -501,7 +526,8 @@
       "B": "错误。RDS 上不能运行 CloudWatch 代理，也不能直接把日志写到 S3，整体方案过于复杂。",
       "C": "错误。从 RDS 控制台的 Logs & events 页面查看不属于集中查询，Logs Insights 也无法统一查询两类日志。",
       "D": "错误。X-Ray 用于跟踪分析，不收集任意日志事件，方向不对。"
-    }
+    },
+    "anchor": "CloudWatch Agent(EC2)+RDS日志导出→Logs Insights统一查询"
   },
   {
     "exam": "SOA-C03",
@@ -520,7 +546,8 @@
       "B": "错误。在 EC2 上运行定时脚本解析 CloudTrail 属于自建方案，开销高。",
       "C": "错误。SQS 是消息队列，不会发送邮件。",
       "D": "正确。让 EventBridge 规则匹配 CloudTrail 中的 root 登录事件并把通知发给订阅了邮箱的 SNS 主题，是标准且低成本的告警方式。"
-    }
+    },
+    "anchor": "EventBridge匹配root登录事件→SNS主题发邮件"
   },
   {
     "exam": "SOA-C03",
@@ -539,7 +566,8 @@
       "B": "正确。各账户启用 AWS Config 记录器并把数据汇聚到安全账户的聚合器，可获得跨账户资源清单，再用 Athena/Quick Suite 查询和生成报告。",
       "C": "错误。CloudTrail 无法直接写入 RDS，且 CloudTrail 记录的是 API 调用，不是资源当前清单。",
       "D": "错误。Trusted Advisor 提供的是最佳实践和限额检查，并不会逐资源审计创建情况。"
-    }
+    },
+    "anchor": "各账户Config recorder→聚合器aggregator汇总跨账户资源"
   },
   {
     "exam": "SOA-C03",
@@ -558,7 +586,8 @@
       "B": "错误。Amazon Linux 2023 AMI 默认已预装 EC2 Instance Connect 代理。",
       "C": "正确。剩下的关键就是给开发人员授予 ec2-instance-connect:SendSSHPublicKey（以及 ec2:DescribeInstances）等 IAM 权限，让他们能在控制台推送公钥并连接。",
       "D": "错误。EC2 Instance Connect 的 VPC 终端节点只在实例位于私有网络时才需要，本题实例为公网；CloudTrail 与建立连接无关。"
-    }
+    },
+    "anchor": "授予ec2-instance-connect:SendSSHPublicKey权限→连接成功"
   },
   {
     "exam": "SOA-C03",
@@ -577,7 +606,8 @@
       "B": "错误。从快照重新构建 AMI 比直接 copy-image 增加了不必要的步骤。",
       "C": "错误。原模板里的 AMI ID 仅在 us-east-1 中有效，跨区域直接运行会失败。",
       "D": "错误。Auto Scaling 组属于单一区域，无法在同一 ASG 中纳入多个区域。"
-    }
+    },
+    "anchor": "AMI是区域级资源,copy-image复制各区域→Mappings按区域引用"
   },
   {
     "exam": "SOA-C03",
@@ -596,7 +626,8 @@
       "B": "错误。把创建事件发到 SNS 并不会自动终止不合规资源。",
       "C": "错误。修改关机行为为 terminate 并不强制要求标签，用户仍然可以启动无标签实例。",
       "D": "错误。AWS-StopEC2Instances 只会停止实例，不满足“终止”的要求。"
-    }
+    },
+    "anchor": "required-tags规则自动修复→AWS-TerminateEC2Instance终止"
   },
   {
     "exam": "SOA-C03",
@@ -615,7 +646,8 @@
       "B": "错误。S3 事件通知不能直接投递到 SQS FIFO 队列。",
       "C": "正确。S3 事件通知支持发布到 SNS FIFO 主题，再扇出到 SQS FIFO 队列，以最少运维工作保持消息顺序。",
       "D": "错误。S3 Access Points 用于访问控制，不会向 SQS 发送通知。"
-    }
+    },
+    "anchor": "S3事件通知→SNS FIFO主题→扇出SQS FIFO保序"
   },
   {
     "exam": "SOA-C03",
@@ -634,7 +666,8 @@
       "B": "错误。基于延迟的路由用于公共托管区记录，与本地到 Resolver 端点的转发无关。",
       "C": "错误。仅创建私有托管区无法让本地系统查询 AWS DNS。",
       "D": "错误。出站端点用于把 VPC 的 DNS 查询转发到本地，方向与需求相反。"
-    }
+    },
+    "anchor": "Resolver入站端点跨AZ+本地DNS故障转移配置端点IP"
   },
   {
     "exam": "SOA-C03",
@@ -653,7 +686,8 @@
       "B": "错误。通过任务计划程序与 S3 同步不是实时的，跨实例难以保持一致性。",
       "C": "错误。EFS 是基于 NFS 的服务，主要面向 Linux 客户端，并非 Windows 原生存储。",
       "D": "错误。EBS Multi-Attach 仅支持特定卷类型和 Linux 实例；Windows 集群没有合适的集群文件系统时无法共享 EBS 卷。"
-    }
+    },
+    "anchor": "FSx for Windows File Server 多AZ→原生SMB强一致共享"
   },
   {
     "exam": "SOA-C03",
@@ -672,7 +706,8 @@
       "B": "错误。NAT 网关必须位于公有子网，本题正是这样部署，所以私有子网没有 NAT 网关并非错误。",
       "C": "错误。默认安全组默认允许相互附加资源之间的流量，且默认允许出站，因此在此场景下不会阻断这种通信。",
       "D": "错误。默认安全组默认允许所有出站流量，不会阻塞 EC2 出站。"
-    }
+    },
+    "anchor": "私有子网自定义NACL拒绝出站→堵住去NAT网关流量"
   },
   {
     "exam": "SOA-C03",
@@ -691,7 +726,8 @@
       "B": "正确。EBS 快照为增量存储：第一次保存 10 GiB（初始数据），第二次保存 4 GiB（变更块），第三次保存 2 GiB（新增数据），合计 16 GiB。",
       "C": "错误。26 GiB 意味着第三次快照保存了 14 GiB，与增量快照机制不符。",
       "D": "错误。32 GiB 假设每次快照都保存整卷数据，忽略了增量快照的本质。"
-    }
+    },
+    "anchor": "EBS快照增量:10+4+2=16 GiB"
   },
   {
     "exam": "SOA-C03",
@@ -710,7 +746,8 @@
       "B": "正确。Amazon RDS Multi-AZ 提供自动故障切换（通常几分钟内），point-in-time restore 可满足 5 分钟 RPO，且运维开销小。",
       "C": "错误。在 EC2 上自建 MySQL 跨可用区复制并维护快照的运维成本远高于托管 RDS。",
       "D": "错误。Multi-AZ RDS 已采用同步复制，再额外配置“数据库复制”属于多余；Multi-AZ + PITR 已经满足题目 RPO/RTO。"
-    }
+    },
+    "anchor": "RDS Multi-AZ+point-in-time restore→满足RTO15/RPO5"
   },
   {
     "exam": "SOA-C03",
@@ -729,7 +766,8 @@
       "B": "错误。基于实例刷新的原地滚动更新虽可耗尽连接，但旧实例被替换后回滚速度较慢。",
       "C": "错误。仅靠增大容量再终止旧实例，本质上就是滚动更新，缺乏简洁的回滚路径。",
       "D": "错误。在 CodeDeploy 已经原生支持蓝绿的情况下，再用 Step Functions 自定义工作流是多余的开销。"
-    }
+    },
+    "anchor": "CodeDeploy蓝绿部署+两个ALB目标组→零中断快速回滚"
   },
   {
     "exam": "SOA-C03",
@@ -748,7 +786,8 @@
       "B": "正确。CloudTrail 对 S3 的数据事件可记录 GetObject、PutObject、DeleteObject 等对象级 API 活动，提供完整审计跟踪。",
       "C": "错误。S3 服务器访问日志记录对象访问请求，但不像 CloudTrail 那样结构化覆盖所有 S3 API 操作。",
       "D": "错误。IAM Access Analyzer 检查资源策略以发现意外共享，并不记录 API 活动。"
-    }
+    },
+    "anchor": "CloudTrail 记录S3 data events→审计对象级API调用"
   },
   {
     "exam": "SOA-C03",
@@ -767,7 +806,8 @@
       "B": "错误。NAT 网关仍然需要通过公网 IP/互联网访问 S3，违反“不使用公共 IP”的需求。",
       "C": "错误。Site-to-Site VPN 用于把 VPC 与本地数据中心连接，不连接 AWS 服务端点。",
       "D": "错误。Transit Gateway 用于 VPC 与网络之间路由，不直接提供 S3 的私有访问。"
-    }
+    },
+    "anchor": "创建S3 Gateway Endpoint→SageMaker私有访问S3无需公网IP"
   },
   {
     "exam": "SOA-C03",
@@ -786,7 +826,8 @@
       "B": "错误。OIDC 用于联邦 Web 身份，而安全公司员工是另一个账户中的 IAM 主体。",
       "C": "正确。跨账户角色承担需要目标角色的信任策略（已完成）与调用方的身份策略：在主体一侧授予 sts:AssumeRole 并指向目标角色 ARN。",
       "D": "错误。sts:SetSourceIdentity 只控制是否允许设置 source identity，并不会授予承担角色的权限。"
-    }
+    },
+    "anchor": "身份策略授予sts:AssumeRole指向目标角色ARN→跨账户承担"
   },
   {
     "exam": "SOA-C03",
@@ -805,6 +846,7 @@
       "B": "错误。GET 请求是读取，不是上传；触发器应针对对象创建。",
       "C": "错误。SNS 订阅过滤策略基于消息属性，S3 事件通知缺乏对 .txt 后缀直接可用的消息属性，且方案过于复杂。",
       "D": "错误。CloudWatch Logs 不能基于 S3 上传事件触发 Lambda。"
-    }
+    },
+    "anchor": "S3事件通知后缀过滤.txt→仅上传.txt触发Lambda"
   }
 ]

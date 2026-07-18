@@ -16,7 +16,8 @@
       "B": "错误。Parameters 部分也是可选的，属性可以直接在模板中硬编码。",
       "C": "正确。PrivateDnsName 是只读属性，由 AWS 根据实例所在的 VPC 和子网自动分配，无法通过模板显式设置，因此会导致堆栈创建失败。",
       "D": "错误。VPC 通过 SubnetId 间接指定，不必直接指定。"
-    }
+    },
+    "anchor": "PrivateDnsName 是只读属性 → 不能在模板中设置"
   },
   {
     "exam": "SOA-C03",
@@ -35,7 +36,8 @@
       "B": "正确。用户定义标签必须先在 Billing and Cost Management 控制台手动激活为成本分配标签，才能在 Cost Explorer 中用于过滤。",
       "C": "错误。Cost and Usage Report 与成本分配标签激活无关，Cost Explorer 不依赖 CUR 即可使用标签。",
       "D": "错误。AWS Budgets 与标签激活无关。"
-    }
+    },
+    "anchor": "激活 Cost Allocation Tags → Cost Explorer 才能过滤"
   },
   {
     "exam": "SOA-C03",
@@ -54,7 +56,8 @@
       "B": "错误。手动登录 50 台实例并用 PowerShell 脚本效率低且易出错。",
       "C": "错误。逐台运行向导需要人工交互，无法规模化。",
       "D": "错误。advanced 详细级别控制的是指标采集粒度，并不能决定捕获哪些日志文件。"
-    }
+    },
+    "anchor": "append-config 追加配置 → CloudWatch agent 采集 DHCP 日志"
   },
   {
     "exam": "SOA-C03",
@@ -73,7 +76,8 @@
       "B": "正确。compliance 模式的 S3 Object Lock 即使是根用户也无法缩短或解除保留期，可严格阻止 3 个月内删除。",
       "C": "错误。版本控制+生命周期规则无法阻止高权限用户彻底删除对象。",
       "D": "错误。governance 模式可被持有 s3:BypassGovernanceRetention 权限的用户绕过，安全性弱于 compliance 模式。"
-    }
+    },
+    "anchor": "S3 Object Lock compliance 模式 → 任何人都无法缩短保留期"
   },
   {
     "exam": "SOA-C03",
@@ -92,7 +96,8 @@
       "B": "错误。logs:CreateExportTask 用于将日志导出到 S3，与发布流日志到 CloudWatch 无关。",
       "C": "错误。VPC 流日志支持 IPv6 流量，IPv6 不会阻塞发布。",
       "D": "错误。VPC 对等连接不会影响流日志发送到 CloudWatch Logs。"
-    }
+    },
+    "anchor": "IAM 角色缺 logs:CreateLogGroup → 无法发布日志"
   },
   {
     "exam": "SOA-C03",
@@ -111,7 +116,8 @@
       "B": "错误。异常缓解仅在加权随机算法下生效，且不会提供会话粘性。",
       "C": "错误。关闭跨可用区负载均衡只改变流量分布，不提供会话粘性。",
       "D": "错误。注销延迟仅控制注销目标前的等待时间，与会话粘性无关。"
-    }
+    },
+    "anchor": "weighted random 无粘性,需 least outstanding requests"
   },
   {
     "exam": "SOA-C03",
@@ -130,7 +136,8 @@
       "B": "错误。还原自动备份会创建新的集群，不会修改现有集群。",
       "C": "正确。Aurora backtracking 可在 backtrack 窗口（最长 72 小时）内将现有 Aurora MySQL 集群在原集群上回溯到指定时间点，无需新建集群。",
       "D": "错误。PITR 会基于备份创建新的 DB 集群，不会在现有集群上回滚。"
-    }
+    },
+    "anchor": "Aurora backtracking → 72 小时内原地回滚集群，无需新建"
   },
   {
     "exam": "SOA-C03",
@@ -149,7 +156,8 @@
       "B": "正确。OnFailure=DO_NOTHING 可使 CloudFormation 在堆栈创建失败时不进行回滚和资源删除，从而保留资源以便排查。",
       "C": "错误。回滚配置 (rollback configuration) 用于基于 CloudWatch 告警，不支持 DO_NOTHING 触发器。",
       "D": "错误。OnFailure=ROLLBACK 会删除已创建的资源，与需求相反。"
-    }
+    },
+    "anchor": "OnFailure=DO_NOTHING → 堆栈创建失败时保留已建资源"
   },
   {
     "exam": "SOA-C03",
@@ -168,7 +176,8 @@
       "B": "正确。ALB 在端口 80 设置 HTTP 监听器并配置到 HTTPS 的重定向动作，端口 443 设置 HTTPS 监听器并附加 ACM 证书，满足需求。",
       "C": "错误。ALB 不使用 TCP 监听器，TCP 监听器属于 NLB；NLB 也不支持 HTTP 到 HTTPS 的重定向规则。",
       "D": "错误。NLB 工作在第 4 层，不支持 HTTP 重定向规则。"
-    }
+    },
+    "anchor": "ALB 80 端口 HTTP 监听器重定向到 443 HTTPS，证书挂 443"
   },
   {
     "exam": "SOA-C03",
@@ -187,7 +196,8 @@
       "B": "正确。在应用 OU 上挂载 SCP 可以对该 OU 内的所有账户强制执行无标签即拒绝的规则，并且只影响该 OU。",
       "C": "错误。IAM 角色无法约束用户的直接调用，且仍是单账户范围。",
       "D": "错误。将 SCP 附加到根 OU 会影响组织内的所有账户，不符合仅限应用 OU 的要求。"
-    }
+    },
+    "anchor": "OU 挂 SCP→无 CostCenter-Project 标签拒绝 RunInstances"
   },
   {
     "exam": "SOA-C03",
@@ -206,7 +216,8 @@
       "B": "错误。Lambda 预留并发限制的是 Lambda 调用并发，不是 Run Command 在实例上的并发执行。",
       "C": "正确。SSM Run Command 支持基于标签选择目标，并通过 rate control 直接限制并发执行数（例如 30），原生满足要求。",
       "D": "错误。Step Functions 方案复杂；Run Command 的 rate control 已原生支持并发限制。"
-    }
+    },
+    "anchor": "SSM Run Command rate control 设并发 30 → 按标签选目标"
   },
   {
     "exam": "SOA-C03",
@@ -225,7 +236,8 @@
       "B": "错误。调整权重只是改变流量分布，无法识别和避开不健康端点。",
       "C": "错误。切换为基于延迟的路由不能给加权记录添加健康检查。",
       "D": "错误。降低 TTL 只是加快 DNS 变更传播，本身不检测端点健康。"
-    }
+    },
+    "anchor": "加权记录加 Route 53 健康检查 → 自动避开不健康端点"
   },
   {
     "exam": "SOA-C03",
@@ -249,7 +261,8 @@
       "C": "错误。自定义 Lambda 脚本运维成本远高于使用 Distributor + State Manager。",
       "D": "错误。AWS-RunRemoteScript 只是运行远程脚本，不提供 Distributor 的包生命周期管理能力。",
       "E": "正确。使用 State Manager 关联调用 AWS-ConfigureAWSPackage，可按标签定位实例并持续强制安装/更新 Distributor 包的期望版本。"
-    }
+    },
+    "anchor": "Distributor 打包+AWS-ConfigureAWSPackage 持续更新"
   },
   {
     "exam": "SOA-C03",
@@ -268,7 +281,8 @@
       "B": "错误。识别缺失补丁应使用 Patch Manager 而非 AWS Config。",
       "C": "错误。EventBridge 驱动的工作流对一次性补丁修复过于复杂。",
       "D": "错误。重做 AMI 并手动替换实例运维量大且会中断业务。"
-    }
+    },
+    "anchor": "Patch Manager 扫描识别缺失补丁 + Patch Now 立即修补零日漏洞"
   },
   {
     "exam": "SOA-C03",
@@ -287,7 +301,8 @@
       "B": "错误。cron 是定时轮询，不是事件驱动。",
       "C": "错误。cron + 协议变更与事件驱动地修复安全组暴露无关。",
       "D": "正确。EventBridge 在收到 Security Hub 发现时触发 Lambda，Lambda 移除暴露公共访问的安全组规则，完全自动化、事件驱动。"
-    }
+    },
+    "anchor": "Security Hub 发现→EventBridge 触发 Lambda 移除暴露规则"
   },
   {
     "exam": "SOA-C03",
@@ -306,7 +321,8 @@
       "B": "错误。分区放置组用于需要故障隔离的大规模工作负载，跨 AZ 也会增加延迟。",
       "C": "错误。分区放置组是为故障隔离设计的，不是最低延迟。",
       "D": "错误。分散放置组将实例分散在不同硬件，目的不是低延迟。"
-    }
+    },
+    "anchor": "cluster placement group 单 AZ → HPC 最低延迟最高吞吐"
   },
   {
     "exam": "SOA-C03",
@@ -325,7 +341,8 @@
       "B": "错误。Amazon Inspector 不运行 CIS AWS 基础基准；该基准由 Security Hub 运行。",
       "C": "错误。GuardDuty 用于威胁检测，不运行 CIS 基础基准。",
       "D": "正确。Security Hub 委派管理员 + Organizations 集成可自动注册新账户，并持续运行 CIS AWS 基础基准，是运维最少的方案。"
-    }
+    },
+    "anchor": "Security Hub 委派管理员+Organizations 自动注册→CIS 基准"
   },
   {
     "exam": "SOA-C03",
@@ -344,7 +361,8 @@
       "B": "错误。改实例类型为 EBS 优化并未对 EBS 卷做合适调整。",
       "C": "正确。AWS Compute Optimizer 基于 IOPS、吞吐等指标对 EBS 卷给出右尺寸建议，直接满足需求。",
       "D": "错误。逐台用 fio 基准测试运维成本极高，不可扩展。"
-    }
+    },
+    "anchor": "AWS Compute Optimizer → 按 IOPS/吞吐给出 EBS 卷右尺寸建议"
   },
   {
     "exam": "SOA-C03",
@@ -363,7 +381,8 @@
       "B": "错误。单个桶的策略不能强制其它桶的全局要求。",
       "C": "错误。编写自定义 Lambda 比使用 AWS 提供的现成 runbook 运维成本更高。",
       "D": "正确。AWS Config 用 s3-bucket-logging-enabled 规则识别不合规桶，并使用托管 SSM Automation runbook AWS-ConfigureS3BucketLogging 自动启用日志，无需自定义代码。"
-    }
+    },
+    "anchor": "AWS Config + AWS-ConfigureS3BucketLogging 自动修复日志"
   },
   {
     "exam": "SOA-C03",
@@ -382,7 +401,8 @@
       "B": "正确。EventBridge 支持定时规则（cron 表达式），可直接以 SNS 主题为目标发布，完全无服务器、运维最少。",
       "C": "错误。SNS 订阅本身没有调度能力。",
       "D": "错误。Step Functions 对简单的每周发布过于复杂。"
-    }
+    },
+    "anchor": "EventBridge 定时规则(cron) → 直接发布到 SNS 主题"
   },
   {
     "exam": "SOA-C03",
@@ -401,7 +421,8 @@
       "B": "错误。前缀范围不会导致 Access Denied。",
       "C": "错误。S3 RTC 只影响复制延迟，不影响所有权或权限。",
       "D": "错误。存储类变化不会引起 Access Denied。"
-    }
+    },
+    "anchor": "跨账户复制需在 Replication 配置改对象所有权为目标桶所有者"
   },
   {
     "exam": "SOA-C03",
@@ -420,7 +441,8 @@
       "B": "错误。将静态密钥放进环境变量同样不安全，不符合最佳实践。",
       "C": "错误。sqs:* 违反最小权限，应只授予必要操作。",
       "D": "正确。给 EC2 实例使用 IAM 角色避免静态凭证，且只授予必要操作，符合最小权限原则。"
-    }
+    },
+    "anchor": "EC2 角色最小权限只授 Send/Receive/DeleteMessage"
   },
   {
     "exam": "SOA-C03",
@@ -439,7 +461,8 @@
       "B": "错误。KMS 不轮换凭据，且只读副本不能应对写入激增。",
       "C": "正确。Secrets Manager 原生支持 RDS 凭据自动轮换，RDS Proxy 通过连接池缓冲写入密集的客户端连接激增。",
       "D": "错误。只读副本只服务读流量，无法处理写入激增。"
-    }
+    },
+    "anchor": "Secrets Manager 自动轮换凭据 + RDS Proxy 应对连接激增"
   },
   {
     "exam": "SOA-C03",
@@ -458,7 +481,8 @@
       "B": "正确。Route 53 Resolver 出站端点 + 转发规则将本地域名查询转发到本地 DNS 服务器，无需复制记录，维护最少。",
       "C": "错误。反向 DNS 转发用于反向查找，且 enableDnsHostnames 与本地解析无关。",
       "D": "错误。在每台实例上维护 /etc/hosts 不可规模化。"
-    }
+    },
+    "anchor": "Route 53 Resolver 出站端点 + 转发规则 → 解析本地 DNS"
   },
   {
     "exam": "SOA-C03",
@@ -477,7 +501,8 @@
       "B": "错误。订阅过滤器用于把日志流向其它服务，不能计数生成指标。",
       "C": "错误。Lambda + Logs Insights 比内置指标过滤器运维成本高。",
       "D": "错误。外部脚本不如 CloudWatch 内置指标过滤器高效。"
-    }
+    },
+    "anchor": "CloudWatch Logs metric filter → 统计 HTTP 404 次数"
   },
   {
     "exam": "SOA-C03",
@@ -496,7 +521,8 @@
       "B": "错误。在单 AZ 内提高最小实例数仍无法防止 AZ 故障。",
       "C": "正确。让 Auto Scaling 组跨同一区域至少两个可用区分布，消除单 AZ 单点，实现真正高可用。",
       "D": "错误。Auto Scaling 组不能跨区域，跨区域需要额外架构设计。"
-    }
+    },
+    "anchor": "Auto Scaling 组跨第二个可用区部署 → 消除单 AZ 单点"
   },
   {
     "exam": "SOA-C03",
@@ -515,7 +541,8 @@
       "B": "错误。安全组是有状态的，无需显式出站规则。",
       "C": "错误。Elastic IP 不会自行变化。",
       "D": "错误。一个子网同一时间只能关联一个网络 ACL。"
-    }
+    },
+    "anchor": "网络 ACL 无状态 → 需显式放行临时端口出站规则"
   },
   {
     "exam": "SOA-C03",
@@ -534,7 +561,8 @@
       "B": "错误。移除互联网路由只会让连通性更差；问题在于权限。",
       "C": "正确。AmazonSSMManagedInstanceCore 托管策略授予 SSM Agent 向 Systems Manager 注册所需的最小权限，符合最小权限原则。",
       "D": "错误。ssm:* 过度授权，应优先使用托管策略。"
-    }
+    },
+    "anchor": "实例配置文件挂 AmazonSSMManagedInstanceCore → 注册到 SSM"
   },
   {
     "exam": "SOA-C03",
@@ -553,7 +581,8 @@
       "B": "错误。SNS 扇出到 SQS 也不会在应用内对队列做优先级。",
       "C": "错误。DynamoDB Stream 与 SQS 优先级无关。",
       "D": "正确。SQS 不支持消息优先级，标准做法是分两个队列，消费者总是优先读取报警队列。"
-    }
+    },
+    "anchor": "SQS 不支持优先级 → 拆分报警/信息两队列，优先消费报警队列"
   },
   {
     "exam": "SOA-C03",
@@ -572,7 +601,8 @@
       "B": "正确。完整 Trusted Advisor 检查集仅在 Business、Enterprise On-Ramp、Enterprise 支持计划下可用，低级别计划检查有限。",
       "C": "错误。SCP 控制 API 调用许可，不影响 Trusted Advisor 可用检查数量。",
       "D": "错误。根用户 MFA 是安全最佳实践，与可用检查数量无关。"
-    }
+    },
+    "anchor": "支持计划级别 → 决定可用 Trusted Advisor 检查数"
   },
   {
     "exam": "SOA-C03",
@@ -591,7 +621,8 @@
       "B": "错误。自建 Lambda + CreateStack 等于重复 StackSets 的功能。",
       "C": "错误。同上，无需自建编排。",
       "D": "正确。StackSets 是 AWS Organizations 多账户/多区域部署的原生机制，运维最少。"
-    }
+    },
+    "anchor": "AWS CloudFormation StackSets → 跨组织多账户部署同一模板"
   },
   {
     "exam": "SOA-C03",
@@ -610,7 +641,8 @@
       "B": "错误。Route 53 Alias 记录只能指向 AWS 资源，不能指向任意第三方域名。",
       "C": "正确。CNAME 将 www.company.com 别名指向 app.example.com，由第三方主机名响应请求。",
       "D": "错误。PTR 用于反向 DNS，不用于域名间映射。"
-    }
+    },
+    "anchor": "CNAME 记录 → 别名指向第三方域名 app.example.com"
   },
   {
     "exam": "SOA-C03",
@@ -629,7 +661,8 @@
       "B": "错误。备份恢复存在恢复时间，无法最小化 RTO。",
       "C": "正确。Redis OSS Multi-AZ + 跨 AZ 副本可在故障时自动提升副本，提供最低 RTO。",
       "D": "错误。还原备份比自动副本切换慢。"
-    }
+    },
+    "anchor": "Redis OSS 复制组启用 Multi-AZ + 副本 → 最小化 RTO"
   },
   {
     "exam": "SOA-C03",
@@ -648,7 +681,8 @@
       "B": "正确。CloudFormation 漂移检测可识别已部署模板的任何偏离，通过 EventBridge + Lambda 定时检测并以 SNS 通知，运维最少。",
       "C": "错误。Access Analyzer 生成最小权限策略，不是用于跨账户比对的现成功能。",
       "D": "错误。S3 + Lambda 自定义比对需要构建并维护自定义逻辑。"
-    }
+    },
+    "anchor": "CloudFormation 漂移检测 + EventBridge→SNS 通知策略变更"
   },
   {
     "exam": "SOA-C03",
@@ -667,7 +701,8 @@
       "B": "错误。无需以 EC2 作代理，这并非 QuickSight 私有连接的设计方式。",
       "C": "错误。S3 网关端点只处理 VPC 内到 S3 的流量；访问 QuickSight 仍走公网。",
       "D": "错误。NAT 网关流量经过公网，违反需求。"
-    }
+    },
+    "anchor": "QuickSight 接口 VPC 端点(PrivateLink) → 流量留在 VPC 内"
   },
   {
     "exam": "SOA-C03",
@@ -686,7 +721,8 @@
       "B": "正确。FSx for Windows File Server Multi-AZ 原生支持 SMB 和 Windows ACL，并可自动切换到另一可用区的备用节点。",
       "C": "错误。Storage Gateway 文件网关无法通过 ALB 简单负载均衡来实现高可用。",
       "D": "错误。两个 Single-AZ + DFSR 运维量远高于原生 Multi-AZ。"
-    }
+    },
+    "anchor": "FSx for Windows Multi-AZ→原生 SMB+Windows ACL"
   },
   {
     "exam": "SOA-C03",
@@ -705,7 +741,8 @@
       "B": "错误。自建 Lambda 在实例上每分钟运行运维更重。",
       "C": "错误。每晚手动登录不实用、被动。",
       "D": "错误。默认 CPU 利用率是整机指标，不包含 PID。"
-    }
+    },
+    "anchor": "CloudWatch agent procstat 插件 → 按进程采集 CPU 含 PID"
   },
   {
     "exam": "SOA-C03",
@@ -724,7 +761,8 @@
       "B": "错误。异常检测告警识别异常偏差，而非具体阈值 99%。",
       "C": "正确。Synthetics heartbeat canary 周期性模拟用户访问 URL 并产生 SuccessPercent；对其设 99% 阈值告警最契合需求。",
       "D": "错误。broken link checker canary 检查链接有效性，不衡量可用性。"
-    }
+    },
+    "anchor": "Synthetics heartbeat canary→SuccessPercent 告警"
   },
   {
     "exam": "SOA-C03",
@@ -743,7 +781,8 @@
       "B": "正确。合并为一个 NAT 网关后，其它可用区的私有子网路由表需要更新，使其互联网流量指向这唯一的 NAT 网关。",
       "C": "错误。私有子网通过 internet gateway 无法上网，且会改变设计。",
       "D": "错误。给 NAT 网关添加辅助 IP 不是支持的修复方式。"
-    }
+    },
+    "anchor": "合并 NAT 网关后 → 更新路由表指向唯一 NAT 网关"
   },
   {
     "exam": "SOA-C03",
@@ -762,7 +801,8 @@
       "B": "错误。DLM 仅创建快照，不能阻止堆栈删除时终止 EC2 实例。",
       "C": "错误。AWS Backup 备份数据，但不会阻止 CloudFormation 删除资源。",
       "D": "正确。DeletionPolicy=Retain 可在堆栈被删除时保留 EC2 实例及其附加资源。"
-    }
+    },
+    "anchor": "DeletionPolicy=Retain → 堆栈删除时保留 EC2 实例"
   },
   {
     "exam": "SOA-C03",
@@ -781,7 +821,8 @@
       "B": "错误。手工制作 AMI 不可规模化，也不含漏洞扫描。",
       "C": "正确。EC2 Image Builder 使用 recipe 自动按计划构建 AMI，并与 Amazon Inspector 集成进行漏洞扫描。",
       "D": "错误。CreateImage 仅对运行实例打快照，不安装依赖也不扫描漏洞。"
-    }
+    },
+    "anchor": "EC2 Image Builder recipe→集成 Inspector 扫描出 AMI"
   },
   {
     "exam": "SOA-C03",
@@ -800,7 +841,8 @@
       "B": "错误。ALB 不为每个 AZ 提供静态 IP，其 IP 会变化。",
       "C": "错误。Global Accelerator 提供两个全局静态 anycast IP，不是每个 AZ 一个静态 IP。",
       "D": "正确。NLB 可承载每秒数百万请求，延迟极低，并为每个可用区提供一个静态 IP。"
-    }
+    },
+    "anchor": "Network Load Balancer → 每 AZ 一个静态 IP，支持百万级请求"
   },
   {
     "exam": "SOA-C03",
@@ -824,7 +866,8 @@
       "C": "错误。转发 header 不解决会话 cookie 问题。",
       "D": "错误。组级粘性用于 ALB 有多个目标组的场景，本题只有一个目标组。",
       "E": "正确。在 ALB 目标组启用粘性会话可将同一用户的请求绑定到同一实例，避免随机注销。"
-    }
+    },
+    "anchor": "CloudFront 转发 cookie + ALB 目标组启用 sticky sessions"
   },
   {
     "exam": "SOA-C03",
@@ -843,7 +886,8 @@
       "B": "正确。每个区域部署一个 Transit Gateway，通过 AWS RAM 共享，连接本地 VPC，再在区域间做 Transit Gateway 对等。",
       "C": "错误。在多个 VPC 间逐对建 Site-to-Site VPN 运维成本极高，不是推荐做法。",
       "D": "错误。VPC 对等不易随 VPC 数量扩展，需大量全网状连接和路由更新。"
-    }
+    },
+    "anchor": "各区域部署 Transit Gateway 经 RAM 共享，再做 TGW 间对等"
   },
   {
     "exam": "SOA-C03",
@@ -867,7 +911,8 @@
       "C": "错误。单可用区降低可用性，且不解决性能或连接突增。",
       "D": "错误。禁用连接池会让连接风暴更严重。",
       "E": "正确。RDS Proxy 通过连接池吸收连接突增，使读性能保持稳定。"
-    }
+    },
+    "anchor": "RDS Performance Insights 定位慢查询 + RDS Proxy 连接池"
   },
   {
     "exam": "SOA-C03",
@@ -886,7 +931,8 @@
       "B": "错误。通过 EventBridge 手动给 ALB 加实例不具备弹性。",
       "C": "正确。Auto Scaling 配合目标跟踪策略（如 CPU 平均利用率或请求数）可以根据随机负载自动伸缩。",
       "D": "错误。定时扩展用于可预测模式，不适合随机峰值。"
-    }
+    },
+    "anchor": "Auto Scaling 配合 target tracking 扩展策略应对随机流量"
   },
   {
     "exam": "SOA-C03",
@@ -905,7 +951,8 @@
       "B": "正确。RDS 只读副本可将读繁重的报表流量从主实例分担到副本，提升性能并增加冗余副本。",
       "C": "错误。CloudFront 是内容 CDN，不适合缓存数据库查询。",
       "D": "错误。仅增加规格无法提升可用性，对读繁重的负载也不经济。"
-    }
+    },
+    "anchor": "RDS read replica → 分担报表读流量，提升性能与可用性"
   },
   {
     "exam": "SOA-C03",
@@ -924,7 +971,8 @@
       "B": "错误。AWS WAF 检查 HTTP/HTTPS 流量，不检查 DNS 查询。",
       "C": "正确。Route 53 Resolver DNS Firewall 可使用规则组（如 AWS 托管威胁列表）阻断对恶意域名的解析。",
       "D": "错误。AWS Config 关注配置合规，不检查 DNS 查询。"
-    }
+    },
+    "anchor": "Route 53 Resolver DNS Firewall → 过滤阻断恶意域名解析"
   },
   {
     "exam": "SOA-C03",
@@ -943,7 +991,8 @@
       "B": "错误。KMS 密钥是区域级的，无法通过策略将其复制到另一账户。",
       "C": "错误。同名新密钥无法解密用旧密钥加密的数据。",
       "D": "错误。S3 导出/导入运维量大且无必要。"
-    }
+    },
+    "anchor": "共享加密快照需先改 KMS 密钥策略授权目标账户，再共享"
   },
   {
     "exam": "SOA-C03",
@@ -962,6 +1011,7 @@
       "B": "错误。CloudWatch Logs 搜索没有 groupby 关键字，该能力由 Logs Insights 提供。",
       "C": "错误。Athena 需要先把日志导出到 S3，运维开销大。",
       "D": "错误。RDS 与 CloudWatch Logs 数据无关。"
-    }
+    },
+    "anchor": "Logs Insights stats count(*) by→跨组按错误分组"
   }
 ]

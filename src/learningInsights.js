@@ -17,8 +17,19 @@ const CONNECTIVE_RE = /^(?:既|又|且|并且|並且|同[时時]|即可|[从從]
 // plus keywords, NOT a copy of the explanation shown right below it. Returns
 // null whenever the anchor wouldn't be meaningfully shorter than the
 // explanation itself (short explanations are their own anchor).
+//
+// Curated anchors win: when the question data carries a hand-authored
+// `anchor` field (SOA-C02/C03 to start), use it verbatim — clause heuristics
+// can't tell which term is the actual exam point (e.g. they'd keep
+// 「是最安全的方法」 but drop GenerateSecretString/RotationSchedule).
+// The heuristic below remains the fallback for banks without curated anchors.
 export function createMemoryAnchor(question, explanation) {
   const raw = String(explanation || '').replace(/\s+/g, ' ').trim()
+  const curated = typeof question?.anchor === 'string' ? question.anchor.trim() : ''
+  if (curated) {
+    const services = [...new Set(((curated + ' ' + raw).match(SERVICE_RE) || []).map(s => s.replace(/\s+/g, ' ')))].slice(0, 5)
+    return { anchor: curated, services, exam: question?.exam || '' }
+  }
   if (!raw) return null
   const text = raw.replace(VERDICT_RE, '').trim()
   // Short explanations read in one glance — an anchor box would just repeat them.
