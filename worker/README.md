@@ -111,3 +111,7 @@ app is nowhere near those limits.
 <!-- redeploy 2026-07-18: re-pin quest_db binding + re-apply schema + reset
      secrets after login failures reported in production (suspected external
      tooling change to the D1/worker config). -->
+<!-- rebuild 2026-07-18b: user corrected GitHub repo secrets (VITE_API_BASE /
+     GOOGLE_CLIENT_ID pair); this commit re-triggers both the Pages build
+     (bakes corrected values into the bundle) and the worker deploy (syncs
+     the corrected GOOGLE_CLIENT_ID). -->
