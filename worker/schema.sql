@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS progress (
   exam          TEXT,
   qid           INTEGER,
   correct       INTEGER DEFAULT 0,    -- last submitted result (0/1)
-  correct_count INTEGER DEFAULT 0,    -- monotonic: max wins
+  correct_count INTEGER DEFAULT 0,    -- SRS stage: consecutive corrects, resets on a wrong answer (LWW-merged)
+  total_correct INTEGER NOT NULL DEFAULT 0, -- lifetime corrects: monotonic, max wins (feeds XP/level)
   ever_wrong    INTEGER DEFAULT 0,    -- OR-merged
   updated_at    INTEGER NOT NULL,     -- epoch ms, for last-write-wins
   PRIMARY KEY (user_id, qkey)

@@ -63,6 +63,9 @@ function remoteToMaps(state) {
     statsHistory[p.qkey] = {
       correct: !!p.correct,
       correctCount: p.correct_count || 0,
+      // Lifetime corrects (feeds XP). Floor at correct_count for rows written
+      // before the total_correct column existed.
+      totalCorrect: Math.max(p.total_correct || 0, p.correct_count || 0),
       everWrong: !!p.ever_wrong,
       exam: p.exam,
       type: undefined,
@@ -118,6 +121,7 @@ function mapsToDelta({ statsHistory, bookmarked, reviewMarked, earnedCertificati
       qkey: k, exam: v.exam, qid: v.id,
       correct: v.correct ? 1 : 0,
       correct_count: v.correctCount || 0,
+      total_correct: v.totalCorrect ?? v.correctCount ?? 0,
       ever_wrong: v.everWrong ? 1 : 0,
       updated_at: v._updatedAt || now,
     }
@@ -211,7 +215,12 @@ export function mergeMaps(local, remote) {
       out.statsHistory[k] = {
         ...a, ...b,
         correct: newer.correct,
-        correctCount: Math.max(a.correctCount || 0, b.correctCount || 0),
+        // SRS stage follows the NEWER entry — a fresh wrong answer resets it
+        // to 0 and that reset must survive the merge (a MAX rule here made
+        // freshly missed questions vanish from the wrong-question list).
+        correctCount: newer.correctCount || 0,
+        // Lifetime corrects never regress (feeds XP/level).
+        totalCorrect: Math.max(a.totalCorrect ?? a.correctCount ?? 0, b.totalCorrect ?? b.correctCount ?? 0),
         everWrong: !!(a.everWrong || b.everWrong),
         question: a.question || b.question,
       }

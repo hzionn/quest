@@ -1,7 +1,10 @@
 // D1 access + the merge semantics for cross-device sync.
 //
 // Merge rules (per qkey):
-//   correct_count -> MAX(local, remote)        (answered-correctly count never regresses)
+//   correct_count -> last-write-wins by updated_at (SRS stage: a wrong answer
+//                    resets it to 0 and that reset must survive sync — a MAX
+//                    rule here silently "un-wrongs" freshly missed questions)
+//   total_correct -> MAX(local, remote)         (lifetime corrects never regress; feeds XP)
 //   ever_wrong    -> OR                         (once wrong, stays wrong)
 //   correct       -> last-write-wins by updated_at
 //   bookmark/review enabled -> last-write-wins by updated_at (supports un-toggle)
@@ -25,7 +28,7 @@ export async function upsertUser(DB, g) {
 // Read the full state for one user.
 export async function getState(DB, uid) {
   const [progress, bookmarks, reviews, settings, certifications, daily] = await Promise.all([
-    DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, ever_wrong, updated_at
+    DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, total_correct, ever_wrong, updated_at
                 FROM progress WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM bookmarks WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM reviews WHERE user_id = ?`).bind(uid).all(),
@@ -64,12 +67,15 @@ export async function getAdminOverview(DB) {
 // single source of truth — no separate score to push, sync or tamper with.
 // Only public identity (name/picture) is exposed; email is never returned.
 export async function getLeaderboard(DB, uid, limit = 20) {
+  // XP counts lifetime corrects (total_correct), never the SRS stage — a wrong
+  // answer resets correct_count but must not revoke already-earned XP. MAX
+  // fallback covers rows written before the total_correct column existed.
   const rows = await DB.prepare(
     `SELECT u.id, u.name, u.picture,
        COALESCE(SUM(
-         p.correct_count * 10
+         MAX(p.total_correct, p.correct_count) * 10
          + (CASE WHEN p.ever_wrong = 1 THEN 3 ELSE 0 END)
-         + (CASE WHEN p.ever_wrong = 1 AND p.correct_count >= 3 THEN 25 ELSE 0 END)
+         + (CASE WHEN p.ever_wrong = 1 AND MAX(p.total_correct, p.correct_count) >= 3 THEN 25 ELSE 0 END)
        ), 0) AS xp,
        COUNT(p.qkey) AS touched,
        (SELECT COALESCE(SUM(d.answered), 0) FROM daily_stats d WHERE d.user_id = u.id) AS practiced
@@ -102,10 +108,11 @@ export async function mergeState(DB, uid, delta) {
   for (const p of delta.progress || []) {
     stmts.push(
       DB.prepare(
-        `INSERT INTO progress (user_id, qkey, exam, qid, correct, correct_count, ever_wrong, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `INSERT INTO progress (user_id, qkey, exam, qid, correct, correct_count, total_correct, ever_wrong, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(user_id, qkey) DO UPDATE SET
-           correct_count = MAX(correct_count, excluded.correct_count),
+           correct_count = CASE WHEN excluded.updated_at >= updated_at THEN excluded.correct_count ELSE correct_count END,
+           total_correct = MAX(total_correct, excluded.total_correct),
            ever_wrong    = MAX(ever_wrong, excluded.ever_wrong),
            correct       = CASE WHEN excluded.updated_at >= updated_at THEN excluded.correct ELSE correct END,
            exam          = excluded.exam,
@@ -113,7 +120,7 @@ export async function mergeState(DB, uid, delta) {
            updated_at    = MAX(updated_at, excluded.updated_at)`
       ).bind(
         uid, p.qkey, p.exam ?? null, p.qid ?? null,
-        p.correct ? 1 : 0, p.correct_count ?? 0, p.ever_wrong ? 1 : 0,
+        p.correct ? 1 : 0, p.correct_count ?? 0, p.total_correct ?? p.correct_count ?? 0, p.ever_wrong ? 1 : 0,
         p.updated_at ?? now
       )
     )

@@ -77,6 +77,13 @@ jobs:
           echo "### ⚠️ Schema apply skipped this run (D1 admin API failing) — re-run if this deploy changed schema.sql" >> $GITHUB_STEP_SUMMARY
           exit 0
 
+      # Additive column migrations. ALTER TABLE has no IF NOT EXISTS in
+      # SQLite, so each statement runs solo and tolerates the duplicate-column
+      # error on reruns — never blocking the deploy.
+      - name: Apply column migrations (idempotent via error tolerance)
+        run: |
+          npx wrangler d1 execute quest_db --remote --command "ALTER TABLE progress ADD COLUMN total_correct INTEGER NOT NULL DEFAULT 0" || echo "total_correct column already exists — skipping"
+
       - name: Set JWT_SECRET
         if: env.JWT_SECRET_VAL != ''
         env:
