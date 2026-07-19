@@ -1954,9 +1954,14 @@ function UploadTab({ state, dispatch, fileInputRef, examTypes }) {
   )
 }
 
-function StatCard({ label, value, icon: Icon }) {
+function StatCard({ label, value, icon: Icon, onClick }) {
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <div className="stat-card bg-white dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200/60 dark:border-gray-700/60 shadow-sm">
+    <Tag
+      onClick={onClick}
+      className={`stat-card bg-white dark:bg-gray-800 rounded-xl p-4 text-center border border-gray-200/60 dark:border-gray-700/60 shadow-sm ${onClick ? 'cursor-pointer hover:border-orange-300 dark:hover:border-orange-700 w-full' : ''}`}
+      title={onClick ? '點擊查看清單' : undefined}
+    >
       {Icon && (
         <div className="w-9 h-9 mx-auto mb-2 rounded-xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center ring-1 ring-orange-100 dark:ring-orange-500/20">
           <Icon size={18} className="text-orange-500 dark:text-orange-400" />
@@ -1964,7 +1969,7 @@ function StatCard({ label, value, icon: Icon }) {
       )}
       <div className="text-2xl font-bold text-gray-900 dark:text-gray-50 animate-count tnum">{value}</div>
       <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</div>
-    </div>
+    </Tag>
   )
 }
 
@@ -3641,11 +3646,15 @@ function LevelCard({ level, unlocked, total, bestCombo, onShare, sharing }) {
 }
 
 // ── SRS 待複習卡（item 13）──
-function ReviewDueCard({ items, dispatch }) {
-  const startReview = () => {
-    const pool = items.map((i) => i.question).filter(Boolean)
+// 錯題快速入口卡：一進統計頁就能一鍵開練，不必再滑到下方分頁列。
+// 有 SRS 到期 → 主按鈕「開始複習」＋次按鈕「練習全部錯題」；
+// 沒到期但有錯題 → 主按鈕「練習錯題」。
+function ReviewDueCard({ items, wrongItems = [], dispatch }) {
+  const startPool = (list) => {
+    const pool = list.map((i) => i.question).filter(Boolean)
     if (pool.length) dispatch({ type: 'GOTO_PRACTICE_QUESTION', questions: pool, startIndex: 0 })
   }
+  const hasDue = items.length > 0
   return (
     <div className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap border-l-4 border-l-orange-400">
       <div className="flex items-center gap-3">
@@ -3653,16 +3662,39 @@ function ReviewDueCard({ items, dispatch }) {
           <Repeat size={24} className="text-orange-500" />
         </div>
         <div>
-          <div className="text-lg font-bold text-gray-900 dark:text-gray-50">今日待複習 <span className="text-orange-500 tnum">{items.length}</span> 題</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">依遺忘曲線排程回鍋的錯題，趁記憶還在鞏固起來</div>
+          {hasDue ? (
+            <>
+              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">今日待複習 <span className="text-orange-500 tnum">{items.length}</span> 題</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">依遺忘曲線排程回鍋的錯題，趁記憶還在鞏固起來</div>
+            </>
+          ) : (
+            <>
+              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">錯題待消滅 <span className="text-orange-500 tnum">{wrongItems.length}</span> 題</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">連續答對 {MASTERY_THRESHOLD} 次即學會並移出清單</div>
+            </>
+          )}
         </div>
       </div>
-      <button
-        onClick={startReview}
-        className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5"
-      >
-        <Play size={15} fill="currentColor" /> 開始複習
-      </button>
+      <div className="flex items-center gap-2 flex-wrap">
+        {hasDue && (
+          <button
+            onClick={() => startPool(items)}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5"
+          >
+            <Play size={15} fill="currentColor" /> 開始複習
+          </button>
+        )}
+        {wrongItems.length > 0 && (
+          <button
+            onClick={() => startPool(wrongItems)}
+            className={hasDue
+              ? 'px-4 py-2.5 rounded-xl border border-orange-300 dark:border-orange-700 text-orange-600 dark:text-orange-300 font-semibold text-sm hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors flex items-center gap-1.5'
+              : 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5'}
+          >
+            <Play size={15} fill="currentColor" /> 練習全部錯題 ({wrongItems.length})
+          </button>
+        )}
+      </div>
     </div>
   )
 }
@@ -4422,8 +4454,10 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
       {/* 等級 + XP（含分享成績卡） */}
       <LevelCard level={glevel} unlocked={unlockedCount} total={achievements.length} bestCombo={state.bestCombo} onShare={doShare} sharing={sharing} />
 
-      {/* SRS 待複習（item 13）：有到期錯題才顯示 */}
-      {reviewDue.length > 0 && <ReviewDueCard items={reviewDue} dispatch={dispatch} />}
+      {/* 錯題／複習快速入口：有到期複習或錯題就常駐頂部，一鍵開練 */}
+      {(reviewDue.length > 0 || wrongQuestions.length > 0) && (
+        <ReviewDueCard items={reviewDue} wrongItems={wrongQuestions} dispatch={dispatch} />
+      )}
 
       {/* 每日目標＋連續學習 */}
       <DailyGoalCard combinedDaily={combinedDaily} dailyGoal={state.dailyGoal} dispatch={dispatch} />
@@ -4433,7 +4467,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
         <StatCard label="已作答" value={totalAnswered} icon={CheckCircle} />
         <StatCard label="答對" value={totalCorrect} icon={Trophy} />
         <StatCard label="正確率" value={`${overallAccuracy}%`} icon={Target} />
-        <StatCard label="錯題數" value={wrongQuestions.length} icon={XCircle} />
+        <StatCard label="錯題數" value={wrongQuestions.length} icon={XCircle} onClick={() => { setActiveSection('wrong'); document.getElementById('stats-sections')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }} />
         <StatCard label="學習總時數" value={formatDuration(totalStudySec)} icon={Clock} />
       </div>
 
@@ -4468,7 +4502,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
       <WeeklyReportCard combinedDaily={combinedDaily} />
 
       {/* Section tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div id="stats-sections" className="flex gap-2 overflow-x-auto pb-1 scroll-mt-24">
         {[
           { key: 'overview', label: '各科正確率', icon: Target },
           { key: 'achieve', label: `成就 (${unlockedCount}/${achievements.length})`, icon: Award },
