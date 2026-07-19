@@ -3047,7 +3047,10 @@ const EXAM_SPECS = {
   'SCS-C03': { name: 'AWS Certified Security - Specialty (C03)', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
   'AIP-C01': { name: 'AWS Certified Generative AI Developer - Professional', count: 85, timeLimit: 205, passScore: 750, questions: '85 題，複選題及多個答案', time: '205 分鐘（3 小時 25 分）', types: '單選、多選' },
   'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
+  'SOA-C02': { name: 'AWS Certified SysOps Administrator - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選、排序' },
+  'SOA-C03': { name: 'AWS Certified CloudOps Engineer - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
   'PCA': { name: 'Google Professional Cloud Architect', count: 50, timeLimit: 120, passScore: 700, questions: '50 題（單選與多選）', time: '120 分鐘（2 小時）', types: '單選、多選' },
+  'GCP-CDL': { name: 'Google Cloud Digital Leader', count: 50, timeLimit: 90, passScore: 700, questions: '50–60 題（單選與多選）', time: '90 分鐘', types: '單選、多選' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {
