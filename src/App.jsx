@@ -3647,14 +3647,21 @@ function LevelCard({ level, unlocked, total, bestCombo, onShare, sharing }) {
 
 // ── SRS 待複習卡（item 13）──
 // 錯題快速入口卡：一進統計頁就能一鍵開練，不必再滑到下方分頁列。
-// 有 SRS 到期 → 主按鈕「開始複習」＋次按鈕「練習全部錯題」；
-// 沒到期但有錯題 → 主按鈕「練習錯題」。
+// 有 SRS 到期 → 主按鈕「開始複習」＋錯題按鈕；沒到期但有錯題 → 錯題主按鈕。
+// 錯題可用下拉選科別（含各科題數），到期複習也跟著所選科別過濾。
 function ReviewDueCard({ items, wrongItems = [], dispatch }) {
+  const [examFilter, setExamFilter] = useState('')
   const startPool = (list) => {
     const pool = list.map((i) => i.question).filter(Boolean)
     if (pool.length) dispatch({ type: 'GOTO_PRACTICE_QUESTION', questions: pool, startIndex: 0 })
   }
-  const hasDue = items.length > 0
+  // 各科錯題數（下拉選項用）；所選科別同步過濾錯題與到期複習兩個池
+  const examCounts = {}
+  wrongItems.forEach((i) => { if (i.exam) examCounts[i.exam] = (examCounts[i.exam] || 0) + 1 })
+  const exams = Object.keys(examCounts).sort()
+  const filteredWrong = examFilter ? wrongItems.filter((i) => i.exam === examFilter) : wrongItems
+  const filteredDue = examFilter ? items.filter((i) => i.exam === examFilter) : items
+  const hasDue = filteredDue.length > 0
   return (
     <div className="surface-card p-5 flex items-center justify-between gap-4 flex-wrap border-l-4 border-l-orange-400">
       <div className="flex items-center gap-3">
@@ -3664,34 +3671,50 @@ function ReviewDueCard({ items, wrongItems = [], dispatch }) {
         <div>
           {hasDue ? (
             <>
-              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">今日待複習 <span className="text-orange-500 tnum">{items.length}</span> 題</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">今日待複習 <span className="text-orange-500 tnum">{filteredDue.length}</span> 題</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">依遺忘曲線排程回鍋的錯題，趁記憶還在鞏固起來</div>
             </>
           ) : (
             <>
-              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">錯題待消滅 <span className="text-orange-500 tnum">{wrongItems.length}</span> 題</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-gray-50">錯題待消滅 <span className="text-orange-500 tnum">{filteredWrong.length}</span> 題</div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">連續答對 {MASTERY_THRESHOLD} 次即學會並移出清單</div>
             </>
           )}
         </div>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
+        {exams.length > 1 && (
+          <div className="relative">
+            <select
+              value={examFilter}
+              onChange={(e) => setExamFilter(e.target.value)}
+              className="pl-3 pr-8 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-400"
+              title="選擇科別"
+            >
+              <option value="">全部科別 ({wrongItems.length})</option>
+              {exams.map((exam) => (
+                <option key={exam} value={exam}>{displayExam(exam)} ({examCounts[exam]})</option>
+              ))}
+            </select>
+            <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </div>
+        )}
         {hasDue && (
           <button
-            onClick={() => startPool(items)}
+            onClick={() => startPool(filteredDue)}
             className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5"
           >
             <Play size={15} fill="currentColor" /> 開始複習
           </button>
         )}
-        {wrongItems.length > 0 && (
+        {filteredWrong.length > 0 && (
           <button
-            onClick={() => startPool(wrongItems)}
+            onClick={() => startPool(filteredWrong)}
             className={hasDue
               ? 'px-4 py-2.5 rounded-xl border border-orange-300 dark:border-orange-700 text-orange-600 dark:text-orange-300 font-semibold text-sm hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors flex items-center gap-1.5'
               : 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm transition-all duration-200 shadow-sm flex items-center gap-1.5'}
           >
-            <Play size={15} fill="currentColor" /> 練習全部錯題 ({wrongItems.length})
+            <Play size={15} fill="currentColor" /> 練習錯題 ({filteredWrong.length})
           </button>
         )}
       </div>
@@ -4317,6 +4340,8 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
   const totalCorrect = facts.correct
   const overallAccuracy = facts.accuracy
   const totalStudySec = facts._totalStudySec
+  // 實際練習量：每次作答都計（含重複刷同一題），由每日統計累加、跨裝置同步
+  const totalPracticed = Object.values(combinedDaily).reduce((s, v) => s + (v?.answered || 0), 0)
   const examStats = facts._examStats
   const excludedExams = getExcludedExams(state.earnedCertifications)
   const activeExamStats = Object.fromEntries(Object.entries(examStats).filter(([exam]) => !excludedExams.has(exam)))
@@ -4464,7 +4489,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <StatCard label="已作答" value={totalAnswered} icon={CheckCircle} />
+        <StatCard label="總練習量" value={Math.max(totalPracticed, totalAnswered)} icon={CheckCircle} />
         <StatCard label="答對" value={totalCorrect} icon={Trophy} />
         <StatCard label="正確率" value={`${overallAccuracy}%`} icon={Target} />
         <StatCard label="錯題數" value={wrongQuestions.length} icon={XCircle} onClick={() => { setActiveSection('wrong'); document.getElementById('stats-sections')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }} />
