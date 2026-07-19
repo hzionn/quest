@@ -71,11 +71,12 @@ export async function getLeaderboard(DB, uid, limit = 20) {
          + (CASE WHEN p.ever_wrong = 1 THEN 3 ELSE 0 END)
          + (CASE WHEN p.ever_wrong = 1 AND p.correct_count >= 3 THEN 25 ELSE 0 END)
        ), 0) AS xp,
-       COUNT(p.qkey) AS answered
+       COUNT(p.qkey) AS touched,
+       (SELECT COALESCE(SUM(d.answered), 0) FROM daily_stats d WHERE d.user_id = u.id) AS practiced
      FROM users u
      LEFT JOIN progress p ON p.user_id = u.id
      GROUP BY u.id
-     ORDER BY xp DESC, answered DESC, u.id ASC`
+     ORDER BY xp DESC, practiced DESC, u.id ASC`
   ).all()
   const all = rows.results || []
   // Standard competition ranking (1, 2, 2, 4): equal XP shares a rank.
@@ -83,7 +84,10 @@ export async function getLeaderboard(DB, uid, limit = 20) {
   const ranked = all.map((r) => {
     seen++
     if (r.xp !== prevXp) { rank = seen; prevXp = r.xp }
-    return { rank, id: r.id, name: r.name, picture: r.picture, xp: r.xp, answered: r.answered }
+    // answered = total practice volume (every submission, summed across
+    // devices via daily_stats) — matches the stats page's 總練習量. Floored
+    // at the distinct-question count for history predating daily_stats.
+    return { rank, id: r.id, name: r.name, picture: r.picture, xp: r.xp, answered: Math.max(r.practiced || 0, r.touched || 0) }
   })
   const me = ranked.find((r) => r.id === uid) || null
   return { top: ranked.slice(0, limit), me, total: ranked.length }
