@@ -190,8 +190,8 @@
     "explanations": {
       "A": "Correct. 正确：此选项直接使用S3事件通知机制，并通过过滤规则确保只有.csv文件触发事件，减少了不必要的触发。 正确：将Lambda函数的ARN设置为目标，避免了额外的中间步骤（如SNS），从而降低了操作开销。",
       "B": "Incorrect. 错误：事件类型s3:ObjectTagging:*与题目要求不符，因为题目明确要求基于文件上传触发，而不是基于标签。 错误：依赖标签设置增加了额外的操作步骤，增加了操作开销。",
-      "C": "Incorrect. 错误：事件类型s3:*过于宽泛，会导致不必要的触发，增加了操作开销。 正确：使用过滤规则可以减少触发，但事件类型选择不符合最佳实践。",
-      "D": "Incorrect. 官方答案未选此项。正确：使用过滤规则确保只有.csv文件触发事件。 错误：引入SNS作为中间步骤增加了额外的复杂性和操作开销，不符合题目要求的“最小操作开销”。"
+      "C": "Incorrect. 缺点：事件类型s3:*过于宽泛，会导致不必要的触发，增加了操作开销。 优点：使用过滤规则可以减少触发，但事件类型选择不符合最佳实践。",
+      "D": "Incorrect. 优点：使用过滤规则确保只有.csv文件触发事件。 缺点：引入SNS作为中间步骤增加了额外的复杂性和操作开销，不符合题目要求的“最小操作开销”。"
     }
   },
   {
@@ -445,10 +445,10 @@
     },
     "answer": "C",
     "explanations": {
-      "A": "Incorrect. 错误：S3 One Zone-IA不提供高可用性，因为数据仅存储在一个可用区。如果发生区域故障，数据可能会丢失，不符合题目要求。 正确：S3 Glacier Flexible Retrieval适合长期存储，访问频率低的数据，但由于前半部分选择了S3 One Zone-IA，整体方案不符合题目要 求。",
-      "B": "Incorrect. 官方答案未选此项。正确：S3 Standard-IA提供高可用性，适合访问频率较低但需要快速访问的数据。 正确：S3 Glacier Flexible Retrieval适合长期存储，访问频率低的数据。 错误：虽然此选项满足高可用性要求，但S3 Glacier Flexible Retrieval的成本高于S3 Glacier Deep Archive，未达到最具成本效益的目标。",
+      "A": "Incorrect. 缺点：S3 One Zone-IA不提供高可用性，因为数据仅存储在一个可用区。如果发生区域故障，数据可能会丢失，不符合题目要求。 优点：S3 Glacier Flexible Retrieval适合长期存储，访问频率低的数据，但由于前半部分选择了S3 One Zone-IA，整体方案不符合题目要 求。",
+      "B": "Incorrect. 优点：S3 Standard-IA提供高可用性，适合访问频率较低但需要快速访问的数据。 优点：S3 Glacier Flexible Retrieval适合长期存储，访问频率低的数据。 缺点：虽然此选项满足高可用性要求，但S3 Glacier Flexible Retrieval的成本高于S3 Glacier Deep Archive，未达到最具成本效益的目标。",
       "C": "Correct. 正确：S3 Standard-IA提供高可用性，适合访问频率较低但需要快速访问的数据。 正确：S3 Glacier Deep Archive是最具成本效益的长期存储选项，适合访问频率极低的数据。 正确：此选项同时满足高可用性和成本效益的要求。",
-      "D": "Incorrect. 错误：S3 One Zone-IA不提供高可用性，因为数据仅存储在一个可用区。如果发生区域故障，数据可能会丢失，不符合题目要求。 正确：S3 Glacier Deep Archive是最具成本效益的长期存储选项，适合访问频率极低的数据。 错误：由于前半部分选择了S3 One Zone-IA，整体方案不符合题目要求。"
+      "D": "Incorrect. 缺点：S3 One Zone-IA不提供高可用性，因为数据仅存储在一个可用区。如果发生区域故障，数据可能会丢失，不符合题目要求。 优点：S3 Glacier Deep Archive是最具成本效益的长期存储选项，适合访问频率极低的数据。 缺点：由于前半部分选择了S3 One Zone-IA，整体方案不符合题目要求。"
     }
   },
   {
@@ -1034,7 +1034,7 @@
       "A": "Incorrect. 使用Amazon Aurora作为数据目录： 错误：Amazon Aurora是一个关系型数据库服务，不是专门设计用于元数据管理或数据目录的工具。 错误：需要手动创建和管理Lambda函数以更新元数据，增加了运维复杂性。 错误：Aurora无法自动检测数据源的元数据变化。",
       "B": "Correct. 使用AWS Glue Data Catalog作为中心元数据存储库： 正确：AWS Glue Data Catalog是专门设计用于元数据管理的服务，支持多种数据源。 正确：AWS Glue爬网器可以自动连接到数据存储并更新元数据，减少了运维开销。 正确：爬网器可以定期运行以检测和更新元数据变化，满足题目要求。",
       "C": "Incorrect. 使用Amazon DynamoDB作为数据目录： 错误：Amazon DynamoDB是一个NoSQL数据库服务，不是专门设计用于元数据管理或数据目录的工具。 错误：需要手动创建和管理Lambda函数以更新元数据，增加了运维复杂性。 错误：DynamoDB无法自动检测数据源的元数据变化。",
-      "D": "Incorrect. 使用AWS Glue Data Catalog并手动提取架构： 部分正确：AWS Glue Data Catalog确实是一个合适的元数据管理工具。 错误：手动提取Amazon RDS和Amazon Redshift的架构增加了运维复杂性，不符合“最低运维开销”的要求。 正确：使用AWS Glue爬网器可以自动推断Amazon S3数据的架构并更新元数据。"
+      "D": "Incorrect. 使用AWS Glue Data Catalog并手动提取架构： 部分优点：AWS Glue Data Catalog确实是一个合适的元数据管理工具。 缺点：手动提取Amazon RDS和Amazon Redshift的架构增加了运维复杂性，不符合“最低运维开销”的要求。 优点：使用AWS Glue爬网器可以自动推断Amazon S3数据的架构并更新元数据。"
     }
   },
   {
@@ -1839,7 +1839,7 @@
     "explanations": {
       "A": "Incorrect. 错误：虽然可以将流日志发布到CloudWatch Logs，但CloudWatch Logs的存储成本较高，且不适合直接与Athena进行分析。 CloudWatch Logs通常用于实时监控，而不是大规模数据分析。",
       "B": "Incorrect. 错误：OpenSearch Service适合实时搜索和分析，但其成本较高，且不如Athena在处理大规模数据分析时高效。 将流日志发布到CloudWatch Logs后再导入OpenSearch会增加额外的复杂性和成本。",
-      "C": "Incorrect. 部分正确：将流日志存储到S3是一个成本优化的选择，Athena可以直接查询S3中的数据。 错误：使用文本格式存储数据会导致查询性能较低，因为Athena对结构化数据（如Parquet格式）的查询效率更高。",
+      "C": "Incorrect. 部分优点：将流日志存储到S3是一个成本优化的选择，Athena可以直接查询S3中的数据。 缺点：使用文本格式存储数据会导致查询性能较低，因为Athena对结构化数据（如Parquet格式）的查询效率更高。",
       "D": "Correct. 正确：将流日志存储到S3是成本优化的最佳实践。 正确：Apache Parquet是一种列式存储格式，能够显著提高Athena的查询性能，同时减少存储成本。 正确：这种组合是最具成本效益的解决方案。"
     }
   },

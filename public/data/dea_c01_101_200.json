@@ -303,7 +303,7 @@
     "answer": "D",
     "explanations": {
       "A": "错误：虽然Kinesis Data Streams是一个流处理服务，但它并不是Apache Kafka的直接替代品。 错误：迁移到Kinesis Data Streams需要对应用程序进行较大的改动，这不符合“replatform”策略的要求。",
-      "B": "官方答案未选此项。正确：Amazon MSK是一个托管的Apache Kafka服务，可以直接迁移现有的Kafka工作负载。 错误：使用provisioned cluster需要手动管理容量和集群配置，管理开销较高。",
+      "B": "错误。优点：Amazon MSK是一个托管的Apache Kafka服务，可以直接迁移现有的Kafka工作负载。 缺点：使用provisioned cluster需要手动管理容量和集群配置，管理开销较高。",
       "C": "错误：Kinesis Data Firehose是一个数据传输服务，主要用于将数据传输到存储服务（如S3、Redshift等），而不是Kafka的替代品。 错误：迁移到Firehose需要对现有应用进行较大的改动，不符合“replatform”策略。",
       "D": "正确：Amazon MSK Serverless是一个托管的Kafka服务，支持无服务器架构，自动管理容量和配置。 正确：符合“replatform”策略，且管理开销最低。"
     }
@@ -1019,7 +1019,7 @@
       "A": "正确：PutRecords API操作可以高效地将数据发送到Amazon Kinesis Data Streams，支持高吞吐量。 正确：增强型扇出（Enhanced Fan-Out）允许每个消费者独立读取数据流，提供专属吞吐量，满足题目要求。 正确：为每个内部消费者使用增强型扇出功能，确保每个消费者的吞吐量独立且优化。",
       "B": "错误：Amazon Kinesis Data Firehose主要用于数据传输到存储服务（如S3、Redshift），而非实时流处理。 错误：提交AWS Support案例开启专属吞吐量并不是标准解决方案，且不符合增强型扇出的要求。 错误：Kinesis Data Firehose不支持增强型扇出功能。",
       "C": "错误：Kinesis Producer Library (KPL)是用于与Kinesis Data Streams交互的工具，而非Kinesis Data Firehose。 错误：Kinesis Data Firehose不支持增强型扇出功能。 错误：此选项混淆了Kinesis Data Streams和Kinesis Data Firehose的功能，无法满足题目要求。",
-      "D": "官方答案未选此项。正确：PutRecords API操作可以高效地将数据发送到Amazon Kinesis Data Streams。 错误：使用EC2实例托管流处理应用程序虽然可行，但没有利用增强型扇出功能，无法提供专属吞吐量。 错误：配置自动扩展虽然可以提高处理能力，但无法解决消费者之间的吞吐量竞争问题。"
+      "D": "错误。优点：PutRecords API操作可以高效地将数据发送到Amazon Kinesis Data Streams。 缺点：使用EC2实例托管流处理应用程序虽然可行，但没有利用增强型扇出功能，无法提供专属吞吐量。 缺点：配置自动扩展虽然可以提高处理能力，但无法解决消费者之间的吞吐量竞争问题。"
     }
   },
   {
@@ -1097,7 +1097,7 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "正确语法：使用INSERT INTO语句将数据插入到目标表中。 SELECT语句从源表中提取数据，并通过WHERE条件过滤出符合条件的数据。 此选项符合Athena的SQL语法规则，且逻辑正确。",
+      "A": "正确。正确语法：使用INSERT INTO语句将数据插入到目标表中。 SELECT语句从源表中提取数据，并通过WHERE条件过滤出符合条件的数据。 此选项符合Athena的SQL语法规则，且逻辑正确。",
       "B": "错误语法：Athena不支持MOVE语法。MOVE不是标准SQL语法，也不是Athena支持的操作。 此选项无效。",
       "C": "部分正确：此选项的语法接近正确，但缺少目标表字段的明确定义（如city, state）。 虽然Athena可能接受此语法，但标准SQL建议明确指定目标表字段。 此选项不如选项A规范。",
       "D": "错误语法：UPDATE语句用于更新现有表中的数据，而不是插入新数据。 此选项的逻辑不符合题目要求，且Athena不支持这种UPDATE语法。 此选项无效。"
@@ -1281,7 +1281,7 @@
       "A": "错误：虽然安全组可以限制连接来源，但使用公共子网意味着数据仍然可能通过公共互联网传输，这不符合题目要求。 错误：题目要求的是数据迁移，而不是存储代码库，创建AMIs并不解决数据传输问题。",
       "B": "正确：AWS Direct Connect提供专用网络连接，避免使用公共互联网，符合题目要求。 正确：AWS Secrets Manager是安全存储服务账户凭证的推荐方式。",
       "C": "错误：使用公共子网意味着数据可能通过公共互联网传输，这不符合题目要求。 错误：预签名URL适用于临时访问，但并未解决安全连接和凭证管理问题。",
-      "D": "部分正确：AWS Direct Connect提供专用网络连接，符合题目要求。 错误：存储应用程序密钥而非服务账户凭证不完全符合题目要求。 错误：预签名URL的使用与题目要求的安全连接和凭证管理无关。"
+      "D": "错误。部分优点：AWS Direct Connect提供专用网络连接，符合题目要求。 缺点：存储应用程序密钥而非服务账户凭证不完全符合题目要求。 缺点：预签名URL的使用与题目要求的安全连接和凭证管理无关。"
     }
   },
   {
@@ -1534,7 +1534,7 @@
     "explanations": {
       "A": "错误。对托管每个区域EFS文件系统的VPC与数据科学团队所在区域的VPC进行对等连接。 错误：VPC对等连接可以实现跨区域网络通信，但EFS文件系统无法直接跨区域挂载。 错误：启用EFS文件锁定并不能解决跨区域数据访问的问题。 错误：Lambda函数无法直接挂载跨区域的EFS文件系统。",
       "B": "错误。将每个区域的EFS文件系统配置为将数据复制到数据科学团队所在的区域。 错误：EFS本身不支持跨区域复制功能，无法直接将数据复制到另一个区域。 错误：需要额外的工具（如DataSync）来实现跨区域数据传输。",
-      "C": "错误。将Lambda函数部署到每个区域。 正确：Lambda函数可以部署到每个区域并挂载区域内的EFS文件系统。 错误：这种方法需要在多个区域部署Lambda函数，增加了管理复杂性，不符合“最少努力”的要求。",
+      "C": "错误。将Lambda函数部署到每个区域。 优点：Lambda函数可以部署到每个区域并挂载区域内的EFS文件系统。 缺点：这种方法需要在多个区域部署Lambda函数，增加了管理复杂性，不符合“最少努力”的要求。",
       "D": "正确。使用AWS DataSync将每个区域EFS文件系统中的文件传输到数据科学团队所在区域的文件系统。 正确：AWS DataSync是专门设计用于高效传输数据的服务，支持跨区域数据传输。 正确：在数据科学团队所在区域挂载单一的EFS文件系统，简化了Lambda函数的配置和管理。 正确：这种方法符合“最少努力”的要求，同时满足数据处理需求。"
     }
   },
@@ -1927,10 +1927,10 @@
     },
     "answer": "A",
     "explanations": {
-      "A": "正确使用了过滤条件 errorcode is not null 来确保只查询有错误代码的记录。 正确使用了 eventtime >= '2024-01-01T00:00:00Z' 来过滤从2024年开始的事件。 使用了 group by eventname, errorcode, errormessage 来对事件名称、错误代码和错误信息进行分组。 使用了 order by TotalEvents desc 来按事件总数降序排列。 使用了 limit 10 来限制返回结果为10条记录。 此选项完全符合题目要求。",
+      "A": "正确。正确使用了过滤条件 errorcode is not null 来确保只查询有错误代码的记录。 正确使用了 eventtime >= '2024-01-01T00:00:00Z' 来过滤从2024年开始的事件。 使用了 group by eventname, errorcode, errormessage 来对事件名称、错误代码和错误信息进行分组。 使用了 order by TotalEvents desc 来按事件总数降序排列。 使用了 limit 10 来限制返回结果为10条记录。 此选项完全符合题目要求。",
       "B": "错误。缺少过滤条件 errorcode is not null，因此可能会包含没有错误代码的记录。 其他部分与选项 A 相同，但由于缺少关键过滤条件，无法满足题目要求。",
       "C": "错误。缺少过滤条件 errorcode is not null，因此可能会包含没有错误代码的记录。 排序方式为 order by eventname asc，而不是按事件总数降序排列，无法满足题目要求。 其他部分与选项 A 相同，但排序方式错误且缺少关键过滤条件。",
-      "D": "官方答案未选此项。正确使用了过滤条件 errorcode is not null 和 eventtime >= '2024-01-01T00:00:00Z'。 缺少 order by 子句，因此无法按事件总数降序排列。 其他部分与选项 A 相同，但由于缺少排序，无法满足题目要求。"
+      "D": "错误。正确使用了过滤条件 errorcode is not null 和 eventtime >= '2024-01-01T00:00:00Z'。 缺少 order by 子句，因此无法按事件总数降序排列。 其他部分与选项 A 相同，但由于缺少排序，无法满足题目要求。"
     }
   },
   {
