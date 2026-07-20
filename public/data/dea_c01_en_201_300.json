@@ -1,0 +1,1932 @@
+[
+  {
+    "exam": "DEA-C01",
+    "id": 201,
+    "type": "single",
+    "question": "A company uses Amazon DataZone as a data governance and business catalog solution. The company stores data in an Amazon S3 data lake. The company uses AWS Glue with an AWS Glue Data Catalog. A data engineer needs to publish AWS Glue Data Quality scores to the Amazon DataZone portal. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create a data quality ruleset with Data Quality Definition language (DQDL) rules that apply to a specific AWS Glue table. Schedule the ruleset to run daily. Configure the Amazon DataZone project to have an Amazon Redshift data source. Enable the data quality configuration for the data source.",
+      "B": "Configure AWS Glue ETL jobs to use an Evaluate Data Quality transform. Define a data quality ruleset inside the jobs. Configure the Amazon DataZone project to have an AWS Glue data source. Enable the data quality configuration for the data source.",
+      "C": "Create a data quality ruleset with Data Quality Definition language (DQDL) rules that apply to a specific AWS Glue table. Schedule the ruleset to run daily. Configure the Amazon DataZone project to have an AWS Glue data source. Enable the data quality configuration for the data source.",
+      "D": "Configure AWS Glue ETL jobs to use an Evaluate Data Quality transform. Define a data quality ruleset inside the jobs. Configure the Amazon DataZone project to have an Amazon Redshift data source. Enable the data quality configuration for the data source."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 错误 虽然提到了使用DQDL规则创建数据质量规则集并每天运行，但将Amazon DataZone项目配置为具有Amazon Redshift数据源是不正确 的。题目明确指出数据存储在Amazon S3数据湖中，并使用AWS Glue Data Catalog，因此数据源应该是AWS Glue，而不是Amazon Redshift。",
+      "B": "Incorrect. 错误 此选项提到使用Evaluate Data Quality transform和定义数据质量规则集，这在技术上是可行的。然而，将Amazon DataZone项目配置为 AWS Glue数据源是正确的，但此选项没有提到使用DQDL规则集，这与题目要求不完全匹配。",
+      "C": "Correct. 正确 此选项正确地提到了使用DQDL规则创建数据质量规则集，并将规则集设置为每天运行。它还正确地将Amazon DataZone项目配置为 AWS Glue数据源，并启用了数据质量配置。这完全符合题目要求。",
+      "D": "Incorrect. 错误 此选项提到使用Evaluate Data Quality transform和定义数据质量规则集，但将Amazon DataZone项目配置为Amazon Redshift数据源是不正 确的。题目明确指出数据存储在Amazon S3数据湖中，并使用AWS Glue Data Catalog，因此数据源应该是AWS Glue，而不是Amazon Redshift。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 202,
+    "type": "single",
+    "question": "A company has a data warehouse in Amazon Redshift. To comply with security regulations, the company needs to log and store all user activities and connection activities for the data warehouse. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an Amazon S3 bucket. Enable logging for the Amazon Redshift cluster. Specify the S3 bucket in the logging configuration to store the logs.",
+      "B": "Create an Amazon Elastic File System (Amazon EFS) file system. Enable logging for the Amazon Redshift cluster. Write logs to the EFS file system.",
+      "C": "Create an Amazon Aurora MySQL database. Enable logging for the Amazon Redshift cluster. Write the logs to a table in the Aurora MySQL database.",
+      "D": "Create an Amazon Elastic Block Store (Amazon EBS) volume. Enable logging for the Amazon Redshift cluster. Write the logs to the EBS volume."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Amazon S3是AWS推荐的存储日志的服务，具有高可用性、持久性和成本效益。 Amazon Redshift支持将日志直接存储到S3中，包括用户活动日志和连接日志。 此选项完全符合题目要求，正确。",
+      "B": "Incorrect. Amazon EFS是一个文件存储服务，主要用于共享文件系统的场景。 Redshift不支持直接将日志写入EFS，且EFS不适合存储日志数据。 此选项不符合题目要求，错误。",
+      "C": "Incorrect. Amazon Aurora是一个关系型数据库服务，主要用于存储结构化数据。 Redshift不支持直接将日志写入Aurora数据库，且将日志存储在数据库中成本较高且不符合最佳实践。 此选项不符合题目要求，错误。",
+      "D": "Incorrect. Amazon EBS是块存储服务，主要用于EC2实例的持久化存储。 Redshift不支持直接将日志写入EBS，且EBS不适合存储日志数据。 此选项不符合题目要求，错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 203,
+    "type": "single",
+    "question": "A company wants to migrate a data warehouse from Teradata to Amazon Redshift. Which solution will meet this requirement with the LEAST operational effort?",
+    "options": {
+      "A": "Use AWS Database Migration Service (AWS DMS) Schema Conversion to migrate the schema. Use AWS DMS to migrate the data.",
+      "B": "Use the AWS Schema Conversion Tool (AWS SCT) to migrate the schema. Use AWS Database Migration Service (AWS DMS) to migrate the data.",
+      "C": "Use AWS Database Migration Service (AWS DMS) to migrate the data. Use automatic schema conversion.",
+      "D": "Manually export the schema definition from Teradata. Apply the schema to the Amazon Redshift database. Use AWS Database Migration Service (AWS DMS) to migrate the data."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误：AWS DMS 本身不支持架构转换。架构转换需要使用 AWS Schema Conversion Tool (SCT)。 正确的工具组合应该是 SCT 用于架构转换，DMS 用于数据迁移。",
+      "B": "Correct. 正确：AWS SCT 是专门设计用于将源数据库的架构转换为目标数据库的架构（例如从 Teradata 到 Redshift）。 AWS DMS 是用于迁移数据的工具，支持从 Teradata 到 Redshift 的数据迁移。 此选项使用了正确的工具组合，并且操作步骤最少。",
+      "C": "Incorrect. 错误：AWS DMS 不支持自动架构转换。架构转换需要使用 AWS SCT。 此选项忽略了架构转换的必要步骤，因此不符合要求。",
+      "D": "Incorrect. 错误：手动导出和应用架构定义需要额外的操作步骤，增加了操作复杂性。 此选项的操作步骤比使用 AWS SCT 和 DMS 的组合更多，因此不符合“最少操作步骤”的要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 204,
+    "type": "single",
+    "question": "A company uses a variety of AWS and third-party data stores. The company wants to consolidate all the data into a central data warehouse to perform analytics. Users need fast response times for analytics queries. The company uses Amazon QuickSight in direct query mode to visualize the data. Users normally run queries during a few hours each day with unpredictable spikes. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use Amazon Redshift Serverless to load all the data into Amazon Redshift managed storage (RMS).",
+      "B": "Use Amazon Athena to load all the data into Amazon S3 in Apache Parquet format.",
+      "C": "Use Amazon Redshift provisioned clusters to load all the data into Amazon Redshift managed storage (RMS).",
+      "D": "Use Amazon Aurora PostgreSQL to load all the data into Aurora."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 分析： Amazon Redshift Serverless是一种无服务器的解决方案，能够根据查询负载自动扩展资源，适合处理不可预测的查询峰值。 Redshift Serverless支持Amazon QuickSight的直接查询模式，提供快速响应时间。 使用Redshift managed storage (RMS)可以简化数据管理，降低运营开销。 此选项符合题目要求：快速响应时间、低运营开销、支持不可预测的查询峰值。 结论： 正确。",
+      "B": "Incorrect. 分析： Amazon Athena是一种无服务器的查询服务，适合直接查询存储在Amazon S3中的数据。 虽然Athena支持Apache Parquet格式以优化查询性能，但它的查询响应时间通常不如Amazon Redshift，尤其是在需要高性能分析时。 Athena的查询性能可能无法满足题目中“快速响应时间”的要求。 结论： 错误。",
+      "C": "Incorrect. 分析： Amazon Redshift provisioned clusters需要手动配置和管理集群资源，增加了运营开销。 虽然它可以提供高性能查询，但与Redshift Serverless相比，无法自动扩展资源以应对不可预测的查询峰值。 此选项不符合题目中“最低运营开销”的要求。 结论： 错误。",
+      "D": "Incorrect. 分析： Amazon Aurora PostgreSQL是一种关系型数据库解决方案，适合事务处理而非数据仓库分析。 Aurora不适合处理大规模分析查询，查询性能和扩展性无法与Amazon Redshift相比。 此选项不符合题目中“快速响应时间”和“数据仓库”的要求。 结论： 错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 205,
+    "type": "single",
+    "question": "A data engineer uses Amazon Kinesis Data Streams to ingest and process records that contain user behavior data from an application every day. The data engineer notices that the data stream is experiencing throttling because hot shards receive much more data than other shards in the data stream. How should the data engineer resolve the throttling issue?",
+    "options": {
+      "A": "Use a random partition key to distribute the ingested records.",
+      "B": "Increase the number of shards in the data stream. Distribute the records across the shards.",
+      "C": "Limit the number of records that are sent each second by the producer to match the capacity of the stream.",
+      "D": "Decrease the size of the records that the producer sends to match the capacity of the stream."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确：使用随机分区键可以有效地将数据均匀分布到多个分片中，从而避免某些分片成为热点分片。 这是解决热点分片问题的推荐方法，因为分区键直接影响数据的分布。",
+      "B": "Incorrect. 错误：虽然增加分片数量可以提高数据流的吞吐量，但如果分区键没有优化，热点分片问题仍然存在。 热点分片问题的根本原因是数据分布不均，而不是分片数量不足。",
+      "C": "Incorrect. 错误：限制生产者发送的记录数量会降低数据流的整体吞吐量，并不能解决热点分片问题。 这种方法只是暂时缓解问题，而不是根本解决问题。",
+      "D": "Incorrect. 错误：减少记录大小可以降低单个分片的负载，但无法解决数据分布不均的问题。 热点分片问题的核心是分区键导致的数据分布不均，而不是记录大小。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 206,
+    "type": "single",
+    "question": "A company has a data processing pipeline that includes several dozen steps. The data processing pipeline needs to send alerts in real time when a step fails or succeeds. The data processing pipeline uses a combination of Amazon S3 buckets, AWS Lambda functions, and AWS Step Functions state machines. A data engineer needs to create a solution to monitor the entire pipeline. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure the Step Functions state machines to store notifications in an Amazon S3 bucket when the state machines finish running. Enable S3 event notifications on the S3 bucket.",
+      "B": "Configure the AWS Lambda functions to store notifications in an Amazon S3 bucket when the state machines finish running. Enable S3 event notifications on the S3 bucket.",
+      "C": "Use AWS CloudTrail to send a message to an Amazon Simple Notification Service (Amazon SNS) topic that sends notifications when a state machine fails to run or succeeds to run.",
+      "D": "Configure an Amazon EventBridge rule to react when the execution status of a state machine changes. Configure the rule to send a message to an Amazon Simple Notification Service (Amazon SNS) topic that sends notifications."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 错误：虽然可以通过S3事件通知触发后续操作，但这种方法无法实时监控Step Functions状态机的执行状态（成功或失败）。此外，S3 事件通知的延迟可能会影响实时性要求。",
+      "B": "Incorrect. 错误：类似于选项A，这种方法依赖于S3事件通知，无法直接监控Step Functions状态机的执行状态。Lambda函数的通知存储到S3的 方式也不符合实时性要求。",
+      "C": "Incorrect. 错误：虽然CloudTrail可以记录API调用，但它并不是实时监控Step Functions状态机执行状态的最佳工具。CloudTrail的日志记录通常用 于审计和合规性，而不是实时事件通知。",
+      "D": "Correct. 正确：EventBridge可以实时捕获Step Functions状态机的执行状态变化（成功或失败），并通过规则将消息发送到SNS topic，从而实现 实时通知。这种方法直接满足题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 207,
+    "type": "single",
+    "question": "A company has an application that uses an Amazon API Gateway REST API and an AWS Lambda function to retrieve data from an Amazon DynamoDB instance. Users recently reported intermittent high latency in the application's response times. A data engineer finds that the Lambda function experiences frequent throttling when the company's other Lambda functions experience increased invocations. The company wants to ensure the API's Lambda function operate without being affected by other Lambda functions. Which solution will meet this requirement MOST cost-effectively?",
+    "options": {
+      "A": "Increase the number of read capacity unit (RCU) in DynamoDB.",
+      "B": "Configure provisioned concurrency for the Lambda function.",
+      "C": "Configure reserved concurrency for the Lambda function.",
+      "D": "Increase the Lambda function timeout and allocated memory."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 增加 DynamoDB 的读取容量单位 (RCU) 分析：DynamoDB 的 RCU 仅影响数据库的读取性能，与 Lambda 函数的并发问题无关。 结论：错误。",
+      "B": "Incorrect. 为 Lambda 函数配置预置并发 分析：预置并发可以确保函数在冷启动时有足够的资源，但它的成本较高，且题目要求“最具成本效益”的解决方案。 结论：错误。",
+      "C": "Correct. 为 Lambda 函数配置保留并发 分析：保留并发可以确保特定的 Lambda 函数有固定的并发资源，不会受到其他函数的影响。此解决方案直接解决了题目中提到 的“频繁被其他函数影响”的问题，同时成本较低。 结论：正确。",
+      "D": "Incorrect. 增加 Lambda 函数的超时时间和分配内存 分析：增加超时时间和内存可以提升函数性能，但无法解决并发资源被其他函数占用的问题。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 208,
+    "type": "single",
+    "question": "A company has as JSON file that contains personally identifiable information (PII) data and non-PII data. The company needs to make the data available for querying and analysis. The non-PII data must be available to everyone in the company. The PII data must be available only to a limited group of employees. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Store the JSON file in an Amazon S3 bucket. Configure AWS Glue to split the file into one file that contains the PII data and one file that contains the non-PII data. Store the output files in separate S3 buckets. Grant the required access to the buckets based on the type of user.",
+      "B": "Store the JSON file in an Amazon S3 bucket. Use Amazon Macie to identify PII data and to grant access based on the type of user.",
+      "C": "Store the JSON file in an Amazon S3 bucket. Catalog the file schema in AWS Lake Formation. Use Lake Formation permissions to provide access to the required data based on the type of user.",
+      "D": "Create two Amazon RDS PostgreSQL databases. Load the PII data and the non-PII data into the separate databases. Grant access to the databases based on the type of user."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：AWS Glue可以用于数据处理和转换，但需要额外的配置来分割文件并管理两个S3 bucket的权限。这增加了操作复杂 性。 错误原因：虽然可以实现目标，但操作开销较高，不符合“LEAST operational overhead”的要求。",
+      "B": "Incorrect. 正确性分析：Amazon Macie可以识别PII数据，但它主要用于数据分类和安全监控，而不是直接管理访问权限。 错误原因：Macie无法直接实现基于用户类型的访问控制，需要额外的服务来完成权限管理。",
+      "C": "Correct. 正确性分析：AWS Lake Formation可以对数据进行编目，并基于用户类型设置精细的权限控制。它直接支持数据分类和访问管理，操 作开销低。 正确原因：符合“LEAST operational overhead”的要求，同时满足数据分类和权限管理需求。",
+      "D": "Incorrect. 正确性分析：使用RDS可以实现数据分离和权限管理，但需要额外的数据库管理和维护。 错误原因：操作开销较高，不符合“LEAST operational overhead”的要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 209,
+    "type": "multiple",
+    "question": "A company uses AWS Key Management Service (AWS KMS) to encrypt an Amazon Redshift cluster. The company wants to configure a cross- Region snapshot of the Redshift cluster as part of disaster recovery (DR) strategy. A data engineer needs to use the AWS CLI to create the cross-Region snapshot. Which combination of steps will meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Create a KMS key and configure a snapshot copy grant in the source AWS Region.",
+      "B": "In the source AWS Region, enable snapshot copying. Specify the name of the snapshot copy grant that is created in the destination AWS Region.",
+      "C": "In the source AWS Region, enable snapshot copying. Specify the name of the snapshot copy grant that is created in the source AWS Region.",
+      "D": "Create a KMS key and configure a snapshot copy grant in the destination AWS Region.",
+      "E": "Convert the cluster to a Multi-AZ deployment."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. 快照复制授权需要在目标区域中创建，而不是源区域。源区域的 KMS 密钥与快照复制授权无关。",
+      "B": "Correct. 启用快照复制时，需要指定目标区域的快照复制授权名称，以便允许跨区域快照复制。",
+      "C": "Incorrect. 快照复制授权必须在目标区域中创建，而不是源区域。",
+      "D": "Correct. 目标区域需要一个 KMS 密钥和快照复制授权，以便接收和解密从源区域复制过来的快照。",
+      "E": "Incorrect. Amazon Redshift 不支持 Multi-AZ 部署，这与跨区域快照复制无关。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 210,
+    "type": "single",
+    "question": "A company is using Amazon S3 to build a data lake. The company needs to replicate records from multiple source databases into Apache Parquet format. Most of the source databases are hosted on Amazon RDS. However, one source database is an on-premises Microsoft SQL Server Enterprise instance. The company needs to implement a solution to replicate existing data from all source databases and all future changes to the target S3 data lake. Which solution will meet these requirements MOST cost-effectively?",
+    "options": {
+      "A": "Use one AWS Glue job to replicate existing data. Use a second AWS Glue job to replicate future changes.",
+      "B": "Use AWS Database Migration Service (AWS DMS) to replicate existing data. Use AWS Glue jobs to replicate future changes.",
+      "C": "Use AWS Database Migration Service (AWS DMS) to replicate existing data and future changes.",
+      "D": "Use AWS Glue jobs to replicate existing data. Use Amazon Kinesis Data Streams to replicate future changes."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 错误：AWS Glue 是一种数据处理和转换服务，适合批处理任务，但不适合实时或增量数据复制。 未来的更改需要实时或增量同步，AWS Glue 不支持这种功能。",
+      "B": "Incorrect. 部分正确：AWS DMS 可以有效地复制现有数据，但 AWS Glue 不适合处理未来的增量数据同步。 未来的更改需要实时或增量同步，AWS Glue 不支持这种功能。",
+      "C": "Correct. 正确：AWS DMS 支持从多个数据源（包括 RDS 和本地数据库）复制数据到目标位置。 它可以处理现有数据的迁移，同时支持增量数据同步（CDC，Change Data Capture）。 这是最符合题目需求且成本效益最高的解决方案。",
+      "D": "Incorrect. 错误：AWS Glue 适合批处理任务，但不适合实时数据迁移。 Amazon Kinesis Data Streams 是实时数据流服务，但它不直接支持数据库的增量数据同步。 这种组合不符合题目要求，且成本较高。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 211,
+    "type": "single",
+    "question": "A data engineer needs to optimize the performance of a data pipeline that handles retail orders. Data about the orders is ingested daily into an Amazon S3 bucket. The data engineer runs queries once each week to extract metrics from the orders data based the order date for multiple date ranges. The data engineer needs an optimization solution that ensures the query performance will not degrade when the volume of data increases. Which solution will meet this requirement MOST cost-effectively?",
+    "options": {
+      "A": "Partition the data based on order date. Use Amazon Athena to query the data.",
+      "B": "Partition the data based on order date. Use Amazon Redshift to query the data.",
+      "C": "Partition the data based on load date. Use Amazon EMR to query the data.",
+      "D": "Partition the data based on load date. Use Amazon Aurora to query the data."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：基于订单日期进行分区可以优化查询性能，因为查询是基于订单日期范围进行的。Amazon Athena是一种无服务器查询 服务，能够直接查询存储在Amazon S3中的分区数据，且成本效益高。 结论：正确。",
+      "B": "Incorrect. 正确性分析：虽然Amazon Redshift是一种高性能数据仓库，但它需要将数据从S3加载到Redshift中，这增加了额外的成本和复杂性。 对于每周一次的查询，使用Redshift并不具备成本效益。 结论：错误。",
+      "C": "Incorrect. 正确性分析：基于加载日期分区不符合查询需求，因为查询是基于订单日期范围进行的。此外，Amazon EMR通常用于处理大规模数 据集，而不是简单的查询操作，且成本较高。 结论：错误。",
+      "D": "Incorrect. 正确性分析：Amazon Aurora是关系型数据库服务，适合事务性操作而非大规模数据查询。基于加载日期分区也不符合查询需求。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 212,
+    "type": "single",
+    "question": "A data engineer has two datasets that contain sales information for multiple cities and states. One dataset is named reference, and the other dataset is named primary. The data engineer needs a solution to determine whether a specific set of values in the city and state columns of the primary dataset exactly match the same specific values in the reference dataset. The data engineer wants to use Data Quality Definition Language (DQDL) rules in an AWS Glue Data Quality job. Which rule will meet these requirements?",
+    "options": {
+      "A": "DatasetMatch \"reference” “city->ref_city, state->ref_state” = 1.0",
+      "B": "Referentiallntegrity “city,state” “reference.{ref_city,ref_state}” = 1.0",
+      "C": "DatasetMatch “reference” “city->ref_city, state->ref_state” = 100",
+      "D": "Referentialintegrity “city,state” \"reference.{ref_city,ref_state}” = 100"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误：虽然DatasetMatch可以用于比较两个数据集，但这里的语法不正确。DatasetMatch的值通常是百分比（如100%），而不是1.0。 此外，DatasetMatch更适合用于检查数据集整体的匹配程度，而不是字段级别的匹配。",
+      "B": "Correct. ReferentialIntegrity “city,state” “reference.{ref_city,ref_state}” = 1.0 正确：ReferentialIntegrity规则用于检查一个数据集的字段是否在另一个数据集中存在并匹配。 语法正确，且1.0表示完全匹配（即100%）。",
+      "C": "Incorrect. 错误：虽然DatasetMatch可以用于比较两个数据集，但这里的语法仍然不正确。 DatasetMatch的值通常是百分比（如100%），但它更适合用于整体数据集的匹配，而不是字段级别的匹配。",
+      "D": "Incorrect. ReferentialIntegrity “city,state” \"reference.{ref_city,ref_state}” = 100 错误：ReferentialIntegrity规则的值应该是1.0（表示完全匹配），而不是100。 虽然语法接近正确，但值的单位不符合规则要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 213,
+    "type": "single",
+    "question": "A company has an on-premises PostgreSQL database that contains customer data. The company wants to migrate the customer data to an Amazon Redshift data warehouse. The company has established a VPN connection between the on-premises database and AWS. The on-premises database is continuously updated. The company must ensure that the data in Amazon Redshift is updated as quickly as possible. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use the pg_dump utility to generate a backup of the PostgreSQL database. Use the AWS Schema Conversion Tool (AWS SCT) to upload the backup to Amazon Redshift. Set up a cron job to perform a backup. Upload the backup to Amazon Redshift every night.",
+      "B": "Create an AWS Database Migration Service (AWS DMS) full-load task. Set Amazon Redshift as the target. Configure the task to use the change data capture (CDC) feature.",
+      "C": "Use the pg_dump utility to generate a backup of the PostgreSQL database. Upload the backup to an Amazon S3 bucket. Use the COPY command to import the data into Amazon Redshift.",
+      "D": "Create an AWS Database Migration Service (AWS DMS) full-load task. Set Amazon Redshift as the target. Configure the task to perform a full load of the database to Amazon Redshift every night."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 使用 pg_dump 工具生成 PostgreSQL 数据库的备份，并通过 AWS SCT 上传到 Amazon Redshift。 错误：pg_dump 和 AWS SCT 的组合适用于一次性迁移，但无法处理持续更新的数据。 错误：cron 作业每晚备份和上传无法满足“尽快更新数据”的要求。",
+      "B": "Correct. 创建 AWS DMS 全量加载任务，设置 Amazon Redshift 为目标，并配置任务使用 CDC 功能。 正确：AWS DMS 支持变更数据捕获（CDC），可以持续同步源数据库的更新到目标数据库。 正确：此方法可以确保数据尽快更新到 Amazon Redshift。",
+      "C": "Incorrect. 使用 pg_dump 工具生成 PostgreSQL 数据库的备份，上传到 Amazon S3，并使用 COPY 命令导入到 Amazon Redshift。 错误：pg_dump 和 COPY 命令适用于一次性迁移，但无法处理持续更新的数据。 错误：此方法无法满足“尽快更新数据”的要求。",
+      "D": "Incorrect. 创建 AWS DMS 全量加载任务，设置 Amazon Redshift 为目标，并配置任务每晚全量加载。 错误：每晚全量加载无法满足“尽快更新数据”的要求。 错误：全量加载效率较低，且不适合处理持续更新的数据。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 214,
+    "type": "single",
+    "question": "A company has several new datasets in CSV and JSON formats. A data engineer needs to make the data available to a team of data analysts who will analyze the data by using SQL queries. Which solution will meet these requirements in the MOST cost-effective way?",
+    "options": {
+      "A": "Create an Amazon RDS MySQL cluster. Use AWS Glue to transform and load the CSV and JSON files into database tables. Provide the data analysts access to the MySQL cluster.",
+      "B": "Create an AWS Glue DataBrew project that contains the new data. Make the DataBrew project available to the data analysts.",
+      "C": "Store the data in an Amazon S3 bucket. Use an AWS Glue crawler to catalog the S3 bucket as tables. Create an Amazon Athena workgroup that has a data usage threshold. Grant the data analysts access to the Athena workgroup.",
+      "D": "Load the data into Super-fast, Parallel, In-memory Calculation Engine (SPICE) in Amazon QuickSight. Allow the data analysts to create analyses and dashboards in QuickSight."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 分析： 正确性：Amazon RDS MySQL可以存储数据并支持SQL查询。 问题：使用RDS MySQL需要预置计算资源，成本较高，且需要额外的管理工作（如备份、维护）。 结论：不是最具成本效益的解决方案。",
+      "B": "Incorrect. 分析： 正确性：AWS Glue DataBrew可以用于数据清理和预处理。 问题：DataBrew主要用于数据准备，而不是SQL查询。数据分析师无法直接使用SQL查询DataBrew项目。 结论：不符合题目要求。",
+      "C": "Correct. 分析： 正确性：Amazon S3是低成本存储解决方案，AWS Glue爬虫可以自动编目数据，Amazon Athena支持直接对S3数据进行SQL查询。 优势：无需预置计算资源，按查询付费，成本效益高。 结论：符合题目要求，是最具成本效益的解决方案。",
+      "D": "Incorrect. 分析： 正确性：QuickSight SPICE适用于数据可视化和仪表板创建。 问题：QuickSight主要用于数据可视化，而不是SQL查询。数据分析师无法直接使用SQL查询SPICE数据。 结论：不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 215,
+    "type": "single",
+    "question": "A retail company stores order information in an Amazon Aurora table named Orders. The company needs to create operational reports from the Orders table with minimal latency. The Orders table contains billions of rows, and over 100,000 transactions can occur each second. A marketing team needs to join the Orders data with an Amazon Redshift table named Campaigns in the marketing team's data warehouse. The operational Aurora database must not be affected. Which solution will meet these requirements with the LEAST operational effort?",
+    "options": {
+      "A": "Use AWS Database Migration Service (AWS DMS) Serverless to replicate the Orders table to Amazon Redshift. Create a materialized view in Amazon Redshift to join with the Campaigns table.",
+      "B": "Use the Aurora zero-ETL integration with Amazon Redshift to replicate the Orders table. Create a materialized view in Amazon Redshift to join with the Campaigns table.",
+      "C": "Use AWS Glue to replicate the Orders table to Amazon Redshift. Create a materialized view in Amazon Redshift to join with the Campaigns table.",
+      "D": "Use federated queries to query the Orders table directly from Aurora. Create a materialized view in Amazon Redshift to join with the Campaigns table."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 使用AWS DMS Serverless将Orders表复制到Amazon Redshift，并创建物化视图： 正确性：AWS DMS可以用于数据复制，但它需要额外的配置和管理，且可能会增加操作复杂性。 错误原因：虽然可以实现目标，但与Aurora zero-ETL相比，DMS的操作复杂性更高，不是最低操作成本的解决方案。",
+      "B": "Correct. 使用Aurora zero-ETL集成Amazon Redshift，并创建物化视图： 正确性：Aurora zero-ETL是专门设计用于将Aurora数据无缝复制到Redshift的解决方案，操作成本最低。 正确原因：此选项直接利用Aurora与Redshift的集成功能，减少了额外的配置和管理工作。",
+      "C": "Incorrect. 使用AWS Glue将Orders表复制到Amazon Redshift，并创建物化视图： 正确性：AWS Glue可以用于ETL任务，但它需要编写和管理ETL作业，增加了操作复杂性。 错误原因：AWS Glue的使用需要额外的开发和维护工作，不是最低操作成本的解决方案。",
+      "D": "Incorrect. 使用联邦查询直接从Aurora查询Orders表，并创建物化视图： 正确性：联邦查询可以直接查询Aurora数据，但它会对Aurora数据库产生负载，影响其性能。 错误原因：此选项不符合题目要求，因为它可能会影响Aurora数据库的操作性能。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 216,
+    "type": "single",
+    "question": "A company is building a new application that ingests CSV files into Amazon Redshift. The company has developed the frontend for the application. The files are stored in an Amazon S3 bucket. Files are no larger than 5 MB. A data engineer is developing the extract, transform, and load (ETL) pipeline for the CSV files. The data engineer configured a Redshift cluster and an AWS Lambda function that copies the data out of the files into the Redshift cluster. Which additional steps should the data engineer perform to meet these requirements?",
+    "options": {
+      "A": "Configure the bucket to send S3 event notifications to Amazon EventBridge. Configure an EventBridge rule that matches S3 new object created events. Set the Lambda function as the target.",
+      "B": "Configure the S3 bucket to send S3 event notifications to an Amazon Simple Queue Service (Amazon SQS) queue. Configure the Lambda function to process the queue.",
+      "C": "Configure AWS Database Migration Service (AWS DMS) to stream new S3 objects to a data stream in Amazon Kinesis Data Streams. Set the Lambda function as the target of the data stream.",
+      "D": "Configure an Amazon EventBridge rule that matches S3 new object created events. Set an Amazon Simple Queue Service (Amazon SQS) queue as the target of the rule. Configure the Lambda function to process the queue."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. S3事件到EventBridge，EventBridge规则直接触发Lambda 结论：不如B稳健（一般不作为最佳） 原因： 可行：EventBridge确实可以接收S3 Object Created类事件并触发Lambda。 但缺少队列缓冲：如果短时间大量文件到达或Lambda出现短暂错误，EventBridge虽然也有重试机制，但在“需要可控的消费速率/更 强的削峰填谷/更直观的死信处理”方面，SQS更常用。 题目强调ETL管道，对可靠投递与解耦更敏感时，增加SQS缓冲更符合工程常见要求。",
+      "B": "Correct. S3事件通知到SQS，Lambda处理队列结论：正确 原因： 解耦：S3只负责投递事件到SQS；Lambda按自己的并发/批量能力消费。 可靠性：SQS提供持久化、可见性超时、重试；可配置DLQ（死信队列）处理异常消息。 削峰填谷：即使突然上传很多CSV文件，消息会堆在队列中，Lambda可以平滑消费。 与题干现状匹配：已经有Lambda负责加载Redshift，只需要补齐触发链路即可。",
+      "C": "Incorrect. 用DMS把新S3对象流到Kinesis，再以Lambda为目标结论：错误 原因： AWS DMS主要用于数据库迁移/CDC（变更数据捕获）等场景，不是用来“监听S3新对象并转发事件”的标准方案。 为5MB以内的CSV文件触发加载Redshift，引入DMS与Kinesis属于明显过度设计，且不符合常见参考架构。",
+      "D": "Incorrect. EventBridge匹配S3新对象事件 -> 投递到SQS -> Lambda处理队列结论：一般不选（不必要的复杂度） 原因： 架构上可行，但相对B多了一层EventBridge。 若没有跨账号路由、复杂事件模式匹配/多目标分发、统一事件总线治理等需求，S3直接投递SQS更简单直接。 题干未体现必须使用EventBridge的额外需求，因此D通常不是“应该执行的附加步骤”的最优解。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 217,
+    "type": "single",
+    "question": "A company stores sensitive data in an Amazon Redshift table. The company needs to give specific users the ability to access the sensitive data. The company must not create duplication in the data. Customer support users must be able to see the last four characters of the sensitive data. Audit users must be able to see the full value of the sensitive data. No other users can have the ability to access the sensitive information. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create a dynamic data masking policy to allow access based on each user role. Create IAM roles that have specific access permissions. Attach the masking policy to the column that contains sensitive data.",
+      "B": "Enable metadata security on the Redshift cluster. Create IAM users and IAM roles for the customer support users and the audit users. Grant the IAM users and IAM roles permissions to view the metadata in the Redshift cluster.",
+      "C": "Create a row-level security policy to allow access based on each user role. Create IAM roles that have specific access permissions. Attach the security policy to the table.",
+      "D": "Create an AWS Glue job to redact the sensitive data and to load the data into a new Redshift table."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 动态数据屏蔽是一种有效的方式，可以根据用户角色动态调整数据的可见性。 通过IAM角色，可以为不同用户分配特定的访问权限。 这种方法避免了数据的重复存储，同时满足了不同用户的访问需求。 正确选项。",
+      "B": "Incorrect. 元数据安全性与数据屏蔽无关，无法满足题目中对敏感数据部分可见或完全可见的需求。 此选项未提及如何处理敏感数据的部分可见性问题。 错误选项。",
+      "C": "Incorrect. 行级安全性（Row-Level Security）用于控制用户对表中不同行的访问权限，而不是对列中数据的部分可见性。 此选项无法满足题目中对敏感数据部分可见或完全可见的需求。 错误选项。",
+      "D": "Incorrect. 此选项会创建数据的副本，违反了题目中“不创建数据重复”的要求。 使用AWS Glue作业编辑数据并加载到新表中并不高效，也不符合动态数据屏蔽的需求。 错误选项。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 218,
+    "type": "single",
+    "question": "A data engineer uses AWS Lake Formation to manage access to data that is stored in an Amazon S3 bucket. The data engineer configures an AWS Glue crawler to discover data at a specific file location in the bucket, s3://examplepath. The crawler execution fails with the following error: “The S3 location: s3://examplepath is not registered.” The data engineer needs to resolve the error. Which solution will meet this requirement?",
+    "options": {
+      "A": "Attach an appropriate IAM policy to the IAM role of the AWS Glue crawler to grant the crawler permission to read the S3 location.",
+      "B": "Register the S3 location in Lake Formation to allow the crawler to access the data.",
+      "C": "Create a new AWS Glue database. Assign the correct permissions to the database for the crawler.",
+      "D": "Configure the S3 bucket policy to allow cross-account access."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误：虽然IAM策略是AWS Glue爬虫访问S3的必要条件，但Lake Formation的权限管理是独立于IAM的。如果S3位置未在Lake Formation 中注册，爬虫仍然无法访问数据。",
+      "B": "Correct. 正确：Lake Formation要求所有数据位置（如S3路径）必须先注册，才能被AWS Glue爬虫访问。这正是解决错误的关键步骤。",
+      "C": "Incorrect. 错误：AWS Glue数据库的权限与Lake Formation的S3位置注册无关。创建数据库并分配权限不会解决爬虫无法访问S3位置的问题。",
+      "D": "Incorrect. 错误：题目未提到跨账户访问的问题。即使配置了S3存储桶策略，Lake Formation仍然需要注册S3位置才能允许爬虫访问。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 219,
+    "type": "single",
+    "question": "A company built a data lake and a data warehouse on AWS. The company wants to implement a data catalog to enhance the current data storage solutions. The company wants to have the capability to add business metadata and glossary information to the data catalog for every asset. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use AWS Glue Catalog. Create a user table for the business glossary. Use the AWS Glue API to change table properties to add business metadata. Create a web application to access the metadata.",
+      "B": "Use an Apache Hive metastore. Create a user table for the business glossary. Use the ALTER TABLE command to change table properties to add business metadata. Create a web application to access the metadata.",
+      "C": "Use Amazon DataZone. Create the business glossaries. Create metadata forms. Use the Amazon DataZone data portal to access the metadata.",
+      "D": "Use Amazon OpenSearch Service. Create an index for the business glossary. Create a second index for the business metadata. Use the OpenSearch Service dashboard to access the metadata."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 使用 AWS Glue Catalog 分析： AWS Glue Catalog确实可以存储元数据，并且支持通过API修改表属性以添加业务元数据。 此选项需要额外的开发工作，因此操作开销较高。 结论：错误",
+      "B": "Incorrect. 使用 Apache Hive metastore 分析： Apache Hive metastore可以存储元数据，并支持通过ALTER TABLE命令修改表属性以添加业务元数据。 然而，Apache Hive metastore是一个开源解决方案，需要额外的管理和维护工作，操作开销较高。 此外，它不直接支持业务术语表和元数据表单功能。 结论：错误",
+      "C": "Correct. 使用 Amazon DataZone 分析： Amazon DataZone是专门设计用于数据目录和数据治理的服务，支持创建业务术语表和元数据表单。 它提供了一个数据门户，可以直接访问元数据，无需额外开发工作。 此选项完全满足题目要求，并且操作开销最低。 结论：正确",
+      "D": "Incorrect. 使用 Amazon OpenSearch Service 分析： Amazon OpenSearch Service可以存储和索引数据，但它主要用于搜索和分析，而不是数据目录功能。 需要额外开发工作来创建索引和仪表板以访问元数据，操作开销较高。 此选项不适合实现数据目录功能。 结论：错误"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 220,
+    "type": "single",
+    "question": "A data engineer is using an AWS Glue ETL job to remove outdated customer records from a table that contains customer account information. The data engineer is using the following SQL command to remove customers that exist in a table named monthly_accounts_update table from the customer accounts table: MERGE INTO accounts t USING monthly_accounts_update s ON t.customer = s.customer - WHEN MATCHED - THEN DELETE - What will happen when the data engineer runs the SQL command?",
+    "options": {
+      "A": "All customer records that exist in both the customer accounts table and the monthly_accounts_update table will be deleted from the accounts table.",
+      "B": "Only customer records that are present in both tables will be retained in the customer accounts table.",
+      "C": "The monthly_accounts_update table will be deleted.",
+      "D": "No records will be deleted because the command syntax is not valid in AWS Glue."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 这是正确的答案。MERGE语句的逻辑是基于匹配条件（ON t.customer = s.customer），当匹配时执行DELETE操作。因 此，所有同时存在于两个表中的记录会被删除。",
+      "B": "Incorrect. 这是错误的答案。MERGE语句的逻 辑是删除匹配的记录，而不是保留它们。因此，这个选项与题目描述的SQL命令不符。",
+      "C": "Incorrect. 这是错误的答案。MERGE语句只会操作目标表（accounts），不会删除源表 （monthly_accounts_update）。",
+      "D": "Incorrect. 这是错误的答案。虽然AWS Glue支持SQL操作，但 MERGE语句是有效的，且题目中的语法是正确的。因此，这个选项不成立。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 221,
+    "type": "single",
+    "question": "A company receives marketing campaign data from a vendor. The company ingests the data into an Amazon S3 bucket every 40 to 60 minutes. The data is in CSV format. File sizes are between 100 KB and 300 KB. A data engineer needs to set-up an extract, transform, and load (ETL) pipeline to upload the content of each file to Amazon Redshift. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an AWS Lambda function that connects to Amazon Redshift and runs a COPY command. Use Amazon EventBridge to invoke the Lambda function based on an Amazon S3 upload trigger.",
+      "B": "Create an Amazon Data Firehose stream. Configure the stream to use an AWS Lambda function as a source to pull data from the S3 bucket. Set Amazon Redshift as the destination.",
+      "C": "Use Amazon Redshift Spectrum to query the S3 bucket. Configure an AWS Glue Crawler for the S3 bucket to update metadata in an AWS Glue Data Catalog.",
+      "D": "Creates an AWS Database Migration Service (AWS DMS) task. Specify an appropriate data schema to migrate. Specify the appropriate type of migration to use."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 分析： Lambda函数可以轻松连接到Amazon Redshift并运行COPY命令，COPY命令是将数据从S3加载到Redshift的高效方法。 EventBridge可以基于S3上传事件触发Lambda函数，自动化程度高，减少了人工干预。 操作开销低，因为Lambda是无服务器的，且COPY命令直接处理CSV文件。 此选项符合题目要求，正确。",
+      "B": "Incorrect. 分析： Amazon Kinesis Data Firehose通常用于实时数据流处理，而题目中的数据每40到60分钟上传一次，非实时场景。 配置Firehose流和Lambda函数作为源增加了复杂性，操作开销较高。 此选项不符合“最少操作开销”的要求，错误。",
+      "C": "Incorrect. 分析： Redshift Spectrum用于直接查询S3中的数据，而题目要求将数据加载到Redshift中，目的不同。 配置Glue Crawler和Data Catalog增加了额外的步骤和复杂性，操作开销较高。 此选项不符合题目要求，错误。",
+      "D": "Incorrect. 分析： AWS DMS主要用于数据库之间的迁移，而题目中的数据是CSV文件，DMS不适合处理这种场景。 需要定义数据架构和迁移类型，增加了复杂性和操作开销。 此选项不符合题目要求，错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 222,
+    "type": "single",
+    "question": "A company wants to build a dimension table in an Amazon S3 bucket. The bucket contains historical data that includes 10 million records. The historical data is 1 TB in size. A data engineer needs a solution to update changes for up to 10,000 records in the base table every day. Which solution will meet this requirement with the LOWEST runtime?",
+    "options": {
+      "A": "Develop an Apache Spark job in Amazon EMR to read the historical data and the new changes into two Spark DataFrames. Use the Spark update method to update the base table.",
+      "B": "Develop an AWS Glue Python job to read the historical data and new changes into two Pandas DataFrames. Use the Pandas update method to update the base table.",
+      "C": "Develop an AWS Glue Apache Spark job to read the historical data and new changes into two Spark DataFrames. Use the Spark update method to update the base table.",
+      "D": "Develop an Amazon EMR job to read new changes into Apache Spark DataFrames. Use the Apache Hudi framework to create the base table in Amazon S3. Use the Spark update method to update the base table."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：虽然Amazon EMR可以高效处理大规模数据，但直接使用Spark更新方法处理1TB的历史数据和每日10,000条增量更新会 导致性能瓶颈，因为Spark本身不擅长处理增量更新。 结论：此选项效率较低，不是最佳选择。",
+      "B": "Incorrect. 正确性分析：Pandas适合处理小规模数据，但对于1TB的历史数据和每日增量更新，Pandas的内存限制和性能不足会导致运行时间过 长。 结论：此选项不适合大规模数据处理。",
+      "C": "Incorrect. 正确性分析：AWS Glue可以使用Spark处理数据，但它的主要优势在于ETL任务，而不是高效处理增量更新。直接使用Spark更新方法 处理1TB数据仍然会导致性能问题。 结论：此选项效率较低，不是最佳选择。",
+      "D": "Correct. 正确性分析：Apache Hudi是专门设计用于高效处理增量更新的框架。它支持在Amazon S3上创建表，并通过增量更新方法显著降低运 行时间。结合Amazon EMR的高性能计算能力，此选项是最佳解决方案。 结论：此选项效率最高，符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 223,
+    "type": "multiple",
+    "question": "A data engineer develops an AWS Glue Apache Spark ETL job to perform transformations on a dataset. When the data engineer runs the job, the job returns an error that reads, “No space left on device.” The data engineer needs to identify the source of the error and provide a solution. Which combinations of steps will meet this requirement MOST cost-effectively? (Choose two.)",
+    "options": {
+      "A": "Scale out the workers vertically to address data skewness.",
+      "B": "Use the Spark UI and AWS Glue metrics to monitor data skew in the Spark executors.",
+      "C": "Scale out the number of workers horizontally to address data skewness.",
+      "D": "Enable the --write-shuffie-files-to-s3 job parameter. Use the salting technique.",
+      "E": "Use error logs in Amazon CloudWatch to monitor data skew."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. 错误：垂直扩展（增加单个worker的资源）并不能有效解决数据倾斜问题，因为数据倾斜通常是由于某些分区的数据量过大，而不 是单个worker资源不足。",
+      "B": "Correct. 正确：Spark UI和AWS Glue的指标可以帮助识别数据倾斜问题，提供详细的执行器级别的性能数据。",
+      "C": "Incorrect. 错误：水平扩展worker数量虽然可以增加计算能力，但并不能直接解决数据倾斜问题，因为数据倾斜是分区不均匀的问题，而不是 worker数量不足的问题。",
+      "D": "Correct. 正确：启用--write-shuffle-files-to-s3参数可以将中间数据写入S3，避免磁盘空间不足的问题。Salting技术可以通过添加随机值来均匀分 布数据，从而解决数据倾斜问题。",
+      "E": "Incorrect. 错误：虽然CloudWatch可以监控错误日志，但它无法提供详细的Spark执行器级别的数据倾斜信息，因此不适合用于解决数据倾斜问 题。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 224,
+    "type": "single",
+    "question": "A company has a data pipeline that uses an Amazon RDS instance, AWS Glue jobs, and an Amazon S3 bucket. The RDS instance and AWS Glue jobs run in a private subnet of a VPC and in the same security group. A user made a change to the security group that prevents the AWS Glue jobs from connecting to the RDS instance. After the change, the security group contains a single rule that allows inbound SSH traffic from a specific IP address. The company must resolve the connectivity issue. Which solution will meet this requirement?",
+    "options": {
+      "A": "Add an inbound rule that allows all TCP traffic on all TCP ports. Set the security group as the source.",
+      "B": "Add an inbound rule that allows all TCP traffic on all UDP ports. Set the private IP address of the RDS instance as the source.",
+      "C": "Add an inbound rule that allows all TCP traffic on all TCP ports. Set the DNS name of the RDS instance as the source.",
+      "D": "Replace the source of the existing SSH rule with the private IP address of the RDS instance. Create an outbound rule with the same source, destination, and protocol as the inbound SSH rule."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：此选项允许安全组内的资源之间进行通信，因为安全组作为来源可以确保 AWS Glue 和 RDS 实例之间的连接。允许所有 TCP 流量是解决问题的直接方法。 优点：简单直接，解决了 AWS Glue 无法连接到 RDS 的问题。 缺点：安全性较低，因为允许所有 TCP 流量可能会带来潜在的安全风险。",
+      "B": "Incorrect. 正确性分析：此选项错误，因为 RDS 和 AWS Glue 的通信使用的是 TCP 协议，而不是 UDP 协议。 优点：无。 缺点：无法解决问题，因为 UDP 端口规则与实际需求不匹配。",
+      "C": "Incorrect. 正确性分析：此选项错误，因为安全组规则中无法直接使用 DNS 名称作为来源。安全组规则需要使用 IP 地址或安全组作为来源。 优点：无。 缺点：技术上不可行，无法解决问题。",
+      "D": "Incorrect. 正确性分析：此选项错误，因为 SSH 规则与 AWS Glue 和 RDS 的通信无关。更改 SSH 规则不会解决问题。 优点：无。 缺点：无法解决问题，且可能影响现有的 SSH 连接。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 225,
+    "type": "single",
+    "question": "A company builds a new data pipeline to process data for business intelligence reports. Users have noticed that data is missing from the reports. A data engineer needs to add a data quality check for columns that contain null values and for referential integrity at a stage before the data is added to storage. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use Amazon SageMaker Data Wrangler to create a Data Quality and Insights report.",
+      "B": "Use AWS Glue ETL jobs to perform a data quality evaluation transform on the data. Use an IsComplete rule on the requested columns. Use a ReferentialItegrity rule for each join.",
+      "C": "Use AWS Glue ETL jobs to perform a SQL transform on the data to determine whether requested column contain null values. Use a second SQL transform to check referential integrity.",
+      "D": "Use Amazon SageMaker Data Wrangler and a custom Python transform to create custom rules to check for null values and referential integrity."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误原因：Amazon SageMaker Data Wrangler主要用于数据准备和可视化分析，而不是专门设计用于数据质量检查和规则验证。它无 法直接满足对空值和引用完整性检查的需求。",
+      "B": "Correct. 正确原因：AWS Glue ETL支持内置的“Data Quality Evaluation Transform”，可以直接使用IsComplete规则检查空值，并使用 ReferentialIntegrity规则验证引用完整性。这种方法是专门设计用于数据质量检查的，且操作开销较低。",
+      "C": "Incorrect. 错误原因：虽然可以使用SQL转换来检查空值和引用完整性，但需要手动编写SQL代码，增加了操作复杂性和维护成本，不符合“最 少操作开销”的要求。",
+      "D": "Incorrect. 错误原因：使用自定义Python转换需要额外的开发工作和维护成本，操作开销较高，不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 226,
+    "type": "single",
+    "question": "A company is setting up a data pipeline in AWS. The pipeline extracts client data from Amazon S3 buckets, performs quality checks, and transforms the data. The pipeline stores the processed data in a relational database. The company will use the processed data for future queries. Which solution will meet these requirements MOST cost-effectively?",
+    "options": {
+      "A": "Use AWS Glue ETL to extract the data from the S3 buckets and perform the transformations. Use AWS Glue Data Quality to enforce suggested quality rules. Load the data and the quality check results into an Amazon RDS for MySQL instance.",
+      "B": "Use AWS Glue Studio to extract the data from the S3 buckets. Use AWS Glue DataBrew to perform the transformations and quality checks. Load the processed data into an Amazon RDS for MySQL instance. Load the quality check results into a new S3 bucket.",
+      "C": "Use AWS Glue ETL to extract the data from the S3 buckets and perform the transformations. Use AWS Glue DataBrew to perform quality checks. Load the processed data and the quality check results into a new S3 bucket.",
+      "D": "Use AWS Glue Studio to extract the data from the S3 buckets. Use AWS Glue DataBrew to perform the transformations and quality checks. Load the processed data and quality check results into an Amazon RDS for MySQL instance."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性：AWS Glue ETL是专门设计用于处理复杂的ETL任务，能够高效地提取和转换数据。 质量检查：AWS Glue Data Quality是专门用于数据质量检查的工具，能够强制执行质量规则。 存储：Amazon RDS for MySQL是一个托管的关系数据库服务，适合存储结构化数据并支持未来查询。 成本效益：此方案使用了AWS Glue的核心功能和Amazon RDS，避免了额外的存储成本，符合题目要求的“最具成本效益”。",
+      "B": "Incorrect. 正确性：AWS Glue Studio可以用于数据提取，但它更适合可视化工作流设计，而不是复杂的ETL任务。 质量检查：AWS Glue DataBrew可以执行质量检查，但它更适合数据准备，而不是强制执行质量规则。 存储：将质量检查结果存储到一个新的S3桶中增加了额外的存储成本，不符合“最具成本效益”的要求。",
+      "C": "Incorrect. 正确性：AWS Glue ETL适合复杂的ETL任务，但AWS Glue DataBrew更适合数据准备，而不是强制执行质量规则。 存储：将数据和质量检查结果存储到S3桶中不符合题目要求，因为题目明确要求将数据存储到关系数据库中以支持未来查询。 成本效益：使用S3存储数据可能会降低查询效率，增加后续处理成本。",
+      "D": "Incorrect. 正确性：AWS Glue Studio适合可视化工作流设计，但不适合复杂的ETL任务。 质量检查：AWS Glue DataBrew更适合数据准备，而不是强制执行质量规则。 存储：将数据和质量检查结果加载到Amazon RDS符合题目要求，但前面的工具选择不够优化。 成本效益：此方案的工具选择可能增加开发复杂性和成本，不是最具成本效益的方案。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 227,
+    "type": "single",
+    "question": "A company uses Amazon Redshift as a data warehouse solution. One of the datasets that the company stores in Amazon Redshift contains data for a vendor. Recently, the vendor asked the company to transfer the vendor’s data into the vendor’s Amazon S3 bucket once each week. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an AWS Lambda function to connect to the Redshift data warehouse. Configure the Lambda function to use the Redshift COPY command to copy the required data to the vendor’s S3 bucket on a schedule.",
+      "B": "Create an AWS Glue job to connect to the Redshift data warehouse. Configure the AWS Glue job to use the Redshift UNLOAD command to load the required data to the vendor’s S3 bucket on a schedule.",
+      "C": "Use the Amazon Redshift data sharing feature. Set the vendor’s S3 bucket as the destination. Configure the source to be as a custom SQL query that selects the required data.",
+      "D": "Configure Amazon Redshift Spectrum to use the vendor’s S3 bucket a destination, Enable data querying in both directions."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误：Redshift COPY命令用于从S3加载数据到Redshift，而不是将数据从Redshift导出到S3。 Lambda可以定时触发，但COPY命令不适合此场景。",
+      "B": "Correct. 正确：UNLOAD命令可以将Redshift中的数据导出到S3。 AWS Glue支持定时任务，可以通过UNLOAD命令将数据导出到指定的S3 bucket。",
+      "C": "Incorrect. 错误：Redshift数据共享功能用于在多个Redshift集群之间共享数据，而不是直接导出数据到S3。 此选项与题目要求不符。",
+      "D": "Incorrect. 错误：Redshift Spectrum用于查询存储在S3中的数据，而不是将Redshift中的数据导出到S3。 双向数据查询与题目要求无关。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 228,
+    "type": "single",
+    "question": "A company uses an Amazon Redshift cluster as a data warehouse that is shared across two departments. To comply with a security policy, each department must have unique access permissions. Department A must have access to tables and views for Department A. Department B must have access to tables and views for Department B. The company often runs SQL queries that use objects from both departments in one query. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Group tables and views for each department into dedicated schemas. Manage permissions at the schema level.",
+      "B": "Group tables and views for each department into dedicated databases. Manage permissions at the database level.",
+      "C": "Update the names of the tables and views to follow a naming convention that contains the department names. Manage permissions based on the new naming convention.",
+      "D": "Create an IAM user group for each department. Use identity-based IAM policies to grant table and view permissions based on the IAM user group."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 将表和视图分组到专用的 schema 中，并在 schema 级别管理权限是 Amazon Redshift 中推荐的最佳实践。通过 schema，可以 轻松地对不同部门的数据进行逻辑分组，并且可以直接在 schema 级别设置权限，从而减少操作开销。",
+      "B": "Incorrect. Amazon Redshift 是一个单数据库系统，通常不支持多个数据库的分区管理。将数据分组到多个数据库会增加复杂性，并且不 符合 Redshift 的设计模式。",
+      "C": "Incorrect. 基于命名约定管理权限是一种低效且容易出错的方法。命名约定无法提供真正的权限隔离，且需要额外的操作来解析和管理 权限。",
+      "D": "Incorrect. Amazon Redshift 的权限管理主要基于数据库级别的角色和权限，而不是 IAM 策略。IAM 策略无法直接管理 Redshift 表和视图 的权限。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 229,
+    "type": "single",
+    "question": "A company wants to ingest streaming data into an Amazon Redshift data warehouse from an Amazon Managed Streaming for Apache Kafka (Amazon MSK) cluster. A data engineer needs to develop a solution that provides low data access time and that optimizes storage costs. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an external schema that maps to the MSK cluster. Create a materialized view that references the external schema to consume the streaming data from the MSK topic.",
+      "B": "Develop an AWS Glue streaming extract, transform, and load (ETL) job to process the incoming data from Amazon MSK. Load the data into Amazon S3. Use Amazon Redshift Spectrum to read the data from Amazon S3.",
+      "C": "Create an external schema that maps to the streaming data source. Create a new Amazon Redshift table that references the external schema.",
+      "D": "Create an Amazon S3 bucket. Ingest the data from Amazon MSK. Create an event-driven AWS Lambda function to load the data from the S3 bucket to a new Amazon Redshift table."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：此选项利用Amazon Redshift的外部模式和物化视图功能直接从MSK消费数据。这种方法可以减少数据访问时间，因为 数据直接从流中消费，而不需要中间存储。物化视图可以优化查询性能。 存储成本：由于数据直接从流中消费，没有额外的存储成本。 操作复杂度：外部模式和物化视图的设置相对简单，操作复杂度较低。 结论：此选项是一个合理的解决方案，符合题目要求。",
+      "B": "Incorrect. 开发一个 AWS Glue 流式 ETL 作业，以处理来自 Amazon MSK 的输入数据。将数据加载到 Amazon S3。使用 Amazon Redshift Spectrum 从 Amazon S3 读取数据。 正确性分析：此选项使用AWS Glue进行流式ETL处理，将数据存储到Amazon S3，并通过Redshift Spectrum查询数据。这种方法适合处 理复杂的ETL需求，但增加了数据访问时间，因为数据需要先存储到S3。 存储成本：S3存储成本较低，但增加了额外的存储开销。 操作复杂度：需要开发和维护Glue作业，操作复杂度较高。 结论：此选项不符合“低数据访问时间”和“最低操作复杂度”的要求。",
+      "C": "Incorrect. 正确性分析：此选项提到创建外部模式，但没有提到如何处理流数据的消费问题。直接创建Redshift表引用外部模式并不能有效处理 流数据。 存储成本：没有明确提到存储优化策略。 操作复杂度：缺乏具体的流数据处理逻辑，操作复杂度较低，但功能不完整。 结论：此选项不符合题目要求。",
+      "D": "Incorrect. 正确性分析：此选项使用S3作为中间存储，并通过Lambda函数将数据加载到Redshift。这种方法增加了数据访问时间，因为数据需要 先存储到S3。 存储成本：S3存储成本较低，但增加了额外的存储开销。 操作复杂度：需要开发和维护Lambda函数，操作复杂度较高。 结论：此选项不符合“低数据访问时间”和“最低操作复杂度”的要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 230,
+    "type": "single",
+    "question": "A sales company uses AWS Glue ETL to collect, process, and ingest data into an Amazon S3 bucket. The AWS Glue pipeline creates a new file in the S3 bucket every hour. File sizes vary from 200 KB to 300 KB. The company wants to build a sales prediction model by using data from the previous 5 years. The historic data includes 44,000 files. The company builds a second AWS Glue ETL pipeline by using the smallest worker type. The second pipeline retrieves the historic files from the S3 bucket and processes the files for downstream analysis. The company notices significant performance issues with the second ETL pipeline. The company needs to improve the performance of the second pipeline. Which solution will meet this requirement MOST cost-effectively?",
+    "options": {
+      "A": "Use a larger worker type.",
+      "B": "Increase the number of workers in the AWS Glue ETL jobs.",
+      "C": "Use the AWS Glue DynamicFrame grouping option.",
+      "D": "Enable AWS Glue auto scaling."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 分析：更大的worker类型可以提供更高的计算能力，但并不能解决小文件处理的性能问题。小文件处理的瓶颈通常在于I/O操作和文 件合并，而不是计算能力。 结论：此选项错误。",
+      "B": "Incorrect. 分析：增加worker数量可以提高并行处理能力，但仍然无法解决小文件处理的核心问题。大量小文件会导致过多的I/O操作，增加 worker数量可能会导致资源浪费。 结论：此选项错误。",
+      "C": "Correct. 分析：DynamicFrame分组选项可以将小文件合并为更大的分组，从而减少I/O操作并提高处理效率。这是解决小文件性能问题的最佳 实践。 结论：此选项正确。",
+      "D": "Incorrect. 分析：自动扩展可以动态调整资源以满足作业需求，但它无法直接解决小文件处理的性能问题。小文件问题需要通过数据分组或合 并来优化，而不是依赖自动扩展。 结论：此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 231,
+    "type": "single",
+    "question": "A company wants to combine data from multiple software as a service (SaaS) applications for analysis. A data engineering team needs to use Amazon QuickSight to perform the analysis and build dashboards. A data engineer needs to extract the data from the SaaS applications and make the data available for QuickSight queries. Which solution will meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Create AWS Lambda functions that call the required APIs to extract the data from the applications. Store the data in an Amazon S3 bucket. Use AWS Glue to catalog the data in the S3 bucket. Create a data source and a dataset in QuickSight.",
+      "B": "Use AWS Lambda functions as Amazon Athena data source connectors to run federated queries against the SaaS applications. Create an Athena data source and a dataset in QuickSight.",
+      "C": "Use Amazon AppFlow to create a flow for each SaaS application. Set an Amazon S3 bucket as the destination. Schedule the flows to extract the data to the bucket. Use AWS Glue to catalog the data in the S3 bucket. Create a data source and a dataset in QuickSight.",
+      "D": "Export data the from the SaaS applications as Microsoft Excel files. Create a data source and a dataset in QuickSight by uploading the Excel files."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：使用Lambda函数调用API提取数据是可行的，但需要手动编写和维护代码，增加了操作复杂性。 错误原因：虽然可以实现目标，但操作效率较低，且需要额外的开发和维护工作。",
+      "B": "Incorrect. 正确性分析：使用Athena进行联邦查询是可行的，但需要配置Lambda作为Athena数据源连接器，增加了复杂性。 错误原因：这种方法对操作效率的提升有限，且对SaaS应用的API支持可能不够全面。",
+      "C": "Correct. 正确性分析：Amazon AppFlow是专门设计用于从SaaS应用程序提取数据的服务，支持自动化和高效的数据流管理。 正确原因：此选项操作效率最高，且无需额外开发工作，完全符合题目要求。",
+      "D": "Incorrect. 正确性分析：手动导出Excel文件并上传到QuickSight是可行的，但完全依赖人工操作。 错误原因：操作效率极低，无法满足自动化需求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 232,
+    "type": "single",
+    "question": "A company runs multiple applications on AWS. The company configured each application to output logs. The company wants to query and visualize the application logs in near real time. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure the applications to output logs to Amazon CloudWatch Logs log groups. Create an Amazon S3 bucket. Create an AWS Lambda function that runs on a schedule to export the required log groups to the S3 bucket. Use Amazon Athena to query the log data in the S3 bucket.",
+      "B": "Create an Amazon OpenSearch Service domain. Configure the applications to output logs to Amazon CloudWatch Logs log groups. Create an OpenSearch Service subscription filter for each log group to stream the data to OpenSearch. Create the required queries and dashboards in OpenSearch Service to analyze and visualize the data.",
+      "C": "Configure the applications to output logs to Amazon CloudWatch Logs log groups. Use CloudWatch log anomaly detection to query and visualize the log data.",
+      "D": "Update the application code to send the log data to Amazon QuickSight by using Super-fast, Parallel, In-memory Calculation Engine (SPICE). Create the required analyses and dashboards in QuickSight."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 将日志输出到CloudWatch Logs，使用Lambda定期导出到S3，并用Athena查询 正确性分析：此方案可以实现日志查询，但由于Lambda是定期运行的，无法满足“近实时”查询的要求。 错误原因：Athena适合查询静态数据，而不是实时数据。此方案不符合题目要求的“近实时”需求。",
+      "B": "Correct. 使用OpenSearch Service订阅过滤器将日志流式传输到OpenSearch 正确性分析：OpenSearch Service支持实时数据流式传输和查询，并提供强大的可视化功能（如仪表板）。 正确原因：此方案完全符合题目要求，可以实现近实时的日志查询和可视化。",
+      "C": "Incorrect. 使用CloudWatch日志异常检测查询和可视化日志数据 正确性分析：CloudWatch日志异常检测主要用于检测日志中的异常模式，而不是用于全面的日志查询和可视化。 错误原因：此方案不适合实现复杂的查询和可视化需求。",
+      "D": "Incorrect. 更新应用代码，将日志发送到QuickSight 正确性分析：QuickSight是一个商业智能工具，适合分析结构化数据，但不适合直接处理日志数据。 错误原因：此方案需要修改应用代码，且QuickSight不支持实时日志查询和可视化。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 233,
+    "type": "single",
+    "question": "An ecommerce company processes millions of orders each day. The company uses AWS Glue ETL to collect data from multiple sources, clean the data, and store the data in an Amazon S3 bucket in CSV format by using the S3 Standard storage class. The company uses the stored data to conduct daily analysis. The company wants to optimize costs for data storage and retrieval. Which solution will meet this requirement?",
+    "options": {
+      "A": "Transition the data to Amazon S3 Glacier Flexible Retrieval.",
+      "B": "Transition the data from Amazon S3 to an Amazon Aurora cluster.",
+      "C": "Configure AWS Glue ETL to transform the incoming data to Apache Parquet format.",
+      "D": "Configure AWS Glue ETL to use Amazon EMR to process incoming data in parallel."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 错误：Amazon S3 Glacier Flexible Retrieval适用于长期存储和归档数据，但不适合频繁访问的数据（如每日分析）。将数据转移到 Glacier会导致检索时间增加，不符合题目要求。",
+      "B": "Incorrect. 错误：Amazon Aurora是关系型数据库服务，适合事务处理或结构化查询，但不适合存储大量非结构化数据（如CSV文件）。此外， Aurora的成本通常高于S3，不符合优化存储成本的要求。",
+      "C": "Correct. 正确：Apache Parquet是一种列式存储格式，能够显著减少存储空间并提高查询性能。将数据从CSV转换为Parquet格式可以优化存储 成本，同时提高数据分析效率。",
+      "D": "Incorrect. 错误：Amazon EMR用于大规模数据处理和分析，但题目重点是优化存储成本，而不是处理性能。此选项未解决存储成本问题。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 234,
+    "type": "single",
+    "question": "A data engineer is optimizing query performance in Amazon Athena notebooks that use Apache Spark to analyze large datasets that are stored in Amazon S3. The data is partitioned. An AWS Glue crawler updates the partitions. The data engineer wants to minimize the amount of data that is scanned to improve efficiency of Athena queries. Which solution will meet these requirements?",
+    "options": {
+      "A": "Apply partition filters in the queries.",
+      "B": "Increase the frequency of AWS Glue crawler invocations to update the data catalog more often.",
+      "C": "Organize the data that is in Amazon S3 by using a nested directory structure.",
+      "D": "Configure Spark to use in-memory caching for frequently accessed data."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 分区过滤器可以显著减少扫描的数据量，从而提高查询效率。这是优化分区数据查询的最佳实践。",
+      "B": "Incorrect. 虽然频繁更新数据目录可以确保数据的最新性，但它不会直接减少查询扫描的数据量。",
+      "C": "Incorrect. 虽然嵌套目录结构可以帮助组织数据，但仅靠目录结构不会自动减少扫描的数据量，分区过滤器才是关键。",
+      "D": "Incorrect. 内存缓存可以提高数据访问速度，但它与减少扫描的数据量无关。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 235,
+    "type": "single",
+    "question": "A company manages an Amazon Redshift data warehouse. The data warehouse is in a public subnet inside a custom VPC. A security group allows only traffic from within itself. An ACL is open to all traffic. The company wants to generate several visualizations in Amazon QuickSight for an upcoming sales event. The company will run QuickSight Enterprise edition in a second AWS account inside a public subnet within a second custom VPC. The new public subnet has a security group that allows outbound traffic to the existing Redshift cluster. A data engineer needs to establish connections between Amazon Redshift and QuickSight. QuickSight must refresh dashboards by querying the Redshift cluster. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure the Redshift security group to allow inbound traffic on the Redshift port from the QuickSight security group.",
+      "B": "Assign Elastic IP addresses to the QuickSight visualizations. Configure the QuickSight security group to allow inbound traffic on the Redshift port from the Elastic IP addresses.",
+      "C": "Confirm that the CIDR ranges of the Redshift VPC and the QuickSight VPC are the same. If CIDR ranges are different, reconfigure one CIDR range to match the other. Establish network peering between the VPCs.",
+      "D": "Create a QuickSight gateway endpoint in the Redshift VPC. Attach an endpoint policy to the gateway endpoint to ensure only specific QuickSight accounts can use the endpoint."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确：此选项直接解决了问题，通过修改Redshift的安全组规则，允许来自QuickSight安全组的流量访问Redshift的端口。QuickSight可 以通过安全组规则访问Redshift。 安全组是VPC内的主要访问控制机制，允许基于源安全组的流量规则是常见的做法。",
+      "B": "Incorrect. 错误：QuickSight本身不支持直接分配Elastic IP地址。Elastic IP地址通常用于EC2实例，而不是QuickSight服务。 此外，使用Elastic IP地址进行访问控制并不符合AWS最佳实践，因为它增加了管理复杂性。",
+      "C": "Incorrect. 错误：虽然VPC对等连接可以解决跨VPC通信问题，但题目中并未提到需要重新配置CIDR范围。此外，VPC对等连接的设置复杂度较 高，且题目中没有明确要求使用这种方法。 QuickSight可以通过安全组规则直接访问Redshift，无需额外的VPC对等连接。",
+      "D": "Incorrect. 错误：QuickSight不支持通过网关终端节点直接连接到Redshift。网关终端节点通常用于访问AWS服务（如S3或DynamoDB），而不是用 于跨账户或跨VPC的服务连接。 此选项与题目要求不符。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 236,
+    "type": "single",
+    "question": "A data engineer is building a data pipeline. A large data file is uploaded to an Amazon S3 bucket once each day at unpredictable times. An AWS Glue workflow uses hundreds of workers to process the file and load the data into Amazon Redshift. The company wants to process the file as quickly as possible. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an on-demand AWS Glue trigger to start the workflow. Create an AWS Lambda function that runs every 15 minutes to check the S3 bucket for the daily file. Configure the function to start the AWS Glue workflow if the file is present.",
+      "B": "Create an event-based AWS Glue trigger to start the workflow. Configure Amazon S3 to log events to AWS CloudTrail. Create a rule in Amazon EventBridge to forward PutObject events to the AWS Glue trigger.",
+      "C": "Create a scheduled AWS Glue trigger to start the workflow. Create a cron job that runs the AWS Glue job every 15 minutes. Set up the AWS Glue job to check the S3 bucket for the daily file. Configure the job to stop if the file is not present.",
+      "D": "Create an on-demand AWS Glue trigger to start the workflow. Create an AWS Database Migration Service (AWS DMS) migration task. Set the DMS source as the S3 bucket. Set the target endpoint as the AWS Glue workflow."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 分析： 正确性：此方法可以实现目标，但效率较低，因为Lambda函数每15分钟轮询一次S3，可能会导致延迟。 错误原因：轮询机制不够高效，无法满足“尽快处理文件”的要求。",
+      "B": "Correct. 分析： 正确性：此方法利用了事件驱动机制，能够在文件上传到S3时立即触发AWS Glue工作流。 优势：事件驱动机制效率高，能够满足“尽快处理文件”的要求。",
+      "C": "Incorrect. 分析： 正确性：此方法可以实现目标，但效率较低，因为计划触发器每15分钟运行一次，可能会导致延迟。 错误原因：计划触发器不够高效，无法满足“尽快处理文件”的要求。",
+      "D": "Incorrect. 分析： 正确性：AWS DMS主要用于数据库迁移，而不是处理S3文件上传事件。 错误原因：此方法不适合当前场景，且AWS DMS无法直接触发AWS Glue工作流。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 237,
+    "type": "single",
+    "question": "A data engineer needs to run a data transformation job whenever a user adds a file to an Amazon S3 bucket. The job will run for less than 1 minute. The job must send the output through an email message to the data engineer. The data engineer expects users to add one file every hour of the day. Which solution will meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Create a small Amazon EC2 instance that polls the S3 bucket for new files. Run transformation code on a schedule to generate the output. Use operating system commands to send email messages.",
+      "B": "Run an Amazon Elastic Container Service (Amazon ECS) task to poll the S3 bucket for new files. Run transformation code on a schedule to generate the output. Use operating system commands to send email messages.",
+      "C": "Create an AWS Lambda function to transform the data. Use Amazon S3 Event Notifications to invoke the Lambda function when a new object is created. Publish the output to an Amazon Simple Notification Service (Amazon SNS) topic. Subscribe the data engineer’s email account to the topic.",
+      "D": "Deploy an Amazon EMR cluster. Use EMR File System (EMRFS) to access the files in the S3 bucket. Run transformation code on a schedule to generate the output to a second S3 bucket. Create an Amazon Simple Notification Service (Amazon SNS) topic. Configure Amazon S3 Event Notifications to notify the topic when a new object is created."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. Create a small Amazon EC2 instance that polls the S3 bucket for new files... 分析：此选项需要手动轮询S3存储桶，增加了复杂性和运营成本。EC2实例需要持续运行，浪费资源，不符合“最具操作效率”的要 求。 结论：错误。",
+      "B": "Incorrect. Run an Amazon Elastic Container Service (Amazon ECS) task to poll the S3 bucket... 分析：虽然ECS任务比EC2实例更灵活，但仍然需要轮询S3存储桶，增加了不必要的复杂性和成本。操作效率不高。 结论：错误。",
+      "C": "Correct. Create an AWS Lambda function to transform the data... 分析：此选项使用S3事件通知自动触发Lambda函数，无需轮询，完全无服务器架构。Lambda函数运行时间短，非常适合此场景。 SNS可以直接发送邮件，满足需求。 结论：正确。",
+      "D": "Incorrect. Deploy an Amazon EMR cluster... 分析：EMR集群适用于大规模数据处理，而此场景仅需处理单个文件，EMR过于复杂且成本高。虽然使用了SNS，但整体架构不符 合“最具操作效率”的要求。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 238,
+    "type": "single",
+    "question": "A company uses Amazon S3 and AWS Glue Data Catalog to manage a data lake that contains contact information for customers. The company uses PySpark and AWS Glue jobs with a DynamicFrame to run a workflow that processes data within the data lake. A data engineer notices that the workflow is generating errors as a result of how customer postal codes are stored in the data lake. Some postal codes include unnecessary numbers or invalid characters. The data engineer needs a solution to address the errors and correct the postal codes in the data lake.",
+    "options": {
+      "A": "Create a schema definition for PySpark that matches the format the processing workflow requires for postal codes. Pass the schema to the DynamicFrame during processing.",
+      "B": "Use AWS Glue workflow properties to allow job state sharing. Configure the AWS Glue jobs to read values from the postal code column by using the properties from a previously successful run of the jobs.",
+      "C": "Configure the column.push_down_predicate setting and the catalogPartitionPredicate settings for the postal code column in the DynamicFrame.",
+      "D": "Set the DynamicFrame additional_options parameter ‘useS3ListImplementation’ to True."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确：通过定义一个符合工作流要求的模式，可以确保数据处理时邮政编码的格式正确。这是解决数据质量问题的标准方法。 DynamicFrame支持模式定义，能够帮助清理和验证数据格式。",
+      "B": "Incorrect. 错误：AWS Glue工作流属性用于作业状态共享，与数据清理或格式校验无关。 此选项未解决邮政编码格式问题，且依赖之前成功运行的作业属性并不适合当前场景。",
+      "C": "Incorrect. 错误：column.push_down_predicate和catalogPartitionPredicate用于过滤数据或分区选择，与数据清理或格式校验无关。 此选项未解决邮政编码中无效字符或多余数字的问题。",
+      "D": "Incorrect. 错误：useS3ListImplementation参数用于优化S3文件列表操作，与数据清理或格式校验无关。 此选项未解决邮政编码格式问题。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 239,
+    "type": "single",
+    "question": "A data engineer is troubleshooting an AWS Glue workflow that occasionally fails. The engineer determines that the failures are a result of data quality issues. A business reporting team needs to receive an email notification any time the workflow fails in the future. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an Amazon Simple Notification Service (Amazon SNS) FIFO topic. Subscribe the team’s email account to the SNS topic. Create an AWS Lambda function that initiates when the AWS Glue job state changes to FAILED. Set the SNS topic as the target.",
+      "B": "Create an Amazon Simple Notification Service (Amazon SNS) standard topic. Subscribe the team’s email account to the SNS topic. Create an Amazon EventBridge rule that triggers when the AWS Glue job state changes to FAILED. Set the SNS topic as the target.",
+      "C": "Create an Amazon Simple Queue Service (Amazon SQS) FIFO queue. Subscribe the team’s email account to the SQS queue. Create an AWS Config rule that triggers when the AWS Glue job state changes to FAILED. Set the SQS queue as the target.",
+      "D": "Create an Amazon Simple Queue Service (Amazon SQS) standard queue. Subscribe the team’s email account to the SQS queue. Create an Amazon EventBridge rule that triggers when the AWS Glue job state changes to FAILESet the SQS queue as the target."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Create an Amazon Simple Notification Service (Amazon SNS) FIFO topic... 分析： SNS FIFO主题主要用于严格的消息顺序和去重场景，而本题没有提到需要FIFO功能。 虽然可以通过Lambda函数监控Glue作业状态，但EventBridge是更直接的解决方案。 此选项复杂度较高且不符合最佳实践。 结论：错误。",
+      "B": "Correct. Create an Amazon Simple Notification Service (Amazon SNS) standard topic... 分析： SNS标准主题适合发送通知，支持电子邮件订阅。 EventBridge可以直接监控AWS Glue作业状态并触发通知，是最佳实践。 此选项符合题目要求，解决方案简单且高效。 结论：正确。",
+      "C": "Incorrect. Create an Amazon Simple Queue Service (Amazon SQS) FIFO queue... 分析： SQS FIFO队列主要用于消息顺序和去重场景，不适合直接发送电子邮件通知。 AWS Config规则不适用于Glue作业状态监控。 此选项不符合题目要求。 结论：错误。",
+      "D": "Incorrect. Create an Amazon Simple Queue Service (Amazon SQS) standard queue... 分析： SQS标准队列用于消息队列场景，不适合直接发送电子邮件通知。 虽然EventBridge可以监控Glue作业状态，但SQS不是最佳目标。 此选项不符合题目要求。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 240,
+    "type": "single",
+    "question": "A company uses AWS Glue jobs to implement several data pipelines. The pipelines are critical to the company. The company needs to implement a monitoring mechanism that will alert stakeholders if the pipelines fail. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an Amazon EventBridge rule to match AWS Glue job failure events. Configure the rule to target an AWS Lambda function to process events. Configure the function to send notifications to an Amazon Simple Notification Service (Amazon SNS) topic.",
+      "B": "Configure an Amazon CloudWatch Logs log group for the AWS Glue jobs. Create an Amazon EventBridge rule to match new log creation events in the log group. Configure the rule to target an AWS Lambda function that reads the logs and sends notifications to an Amazon Simple Notification Service (Amazon SNS) topic if AWS Glue job failure logs are present.",
+      "C": "Create an Amazon EventBridge rule to match AWS Glue job failure events. Define an Amazon CloudWatch metric based on the EventBridge rule. Set up a CloudWatch alarm based on the metric to send notifications to an Amazon Simple Notification Service (Amazon SNS) topic.",
+      "D": "Configure an Amazon CloudWatch Logs log group for the AWS Glue jobs. Create an Amazon EventBridge rule to match new log creation events in the log group. Configure the rule to send notifications to an Amazon Simple Notification Service (Amazon SNS) topic."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 分析：此选项通过EventBridge规则捕获Glue作业失败事件，并使用Lambda函数处理事件后发送SNS通知。虽然可以实现目标，但引入 了Lambda函数，增加了额外的操作复杂性，不符合“LEAST operational overhead”的要求。 结论：错误。",
+      "B": "Incorrect. 分析：此选项通过CloudWatch Logs和EventBridge规则捕获日志事件，并使用Lambda函数解析日志以检测失败情况。与选项A类似， Lambda函数的引入增加了操作复杂性，不符合“LEAST operational overhead”的要求。 结论：错误。",
+      "C": "Correct. 分析：此选项直接使用EventBridge规则捕获Glue作业失败事件，并通过CloudWatch指标和警报发送SNS通知。整个流程无需额外的 Lambda函数或复杂的日志解析，完全符合“LEAST operational overhead”的要求。 结论：正确。",
+      "D": "Incorrect. 分析：此选项通过CloudWatch Logs和EventBridge规则捕获日志事件，并直接发送SNS通知。然而，它无法直接检测Glue作业失败事 件，需要额外的逻辑来解析日志，操作复杂性较高。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 241,
+    "type": "single",
+    "question": "A company uses AWS Glue Apache Spark jobs to handle extract, transform, and load (ETL) workloads. The company has enabled logging and monitoring for all AWS Glue jobs. One of the AWS Glue jobs begins to fail. A data engineer investigates the error and wants to examine metrics for all individual stages within the job. How can the data engineer access the stage metrics?",
+    "options": {
+      "A": "Examine the AWS Glue job and stage details in the Spark UI.",
+      "B": "Examine the AWS Glue job and stage metrics in Amazon CloudWatch.",
+      "C": "Examine the AWS Glue job and stage logs in AWS CloudTrail logs.",
+      "D": "Examine the AWS Glue job and stage details by using the run insights feature on the job."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Glue使用Apache Spark作为其底层引擎，Spark UI提供了详细的作业和阶段信息，包括执行时间、任务分配等。这是查看 阶段详细信息的正确方法。",
+      "B": "Incorrect. 虽然AWS Glue可以将作业的总体指标发送到Amazon CloudWatch，但CloudWatch并不提供Spark阶段级别的详细信息。",
+      "C": "Incorrect. AWS CloudTrail主要用于记录API调用和用户活动日志，而不是用于查看Spark作业的阶段详细信息。",
+      "D": "Incorrect. AWS Glue的运行洞察功能（Run Insights）提供的是作业级别的性能分析，而不是Spark阶段级别的详细信息。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 242,
+    "type": "single",
+    "question": "A data engineer notices slow query performance on a highly partitioned table that is in Amazon Athena. The table contains daily data for the previous 5 years, partitioned by date. The data engineer wants to improve query performance and to automate partition management. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use an AWS Lambda function that runs daily. Configure the function to manually create new partitions in AWS Glue for each day’s data.",
+      "B": "Use partition projection in Athena. Configure the table properties by using a date range from 5 years ago to the present.",
+      "C": "Reduce the number of partitions by changing the partitioning schema from daily to monthly granularity.",
+      "D": "Increase the processing capacity of Athena queries by allocating more compute resources."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 错误：虽然使用AWS Lambda可以自动化分区创建，但手动创建分区并不能解决查询性能问题。分区投影是更高效的解决方案，因为 它避免了频繁的分区元数据更新。",
+      "B": "Correct. 正确：分区投影允许Athena在查询时动态推断分区，而无需依赖AWS Glue元数据。这显著提高了查询性能，并简化了分区管理。",
+      "C": "Incorrect. 错误：虽然减少分区数量可以改善性能，但改变分区粒度可能会影响数据的查询精度。如果用户需要按天查询数据，这种方法不可 行。",
+      "D": "Incorrect. 错误：Athena是基于服务器无状态的查询服务，无法直接分配更多计算资源。性能优化应通过分区管理和查询设计来实现，而不是 增加计算资源。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 243,
+    "type": "multiple",
+    "question": "A data engineer is using an Apache Iceberg framework to build a data lake that contains 100 ТВ of data. The data engineer wants to run AWS Glue Apache Spark jobs that use the Iceberg framework. What combination of steps will meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Create a key named --conf for an AWS Glue job. Set Iceberg as a value for the --datalake-formats job parameter.",
+      "B": "Specify the path to a specific version of Iceberg by using the -extra-jars job parameter. Set Iceberg as a value for the datalake-formats job parameter.",
+      "C": "Set Iceberg as a value for the --datalake-formats job parameter.",
+      "D": "Set the --enable-auto-scaling parameter to true.",
+      "E": "Add the --job-bookmark-option: job-bookmark-enable parameter to an AWS Glue job."
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "Incorrect. AWS Glue作业中并 没有直接通过`--conf`键来设置数据湖格式的方式。正确的方式是通过`--datalake-formats`参数来指定数据湖格式。",
+      "B": "Correct. 使用`-extra-jars`参数可以指定Iceberg框架的具体版本路径，这样可以确保AWS Glue作业能够加载正确的Iceberg库。 同时，设置`--datalake-formats`参数为Iceberg是正确的操作。",
+      "C": "Correct. `--datalake-formats`参数用于指定数据湖的格式，Iceberg是支持 的格式之一，因此此选项是正确的。",
+      "D": "Incorrect. `--enable-auto-scaling`参数用于启用AWS Glue作业的自动扩展功能，与Iceberg框 架的集成无关，因此此选项不符合题目要求。",
+      "E": "Incorrect. `--job-bookmark-option`参数用于启用作业书 签功能，以便跟踪作业的状态和增量数据处理，与Iceberg框架的集成无直接关系，因此此选项不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 244,
+    "type": "single",
+    "question": "A data engineer is configuring an AWS Glue Apache Spark extract, transform, and load (ETL) job. The job contains a sort-merge join of two large and equally sized DataFrames. The job is failing with the following error: No space left on device. Which solution will resolve the error?",
+    "options": {
+      "A": "Use the AWS Glue Spark shuffle manager.",
+      "B": "Deploy are Amazon Elastic Block Store (Amazon EBS) volume for the job to use.",
+      "C": "Convert the sort-merge join in the job to be a broadcast join.",
+      "D": "Convert the DataFrames to DynamicFrames, and perform a DynamicFrame join in the job."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Glue Spark shuffle manager是专门为AWS Glue优化的shuffle管理器，能够有效地管理中间数据的存储和传输，减少磁盘空间不足的 问题。 在sort-merge join中，shuffle操作会产生大量中间数据，使用Glue Spark shuffle manager可以优化这些操作。 此选项是解决问题的合理方法。",
+      "B": "Incorrect. 增加EBS卷可以扩展磁盘空间，但AWS Glue作业通常运行在托管的环境中，无法直接控制底层的EBS卷配置。 此选项不适用于AWS Glue环境，因此是错误的。",
+      "C": "Incorrect. 广播连接适用于一方数据较小的情况，因为广播连接会将较小的数据集分发到所有节点。如果两个DataFrame都很大且大小相近，广 播连接会导致内存不足问题。 此选项不适合当前场景，因此是错误的。",
+      "D": "Incorrect. DynamicFrame是AWS Glue特有的数据结构，提供了更高层次的抽象和数据清理功能，但它并不会直接解决磁盘空间不足的问题。 此选项与问题无关，因此是错误的。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 245,
+    "type": "single",
+    "question": "A company needs to implement a workflow to process transactions. Each transaction goes through multiple levels of validation. Each validation level depends on the preceding validation level. The workflow must either process or reject each transaction within 24-hours. The workflow must run for less than 24 hours total. Which solution will meet these requirements with the LEAST operational cost?",
+    "options": {
+      "A": "Create a standard workflow in AWS Step Functions. Implement a Wait for Callback pattern to wait for the validation steps to finish.",
+      "B": "Create an express workflow in AWS Step Functions. Implement a Wait for Callback pattern to wait for the validation steps to finish.",
+      "C": "Use AWS Lambda functions to implement the workflow. Use Amazon EventBridge to invoke the validation steps.",
+      "D": "Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to implement the workflow."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 标准工作流适用于长时间运行的任务，支持Wait for Callback模式，可以有效处理多级验证逻辑。 Step Functions的标准工作流按状态转换计费，适合需要24小时内完成的任务，且成本较低。 此选项满足题目要求，且操作成本较低。",
+      "B": "Incorrect. 快速工作流适用于短时间运行的任务，通常在几秒到几分钟内完成。 快速工作流不适合长时间运行的任务（如24小时），因为其设计初衷是处理高吞吐量的短任务。 此选项不符合题目要求，且可能导致成本增加。",
+      "C": "Incorrect. Lambda函数适合短时间运行的任务，最大执行时间为15分钟，无法满足24小时的工作流需求。 虽然EventBridge可以触发异步事件，但无法直接实现多级依赖的验证逻辑。 此选项不符合题目要求。",
+      "D": "Incorrect. Amazon MWAA适合复杂的工作流管理，但其操作成本较高，且需要额外的配置和管理。 对于简单的多级验证逻辑，使用MWAA可能过于复杂，且不符合“最低操作成本”的要求。 此选项不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 246,
+    "type": "single",
+    "question": "A data engineer configures a large number of AWS Glue jobs that all start up around the same time. All the jobs run for less than 1 hour in the same subnet of the same VPC. All the AWS Glue jobs run on a G1.X worker type. Some of the jobs occasionally fail with the following error: \"The specified subnet does not have enough free addresses to satisfy the request\". What is the likely root cause of the error?",
+    "options": {
+      "A": "There are not enough IP addresses in the subnet.",
+      "B": "The G1.X worker type cannot access the subnet.",
+      "C": "AWS Glue does not have the correct IAM permissions to add additional IP addresses to the subnet.",
+      "D": "There are not enough IP addresses in the VPC."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 这是最可能的原因。AWS Glue作业需要在VPC的子网中启动，并为每个worker分配一个IP地址。如果子网中的可用IP地址不足，就会 导致作业启动失败。 G1.X worker类型每个实例都需要一个独立的IP地址。如果多个作业同时启动，可能会耗尽子网中的IP地址。 因此，这个选项是正确的。",
+      "B": "Incorrect. 这个选项是错误的。G1.X worker类型可以正常访问子网，只要子网配置正确并且有足够的IP地址。 题目中并未提到任何与worker类型无法访问子网相关的问题。",
+      "C": "Incorrect. 这个选项是错误的。AWS Glue不会动态向子网添加IP地址，子网的IP地址是通过VPC和子网的CIDR块预先定义的，无法通过IAM权限 动态扩展。 因此，这个选项不符合题目描述。",
+      "D": "Incorrect. 这个选项是错误的。题目明确提到问题发生在子网中，而不是整个VPC。即使VPC中有足够的IP地址，如果子网的CIDR块范围较小， 子网中的IP地址仍可能不足。 因此，这个选项不符合题目描述。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 247,
+    "type": "single",
+    "question": "A company runs an Apache Spark application every night in an Amazon EMR cluster. The company uses Amazon EC2 instances to supply compute capacity for the EMR cluster. The company deployed the Spark application in cluster mode. An error occurs in the Spark application. A log for the error is stored in the application's Spark driver standard error logs. A data engineer needs to investigate the error. Where can the data engineer find this error log?",
+    "options": {
+      "A": "The engineer can connect to the web UI on the live cluster to see the YARN ResourceManager logs.",
+      "B": "The engineer can connect to the persistent application UI to see the first YARN container log in the Spark UI.",
+      "C": "The engineer can connect to the Amazon EMR console to see the Amazon EMR step logs that are archived in Amazon S3.",
+      "D": "The engineer can connect to the primary node of the cluster by using SSH to see the Spark history server logs."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. YARN ResourceManager日志主要记录资源调度相关的信息，而不是Spark driver的标准错误日志。 虽然可以通过YARN UI查看部分任务状态，但无法直接定位到Spark driver的错误日志。 因此此选项错误。",
+      "B": "Incorrect. Spark UI可以提供任务执行的详细信息，但它不会直接存储Spark driver的标准错误日志。 此外，Spark UI中的日志通常是临时的，无法持久化存储。 因此此选项错误。",
+      "C": "Correct. Amazon EMR会将步骤日志（包括Spark driver的标准错误日志）自动存储到Amazon S3中，前提是启用了日志存储功能。 通过EMR控制台可以方便地查看这些存储在S3中的日志。 此选项正确。",
+      "D": "Incorrect. Spark history server主要用于查看已完成的Spark应用程序的执行历史，但它不会直接存储Spark driver的标准错误日志。 此外，连接到主节点需要额外的权限和配置，而不是最直接的方式。 因此此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 248,
+    "type": "single",
+    "question": "A company processes 500 GB of audience and advertising data daily, storing CSV files in Amazon S3 with schemas registered in AWS Glue Data Catalog. They need to convert these files to Apache Parquet format and store them in an S3 bucket. The solution requires a long-running workflow with 15 GiB memory capacity to process the data concurrently, followed by a correlation process that begins only after the first two processes complete. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to orchestrate the workflow by using AWS Glue. Configure AWS Glue to begin the third process after the first two processes have finished.",
+      "B": "Use Amazon EMR to run each process in the workflow. Create an Amazon Simple Queue Service (Amazon SQS) queue to handle messages that indicate the completion of the first two processes. Configure an AWS Lambda function to process the SQS queue by running the third process.",
+      "C": "Use AWS Glue workflows to run the first two processes in parallel. Ensure that the third process starts after the first two processes have finished.",
+      "D": "Use AWS Step Functions to orchestrate a workflow that uses multiple AWS Lambda functions. Ensure that the third process starts after the first two processes have finished."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 使用Amazon MWAA和AWS Glue： 正确性：Amazon MWAA（Managed Workflows for Apache Airflow）可以编排复杂的工作流，并支持与AWS Glue集成。但它需要额外的配 置和管理Airflow环境，增加了操作开销。 错误原因：虽然可以实现目标，但操作开销较高，不符合“最小化操作开销”的要求。",
+      "B": "Incorrect. 使用Amazon EMR和SQS： 正确性：Amazon EMR可以处理大规模数据转换，SQS可以用于消息队列，Lambda可以触发后续任务。但这种方案需要管理EMR集 群、SQS队列和Lambda函数，增加了复杂性。 错误原因：操作开销较高，且需要额外的组件（SQS和Lambda），不符合题目要求。",
+      "C": "Correct. 使用AWS Glue Workflows： 正确性：AWS Glue Workflows可以直接编排工作流，支持并行处理和顺序执行，且与AWS Glue Data Catalog无缝集成。操作开销低，符 合题目要求。 正确原因：这是最简化的解决方案，直接满足题目要求。",
+      "D": "Incorrect. 使用AWS Step Functions和Lambda： 正确性：AWS Step Functions可以编排工作流，Lambda可以处理数据转换。但Lambda的内存限制为10 GiB，无法满足15 GiB的需求。 错误原因：内存限制不满足要求，且需要额外管理Step Functions和Lambda，增加了操作开销。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 249,
+    "type": "single",
+    "question": "A company uses an organization in AWS Organizations to manage multiple AWS accounts. The company uses an enhanced fanout data stream in Amazon Kinesis Data Streams to receive streaming data from multiple producers. The company runs the data stream in an account named Account A. The company wants to use an AWS Lambda function in an account named Account В to process the data from the data stream. The company creates a Lambda execution role in Account В that has permissions to access data from the data stream in Account A. What additional step must the company take to meet this requirement?",
+    "options": {
+      "A": "Create a service control policy (SCP) to grant the data stream read access to the cross-account Lambda execution role. Attach the SCP to Account A.",
+      "B": "Add a resource-based policy to the data stream to allow read access for the cross-account Lambda execution role.",
+      "C": "Create a service control policy (SCP) to grant the data stream read access to the cross-account Lambda execution role. Attach the SCP to Account B.",
+      "D": "Add a resource-based policy to the cross-account Lambda function to grant the data stream read access to the function."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. SCP 的作用是限制或允许账户级别的权限，但它不能直接授予资源访问权限。SCP无法直接赋予Lambda执行角色对Kinesis数据流的读取 权限，因此此选项不正确。",
+      "B": "Correct. AWS支持通过资源基于策略（Resource- based Policy）来实现跨账户访问。将资源策略附加到Kinesis数据流，可以明确授予Account B中的Lambda执行角色对数据流的读取权 限。",
+      "C": "Incorrect. SCP 的作用是限制或允许账户级别的权限，但它不能直接授予资源访问权限。SCP无法直接赋予Lambda执行角色对Kinesis数据流的读取 权限，因此此选项不正确。",
+      "D": "Incorrect. Lambda函数的资源策略是用来控制谁 可以调用或管理该函数，而不是用来授予函数对其他资源（如Kinesis数据流）的访问权限。因此此选项不正确。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 250,
+    "type": "single",
+    "question": "A company needs to use Amazon Athena to analyze data that is in an Amazon S3 bucket. A data engineer needs to configure AWS Glue table partitions for year, month, and day. The data engineer needs to create the partitions every day to adjust to schema changes in the data. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use AWS Glue DataBrew to create the partitions for the AWS Glue table.",
+      "B": "Use an AWS Lambda function to create the partitions for the AWS Glue table.",
+      "C": "Set partition projection properties for the AWS Glue table.",
+      "D": "Configure an AWS Glue crawler to run on a set schedule."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 错误：AWS Glue DataBrew主要用于数据准备和清理，而不是用于管理表分区。它无法直接创建分区或管理分区属性。 因此此选项不符合题目要求。",
+      "B": "Incorrect. 部分正确：AWS Lambda可以通过编写自定义代码来动态创建分区，但这种方法需要额外的开发和维护工作。 虽然可以满足需求，但并不是最优解，因为AWS Glue本身提供了更高效的分区管理功能。",
+      "C": "Correct. 正确：分区投影是一种高效的分区管理方法，适用于分区结构固定且分区数量较大的场景。 通过设置分区投影属性，Athena可以直接查询分区数据，而无需每天更新分区信息。 此方法无需额外的计算资源，且能够自动适应分区变化，是最佳解决方案。",
+      "D": "Incorrect. 部分正确：AWS Glue爬网程序可以自动检测数据的分区并更新表，但需要定期运行爬网程序，这会增加额外的计算成本。 相比分区投影，爬网程序的效率较低，且不适合每天频繁更新分区的场景。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 251,
+    "type": "single",
+    "question": "A hotel management company receives daily data files from each of its hotels. The company wants to upload its data to AWS. The company plans to use Amazon Athena to access the files. The company needs to protect the files from accidental deletion. The company will develop an application on its on-premises servers to automatically forward the files to a fully managed AWS ingestion service. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use AWS DataSync to replicate data from the on-premises servers to Amazon Elastic File System (Amazon EFS). Configure automatic backups in AWS Backup.",
+      "B": "Use the Amazon Kinesis Agent on the on-premises servers to send data to Amazon Data Firehose. Store the data in an Amazon S3 bucket that has versioning enabled.",
+      "C": "Use AWS Glue jobs to ingest data from the on-premises servers into Amazon RDS. Enable automated backups for data protection.",
+      "D": "Use a self-managed Apache Kafka agent on the on-premises servers to stream data to Amazon Managed Streaming for Apache Kafka (Amazon MSK). Store the data in an Amazon S3 bucket with versioning enabled."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：AWS DataSync确实可以将数据从本地服务器传输到AWS，但Amazon EFS并不是Amazon Athena支持的存储类型。Athena 只能查询存储在Amazon S3中的数据。 数据保护：EFS可以通过AWS Backup进行备份，但这并不是防止意外删除的最佳方法，版本控制更适合。 操作开销：需要配置AWS Backup，增加了运维复杂性。 结论：此选项不符合要求。",
+      "B": "Correct. 正确性分析：Amazon Kinesis Agent和Amazon Data Firehose是完全托管的服务，能够自动将数据传输到Amazon S3，且支持启用版本控 制以防止意外删除。 数据保护：启用版本控制后，即使文件被删除或覆盖，也可以恢复到之前的版本。 操作开销：此选项的操作开销最低，因为Kinesis Agent和Data Firehose是托管服务，几乎不需要额外的管理工作。 结论：此选项符合所有要求。",
+      "C": "Incorrect. 正确性分析：AWS Glue可以用于数据摄取，但Amazon RDS并不是Amazon Athena支持的存储类型。Athena只能查询存储在Amazon S3中 的数据。 数据保护：RDS的自动备份功能可以保护数据，但不适用于防止意外删除的场景。 操作开销：需要配置Glue作业和RDS，增加了运维复杂性。 结论：此选项不符合要求。",
+      "D": "Incorrect. 正确性分析：使用自管理的Apache Kafka代理增加了运维复杂性，而Amazon MSK虽然是托管服务，但需要额外的配置来将数据存储 到Amazon S3中。 数据保护：启用版本控制的Amazon S3可以防止意外删除，但此选项的流数据传输方式复杂且不必要。 操作开销：自管理的Kafka代理需要额外的维护工作，增加了运维复杂性。 结论：此选项不符合要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 252,
+    "type": "multiple",
+    "question": "A company wants to use Apache Spark jobs that run on an Amazon EMR cluster to process streaming data. The Spark jobs will transform and store the data in an Amazon S3 bucket. The company will use Amazon Athena to perform analysis. The company needs to optimize the data format for analytical queries. Which solutions will meet these requirements with the SHORTEST query times? (Choose two.)",
+    "options": {
+      "A": "Use Avro format. Use AWS Glue Data Catalog to track schema changes.",
+      "B": "Use ORC format. Use AWS Glue Data Catalog to track schema changes.",
+      "C": "Use Apache Parquet format. Use an external Amazon DynamoDB table to track schema changes.",
+      "D": "Use Apache Parquet format. Use AWS Glue Data Catalog to track schema changes.",
+      "E": "Use ORC format. Store schema definitions in separate files in Amazon S3."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. Avro格式是一种行式存储格式，适合流式数据处理，但在分析查询性能方面不如列式存储格式（如Parquet和ORC）。 AWS Glue Data Catalog是一个优秀的架构管理工具，但Avro格式本身不适合优化Athena查询性能。 此选项错误。",
+      "B": "Correct. ORC是一种列式存储格式，专为高效查询设计，尤其适合Athena分析查询。 AWS Glue Data Catalog可以有效管理数据的架构变化，与ORC格式搭配使用是一个合理的选择。 此选项正确。",
+      "C": "Incorrect. Parquet是一种列式存储格式，与ORC类似，适合优化Athena查询性能。 使用外部Amazon DynamoDB表来跟踪架构变化并不是最佳实践，AWS Glue Data Catalog是更推荐的架构管理工具。 此选项错误。",
+      "D": "Correct. Parquet格式是一种高效的列式存储格式，适合Athena查询。 AWS Glue Data Catalog是官方推荐的架构管理工具，与Parquet格式搭配使用是一个合理的选择。 此选项正确。",
+      "E": "Incorrect. ORC格式是一种高效的列式存储格式，适合Athena查询。 将架构定义存储在Amazon S3中的单独文件中不是最佳实践，AWS Glue Data Catalog是更推荐的架构管理工具。 此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 253,
+    "type": "single",
+    "question": "A company adds new data to a large CSV file in an Amazon S3 bucket every day. The file contains company sales data from the previous 5 years. The file currently includes more than 5,000 rows. The CSV file structure is shown below with sample data:\nID | SALE_DATE   | ITEM_SOLD  | SALE_PRICE | SALES_REP | STORE_NAME\n1  | 01-Jan-2024 | TV         | 1000       | Terry     | Alaska\n2  | 02-Jan-2024 | DVD player | 100        | Diego     | Boston\nThe company needs to use Amazon Athena to run queries on the CSV file to fetch data from a specific time period. Which solution will meet this requirement MOST cost-effectively?",
+    "options": {
+      "A": "Write an Apache Spark script to convert the CSV data to JSON format. Create an AWS Glue job to run the script every day. Catalog the JSON data in AWS Glue. Run the Athena queries on the JSON data.",
+      "B": "Use prefixes to partition the data in the S3 bucket. Use the SALE_DATE column to create a partition for each day. Catalog the data in AWS Glue and ensure that the partitions are added. Update the Athena queries to use the new partitions.",
+      "C": "Launch an Amazon EMR cluster. Specify AWS Glue Data Catalog as the default Apache Hive metastore. Use Presto in Trino to run queries on the data.",
+      "D": "Create an Amazon RDS database. Create a table named SALES that matches the schema of the CSV file. Create an index on the SALE_DATE column. Create an AWS Lambda function to load the CSV data into the RDS database. Use S3 Event Notifications to invoke the Lambda function."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 编写Apache Spark脚本将CSV转换为JSON格式，并使用AWS Glue进行编目： 优点：JSON格式在某些情况下比CSV更适合查询，尤其是嵌套数据。 缺点：转换数据格式需要额外的计算资源（Apache Spark和AWS Glue作业），增加了成本和复杂性。 结论：不符合“最具成本效益”的要求。",
+      "B": "Correct. 使用前缀对S3数据进行分区，并基于SALE_DATE创建分区： 优点：分区可以显著提高Athena查询效率，因为Athena只扫描相关分区的数据，而不是整个文件。 优点：直接使用现有的CSV文件，无需转换格式，成本较低。 缺点：需要手动或自动管理分区，但这是Athena的推荐实践。 结论：符合“最具成本效益”的要求。",
+      "C": "Incorrect. 使用Amazon EMR集群和Trino运行查询： 优点：EMR集群可以处理大规模数据查询，性能强大。 缺点：EMR集群的运行成本较高，且题目中数据量较小（5000行），不需要如此复杂的解决方案。 结论：不符合“最具成本效益”的要求。",
+      "D": "Incorrect. 使用Amazon RDS数据库并通过Lambda函数加载数据： 优点：关系型数据库可以通过索引提高查询效率。 缺点：需要额外的存储和计算资源（RDS实例和Lambda函数），增加了成本和复杂性。 缺点：将数据从S3加载到RDS需要额外的操作步骤，且不符合题目中直接使用Athena的要求。 结论：不符合“最具成本效益”的要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 254,
+    "type": "single",
+    "question": "A data engineer must implement a data cataloging solution to track schema changes in an Amazon Redshift table. Which solution will meet these requirements?",
+    "options": {
+      "A": "Schedule an AWS Glue crawler to run every day on the table by using the Java Database Connectivity (JDBC) driver. Configure the crawler to update an AWS Glue Data Catalog.",
+      "B": "Use AWS DataSync to log the table metadata to an AWS Glue Data Catalog. Use an AWS Glue crawler to update the Data Catalog every day.",
+      "C": "Use the AWS Schema Conversion Tool (AWS SCT) to log the table metadata to an Apache Hive metastore. Use Amazon EventBridge Scheduler to update the metastore every day.",
+      "D": "Schedule an AWS Glue crawler to run every day on the table. Configure the crawler to update an Apache Hive metastore."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：AWS Glue爬虫可以通过JDBC驱动程序连接到Amazon Redshift表，并提取表的元数据。爬虫可以将提取的元数据更新到 AWS Glue Data Catalog中，这是AWS官方推荐的方式。 优点：直接使用AWS Glue爬虫和Data Catalog，符合题目要求，且是AWS原生解决方案。 结论：此选项正确。",
+      "B": "Incorrect. 正确性分析：AWS DataSync主要用于数据迁移和同步，而不是用于提取表的元数据或更新AWS Glue Data Catalog。因此此选项不符合 题目要求。 结论：此选项错误。",
+      "C": "Incorrect. 正确性分析：AWS SCT主要用于数据库架构转换，而不是用于提取表的元数据或更新Apache Hive metastore。此外，题目要求是更新 AWS Glue Data Catalog，而不是Hive metastore。 结论：此选项错误。",
+      "D": "Incorrect. 正确性分析：AWS Glue爬虫可以提取表的元数据，但此选项提到更新Apache Hive metastore，而不是AWS Glue Data Catalog。题目明确 要求更新AWS Glue Data Catalog，因此此选项不符合要求。 结论：此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 255,
+    "type": "single",
+    "question": "A data engineer is building a solution to detect sensitive information that is stored in a data lake across multiple Amazon S3 buckets. The solution must detect personally identifiable information (PII) that is in a proprietary data format. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use the AWS Glue Detect PII transform with specific patterns.",
+      "B": "Use Amazon Made with managed data identifiers.",
+      "C": "Use an AWS Lambda function with custom regular expressions.",
+      "D": "Use Amazon Athena with a SQL query to match the custom formats."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 使用 AWS Glue Detect PII transform 和特定模式 AWS Glue Detect PII transform 是一种内置功能，可以检测数据中的敏感信息（如PII）。 它支持特定模式的检测，但对于“专有数据格式”，可能需要额外的配置或自定义模式。 操作开销较低，因为它是托管服务，且与AWS Glue生态系统集成良好。 此选项适合处理标准化的PII检测，但对于专有数据格式的支持可能有限。",
+      "B": "Incorrect. 使用 Amazon Macie 和托管数据标识符 Amazon Macie 是专门设计用于检测敏感信息（如PII）的服务，支持托管数据标识符。 它可以扫描S3桶中的数据，并自动检测敏感信息，操作开销非常低。 然而，Macie主要支持标准化的数据格式，对于专有数据格式可能需要额外的自定义工作。 此选项适合处理标准化的PII检测，但对于专有数据格式的支持可能有限。",
+      "C": "Incorrect. 使用带有自定义正则表达式的 AWS Lambda 函数 使用Lambda函数可以实现高度定制化的敏感信息检测，包括专有数据格式。 需要编写和维护自定义正则表达式，操作开销较高。 此选项适合处理复杂的专有数据格式，但不符合“最低操作开销”的要求。",
+      "D": "Incorrect. 使用 Amazon Athena 和 SQL 查询匹配自定义格式 Amazon Athena可以通过SQL查询分析S3中的数据，支持自定义格式的匹配。 需要编写复杂的SQL查询，并且Athena的性能可能受数据量和查询复杂度的影响。 操作开销较高，不符合“最低操作开销”的要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 256,
+    "type": "single",
+    "question": "A data engineer is building a new data pipeline that stores metadata in an Amazon DynamoDB table. The data engineer must ensure that all items that are older than a specified age are removed from the DynamoDB table daily. Which solution will meet this requirement with the LEAST configuration effort?",
+    "options": {
+      "A": "Enable DynamoDB TTL on the DynamoDB table. Adjust the application source code to set the TTL attribute appropriately.",
+      "B": "Create an Amazon EventBridge rule that uses a daily cron expression to trigger an AWS Lambda function to delete items that are older than the specified age.",
+      "C": "Add a lifecycle configuration to the DynamoDB table that deletes items that are older than the specified age.",
+      "D": "Create a DynamoDB stream that has an AWS Lambda function that reacts to data modifications. Configure the Lambda function to delete items that are older than the specified age."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 启用 DynamoDB TTL，并调整应用程序源代码以设置 TTL 属性。 正确性：DynamoDB TTL 是专门设计用于自动删除过期数据的功能。启用 TTL 后，DynamoDB 会根据指定的时间戳自动清理过期的项 目，无需额外的配置或手动干预。 复杂度：配置 TTL 非常简单，只需在表中定义一个 TTL 属性，并在应用程序中设置该属性的值即可。 优势：这是最直接、最少配置的解决方案，完全符合题目要求。 结论：此选项正确。",
+      "B": "Incorrect. 使用 Amazon EventBridge 和 AWS Lambda 定期删除过期项目。 正确性：此方法可以实现目标，但需要额外的配置，包括创建 EventBridge 规则、编写 Lambda 函数代码，以及处理 DynamoDB 表的 查询和删除操作。 复杂度：相比 TTL，此方法的配置复杂度更高，需要额外的开发和维护工作。 成本：运行 Lambda 函数和 EventBridge 规则可能会产生额外的费用。 结论：此选项虽然可行，但不是最优解。",
+      "C": "Incorrect. 为 DynamoDB 表添加生命周期配置。 正确性：DynamoDB 不支持直接的生命周期配置功能。此选项描述的功能在 DynamoDB 中不存在。 结论：此选项错误。",
+      "D": "Incorrect. 使用 DynamoDB Streams 和 AWS Lambda 删除过期项目。 正确性：DynamoDB Streams 是用于捕获表中数据修改的工具，适合处理实时数据变化，但不适合定期清理过期数据。 复杂度：此方法需要额外的配置，包括设置 Streams 和编写 Lambda 函数代码，复杂度较高。 结论：此选项虽然可行，但不是最优解。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 257,
+    "type": "single",
+    "question": "A ride-sharing company stores records for all rides in an Amazon DynamoDB table. The table includes the following columns and types of values:\nRideID | RiderID | DriverID | RideStatus | TripStartTime          | TripEndTime\nXA1231 | AXEF1   | BN123    | Active     | 2025-02-11 12:23:34:00 | NULL\nXA1232 | AXEF2   | BN124    | Completed  | 2025-02-11 08:36:12:00 | 2025-02-11 08:55:02:00\nThe table currently contains billions of items. The table is partitioned by RideID and uses TripStartTime as the sort key. The company wants to use the data to build a personal interface to give drivers the ability to view the rides that each driver has completed, based on RideStatus. The solution must access the necessary data without scanning the entire table. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create a local secondary index (LSI) on DriverID.",
+      "B": "Create a global secondary index (GSI) that uses RiderID as the partition key and RideStatus as the sort key.",
+      "C": "Create a global secondary index (GSI) that uses DriverID as the partition key and RideStatus as the sort key.",
+      "D": "Create a filter expression that uses RiderID and RideStatus."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. LSI的分区键必须与主表的分区键相同（即RideID），但本题的需求是基于DriverID查询数据，而DriverID并不是主表的分区键。 LSI的使用场景通常是对主表的排序键进行额外的查询优化，而本题需要基于DriverID和RideStatus查询数据，LSI无法满足需求。 因此此选项错误。",
+      "B": "Incorrect. 本题的需求是让司机（DriverID）查看自己完成的行程（RideStatus为Completed），而此选项使用RiderID作为分区键，与需求不符。 此选项无法有效地查询基于DriverID的数据，因此错误。",
+      "C": "Correct. GSI允许使用与主表不同的分区键和排序键，适合本题需求。 使用DriverID作为分区键，可以有效地查询某个司机的所有行程记录。 使用RideStatus作为排序键，可以进一步筛选出完成的行程（RideStatus为Completed）。 此选项能够满足需求，因此正确。",
+      "D": "Incorrect. 过滤表达式(Filter Expression)是在查询结果返回后进行过滤，无法避免全表扫描。 本题明确要求避免扫描整个表，因此此选项不符合需求。 此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 258,
+    "type": "single",
+    "question": "A company stores information about its subscribers in an Amazon S3 bucket. The company runs an analysis every time a subscriber ends their subscription. The company uses AWS Lambda functions to respond to events from the S3 bucket by performing analyses. The Lambda functions clean data from the S3 bucket and initiate an AWS Glue workflow. The Lambda functions have 128 MB of memory and 512 MB of ephemeral storage. The Lambda functions have a timeout of 15 seconds. All three functions successfully finish running. However, CPU usage is often near 100%, which causes slow performance. The company wants to improve the performance of the functions and reduce the total runtime of the pipeline. Which solution will meet these requirements?",
+    "options": {
+      "A": "Increase the memory of the Lambda functions to 512 MB.",
+      "B": "Increase the number of retries by using the Maximum Retry Attempts setting.",
+      "C": "Configure the Lambda functions to run in the company's VPC.",
+      "D": "Increase the timeout value for the Lambda functions from 15 seconds to 30 seconds."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 增加 Lambda 函数的内存到 512 MB Lambda 函数的性能与分配的内存直接相关。增加内存不仅会提高 CPU 的性能（因为 CPU 和内存是线性关联的），还可能减少运行时 间。 当前 CPU 使用率接近 100%，说明计算资源不足，增加内存可以有效缓解这一问题。 此选项是解决高 CPU 使用率和性能问题的正确方法。",
+      "B": "Incorrect. 增加重试次数 重试次数的增加仅适用于处理失败的任务，而本题中所有 Lambda 函数都成功运行，因此增加重试次数无法解决性能问题。 此选项与题目要求无关，错误。",
+      "C": "Incorrect. 将 Lambda 函数配置为在公司的 VPC 中运行 将 Lambda 函数配置为运行在 VPC 中通常用于访问私有资源（如 RDS 或 EC2），与性能优化无直接关系。 此外，运行在 VPC 中可能会增加冷启动时间，进一步降低性能。 此选项与题目要求无关，错误。",
+      "D": "Incorrect. 增加 Lambda 函数的超时时间到 30 秒 增加超时时间仅适用于处理长时间运行的任务，但本题中 Lambda 函数已经成功运行，且 CPU 使用率是主要问题。 增加超时时间无法解决高 CPU 使用率的问题，也无法提高性能。 此选项与题目要求无关，错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 259,
+    "type": "single",
+    "question": "A company uses a data stream in Amazon Kinesis Data Streams to collect transactional data from multiple sources. The company uses an AWS Glue extract, transform, and load (ETL) pipeline to look for outliers in the data from the stream. When the workflow detects an outlier, it sends a notification to an Amazon Simple Notification Service (Amazon SNS) topic. The SNS topic initiates a second workflow to retrieve logs for the outliers and stores the logs in an Amazon S3 bucket. The company experiences delays in the notifications to the SNS topic during periods when the data stream is processing a high volume of data. When the company examines Amazon CloudWatch logs, the company notices a high value for the glue.driver.BlockManager.disk.diskSpaceUsed_MB metric when the traffic is high. The company must resolve this issue. Which solution will meet this requirement with the LEAST operational effort?",
+    "options": {
+      "A": "Increase the number of data processing units (DPUs) in AWS Glue ETL jobs.",
+      "B": "Use Amazon EMR to manage the ETL pipeline instead of AWS Glue.",
+      "C": "Use AWS Step Functions to orchestrate a parallel workflow state.",
+      "D": "Enable auto scaling for the AWS Glue ETL jobs."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 增加DPUs可以直接提高AWS Glue作业的计算能力，从而缓解磁盘空间使用率过高的问题。 但这种方法需要手动调整DPUs数量，无法动态适应流量变化，操作复杂性较高。 因此，此选项虽然有效，但不是最优解。",
+      "B": "Incorrect. Amazon EMR提供更灵活的资源管理和扩展能力，可以有效处理高流量数据。 但迁移到EMR需要重新设计和部署ETL管道，增加了操作复杂性。 此选项虽然有效，但不符合“最少操作复杂性”的要求。",
+      "C": "Incorrect. Step Functions可以优化工作流的并行处理，但它无法直接解决AWS Glue作业的性能瓶颈问题。 此选项与问题核心无关，因此不正确。",
+      "D": "Correct. 启用自动扩展可以根据流量动态调整AWS Glue作业的资源分配，从而缓解磁盘空间使用率过高的问题。 此方法无需手动干预，操作复杂性最低，符合题目要求。 因此，此选项是最优解。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 260,
+    "type": "multiple",
+    "question": "A company has a data processing pipeline that runs multiple SQL queries in sequence against an Amazon Redshift cluster. The company merges with a second company. The original company modifies a query that aggregates sales revenue data to join sales tables from both companies. The sales table for the first company is named Table S1. The sales table for the second company is named Table S2. Table S1 contains 10 billion records. Table S2 contains 900 million records. The query becomes slow after the modification. A data engineer must improve the query performance. Which solutions will meet these requirements? (Choose two.)",
+    "options": {
+      "A": "Use the KEY distribution style for both sales tables. Select a low cardinality column to use for the join.",
+      "B": "Use the KEY distribution style for both sales tables. Select a high cardinality column to use for the join.",
+      "C": "Use the EVEN distribution style for Table S1. Use the ALL distribution style for Table S2.",
+      "D": "Use the Amazon Redshift query optimizer to review and select optimizations to implement.",
+      "E": "Use Amazon Redshift Advisor to review and select optimizations to implement."
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. 使用KEY分布样式并选择低基数列用于连接。 KEY分布样式适用于连接操作，但选择低基数列可能导致数据分布不均匀，从而导致查询性能下降。 低基数列的分布可能会导致某些节点存储大量数据，而其他节点存储较少数据，造成数据倾斜。 此选项不适合解决问题。",
+      "B": "Correct. 使用KEY分布样式并选择高基数列用于连接。 KEY分布样式适用于连接操作，选择高基数列可以确保数据在节点之间均匀分布，从而提高查询性能。 高基数列的分布可以减少数据倾斜问题，优化查询效率。 此选项是正确的。",
+      "C": "Incorrect. 对Table S1使用EVEN分布样式，对Table S2使用ALL分布样式。 EVEN分布样式会将数据均匀分布到所有节点，但不适合连接操作，因为它无法优化连接性能。 ALL分布样式会将Table S2的数据复制到所有节点，适合小表的连接操作，但Table S2有900万条记录，使用ALL分布样式可能会导致存 储和性能问题。 此选项不适合解决问题。",
+      "D": "Incorrect. 使用Amazon Redshift查询优化器审查并选择优化。 Amazon Redshift查询优化器可以帮助分析查询性能并提供优化建议，但它是一个辅助工具，不能直接解决分布样式的问题。 此选项虽然有帮助，但不是直接解决问题的最佳方法。 此选项不适合解决问题。",
+      "E": "Correct. 使用Amazon Redshift Advisor审查并选择优化。 Amazon Redshift Advisor是一个专门的工具，可以分析表的分布样式、排序键等，并提供优化建议。 此工具可以帮助选择最佳的分布样式和其他优化策略，从而提高查询性能。 此选项是正确的。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 261,
+    "type": "multiple",
+    "question": "A gaming company uses AWS Glue to perform read and write operations on Apache Iceberg tables for real-time streaming data. The data in the Iceberg tables is in Apache Parquet format. The company is experiencing slow query performance. Which solutions will improve query performance? (Choose two.)",
+    "options": {
+      "A": "Use AWS Glue Data Catalog to generate column-level statistics for the Iceberg tables on a schedule.",
+      "B": "Use AWS Glue Data Catalog to automatically compact the Iceberg tables.",
+      "C": "Use AWS Glue Data Catalog to automatically optimize indexes for the Iceberg tables.",
+      "D": "Use AWS Glue Data Catalog to enable copy-on-write for the Iceberg tables.",
+      "E": "Use AWS Glue Data Catalog to generate views for the Iceberg tables."
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. 生成列级统计信息可以帮助优化查询计划，因为查询引擎可以利用统计信息选择更高效的执行路径。 然而，统计信息的生成并不会直接解决查询性能问题，尤其是针对实时流数据的场景。此选项对问题的解决作用有限。 错误原因：虽然统计信息有助于查询优化，但它不是解决慢查询性能的直接方法。",
+      "B": "Correct. 表压缩可以减少存储空间并提高查询性能，尤其是针对实时流数据的场景，压缩可以减少I/O操作。 Iceberg支持表的自动压缩，这对于优化查询性能是一个有效的解决方案。 正确原因：压缩可以显著提高查询性能，尤其是针对大规模数据表。",
+      "C": "Incorrect. 索引优化可以提高查询性能，但AWS Glue Data Catalog并不直接支持Iceberg表的索引优化功能。 此选项描述的功能在实际中并不存在，因此无法作为解决方案。 错误原因：AWS Glue Data Catalog无法自动优化Iceberg表的索引。",
+      "D": "Correct. Iceberg支持两种写入模式：copy-on-write和merge-on-read。启用copy-on-write可以减少查询时的合并开销，从而提高查询性能。 对于实时流数据，copy-on-write模式可以显著优化查询性能。 正确原因：启用copy-on-write可以减少查询时的合并开销，提高性能。",
+      "E": "Incorrect. 生成视图可以帮助简化查询，但它不会直接提高查询性能。 视图的作用更多是逻辑上的组织，而非物理上的优化。 错误原因：生成视图不会直接解决慢查询性能问题。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 262,
+    "type": "single",
+    "question": "A data engineer at a company is optimizing extract, transform, and load (ETL) workflows. The current architecture uses Amazon EMR and Apache Spark for large-scale transformations and AWS Glue for other ETL tasks. The workflows load processed data into an Amazon S3 based data lake. The company wants to move to a fully managed serverless solution that can orchestrate multiple ETL jobs and automate execution. The new solution must continue to use Spark to process data. The company needs to orchestrate and automate the ETL workflows with minimal manual intervention. Which solution will meet these requirements?",
+    "options": {
+      "A": "Migrate all ETL jobs to AWS Glue. Use AWS Glue workflows to orchestrate the pipeline.",
+      "B": "Configure AWS Step Functions and Amazon EventBridge to orchestrate and invoke ETL workflows in AWS Glue and Amazon EMR.",
+      "C": "Configure AWS Lambda functions to process Amazon S3 event notifications for data transformation tasks when new data is uploaded.",
+      "D": "Use Amazon Managed Workflows for Apache Airflow automatic scheduling to orchestrate the Spark-based ETL jobs."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 优点：AWS Glue是一个完全托管的无服务器ETL服务，支持Spark作业，并且AWS Glue workflows可以编排多个ETL作业。 缺点：如果现有的Spark作业在Amazon EMR上运行，迁移到AWS Glue可能需要重新配置和测试，可能会增加迁移成本。 结论：符合题目要求，但需要评估迁移成本。",
+      "B": "Incorrect. 优点：AWS Step Functions和Amazon EventBridge可以灵活地编排和自动化工作流，支持调用AWS Glue和Amazon EMR作业。 缺点：虽然可以实现编排，但Step Functions和EventBridge并非完全无服务器的ETL解决方案，且需要额外的配置和管理。 结论：不完全符合题目要求，因为题目明确要求“完全托管的无服务器解决方案”。",
+      "C": "Incorrect. 优点：AWS Lambda是无服务器的，可以响应S3事件通知进行数据处理。 缺点：Lambda不适合处理复杂的Spark作业，且无法编排多个ETL工作流。 结论：不符合题目要求，因为题目明确要求继续使用Spark进行数据处理。",
+      "D": "Incorrect. 优点：Amazon MWAA是托管的Apache Airflow服务，可以编排复杂的Spark作业。 缺点：虽然是托管服务，但Apache Airflow并非完全无服务器解决方案，且需要额外的管理和配置。 结论：不完全符合题目要求，因为题目明确要求“完全托管的无服务器解决方案”。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 263,
+    "type": "single",
+    "question": "A company that operates globally must follow regulations that require data from an AWS Region to be accessible only within that Region. A data engineer is creating a data pipeline that will create resources in the Region where the data engineer works. The data pipeline should have access to data only from the Region where the data engineer works. The pipeline uses Active Directory as an identity and authentication system. The pipeline uses a custom identity broker application to verify that employees are signed in to Active Directory and to obtain temporary credentials by using the AssumeRole API operation. Which solution will meet the locality requirements with the LEAST administrative effort?",
+    "options": {
+      "A": "Create an IAM role that has permissions to create resources. Create a policy for each Region that ensures users can create resources only in that Region. Pass the policy as the session policy when employees obtain the temporary credentials.",
+      "B": "Create an IAM role for data engineers in each Region separately. Instruct each data engineer to obtain temporary credentials by assuming the appropriate Region specific IAM role.",
+      "C": "Create an IAM group for each Region. Include the required IAM policies for each IAM group. Add users to each IAM group so that when users log in by obtaining the temporary credentials, the users will receive the appropriate access based on the IAM group.",
+      "D": "Create individual IAM policies that allow users to create resources in a specific Region. Assign the policies to each data engineer. Allow users to assume the individually assigned role when the users log in to AWS."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：此选项通过会话策略动态限制用户的权限，使其只能在特定区域内创建资源。会话策略是临时的，且可以根据需要动 态调整，符合最小化管理工作量的要求。 优点：不需要为每个区域创建多个角色或用户组，减少了管理复杂性。 缺点：需要确保会话策略正确传递并应用。 结论：此选项是正确的，符合题目要求。",
+      "B": "Incorrect. 正确性分析：此选项通过为每个区域创建单独的角色来限制权限，但需要为每个区域管理多个角色，增加了管理工作量。 优点：可以实现区域权限隔离。 缺点：管理多个角色会增加复杂性，不符合“最小化管理工作量”的要求。 结论：此选项正确但不优。",
+      "C": "Incorrect. 正确性分析：此选项通过 IAM 组实现权限管理，但 IAM 组无法动态限制会话权限，且需要手动管理用户与组的关系。 优点：可以实现区域权限隔离。 缺点：IAM 组无法动态调整权限，且管理工作量较大。 结论：此选项错误。",
+      "D": "Incorrect. 正确性分析：此选项通过为每个用户分配单独的策略来限制权限，但需要为每个用户管理多个策略，增加了管理工作量。 优点：可以实现区域权限隔离。 缺点：管理多个策略会增加复杂性，不符合“最小化管理工作量”的要求。 结论：此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 264,
+    "type": "single",
+    "question": "A company needs a solution to automatically ingest data from an Amazon S3 bucket to an Amazon Redshift table every day. The company must obfuscate sensitive data in Amazon Redshift. Users must not be able to view the sensitive data as plaintext. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Enable Amazon Macie for the company's AWS account. Configure a sensitive data discovery job for the S3 bucket. Configure an AWS Glue job to load the data into Amazon Redshift.",
+      "B": "Enable Amazon Macie for the company's AWS account. Configure an AWS Glue job to flag and obfuscate data columns based on the Macie analysis. Load the data into Amazon Redshift.",
+      "C": "Configure an AWS Glue job to read the data from the S3 bucket, detect and obfuscate sensitive data, and load the data into Amazon Redshift.",
+      "D": "Configure an AWS Glue job to load the data into Amazon Redshift. Use Amazon Redshift to detect the sensitive data, create masking policies, and apply dynamic masking."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 启用Amazon Macie并使用AWS Glue加载数据到Amazon Redshift。 Amazon Macie主要用于发现和分类敏感数据，但它并不直接支持数据模糊处理。 此选项没有明确说明如何对敏感数据进行模糊处理，且需要额外配置Macie任务，增加了操作开销。 因此，此选项不符合题目要求。",
+      "B": "Incorrect. 启用Amazon Macie并使用AWS Glue标记和模糊处理数据列。 此选项假设Amazon Macie可以直接与AWS Glue集成以标记和模糊处理数据，但实际上这种集成并不直接存在。 需要额外配置Macie任务和Glue任务，操作开销较高。 因此，此选项不符合题目要求。",
+      "C": "Incorrect. 使用AWS Glue检测和模糊处理敏感数据，然后加载到Amazon Redshift。 AWS Glue可以通过自定义脚本检测和模糊处理敏感数据，但需要编写复杂的ETL逻辑。 此选项增加了开发和维护的复杂性，操作开销较高。 因此，此选项不符合题目要求。",
+      "D": "Correct. 使用AWS Glue加载数据到Amazon Redshift，并在Redshift中应用动态屏蔽。 此选项利用了Amazon Redshift的动态数据屏蔽功能，可以直接在Redshift中创建屏蔽策略并应用动态屏蔽。 动态屏蔽可以确保用户无法查看敏感数据的明文，且操作开销较低。 此选项符合题目要求，是最优解。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 265,
+    "type": "single",
+    "question": "A company needs to aggregate and filter a large amount of streaming data in real-time with low latency. The company needs to store the data in Amazon S3 for analysis. Which solution will meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Use Amazon Kinesis Data Streams with provisioned capacity and AWS Lambda functions to perform custom transformations and to integrate with Amazon S3.",
+      "B": "Use Amazon Data Firehose with built-in data transformations. Deliver the data directly to Amazon S3.",
+      "C": "Use Amazon Kinesis Data Streams and Amazon Managed Service for Apache Flink to perform complex processing and to integrate with Amazon S3.",
+      "D": "Use Amazon Data Firehose and AWS Lambda functions to perform custom transformations and to deliver the data to Amazon S3."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 使用Amazon Kinesis Data Streams和AWS Lambda函数执行自定义转换并与Amazon S3集成 Amazon Kinesis Data Streams适合实时流数据处理，但需要手动管理分片（shard），增加了操作复杂性。 使用AWS Lambda进行自定义转换是可行的，但Lambda的触发频率和并发限制可能会影响低延迟需求。 此方案需要额外的开发和管理工作，操作效率较低。 错误原因：操作效率不高，且可能无法完全满足低延迟需求。",
+      "B": "Incorrect. 使用Amazon Kinesis Data Firehose和内置数据转换功能，将数据直接传送到Amazon S3 Amazon Kinesis Data Firehose是专门设计用于将流数据传送到存储服务（如Amazon S3）的服务，支持内置数据转换功能。 此方案操作效率高，且支持低延迟数据传输。 但Firehose的内置转换功能较为有限，无法处理复杂的实时数据转换需求。 错误原因：虽然操作效率高，但无法满足复杂数据处理需求。",
+      "C": "Correct. 使用Amazon Kinesis Data Streams和Amazon Managed Service for Apache Flink执行复杂处理并与Amazon S3集成 Amazon Kinesis Data Streams适合实时流数据处理，支持高吞吐量和低延迟。 Amazon Managed Service for Apache Flink是专门设计用于处理复杂流数据的服务，支持实时数据分析和转换。 此方案能够满足低延迟和复杂数据处理需求，同时与Amazon S3集成。 正确原因：满足所有需求，包括实时处理、低延迟、复杂转换和操作效率。",
+      "D": "Incorrect. 使用Amazon Kinesis Data Firehose和AWS Lambda函数执行自定义转换并将数据传送到Amazon S3 Amazon Kinesis Data Firehose适合将流数据传送到存储服务，但其内置转换功能有限。 使用AWS Lambda进行自定义转换增加了操作复杂性，可能影响低延迟需求。 此方案的操作效率较低，且无法完全满足复杂数据处理需求。 错误原因：操作效率不高，且可能无法满足低延迟和复杂处理需求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 266,
+    "type": "single",
+    "question": "A company is developing machine learning (ML) models. A data engineer needs to apply data quality rules to training data. The company stores the training data in an Amazon S3 bucket. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create an AWS Lambda function to check data quality and to raise exceptions in the code. Run the function when data is added to the S3 bucket. Create an Amazon CloudWatch alarm for exceptions in the code.",
+      "B": "Create an AWS Glue DataBrew project for the data in the S3 bucket. Create a ruleset for the data quality rules. Create a profile job to run the data quality rules. Use Amazon EventBridge to run the profile job when data is added to the S3 bucket.",
+      "C": "Create an Amazon EMR provisioned cluster. Add a Python open source data quality package to the EMR cluster. Use the Python package to write code for data quality rules and to copy the data from the S3 bucket to the EMR cluster. Copy the data from the S3 bucket to the EMR cluster. Run the data quality rules.",
+      "D": "Create AWS Lambda functions to evaluate data quality rules. Use AWS Step Functions to orchestrate a workflow that publishes notifications when the data fails to meet data quality rules."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 使用AWS Lambda和CloudWatch： 优点：Lambda函数可以自动触发，结合CloudWatch可以监控异常。 缺点：需要手动编写代码来实现数据质量检查规则，且异常处理逻辑复杂，增加了开发和维护成本。 结论：虽然可以实现，但操作开销较高，不是最优解。",
+      "B": "Correct. 使用AWS Glue DataBrew和EventBridge： 优点：AWS Glue DataBrew提供了可视化的界面，可以轻松创建数据质量规则集和配置任务。EventBridge可以自动触发任务，减少了 手动操作。 缺点：需要熟悉DataBrew的使用，但整体操作开销较低。 结论：这是一个低操作开销的解决方案，符合题目要求。",
+      "C": "Incorrect. 使用Amazon EMR和Python包： 优点：可以灵活使用开源工具实现复杂的数据质量检查。 缺点：需要配置EMR集群并管理其生命周期，操作开销较高；此外，数据需要从S3复制到EMR，增加了额外的步骤。 结论：操作开销较高，不符合题目要求。",
+      "D": "Incorrect. 使用AWS Lambda和Step Functions： 优点：Step Functions可以编排复杂的工作流，Lambda函数可以实现数据质量检查。 缺点：需要手动编写代码实现数据质量规则，且工作流编排复杂，增加了开发和维护成本。 结论：操作开销较高，不是最优解。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 267,
+    "type": "single",
+    "question": "A data engineer needs to analyze time-sensitive sales data. The company stores the data in an Amazon S3 bucket. The data engineer uses AWS Glue Data Catalog to access the data. When the data engineer performs the analysis, the data engineer notices that some records are missing or out of date. What is the likely cause of these issues?",
+    "options": {
+      "A": "AWS Glue Data Catalog is not up to date with the latest S3 partition changes.",
+      "B": "Incorrect IAM roles are assigned to the AWS Glue jobs.",
+      "C": "Versioning is not enabled on the S3 bucket.",
+      "D": "The AWS Glue job schedules overlap with one another."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. AWS Glue Data Catalog需要定期更新以反映S3分区的最新变化。如果数据工程师在分析时发现数据缺失或过时，可能是因为 Data Catalog未及时更新，导致无法正确读取最新的数据。",
+      "B": "Incorrect. IAM角色的错误通常会导致权限问题，例如无法访问S3或无法运行Glue作业，但不会直接导致数据缺失或过时的问题。",
+      "C": "Incorrect. S3版本控制主要用于数据恢复和历史版本管理，与数据缺失或过时无直接关系。即使未启用版本控制，最新的数据仍然可以 被读取。",
+      "D": "Incorrect. 作业调度时间重叠可能会导致资源竞争或性能问题，但不会直接导致数据缺失或过时的问题。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 268,
+    "type": "single",
+    "question": "A retail company stores point-of-sale transaction data in an Amazon RDS for MySQL database. The company maintains historical sales analytics in Amazon Redshift. The company needs to create daily reports that combine the current day's transactions with historical sales patterns for trend analysis. The company requires a solution that provides near real-time insights while minimizing data transfer costs and maintenance overhead. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure AWS Database Migration Service (AWS DMS) to continuously replicate data from RDS for MySQL to Amazon Redshift. Use Redshift queries to create consolidated reports.",
+      "B": "Implement Amazon Redshift federated queries to directly access RDS for MySQL data and join it with existing Redshift tables in a single query.",
+      "C": "Use AWS Glue to create an extract, transform, and load (ETL) pipeline that runs every hour to copy incremental data from RDS for MySQL to Amazon Redshift. Generate reports.",
+      "D": "Export RDS for MySQL data to an Amazon S3 bucket on a regular schedule. Use the COPY command to load the data into Amazon Redshift staging tables. Join the data with historical data."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：AWS DMS支持将数据从RDS持续复制到Redshift，能够实现近实时数据同步。Redshift可以直接查询合并后的数据，满足 趋势分析需求。 优点：维护开销较低，数据传输成本较低，支持近实时数据同步。 缺点：需要配置DMS任务，可能需要额外的监控。 此选项正确。",
+      "B": "Incorrect. 正确性分析：Redshift Federated Queries允许直接查询RDS数据并与Redshift表结合，减少数据传输。但Federated Queries的性能可能不 如直接将数据复制到Redshift，尤其在处理大规模数据时。 优点：无需数据复制，维护开销低。 缺点：性能可能受限，尤其在处理复杂查询或大规模数据时。 此选项部分正确，但不完全满足近实时洞察的需求。",
+      "C": "Incorrect. 正确性分析：AWS Glue可以实现定时ETL任务，但每小时运行一次的频率无法满足“近实时洞察”的要求。 优点：支持复杂的ETL逻辑。 缺点：数据更新频率较低，无法提供近实时数据分析。 此选项错误。",
+      "D": "Incorrect. 正确性分析：将数据导出到S3并使用COPY命令加载到Redshift是常见的批量数据加载方式，但定期导出无法满足“近实时洞察”的需 求。 优点：适合处理大规模数据的批量加载。 缺点：数据更新频率较低，维护开销较高。 此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 269,
+    "type": "single",
+    "question": "A company is creating a new data pipeline to populate a data lake. A data analyst needs to prepare and standardize the data before a data engineering team can perform advanced data transformations. The data analyst needs a solution to process the data that does not require writing new code. Which solution will meet these requirements with the LEAST operational effort?",
+    "options": {
+      "A": "Use Python and Pandas in an AWS Glue Studio notebook. Ensure that the data engineers add additional transformations to complete the pipeline.",
+      "B": "Use Amazon SageMaker Canvas and SageMaker Data Wrangler to write to a new dataset. Ensure that the data engineers add additional transformations to complete the pipeline by using AWS Glue.",
+      "C": "Use AWS Glue Studio with data preparation recipe transformations. Ensure that the data engineers add additional transformations to complete the pipeline.",
+      "D": "Create a document that includes the data preparation rules. Ensure that the data engineers implement the rules in AWS Glue."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 使用 AWS Glue Studio 笔记本中的 Python 和 Pandas。 优点：Python和Pandas是强大的数据处理工具，适合复杂的自定义数据转换。 缺点：需要编写代码，增加了操作复杂性，不符合题目要求“无需编写新代码”。 结论：错误。",
+      "B": "Incorrect. 使用 Amazon SageMaker Canvas 和 SageMaker Data Wrangler。 优点：SageMaker Data Wrangler提供了可视化的数据准备功能，适合数据分析师使用。 缺点：虽然可以完成数据准备，但需要结合AWS Glue进行后续转换，增加了操作复杂性。 结论：错误。",
+      "C": "Correct. 使用 AWS Glue Studio 的数据准备配方转换。 优点：AWS Glue Studio提供了可视化的“数据准备配方”功能，允许用户无需编写代码即可完成数据标准化和准备。 优点：与AWS Glue无缝集成，数据工程师可以直接在同一平台上完成后续转换。 结论：正确。",
+      "D": "Incorrect. 创建一个包含数据准备规则的文档。 优点：文档可以清晰定义规则。 缺点：需要数据工程师手动实现规则，增加了操作复杂性，不符合题目要求“最少的操作工作量”。 结论：错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 270,
+    "type": "single",
+    "question": "A company uses an Amazon RDS for Oracle database to store data for an ecommerce application. The company needs a solution to make the data in all tables available for future analytics. The solution must process data from a table named customer_complaints in near real time by using a REST API. Which solution will meet these requirements MOST cost-effectively?",
+    "options": {
+      "A": "Use AWS Database Migration Service (AWS DMS) to replicate the Oracle database to an Amazon RDS for PostgreSQL database instance. Create an AWS Lambda function to process data from the PostgreSQL customer_complaints table and to call the REST API.",
+      "B": "Create a task in AWS Database Migration Service (AWS DMS) to replicate the Oracle database to Amazon Redshift. Set the Oracle database as the source. Configure an AWS Lambda function to use the Amazon Redshift Data API to query the data from the customer_complaints table and to call the REST API. Unload the data from Amazon Redshift to Amazon S3.",
+      "C": "Set up one AWS Database Migration Service (AWS DMS) task to stream the customer_complaints table data to Amazon Kinesis Data Streams. Set up a second AWS DMS task to send data to an Amazon S3 bucket. Configure an AWS Lambda function to process Kinesis data and to call the REST API.",
+      "D": "Create a read replica of the Amazon RDS for Oracle database. Configure an AWS Lambda function to process data from the read replica customer_complaints table and to call the REST API."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 使用AWS DMS将Oracle数据库复制到Amazon RDS for PostgreSQL，并使用AWS Lambda处理数据： 优点：PostgreSQL是开源数据库，成本较低，支持分析功能。 缺点：PostgreSQL的性能可能不适合处理近实时数据流，且需要额外配置Lambda函数来处理数据。 结论：不满足近实时数据处理的要求。",
+      "B": "Incorrect. 使用AWS DMS将Oracle数据库复制到Amazon Redshift，并使用Redshift Data API查询数据： 优点：Amazon Redshift是专为分析设计的数据库，支持复杂查询。 缺点：Redshift不适合近实时数据处理，且成本较高。将数据卸载到S3增加了复杂性。 结论：不满足近实时数据处理的要求，且成本较高。",
+      "C": "Correct. 使用AWS DMS将数据流式传输到Amazon Kinesis Data Streams，并将数据发送到S3： 优点：Kinesis Data Streams专为实时数据处理设计，支持近实时数据流。S3可用于存储历史数据以供分析。 缺点：需要配置两个DMS任务，增加了复杂性，但仍是最符合要求的解决方案。 结论：满足近实时数据处理的要求，且成本效益较高。",
+      "D": "Incorrect. 创建RDS for Oracle的只读副本，并使用AWS Lambda处理数据： 优点：只读副本可以减轻主数据库的负载。 缺点：只读副本不支持近实时数据流处理，且Oracle数据库的成本较高。 结论：不满足近实时数据处理的要求，且成本较高。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 271,
+    "type": "single",
+    "question": "A company maintains a central Amazon Redshift data warehouse that aggregates daily transactional data from Amazon RDS for PostgreSQL and Amazon Aurora MySQL. A data engineer notices that some complex transformation queries take hours to finish. The data engineer wants to optimize query performance to reduce query execution time as much as possible. Which solution will meet this requirement?",
+    "options": {
+      "A": "Increase the concurrency scaling quota for the Redshift cluster.",
+      "B": "Export the tables to an Amazon S3 bucket. Use Amazon Athena to query the data in the bucket.",
+      "C": "Use Amazon Redshift Spectrum to create external tables based on the Redshift tables.",
+      "D": "Use materialized views in Amazon Redshift for frequently queried data patterns."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 并发扩展主要用于处理高并发查询的场景，而不是优化单个复杂查询的执行时间。 本题的重点是减少复杂查询的执行时间，而不是解决并发问题，因此此选项不适合。 错误原因：并发扩展无法直接优化复杂查询的性能。",
+      "B": "Incorrect. Amazon Athena 是一种基于 S3 的交互式查询服务，适合查询存储在 S3 中的非结构化或半结构化数据。 将 Redshift 数据导出到 S3 并使用 Athena 查询可能会增加数据传输和转换的复杂性，且无法直接优化 Redshift 的查询性能。 错误原因：此选项改变了数据查询的架构，未解决 Redshift 查询性能问题。",
+      "C": "Incorrect. Redshift Spectrum 主要用于查询存储在 S3 中的外部数据，而不是优化 Redshift 内部表的查询性能。 本题的重点是优化 Redshift 内部表的复杂查询性能，因此此选项不适合。 错误原因：Redshift Spectrum 适用于外部数据查询，与本题场景不符。",
+      "D": "Correct. 物化视图可以预先计算和存储查询结果，从而显著减少复杂查询的执行时间。 对于频繁查询的复杂数据模式，使用物化视图是优化性能的最佳实践。 正确原因：物化视图能够直接优化复杂查询的性能，符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 272,
+    "type": "single",
+    "question": "A company uses an Amazon S3 bucket to integrate multiple data sources into a central data lake. The company needs to perform multiple transformations and data cleaning processes on the data to make the data accessible to business partners. The company needs a solution that will give multiple business partners the ability to run SQL queries on the central data lake during normal business hours. Which solution will meet these requirements MOST cost-effectively?",
+    "options": {
+      "A": "Use a provisioned Amazon EMR cluster after normal business hours to process the previous day's data, apply all necessary transformations, and load the prepared data into Amazon Redshift Serverless.",
+      "B": "Use an AWS Glue Flex Job after normal business hours to process the previous day's data, apply all necessary transformations. and load the prepared data into Amazon Redshift Serverless.",
+      "C": "Use an AWS Lambda function after normal business hours to process the previous day's data, apply all necessary transformations, and load the prepared data into an Amazon Redshift provisioned cluster.",
+      "D": "Use an AWS Glue Flex job after normal business hours to process the previous day's data, apply all necessary transformations, and load the prepared data into an Amazon Redshift provisioned cluster."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 使用预置的Amazon EMR集群处理数据并加载到Amazon Redshift Serverless 正确性：Amazon EMR适合处理大规模数据，但预置集群需要持续运行，成本较高。 错误原因：题目要求成本效益最高的解决方案，预置EMR集群的成本可能超出需求。",
+      "B": "Correct. 使用AWS Glue Flex Job处理数据并加载到Amazon Redshift Serverless 正确性：AWS Glue Flex Job是按需计费的，成本较低，适合非实时数据处理。Amazon Redshift Serverless支持按需扩展，适合多个业务 合作伙伴运行SQL查询。 正确原因：此选项满足成本效益和功能需求，是最优解。",
+      "C": "Incorrect. 使用AWS Lambda处理数据并加载到Amazon Redshift预置集群 正确性：AWS Lambda适合处理小规模数据，但不适合复杂的转换任务。预置Redshift集群的成本较高。 错误原因：Lambda的处理能力有限，预置集群的成本不符合题目要求。",
+      "D": "Incorrect. 使用AWS Glue Flex Job处理数据并加载到Amazon Redshift预置集群 正确性：AWS Glue Flex Job适合数据处理，但预置Redshift集群的成本较高。 错误原因：预置集群的成本不符合题目要求，且Redshift Serverless更适合按需扩展。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 273,
+    "type": "single",
+    "question": "A company needs to build an extract, transform, and load (ETL) pipeline that has separate stages for batch data ingestion, transformation, and storage. The pipeline must store the transformed data in an Amazon S3 bucket. Each stage must automatically retry failures. The pipeline must provide visibility into the success or failure of individual stages. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Chain AWS Glue jobs that perform each stage together by using job triggers. Set the MaxRetries field to 0.",
+      "B": "Deploy AWS Step Functions workflows to orchestrate AWS Lambda functions that ingest data. Use AWS Glue jobs to transform the data and store the data in the S3 bucket.",
+      "C": "Build an Amazon EventBridge based pipeline that invokes AWS Lambda functions to perform each stage.",
+      "D": "Schedule Apache Airflow directed acyclic graphs (DAGs) on Amazon Manages Workflows tor Apache Airflow (Amazon MWAA) to orchestrate pipeline steps. Use Amazon Simple Queue Service (Amazon SQS) to ingest data. Use AWS Glue jobs to transform data and store the data in the S3 bucket."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 优点：AWS Glue支持ETL任务，且可以通过作业触发器链接多个阶段，提供一定的自动化能力。 缺点：将MaxRetries设置为0意味着没有自动重试机制，这不符合题目要求。此外，AWS Glue作业触发器的可视化能力有限，无法提 供对每个阶段的详细监控。 结论：此选项不符合题目要求。",
+      "B": "Correct. 优点：AWS Step Functions可以编排多个服务（如AWS Lambda和AWS Glue），并提供自动重试机制和详细的可视化监控能力。AWS Glue 可以高效处理数据转换，Amazon S3是理想的存储目标。 缺点：需要设计和部署Step Functions工作流，可能增加初始开发工作量。 结论：此选项符合题目要求，且运维开销较低。",
+      "C": "Incorrect. 优点：Amazon EventBridge可以触发AWS Lambda函数，支持事件驱动的架构。 缺点：EventBridge的事件流设计复杂，且缺乏对整个ETL流程的可视化监控能力。此外，EventBridge不直接支持数据转换，需要额外 的服务（如AWS Glue）来完成转换任务。 结论：此选项不完全符合题目要求。",
+      "D": "Incorrect. 在 Amazon Managed Workflows for Apache Airflow (Amazon MWAA) 上调度 Apache Airflow DAGs 来编排管道步骤。使用 Amazon Simple Queue Service (Amazon SQS) 摄取数据。使用 AWS Glue 作业转换数据并将数据存储在 S3 bucket 中。 优点：Apache Airflow是强大的工作流编排工具，支持复杂的ETL流程设计。Amazon MWAA托管服务减少了运维开销。 缺点：Airflow的学习曲线较陡，且需要额外配置SQS和Glue作业，增加了复杂性。此外，Airflow的运维开销可能高于Step Functions。 结论：此选项符合题目要求，但运维开销较高。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 274,
+    "type": "single",
+    "question": "A company needs to implement a data mesh architecture in which domains for trading, risk, and compliance teams each have own their data. The teams need to share specific views with one another. The teams have over 1,000 tables across 50 databases in AWS Glue Data Catalog. All three teams use Amazon Athena to perform on-demand analysis. The teams use Amazon Redshift to generate complex reports. The compliance team must audit all data access. Access to personally identifiable information (PII) data must be restricted. The company requires a scalable solution to meet the team requirements. The solution must provide the ability to perform analysis across team domains. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create views in Athena for on-demand analysis. Use the Athena views in Amazon Redshift to perform cross-domain analytics. Use AWS CloudTrail to audit data access. Use AWS Lake Formation to establish fine-grained access control.",
+      "B": "Use AWS Glue Data Catalog views to perform analysis. Use AWS CloudTrail logs to audit data access. Use AWS Lake Formation to manage access permissions. Use security definer views to mask PII.",
+      "C": "Use AWS Lake Formation to set up cross-domain access to tables. Set up fine-grained access controls.",
+      "D": "Create materialized views and enable Amazon Redshift datashares for each domain. Configure cross-domain access policies."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 正确性：在Athena中创建视图可以满足按需分析的需求，使用Athena视图在Redshift中进行跨域分析也是可行的。然而，Athena视图 的性能可能不适合处理复杂的跨域分析场景，尤其是涉及大量数据时。 细粒度访问控制：选项提到使用AWS Lake Formation建立细粒度访问控制，这符合要求。 数据审计：使用AWS CloudTrail审计数据访问是正确的，但CloudTrail的日志可能不够细化，无法完全满足合规团队的审计需求。 PII保护：选项未明确提到如何保护PII数据。 结论：此选项部分满足需求，但在跨域分析性能和PII保护方面存在不足。",
+      "B": "Incorrect. 正确性：使用AWS Glue Data Catalog视图进行分析是可行的，但AWS Glue Data Catalog视图的功能有限，无法直接支持复杂的跨域分 析。 数据审计：使用AWS CloudTrail日志审计数据访问是正确的，但与选项A类似，CloudTrail的日志可能不够细化。 细粒度访问控制：选项提到使用AWS Lake Formation管理访问权限，这符合要求。 PII保护：选项提到使用安全定义器视图屏蔽PII数据，这是一种有效的保护方法，但实现起来可能较为复杂。 结论：此选项部分满足需求，但在跨域分析性能方面存在不足。",
+      "C": "Correct. 正确性：使用AWS Lake Formation设置跨域表访问是一个直接且有效的解决方案。Lake Formation支持跨域数据共享，并且可以设置细 粒度访问控制。 数据审计：Lake Formation可以与CloudTrail集成，提供详细的访问审计功能，满足合规团队的需求。 细粒度访问控制：Lake Formation支持细粒度访问控制，可以限制对PII数据的访问。 跨域分析：通过Lake Formation的跨域访问功能，可以实现跨域分析，满足团队需求。 结论：此选项全面满足需求，是最佳选择。",
+      "D": "Incorrect. 正确性：创建物化视图和启用Amazon Redshift数据共享可以支持跨域分析，但物化视图的维护成本较高，且Redshift数据共享的功能 可能无法完全满足数据网格架构的需求。 数据审计：选项未提到如何审计数据访问，这不符合合规团队的要求。 细粒度访问控制：选项未提到如何实现细粒度访问控制，这不符合PII保护的要求。 结论：此选项部分满足需求，但在数据审计和细粒度访问控制方面存在不足。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 275,
+    "type": "single",
+    "question": "A company stores data in Amazon S3 and Amazon RDS. The company needs to apply technical controls to meet security requirements. The company must generate backups of the data and retain the backups for specified retention periods. The company must protect the backups from accidental or malicious deletion during the retention periods. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Create S3 buckets with versioning and MFA Delete enabled. Set a backup retention period and backup window for each RDS DB instance. Use the automated backup feature of Amazon RDS, and take additional snapshots as required.",
+      "B": "Create S3 buckets with versioning and Same-Region Replication enabled. Set a backup retention period and backup window for each RDS DB instance. Use the automated backup feature of Amazon RDS. Take additional snapshots as required.",
+      "C": "Create a backup plan in AWS Backup. Specify the backup schedule, set window and lifecycle values, and select a backup vault. Assign the Amazon S3 and Amazon RDS resources to the backup plan. Create a vault lock in compliance mode.",
+      "D": "Create S3 buckets with versioning and Cross-Region Replication enabled. Set a backup retention period and backup window for each RDS DB instance. Use Amazon RDS automated backups. Take additional snapshots as required."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 创建启用了版本控制和MFA Delete的S3存储桶，并使用RDS自动备份和额外快照： 优点：S3版本控制和MFA Delete可以防止数据被意外或恶意删除。 缺点：需要手动管理RDS的备份和快照，增加了操作开销。 结论：虽然可以满足数据保护需求，但操作开销较高，不是最优解。",
+      "B": "Incorrect. 创建启用了版本控制和同区域复制的S3存储桶，并使用RDS自动备份和额外快照： 优点：同区域复制可以提供额外的冗余保护。 缺点：同样需要手动管理RDS的备份和快照，操作开销较高。此外，同区域复制并不能防止数据被删除。 结论：无法完全满足防止数据删除的需求，且操作开销较高。",
+      "C": "Correct. 使用AWS Backup创建备份计划，并启用保管库锁： 优点：AWS Backup可以集中管理S3和RDS的备份，减少操作开销。保管库锁（Vault Lock）可以防止数据在保留期内被删除，完全满 足安全需求。 缺点：无明显缺点，完全符合题目要求。 结论：这是最优解，既满足需求又减少了操作开销。",
+      "D": "Incorrect. 创建启用了版本控制和跨区域复制的S3存储桶，并使用RDS自动备份和额外快照： 优点：跨区域复制提供了额外的灾难恢复能力。 缺点：跨区域复制无法防止数据被删除，且需要手动管理RDS的备份和快照，增加了操作开销。 结论：无法完全满足防止数据删除的需求，且操作开销较高。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 276,
+    "type": "single",
+    "question": "A data engineer uploads confidential documents to an Amazon S3 bucket every day. The data engineer requires a solution to independently verify the integrity of all uploaded data to confirm that there was no corruption during the transfer process. Which solution will meet this requirement?",
+    "options": {
+      "A": "Download a subset of the data after the data is uploaded to the S3 bucket. Manually validate the objects for integrity.",
+      "B": "Change the default encryption on the S3 bucket to server-side encryption with customer-provided keys (SSE-C). Turn on S3 bucket keys to validate data integrity.",
+      "C": "Calculate the SHA-256 checksum for the objects before uploading the objects. Pass the calculated value to the AWS SDK in each upload request.",
+      "D": "Download the complete data after the data is uploaded to the S3 bucket. Programmatically validate the objects for integrity."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 下载部分数据后手动验证对象的完整性。 错误：手动验证数据完整性效率低下，且无法保证所有数据的完整性，仅验证部分数据无法满足题目要求。 手动操作容易出错，不适合生产环境。",
+      "B": "Incorrect. 使用 SSE-C 加密并启用 S3 bucket keys 来验证数据完整性。 错误：SSE-C（服务器端加密，客户提供密钥）主要用于加密数据，而不是验证数据完整性。 启用 S3 bucket keys与数据完整性验证无直接关系。",
+      "C": "Correct. 在上传对象之前计算 SHA-256 校验和，并将计算值传递给 AWS SDK。 正确：通过计算 SHA-256 校验和并将其传递给 AWS SDK，S3 可以在上传过程中验证数据的完整性。 这种方法是自动化的，可靠且高效，符合题目要求。",
+      "D": "Incorrect. 下载完整数据后以编程方式验证对象的完整性。 错误：下载完整数据后验证完整性效率低下，尤其是对于大规模数据集。 这种方法需要额外的存储和计算资源，不符合题目要求的独立验证需求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 277,
+    "type": "single",
+    "question": "A company needs to optimize storage for an Amazon S3 bucket. Objects older than 1 year must be accessible within 5 hours. All versions of the objects must be retained and immutable for 7 years. All versions of the objects must use the write-once-read-many (WORM) model. Which solution will meet these requirements?",
+    "options": {
+      "A": "Configure S3 Versioning on the bucket and use the S3 Intelligent-Tiering storage class. Configure a lifecycle policy for the bucket to transition objects that are older than 1 year to S3 Glacier Flexible Retrieval. Configure the policy to delete objects that are older than 7 years.",
+      "B": "Configure S3 Object Lock on the bucket and use the S3 Intelligent-Tiering storage class. Configure a lifecycle policy for the bucket to transition objects that are older than 1 year to S3 Glacier Deep Archive. Configure the policy to delete objects that are older than 7 years.",
+      "C": "Configure S3 Object Lock on the bucket and use the S3 Intelligent-Tiering storage class. Configure a lifecycle policy for the bucket to transition objects that are older than 1 year to S3 Glacier Flexible Retrieval. Configure the policy to delete objects that are older than 7 years.",
+      "D": "Configure S3 Versioning on the bucket and use the S3 Intelligent-Tiering storage class. Configure a lifecycle policy for the bucket to transition objects that are older than 1 year to S3 Glacier Deep Archive. Configure the policy to deletes objects that are older than 7 years."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 配置S3 Versioning并使用S3 Intelligent-Tiering，生命周期策略将超过1年的对象转移到S3 Glacier Flexible Retrieval，删除超过7年的 对象。 正确性分析：S3 Versioning可以保留所有版本，但没有提到WORM模型的实现，因此无法满足不可变性要求。 存储类别选择合理，S3 Glacier Flexible Retrieval的访问时间为5小时以内，符合要求。 生命周期策略可以删除超过7年的对象，符合要求。 结论：不满足WORM模型要求，因此此选项错误。",
+      "B": "Incorrect. 配置S3 Object Lock并使用S3 Intelligent-Tiering，生命周期策略将超过1年的对象转移到S3 Glacier Deep Archive，删除超过7年的对 象。 正确性分析：S3 Object Lock可以实现WORM模型，满足不可变性要求。 S3 Glacier Deep Archive的访问时间为12小时，不符合5小时的访问时间要求。 生命周期策略可以删除超过7年的对象，符合要求。 结论：存储类别选择不符合访问时间要求，因此此选项错误。",
+      "C": "Correct. 配置S3 Object Lock并使用S3 Intelligent-Tiering，生命周期策略将超过1年的对象转移到S3 Glacier Flexible Retrieval，删除超过7年的 对象。 正确性分析：S3 Object Lock可以实现WORM模型，满足不可变性要求。 S3 Glacier Flexible Retrieval的访问时间为5小时以内，符合要求。 生命周期策略可以删除超过7年的对象，符合要求。 结论：此选项满足所有要求，因此正确。",
+      "D": "Incorrect. 配置S3 Versioning并使用S3 Intelligent-Tiering，生命周期策略将超过1年的对象转移到S3 Glacier Deep Archive，删除超过7年的对 象。 正确性分析：S3 Versioning可以保留所有版本，但没有提到WORM模型的实现，因此无法满足不可变性要求。 S3 Glacier Deep Archive的访问时间为12小时，不符合5小时的访问时间要求。 生命周期策略可以删除超过7年的对象，符合要求。 结论：不满足WORM模型和访问时间要求，因此此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 278,
+    "type": "single",
+    "question": "A data engineer needs to deploy a complex pipeline. The stages of the pipeline must be able to run a script. The data engineer must use only fully managed and serverless services in the pipeline. Which solution will meet these requirements?",
+    "options": {
+      "A": "Deploy AWS Glue jobs and workflows. Use AWS Glue to run the jobs and workflows on a schedule.",
+      "B": "Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to build and schedule the pipeline.",
+      "C": "Deploy the script to Amazon EC2 instances. Use Amazon EventBridge to run the script on a schedule.",
+      "D": "Use Aws Glue DataBrew to build the pipeline. Use Amazon EventBridge to run the pipeline on a schedule."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：AWS Glue是一个完全托管的ETL服务，可以运行脚本并调度工作流。它支持无服务器架构，适合构建复杂的数据管道。 适用性：AWS Glue可以满足题目要求，但它主要用于ETL任务，而不是通用的复杂管道调度。 结论：虽然可以满足要求，但可能不是最佳选择。",
+      "B": "Correct. 正确性分析：Amazon MWAA是一个完全托管的Apache Airflow服务，专门用于构建和调度复杂的工作流。它支持运行脚本，并且是无 服务器的。 适用性：Amazon MWAA非常适合构建复杂的管道，完全符合题目要求。 结论：这是最佳选择。",
+      "C": "Incorrect. 正确性分析：Amazon EC2不是无服务器服务，需要管理底层基础设施，不符合题目要求。 适用性：不符合题目要求的“完全托管和无服务器”条件。 结论：错误选项。",
+      "D": "Incorrect. Use AWS Glue DataBrew to build the pipeline. Use Amazon EventBridge to run the pipeline on a schedule. 正确性分析：AWS Glue DataBrew是一个数据准备工具，主要用于数据清理和转换，而不是构建复杂的管道。 适用性：不适合构建复杂的管道，且与题目要求不完全匹配。 结论：错误选项。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 279,
+    "type": "single",
+    "question": "A company needs to optimize storage costs for an Amazon S3 bucket. The S3 bucket receives 10 million objects every day. The objects range in size from 2 KB to 5 MB. The objects need to be immediately accessible for the first 60 days. Users access objects infrequently from 61 to 180 days. The objects must be accessible within an hour from 181 to 365 days. The company can delete the objects after 365 days. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use S3 Intelligent-Tiering to automatically transition objects. Select the Archive Access tier for Intelligent-Tiering. Configure an S3 bucket policy to expire objects that are older than 365 days.",
+      "B": "Create an S3 Lifecycle policy to move objects. Configure the policy to move objects from S3 Standard to S3 Standard-Infrequent Access (S3 Standard-IA) after 60 days. Move the objects to S3 Glacier Flexible Retrieval after 180 days. Expire objects after 365 days.",
+      "C": "Enable S3 Inventory. Use a daily inventory report to configure an S3 Batch Operations job that moves objects from S3 Standard to S3 Standard-Infrequent Access (S3 Standard-IA) after 60 days. Move objects to S3 Glacier Flexible Retrieval after 180 days. Expire objects after 365 days.",
+      "D": "Enable S3 Inventory. Run an AWS Lambda function each day to fetch an inventory report and move objects from S3 Standard to S3 Standard-Infrequent Access (S3 Standard-IA) after 60 days. Move objects to S3 Glacier Flexible Retrieval after 180 days. Expire objects after 365 days."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 使用 S3 Intelligent-Tiering 自动转换对象。 优点：S3 Intelligent-Tiering可以根据访问模式自动调整存储层级，减少管理复杂性。 缺点：题目明确要求在181到365天内对象可以在1小时内访问，而Intelligent-Tiering的Archive Access层可能无法满足这一要求，因为它 的检索时间可能超过1小时。 结论：此选项不符合题目要求。",
+      "B": "Correct. 创建一个 S3 生命周期策略。 优点：S3生命周期策略可以精确地控制对象在不同时间段的存储层级转换，完全符合题目要求。 缺点：需要手动配置策略，但这是合理的管理方式。 结论：此选项符合题目要求。",
+      "C": "Incorrect. 启用 S3 Inventory 并使用 S3 Batch Operations。 优点：S3 Inventory和Batch Operations可以批量管理对象的存储层级转换。 缺点：这种方法复杂度较高，且不如生命周期策略直接和高效。题目并未要求使用Inventory和Batch Operations。 结论：此选项不符合题目要求。",
+      "D": "Incorrect. 启用 S3 Inventory 并使用 AWS Lambda。 优点：通过Lambda函数可以实现自动化管理。 缺点：这种方法复杂度较高，且不如生命周期策略直接和高效。题目并未要求使用Lambda函数。 结论：此选项不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 280,
+    "type": "single",
+    "question": "A company needs to use an Aws Glue PySpark job to read specific data from an Amazon DynamoDB table. The company knows the partition key values for the required records. The existing processing logic of the AWS Glue PySpark job requires the data to be in DynamicFrame format. The company needs a solution to ensure that the job reads only the specified data. Which solution will meet this requirement with the MINIMUM number of read capacity units (RCUs)?",
+    "options": {
+      "A": "Use the AWS Glue DynamoDB ETL connector to read the DynamoDB table. Use the filter option to read the required partition key.",
+      "B": "Perform a query on the DynamoDB table in the AWS Glue job by using only the sort key in the key condition expression. Load the data into a DynamicFrame.",
+      "C": "Perform a scan on the DynamoDB table in the Aws Glue job. Put the data into a DynamicFrame. Filter the DynamicFrame on the partition key.",
+      "D": "Perform a query on the DynamoDB table in the AWS Glue job. Use the partition key in the key condition expression. Put the data into a DynamicFrame."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 错误原因：AWS Glue DynamoDB ETL连接器的过滤选项并不会直接减少DynamoDB的读取操作，而是先读取整个表的数据，然后在 DynamicFrame中进行过滤。这种方式会导致大量的RCU消耗，不符合题目要求的“最小RCU”。",
+      "B": "Incorrect. 错误原因：仅使用排序键进行查询是不正确的，因为DynamoDB的查询操作必须包含分区键。排序键只能作为辅助条件，不能单独使 用。这种方式会导致查询失败。",
+      "C": "Incorrect. 错误原因：扫描操作会读取整个DynamoDB表的数据，导致大量的RCU消耗。虽然可以在DynamicFrame中进行过滤，但这并不能减少 DynamoDB的读取成本，因此不符合题目要求的“最小RCU”。",
+      "D": "Correct. 正确原因：DynamoDB的查询操作允许使用分区键作为查询条件，这样可以直接读取指定的记录，避免读取整个表的数据，从而显著 减少RCU消耗。将查询结果直接加载到DynamicFrame中也符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 281,
+    "type": "single",
+    "question": "A company runs a multi-tenant Amazon EMR cluster on Amazon EC2 instances. Multiple teams perform interactive query analyses and data transformations on the data in the EMR cluster. The teams can access the cluster only through EMR Studio workspaces and EMR steps. The teams need to use EMR steps to run Apache Spark jobs to fetch data from an Amazon DynamoDB table. The DynamoDB table contains confidential data that must be accessible to only one specific team. The company needs to ensure that only the appropriate team can access the confidential data in the EMR cluster. Which solution will meet these requirements?",
+    "options": {
+      "A": "Set up runtime roles for EMR steps.",
+      "B": "Set up AWS Lake Formation permissions.",
+      "C": "Set up IAM roles for EMR File System (EMRFS) requests.",
+      "D": "Set up a DynamoDB resource-based policy."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. EMR步骤可以使用运行时角色来执行特定任务。通过为EMR步骤设置IAM运行时角色，可以限制特定团队对DynamoDB的访问权 限。这种方法可以确保只有授权的团队能够访问机密数据，同时不会影响其他团队的操作。",
+      "B": "Incorrect. AWS Lake Formation主要用于管理数据湖中的权限，而不是直接管理DynamoDB的访问权限。题目中并未提到数据湖的相关内 容，因此此选项不适合。",
+      "C": "Incorrect. EMRFS主要用于管理Amazon S3上的数据访问权限，与DynamoDB无关。此选项无法满足题目中对DynamoDB访问权限的要求。",
+      "D": "Incorrect. 虽然DynamoDB支持基于资源的策略，但这种方法通常用于直接限制用户或服务对DynamoDB的访问，而不是通过EMR步骤的运 行时角色来实现权限隔离。此选项无法满足题目中对EMR步骤权限管理的需求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 282,
+    "type": "single",
+    "question": "A company stores Apache Parquet files in an Amazon S3 data lake. The data lake receives thousands of files from multiple sources every hour. The files range in size from 50 KB to 100 KB. The company is evaluating the implementation of Apache Iceberg tables for the data lake. The company is using AWS Glue Data Catalog as part of the evaluation. The company needs a solution to optimize query performance in Iceberg. The solution must ensure that Iceberg table performance does not degrade when more files are added over time. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use an AWS Glue job to compact the files into a standard size of 512 MB at the end of each day. Run an AWS Glue crawler to update the Data Catalog.",
+      "B": "Configure the Data Catalog to automatically compact the files every minute.",
+      "C": "Configure Iceberg table properties to enable automatic compaction based on thresholds for file size and the number of files.",
+      "D": "Implement a partition strategy in Amazon S3. Run an AWS Glue crawler to update the Data Catalog every 5 minutes."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 正确性分析：将文件压缩为标准大小可以减少小文件对查询性能的影响，但每天压缩一次可能无法及时处理新增文件，尤其是题目 提到每小时有大量文件进入数据湖。 错误原因：这种方法无法实时优化查询性能，且需要额外的Glue作业和爬网程序，增加了复杂性。",
+      "B": "Incorrect. 正确性分析：AWS Glue Data Catalog本身不具备文件压缩功能，Data Catalog主要用于存储元数据，而非直接操作文件。 错误原因：此选项描述的功能并不存在，因此是错误的。",
+      "C": "Correct. 正确性分析：Apache Iceberg支持自动文件合并（compaction），可以根据文件大小和数量的阈值进行优化。这种方法可以实时管理小 文件问题，确保查询性能不会随着文件数量增加而下降。 正确原因：此选项直接利用Iceberg的内置功能，符合题目要求，是最佳解决方案。",
+      "D": "Incorrect. 正确性分析：分区策略可以优化查询性能，但题目并未提到需要分区，且分区策略无法解决小文件问题。此外，频繁运行爬网程序 会增加成本和复杂性。 错误原因：此选项未解决小文件问题，且分区策略与Iceberg表的自动管理功能相比不够高效。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 283,
+    "type": "single",
+    "question": "A data engineer must maintain and monitor a data pipeline on AWS that processes streaming data from Internet of Things (IoT) devices. The pipeline uses Amazon Kinesis Data Streams to ingest data and Amazon Data Firehose to deliver data to an Amazon S3 bucket. The data engineer needs to monitor the health of the pipeline. Which solution will meet these requirements with the LEAST operational effort?",
+    "options": {
+      "A": "Use Amazon CloudWatch Logs to manually review logs that are generated by Kinesis Data Streams and Firehose.",
+      "B": "Configure Amazon CloudWatch alarms to monitor key metrics such as IncomingBytes, OutgoingBytes, and DeliveryToS3.Success for Kinesis Data Streams and Firehose",
+      "C": "Use an AWS Lambda function to run daily checks on the status of the Kinesis Data Streams and Firehose. Configure the Lambda function to use Amazon Simple Notification Service (Amazon SNS) to send notifications.",
+      "D": "Use Amazon Managed Service for Apache Flink to perform near real-time anomaly detection on the streaming data and to invoke alerts if unusual patterns are detected."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 手动查看日志需要较高的操作成本，无法实现自动化监控。 虽然可以通过日志获取详细信息，但不符合“最少操作成本”的要求。 此选项错误。",
+      "B": "Correct. CloudWatch alarms可以自动监控关键指标，并在指标超出阈值时触发警报。 此方法操作成本低，且直接针对数据管道的健康状态进行监控。 符合题目要求，是正确答案。",
+      "C": "Incorrect. 使用 AWS Lambda 函数每天检查 Kinesis Data Streams 和 Firehose 的状态。配置 Lambda 函数使用 Amazon SNS 发送通知。 使用Lambda函数进行每日检查需要编写和维护代码，增加了操作成本。 虽然可以通过SNS发送通知，但这种方法不如CloudWatch alarms直接且高效。 此选项错误。",
+      "D": "Incorrect. Amazon Managed Service for Apache Flink适用于复杂的实时数据处理和异常检测，但本题仅要求监控数据管道的健康状态。 使用Flink进行异常检测超出了题目需求，且操作成本较高。 此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 284,
+    "type": "single",
+    "question": "A company needs a solution to store and query product data that has variable attributes. The solution must support unpredictable and high- volume queries with single-digit millisecond latency, even during sudden traffic spikes. The solution must retrieve items by a primary identifier named Product ID. The solution must allow flexible queries by secondary attributes named Category and Brand. Which solution will meet these requirements?",
+    "options": {
+      "A": "Use an Amazon DynamoDB table with on-demand capacity to store product data. Store products by primary key. Use global secondary indexes (GSIs) to store secondary attributes.",
+      "B": "Use Amazon Aurora with a Multi-AZ deployment to store product data. Use read replicas. Create indexes for primary and secondary attributes.",
+      "C": "Use an Amazon OpenSearch Serverless cluster with dynamic scaling to store product data. Index product data by primary and secondary attributes.",
+      "D": "Use Amazon ElastiCache (Redis OSS) and Amazon S3 to store product data. Use Amazon Athena to run flexible secondary attribute queries."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：DynamoDB是一个完全托管的NoSQL数据库，支持单毫秒级延迟查询，尤其适合高并发场景。按需容量模式可以动态调 整吞吐量，适应流量高峰。通过主键存储数据，并使用GSI支持次要属性查询，完全符合题目要求。 结论：此选项正确。",
+      "B": "Incorrect. 正确性分析：Aurora是一个关系型数据库，适合结构化数据存储和复杂查询，但其查询延迟通常在毫秒级以上，无法保证单毫秒级 延迟。此外，Aurora的性能在高并发场景下可能不如DynamoDB。 结论：此选项错误。",
+      "C": "Incorrect. 正确性分析：OpenSearch适合全文搜索和分析场景，但其查询延迟通常在毫秒级以上，且不适合存储具有可变属性的数据。此外， OpenSearch的动态扩展虽然可以处理流量高峰，但其设计目标与题目要求不完全匹配。 结论：此选项错误。",
+      "D": "Incorrect. 正确性分析：ElastiCache（Redis OSS）适合缓存场景，但不适合存储具有可变属性的数据。S3是对象存储服务，适合存储非结构化 数据，但查询性能较低。Athena适合运行复杂查询，但其查询延迟无法达到单毫秒级。此外，组合使用这些服务会增加系统复杂 性。 结论：此选项错误。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 285,
+    "type": "single",
+    "question": "A company is uploading log files from on-premises servers to an Amazon S3 bucket. The company needs to validate that the logs from the on- premises server are the same as the logs that are stored in the S3 bucket. Which solution will meet this requirement?",
+    "options": {
+      "A": "Use the AWS SDK to automatically compute CRC32 checksums during the upload. Store the checksums in S3 object metadata.",
+      "B": "Create an AWS Lambda function to calculate SHA-256 checksums. Store results in a separate metadata table. Validate the logs after the upload.",
+      "C": "Enable S3 Object Lock in compliance mode on the S3 bucket. Upload the objects to the bucket.",
+      "D": "After uploading the objects to the S3 bucket, enable S3 Object Lock in governance mode on the S3 objects."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正确性分析：AWS SDK确实支持在上传过程中计算校验和（如CRC32），并且可以将校验和存储在S3对象的元数据中。这种方法可以 直接验证上传的文件是否与原始文件一致。 优点：自动化程度高，直接利用AWS SDK完成校验和计算和存储，减少额外的开发工作。 缺点：CRC32校验和的强度较低，可能不适合高安全性场景。 结论：此选项是一个合理的解决方案。",
+      "B": "Incorrect. 正确性分析：SHA-256是一种更强的校验和算法，能够提供更高的安全性。然而，这种方法需要额外的开发工作，包括创建Lambda 函数、管理元数据表以及实现验证逻辑。 优点：安全性高，适合对数据完整性要求极高的场景。 缺点：复杂度高，增加了开发和维护成本。 结论：虽然此选项可行，但不如选项A简单高效。",
+      "C": "Incorrect. 正确性分析：S3 Object Lock的合规模式用于防止对象被删除或覆盖，但它并不能验证文件的完整性。 优点：提供数据保护，防止意外删除或修改。 缺点：与题目要求无关，无法验证文件是否一致。 结论：此选项不符合题目要求。",
+      "D": "Incorrect. 正确性分析：治理模式与合规模式类似，主要用于防止对象被删除或覆盖，但无法验证文件的完整性。 优点：提供数据保护，防止意外删除或修改。 缺点：与题目要求无关，无法验证文件是否一致。 结论：此选项不符合题目要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 286,
+    "type": "single",
+    "question": "An ecommerce company uses AWS Glue ETL to process and analyze orders. The company wants to build an extract, transform, and load (ETL) pipeline that processes placed, shipped, delivered, and canceled orders differently. The company integrates the order processing system with Amazon EventBridge. The company configures EventBridge Scheduler rules for each order status to invoke different AWS Glue workflows. When the company examines Amazon CloudWatch metrics for the workflow, the company notices that the FailedInvocations metric shows a high value for canceled orders. The company must determine the cause of the failed invocations. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure a dead-letter queue in EventBridge Scheduler to store failed events. Analyze the failed order events.",
+      "B": "Use the archive and replay features in EventBridge Scheduler to investigate the issue.",
+      "C": "Change the retry policy in EventBridge Scheduler to reduce the value for maximum retries.",
+      "D": "Change the retry policy in EventBridge Scheduler to increase the value for maximum age of event."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct.  为 Scheduler 配置 DLQ（通常是 SQS）后，当目标调用失败且重试耗尽（或符合投递到 DLQ 条件）时，失败载荷会进入 DLQ。 团队可以从 DLQ 中查看：订单状态为 canceled 的事件内容、目标参数、可能的字段缺失/格式问题，从而定位为何 Glue workflow 调用 失败（例如输入参数不符合 Glue workflow 预期）。 该方案直接满足“确定失败原因”的要求。",
+      "B": "Incorrect.  Archive and replay 是 Amazon EventBridge（Event bus）的能力，用于对进入 Event bus 的事件进行归档与重放。 题干说的是 EventBridge Scheduler 的 FailedInvocations，Scheduler 的排查关键在于“投递到目标失败的请求载荷与失败投递处理”。 即使在 Event bus 侧能归档事件，也不等价于拿到“Scheduler 对 Glue 调用失败时的投递记录/失败载荷去向”，且选项描述为“Scheduler 的归档与重放”本身就不准确。",
+      "C": "Incorrect.  减少最大重试次数只会让失败更快停止，可能降低重试带来的噪音，但并不能帮助“确定失败原因”。 题目关注的是“为什么 canceled 订单失败调用高”，不是“如何让指标变好看”。",
+      "D": "Incorrect.  增加 event age 允许更长时间内重试投递，有助于应对临时性故障（例如短暂的权限传播延迟或目标限流）。 但这仍然不能直接提供失败载荷用于分析，也不保证能定位“取消订单为何失败”。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 287,
+    "type": "single",
+    "question": "A company needs to build a data pipeline to process a 1-TB file from an Amazon S3 bucket. The pipeline needs to create three DataFrames based on business logic. The pipeline must save all three DataFrames to a second S3 bucket in parallel. The company needs to set the pipeline to be the target of an Amazon EventBridge rule that matches file uploads to the source S3 bucket. Which solution will meet these requirements with the LEAST maintenance overhead?",
+    "options": {
+      "A": "Configure an Apache Spark Streaming application on Amazon EMR to process data from the S3 source bucket in batches, create DataFrames, and save the output to the destination S3 bucket.",
+      "B": "Configure three AWS Lambda functions to process the business logic and to save the DataFrames to the destination S3 bucket in parallel.",
+      "C": "Configure an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file.",
+      "D": "Configure an AWS Step Functions state machine to initiate an AWS Glue workflow to run three AWS Glue jobs in parallel to process the file."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 在 EMR 上配置 Spark Streaming 批处理 错误点（主要）：题目是处理 “1TB 文件上传事件” 的批处理场景，使用 Spark Streaming（偏流式）不匹配，且不必要复杂。 维护开销高：EMR 集群需要规划/运维（容量、扩缩容、补丁、版本、失败重试策略、日志、成本优化等），相对 Glue Serverless 更 高。 事件触发可做但不最优：可以用 EventBridge 触发 EMR Steps/Serverless，但题目强调最小维护开销，EMR 不占优。 结论：不满足“最少维护开销”的最佳解。",
+      "B": "Incorrect. 三个 Lambda 并行处理并保存 DataFrame 错误点（关键）：1TB 文件远超 Lambda 适用范围。 硬性限制：Lambda 有运行时长、内存/临时存储等限制（即使可配置到较高水平，也不适合 1TB 级 ETL 形成 DataFrame 并输出）。 数据处理模型不匹配：题目描述 DataFrame 更偏 Spark/Glue 这类分布式处理概念，Lambda 更适合轻量事件处理、拆分小任务。 结论：不满足可行性与规模要求。",
+      "C": "Correct. 配置 Glue Workflow 并行运行三个 Glue Job 正确点（规模）：Glue Job 基于托管 Spark，适合处理 TB 级数据。 正确点（并行）：Glue Workflow 可定义多个 Job 节点，并可设置为 并行运行，天然满足“保存三份结果并行”。 正确点（维护开销）：Glue 是 Serverless（无需管理集群），Workflow 也为托管编排，整体维护开销低。 正确点（事件触发）：EventBridge 可将 Glue 的启动 API 作为目标（例如触发 Workflow/Job 运行），从而实现“文件上传即触发管道”。 注意点：如果三份 DataFrame 都来自同一 1TB 输入文件，三套 Job 并行各自读取同一输入会带来重复扫描成本；但题目没有要求“最 省钱/最少读取”，而是强调并行写出与最低维护。实现上也可通过在同一 Glue Job 内一次读取并写出三份结果，但题干明确“并行保 存三份 DataFrame”，用并行 Job 最贴合字面需求。 结论：满足所有需求且维护开销最小。",
+      "D": "Incorrect. Step Functions 启动 Glue Workflow 并行运行三个 Glue Job 可行：Step Functions 可以被 EventBridge 触发，然后再启动 Glue Workflow，实现编排与并行。 但不是最少维护：相比直接用 Glue Workflow，本方案引入额外组件（状态机定义、权限、错误处理、版本迭代、可观测性与成本）， 属于“多一层编排”。 功能重复：Workflow 本身已能表达并行与依赖，Step Functions 在此更多是冗余。 结论：能做但维护开销更高，不是最优。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 288,
+    "type": "single",
+    "question": "A company needs to transform IoT sensor data in near real time before the company stores the data in an Amazon S3 bucket. The data is available from a data stream in Amazon Kinesis Data Streams. The company needs to apply complex and stateful transformations to the data before the company stores the data. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Schedule AWS Glue ETL jobs to process the data stream.",
+      "B": "Configure an application in Amazon Managed Service for Apache Flink to process the data stream.",
+      "C": "Configure an AWS Lambda function to process the data stream.",
+      "D": "Schedule Apache Spark jobs on an Amazon EMR cluster to process the data stream."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 结论：不优/大概率不满足题意（或不满足“近实时 + 复杂有状态 + 最低运 维”的最优解）。 原因： “Schedule（调度）Glue ETL jobs”更偏批处理或按时间触发的作业形态，通常意味着非严格近实时（取决于调度频率与作业启动时 间）。 Glue 虽有 Streaming Job 能从 Kinesis 读取，但题干选项并未描述为持续运行的 Glue Streaming Job，而是“调度作业”。 对复杂且有状态的持续流处理（窗口、状态一致性、checkpoint/exactly-once 等），Flink 是更标准的答案。 运维上 Glue 也低，但在该题的语义匹配度与 stateful 流处理能力定位上，弱于 Flink 托管流服务。",
+      "B": "Correct. 结论：正确。 原因： Flink 是面向流式计算的引擎，天然支持复杂事件处理、窗口、按 key 的有状态计算。 支持状态管理与容错（checkpoint/savepoint），适配“复杂且有状态转换”。 与 Kinesis Data Streams 集成成熟，可实现近实时处理后将结果落地到 S3（可通过 Flink sink/写入到下游再落地）。 托管服务形态，比自建/自管 Flink 或 EMR 集群运维开销更低，符合题目“LEAST operational overhead”。",
+      "C": "Incorrect. 结论：错误（不适合复杂且有状态）。 原因： Lambda 处理 Kinesis 常用于轻量转换、过滤、简单 enrich；但题目强调复杂且有状态转换，Lambda 需要额外依赖外部状态存储（如 DynamoDB/Elasticache 等）来实现状态，复杂度与一致性成本上升。 Lambda 存在运行时限制、并发与批次处理行为带来的复杂性；实现 exactly-once/复杂窗口语义通常不如 Flink 原生。 虽然 Lambda 运维低，但在“复杂 stateful”这一硬性要求下不匹配。",
+      "D": "Incorrect. 结论：错误（运维开销不满足“最少”）。 原因： EMR 集群需要容量规划、扩缩容、补丁与运维管理，相比托管 Flink 服务运维开销显著更高。 “Schedule Spark jobs”也更偏批/微批调度表达，不如持续运行的流处理应用贴近“near real time”。 即便能实现（Structured Streaming 等），也不符合“LEAST operational overhead”。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 289,
+    "type": "single",
+    "question": "A company stores time-series data that is collected from streaming services in an Amazon S3 bucket. The company must ensure that only workloads that are deployed within the company’s VPC can access the data. Which solution will meet this requirement?",
+    "options": {
+      "A": "Create an S3 bucket policy that uses a condition to allow access only to traffic that originates from the company’s VPC.",
+      "B": "Apply a security group to the S3 bucket that allows connections only from the company's VPC CIDR block.",
+      "C": "Define an IAM policy that denies access to all users unless the request originates from within the company’s VPC.",
+      "D": "Use a network ACL on the VPC subnets to allow only specific resources to access the S3 bucket."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. Create an S3 bucket policy... only traffic that originates from the company’s VPC. 结论：正确（最佳匹配） 原因： S3 Bucket Policy是资源级控制，能在桶侧强制限制访问来源。 典型实现方式是先创建 S3 VPC Endpoint，再在Bucket Policy中加条件，例如： aws:sourceVpce = vpce-xxxxxxxx（最常见、最精确） 或在某些场景使用 aws:SourceVpc（依赖服务/路径支持） 这样即使访问凭证泄露，外部网络请求也会因为不满足条件而被拒绝。 注意： 题干没显式提VPC Endpoint，但“只允许来自VPC的流量访问S3”在AWS实操上通常隐含需要配合VPC Endpoint与相应条件键实现。",
+      "B": "Incorrect. Apply a security group to the S3 bucket... 结论：错误 原因： S3 Bucket不能关联Security Group。Security Group作用于ENI/EC2/Lambda(在VPC中)等网络接口级资源，S3是区域级服务端点。 因此该方案在机制上不可行。",
+      "C": "Incorrect. 结论：不优/通常视为错 误（不满足“仅VPC内工作负载”这一强约束的最佳方式） 原因： IAM Identity Policy是身份侧约束，前提是所有访问都使用受你控制的IAM身份；它不是对S3桶的统一“资源侧闸门”。 “deny access to all users”在跨账号/外部主体/桶策略允许等情况下并不天然成立；要对桶实现统一强制，应该用Bucket Policy（或组织 级SCP等）。 另外，“请求源自VPC”这种判断在S3侧更常见且可靠的落点是Bucket Policy + VPC Endpoint条件（如 aws:sourceVpce）。",
+      "D": "Incorrect. Use a network ACL on the VPC subnets... 结论：错误 原因： NACL只能控制子网入站/出站的网络流量，无法对S3桶实施资源级访问控制。 即便限制了某些子网的出站，也无法防止其他网络路径（例如其他VPC、其他账号、互联网）对S3的访问。 该方案不能满足“只有VPC内工作负载能访问数据”的核心要求。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 290,
+    "type": "single",
+    "question": "A company runs a data platform on AWS. The data platform uses AWS Glue to provide a data catalog and to perform processing. The company notices quality issues in the data. The company needs to implement data quality validations. The validations must include rules for known issues. The validations must have the ability to automatically detect unexpected data quality issues. Which solution will meet these requirements with the LEAST operation overhead?",
+    "options": {
+      "A": "Use AWS Glue jobs to implement AWS Glue Data Quality validations that include anomaly detection.",
+      "B": "Use AWS Glue jobs to implement data quality rules that use open source data quality frameworks.",
+      "C": "Use AWS Glue DataBrew to profile the data. Configure data quality rules based on the data quality results from the profiling.",
+      "D": "Use AWS Glue jobs to implement data quality validations that use SQL statements."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 为什么正确： AWS Glue Data Quality 是 Glue 的原生数据质量能力，可在 Glue 作业/ETL 中直接运行规则集并输出质量结果与指标。 题目要求“包含针对已知问题的规则”——Glue Data Quality 支持显式规则（如 completeness/uniqueness/range 等类型或基于表达式的规 则集合）。 题目要求“自动检测意外数据质量问题”——该选项明确包含anomaly detection，满足对未知异常的自动检测诉求。 运维开销低：无需自建第三方框架、无需维护额外依赖与运行环境；与现有 Glue 平台天然集成。 可能的注意点： 异常检测通常依赖基线/历史统计或指标监控，需要合理配置数据源与阈值策略；但相较自建仍是最低运维。",
+      "B": "Incorrect. 为什么错误： 开源框架（例如 Great Expectations、Deequ 等）可以实现规则校验，但题目还要求自动检测意外问题，通常需要额外开发统计检测、 模型或阈值逻辑（并非开箱即用且实现方式不统一）。 运维开销高：需要打包依赖、版本管理、运行时兼容（Glue 版本/依赖冲突）、性能调优、框架升级、测试与发布流程维护。 相对 Glue 原生 Data Quality，明显不符合“LEAST operation overhead”。",
+      "C": "Incorrect. 为什么不优/通常不满足： DataBrew 的 profiling 可帮助发现分布、缺失率、模式等，并据此手动配置规则；但题目要求“必须有能力自动检测意外问题”，该方案 更多是“先剖析再配置”，偏人工闭环。 即便可通过持续 profile 发现变化，也更像“监控+人工解释/调整”，并非明确的内建异常检测能力（题干要求强调自动检测）。 从平台架构角度，公司当前平台以 Glue Catalog + Glue processing 为核心，引入 DataBrew 会增加一个独立服务与流程（作业编排、权 限、输出对接），不一定是最低运维。",
+      "D": "Incorrect. 为什么错误： SQL 可以实现大量显式规则校验（已知问题），例如 NULL 检查、范围检查、重复检查等。 但“自动检测意外问题（异常检测）”用纯 SQL 实现通常需要自建统计基线、阈值、历史对比、漂移检测等逻辑，开发与维护成本高。 运维开销不低：规则管理、版本控制、扩展性、指标沉淀与告警通常需要额外体系。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 291,
+    "type": "single",
+    "question": "A company uses an Amazon S3 Standard bucket to maintain a self-managed transactional data lake that uses Apache Iceberg tables. The data lake ingests data both in real time and in batches. Users report slow performance for real-time tables. A data engineer reviews the real-time tables and notices that the tables are made up of many small data files The data engineer must improve the performance of the real-time tables. Which solution will meet this requirement?",
+    "options": {
+      "A": "Expire historic snapshots.",
+      "B": "Archive historic snapshots.",
+      "C": "Delete S3 objects that are not linked from the Iceberg table.",
+      "D": "Apply compaction."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Expire historic snapshots（使历史快照过期）结论：不满足主要需求（通常不直接解决小文件导致的慢）。 原因： 过期快照主要作用是减少元数据历史版本、释放旧文件的可回收空间（取决于后续是否清理未引用文件）。 即便减少了快照数量，当前表的现有活动数据文件仍然很多，查询仍要扫描/打开大量小文件。 因此对“实时表由很多小文件导致慢”的问题，帮助有限，非最直接手段。",
+      "B": "Incorrect. Archive historic snapshots（归档历史快照）结论：不满足需求。 原因： Iceberg 常见维护动作是过期/删除旧快照引用，而“归档快照”并不是解决查询小文件性能的常规方案。 归档历史快照更多是治理/合规/审计或降低主存储元数据负担的概念，不会把小文件合并成大文件。 对查询性能瓶颈（大量小文件）基本无直接改善。",
+      "C": "Incorrect. Delete S3 objects that are not linked from the Iceberg table（删除未从 Iceberg 表链接的 S3 对象）结论：不满足需求（偏存储清理， 不是性能根治）。 原因： 这是“清理孤儿文件（orphan files）”的思路：删除元数据不再引用的对象以节省存储。 题干问题是表由许多小数据文件组成，这些文件通常是“被引用的有效数据文件”，并不是孤儿文件。 删除未链接对象可能节省成本，但不会减少查询需要读取的已链接的小文件数量，因此不能解决实时表性能问题。",
+      "D": "Correct. Apply compaction（应用合并压缩/文件合并 compaction）结论：满足需求（正确）。 原因： Compaction 会将许多小文件重写（rewrite）/合并为更少、更大的文件。 显著降低查询时的文件枚举、打开连接、任务调度与元数据处理开销，通常是实时摄取表的关键优化手段。 与题干“发现由很多小文件组成”这一直接根因完全匹配。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 292,
+    "type": "single",
+    "question": "An ecommerce company collects daily customer transaction logs in CSV format and stores the logs in Amazon S3. The company uses Amazon Athena to scan a subset of attributes from the logs on the same day the company receives each log. Query times are increasing because of increasing transaction volume. The company wants to improve query performance. Which solution will meet these requirements with the SHORTEST query times?",
+    "options": {
+      "A": "Convert the CSV logs into multiple ORC files for better parallelism in Athena. Partition by date in Amazon S3. Use columnar pushdown filters.",
+      "B": "Convert the CSV logs to JSON. Partition by date in Amazon S3. Use Athena with dynamic filtering to reduce data scans.",
+      "C": "Convert the CSV logs to Avro. Partition by date in Amazon S3. Use Athena with projection-based partitioning.",
+      "D": "Convert the CSV logs to a single Apache Parquet file for each day Partition the data by date in Amazon S3. Use Athena with predicate pushdown filters."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Convert CSV to multiple ORC files + date partition + columnar pushdown filters 正确点： ORC 是列式格式，对“只扫描部分属性”非常有利（列裁剪）。 按日期分区能让查询当天数据时只读当天分区。 列式格式通常支持谓词/列下推，减少扫描。 风险/不足： “multiple ORC files for better parallelism”描述不够严谨：并行性并不只取决于“多文件”，还取决于文件大小是否合理。如果变成大量小 文件，Athena 会有较大的任务调度与元数据开销，反而变慢。 相较 D，A 没强调避免小文件或形成每日日志的合理聚合粒度；并且“columnar pushdown filters”表述不如 Athena 常见术语“predicate pushdown”准确（虽然本质接近）。 结论：方向对，但“多文件”未必一定带来最短查询时间；在考试语境下不如 Parquet + 明确的下推更稳。",
+      "B": "Incorrect. Convert CSV to JSON + date partition + Athena dynamic filtering 错误点（主要）： JSON 是行式/半结构化文本，通常比 CSV 更冗余，解析成本更高；对“只查部分列”的场景不如列式格式。 动态过滤（dynamic filtering）在特定 Join 场景有帮助，但题干核心瓶颈是数据量增长导致扫描/读取变慢；最佳解通常是列式 + 分 区，而不是转 JSON。 结论：不满足“最短查询时间”的目标。",
+      "C": "Incorrect. Convert CSV to Avro + date partition + projection-based partitioning 正确点： Avro 是二进制格式，通常比 CSV/JSON 更高效。 按日期分区对当天查询有帮助。 Partition projection 能减少 Glue/Athena 分区元数据管理开销（无需频繁添加分区）。 错误点/不足（针对“最短查询时间”）： Avro 是行式，对于“只扫描部分属性”的查询，通常不如 Parquet/ORC 的列式读取高效（列裁剪与压缩效率通常更差）。 Partition projection 更偏向运维与元数据扩展性，并非单次查询性能的最核心加速点；题干也没有强调分区管理困难，而是查询变 慢。 结论：比 CSV/JSON 好，但通常不如 Parquet/ORC 达到最短查询时间。",
+      "D": "Correct. Convert CSV to a single Parquet file per day + date partition + Athena predicate pushdown filters 正确点： Parquet 是列式存储：对“只扫描部分属性”可进行列裁剪，显著减少读取数据量与反序列化成本。 Predicate pushdown 能让引擎利用 Parquet 的统计信息与分块（row group）信息减少读取。 按日期分区，针对“当天日志当天查”的模式，能做到只扫当天分区，非常关键。 “每天一个文件”在考试最佳实践语境下，通常隐含意义是：把当天数据合并成较少的大文件，从而减少大量小文件带来的开销（S3 读取与 Athena 任务调度/元数据开销）。 可能的疑问点： 如果“单个文件”过大，理论上可能影响并行度；但 Parquet 是可分割/可并行读取的格式（按 row group/stripe 等进行分片读取），在 Athena 中通常仍可并行扫描，且减少小文件开销往往收益更大。 结论：最符合“最短查询时间”的典型组合：分区 + 列式 Parquet + 下推 + 减少小文件。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 293,
+    "type": "single",
+    "question": "A company stores customer data in an Amazon S3 bucket. The company must permanently delete all customer data that is older than 7 years. Which solution will meet this requirement?",
+    "options": {
+      "A": "Configure an S3 Lifecycle policy to permanently delete objects that are older than 7 years.",
+      "B": "Use Amazon Athena to query the S3 bucket for objects that are older than 7 years. Configure Athena to delete the results.",
+      "C": "Configure an S3 Lifecycle policy to move objects that are older than 7 years to S3 Glacier Deep Archive.",
+      "D": "Configure an S3 Lifecycle policy to enable S3 Object Lock on all objects that are older than 7 years."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 配置S3生命周期策略，以永久删除超过7年的对象正确。 原因： S3 Lifecycle 的 Expiration 动作可以按对象年龄自动删除对象，最符合“超过7年自动永久删除”的要求。 运营上无需人工/批处理脚本，持续合规。 注意点（考试延伸）：若启用Versioning，应额外配置Noncurrent version expiration（非当前版本过期）以实现真正“永久删除”。但选项 A表达的方向仍然是唯一契合删除要求的方案。",
+      "B": "Incorrect. 用Athena查询超过7年的对象，并配置Athena删除结果错误。 原因： Athena是查询服务，查询“对象是否超过7年”并不等同于删除对象。 “删除结果”只是删除查询输出（通常在某个S3输出路径），不是删除被查询到的原始对象。 即使通过额外机制（如Lambda/S3 Batch Operations）实现删除，也不在该选项描述范围内，且复杂、非最佳实践。",
+      "C": "Incorrect. 生命周期将超过7年的对象移动到Glacier Deep Archive 错误。 原因： 这是归档/长期保存方案，不是删除方案。 需求明确要求“必须永久删除”，迁移到Deep Archive仍然保留数据，违反要求。",
+      "D": "Incorrect. 生命周期对超过7年的对象启用S3 Object Lock 错误。 原因： S3 Object Lock用于WORM（写一次读多次）与防删除（保留期内不可删除），与“必须删除”方向相反。 Object Lock并不能通过生命周期“对已存在且超过7年的对象启用”；Object Lock通常在Bucket级别开启，并在对象写入时设置保留模 式/期限（或通过特定API对版本设置保留），不是用来触发删除。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 294,
+    "type": "single",
+    "question": "Two data engineering teams use separate AWS accounts. Both teams request access to the same datashare in an Amazon Redshift cluster that is in a third AWS account. The datashare is named salesshare. A data engineer must use the Amazon Redshift SQL interface to grant both data engineering teams' access to the datashare. Which command or commands will meet this requirement?",
+    "options": {
+      "A": "GRANT USAGE ON DATASHARE salesshare TO ACCOUNTS ‘ ’ AND ‘ ’;",
+      "B": "GRANT USAGE ON DATASHARE salesshare TO NAMESPACES ‘ ’ AND ‘ ’;",
+      "C": "GRANT USAGE ON DATASHARE salesshare TO ACCOUNT ‘ ’; GRANT USAGE ON DATASHARE salesshare TO ACCOUNT ‘ ’;",
+      "D": "GRANT USAGE ON DATASHARE salesshare TO NAMESPACE ‘ ’; GRANT USAGE ON DATASHARE salesshare TO NAMESPACE ‘ ’;"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 命令：GRANT USAGE ON DATASHARE salesshare TO ACCOUNTS ‘ ’ AND ‘ ’; ...（重复） 错误点1：Redshift 该语法使用的是 ACCOUNT（单数），不是 ACCOUNTS。 错误点2：多个授权目标通常不是用 AND 连接（通常用逗号或多条语句）。 结论：语法不正确，不能满足要求。",
+      "B": "Incorrect. 命令：GRANT USAGE ON DATASHARE salesshare TO NAMESPACES ‘ ’ AND ‘ ’; ...（重复） 错误点1：关键字应为 NAMESPACE（单数），不是 NAMESPACES。 错误点2：多个授权目标不应使用 AND 连接。 结论：语法不正确，不能满足要求。",
+      "C": "Incorrect. 命令：GRANT USAGE ON DATASHARE salesshare TO ACCOUNT ‘ ’;（共 4 条） 可能正确的点：在 Redshift data sharing 中，确实存在 “TO ACCOUNT 'account-id'” 这种授权思路（把 datashare 分享给某个 AWS 账号）。 主要问题：题目场景是“两个团队（两个账号）”，通常只需要对两个账号各授权一次即可；该选项给了 4 条 ACCOUNT 授权语句，语 义上显得不匹配题意（除非占位符代表重复或代表额外账号/并非题意）。 考试解题角度：本题更典型考点是“授权给消费者 namespace”的 SQL 语法，而不是账号级授权。 结论：从语法可能可执行，但与题目更常见、最严谨的“按消费者 namespace 授权”不一致；且给出 4 条对 ACCOUNT 的授权不符合“两 方”这一描述下的最小匹配方案。",
+      "D": "Correct. 命令：GRANT USAGE ON DATASHARE salesshare TO NAMESPACE ‘ ’;（共 4 条） 正确点1：关键字 NAMESPACE（单数）是正确的授权对象类型之一。 正确点2：使用多条 GRANT 语句分别授权给不同消费者，是可行做法。 注意点：同样存在“题干只有两个团队，但这里写了 4 条”的形式问题；不过如果占位符代表两个团队各自可能有多个消费者 namespace（例如不同环境/不同 Redshift 端点），则完全合理。 结论：这是最符合 Redshift data sharing 常见授权方式、且语法明确正确的一组命令。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 295,
+    "type": "single",
+    "question": "A company regularly loads data into an Amazon DynamoDB table. The company must retain the data in DynamoDB for 1 year. After 1 year, the company must archive the data for 5 years. After 5 years, the company must delete the data. Which solution will meet these requirements in the MOST operationally efficient way?",
+    "options": {
+      "A": "Include a timestamp with the data that is loaded into DynamoDB. Create an AWS Lambda function to read the timestamps and move items that are 1 year old to Amazon S3 Glacier Flexible Retrieval. Create an S3 Lifecycle policy to delete the items after 5 years.",
+      "B": "Enable Amazon DynamoDB Streams. Configure a TTL rule to delete items from the DynamoDB table after 1 year. Use an AWS Lambda function to consume the stream and send items to Amazon S3 Glacier Flexible Retrieval. Delete the items from S3 Glacier Flexible Retrieval after 5 years.",
+      "C": "Include a timestamp with the data that is loaded into DynamoDB. Use an AWS Lambda function to read timestamps and move items that are 1 year old directly to Amazon S3 Glacier Deep Archive. Configure the function to delete items after 5 years.",
+      "D": "Enable Amazon DynamoDB Streams. Configure a TTL rule to delete items from the DynamoDB table after 1 year. Use an AWS Lambda function to consume the stream and send items directly to Amazon S3 Glacier Deep Archive. Create an S3 Lifecycle policy to delete the items after 5 years."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 做法：写入时间戳 + Lambda读取时间戳，把满1年的数据搬到S3 Glacier Flexible Retrieval + S3 Lifecycle 5年后删除。 问题： 需要扫描/遍历DynamoDB以找出满1年的item（无论是Scan还是查询GSI/分区设计，通常都需要额外机制与调度），运维复杂度和成本 高。 题目要求“最省运维”，这种“定期找旧数据搬迁”的方案通常不如TTL+Streams事件驱动。 Glacier Flexible Retrieval可用但不如Deep Archive贴合“长期归档”成本最优（题目没提需要更快取回）。 结论：不够运维高效，通常不是最优。",
+      "B": "Incorrect. 做法：开启Streams + TTL 1年删除 + Lambda消费Streams写入S3 Glacier Flexible Retrieval + “5年后删除”。 优点： TTL满足DynamoDB保留1年后自动移除。 Streams + Lambda可在TTL删除时拿到REMOVE事件并归档，避免扫描。 不足： “Delete the items from S3 ... after 5 years”没有明确使用S3 Lifecycle；若靠自建脚本/Lambda定期删除，运维效率更差。 存储类型为Glacier Flexible Retrieval，长期5年归档通常Deep Archive更省钱（在题目未强调检索性能时）。 结论：思路基本正确，但在“最省运维”上不如使用S3 Lifecycle明确自动过期删除的方案；存储类型也不如Deep Archive贴合长期归 档。",
+      "C": "Incorrect. 做法：写入时间戳 + Lambda找出满1年数据迁移到S3 Glacier Deep Archive + Lambda在5年后删除。 问题： 仍然需要扫描/查找满1年的数据，运维不高效（同A）。 “5年后删除”由Lambda实现，意味着还要自建定时、状态管理、幂等处理等，不如S3 Lifecycle托管。 结论：不满足“最省运维”。",
+      "D": "Correct. 做法：开启Streams + 配置TTL 1年删除 + Lambda消费Streams把数据写入S3 Glacier Deep Archive + S3 Lifecycle 5年后删除。 为什么正确： TTL：自动在1年后从DynamoDB移除数据（满足“DynamoDB保留1年”）。 Streams + Lambda：TTL删除会产生REMOVE事件（在Streams中可见），Lambda可将被删除的旧数据归档到S3，实现事件驱动、无需扫 描。 S3 Glacier Deep Archive：适合长期低频访问归档，成本更优。 S3 Lifecycle：自动在5年后删除对象，最省运维。 潜在注意点（不影响本题结论）： TTL删除并非精确到秒，可能有延迟（通常可接受，题目未要求严格时间点）。 Streams需要选择包含OLD_IMAGE（或至少能拿到所需归档字段），否则REMOVE记录可能无法包含完整归档数据。 结论：满足全部要求且最省运维。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 296,
+    "type": "single",
+    "question": "A company must retain specific data for 1 year. A data engineer observes that one of the company’s Amazon S3 buckets contains millions of objects that are older than 3 years. Versioning is enabled on the bucket. To reduce costs, the data engineer implements an S3 Lifecycle rule to expire objects after 365 days. The new S3 Lifecycle rule causes the object count to double instead of decrease. Which additional step must the data engineer take to permanently delete the old objects?",
+    "options": {
+      "A": "Disable versioning on the S3 bucket.",
+      "B": "Use an AWS Lambda function to run a Python job to identify and delete objects that are older than 365 days.",
+      "C": "Suspend versioning on the S3 bucket.",
+      "D": "Add an additional S3 Lifecycle rule to delete the current and expired versions of objects that are older than 365 days."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. Disable versioning on the S3 bucket（禁用版本控制）结论：错误。 原因： S3 的版本控制一旦启用，通常只能Suspend（暂停），不能回到真正意义上的“Disable/从未启用”状态来清除历史版本。 即使能改变状态，也不会自动删除已经存在的历史版本与删除标记。 不能解决“永久删除旧版本对象”的根因。",
+      "B": "Incorrect. Use an AWS Lambda function to ... delete objects older than 365 days（用 Lambda 写脚本识别并删除）结论：不优且不满足题意的“必 须”步骤，通常判错。 原因： 在启用版本控制时，“删除对象”默认只会给当前版本加 Delete Marker；若不显式删除每个版本（含 VersionId），很难做到“永久删 除”。 对“数百万对象”进行扫描、列举版本、逐个删除版本会带来复杂度、成本与超时风险（Lambda 运行时限制、分页、重试、权限 等）。 题干已经在用 Lifecycle 优化成本，正确方向应继续用 Lifecycle 的版本清理能力，而不是改用自定义计算。",
+      "C": "Incorrect. Suspend versioning on the S3 bucket（暂停版本控制）结论：错误。 原因： 暂停版本控制只能阻止未来继续产生新版本（后续写入变成“null version”），但不会删除现有的历史版本或已产生的 Delete Marker。 题目要求“永久删除旧对象”，暂停不等于清理。",
+      "D": "Correct. Add an additional S3 Lifecycle rule to delete the current and expired versions ...（增加规则删除当前与过期版本）结论：正确。 原因： 在版本控制桶中，仅配置“Expiration（到期删除当前对象）”会生成 Delete Marker，导致对象/版本计数增加。 要真正清理存储，需要 Lifecycle 进一步配置： Noncurrent version expiration：删除超过 365 天的非当前版本（旧版本）。 （常见也会配）Expired object delete marker removal：清理由生命周期过期造成的多余删除标记（视具体配置与需求）。 这样才能“永久删除旧对象版本”，并让对象数量与存储成本真正下降。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 297,
+    "type": "single",
+    "question": "A manufacturing company uses AWS Glue jobs to process IoT sensor data to generate predictive maintenance models. A data engineer needs to implement automated data quality checks to identify temperature readings that are outside the expected range of -50°C to 150°C. The data quality checks must also identify records that are missing timestamp values. The data engineer needs a solution that requires minimal coding and can automatically flag the specified issues. Which solution will meet these requirements?",
+    "options": {
+      "A": "Create an AWS Glue DataBrew project to profile the sensor data Define completeness rules for timestamps. Set up numeric range validation for temperature values.",
+      "B": "Use AWS Glue’s Data Quality rules and machine learning (ML)-based anomaly detection to identify missing timestamps and to detect temperature anomalies.",
+      "C": "Create an AWS Lambda function to scan the sensor data files to validate temperature ranges. Use AWS Glue Data Catalog tables to check timestamp completeness.",
+      "D": "Create an AWS Glue DynamicFrame that uses a custom data quality operator to profile the sensor data. Use Amazon SageMaker Data Wrangler transforms to validate timestamps and temperature ranges."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 使用 AWS Glue DataBrew 项目做剖析 + 规则（timestamp 完整性 + temperature 数值范围） 正确点：DataBrew是典型的低代码/无代码数据准备与数据质量服务，可通过界面/配置方式定义规则。 满足范围校验：可为数值列配置范围类规则（例如必须在[-50,150]）。 满足缺失值检查：可对timestamp配置完整性/非空（completeness）规则。 自动标记：DataBrew的数据质量规则评估可生成结果/报告并标识不符合规则的记录或统计。 结论：与题目“最少编码 + 自动flag指定问题”高度吻合。",
+      "B": "Incorrect. 使用 AWS Glue Data Quality 规则 + ML-based anomaly detection 部分合理：AWS Glue Data Quality（Glue Data Quality / Deequ规则集能力）确实可以做非空、范围等规则校验，并可集成到Glue作业流 程中。 问题1（与题意不匹配）：题目要的是固定阈值范围（-50到150），不需要“异常检测”。异常检测通常用于未知阈值或统计分布漂移场 景。 问题2（表述风险）：“Glue 的数据质量规则 + ML异常检测”这种组合在考试语境里更像把概念混在一起；即使能做，也显得不必要且 不如直接规则明确。 结论：虽然“规则”能解决问题，但该选项引入ML anomaly detection，偏离题目“指定范围”与“最少复杂度”的意图，因此不选。",
+      "C": "Incorrect. Lambda 扫描文件校验温度范围 + Glue Data Catalog 检查 timestamp 完整性 错误点（不满足 minimal coding）：需要编写Lambda扫描文件、解析格式、处理大规模数据与错误输出，开发与运维成本更高。 错误点（Data Catalog不负责“完整性检查”）：Glue Data Catalog是元数据目录（schema、分区、表），不是用来做逐行数据完整性校验 的工具。 结论：不符合“最少编码”，且技术路径不正确。",
+      "D": "Incorrect. Glue DynamicFrame + 自定义数据质量算子 + SageMaker Data Wrangler transforms 错误点（编码与复杂度高）：自定义operator意味着要写代码实现规则与统计；还要引入Data Wrangler，组件更多。 与题目目标冲突：题目明确要“最少编码”，该方案明显是重型定制。 结论：不选。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 298,
+    "type": "single",
+    "question": "A media company wants to improve a system that recommends media content to customers based on user behavior and preferences. To improve the recommendation system, the company needs to incorporate insights from third-party datasets into the company’s existing analytics platform. The company wants to minimize the effort and time required to incorporate third-party datasets. Which solution will meet these requirements with the LEAST operational overhead?",
+    "options": {
+      "A": "Use API calls to access and integrate third-party datasets from AWS Data Exchange.",
+      "B": "Use API calls to access and integrate third-party datasets from AWS DataSync.",
+      "C": "Use Amazon Kinesis Data Streams to access and integrate third-party datasets from a Git repository.",
+      "D": "Use Amazon Kinesis Data Streams to access and integrate third-party datasets from Amazon Elastic Container Registry (Amazon ECR)."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 结论：正确。 原因： AWS Data Exchange 是 AWS 官方的数据集市场与交换平台，提供订阅第三方数据、版本管理、数据交付等能力。 可以通过 API/控制台自动化订阅与导入流程，把数据交付到 S3 等存储，再被现有分析平台（数据湖/数仓/ETL）使用。 相对自建采集、同步、解析管道，Data Exchange 的运维工作量最小，符合“LEAST operational overhead”。",
+      "B": "Incorrect. 结论：错误。 原因： AWS DataSync 用于在本地存储（NFS/SMB）与 AWS（S3/EFS/FSx）之间进行数据迁移与同步，核心不是“第三方数据集分发/订阅”。 DataSync 并不提供“第三方数据集目录、订阅、许可管理、数据产品交付”的能力。 用 DataSync 来集成第三方数据，前提是你已经能以文件系统等形式拿到第三方数据源，仍需要额外的对接与运维，不满足“最少工作 量”。",
+      "C": "Incorrect. 结论：错误。 原因： Kinesis Data Streams 是实时流数据摄取服务，不是用来“访问 Git 仓库并把数据集接入”的工具。 Git 仓库也不是标准的第三方数据集交付渠道；要实现该方案通常需要自建拉取代码/数据、解析、发布到 Kinesis 的生产者应用，运 维开销很高。 与题干“最小时间和精力”目标相反。",
+      "D": "Incorrect. Use Amazon Kinesis Data Streams to access and integrate third-party datasets from Amazon ECR. 结论：错误。 原因： Amazon ECR 是容器镜像仓库，不是第三方“数据集”分发服务。 Kinesis 也无法直接“从 ECR 访问并集成数据集”；你仍要运行容器应用去读取外部数据并写入 Kinesis，属于自建链路，运维开销更 高。 整体与题意不符。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 299,
+    "type": "single",
+    "question": "A company generates yearly financial statements for customers and stores the statements in an Amazon S3 bucket. Customers rarely access the documents after 1 week. The company must retain the statements for 7 years. The statements must remain readily accessible for customers. Which solution will meet these requirements in the MOST cost-effective way?",
+    "options": {
+      "A": "Create an S3 Lifecycle rule to transition objects to S3 Glacier Deep Archive after 7 days. Expire the objects after 7 years.",
+      "B": "Set the S3 bucket to use S3 Intelligent-Tiering when new objects are uploaded. Set objects to expire after 7 years.",
+      "C": "Create an S3 Lifecycle rule to transition objects to S3 Glacier Instant Retrieval after 7 days. Expire the objects after 7 years.",
+      "D": "Set the S3 bucket to use S3 Glacier Instant Retrieval when new objects are uploaded. Create an AWS Lambda function that runs daily to delete any objects that are older than 7 years."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 7天后转到 S3 Glacier Deep Archive，7年后过期 优点：长期存储成本通常最低；Lifecycle 过期删除也正确。 致命问题：Deep Archive 的访问通常需要 Restore（取回延迟较高，可能数小时），不符合“statements must remain readily accessible”。 结论：不满足“随时可直接访问/可立即访问”的要求，因此错误。",
+      "B": "Incorrect. 上传时使用 S3 Intelligent-Tiering，7年后过期 优点：自动在 Frequent/IA 间移动，访问仍是即时的；Lifecycle 过期删除也正确。 问题1（成本不一定最优）：Intelligent-Tiering 会产生监控与自动分层费用（per-object monitoring）；如果对象数量巨大且7年都要保 留，这部分费用可能显著。 问题2（不保证用到更便宜的“可即时读取”层级）：Intelligent-Tiering 的核心是 Standard/IA 的自动切换；若要进入 Archive/Deep Archive 层通常需要启用相应层级，而这些层级又可能不满足“readily accessible”（需要恢复）。 对比：题目已明确“1周后很少访问”，我们可以直接用 Lifecycle 精准转入更合适的类别，通常比长期付监控费更省。 结论：可能满足可访问性，但通常不是“MOST cost-effective”。因此不选。",
+      "C": "Correct. 7天后转到 S3 Glacier Instant Retrieval，7年后过期 优点1（满足可访问性）：Glacier Instant Retrieval 设计目标就是低频访问但仍需毫秒级检索，符合“readily accessible”。 优点2（成本匹配访问模式）：1周后转入更低存储成本类别，且访问很少，偶发读取产生的取回费用可接受。 优点3（运维最简）：Lifecycle Transition + Expiration 原生能力即可完成7年保留与到期删除。 结论：同时满足“7年保留 + 立即可访问 + 成本最优”，正确。",
+      "D": "Incorrect. 上传时直接使用 S3 Glacier Instant Retrieval + Lambda 每天删7年前对象 优点：存储类别满足“可立即访问”；也能实现删除逻辑。 问题1（不必要的运维/成本）：用 Lambda 定时删除不如 Lifecycle Expiration 简单可靠；会引入代码、调度、权限、失败重试、成本与 审计复杂度。 问题2（可能更贵）：上传后前7天可能访问相对更多，若一开始就放在 Glacier Instant Retrieval，读取会产生取回费用；而先放 Standard 7天再转，通常更贴合“1周后很少访问”。 结论：不是最具成本效益且不够简洁，因此不选。"
+    }
+  },
+  {
+    "exam": "DEA-C01",
+    "id": 300,
+    "type": "single",
+    "question": "A company runs an extract, transform, and load (ETL) job in AWS Glue. The job processes personally identifiable information (PII) data and writes logs to an Amazon CloudWatch Logs log group. A data engineer needs to mask PII data in the CloudWatch logs group. Which solution will meet these requirements?",
+    "options": {
+      "A": "Attach an AWS Glue security configuration to the ETL job.",
+      "B": "Configure a data protection policy. Attach the policy to the CloudWatch log group.",
+      "C": "Run an Amazon Macie sensitive data discovery job.",
+      "D": "Call AWS Glue sensitive data detection APIs in the ETL job."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. Attach an AWS Glue security configuration to the ETL job 为什么看起来可能相关：AWS Glue Security Configuration可配置加密（如S3数据、CloudWatch Logs加密、作业书签加密等）。 为什么错误：安全配置主要解决加密/传输安全，不提供对日志内容的PII识别与掩码。它无法把已写入或即将写入CloudWatch Logs的 PII字段自动替换为“***”。 结论：不满足“mask PII in CloudWatch logs group”。",
+      "B": "Correct. Configure a data protection policy. Attach the policy to the CloudWatch log group 为什么正确：CloudWatch Logs支持Data Protection Policy，可以对日志事件中的敏感数据进行检测与脱敏/掩码（并可结合访问控制决 定谁能看原文）。 与题意匹配点：题目明确目标位置是CloudWatch Logs log group，该方案直接对日志组生效，无需改Glue代码。 结论：满足要求。",
+      "C": "Incorrect. Run an Amazon Macie sensitive data discovery job 为什么看起来可能相关：Macie擅长识别PII。 为什么错误：Macie主要用于Amazon S3中的敏感数据发现与分类，不是用来对CloudWatch Logs中的日志内容进行实时/就地掩码的服 务。 结论：不能实现“对CloudWatch日志组进行掩码”。",
+      "D": "Incorrect. Call AWS Glue sensitive data detection APIs in the ETL job 为什么错误：AWS Glue并没有一个通用的、用于“敏感数据检测并对CloudWatch Logs进行掩码”的标准API集合可在作业中直接调用来 完成该目标。 即使自建检测逻辑也不匹配：你可以在应用层面避免打印PII或自行脱敏后再打印，但题目问的是“mask PII data in the CloudWatch logs group”，更符合使用CloudWatch Logs的原生数据保护策略。 结论：不符合题干意图与AWS推荐做法。"
+    }
+  }
+]

@@ -928,7 +928,7 @@ const CLOUD_PROVIDERS = [
 
 // 各雲服務商已上線的考試代碼（用來在入口畫面分組）
 const PROVIDER_EXAMS = {
-  aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'AIP-C01', 'MLA-C01'],
+  aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'DEA-C01', 'AIP-C01', 'MLA-C01'],
   gcp: ['PCA', 'GCP-CDL'],
 }
 
@@ -3049,6 +3049,7 @@ const EXAM_SPECS = {
   'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
   'SOA-C02': { name: 'AWS Certified SysOps Administrator - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選、排序' },
   'SOA-C03': { name: 'AWS Certified CloudOps Engineer - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
+  'DEA-C01': { name: 'AWS Certified Data Engineer - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
   'PCA': { name: 'Google Professional Cloud Architect', count: 50, timeLimit: 120, passScore: 700, questions: '50 題（單選與多選）', time: '120 分鐘（2 小時）', types: '單選、多選' },
   'GCP-CDL': { name: 'Google Cloud Digital Leader', count: 50, timeLimit: 90, passScore: 700, questions: '50–60 題（單選與多選）', time: '90 分鐘', types: '單選、多選' },
 }
