@@ -15,7 +15,23 @@ import { requestReload } from './swUpdate.js'
 // and the controllerchange listener below reloads the page once the new
 // worker actually takes control (guarded by requestReload() so it doesn't
 // interrupt a live mock exam — see swUpdate.js).
-registerSW({ immediate: true })
+//
+// The browser only checks for a new SW on an actual navigation. A home
+// -screen PWA that gets backgrounded and resumed (not force-quit) never
+// navigates again, so it would never notice a new deploy. onRegisteredSW
+// below forces an explicit update check whenever the app becomes visible
+// again, so a resumed session catches up too.
+registerSW({
+  immediate: true,
+  onRegisteredSW(_swUrl, registration) {
+    if (!registration) return
+    const check = () => registration.update().catch(() => {})
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') check()
+    })
+    window.addEventListener('focus', check)
+  },
+})
 
 if ('serviceWorker' in navigator) {
   const hadController = !!navigator.serviceWorker.controller
