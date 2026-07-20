@@ -23,6 +23,7 @@ import { buildDailyStudyPlan } from './studyPlan'
 import { CERTIFICATIONS, getExcludedExams, isCertificationEarned } from './certifications'
 import { buildExamProgressReport, createMemoryAnchor } from './learningInsights'
 import { shareScoreCard } from './sharecard'
+import { markExamActive } from './swUpdate'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -1166,6 +1167,11 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const fileInputRef = useRef(null)
   const { signOut, authReady } = useGoogleSync(state, dispatch, user, setUser)
+
+  // Tell the SW-update coordinator whether a live exam is in progress, so a
+  // pending auto-reload (new deploy) waits until the exam ends instead of
+  // dropping it mid-attempt (see swUpdate.js).
+  useEffect(() => { markExamActive(state.examActive) }, [state.examActive])
 
   // ── Lazy question-bank loading ──
   // bankIndex (build-generated) maps exam → { count, files, enFiles } so the

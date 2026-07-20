@@ -26,6 +26,12 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Activate a new service worker (and let it take control of already
+        // -open tabs) as soon as it installs, instead of waiting for every
+        // tab to close. Paired with the controllerchange reload in main.jsx
+        // so a deploy reaches an already-open tab without a manual refresh.
+        skipWaiting: true,
+        clientsClaim: true,
         // Precache the app shell only — the 14 MB question bank goes through
         // runtime caching below instead (URLs carry ?v=<build id>, so entries
         // are immutable; a new deploy simply caches new URLs and the old ones
