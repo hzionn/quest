@@ -3,11 +3,24 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Computed once per build and both embedded in the JS bundle (below) and
+// published as a plain static file (see the write-build-version plugin) —
+// the app polls that file to detect a new deploy independent of whether the
+// service worker's own update lifecycle actually runs (Safari's SW update
+// checks are notoriously unreliable; a plain versioned fetch isn't).
+const BUILD_ID = String(Date.now())
+
 export default defineConfig({
   base: '/quest/',
   plugins: [
     react(),
     tailwindcss(),
+    {
+      name: 'write-build-version',
+      generateBundle() {
+        this.emitFile({ type: 'asset', fileName: 'version.txt', source: BUILD_ID })
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon-32.png', 'favicon-16.png', 'apple-touch-icon.png', 'aws.png', 'gcp-logo.png'],
@@ -56,6 +69,6 @@ export default defineConfig({
   // Build-time id appended to data fetches so a new deploy always busts
   // the browser/CDN cache for the static JSON question banks.
   define: {
-    __BUILD_ID__: JSON.stringify(String(Date.now())),
+    __BUILD_ID__: JSON.stringify(BUILD_ID),
   },
 })

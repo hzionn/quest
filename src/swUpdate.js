@@ -27,3 +27,33 @@ export function requestReload() {
   if (examActive) { pending = true; return }
   reloadNow()
 }
+
+// ── Version polling (SW-independent) ──────────────────────────────────────
+// The service-worker update lifecycle (skipWaiting/clientsClaim/reload) is
+// the primary mechanism, but browsers vary in how reliably they actually run
+// it (Safari's SW update checks are a known weak spot). This is a plain,
+// cache-busted fetch of a one-line build-id file, so it detects a new
+// deploy regardless of whatever the SW is or isn't doing.
+export function startVersionPolling(baseUrl, currentBuildId) {
+  let checking = false
+  const check = async () => {
+    if (checking) return
+    checking = true
+    try {
+      const res = await fetch(`${baseUrl}version.txt?t=${Date.now()}`, { cache: 'no-store' })
+      if (res.ok) {
+        const latest = (await res.text()).trim()
+        if (latest && latest !== String(currentBuildId)) requestReload()
+      }
+    } catch {
+      // offline, or the request was blocked — just try again next time
+    } finally {
+      checking = false
+    }
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') check()
+  })
+  window.addEventListener('focus', check)
+  setInterval(check, 10 * 60 * 1000)
+}
