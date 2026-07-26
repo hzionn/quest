@@ -1711,7 +1711,7 @@
   {
     "exam": "DEA-C01",
     "id": 87,
-    "type": "single",
+    "type": "multiple",
     "question": "一家零售公司使用 Amazon Aurora PostgreSQL 来处理和存储实时事务数据。该公司使用 Amazon Redshift 集群作为数据仓库。 每天早晨运行一个提取、转换和加载 (ETL) 作业，将 PostgreSQL 数据库中的新数据更新到 Redshift 集群。随着公司快速增长，需要对 Redshift 集群进行成本优化。 一位数据工程师需要创建一个解决方案来归档历史数据。数据工程师必须能够运行分析查询，有效地结合 PostgreSQL 中的实时事务 数据、Redshift 中的当前数据以及归档的历史数据。该解决方案必须仅在 Amazon Redshift 中保留最近 15 个月的数据以降低成本。 哪种步骤组合可以满足这些要求？（选择两项）",
     "options": {
       "A": "配置 Amazon Redshift Federated Query 功能以查询 PostgreSQL 数据库中的实时事务数据。",
@@ -1720,11 +1720,11 @@
       "D": "安排每月作业使用 UNLOAD 命令将超过 15 个月的数据复制到 Amazon S3 Glacier Flexible Retrieval。删除 Redshift 集群中的旧数据。 配置 Redshift Spectrum 以从 S3 Glacier Flexible Retrieval 访问历史数据。",
       "E": "在 Amazon Redshift 中创建一个物化视图，将来自不同来源的实时、当前和历史数据结合起来。"
     },
-    "answer": "A",
+    "answer": ["A", "C"],
     "explanations": {
-      "A": "正确：Amazon Redshift Federated Query允许Redshift直接查询外部数据源（如PostgreSQL），无需将数据导入Redshift。这符合题目要 求，可以查询实时事务数据。",
+      "A": "正确：Amazon Redshift Federated Query允许Redshift直接查询外部数据源（如PostgreSQL），无需将数据导入Redshift。这解决了「结合PostgreSQL实时事务数据」的要求，可以查询实时事务数据。",
       "B": "错误：Redshift Spectrum用于查询存储在Amazon S3上的数据，而不是直接查询PostgreSQL数据库。因此，这个选项不符合题目要求。",
-      "C": "官方答案未选此项。正确：将历史数据卸载到Amazon S3并使用Redshift Spectrum查询是一个成本优化的解决方案。这符合题目要求，可以有效地归档历 史数据并降低Redshift存储成本。",
+      "C": "正确：将超过15个月的旧数据卸载到Amazon S3并删除Redshift中的旧数据，可以满足「仅在Redshift中保留最近15个月数据以降低成本」的要求；再用Redshift Spectrum查询S3中的历史数据，则解决了「结合归档历史数据」的要求。与A搭配，正好完整覆盖题目的两个要求（查询实时数据＋归档历史数据降低成本）。",
       "D": "错误：S3 Glacier Flexible Retrieval是用于长期存储的低成本解决方案，但它不支持Redshift Spectrum直接查询。此选项不符合题目要 求。",
       "E": "错误：物化视图只能在Redshift内部使用，无法直接整合外部数据源（如PostgreSQL或S3上的数据）。此选项不符合题目要求。"
     }
