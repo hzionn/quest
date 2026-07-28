@@ -164,7 +164,10 @@ export function useGoogleSync(state, dispatch, user, setUser) {
   // keys dirtied mid-flight survive for the next push.
   const prevMapsRef = useRef(null)
   const mapsRef = useRef(null)
-  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set(), certifications: new Set(), daily: new Set() })
+  // `bonus` is a plain flag, not a key set: bonus XP is a single scalar, and
+  // it can change on its own (claiming a daily mission touches nothing else),
+  // so it needs its own reason-to-push.
+  const dirtyRef = useRef({ stats: new Set(), bookmarks: new Set(), reviews: new Set(), certifications: new Set(), daily: new Set(), bonus: false })
   const lastOthersJsonRef = useRef('')
 
   const clearDirty = () => {
@@ -173,6 +176,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
     dirtyRef.current.reviews.clear()
     dirtyRef.current.certifications.clear()
     dirtyRef.current.daily.clear()
+    dirtyRef.current.bonus = false
   }
 
   // Other devices' daily overlay: only dispatch when the content actually
@@ -193,8 +197,9 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       certifications: new Set(d.certifications),
       daily: new Set(d.daily),
     }
-    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size + snap.certifications.size + snap.daily.size
+    const total = snap.stats.size + snap.bookmarks.size + snap.reviews.size + snap.certifications.size + snap.daily.size + (d.bonus ? 1 : 0)
     if (!total || !mapsRef.current) return
+    const sentBonus = d.bonus
     pushMaps(mapsRef.current, snap)
       .then((remote) => {
         snap.stats.forEach((k) => d.stats.delete(k))
@@ -202,6 +207,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
         snap.reviews.forEach((k) => d.reviews.delete(k))
         snap.certifications.forEach((k) => d.certifications.delete(k))
         snap.daily.forEach((k) => d.daily.delete(k))
+        if (sentBonus) d.bonus = false
         lastPushAtRef.current = Date.now()
         if (remote) applyDailyOthers(remote.dailyOthers)
       })
@@ -235,6 +241,9 @@ export function useGoogleSync(state, dispatch, user, setUser) {
           reviewMarked: state.reviewMarked,
           earnedCertifications: state.earnedCertifications,
         }
+        // Fever/mission XP: keep the higher of local vs server (RESTORE_GAMIFY
+        // MAX-merges too), then push the winner back below.
+        const bonusXp = Math.max(state.bonusXp || 0, remote.bonusXp || 0)
         const merged = mergeMaps(local, remote)
         // Daily counters: reconcile OWN device per-day (field-wise max with
         // the server's row for this device — restores after a cleared
@@ -254,8 +263,9 @@ export function useGoogleSync(state, dispatch, user, setUser) {
         dispatch({ type: 'RESTORE_REVIEWS', reviewMarked: merged.reviewMarked })
         dispatch({ type: 'RESTORE_CERTIFICATIONS', earnedCertifications: merged.earnedCertifications })
         dispatch({ type: 'RESTORE_DAILY', dailyStats: ownDaily })
+        if (bonusXp > (state.bonusXp || 0)) dispatch({ type: 'RESTORE_GAMIFY', bonusXp })
         applyDailyOthers(remote.dailyOthers)
-        const mergedWithDaily = { ...merged, dailyStats: ownDaily }
+        const mergedWithDaily = { ...merged, dailyStats: ownDaily, bonusXp }
         await pushMaps(mergedWithDaily).catch(() => {})
         prevMapsRef.current = mergedWithDaily
         mapsRef.current = mergedWithDaily
@@ -280,6 +290,7 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       reviewMarked: state.reviewMarked,
       earnedCertifications: state.earnedCertifications,
       dailyStats: state.dailyStats,
+      bonusXp: state.bonusXp || 0,
     }
     mapsRef.current = cur
     const prev = prevMapsRef.current
@@ -290,15 +301,16 @@ export function useGoogleSync(state, dispatch, user, setUser) {
       diffKeys(prev.reviewMarked, cur.reviewMarked).forEach((k) => d.reviews.add(k))
       diffKeys(prev.earnedCertifications, cur.earnedCertifications).forEach((k) => d.certifications.add(k))
       diffKeys(prev.dailyStats, cur.dailyStats).forEach((k) => d.daily.add(k))
+      if ((prev.bonusXp || 0) !== cur.bonusXp) d.bonus = true
     }
     prevMapsRef.current = cur
     const d = dirtyRef.current
-    if (!(d.stats.size + d.bookmarks.size + d.reviews.size + d.certifications.size + d.daily.size)) return
+    if (!(d.stats.size + d.bookmarks.size + d.reviews.size + d.certifications.size + d.daily.size + (d.bonus ? 1 : 0))) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(pushDirty, 3000)
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.earnedCertifications, state.dailyStats, user])
+  }, [state.statsHistory, state.bookmarked, state.reviewMarked, state.earnedCertifications, state.dailyStats, state.bonusXp, user])
 
   // 4. Best-effort flush on page hide.
   useEffect(() => {

@@ -104,14 +104,24 @@ function remoteToMaps(state) {
       _updatedAt: cert.updated_at || 0,
     }
   }
-  return { statsHistory, bookmarked: toMap(state.bookmarks), reviewMarked: toMap(state.reviews), earnedCertifications, dailyOwn, dailyOthers }
+  return {
+    statsHistory,
+    bookmarked: toMap(state.bookmarks),
+    reviewMarked: toMap(state.reviews),
+    earnedCertifications,
+    dailyOwn,
+    dailyOthers,
+    // Fever/mission XP — not derivable from progress rows, so it round-trips
+    // as its own scalar (MAX-merged server-side).
+    bonusXp: state.bonus_xp || 0,
+  }
 }
 
 // Build a delta payload from the app's current maps. With `dirty` (per-map
 // sets of qkeys) only those keys are sent — a much smaller payload than the
 // full maps, and un-toggled bookmarks/reviews go up as enabled:0 so removals
 // sync too (the server upserts enabled with last-write-wins).
-function mapsToDelta({ statsHistory, bookmarked, reviewMarked, earnedCertifications }, dirty = null) {
+function mapsToDelta({ statsHistory, bookmarked, reviewMarked, earnedCertifications, bonusXp }, dirty = null) {
   const now = Date.now()
   const stripped = stripQuestions(statsHistory)
   const statKeys = dirty ? [...dirty.stats].filter((k) => stripped[k]) : Object.keys(stripped)
@@ -138,7 +148,15 @@ function mapsToDelta({ statsHistory, bookmarked, reviewMarked, earnedCertificati
       updated_at: cert._updatedAt || now,
     }
   })
-  return { progress, bookmarks: flags(bookmarked, dirty?.bookmarks), reviews: flags(reviewMarked, dirty?.reviews), certifications }
+  // bonus_xp always rides along: it's one integer, and MAX-merge makes
+  // resending it idempotent — no dirty-tracking needed.
+  return {
+    progress,
+    bookmarks: flags(bookmarked, dirty?.bookmarks),
+    reviews: flags(reviewMarked, dirty?.reviews),
+    certifications,
+    bonus_xp: bonusXp || 0,
+  }
 }
 
 // This device's daily counters as server rows (G-Counter contribution).

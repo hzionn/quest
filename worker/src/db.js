@@ -8,6 +8,7 @@
 //   ever_wrong    -> OR                         (once wrong, stays wrong)
 //   correct       -> last-write-wins by updated_at
 //   bookmark/review enabled -> last-write-wins by updated_at (supports un-toggle)
+//   users.bonus_xp -> MAX(local, remote)       (monotonic; Fever/mission XP)
 
 export async function upsertUser(DB, g) {
   const now = Date.now()
@@ -27,7 +28,7 @@ export async function upsertUser(DB, g) {
 
 // Read the full state for one user.
 export async function getState(DB, uid) {
-  const [progress, bookmarks, reviews, settings, certifications, daily] = await Promise.all([
+  const [progress, bookmarks, reviews, settings, certifications, daily, me] = await Promise.all([
     DB.prepare(`SELECT qkey, exam, qid, correct, correct_count, total_correct, ever_wrong, updated_at
                 FROM progress WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT qkey, enabled, updated_at FROM bookmarks WHERE user_id = ?`).bind(uid).all(),
@@ -36,6 +37,7 @@ export async function getState(DB, uid) {
     DB.prepare(`SELECT cert_id, enabled, earned_at, updated_at FROM earned_certifications WHERE user_id = ?`).bind(uid).all(),
     DB.prepare(`SELECT device_id, day, answered, correct, seconds, updated_at
                 FROM daily_stats WHERE user_id = ?`).bind(uid).all(),
+    DB.prepare(`SELECT bonus_xp FROM users WHERE id = ?`).bind(uid).first(),
   ])
   return {
     progress: progress.results || [],
@@ -44,6 +46,7 @@ export async function getState(DB, uid) {
     settings: settings || null,
     certifications: certifications.results || [],
     daily: daily.results || [],
+    bonus_xp: me?.bonus_xp || 0,
   }
 }
 
@@ -62,21 +65,26 @@ export async function getAdminOverview(DB) {
 }
 
 // Level leaderboard. XP is DERIVED from the same progress rows the client uses
-// (mirrors gamify.js computeXP): correct_count*10, +3 if ever_wrong, +25 mastery
-// bonus when ever_wrong && correct_count >= 3. Computing it server-side keeps a
-// single source of truth — no separate score to push, sync or tamper with.
+// (mirrors gamify.js computeXP): total_correct*10, +3 if ever_wrong, +25 mastery
+// bonus when ever_wrong && total_correct >= 3, plus the user's bonus_xp.
+// Computing it server-side keeps a single source of truth — no separate score
+// to push, sync or tamper with. test/gamify.test.mjs pins these constants
+// against gamify.js so the two formulas can't silently drift apart.
 // Only public identity (name/picture) is exposed; email is never returned.
 export async function getLeaderboard(DB, uid, limit = 20) {
   // XP counts lifetime corrects (total_correct), never the SRS stage — a wrong
   // answer resets correct_count but must not revoke already-earned XP. MAX
   // fallback covers rows written before the total_correct column existed.
+  // bonus_xp (Fever combo + daily-mission rewards) is NOT derivable from
+  // progress rows, so it is stored per user and added here — leaving it out
+  // made the leaderboard read lower than the client's own level card.
   const rows = await DB.prepare(
     `SELECT u.id, u.name, u.picture,
        COALESCE(SUM(
          MAX(p.total_correct, p.correct_count) * 10
          + (CASE WHEN p.ever_wrong = 1 THEN 3 ELSE 0 END)
          + (CASE WHEN p.ever_wrong = 1 AND MAX(p.total_correct, p.correct_count) >= 3 THEN 25 ELSE 0 END)
-       ), 0) AS xp,
+       ), 0) + COALESCE(u.bonus_xp, 0) AS xp,
        COUNT(p.qkey) AS touched,
        (SELECT COALESCE(SUM(d.answered), 0) FROM daily_stats d WHERE d.user_id = u.id) AS practiced
      FROM users u
@@ -190,6 +198,17 @@ export async function mergeState(DB, uid, delta) {
            lang       = CASE WHEN excluded.updated_at >= updated_at THEN excluded.lang ELSE lang END,
            updated_at = MAX(updated_at, excluded.updated_at)`
       ).bind(uid, s.dark_mode ? 1 : 0, s.lang ?? null, s.updated_at ?? now)
+    )
+  }
+
+  // Bonus XP (Fever combo + daily missions): a per-user scalar the client
+  // accrues locally. MAX-merge keeps it monotonic, so an older device pushing
+  // a stale value can never revoke XP the user already earned elsewhere.
+  const bonusXp = Number(delta.bonus_xp)
+  if (Number.isFinite(bonusXp) && bonusXp > 0) {
+    stmts.push(
+      DB.prepare(`UPDATE users SET bonus_xp = MAX(bonus_xp, ?) WHERE id = ?`)
+        .bind(Math.floor(bonusXp), uid)
     )
   }
 

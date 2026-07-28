@@ -83,6 +83,7 @@ jobs:
       - name: Apply column migrations (idempotent via error tolerance)
         run: |
           npx wrangler d1 execute quest_db --remote --command "ALTER TABLE progress ADD COLUMN total_correct INTEGER NOT NULL DEFAULT 0" || echo "total_correct column already exists — skipping"
+          npx wrangler d1 execute quest_db --remote --command "ALTER TABLE users ADD COLUMN bonus_xp INTEGER NOT NULL DEFAULT 0" || echo "bonus_xp column already exists — skipping"
 
       - name: Set JWT_SECRET
         if: env.JWT_SECRET_VAL != ''

@@ -8,7 +8,12 @@ CREATE TABLE IF NOT EXISTS users (
   name        TEXT,
   picture     TEXT,
   created_at  INTEGER NOT NULL,       -- epoch ms
-  last_seen   INTEGER NOT NULL
+  last_seen   INTEGER NOT NULL,
+  -- XP that is NOT derivable from progress rows: Fever combo bonuses and
+  -- daily-mission rewards. Monotonic, MAX-merged (mirrors the client's own
+  -- RESTORE_GAMIFY semantics). Without this the leaderboard under-reports
+  -- every user who has earned any bonus XP.
+  bonus_xp    INTEGER NOT NULL DEFAULT 0
 );
 
 -- Per-question practice history. qkey = "<exam>-<id>".
