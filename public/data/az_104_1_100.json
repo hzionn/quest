@@ -784,5 +784,436 @@
       "C": "錯誤。使用者設定管理的是應用程式註冊、LinkedIn 帳戶連線等租用戶層級的一般行為，並不包含裝置本機管理員。",
       "D": "錯誤。群組的一般設定管理自助群組管理等行為，同樣與裝置本機管理員無關。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 56,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n✑ 讀者 (Reader)\n✑ 安全性管理員 (Security Admin)\n✑ 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "把 User1 從 Subscription1 的安全性讀取者與讀者角色中移除。",
+      "B": "將 VNet1 的「使用者存取管理員 (User Access Administrator)」角色指派給 User1。",
+      "C": "將 VNet1 的「網路參與者 (Network Contributor)」角色指派給 User1。",
+      "D": "將 RG1 的「網路參與者 (Network Contributor)」角色指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。移除既有角色只會減少 User1 的權限，完全不會賦予他指派角色給別人的能力。",
+      "B": "正確。要能「把角色指派給其他使用者」，必須具備 Microsoft.Authorization/roleAssignments/write 權限，內建角色中提供這項權限的是「使用者存取管理員」與「擁有者」。在 VNet1 範圍指派使用者存取管理員，正好滿足需求且符合最小權限。",
+      "C": "錯誤。網路參與者可以管理網路資源本身（建立、修改 VNet、NSG 等），但不含指派角色的權限。",
+      "D": "錯誤。理由同上，換成資源群組範圍仍然沒有角色指派權限，而且範圍還放得比需要的更大。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 57,
+    "type": "single",
+    "question": "你有一個名為 contosocloud.onmicrosoft.com 的 Azure Active Directory (Azure AD) 租用戶。貴公司對 contoso.com 有一個公用 DNS 區域。你把 contoso.com 新增為 Azure AD 的自訂網域名稱，現在必須讓 Azure 能夠驗證這個網域名稱。你應該建立哪一種 DNS 記錄？",
+    "options": {
+      "A": "MX",
+      "B": "NSEC",
+      "C": "PTR",
+      "D": "RRSIG"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure AD 驗證自訂網域擁有權時，接受 MX 或 TXT 記錄；管理員需在該網域的公用 DNS 區域中，加入 Azure 提供的驗證用記錄，Azure 查得到即完成驗證。",
+      "B": "錯誤。NSEC 是 DNSSEC 用來證明某筆記錄「不存在」的記錄型別，與網域擁有權驗證無關。",
+      "C": "錯誤。PTR 是反向 DNS 記錄，把 IP 位址對應回主機名稱，不能用於 Azure AD 網域驗證。",
+      "D": "錯誤。RRSIG 是 DNSSEC 的數位簽章記錄，用於驗證 DNS 回應的完整性，並非 Azure AD 接受的驗證記錄型別。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 58,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Adatum 的 Azure Active Directory (Azure AD) 租用戶，以及一個名為 Subscription1 的 Azure 訂用帳戶。Adatum 中有一個名為 Developers 的群組，Subscription1 中有一個名為 Dev 的資源群組。你需要讓 Developers 群組能夠在 Dev 資源群組中建立 Azure 邏輯應用程式。\n解法：在 Subscription1 上，把「DevTest Labs 使用者」角色指派給 Developers 群組。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。DevTest Labs 使用者角色的權限範圍是 DevTest Labs 中的虛擬機器操作，與建立邏輯應用程式無關。",
+      "B": "正確。該角色不含建立 Microsoft.Logic/workflows 資源的權限；要讓群組能建立邏輯應用程式，需在 Dev 資源群組上指派「參與者」或「邏輯應用程式參與者」角色。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 59,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Adatum 的 Azure Active Directory (Azure AD) 租用戶，以及一個名為 Subscription1 的 Azure 訂用帳戶。Adatum 中有一個名為 Developers 的群組，Subscription1 中有一個名為 Dev 的資源群組。你需要讓 Developers 群組能夠在 Dev 資源群組中建立 Azure 邏輯應用程式。\n解法：在 Subscription1 上，把「邏輯應用程式操作員 (Logic App Operator)」角色指派給 Developers 群組。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。邏輯應用程式操作員只能讀取、啟用、停用與執行既有的邏輯應用程式，是「操作」而非「建立」的角色。",
+      "B": "正確。操作員角色不具備建立新邏輯應用程式的寫入權限，因此無法達成目標；需要的是參與者層級的角色。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 60,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Adatum 的 Azure Active Directory (Azure AD) 租用戶，以及一個名為 Subscription1 的 Azure 訂用帳戶。Adatum 中有一個名為 Developers 的群組，Subscription1 中有一個名為 Dev 的資源群組。你需要讓 Developers 群組能夠在 Dev 資源群組中建立 Azure 邏輯應用程式。\n解法：在 Dev 上，把「參與者 (Contributor)」角色指派給 Developers 群組。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。參與者可以建立與管理該範圍內的所有資源類型（僅不能指派角色），在 Dev 資源群組上指派後，Developers 群組即可在其中建立邏輯應用程式，且權限剛好侷限在該資源群組。",
+      "B": "錯誤。參與者角色確實包含建立邏輯應用程式所需的寫入權限，此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 62,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含名為 Workspace1 的 Azure Log Analytics 工作區。你需要檢視名為 Event 的資料表中的錯誤事件。你應該在 Workspace1 中執行哪一個查詢？",
+    "options": {
+      "A": "Get-Event Event | where {$_.EventType == \"error\"}",
+      "B": "search in (Event) \"error\"",
+      "C": "select * from Event where EventType == \"error\"",
+      "D": "search in (Event) * | where EventType -eq \"error\""
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這是 PowerShell 語法，Log Analytics 使用的是 Kusto 查詢語言 (KQL)，不接受 PowerShell 管線與比較運算子。",
+      "B": "正確。這是合法的 KQL：search 運算子可將搜尋範圍限定在 Event 資料表，並在其中比對關鍵字 \"error\"，符合檢視錯誤事件的需求。",
+      "C": "錯誤。這是 SQL 語法。KQL 雖然概念相近，但不使用 SELECT ... FROM ... WHERE 的寫法。",
+      "D": "錯誤。KQL 的相等比較是 ==，不是 PowerShell 風格的 -eq；此外 search in (Event) * 的寫法也不正確。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 66,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶。使用者會從家中或客戶端連線存取訂用帳戶中的資源：在家時必須建立點對站 VPN，在客戶端則透過站對站 VPN 存取。你有一個業務線應用程式 App1 執行在數台 Azure 虛擬機器上，這些 VM 執行 Windows Server 2016。你必須確保連往 App1 的連線能分散到所有虛擬機器。你可以使用哪兩種 Azure 服務？（每個正確答案各自都是完整解，每個正確選項各得一分）",
+    "options": {
+      "A": "內部負載平衡器",
+      "B": "公用負載平衡器",
+      "C": "Azure 內容傳遞網路 (CDN)",
+      "D": "流量管理員 (Traffic Manager)",
+      "E": "Azure 應用程式閘道 (Application Gateway)"
+    },
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanations": {
+      "A": "正確。所有使用者都是透過 VPN 進入虛擬網路後才存取 App1，屬於私人網路內的流量，內部負載平衡器正好把這些連線分散到後端的多台 VM。",
+      "B": "錯誤。公用負載平衡器面向網際網路，而題目的使用者一律經由 VPN 從私人網路連入，不需要也不應該把 App1 曝露到公用端點。",
+      "C": "錯誤。CDN 是把靜態內容快取到邊緣節點，並非在多台 VM 之間分散應用程式連線的負載平衡機制。",
+      "D": "錯誤。流量管理員是 DNS 層級的流量導向，通常用於跨區域的端點選擇；它回傳的是端點位址而非逐連線分流，也不適合這個 VPN 內網情境。",
+      "E": "正確。應用程式閘道是第 7 層負載平衡器，可部署在虛擬網路中並使用私人前端 IP，同樣能把連往 App1 的連線分散到多台後端 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 67,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶與 100 台 Azure 虛擬機器。你必須快速找出使用率偏低、可以改用較便宜服務層級的虛擬機器。你應該使用哪一個刀鋒？",
+    "options": {
+      "A": "監視器 (Monitor)",
+      "B": "顧問 (Advisor)",
+      "C": "計量 (Metrics)",
+      "D": "客戶深入解析 (Customer insights)"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure 監視器能提供原始計量與記錄，但你必須自行針對 100 台 VM 分析判讀，無法「快速」得到可調降規格的清單。",
+      "B": "正確。Azure 顧問會自動分析使用量並直接產出成本最佳化建議，其中就包含「調整大小或關閉使用率偏低的虛擬機器」，正是快速找出這類 VM 的工具。",
+      "C": "錯誤。計量刀鋒只是呈現個別資源的量測圖表，需要逐台檢視與比對，不符合「快速找出」的需求。",
+      "D": "錯誤。Customer Insights 屬於 Dynamics 365 的客戶資料平台，與 Azure 資源使用率完全無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 69,
+    "type": "single",
+    "question": "你有一個名為 contoso.onmicrosoft.com 的 Azure Active Directory (Azure AD) 租用戶，「使用者管理員」角色已指派給名為 Admin1 的使用者。一位外部夥伴擁有使用 user@outlook.com 登入的 Microsoft 帳戶。Admin1 嘗試邀請這位外部夥伴登入該 Azure AD 租用戶時，收到錯誤訊息：「Unable to invite user ... Generic authorization exception.」你必須讓 Admin1 能夠邀請這位外部夥伴。你應該怎麼做？",
+    "options": {
+      "A": "在「使用者設定」刀鋒中修改「外部協同作業設定」。",
+      "B": "在「自訂網域名稱」刀鋒中新增自訂網域。",
+      "C": "在「組織關聯性」刀鋒中新增識別提供者。",
+      "D": "在「角色與管理員」刀鋒中把「安全性管理員」角色指派給 Admin1。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。外部協同作業設定決定了「哪些角色可以邀請來賓」以及是否有網域允許／封鎖清單。此錯誤通常是因為該設定限制了邀請權限，調整後 Admin1 即可送出邀請。",
+      "B": "錯誤。自訂網域是給自家租用戶使用者用的，與能否邀請外部 Microsoft 帳戶無關。",
+      "C": "錯誤。識別提供者用於 Google／Facebook 等外部身分的自助註冊情境；Microsoft 帳戶本來就是 B2B 原生支援的身分，不需另外新增提供者。",
+      "D": "錯誤。安全性管理員負責的是資安相關設定，並不會解除來賓邀請的限制；問題出在租用戶層級的協同作業設定，而不是 Admin1 的角色不足。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 70,
+    "type": "single",
+    "question": "你有一個連結到 Azure Active Directory 租用戶的 Azure 訂用帳戶，租用戶中有一個名為 User1 的使用者帳戶。你必須讓 User1 能夠將原則指派到「租用戶根管理群組」。你應該怎麼做？",
+    "options": {
+      "A": "把該 Azure 訂用帳戶的擁有者角色指派給 User1，然後修改預設的條件式存取原則。",
+      "B": "把該 Azure 訂用帳戶的擁有者角色指派給 User1，然後請 User1 設定 Azure 資源的存取管理。",
+      "C": "把「全域管理員」角色指派給 User1，然後請 User1 設定 Azure 資源的存取管理。",
+      "D": "建立一個新的管理群組，並指定 User1 為該新管理群組的擁有者。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。訂用帳戶層級的擁有者權限無法向上作用到租用戶根管理群組；條件式存取原則管的是登入條件，與 Azure 原則指派無關。",
+      "B": "錯誤。同樣受限於範圍——訂用帳戶擁有者無權在根管理群組上操作。",
+      "C": "正確。預設情況下連全域管理員都沒有根管理群組的存取權。全域管理員可以在 Azure AD 內容中開啟「Azure 資源的存取管理」提升權限，取得根範圍的使用者存取管理員角色，之後才能在租用戶根管理群組上指派原則。",
+      "D": "錯誤。新建一個管理群組並給予擁有者權限，作用範圍只在那個新群組，仍然碰不到租用戶根管理群組。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 73,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你必須確保一位名為 Admin1 的 Azure Active Directory (Azure AD) 使用者，被指派到為某個 Azure 訂用帳戶啟用「流量分析 (Traffic Analytics)」所需的角色。\n解法：你在訂用帳戶層級把「網路參與者 (Network Contributor)」角色指派給 Admin1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。啟用流量分析除了操作 NSG 流量記錄之外，還需要對 Log Analytics 工作區與相關儲存體具備權限，單一個網路參與者角色並不足夠。",
+      "B": "正確。網路參與者只涵蓋網路資源，官方的必要條件還包含 Log Analytics 工作區的存取權與 Microsoft.Insights 提供者註冊，因此此解法無法達成目標。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 74,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你必須確保一位名為 Admin1 的 Azure Active Directory (Azure AD) 使用者，被指派到為某個 Azure 訂用帳戶啟用「流量分析 (Traffic Analytics)」所需的角色。\n解法：你在訂用帳戶層級把「擁有者 (Owner)」角色指派給 Admin1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。擁有者具備該訂用帳戶範圍內的完整權限，涵蓋 NSG 流量記錄、儲存體帳戶、Log Analytics 工作區與資源提供者註冊，足以完成啟用流量分析所需的全部動作。",
+      "B": "錯誤。擁有者是最高權限的內建角色，不存在權限不足的問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 75,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你必須確保一位名為 Admin1 的 Azure Active Directory (Azure AD) 使用者，被指派到為某個 Azure 訂用帳戶啟用「流量分析 (Traffic Analytics)」所需的角色。\n解法：你在訂用帳戶層級把「讀者 (Reader)」角色指派給 Admin1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。讀者角色只能檢視資源，完全沒有任何寫入權限。",
+      "B": "正確。啟用流量分析需要建立與修改 NSG 流量記錄設定、關聯 Log Analytics 工作區等寫入動作，唯讀的讀者角色無法完成。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 76,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中有一位名為 User1 的使用者。你必須讓 User1 能夠部署虛擬機器並管理虛擬網路，且解決方案必須遵循最小權限原則。你應該指派哪一個角色型存取控制 (RBAC) 角色給 User1？",
+    "options": {
+      "A": "擁有者 (Owner)",
+      "B": "虛擬機器參與者 (Virtual Machine Contributor)",
+      "C": "參與者 (Contributor)",
+      "D": "虛擬機器系統管理員登入 (Virtual Machine Administrator Login)"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。擁有者在參與者的權限之外還多了指派角色的能力，超出題目所需，違反最小權限原則。",
+      "B": "錯誤。虛擬機器參與者可以部署與管理 VM，但不具備管理虛擬網路的權限，無法滿足第二項需求。",
+      "C": "正確。題目同時要求「部署虛擬機器」與「管理虛擬網路」兩類資源。單一內建角色中，能涵蓋這兩者又不含角色指派權限的最小者就是參與者。",
+      "D": "錯誤。這個角色只是允許以系統管理員身分登入 VM 的作業系統，與建立或管理 Azure 資源無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 78,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的 Azure 虛擬機器 VM1。VM1 上執行的服務將用來把資源部署到 RG1。你必須讓 VM1 上執行的服務，能夠「以 VM1 的身分識別」管理 RG1 中的資源。你應該「最先」做什麼？",
+    "options": {
+      "A": "在 Azure 入口網站中修改 VM1 的「受控識別」設定",
+      "B": "在 Azure 入口網站中修改 RG1 的「存取控制 (IAM)」設定",
+      "C": "在 Azure 入口網站中修改 VM1 的「存取控制 (IAM)」設定",
+      "D": "在 Azure 入口網站中修改 RG1 的「原則」設定"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。要讓服務以「VM 本身的身分識別」存取資源，必須先在 VM1 上啟用受控識別（系統指派或使用者指派），產生服務主體之後，才有對象可以被授與 RG1 的權限。",
+      "B": "錯誤。方向正確但順序錯了——受控識別尚未啟用時，RG1 的 IAM 中根本找不到可指派的身分識別對象。",
+      "C": "錯誤。修改 VM1 的 IAM 是設定「誰能管理 VM1」，與 VM1 能去管理什麼無關。",
+      "D": "錯誤。Azure 原則用於強制資源合規性，並不授與任何身分識別權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 80,
+    "type": "single",
+    "question": "你有一個名為 adatum.com 的 Azure DNS 區域。你必須把名為 research.adatum.com 的子網域委派給 Azure 中另一台 DNS 伺服器。你應該怎麼做？",
+    "options": {
+      "A": "在 adatum.com 區域中建立名為 research 的 NS 記錄。",
+      "B": "在 adatum.com 區域中建立名為 research 的 PTR 記錄。",
+      "C": "修改 adatum.com 的 SOA 記錄。",
+      "D": "在 adatum.com 區域中建立名為 *.research 的 A 記錄。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。子網域委派的標準做法，就是在父區域中為子網域名稱建立 NS 記錄，指向負責該子網域的名稱伺服器；DNS 查詢到此就會被導向那組伺服器。",
+      "B": "錯誤。PTR 是反向查詢記錄（IP 對應主機名稱），無法用來委派子網域。",
+      "C": "錯誤。SOA 記錄描述的是本區域的權威資訊與更新參數，修改它不會產生任何委派關係。",
+      "D": "錯誤。萬用字元 A 記錄是把名稱直接解析到 IP，等於由父區域自己回答，正好與「委派給別台伺服器」相反。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 82,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含名為 Workspace1 的 Azure Log Analytics 工作區。你需要檢視名為 Event 的資料表中的錯誤事件。你應該在 Workspace1 中執行哪一個查詢？",
+    "options": {
+      "A": "Get-Event Event | where {$_.EventType == \"error\"}",
+      "B": "Event | search \"error\"",
+      "C": "select * from Event where EventType == \"error\"",
+      "D": "search in (Event) * | where EventType -eq \"error\""
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這是 PowerShell 語法，Log Analytics 使用的是 Kusto 查詢語言 (KQL)。",
+      "B": "正確。KQL 的慣用寫法是先指定資料表再以管線接運算子：Event | search \"error\" 會在 Event 資料表中比對關鍵字 error，正是題目要的結果。",
+      "C": "錯誤。這是 SQL 語法，KQL 不使用 SELECT ... FROM ... WHERE。",
+      "D": "錯誤。KQL 的相等比較運算子是 ==，而非 PowerShell 風格的 -eq。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 83,
+    "type": "single",
+    "question": "你有一個已註冊的 DNS 網域 contoso.com，並在 Azure 中建立了一個名為 contoso.com 的公用 DNS 區域。你必須確保在 contoso.com 區域中建立的記錄可以從網際網路解析。你應該怎麼做？",
+    "options": {
+      "A": "在 contoso.com 中建立 NS 記錄。",
+      "B": "在 DNS 網域註冊機構修改 SOA 記錄。",
+      "C": "在 contoso.com 中建立 SOA 記錄。",
+      "D": "在 DNS 網域註冊機構修改 NS 記錄。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。Azure DNS 區域建立時就會自動產生自己的 NS 記錄，在區域內再建一組並不會讓網際網路知道該來問 Azure。",
+      "B": "錯誤。SOA 記錄由代管該區域的服務自行維護，註冊機構端要改的是名稱伺服器而非 SOA。",
+      "C": "錯誤。SOA 記錄同樣是 Azure DNS 自動建立的，不需要也無法手動新增。",
+      "D": "正確。必須到網域註冊機構把該網域的名稱伺服器改成 Azure DNS 區域所配發的那四台 NS 位址，完成委派後，全球的解析器才會向 Azure 查詢 contoso.com 的記錄。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 87,
+    "type": "single",
+    "question": "你有一個 Azure Active Directory (Azure AD) 租用戶。你打算在 Azure Active Directory 系統管理中心使用「大量刪除」來刪除多位使用者，需要建立並上傳供大量刪除使用的檔案。檔案中應該包含哪些使用者屬性？",
+    "options": {
+      "A": "僅每位使用者的使用者主體名稱與使用位置",
+      "B": "僅每位使用者的使用者主體名稱",
+      "C": "僅每位使用者的顯示名稱",
+      "D": "僅每位使用者的顯示名稱與使用位置",
+      "E": "僅每位使用者的顯示名稱與使用者主體名稱"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。使用位置屬於授權指派相關的屬性，刪除作業不需要它。",
+      "B": "正確。大量刪除的 CSV 只需要一個欄位：每位使用者的使用者主體名稱 (UPN)。UPN 在租用戶中唯一，足以識別要刪除的帳戶。",
+      "C": "錯誤。顯示名稱可能重複，無法唯一識別帳戶，不能作為刪除依據。",
+      "D": "錯誤。兩個欄位都不是大量刪除所需，顯示名稱更無法唯一識別使用者。",
+      "E": "錯誤。雖然包含了 UPN，但多出的顯示名稱並非必要欄位；範本要求的僅有 UPN。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 89,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你必須確保一位名為 Admin1 的 Azure Active Directory (Azure AD) 使用者，被指派到為某個 Azure 訂用帳戶啟用「流量分析 (Traffic Analytics)」所需的角色。\n解法：你在訂用帳戶層級把「流量管理員參與者 (Traffic Manager Contributor)」角色指派給 Admin1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。名稱雖然都有「流量」兩字，但流量管理員 (Traffic Manager) 是 DNS 層級的流量導向服務，與網路監看員的流量分析 (Traffic Analytics) 是完全不同的產品。",
+      "B": "正確。流量管理員參與者只能管理 Traffic Manager 設定檔，與 NSG 流量記錄及 Log Analytics 工作區毫無關係，無法用來啟用流量分析。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 90,
+    "type": "single",
+    "question": "你有三個辦公室，以及一個包含 Azure Active Directory (Azure AD) 租用戶的 Azure 訂用帳戶。你必須把使用者管理權限，授與每個辦公室的當地系統管理員。你應該使用什麼？",
+    "options": {
+      "A": "Azure AD 角色",
+      "B": "系統管理單位 (administrative units)",
+      "C": "Azure AD 權利管理中的存取套件",
+      "D": "Azure 角色"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。單純指派 Azure AD 角色（例如使用者管理員）的作用範圍是整個租用戶，當地管理員會因此能管理所有辦公室的使用者，範圍過大。",
+      "B": "正確。系統管理單位可以把使用者與群組切分成容器（例如依辦公室），再把目錄角色「限定在該單位範圍內」指派給當地管理員，使其只能管理自己辦公室的使用者。",
+      "C": "錯誤。存取套件是治理使用者「申請與取得資源存取權」的流程，不是用來委派使用者管理權限的機制。",
+      "D": "錯誤。Azure 角色 (RBAC) 管的是 Azure 資源（訂用帳戶、資源群組、資源），不是 Azure AD 中的使用者物件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 91,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Adatum 的 Azure Active Directory (Azure AD) 租用戶，以及一個名為 Subscription1 的 Azure 訂用帳戶。Adatum 中有一個名為 Developers 的群組，Subscription1 中有一個名為 Dev 的資源群組。你需要讓 Developers 群組能夠在 Dev 資源群組中建立 Azure 邏輯應用程式。\n解法：在 Dev 上，把「邏輯應用程式參與者 (Logic App Contributor)」角色指派給 Developers 群組。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。邏輯應用程式參與者具備建立與管理邏輯應用程式的權限，指派在 Dev 資源群組範圍即可讓該群組在其中建立邏輯應用程式，而且權限剛好侷限於此，符合最小權限。",
+      "B": "錯誤。與「邏輯應用程式操作員」不同，參與者版本包含寫入權限，因此可以建立邏輯應用程式。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 93,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n✑ 讀者 (Reader)\n✑ 安全性管理員 (Security Admin)\n✑ 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "把 User1 從 Subscription1 的安全性讀取者角色中移除，並將 RG1 的參與者角色指派給 User1。",
+      "B": "將 VNet1 的「擁有者 (Owner)」角色指派給 User1。",
+      "C": "將 VNet1 的「參與者 (Contributor)」角色指派給 User1。",
+      "D": "將 VNet1 的「網路參與者 (Network Contributor)」角色指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。參與者可以管理資源但不能指派角色；移除既有角色也無助於取得角色指派權限。",
+      "B": "正確。內建角色中具備 Microsoft.Authorization/roleAssignments/write 權限的只有「擁有者」與「使用者存取管理員」。本題選項中沒有使用者存取管理員，因此在 VNet1 範圍指派擁有者即可讓 User1 把讀者角色指派給其他人。",
+      "C": "錯誤。參與者明確被排除了指派角色的權限，這正是它與擁有者最主要的差別。",
+      "D": "錯誤。網路參與者能管理網路資源，但同樣不含角色指派權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 95,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶，storage1 中有一個名為 share1 的檔案共用。該訂用帳戶連結到一個混合式 Azure Active Directory (Azure AD) 租用戶，租用戶中有一個名為 Group1 的安全性群組。你必須把 share1 的「Storage File Data SMB Share Elevated Contributor」角色授與 Group1。你應該「最先」做什麼？",
+    "options": {
+      "A": "為 storage1 啟用 Active Directory 網域服務 (AD DS) 驗證。",
+      "B": "使用檔案總管授與共用層級權限。",
+      "C": "使用檔案總管掛載 share1。",
+      "D": "建立私人端點。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure 檔案共用要以身分識別為基礎做 SMB 存取控制，必須先在儲存體帳戶上啟用以身分識別為基礎的驗證（此情境為混合式租用戶，對應 AD DS 驗證）；未啟用之前，那些 Storage File Data SMB 角色根本無法生效。",
+      "B": "錯誤。共用層級權限是透過 Azure RBAC 角色指派的，不是在檔案總管中設定；而且順序上也必須先啟用身分識別驗證。",
+      "C": "錯誤。掛載共用是「使用」它，與設定存取權限的前置作業無關。",
+      "D": "錯誤。私人端點解決的是網路連線路徑問題，與身分識別驗證及角色指派無關。"
+    }
   }
 ]

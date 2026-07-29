@@ -784,5 +784,436 @@
       "C": "Incorrect. 錯誤。使用者設定管理的是應用程式註冊、LinkedIn 帳戶連線等租用戶層級的一般行為，並不包含裝置本機管理員。",
       "D": "Incorrect. 錯誤。群組的一般設定管理自助群組管理等行為，同樣與裝置本機管理員無關。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 56,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains a virtual network named VNet1. VNet1 is in a resource group named RG1. Subscription1 has a user named User1. User1 has the following roles: ✑ Reader ✑ Security Admin ✑ Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
+    "options": {
+      "A": "Remove User1 from the Security Reader and Reader roles for Subscription1.",
+      "B": "Assign User1 the User Access Administrator role for VNet1.",
+      "C": "Assign User1 the Network Contributor role for VNet1.",
+      "D": "Assign User1 the Network Contributor role for RG1."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。移除既有角色只會減少 User1 的權限，完全不會賦予他指派角色給別人的能力。",
+      "B": "Correct. 正確。要能「把角色指派給其他使用者」，必須具備 Microsoft.Authorization/roleAssignments/write 權限，內建角色中提供這項權限的是「使用者存取管理員」與「擁有者」。在 VNet1 範圍指派使用者存取管理員，正好滿足需求且符合最小權限。",
+      "C": "Incorrect. 錯誤。網路參與者可以管理網路資源本身（建立、修改 VNet、NSG 等），但不含指派角色的權限。",
+      "D": "Incorrect. 錯誤。理由同上，換成資源群組範圍仍然沒有角色指派權限，而且範圍還放得比需要的更大。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 57,
+    "type": "single",
+    "question": "You have an Azure Active Directory (Azure AD) tenant named contosocloud.onmicrosoft.com. Your company has a public DNS zone for contoso.com. You add contoso.com as a custom domain name to Azure AD. You need to ensure that Azure can verify the domain name. Which type of DNS record should you create?",
+    "options": {
+      "A": "MX",
+      "B": "NSEC",
+      "C": "PTR",
+      "D": "RRSIG"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure AD 驗證自訂網域擁有權時，接受 MX 或 TXT 記錄；管理員需在該網域的公用 DNS 區域中，加入 Azure 提供的驗證用記錄，Azure 查得到即完成驗證。",
+      "B": "Incorrect. 錯誤。NSEC 是 DNSSEC 用來證明某筆記錄「不存在」的記錄型別，與網域擁有權驗證無關。",
+      "C": "Incorrect. 錯誤。PTR 是反向 DNS 記錄，把 IP 位址對應回主機名稱，不能用於 Azure AD 網域驗證。",
+      "D": "Incorrect. 錯誤。RRSIG 是 DNSSEC 的數位簽章記錄，用於驗證 DNS 回應的完整性，並非 Azure AD 接受的驗證記錄型別。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 58,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Directory (Azure AD) tenant named Adatum and an Azure Subscription named Subscription1. Adatum contains a group named Developers. Subscription1 contains a resource group named Dev. You need to provide the Developers group with the ability to create Azure logic apps in the Dev resource group. Solution: On Subscription1, you assign the DevTest Labs User role to the Developers group. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。DevTest Labs 使用者角色的權限範圍是 DevTest Labs 中的虛擬機器操作，與建立邏輯應用程式無關。",
+      "B": "Correct. 正確。該角色不含建立 Microsoft.Logic/workflows 資源的權限；要讓群組能建立邏輯應用程式，需在 Dev 資源群組上指派「參與者」或「邏輯應用程式參與者」角色。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 59,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Directory (Azure AD) tenant named Adatum and an Azure Subscription named Subscription1. Adatum contains a group named Developers. Subscription1 contains a resource group named Dev. You need to provide the Developers group with the ability to create Azure logic apps in the Dev resource group. Solution: On Subscription1, you assign the Logic App Operator role to the Developers group. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。邏輯應用程式操作員只能讀取、啟用、停用與執行既有的邏輯應用程式，是「操作」而非「建立」的角色。",
+      "B": "Correct. 正確。操作員角色不具備建立新邏輯應用程式的寫入權限，因此無法達成目標；需要的是參與者層級的角色。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 60,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Directory (Azure AD) tenant named Adatum and an Azure Subscription named Subscription1. Adatum contains a group named Developers. Subscription1 contains a resource group named Dev. You need to provide the Developers group with the ability to create Azure logic apps in the Dev resource group. Solution: On Dev, you assign the Contributor role to the Developers group. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。參與者可以建立與管理該範圍內的所有資源類型（僅不能指派角色），在 Dev 資源群組上指派後，Developers 群組即可在其中建立邏輯應用程式，且權限剛好侷限在該資源群組。",
+      "B": "Incorrect. 錯誤。參與者角色確實包含建立邏輯應用程式所需的寫入權限，此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 62,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains an Azure Log Analytics workspace named Workspace1. You need to view the error events from a table named Event. Which query should you run in Workspace1?",
+    "options": {
+      "A": "Get-Event Event | where {$_.EventType == \"error\"}",
+      "B": "search in (Event) \"error\"",
+      "C": "select * from Event where EventType == \"error\"",
+      "D": "search in (Event) * | where EventType -eq \"error\""
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。這是 PowerShell 語法，Log Analytics 使用的是 Kusto 查詢語言 (KQL)，不接受 PowerShell 管線與比較運算子。",
+      "B": "Correct. 正確。這是合法的 KQL：search 運算子可將搜尋範圍限定在 Event 資料表，並在其中比對關鍵字 \"error\"，符合檢視錯誤事件的需求。",
+      "C": "Incorrect. 錯誤。這是 SQL 語法。KQL 雖然概念相近，但不使用 SELECT ... FROM ... WHERE 的寫法。",
+      "D": "Incorrect. 錯誤。KQL 的相等比較是 ==，不是 PowerShell 風格的 -eq；此外 search in (Event) * 的寫法也不正確。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 66,
+    "type": "multiple",
+    "question": "You have an Azure subscription. Users access the resources in the subscription from either home or from customer sites. From home, users must establish a point-to-site VPN to access the Azure resources. The users on the customer sites access the Azure resources by using site-to-site VPNs. You have a line-of-business-app named App1 that runs on several Azure virtual machine. The virtual machines run Windows Server 2016. You need to ensure that the connections to App1 are spread across all the virtual machines. What are two possible Azure services that you can use? Each correct answer presents a complete solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "an internal load balancer",
+      "B": "a public load balancer",
+      "C": "an Azure Content Delivery Network (CDN)",
+      "D": "Traffic Manager",
+      "E": "an Azure Application Gateway"
+    },
+    "answer": [
+      "A",
+      "E"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。所有使用者都是透過 VPN 進入虛擬網路後才存取 App1，屬於私人網路內的流量，內部負載平衡器正好把這些連線分散到後端的多台 VM。",
+      "B": "Incorrect. 錯誤。公用負載平衡器面向網際網路，而題目的使用者一律經由 VPN 從私人網路連入，不需要也不應該把 App1 曝露到公用端點。",
+      "C": "Incorrect. 錯誤。CDN 是把靜態內容快取到邊緣節點，並非在多台 VM 之間分散應用程式連線的負載平衡機制。",
+      "D": "Incorrect. 錯誤。流量管理員是 DNS 層級的流量導向，通常用於跨區域的端點選擇；它回傳的是端點位址而非逐連線分流，也不適合這個 VPN 內網情境。",
+      "E": "Correct. 正確。應用程式閘道是第 7 層負載平衡器，可部署在虛擬網路中並使用私人前端 IP，同樣能把連往 App1 的連線分散到多台後端 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 67,
+    "type": "single",
+    "question": "You have an Azure subscription. You have 100 Azure virtual machines. You need to quickly identify underutilized virtual machines that can have their service tier changed to a less expensive offering. Which blade should you use?",
+    "options": {
+      "A": "Monitor",
+      "B": "Advisor",
+      "C": "Metrics",
+      "D": "Customer insights"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Azure 監視器能提供原始計量與記錄，但你必須自行針對 100 台 VM 分析判讀，無法「快速」得到可調降規格的清單。",
+      "B": "Correct. 正確。Azure 顧問會自動分析使用量並直接產出成本最佳化建議，其中就包含「調整大小或關閉使用率偏低的虛擬機器」，正是快速找出這類 VM 的工具。",
+      "C": "Incorrect. 錯誤。計量刀鋒只是呈現個別資源的量測圖表，需要逐台檢視與比對，不符合「快速找出」的需求。",
+      "D": "Incorrect. 錯誤。Customer Insights 屬於 Dynamics 365 的客戶資料平台，與 Azure 資源使用率完全無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 69,
+    "type": "single",
+    "question": "You have an Azure Active Directory (Azure AD) tenant named contoso.onmicrosoft.com. The User administrator role is assigned to a user named Admin1. An external partner has a Microsoft account that uses the [email protected] sign in. Admin1 attempts to invite the external partner to sign in to the Azure AD tenant and receives the following error message: `Unable to invite user [email protected] `\" Generic authorization exception.` You need to ensure that Admin1 can invite the external partner to sign in to the Azure AD tenant. What should you do?",
+    "options": {
+      "A": "From the Users settings blade, modify the External collaboration settings.",
+      "B": "From the Custom domain names blade, add a custom domain.",
+      "C": "From the Organizational relationships blade, add an identity provider.",
+      "D": "From the Roles and administrators blade, assign the Security administrator role to Admin1."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。外部協同作業設定決定了「哪些角色可以邀請來賓」以及是否有網域允許／封鎖清單。此錯誤通常是因為該設定限制了邀請權限，調整後 Admin1 即可送出邀請。",
+      "B": "Incorrect. 錯誤。自訂網域是給自家租用戶使用者用的，與能否邀請外部 Microsoft 帳戶無關。",
+      "C": "Incorrect. 錯誤。識別提供者用於 Google／Facebook 等外部身分的自助註冊情境；Microsoft 帳戶本來就是 B2B 原生支援的身分，不需另外新增提供者。",
+      "D": "Incorrect. 錯誤。安全性管理員負責的是資安相關設定，並不會解除來賓邀請的限制；問題出在租用戶層級的協同作業設定，而不是 Admin1 的角色不足。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 70,
+    "type": "single",
+    "question": "You have an Azure subscription linked to an Azure Active Directory tenant. The tenant includes a user account named User1. You need to ensure that User1 can assign a policy to the tenant root management group. What should you do?",
+    "options": {
+      "A": "Assign the Owner role for the Azure Subscription to User1, and then modify the default conditional access policies.",
+      "B": "Assign the Owner role for the Azure subscription to User1, and then instruct User1 to configure access management for Azure resources.",
+      "C": "Assign the Global administrator role to User1, and then instruct User1 to configure access management for Azure resources.",
+      "D": "Create a new management group and delegate User1 as the owner of the new management group."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。訂用帳戶層級的擁有者權限無法向上作用到租用戶根管理群組；條件式存取原則管的是登入條件，與 Azure 原則指派無關。",
+      "B": "Incorrect. 錯誤。同樣受限於範圍——訂用帳戶擁有者無權在根管理群組上操作。",
+      "C": "Correct. 正確。預設情況下連全域管理員都沒有根管理群組的存取權。全域管理員可以在 Azure AD 內容中開啟「Azure 資源的存取管理」提升權限，取得根範圍的使用者存取管理員角色，之後才能在租用戶根管理群組上指派原則。",
+      "D": "Incorrect. 錯誤。新建一個管理群組並給予擁有者權限，作用範圍只在那個新群組，仍然碰不到租用戶根管理群組。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 73,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You need to ensure that an Azure Active Directory (Azure AD) user named Admin1 is assigned the required role to enable Traffic Analytics for an Azure subscription. Solution: You assign the Network Contributor role at the subscription level to Admin1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。啟用流量分析除了操作 NSG 流量記錄之外，還需要對 Log Analytics 工作區與相關儲存體具備權限，單一個網路參與者角色並不足夠。",
+      "B": "Correct. 正確。網路參與者只涵蓋網路資源，官方的必要條件還包含 Log Analytics 工作區的存取權與 Microsoft.Insights 提供者註冊，因此此解法無法達成目標。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 74,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You need to ensure that an Azure Active Directory (Azure AD) user named Admin1 is assigned the required role to enable Traffic Analytics for an Azure subscription. Solution: You assign the Owner role at the subscription level to Admin1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。擁有者具備該訂用帳戶範圍內的完整權限，涵蓋 NSG 流量記錄、儲存體帳戶、Log Analytics 工作區與資源提供者註冊，足以完成啟用流量分析所需的全部動作。",
+      "B": "Incorrect. 錯誤。擁有者是最高權限的內建角色，不存在權限不足的問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 75,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You need to ensure that an Azure Active Directory (Azure AD) user named Admin1 is assigned the required role to enable Traffic Analytics for an Azure subscription. Solution: You assign the Reader role at the subscription level to Admin1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。讀者角色只能檢視資源，完全沒有任何寫入權限。",
+      "B": "Correct. 正確。啟用流量分析需要建立與修改 NSG 流量記錄設定、關聯 Log Analytics 工作區等寫入動作，唯讀的讀者角色無法完成。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 76,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a user named User1. You need to ensure that User1 can deploy virtual machines and manage virtual networks. The solution must use the principle of least privilege. Which role-based access control (RBAC) role should you assign to User1?",
+    "options": {
+      "A": "Owner",
+      "B": "Virtual Machine Contributor",
+      "C": "Contributor",
+      "D": "Virtual Machine Administrator Login"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。擁有者在參與者的權限之外還多了指派角色的能力，超出題目所需，違反最小權限原則。",
+      "B": "Incorrect. 錯誤。虛擬機器參與者可以部署與管理 VM，但不具備管理虛擬網路的權限，無法滿足第二項需求。",
+      "C": "Correct. 正確。題目同時要求「部署虛擬機器」與「管理虛擬網路」兩類資源。單一內建角色中，能涵蓋這兩者又不含角色指派權限的最小者就是參與者。",
+      "D": "Incorrect. 錯誤。這個角色只是允許以系統管理員身分登入 VM 的作業系統，與建立或管理 Azure 資源無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 78,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains an Azure virtual machine named VM1. VM1 is in a resource group named RG1. VM1 runs services that will be used to deploy resources to RG1. You need to ensure that a service running on VM1 can manage the resources in RG1 by using the identity of VM1. What should you do first?",
+    "options": {
+      "A": "From the Azure portal, modify the Managed Identity settings of VM1",
+      "B": "From the Azure portal, modify the Access control (IAM) settings of RG1",
+      "C": "From the Azure portal, modify the Access control (IAM) settings of VM1",
+      "D": "From the Azure portal, modify the Policies settings of RG1"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。要讓服務以「VM 本身的身分識別」存取資源，必須先在 VM1 上啟用受控識別（系統指派或使用者指派），產生服務主體之後，才有對象可以被授與 RG1 的權限。",
+      "B": "Incorrect. 錯誤。方向正確但順序錯了——受控識別尚未啟用時，RG1 的 IAM 中根本找不到可指派的身分識別對象。",
+      "C": "Incorrect. 錯誤。修改 VM1 的 IAM 是設定「誰能管理 VM1」，與 VM1 能去管理什麼無關。",
+      "D": "Incorrect. 錯誤。Azure 原則用於強制資源合規性，並不授與任何身分識別權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 80,
+    "type": "single",
+    "question": "You have an Azure DNS zone named adatum.com. You need to delegate a subdomain named research.adatum.com to a different DNS server in Azure. What should you do?",
+    "options": {
+      "A": "Create an NS record named research in the adatum.com zone.",
+      "B": "Create a PTR record named research in the adatum.com zone.",
+      "C": "Modify the SOA record of adatum.com.",
+      "D": "Create an A record named *.research in the adatum.com zone."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。子網域委派的標準做法，就是在父區域中為子網域名稱建立 NS 記錄，指向負責該子網域的名稱伺服器；DNS 查詢到此就會被導向那組伺服器。",
+      "B": "Incorrect. 錯誤。PTR 是反向查詢記錄（IP 對應主機名稱），無法用來委派子網域。",
+      "C": "Incorrect. 錯誤。SOA 記錄描述的是本區域的權威資訊與更新參數，修改它不會產生任何委派關係。",
+      "D": "Incorrect. 錯誤。萬用字元 A 記錄是把名稱直接解析到 IP，等於由父區域自己回答，正好與「委派給別台伺服器」相反。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 82,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains an Azure Log Analytics workspace named Workspace1. You need to view the error events from a table named Event. Which query should you run in Workspace1?",
+    "options": {
+      "A": "Get-Event Event | where {$_.EventType == \"error\"}",
+      "B": "Event | search \"error\"",
+      "C": "select * from Event where EventType == \"error\"",
+      "D": "search in (Event) * | where EventType ג€\"eq ג€errorג€"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。這是 PowerShell 語法，Log Analytics 使用的是 Kusto 查詢語言 (KQL)。",
+      "B": "Correct. 正確。KQL 的慣用寫法是先指定資料表再以管線接運算子：Event | search \"error\" 會在 Event 資料表中比對關鍵字 error，正是題目要的結果。",
+      "C": "Incorrect. 錯誤。這是 SQL 語法，KQL 不使用 SELECT ... FROM ... WHERE。",
+      "D": "Incorrect. 錯誤。KQL 的相等比較運算子是 ==，而非 PowerShell 風格的 -eq。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 83,
+    "type": "single",
+    "question": "You have a registered DNS domain named contoso.com. You create a public Azure DNS zone named contoso.com. You need to ensure that records created in the contoso.com zone are resolvable from the internet. What should you do?",
+    "options": {
+      "A": "Create NS records in contoso.com.",
+      "B": "Modify the SOA record in the DNS domain registrar.",
+      "C": "Create the SOA record in contoso.com.",
+      "D": "Modify the NS records in the DNS domain registrar."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Azure DNS 區域建立時就會自動產生自己的 NS 記錄，在區域內再建一組並不會讓網際網路知道該來問 Azure。",
+      "B": "Incorrect. 錯誤。SOA 記錄由代管該區域的服務自行維護，註冊機構端要改的是名稱伺服器而非 SOA。",
+      "C": "Incorrect. 錯誤。SOA 記錄同樣是 Azure DNS 自動建立的，不需要也無法手動新增。",
+      "D": "Correct. 正確。必須到網域註冊機構把該網域的名稱伺服器改成 Azure DNS 區域所配發的那四台 NS 位址，完成委派後，全球的解析器才會向 Azure 查詢 contoso.com 的記錄。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 87,
+    "type": "single",
+    "question": "You have an Azure Active Directory (Azure AD) tenant. You plan to delete multiple users by using Bulk delete in the Azure Active Directory admin center. You need to create and upload a file for the bulk delete. Which user attributes should you include in the file?",
+    "options": {
+      "A": "The user principal name and usage location of each user only",
+      "B": "The user principal name of each user only",
+      "C": "The display name of each user only",
+      "D": "The display name and usage location of each user only",
+      "E": "The display name and user principal name of each user only"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。使用位置屬於授權指派相關的屬性，刪除作業不需要它。",
+      "B": "Correct. 正確。大量刪除的 CSV 只需要一個欄位：每位使用者的使用者主體名稱 (UPN)。UPN 在租用戶中唯一，足以識別要刪除的帳戶。",
+      "C": "Incorrect. 錯誤。顯示名稱可能重複，無法唯一識別帳戶，不能作為刪除依據。",
+      "D": "Incorrect. 錯誤。兩個欄位都不是大量刪除所需，顯示名稱更無法唯一識別使用者。",
+      "E": "Incorrect. 錯誤。雖然包含了 UPN，但多出的顯示名稱並非必要欄位；範本要求的僅有 UPN。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 89,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You need to ensure that an Azure Active Directory (Azure AD) user named Admin1 is assigned the required role to enable Traffic Analytics for an Azure subscription. Solution: You assign the Traffic Manager Contributor role at the subscription level to Admin1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。名稱雖然都有「流量」兩字，但流量管理員 (Traffic Manager) 是 DNS 層級的流量導向服務，與網路監看員的流量分析 (Traffic Analytics) 是完全不同的產品。",
+      "B": "Correct. 正確。流量管理員參與者只能管理 Traffic Manager 設定檔，與 NSG 流量記錄及 Log Analytics 工作區毫無關係，無法用來啟用流量分析。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 90,
+    "type": "single",
+    "question": "You have three offices and an Azure subscription that contains an Azure Active Directory (Azure AD) tenant. You need to grant user management permissions to a local administrator in each office. What should you use?",
+    "options": {
+      "A": "Azure AD roles",
+      "B": "administrative units",
+      "C": "access packages in Azure AD entitlement management",
+      "D": "Azure roles"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。單純指派 Azure AD 角色（例如使用者管理員）的作用範圍是整個租用戶，當地管理員會因此能管理所有辦公室的使用者，範圍過大。",
+      "B": "Correct. 正確。系統管理單位可以把使用者與群組切分成容器（例如依辦公室），再把目錄角色「限定在該單位範圍內」指派給當地管理員，使其只能管理自己辦公室的使用者。",
+      "C": "Incorrect. 錯誤。存取套件是治理使用者「申請與取得資源存取權」的流程，不是用來委派使用者管理權限的機制。",
+      "D": "Incorrect. 錯誤。Azure 角色 (RBAC) 管的是 Azure 資源（訂用帳戶、資源群組、資源），不是 Azure AD 中的使用者物件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 91,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Directory (Azure AD) tenant named Adatum and an Azure Subscription named Subscription1. Adatum contains a group named Developers. Subscription1 contains a resource group named Dev. You need to provide the Developers group with the ability to create Azure logic apps in the Dev resource group. Solution: On Dev, you assign the Logic App Contributor role to the Developers group. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。邏輯應用程式參與者具備建立與管理邏輯應用程式的權限，指派在 Dev 資源群組範圍即可讓該群組在其中建立邏輯應用程式，而且權限剛好侷限於此，符合最小權限。",
+      "B": "Incorrect. 錯誤。與「邏輯應用程式操作員」不同，參與者版本包含寫入權限，因此可以建立邏輯應用程式。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 93,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains a virtual network named VNet1. VNet1 is in a resource group named RG1. Subscription1 has a user named User1. User1 has the following roles: ✑ Reader ✑ Security Admin ✑ Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
+    "options": {
+      "A": "Remove User1 from the Security Reader role for Subscription1. Assign User1 the Contributor role for RG1.",
+      "B": "Assign User1 the Owner role for VNet1.",
+      "C": "Assign User1 the Contributor role for VNet1.",
+      "D": "Assign User1 the Network Contributor role for VNet1."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。參與者可以管理資源但不能指派角色；移除既有角色也無助於取得角色指派權限。",
+      "B": "Correct. 正確。內建角色中具備 Microsoft.Authorization/roleAssignments/write 權限的只有「擁有者」與「使用者存取管理員」。本題選項中沒有使用者存取管理員，因此在 VNet1 範圍指派擁有者即可讓 User1 把讀者角色指派給其他人。",
+      "C": "Incorrect. 錯誤。參與者明確被排除了指派角色的權限，這正是它與擁有者最主要的差別。",
+      "D": "Incorrect. 錯誤。網路參與者能管理網路資源，但同樣不含角色指派權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 95,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account named storage1. The storage1 account contains a file share named share1. The subscription is linked to a hybrid Azure Active Directory (Azure AD) tenant that contains a security group named Group1. You need to grant Group1 the Storage File Data SMB Share Elevated Contributor role for share1. What should you do first?",
+    "options": {
+      "A": "Enable Active Directory Domain Service (AD DS) authentication for storage1.",
+      "B": "Grant share-level permissions by using File Explorer.",
+      "C": "Mount share1 by using File Explorer.",
+      "D": "Create a private endpoint."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure 檔案共用要以身分識別為基礎做 SMB 存取控制，必須先在儲存體帳戶上啟用以身分識別為基礎的驗證（此情境為混合式租用戶，對應 AD DS 驗證）；未啟用之前，那些 Storage File Data SMB 角色根本無法生效。",
+      "B": "Incorrect. 錯誤。共用層級權限是透過 Azure RBAC 角色指派的，不是在檔案總管中設定；而且順序上也必須先啟用身分識別驗證。",
+      "C": "Incorrect. 錯誤。掛載共用是「使用」它，與設定存取權限的前置作業無關。",
+      "D": "Incorrect. 錯誤。私人端點解決的是網路連線路徑問題，與身分識別驗證及角色指派無關。"
+    }
   }
 ]
