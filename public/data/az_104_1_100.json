@@ -364,5 +364,425 @@
       "A": "錯誤。允許閘道傳輸只是讓對等互連的另一端能使用本端的閘道，站對站流量之所以已經通了，代表傳輸面的設定原本就沒問題；這個設定並不會把新的路由推送到已連線的點對站用戶端。",
       "B": "正確。點對站用戶端是在連線建立當下才取得路由的，新增對等互連後，用戶端手上仍是舊的路由表。必須重新下載並重新安裝 VPN 用戶端組態套件（或重新連線），工作站才會學到往 VirtualNetworkB 的路由。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 25,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，請判斷此解法是否滿足需求。\n貴公司的 Azure 訂用帳戶中有兩個虛擬網路 VirtualNetworkA 與 VirtualNetworkB。VirtualNetworkA 內含一個設定為使用靜態路由的 VPN 閘道，且公司的內部部署網路與 VirtualNetworkA 之間已建立站對站 VPN 連線。你另外從一台 Windows 10 工作站設定了到 VirtualNetworkA 的點對站 VPN 連線。在 VirtualNetworkA 與 VirtualNetworkB 之間設定虛擬網路對等互連後，你確認可以從公司內部部署網路存取 VirtualNetworkB，但從該 Windows 10 工作站卻無法連線到 VirtualNetworkB。你必須讓該 Windows 10 工作站也能連線到 VirtualNetworkB。\n解法：你在 VirtualNetworkB 上勾選「允許閘道傳輸 (Allow gateway transit)」設定。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。「允許閘道傳輸」要勾在「擁有閘道」的那一端，也就是 VirtualNetworkA；勾在沒有閘道的 VirtualNetworkB 上沒有意義。",
+      "B": "正確。問題出在點對站用戶端手上的路由是連線當下取得的，新增對等互連後不會自動更新。無論閘道傳輸勾在哪一端，都必須重新下載並安裝 VPN 用戶端組態套件，工作站才會學到往 VirtualNetworkB 的路由。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 26,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，請判斷此解法是否滿足需求。\n貴公司的 Azure 訂用帳戶中有兩個虛擬網路 VirtualNetworkA 與 VirtualNetworkB。VirtualNetworkA 內含一個設定為使用靜態路由的 VPN 閘道，且公司的內部部署網路與 VirtualNetworkA 之間已建立站對站 VPN 連線。你另外從一台 Windows 10 工作站設定了到 VirtualNetworkA 的點對站 VPN 連線。在 VirtualNetworkA 與 VirtualNetworkB 之間設定虛擬網路對等互連後，你確認可以從公司內部部署網路存取 VirtualNetworkB，但從該 Windows 10 工作站卻無法連線到 VirtualNetworkB。你必須讓該 Windows 10 工作站也能連線到 VirtualNetworkB。\n解法：你在該 Windows 10 工作站上重新下載並重新安裝 VPN 用戶端組態套件。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。點對站用戶端的路由是在安裝組態套件時寫入的。新增虛擬網路對等互連之後，必須重新產生、下載並安裝用戶端組態套件，工作站才會取得指向 VirtualNetworkB 的新路由，連線隨即可以建立。",
+      "B": "錯誤。這正是官方文件建議的處理方式：只要虛擬網路的拓撲改變（例如新增對等互連），就必須重新安裝點對站用戶端組態。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 27,
+    "type": "single",
+    "question": "貴公司有多台虛擬機器 (VM) 裝載於 Microsoft Azure，這些 VM 位於單一 Azure 虛擬網路 VNet1 中。公司有部分使用者採遠端工作，這些遠端工作者需要存取 VNet1 上的 VM。你需要為遠端工作者提供存取權，應該怎麼做？",
+    "options": {
+      "A": "設定站對站 (S2S) VPN。",
+      "B": "設定 VNet 對 VNet VPN。",
+      "C": "設定點對站 (P2S) VPN。",
+      "D": "在一台 Windows Server 2012 伺服器 VM 上設定 DirectAccess。",
+      "E": "設定多站台 VPN。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。站對站 VPN 是把「整個內部部署網路」透過 VPN 裝置連到 Azure，適用於固定辦公室對雲端，不適合散在各處、沒有固定站台的個別遠端工作者。",
+      "B": "錯誤。VNet 對 VNet VPN 連接的是兩個 Azure 虛擬網路，與個別使用者的用戶端連線無關。",
+      "C": "正確。點對站 VPN 就是為「個別用戶端裝置」設計的，遠端工作者只要在自己的電腦上安裝 VPN 用戶端即可連入 VNet1，不需要在其所在地建置任何 VPN 硬體。",
+      "D": "錯誤。DirectAccess 是內部部署 Windows Server 的遠端存取技術，並非 Azure 虛擬網路的解決方案，且已被淘汰。",
+      "E": "錯誤。多站台 VPN 是讓多個內部部署站台同時連到同一個 Azure 虛擬網路，仍屬站對站的範疇，不解決個別遠端使用者的需求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 28,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，請判斷此解法是否滿足需求。\n貴公司在 Azure 虛擬機器 (VM) 上設定了 Microsoft SQL Server Always On 可用性群組。你需要設定一個 Azure 內部負載平衡器作為該可用性群組的接聽程式。\n解法：你在連接埠 1433 上建立一個 HTTP 健康情況探查。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。SQL Server 在 1433 埠上講的是 TDS 通訊協定，不是 HTTP，HTTP 探查會一直失敗而讓節點被判定為不健康。",
+      "B": "正確。Always On 接聽程式的健康情況探查必須指向專用的探查連接埠（慣例為 59999），且必須使用 TCP 探查而非 HTTP；在 1433 上做 HTTP 探查兩點都錯。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 29,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，請判斷此解法是否滿足需求。\n貴公司在 Azure 虛擬機器 (VM) 上設定了 Microsoft SQL Server Always On 可用性群組。你需要設定一個 Azure 內部負載平衡器作為該可用性群組的接聽程式。\n解法：你將工作階段持續性 (Session persistence) 設定為「用戶端 IP」。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。工作階段持續性控制的是「同一用戶端是否固定導向同一後端」，與可用性群組接聽程式能否運作無關。",
+      "B": "正確。要讓內部負載平衡器充當 Always On 接聽程式，關鍵設定是啟用「浮動 IP (Floating IP / Direct Server Return)」，並搭配專用連接埠的 TCP 健康情況探查；調整工作階段持續性無法達成目標。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 30,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，請判斷此解法是否滿足需求。\n貴公司在 Azure 虛擬機器 (VM) 上設定了 Microsoft SQL Server Always On 可用性群組。你需要設定一個 Azure 內部負載平衡器作為該可用性群組的接聽程式。\n解法：你啟用「浮動 IP (Floating IP)」。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。浮動 IP（Direct Server Return）會讓封包保留原本的目的 IP 送到後端，SQL Server 節點上的叢集網路名稱資源才能接收並回應接聽程式的 IP，這正是內部負載平衡器擔任 Always On 接聽程式的必要設定。",
+      "B": "錯誤。啟用浮動 IP 正是官方文件中設定 Always On 接聽程式的關鍵步驟。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 31,
+    "type": "single",
+    "question": "貴公司有兩台內部部署伺服器 SRV01 與 SRV02。開發人員撰寫了一個執行於 SRV01 的應用程式，該程式會以 IP 位址呼叫 SRV02 上的服務。你打算把這個應用程式移轉到 Azure 虛擬機器 (VM)，並已在 Azure 虛擬網路的單一子網路中設定了兩台 VM。你需要為這兩台 VM 設定靜態的內部 IP 位址，應該怎麼做？",
+    "options": {
+      "A": "執行 New-AzureRMVMConfig PowerShell Cmdlet。",
+      "B": "執行 Set-AzureSubnet PowerShell Cmdlet。",
+      "C": "在 Azure 管理入口網站中修改 VM 的內容。",
+      "D": "在 Windows「網路和共用中心」修改 IP 內容。",
+      "E": "執行 Set-AzureStaticVNetIP PowerShell Cmdlet。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。New-AzureRMVMConfig 只是在記憶體中建立一個 VM 組態物件，用於後續建立新 VM，並不能為既有 VM 指派靜態內部 IP。",
+      "B": "錯誤。Set-AzureSubnet 處理的是子網路本身的設定，不是個別 VM 網路介面上的 IP 配置方式。",
+      "C": "正確。在入口網站中找到該 VM 的網路介面 →「IP 組態」，把私人 IP 位址的指派方式從「動態」改為「靜態」即可，這是適用於 Resource Manager 部署模型的標準做法。",
+      "D": "錯誤。絕對不可以在 Guest OS 內手動設定 IP。Azure 的私人 IP 是由平台的 DHCP 指派的，在 OS 內寫死會導致網路中斷。",
+      "E": "錯誤。Set-AzureStaticVNetIP 屬於舊的「傳統 (Classic/ASM)」部署模型指令，不適用於題目所述的 Azure 虛擬網路 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 32,
+    "type": "single",
+    "question": "貴公司有一個 Azure Active Directory (Azure AD) 訂用帳戶。你需要在公司虛擬網路的子網路中部署五台虛擬機器 (VM)，每台 VM 都要同時具備公用與私人 IP 位址，而且所有這些虛擬機器的輸入與輸出安全性規則必須完全相同。下列何者是此組態所需的最少 網路介面 數量？",
+    "options": {
+      "A": "5",
+      "B": "10",
+      "C": "20",
+      "D": "40"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。每台 VM 至少需要一張網路介面，而公用與私人 IP 位址可以同時掛在「同一張」網路介面的同一個 IP 組態上，不需要為公用 IP 另外配置介面。因此五台 VM 只需要五張網路介面。",
+      "B": "錯誤。這是誤以為公用 IP 與私人 IP 各需一張網路介面；實際上兩者可共存於同一個 IP 組態中。",
+      "C": "錯誤。20 遠超過需求，沒有任何理由讓每台 VM 需要四張網路介面。",
+      "D": "錯誤。40 同樣毫無根據。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 33,
+    "type": "single",
+    "question": "貴公司有一個 Azure Active Directory (Azure AD) 訂用帳戶。你需要在公司虛擬網路的子網路中部署五台虛擬機器 (VM)，每台 VM 都要同時具備公用與私人 IP 位址，而且所有這些虛擬機器的輸入與輸出安全性規則必須完全相同。下列何者是此組態所需的最少 安全性群組 數量？",
+    "options": {
+      "A": "4",
+      "B": "3",
+      "C": "2",
+      "D": "1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。題目明確說明所有 VM 的規則完全相同，不需要四個各自獨立的網路安全性群組。",
+      "B": "錯誤。同上，規則既然一致就沒有拆成三個的必要。",
+      "C": "錯誤。即使想分別套用在子網路與網路介面兩個層級，一個網路安全性群組也可以同時關聯到多個目標，仍不需要兩個。",
+      "D": "正確。網路安全性群組可以關聯到子網路，或同時關聯到多張網路介面。既然五台 VM 的輸入與輸出規則完全相同，只要建立一個 NSG 並把它關聯到該子網路即可涵蓋全部。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 34,
+    "type": "single",
+    "question": "貴公司的 Azure 訂用帳戶中有執行 Windows Server 2016 的 Azure 虛擬機器 (VM)，其中一台每天都會使用 Azure 備份的「立即還原 (Instant Restore)」進行備份。當這台 VM 感染了會加密資料的勒索軟體時，你決定要復原該 VM 的檔案。在此情境中，下列敘述何者為真？",
+    "options": {
+      "A": "你只能把檔案復原到那台受感染的 VM。",
+      "B": "你可以把檔案復原到公司訂用帳戶中的任何一台 VM。",
+      "C": "你只能把檔案復原到一台新的 VM。",
+      "D": "你將無法復原這些檔案。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。檔案層級復原並不限定目標必須是原本那台機器；何況受感染的機器正是最不該還原回去的目標。",
+      "B": "正確。Azure 備份的檔案復原是透過在目標機器上執行掛載指令碼，把復原點掛成本機磁碟區再複製檔案。只要該機器的作業系統相容並可執行指令碼，訂用帳戶中的任何一台 VM 都可以作為復原目標。",
+      "C": "錯誤。並沒有「只能復原到新 VM」的限制，既有的乾淨 VM 同樣可以作為目標。",
+      "D": "錯誤。備份保存在復原服務保存庫中，與受感染的 VM 隔離，檔案完全可以復原。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 35,
+    "type": "single",
+    "question": "貴公司的 Azure 訂用帳戶中有執行 Windows Server 2016 的 Azure 虛擬機器 (VM)，其中一台每天都會使用 Azure 備份的「立即還原 (Instant Restore)」進行備份。當這台 VM 感染了會加密資料的勒索軟體時，你必須還原這台 VM。你應該採取下列哪一個動作？",
+    "options": {
+      "A": "先刪除受感染的 VM，再還原該 VM。",
+      "B": "把該 VM 還原到公司訂用帳戶中的任何一台 VM。",
+      "C": "把該 VM 還原到一台新的 Azure VM。",
+      "D": "把該 VM 還原到一台內部部署的 Windows 裝置。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。在確認還原成功之前就刪除原始 VM 風險極高，一旦還原出問題將無可退路；而且還原並不需要先刪除原機。",
+      "B": "錯誤。整台 VM 的還原是建立新的 VM 資源，不是把內容覆寫到某台既有的 VM 上；能還原到任意 VM 的是「檔案層級」復原。",
+      "C": "正確。遇到勒索軟體時，正確做法是從乾淨的復原點還原成一台全新的 Azure VM，讓受感染的機器維持隔離以供調查，同時避免殘留的惡意程式再次加密資料。",
+      "D": "錯誤。Azure VM 備份的復原點只能還原為 Azure 中的 VM 或磁碟，無法直接還原到內部部署裝置。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 36,
+    "type": "single",
+    "question": "你管理一套 Azure 上的解決方案，目前遇到效能問題。你需要從 Azure 基礎結構的「計量 (metrics)」找出效能問題的原因。你應該使用下列哪一項工具？",
+    "options": {
+      "A": "Azure 流量分析 (Traffic Analytics)",
+      "B": "Azure 監視器 (Azure Monitor)",
+      "C": "Azure 活動記錄 (Activity Log)",
+      "D": "Azure 顧問 (Azure Advisor)"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。流量分析專門用來分析 NSG 流量記錄，呈現的是網路流向與流量模式，不是基礎結構的效能計量。",
+      "B": "正確。Azure 監視器是平台計量的集中式服務，會收集 CPU、記憶體、磁碟 IOPS、網路等資源計量，並提供圖表、警示與診斷，正是用來調查效能問題的工具。",
+      "C": "錯誤。活動記錄記載的是「對資源做了什麼操作」的控制平面事件（誰在何時建立或修改了資源），不含效能計量。",
+      "D": "錯誤。Azure 顧問提供的是成本、安全性、可靠性與效能的最佳做法「建議」，並不呈現即時計量資料供你診斷特定問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 37,
+    "type": "multiple",
+    "question": "貴公司的 Azure 訂用帳戶中有一個復原服務保存庫。你想使用 Azure 備份，把公司的虛擬機器 (VM) 排程備份到該保存庫。下列哪些 VM 可以備份？（請選出所有適用項目）",
+    "options": {
+      "A": "執行 Windows 10 的 VM。",
+      "B": "執行 Windows Server 2012 或更新版本的 VM。",
+      "C": "尚未關機的 VM。",
+      "D": "執行 Debian 8.2 以上版本的 VM。",
+      "E": "已經關機的 VM。"
+    },
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "正確。Azure 備份支援執行於 Azure 上的 Windows 用戶端作業系統，Windows 10 的 Azure VM 可以納入備份。",
+      "B": "正確。Windows Server 2012 及更新版本都在 Azure VM 備份的支援清單中。",
+      "C": "正確。執行中的 VM 是最典型的備份對象，且能透過 VSS 取得應用程式一致的備份。",
+      "D": "正確。Debian 8.2 以上版本屬於 Azure 備份支援的 Linux 發行版本。",
+      "E": "正確。已關機（停止／解除配置）的 VM 同樣可以備份，只是因為無法與 Guest OS 互動，取得的是「檔案系統一致」而非應用程式一致的備份。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 38,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你撰寫一個 PowerShell 指令碼，為每位使用者執行 New-AzureADUser Cmdlet。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。New-AzureADUser 建立的是租用戶內的「成員 (Member)」帳戶，而且需要指定密碼設定檔，建立出來的並不是來賓帳戶。",
+      "B": "正確。來賓帳戶必須透過 B2B 邀請流程產生（使用者類型為 Guest 並帶有外部識別）。要以指令碼大量建立，應改用 New-AzureADMSInvitation。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 39,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你在 Azure 入口網站的 Azure AD 中，使用「大量建立使用者 (Bulk create user)」作業。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。「大量建立使用者」匯入的是租用戶的成員帳戶，並不會送出 B2B 邀請，產生的不是來賓帳戶。",
+      "B": "正確。入口網站中對應的功能是「大量邀請使用者 (Bulk invite users)」，那才會建立來賓帳戶；「大量建立使用者」建立的是一般成員帳戶，不符合需求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 40,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你撰寫一個 PowerShell 指令碼，為每位外部使用者執行 New-AzureADMSInvitation Cmdlet。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。New-AzureADMSInvitation 正是 B2B 邀請的 Cmdlet，會為指定的外部電子郵件地址在租用戶中建立來賓使用者帳戶，以指令碼搭配 CSV 逐筆執行即可完成 500 位使用者的建立。",
+      "B": "錯誤。這正是官方建議用來以程式方式大量建立來賓帳戶的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 42,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集。一位管理員回報她無法將 AKS1 的存取權授與 contoso.com 中的使用者。你必須確保可以把 AKS1 的存取權授與 contoso.com 的使用者。你應該「最先」做什麼？",
+    "options": {
+      "A": "在 contoso.com 中修改「組織關聯性」設定。",
+      "B": "在 contoso.com 中建立 OAuth 2.0 授權端點。",
+      "C": "重新建立 AKS1。",
+      "D": "在 AKS1 中建立命名空間。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。組織關聯性設定管理的是與外部組織的 B2B 協作，與本租用戶使用者存取 AKS 叢集無關。",
+      "B": "正確。要讓 AKS 使用 Azure AD 帳戶進行驗證，必須在租用戶中註冊應用程式並建立 OAuth 2.0 授權端點，作為 AKS 與 Azure AD 整合的基礎；完成後才能把叢集存取權授與目錄中的使用者。",
+      "C": "錯誤。雖然 Azure AD 整合在早期版本必須於建立叢集時啟用，但題目問的是「最先」該做什麼，前置作業是先在 Azure AD 端建立授權端點，而非直接重建叢集。",
+      "D": "錯誤。命名空間是叢集內部的資源隔離單位，建立它並不會讓 Azure AD 使用者具備存取叢集的能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 43,
+    "type": "multiple",
+    "question": "你有一個 Microsoft 365 租用戶與一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶。你打算讓三位使用者 User1、User2、User3 存取一個暫時性的 Microsoft SharePoint 文件庫 Library1。你需要為這些使用者建立群組，且該解決方案必須確保群組在 180 天後自動刪除。你應該建立下列哪兩種群組？（每個正確答案各自都是完整解，每個正確選項各得一分）",
+    "options": {
+      "A": "使用「指派 (Assigned)」成員資格類型的 Microsoft 365 群組",
+      "B": "使用「指派 (Assigned)」成員資格類型的安全性群組",
+      "C": "使用「動態使用者 (Dynamic User)」成員資格類型的 Microsoft 365 群組",
+      "D": "使用「動態使用者 (Dynamic User)」成員資格類型的安全性群組",
+      "E": "使用「動態裝置 (Dynamic Device)」成員資格類型的安全性群組"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "正確。SharePoint 文件庫需要 Microsoft 365 群組才能配置；而 Azure AD 的群組到期原則只適用於 Microsoft 365 群組，套用後即可在 180 天後自動刪除。成員資格用「指派」可直接加入這三位使用者。",
+      "B": "錯誤。安全性群組不會佈建 SharePoint 網站與文件庫，也不在群組到期原則的適用範圍內，無法自動刪除。",
+      "C": "正確。同樣是 Microsoft 365 群組，因此可套用到期原則並佈建 SharePoint 資源；差別只在成員資格改由動態規則決定，一樣滿足需求。",
+      "D": "錯誤。安全性群組不受群組到期原則管轄，無法達成 180 天自動刪除。",
+      "E": "錯誤。動態裝置群組的成員是裝置而非使用者，既不能授與使用者存取權，也不適用到期原則。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 49,
+    "type": "single",
+    "question": "你最近建立了一個新的 Azure 訂用帳戶，其中有一位名為 Admin1 的使用者。Admin1 嘗試以 Azure Resource Manager 範本部署一項 Azure Marketplace 資源，透過 Azure PowerShell 部署時收到下列錯誤訊息：\n「User failed validation to purchase resources. Error message: Legal terms have not been accepted for this item on this subscription...」\n你必須讓 Admin1 能夠成功部署該 Marketplace 資源。你應該怎麼做？",
+    "options": {
+      "A": "在 Azure PowerShell 中執行 Set-AzApiManagementSubscription Cmdlet",
+      "B": "在 Azure 入口網站中註冊 Microsoft.Marketplace 資源提供者",
+      "C": "在 Azure PowerShell 中執行 Set-AzMarketplaceTerms Cmdlet",
+      "D": "在 Azure 入口網站中將「計費管理員」角色指派給 Admin1"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Set-AzApiManagementSubscription 用於管理 API 管理服務的訂閱，與 Marketplace 法律條款毫無關係。",
+      "B": "錯誤。錯誤訊息明確指出問題是「尚未接受法律條款」，不是資源提供者未註冊；註冊提供者無法消除這個錯誤。",
+      "C": "正確。錯誤訊息要求接受該 Marketplace 項目的法律條款，Set-AzMarketplaceTerms 正是以程式方式接受（或檢視）這些條款的 Cmdlet，接受後即可透過範本完成部署。",
+      "D": "錯誤。這不是權限不足的問題；即使具備計費管理員角色，法律條款未接受依然會被擋下。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 50,
+    "type": "single",
+    "question": "你有一個包含 5,000 個使用者帳戶的 Azure Active Directory (Azure AD) 租用戶。你建立了一個名為 AdminUser1 的新使用者帳戶，需要把「使用者管理員 (User administrator)」這個管理角色指派給它。你應該在該使用者帳戶的內容中做什麼？",
+    "options": {
+      "A": "在「授權」刀鋒中指派新的授權",
+      "B": "在「目錄角色」刀鋒中修改目錄角色",
+      "C": "在「群組」刀鋒中邀請該使用者帳戶加入新群組"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。授權決定的是使用者可以使用哪些產品功能（例如 Azure AD Premium、Microsoft 365），與是否具備管理權限無關。",
+      "B": "正確。Azure AD 的管理角色（如使用者管理員、全域管理員）是在使用者帳戶的「目錄角色 / 指派的角色」中設定的，在此加入該角色即可。",
+      "C": "錯誤。加入一般群組不會帶來目錄管理權限；除非該群組本身是「可指派角色」的群組並已獲指派該角色，但選項描述的只是單純建立新群組。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 51,
+    "type": "single",
+    "question": "你有一個名為 contoso.onmicrosoft.com 的 Azure Active Directory (Azure AD) 租用戶，內含 100 個使用者帳戶。你為租用戶購買了 10 個 Azure AD Premium P2 授權，需要確保其中 10 位使用者可以使用所有 Azure AD Premium 功能。你應該怎麼做？",
+    "options": {
+      "A": "在 Azure AD 的「授權」刀鋒中指派授權",
+      "B": "在每位使用者的「群組」刀鋒中邀請使用者加入群組",
+      "C": "在該 Azure AD 網域中新增企業應用程式",
+      "D": "在每位使用者的「目錄角色」刀鋒中修改目錄角色"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。購買授權只是讓租用戶擁有可用額度，使用者必須被實際「指派」到授權才會生效。在 Azure AD 的「授權」刀鋒中選取 Azure AD Premium P2 並指派給那 10 位使用者即可。",
+      "B": "錯誤。單純加入群組不會授與授權；除非該群組已設定「群組型授權」，但選項並未描述這件事。",
+      "C": "錯誤。企業應用程式是用來整合 SaaS 應用與單一登入，與授權指派無關。",
+      "D": "錯誤。目錄角色給的是管理權限，不是產品功能的使用授權，兩者是不同的東西。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 52,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，以及一套內部部署的 Microsoft System Center Service Manager。Subscription1 中有一台名為 VM1 的虛擬機器。你必須確保當 VM1 的可用記憶體低於 10% 時，Service Manager 中會產生警示。你應該「最先」做什麼？",
+    "options": {
+      "A": "建立自動化 Runbook",
+      "B": "部署函數應用程式 (Function App)",
+      "C": "部署 IT 服務管理連接器 (ITSM Connector)",
+      "D": "建立通知"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Runbook 用於執行自動化作業，本身並不會把 Azure 的警示送進 Service Manager。",
+      "B": "錯誤。函數應用程式雖然可以自行寫程式串接，但那並非官方做法，也不是「最先」該做的事。",
+      "C": "正確。要讓 Azure 的警示流入 System Center Service Manager 這類 ITSM 系統，必須先部署 IT 服務管理連接器 (ITSM Connector) 建立雙向整合，之後建立的警示才有辦法送達。",
+      "D": "錯誤。在建立連接器之前就先建立通知，沒有任何管道可以把警示遞送到 Service Manager。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 53,
+    "type": "single",
+    "question": "你申請了 Azure Active Directory (Azure AD) Premium P2。你需要把一位名為 admin@contoso.com 的使用者，加為所有將加入該 Azure AD 網域之電腦上的管理員。你應該在 Azure AD 中設定什麼？",
+    "options": {
+      "A": "「裝置」刀鋒中的「裝置設定」",
+      "B": "「MFA 伺服器」刀鋒中的「提供者」",
+      "C": "「使用者」刀鋒中的「使用者設定」",
+      "D": "「群組」刀鋒中的「一般設定」"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。在 Azure AD →「裝置」→「裝置設定」中，有「其他本機系統管理員（位於已加入 Azure AD 的裝置上）」這個選項，於此加入的使用者會成為所有已加入 Azure AD 裝置的本機管理員。",
+      "B": "錯誤。MFA 伺服器提供者設定的是多重要素驗證，與裝置上的本機管理員權限無關。",
+      "C": "錯誤。使用者設定管理的是應用程式註冊、LinkedIn 帳戶連線等租用戶層級的一般行為，並不包含裝置本機管理員。",
+      "D": "錯誤。群組的一般設定管理自助群組管理等行為，同樣與裝置本機管理員無關。"
+    }
   }
 ]
