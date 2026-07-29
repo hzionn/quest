@@ -23,7 +23,7 @@ export default defineConfig({
     },
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon-32.png', 'favicon-16.png', 'apple-touch-icon.png', 'aws.png', 'gcp-logo.png'],
+      includeAssets: ['favicon-32.png', 'favicon-16.png', 'apple-touch-icon.png', 'aws.png', 'gcp-logo.png', 'azure-logo.png'],
       manifest: {
         name: '雲端證照考試練習器',
         short_name: '證照練習',

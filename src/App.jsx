@@ -923,14 +923,37 @@ function GoogleAuthGate({ user, authReady, onSignedIn }) {
 
 // 登入後的科別選擇畫面：先選練習科別，再進入對應題目
 const CLOUD_PROVIDERS = [
-  { key: 'aws', label: 'AWS', accent: 'orange' },
-  { key: 'gcp', label: 'GCP', accent: 'blue' },
+  { key: 'aws', label: 'AWS', accent: 'orange', logo: awsLogo },
+  { key: 'gcp', label: 'GCP', accent: 'blue', logo: `${BASE_URL}gcp-logo.png` },
+  { key: 'azure', label: 'Azure', accent: 'sky', logo: `${BASE_URL}azure-logo.png` },
 ]
 
-// 各雲服務商已上線的考試代碼（用來在入口畫面分組）
+// Tailwind only ships classes it can see as complete literals, so each accent
+// spells its classes out in full rather than interpolating the colour name.
+const PROVIDER_ACCENTS = {
+  orange: {
+    tab: 'bg-orange-500/20 text-orange-300 shadow-sm',
+    hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-400', hoverText: 'group-hover:text-orange-300',
+    badgeHoverBg: 'group-hover:bg-orange-500/30', badgeHoverText: 'group-hover:text-orange-200',
+  },
+  blue: {
+    tab: 'bg-blue-500/20 text-blue-300 shadow-sm',
+    hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400', hoverText: 'group-hover:text-blue-300',
+    badgeHoverBg: 'group-hover:bg-blue-500/30', badgeHoverText: 'group-hover:text-blue-200',
+  },
+  sky: {
+    tab: 'bg-sky-500/20 text-sky-300 shadow-sm',
+    hoverBg: 'hover:bg-sky-500/20', hoverBorder: 'hover:border-sky-400', hoverText: 'group-hover:text-sky-300',
+    badgeHoverBg: 'group-hover:bg-sky-500/30', badgeHoverText: 'group-hover:text-sky-200',
+  },
+}
+
+// 各雲服務商的考試代碼（用來在入口畫面分組）。列在這裡但題庫還沒匯入的
+// 科別，會以「題庫準備中」的停用磚顯示，題目一進來就自動變成可點選。
 const PROVIDER_EXAMS = {
   aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'DEA-C01', 'AIP-C01', 'MLA-C01'],
   gcp: ['PCA', 'GCP-CDL'],
+  azure: ['AZ-104'],
 }
 
 function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue, studyPlan, onStartPlan, dailyMissions, onClaimMissions }) {
@@ -952,14 +975,13 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
     [examTypes, bankIndex]
   )
   const isLoadingSubject = !!loadProgress
-  const isAws = provider === 'aws'
-  const logoSrc = isAws ? awsLogo : `${BASE_URL}gcp-logo.png`
-  const accent = isAws
-    ? { hoverBg: 'hover:bg-orange-500/20', hoverBorder: 'hover:border-orange-400', hoverText: 'group-hover:text-orange-300', badgeHoverBg: 'group-hover:bg-orange-500/30', badgeHoverText: 'group-hover:text-orange-200' }
-    : { hoverBg: 'hover:bg-blue-500/20', hoverBorder: 'hover:border-blue-400', hoverText: 'group-hover:text-blue-300', badgeHoverBg: 'group-hover:bg-blue-500/30', badgeHoverText: 'group-hover:text-blue-200' }
-  // 只列出當前服務商下、題庫實際有的科別
+  const providerCfg = CLOUD_PROVIDERS.find(p => p.key === provider) || CLOUD_PROVIDERS[0]
+  const logoSrc = providerCfg.logo
+  const accent = PROVIDER_ACCENTS[providerCfg.accent]
+  // 可點選的是題庫實際有題目的科別；已登記但題庫還沒到的另外標示
   const providerExamCodes = PROVIDER_EXAMS[provider] || []
   const visibleExams = providerExamCodes.filter(code => availableExams.has(code))
+  const pendingExams = providerExamCodes.filter(code => !availableExams.has(code))
   const providerTotal = visibleExams.reduce((sum, code) => sum + (counts[code] || 0), 0)
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
@@ -1018,9 +1040,7 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
               onClick={() => setProvider(p.key)}
               className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
                 provider === p.key
-                  ? p.accent === 'orange'
-                    ? 'bg-orange-500/20 text-orange-300 shadow-sm'
-                    : 'bg-blue-500/20 text-blue-300 shadow-sm'
+                  ? PROVIDER_ACCENTS[p.accent].tab
                   : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
               }`}
             >
@@ -1045,7 +1065,7 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
             <Loader2 size={32} className="animate-spin" />
             <span className="text-sm">題庫載入中...</span>
           </div>
-        ) : visibleExams.length > 0 ? (
+        ) : visibleExams.length + pendingExams.length > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {visibleExams.map(exam => (
@@ -1057,6 +1077,16 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
                   <span className={`font-semibold text-white ${accent.hoverText}`}>{displayExam(exam)}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-lg bg-gray-600 text-gray-300 ${accent.badgeHoverBg} ${accent.badgeHoverText}`}>{counts[exam] || 0} 題</span>
                 </button>
+              ))}
+              {pendingExams.map(exam => (
+                <div
+                  key={exam}
+                  className="flex items-center justify-between px-4 py-4 rounded-xl bg-gray-800/40 border border-dashed border-gray-600/70 text-left cursor-not-allowed"
+                  title="題庫尚未匯入"
+                >
+                  <span className="font-semibold text-gray-400">{displayExam(exam)}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-lg bg-gray-700/80 text-gray-400">題庫準備中</span>
+                </div>
               ))}
             </div>
             {visibleExams.length > 1 && (
@@ -1071,9 +1101,9 @@ function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress,
           </>
         ) : (
           <div className="flex flex-col items-center gap-3 py-10 text-gray-400 border border-dashed border-gray-700 rounded-xl bg-gray-900/40">
-            <img src={`${BASE_URL}gcp-logo.png`} alt="Google Cloud Platform" className="h-16 object-contain opacity-90" />
-            <p className="text-base font-semibold text-gray-200">GCP 題庫即將推出</p>
-            <p className="text-xs text-gray-500 text-center max-w-xs">Google Cloud 認證相關題目正在準備中，敬請期待。</p>
+            <img src={logoSrc} alt={providerCfg.label} className="h-16 object-contain opacity-90" />
+            <p className="text-base font-semibold text-gray-200">{providerCfg.label} 題庫即將推出</p>
+            <p className="text-xs text-gray-500 text-center max-w-xs">{providerCfg.label} 認證相關題目正在準備中，敬請期待。</p>
           </div>
         )}
       </div>
@@ -3058,6 +3088,7 @@ const EXAM_SPECS = {
   'DEA-C01': { name: 'AWS Certified Data Engineer - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
   'PCA': { name: 'Google Professional Cloud Architect', count: 50, timeLimit: 120, passScore: 700, questions: '50 題（單選與多選）', time: '120 分鐘（2 小時）', types: '單選、多選' },
   'GCP-CDL': { name: 'Google Cloud Digital Leader', count: 50, timeLimit: 90, passScore: 700, questions: '50–60 題（單選與多選）', time: '90 分鐘', types: '單選、多選' },
+  'AZ-104': { name: 'Microsoft Certified: Azure Administrator Associate', count: 50, timeLimit: 120, passScore: 700, questions: '40–60 題（微軟未公布確切題數）', time: '120 分鐘（2 小時）', types: '單選、多選' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {

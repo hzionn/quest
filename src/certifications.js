@@ -8,6 +8,7 @@ export const CERTIFICATIONS = [
   { id: 'aws-aip', provider: 'AWS', name: 'AWS Certified Generative AI Developer – Professional', exams: ['AIP-C01'], badge: 'cert-badges/aip.png' },
   { id: 'gcp-pca', provider: 'GCP', name: 'Google Cloud Professional Cloud Architect', exams: ['PCA'], badge: 'gcp-logo.png' },
   { id: 'gcp-cdl', provider: 'GCP', name: 'Google Cloud Digital Leader', exams: ['GCP-CDL'], badge: 'gcp-logo.png' },
+  { id: 'azure-az104', provider: 'Azure', name: 'Microsoft Certified: Azure Administrator Associate', exams: ['AZ-104'], badge: 'azure-logo.png' },
 ]
 
 export function isCertificationEarned(entry) {
