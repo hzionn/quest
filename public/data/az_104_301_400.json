@@ -1531,6 +1531,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 393,
+    "type": "matching",
+    "question": "你有一個名為 VNet1 的虛擬網路，設定如下（Get-AzVirtualNetwork 的輸出節錄）：\n・Name: VNet1、ResourceGroupName: Production、Location: westus\n・AddressSpace.AddressPrefixes: [ \"10.2.0.0/16\" ]\n・DhcpOptions: {}\n・Subnets: [ { \"Name\": \"default\", \"AddressPrefix\": \"10.2.0.0/24\",\n　\"IpConfigurations\": [], \"ServiceEndpoints\": [] } ]\n・VirtualNetworkPeerings: []、EnableDDoSProtection: false、EnableVmProtection: false\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "新增一張網路介面",
+      "新增一個子網路",
+      "新增一個位址空間",
+      "刪除一個子網路",
+      "刪除一個位址空間"
+    ],
+    "matches": [
+      {
+        "use_case": "在 VNet1 上的虛擬機器可以取得 192.168.1.0/24 範圍內的 IP 位址之前，你必須先【答案】。",
+        "correct_answer": "新增一個位址空間"
+      },
+      {
+        "use_case": "在 VNet1 上的虛擬機器可以取得 10.2.1.0/24 範圍內的 IP 位址之前，你必須先【答案】。",
+        "correct_answer": "新增一個子網路"
+      }
+    ],
+    "explanations": {
+      "1": "192.168.1.0/24 完全不在 VNet1 目前的位址空間 10.2.0.0/16 之內，所以第一步必須先「新增一個位址空間」把 192.168.1.0/24 加進 VNet1（之後才能在其中切出子網路）。",
+      "2": "10.2.1.0/24 已經落在位址空間 10.2.0.0/16 之內，位址空間不用動；缺的是子網路——目前只有 default（10.2.0.0/24）。所以只要「新增一個子網路」用 10.2.1.0/24 這個前置詞即可。",
+      "_full": "判斷順序固定兩層：\n① 目標網段在不在「位址空間」內？不在就要先加位址空間。\n② 在位址空間內但沒有對應「子網路」？那就加子網路。\n虛擬機器的 IP 是由「網路介面所在的子網路」配發的，所以這兩層缺哪一層就補哪一層。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 396,
     "type": "single",
     "question": "貴公司有一個名為 Subscription1 的 Azure 訂用帳戶，以及兩台執行 Windows Server 2016 的內部部署伺服器 Server1 與 Server2。Server1 設定為 DNS 伺服器，具有名為 adatum.com 的主要 DNS 區域，其中含有 1,000 筆 DNS 記錄。你從 Server2 管理 Server1 與 Subscription1，Server2 上已安裝 DNS 管理員主控台、Azure PowerShell 與 Azure CLI 2.0。你必須把 adatum.com 區域移轉到 Subscription1 中的 Azure DNS 區域，且解決方案必須盡量減少管理工作。你應該使用什麼？",
@@ -1565,6 +1593,63 @@
       "B": "錯誤。多建一個負載平衡器是不必要的成本與複雜度，既有負載平衡器已能透過 NAT 規則達成。",
       "C": "錯誤。前端 IP 組態只是定義負載平衡器對外的位址，不決定流量送往哪一台後端。",
       "D": "錯誤。負載平衡規則的本質是把流量「分散」到後端集區中的多台機器，無法指定只送往單一 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 398,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜子網路 Subnet11、Subnet12\n・VNet2｜子網路 Subnet13\n\nSubscription1 中包含下列虛擬機器：\n・VM1｜Subnet11｜可用性設定組 AS1\n・VM2｜Subnet11｜可用性設定組 AS1\n・VM3｜Subnet11｜不適用（無可用性設定組）\n・VM4｜Subnet11｜不適用\n・VM5｜Subnet12｜不適用\n・VM6｜Subnet12｜不適用\n\n你在 Subscription1 中建立了一個負載平衡器，設定如下：\n✑ 名稱：LB1　✑ SKU：Basic　✑ 類型：內部 (Internal)\n✑ 子網路：Subnet12　✑ 虛擬網路：VNET1\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "LB1 可以在 VM1 與 VM2 之間平衡流量。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "LB1 可以在 VM3 與 VM4 之間平衡流量。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "LB1 可以在 VM5 與 VM6 之間平衡流量。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。Basic SKU 負載平衡器的後端集區成員必須位於「同一個可用性設定組」或「同一個虛擬機器擴展集」之中。VM1 與 VM2 都在 AS1，符合這個限制；同時它們與 LB1 都在 VNET1 內（Basic 內部負載平衡器只要求同一個虛擬網路，不要求與前端在同一個子網路）。",
+      "2": "否。VM3 與 VM4 雖然同在 Subnet11，但都「不屬於任何可用性設定組」，也不在擴展集裡。Basic SKU 的後端集區無法收納這種獨立的虛擬機器組合。（若改用 Standard SKU 就沒有這個限制——這正是本題的考點。）",
+      "3": "否。VM5 與 VM6 位於 LB1 的前端子網路 Subnet12，看起來「最接近」，但它們同樣不在任何可用性設定組或擴展集中，所以 Basic SKU 一樣不能把它們放進後端集區。子網路相同並不能豁免這項限制。",
+      "_full": "本題只考一條規則：Basic SKU 負載平衡器的後端集區「只能」包含同一個可用性設定組或同一個虛擬機器擴展集內的執行個體。\n・VM1/VM2 在 AS1 → 可以。\n・VM3/VM4、VM5/VM6 都沒有可用性設定組 → 不行（與子網路無關）。\nStandard SKU 則放寬為「同一個虛擬網路內的任意 VM」，遇到這類題目先看 SKU 就對了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 399,
+    "type": "matching",
+    "question": "你有一台執行 Windows Server 2019 的 Azure 虛擬機器，設定如下：\n✑ 名稱：VM1　✑ 位置：West US　✑ 連線到：VNET1\n✑ 私人 IP 位址：10.1.0.4　✑ 公用 IP 位址：52.186.85.63\n✑ Windows Server 中的 DNS 後置字元：Adatum.com\n\n你建立了下列 Azure DNS 區域：\n・Adatum.pri｜私人｜West Europe\n・Contoso.pri｜私人｜Central US\n・Adatum.com｜公用｜West Europe\n・Contoso.com｜公用｜North Europe\n\n你必須找出哪些 DNS 區域可以連結到 VNET1，以及 VM1 可以自動註冊到哪些 DNS 區域。（每個正確選擇得一分）",
+    "available_options": [
+      "只有 Adatum.com",
+      "只有 Adatum.pri 和 adatum.com",
+      "只有那些私人區域",
+      "只有那些公用區域"
+    ],
+    "matches": [
+      {
+        "use_case": "可以連結到 VNET1 的 DNS 區域：",
+        "correct_answer": "只有那些私人區域"
+      },
+      {
+        "use_case": "VM1 可以自動註冊到的 DNS 區域：",
+        "correct_answer": "只有那些私人區域"
+      }
+    ],
+    "explanations": {
+      "1": "「虛擬網路連結」是「私人」DNS 區域專屬的功能——公用區域對整個網際網路提供解析，根本沒有連結虛擬網路的概念。而私人 DNS 區域是「全域」資源，與虛擬網路不需要同區域，因此 Adatum.pri（West Europe）與 Contoso.pri（Central US）都可以連結到位於 West US 的 VNET1。→ 只有那些私人區域。",
+      "2": "自動註冊同樣只有私人區域支援（在建立虛擬網路連結時勾選「啟用自動註冊」），公用區域的記錄一律要手動維護。VM 在 Windows 裡設定的 DNS 後置字元（Adatum.com）不影響註冊目標。→ 只有那些私人區域。\n（補充一個實務限制：同一個虛擬網路「同時只能有一個」啟用自動註冊的連結，所以實際上一次只會註冊到其中一個私人區域；但就選項而言，支援自動註冊的類別就是私人區域。）",
+      "_full": "兩格都圍繞同一條界線：虛擬網路連結與自動註冊都是「私人」DNS 區域的功能，公用區域兩者都沒有。\n另外兩個要記的細節：① 私人 DNS 區域是全域資源，連結時不要求與虛擬網路同區域（本題的 West Europe／Central US 都不是問題）；② 每個虛擬網路最多只能有一個啟用自動註冊的連結。"
     }
   }
 ]

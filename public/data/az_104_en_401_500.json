@@ -20,6 +20,65 @@
   },
   {
     "exam": "AZ-104",
+    "id": 404,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resources RG1 (resource group, Central US), RG2 (resource group, West US), RG3 (resource group, East US) and VMSS1 (virtual machine scale set, resource group RG1, West US). VMSS1 is set to VM (virtual machines) orchestration mode. You need to deploy a new Azure virtual machine named VM1, and then add VM1 to VMSS1. Which resource group and location should you use to deploy VM1?",
+    "available_options": [
+      "RG1 only",
+      "RG2 only",
+      "RG1 or RG2 only",
+      "RG1, RG2, or RG3",
+      "West US only",
+      "Central US only",
+      "Central US or West US only",
+      "East US, Central US, or West US"
+    ],
+    "matches": [
+      {
+        "use_case": "Resource group:",
+        "correct_answer": "RG1, RG2, or RG3"
+      },
+      {
+        "use_case": "Location:",
+        "correct_answer": "West US only"
+      }
+    ],
+    "explanations": {
+      "1": "資源群組的位置只是「存放該群組中繼資料」的區域，不限制其中資源可以位於哪裡；而且 VM 與擴展集也不需要在同一個資源群組。因此三個資源群組都可以用。",
+      "2": "位置就不能隨意了：要把一台既有的虛擬機器加入擴展集，VM 必須與擴展集在「同一個區域」（也必須在同一個訂用帳戶）。VMSS1 位於 West US，所以 VM1 也必須部署在 West US。（注意不要被 RG1 的 Central US 誤導——那只是資源群組中繼資料的位置。）",
+      "_full": "兩個常混淆的觀念：\n① 資源群組的「位置」與其中資源的「位置」互不相干，也不要求資源同群組。\n② 「VM 協調模式」的擴展集才能把「在擴展集外自行建立的 VM」明確加進來（ScaleSetVM 模式的執行個體則由擴展集自己依組態模型建立與管理）；而加入的前提是 VM 與擴展集同區域、同訂用帳戶。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 405,
+    "type": "matching",
+    "question": "You have three virtual networks named VNET1, VNET2 and VNET3 with peerings configured as follows: VNET1 peerings - Peering1 to VNET2 (status Connected, gateway transit Disabled) and Peering1 to VNET3 (Connected, gateway transit Disabled); VNET2 peerings - Peering1 to VNET1 (Connected, gateway transit Disabled); VNET3 peerings - Peering1 to VNET1 (Connected, gateway transit Disabled). How can packets be routed between the virtual networks?",
+    "available_options": [
+      "VNET2 only",
+      "VNET3 only",
+      "VNET2 and VNET3",
+      "VNET1 only",
+      "VNET1 and VNET3"
+    ],
+    "matches": [
+      {
+        "use_case": "Packets from VNET1 can be routed to:",
+        "correct_answer": "VNET2 and VNET3"
+      },
+      {
+        "use_case": "Packets from VNET2 can be routed to:",
+        "correct_answer": "VNET1 only"
+      }
+    ],
+    "explanations": {
+      "1": "VNET1 分別與 VNET2、VNET3 都建立了對等互連且狀態為「已連線」，所以 VNET1 的封包可以直接送到這兩個網路。→ VNET2 和 VNET3。",
+      "2": "VNET2 只與 VNET1 對等互連。虛擬網路對等互連「沒有傳遞性」——VNET2 不會因為 VNET1 也連著 VNET3 就能到達 VNET3。而且兩邊的「閘道傳輸」都是停用，沒有可以中轉的路徑。→ 只有 VNET1。\n（要讓 VNET2 到 VNET3，得直接建立 VNET2↔VNET3 的對等互連，或在 VNET1 中放 NVA／Azure 防火牆並搭配使用者定義路由來中轉。）",
+      "_full": "本題只考一條規則：對等互連「不具傳遞性」。\n・直接對等的網路互通（VNET1 ↔ VNET2、VNET1 ↔ VNET3）。\n・沒有直接對等的網路不互通（VNET2 ✗ VNET3），即使它們共同連著同一個中央網路也一樣。\n「閘道傳輸 (gateway transit)」只影響 VPN／ExpressRoute 閘道的共用，不會讓對等互連變成可傳遞。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 406,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have a computer named Computer1 that has a point-to-site VPN connection to an Azure virtual network named VNet1. The point-to-site connection uses a self-signed certificate. From Azure, you download and install the VPN client configuration package on a computer named Computer2. You need to ensure that you can establish a point-to-site VPN connection to VNet1 from Computer2. Solution: You modify the Azure Active Directory (Azure AD) authentication policies. Does this meet the goal?",
@@ -65,6 +124,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 411,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the Azure virtual machines VM1 (connected to subnet 172.16.1.0/24, IP 172.16.1.4) and VM2 (connected to subnet 172.16.2.0/24, IP 172.16.2.4). You add inbound security rules to a network security group (NSG) named NSG1: priority 100, source 172.16.1.0/24, destination 172.16.2.0/24, TCP, any port, Allow; priority 101, source Any, destination 172.16.2.0/24, TCP, any port, Deny. You run Azure Network Watcher connection troubleshoot: first with source VM1, destination VM2, probe protocol TCP, destination port 8080 - status Unreachable; then with source VM1, destination VM2, probe protocol ICMP - status Reachable, hops VM1 (172.16.1.4) with next hop IP 172.16.2.4 then VM2 (172.16.2.4), both healthy. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "NSG1 limits VM1 traffic.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "NSG1 applies to VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "VM1 and VM2 connect to the same virtual network.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。優先順序 100 的規則「允許」來源 172.16.1.0/24（也就是 VM1 所在子網路）到 172.16.2.0/24 的任何 TCP 連接埠，而且它的數字比 101 的拒絕規則小、會先命中。所以 TCP 8080 之所以「無法連線」不是被 NSG 擋掉，而是 VM2 上根本沒有服務在監聽 8080——NSG1 並沒有限制 VM1 的流量。",
+      "2": "是。NSG1 兩條規則的「目的地」都是 172.16.2.0/24，正是 VM2 所在的子網路；而輸入規則是在「流量進入的那一端」評估的，代表 NSG1 關聯在 VM2 的子網路（或網路介面）上，因此套用於 VM2。",
+      "3": "是。第二次檢查的躍點清單顯示 VM1 (172.16.1.4) 的「下一個躍點」直接就是 172.16.2.4（VM2），中間沒有任何閘道或設備。同一個虛擬網路內的不同子網路之間本來就由系統路由直接互通，這正是這個結果的成因（不同虛擬網路之間會需要對等互連或閘道，躍點也會不同）。",
+      "_full": "三個判斷各有依據：\n① 讀 NSG 規則要按優先順序：數字小的先命中，所以允許規則勝過後面的拒絕規則——TCP 8080 不通是應用層沒監聽，不是 NSG 擋的。\n② 從規則的「目的地」就能反推 NSG 關聯在哪一端（輸入規則在接收端評估）。\n③ 網路監看員的躍點清單能證明兩台 VM 是否同網路：中間沒有其他躍點就是同一個虛擬網路。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 412,
     "type": "single",
     "question": "You have the Azure virtual network named VNet1 that contains a subnet named Subnet1. Subnet1 contains three Azure virtual machines. Each virtual machine has a public IP address. The virtual machines host several applications that are accessible over port 443 to users on the Internet. Your on-premises network has a site-to-site VPN connection to VNet1. You discover that the virtual machines can be accessed by using the Remote Desktop Protocol (RDP) from the Internet and from the on-premises network. You need to prevent RDP access to the virtual machines from the Internet, unless the RDP connection is established from the on-premises network. The solution must ensure that all the applications can still be accessed by the Internet users. What should you do?",
@@ -105,6 +194,67 @@
       "C": "Correct. 正確。要與 ExpressRoute 並存作為容錯移轉路徑，VPN 閘道必須支援共存組態，最低可用的是 VpnGw1；在符合功能的前提下它成本最低。",
       "D": "Incorrect. 錯誤。VNet1 既然已經連接 ExpressRoute，代表閘道子網路早已存在，不需要重新建立。",
       "E": "Incorrect. 錯誤。Basic SKU 不支援與 ExpressRoute 共存，雖然更便宜卻無法達成需求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 415,
+    "type": "matching",
+    "question": "You have an Azure subscription whose virtual networks include test1-vnet, testVNET1 and vNET1 through vNET6. Peering for vNET6 is configured as follows: peering1 to vNET1 (status Disconnected, gateway transit Enabled) and peering2 to vNET2 (status Disconnected, gateway transit Disabled). Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "vNET6 only",
+      "vNET6 and vNET1 only",
+      "vNET6, vNET1, and vNET2 only",
+      "all the virtual networks in the subscription",
+      "add a service endpoint",
+      "add a subnet",
+      "delete peering1",
+      "modify the address space"
+    ],
+    "matches": [
+      {
+        "use_case": "Hosts on vNET6 can communicate with hosts on [answer choice].",
+        "correct_answer": "vNET6 only"
+      },
+      {
+        "use_case": "To change the status of the peering connection to vNET1 to Connected, you must first [answer choice].",
+        "correct_answer": "delete peering1"
+      }
+    ],
+    "explanations": {
+      "1": "兩個對等互連的狀態都是「已中斷連線」，代表對方虛擬網路上「對應的那一半」對等互連已經被刪除（對等互連必須兩邊各建一條，兩邊都存在才會是 Connected）。狀態不是 Connected 時流量不會通，因此 vNET6 上的主機只能和 vNET6 自己的主機通訊。",
+      "2": "「已中斷連線」的對等互連無法用「更新」修回來——必須把這一半刪掉再重新建立（兩邊各建一條），狀態才會回到 Initiated／Connected。所以第一步是刪除 peering1。新增服務端點或子網路、修改位址空間都不會改變對等互連的狀態（位址空間重疊會導致「建立失敗」，但這裡的問題是對方那一半不存在）。",
+      "_full": "對等互連的狀態機要記清楚：\n・Initiated：只建了單邊，等對方建立。\n・Connected：兩邊都建好，流量才通。\n・Disconnected：對方那一半被刪除了——「不能靠更新修復」，必須刪除本地這一半再重建。\n另外，狀態不是 Connected 時，不管閘道傳輸有沒有啟用都不會通。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 416,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains VM1 (virtual machine), VM2 (virtual machine) and LB1 (load balancer, Basic SKU). You install the Web Server (IIS) role on VM1 and VM2, and then add VM1 and VM2 to the backend pool of LB1. LB1's overview shows: resource group VMRG, location West Europe, SKU Basic, backend pool Backend1 (2 virtual machines), health probe Probe1 (HTTP:80/Probe1.htm), load balancing rule Rule1 (TCP/80), NAT rules none, public IP address 104.40.178.194 (LB1). Rule1 is configured as: name Rule1, IP version IPv4, frontend IP address 104.40.178.194 (LoadBalanceFrontEnd), protocol TCP, port 80, backend port 80, backend pool Backend1 (2 virtual machines), health probe Probe1 (HTTP:80/Probe1.htm), session persistence None, idle timeout 4 minutes, floating IP (direct server return) Disabled. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 is in the same availability set as VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "If Probe1.htm is present on VM1 and VM2, LB1 will balance TCP port 80 between VM1 and VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "If you delete Rule1, LB1 will balance all the requests between VM1 and VM2 for all the ports.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。這是從「LB1 是 Basic SKU 且後端集區已成功包含兩台 VM」反推出來的：Basic SKU 的後端集區只能收納「同一個可用性設定組」或「同一個虛擬機器擴展集」中的執行個體。既然兩台 VM 都已經在 Backend1 裡，它們必定同屬一個可用性設定組。",
+      "2": "是。負載平衡規則 Rule1 已經把前端 TCP 80 對應到後端 80，而健康情況探查 Probe1 會去抓 HTTP:80/Probe1.htm。探查成功（也就是兩台都有 Probe1.htm）時，兩台都被判定為健康，新連線就會被分配到兩台上——探查失敗的執行個體會停止收到新流量。",
+      "3": "否。負載平衡「規則」正是定義「哪個連接埠要被平衡」的東西。把 Rule1 刪掉之後就沒有任何規則了，LB1 不會轉發任何流量，更不會變成「全部連接埠都平衡」。（若真的想涵蓋所有連接埠，要建立啟用「高可用性埠 (HA Ports)」的規則，而那是 Standard SKU 內部負載平衡器才有的功能。）",
+      "_full": "三個要點：\n① Basic SKU 的後端集區限制（同一可用性設定組或擴展集）可以「反推」出 VM 的關係。\n② 健康情況探查決定哪些後端會收到新流量；探查成功才會被納入分配。\n③ 沒有負載平衡規則就沒有任何流量轉發——刪除規則不等於「全部開放」；要一次涵蓋所有連接埠得用 Standard SKU 的高可用性埠。"
     }
   },
   {

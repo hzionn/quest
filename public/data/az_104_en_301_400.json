@@ -1531,6 +1531,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 393,
+    "type": "matching",
+    "question": "You have a virtual network named VNet1 that has the following configuration (excerpt of Get-AzVirtualNetwork output): Name VNet1; ResourceGroupName Production; Location westus; AddressSpace.AddressPrefixes [ \"10.2.0.0/16\" ]; DhcpOptions {}; Subnets [ { \"Name\": \"default\", \"AddressPrefix\": \"10.2.0.0/24\", \"IpConfigurations\": [], \"ServiceEndpoints\": [] } ]; VirtualNetworkPeerings []; EnableDDoSProtection false; EnableVmProtection false. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "add a network interface",
+      "add a subnet",
+      "add an address space",
+      "delete a subnet",
+      "delete an address space"
+    ],
+    "matches": [
+      {
+        "use_case": "Before a virtual machine on VNet1 can receive an IP address from 192.168.1.0/24, you must first [answer choice]",
+        "correct_answer": "add an address space"
+      },
+      {
+        "use_case": "Before a virtual machine on VNet1 can receive an IP address from 10.2.1.0/24, you must first [answer choice]",
+        "correct_answer": "add a subnet"
+      }
+    ],
+    "explanations": {
+      "1": "192.168.1.0/24 完全不在 VNet1 目前的位址空間 10.2.0.0/16 之內，所以第一步必須先「新增一個位址空間」把 192.168.1.0/24 加進 VNet1（之後才能在其中切出子網路）。",
+      "2": "10.2.1.0/24 已經落在位址空間 10.2.0.0/16 之內，位址空間不用動；缺的是子網路——目前只有 default（10.2.0.0/24）。所以只要「新增一個子網路」用 10.2.1.0/24 這個前置詞即可。",
+      "_full": "判斷順序固定兩層：\n① 目標網段在不在「位址空間」內？不在就要先加位址空間。\n② 在位址空間內但沒有對應「子網路」？那就加子網路。\n虛擬機器的 IP 是由「網路介面所在的子網路」配發的，所以這兩層缺哪一層就補哪一層。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 396,
     "type": "single",
     "question": "Your company has an Azure subscription named Subscription1. The company also has two on-premises servers named Server1 and Server2 that run Windows Server 2016. Server1 is configured as a DNS server that has a primary DNS zone named adatum.com. Adatum.com contains 1,000 DNS records. You manage Server1 and Subscription1 from Server2. Server2 has the following tools installed: ✑ The DNS Manager console ✑ Azure PowerShell ✑ Azure CLI 2.0 You need to move the adatum.com zone to an Azure DNS zone in Subscription1. The solution must minimize administrative effort. What should you use?",
@@ -1565,6 +1593,63 @@
       "B": "Incorrect. 錯誤。多建一個負載平衡器是不必要的成本與複雜度，既有負載平衡器已能透過 NAT 規則達成。",
       "C": "Incorrect. 錯誤。前端 IP 組態只是定義負載平衡器對外的位址，不決定流量送往哪一台後端。",
       "D": "Incorrect. 錯誤。負載平衡規則的本質是把流量「分散」到後端集區中的多台機器，無法指定只送往單一 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 398,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1 that contains the virtual networks VNet1 (subnets Subnet11 and Subnet12) and VNet2 (Subnet13). Subscription1 contains the virtual machines VM1 (Subnet11, availability set AS1), VM2 (Subnet11, AS1), VM3 (Subnet11, not applicable), VM4 (Subnet11, not applicable), VM5 (Subnet12, not applicable) and VM6 (Subnet12, not applicable). In Subscription1, you create a load balancer with these configurations: Name LB1; SKU Basic; Type Internal; Subnet Subnet12; Virtual network VNET1. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "LB1 can balance the traffic between VM1 and VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "LB1 can balance the traffic between VM3 and VM4.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "LB1 can balance the traffic between VM5 and VM6.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。Basic SKU 負載平衡器的後端集區成員必須位於「同一個可用性設定組」或「同一個虛擬機器擴展集」之中。VM1 與 VM2 都在 AS1，符合這個限制；同時它們與 LB1 都在 VNET1 內（Basic 內部負載平衡器只要求同一個虛擬網路，不要求與前端在同一個子網路）。",
+      "2": "否。VM3 與 VM4 雖然同在 Subnet11，但都「不屬於任何可用性設定組」，也不在擴展集裡。Basic SKU 的後端集區無法收納這種獨立的虛擬機器組合。（若改用 Standard SKU 就沒有這個限制——這正是本題的考點。）",
+      "3": "否。VM5 與 VM6 位於 LB1 的前端子網路 Subnet12，看起來「最接近」，但它們同樣不在任何可用性設定組或擴展集中，所以 Basic SKU 一樣不能把它們放進後端集區。子網路相同並不能豁免這項限制。",
+      "_full": "本題只考一條規則：Basic SKU 負載平衡器的後端集區「只能」包含同一個可用性設定組或同一個虛擬機器擴展集內的執行個體。\n・VM1/VM2 在 AS1 → 可以。\n・VM3/VM4、VM5/VM6 都沒有可用性設定組 → 不行（與子網路無關）。\nStandard SKU 則放寬為「同一個虛擬網路內的任意 VM」，遇到這類題目先看 SKU 就對了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 399,
+    "type": "matching",
+    "question": "You have an Azure virtual machine that runs Windows Server 2019 and has the following configurations: Name VM1; Location West US; Connected to VNET1; Private IP address 10.1.0.4; Public IP address 52.186.85.63; DNS suffix in Windows Server Adatum.com. You create the Azure DNS zones Adatum.pri (Private, West Europe), Contoso.pri (Private, Central US), Adatum.com (Public, West Europe) and Contoso.com (Public, North Europe). You need to identify which DNS zones you can link to VNET1 and the DNS zones to which VM1 can automatically register. Which zones should you identify?",
+    "available_options": [
+      "Adatum.com only",
+      "Adatum.pri and adatum.com only",
+      "The private zones only",
+      "The public zones only"
+    ],
+    "matches": [
+      {
+        "use_case": "DNS zones that you can link to VNET1:",
+        "correct_answer": "The private zones only"
+      },
+      {
+        "use_case": "DNS zones to which VM1 can automatically register:",
+        "correct_answer": "The private zones only"
+      }
+    ],
+    "explanations": {
+      "1": "「虛擬網路連結」是「私人」DNS 區域專屬的功能——公用區域對整個網際網路提供解析，根本沒有連結虛擬網路的概念。而私人 DNS 區域是「全域」資源，與虛擬網路不需要同區域，因此 Adatum.pri（West Europe）與 Contoso.pri（Central US）都可以連結到位於 West US 的 VNET1。→ 只有那些私人區域。",
+      "2": "自動註冊同樣只有私人區域支援（在建立虛擬網路連結時勾選「啟用自動註冊」），公用區域的記錄一律要手動維護。VM 在 Windows 裡設定的 DNS 後置字元（Adatum.com）不影響註冊目標。→ 只有那些私人區域。\n（補充一個實務限制：同一個虛擬網路「同時只能有一個」啟用自動註冊的連結，所以實際上一次只會註冊到其中一個私人區域；但就選項而言，支援自動註冊的類別就是私人區域。）",
+      "_full": "兩格都圍繞同一條界線：虛擬網路連結與自動註冊都是「私人」DNS 區域的功能，公用區域兩者都沒有。\n另外兩個要記的細節：① 私人 DNS 區域是全域資源，連結時不要求與虛擬網路同區域（本題的 West Europe／Central US 都不是問題）；② 每個虛擬網路最多只能有一個啟用自動註冊的連結。"
     }
   }
 ]
