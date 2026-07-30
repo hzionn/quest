@@ -1046,6 +1046,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 469,
+    "type": "matching",
+    "question": "你有一個名為 VNET1 的虛擬網路，其中包含下列子網路：\n・Subnet1｜10.10.1.0/24｜關聯的網路安全性群組：NSG1\n・Subnet2｜10.10.2.0/24｜關聯的網路安全性群組：無\n\n你有下列 Azure 虛擬機器：\n・VM1｜Subnet1｜10.10.1.5｜網路介面上的 NSG：NSG2\n・VM2｜Subnet2｜10.10.2.5｜無\n・VM3｜Subnet2｜10.10.2.6｜無\n\nNSG1 的輸入安全性規則：\n・優先順序 101｜來源 10.10.2.0/24｜目的地 10.10.1.0/24｜目的連接埠 TCP/1433｜允許\n\nNSG2 的輸入安全性規則：\n・優先順序 125｜來源 10.10.2.5｜目的地 10.10.1.5｜目的連接埠 TCP/1433｜封鎖 (Block)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "VM2 可以連線到 VM1 上的 TCP 連接埠 1433 服務。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "VM1 可以連線到 VM2 上的 TCP 連接埠 1433 服務。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "VM2 可以連線到 VM3 上的 TCP 連接埠 1433 服務。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。流量進入 VM1 時會被「兩層」NSG 依序評估：先是子網路上的 NSG1，再是網路介面上的 NSG2，「兩層都必須允許」才會通。NSG1 的規則允許 10.10.2.0/24 → 10.10.1.0/24 的 1433，但 NSG2 明確封鎖 10.10.2.5 → 10.10.1.5 的 1433，所以來自 VM2（10.10.2.5）的連線在網路介面這一層被擋下。",
+      "2": "是。這次方向相反：VM1 送出的流量看 NSG2／NSG1 的「輸出」規則——兩個 NSG 都只建了輸入規則，輸出方向沿用預設的 AllowVnetOutBound，放行。而 VM2 那一端（Subnet2 無 NSG、網路介面也無 NSG）完全沒有限制，預設的 AllowVnetInBound 允許同一虛擬網路的流量進入。",
+      "3": "是。VM2 與 VM3 都在 Subnet2，而 Subnet2 沒有關聯任何 NSG，兩台的網路介面也沒有 NSG。在沒有自訂規則的情況下，預設規則允許同一虛擬網路內部互通，因此連線成立。",
+      "_full": "本題的核心是「NSG 的兩層評估」：\n・輸入方向：先評估「子網路」的 NSG，再評估「網路介面」的 NSG，兩層都允許才通。\n・輸出方向：順序相反（先網路介面、再子網路），同樣兩層都要允許。\n所以只要任一層有拒絕規則命中，流量就不通——第一項就是被網路介面層的 NSG2 擋下。另外記得預設規則允許虛擬網路內部互通，因此沒掛 NSG 的路徑一律通。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 470,
+    "type": "matching",
+    "question": "Subscription1 中包含下列虛擬機器：\n・VM1｜10.0.1.4　・VM2｜10.0.2.4　・VM3｜10.0.3.4\n\nSubscription1 中有一個名為 VNet1 的虛擬網路，其子網路如下：\n・Subnet1｜10.0.1.0/24｜連線的虛擬機器 VM1\n・Subnet2｜10.0.2.0/24｜VM2\n・Subnet3｜10.0.3.0/24｜VM3\n\nVM3 有多張網路卡，其中一張名為 NIC3。NIC3 已啟用「IP 轉送」，且 VM3 上已啟用路由功能。\n你建立了一個名為 RT1 的路由表，內含下列路由：\n・位址前置詞 10.0.1.0/24｜下一個躍點類型 虛擬設備｜下一個躍點位址 10.0.3.4\n・位址前置詞 10.0.2.0/24｜下一個躍點類型 虛擬設備｜下一個躍點位址 10.0.3.4\n\n你把 RT1 套用到 Subnet1 與 Subnet2。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "VM3 可以與 VM1 建立網路連線。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "如果 VM3 關機，VM2 可以與 VM1 建立網路連線。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "VM1 可以與 VM2 建立網路連線。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "是。RT1 只套用到 Subnet1 與 Subnet2，「沒有」套用到 VM3 所在的 Subnet3。因此 VM3 發出的流量走的是 Azure 預設的系統路由——同一虛擬網路內直接送達，不會被導去任何虛擬設備。",
+      "2": "否。VM2 在 Subnet2，而 Subnet2 套用了 RT1：前往 10.0.1.0/24 的流量必須先送到下一個躍點 10.0.3.4（也就是 VM3）。VM3 一關機，這個下一個躍點就無法回應，流量沒有替代路徑（使用者定義路由的優先權高於系統路由），因此連線失敗。這正是把 NVA 當單點時的典型風險。",
+      "3": "是。VM1 在 Subnet1，同樣套用 RT1：前往 10.0.2.0/24 的流量先送到 VM3。而 VM3 的 NIC3 已啟用「IP 轉送」（允許接收目的位址不屬於自己的封包），作業系統內也啟用了路由功能，所以它會把封包轉送到 VM2。兩個條件都滿足，連線成立。",
+      "_full": "三個要點：\n① 使用者定義路由只影響「套用了該路由表的子網路」——沒套用的子網路仍走系統路由。\n② 使用者定義路由的優先權高於系統路由，所以下一個躍點掛掉就沒有備援（第 2 項）。\n③ 要讓 VM 真的能當路由器，必須同時做兩件事：在 Azure 的網路介面上啟用「IP 轉送」，並在客體作業系統內啟用路由／轉送功能。少任一項封包都會被丟棄。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 471,
     "type": "single",
     "question": "你的內部部署網路中有一個名為 Share1 的 SMB 共用。你有一個 Azure 訂用帳戶，其中包含一個名為 webapp1 的 Web 應用程式與一個名為 VNET1 的虛擬網路。你必須確保 webapp1 能夠連線到 Share1。你應該部署什麼？",
@@ -1120,6 +1180,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 477,
+    "type": "matching",
+    "question": "你有下列虛擬網路：\n・VNet1｜位置 East US｜雲端類型 Azure Government\n・VNet2｜位置 West US 2｜雲端類型 Public（公用）\n・VNet3｜位置 China East｜雲端類型 Azure China\n\n你考慮下列對等互連設定：\n・Peering 1-2：VNet1 ↔ VNet2\n・Peering 1-3：VNet1 ↔ VNet3\n・Peering 3-2：VNet3 ↔ VNet2\n\n你必須為這些虛擬網路上的資源設計通訊策略。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Peering 1-2 是可行的設定。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Peering 1-3 是可行的設定。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Peering 3-2 是可行的設定。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。Azure Government 與全球公用 Azure 是兩個「獨立的雲端」，各有自己的 Azure Resource Manager 端點、身分識別系統與骨幹網路。虛擬網路對等互連無法跨越不同的雲端環境。",
+      "2": "否。Azure Government 與 Azure 中國同樣是兩個獨立的雲端，理由同上。",
+      "3": "否。Azure 中國與全球公用 Azure 也是獨立的雲端（Azure 中國由當地合作夥伴 21Vianet 營運，與全球 Azure 實體隔離）。",
+      "_full": "一條規則就能全部判完：虛擬網路對等互連「不能跨雲端環境」——公用 Azure、Azure Government、Azure 中國（以及德國的舊主權雲）彼此完全隔離。\n對等互連可以跨區域、跨訂用帳戶、跨 Microsoft Entra 租用戶，但「不能跨雲端」。要在不同雲端之間互通，只能走公用網際網路上的 VPN／ExpressRoute 等站對站方案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 478,
     "type": "single",
     "question": "你有五台執行 Windows Server 2016 的 Azure 虛擬機器，設定為 Web 伺服器，並由名為 LB1 的 Azure 負載平衡器提供負載平衡服務。你必須確保訪客的每一次請求都由「同一台」Web 伺服器服務。你應該設定什麼？",
@@ -1154,6 +1244,37 @@
       "B": "正確。使用者透過瀏覽器以 HTTPS（TCP 443）連到 Azure Bastion，因此 NSG 的輸入規則必須允許來源 Internet 的 443；Bastion 再以 RDP/SSH 連到後端 VM。",
       "C": "錯誤。389 是 LDAP，與 Bastion 無關。",
       "D": "錯誤。8080 不是 Bastion 使用的連接埠。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 480,
+    "type": "matching",
+    "question": "你的內部部署網路中有下列伺服器：\n・DC1｜IP 192.168.2.1/16｜角色：網域控制站、DNS 伺服器\n・Server1｜IP 192.168.2.50/16｜角色：成員伺服器\n\n你打算把 contoso.com 移轉到 Azure，並建立了一個名為 VNET1 的 Azure 虛擬網路：\n• 位址空間：10.0.0.0/16\n• 子網路：名稱 Subnet1、IPv4 10.0.1.0/24\n\n你必須把 DC1 移到 VNET1，且解決方案必須確保 contoso.com 中的成員伺服器仍能解析 AD DS 的 DNS 名稱。\n你應該如何設定 DC1？（每個正確選擇得一分）",
+    "available_options": [
+      "自動取得 IP 位址",
+      "使用 10.0.1.3",
+      "使用 10.0.2.1",
+      "使用 192.168.2.1",
+      "將 VNET1 設定為使用自訂 DNS 伺服器",
+      "將 VNET1 設定為使用預設的 Azure 提供的 DNS 伺服器",
+      "建立一個名為 contoso.com 的 Azure 私人 DNS 區域",
+      "建立一個名為 contoso.com 的 Azure 公用 DNS 區域"
+    ],
+    "matches": [
+      {
+        "use_case": "IP 位址：",
+        "correct_answer": "自動取得 IP 位址"
+      },
+      {
+        "use_case": "名稱解析：",
+        "correct_answer": "將 VNET1 設定為使用自訂 DNS 伺服器"
+      }
+    ],
+    "explanations": {
+      "1": "自動取得 IP 位址。【答案校正】官方標示為「使用 10.0.1.3」，但 10.0.1.3 在 Azure 是「保留位址」，根本無法指派給虛擬機器——每個子網路的前四個位址都被保留（10.0.1.0 網路位址、10.0.1.1 預設閘道、10.0.1.2 與 10.0.1.3 供 Azure DNS 對應），Subnet1 的第一個可用位址是 10.0.1.4。\n而且 Azure 的正確做法本來就是：客體作業系統一律設為「自動取得 IP 位址」，要固定位址就在「Azure 網路介面」上把配置改為靜態；在客體 OS 內手動寫死 IP 是不受支援的做法，會導致連線異常。另外 10.0.2.1 不在 Subnet1 範圍內、192.168.2.1 更不在 VNET1 的位址空間內。",
+      "2": "將 VNET1 設定為使用自訂 DNS 伺服器（指向 DC1）。【答案校正】官方標示為「建立一個名為 contoso.com 的 Azure 私人 DNS 區域」，但 Azure 私人 DNS 區域「不支援 AD DS 所需的動態註冊與 SRV 記錄」——網域成員要靠 _ldap._tcp、_kerberos._tcp 這類 SRV 記錄才能找到網域控制站，這些記錄由 DC 自己動態維護，私人 DNS 區域無法承擔這個角色（Microsoft 文件也明確指出不支援用 Azure DNS 私人區域取代 AD DS 的 DNS）。正確做法是把 VNET1 的 DNS 伺服器設為自訂，填入 DC1 的私人 IP，讓虛擬網路中的機器都去問 DC1。改用 Azure 提供的 DNS 或建立公用區域同樣無法解析 AD DS 名稱。",
+      "_full": "【答案校正】本題兩格的官方答案都站不住腳：\n① Azure 每個子網路保留前四個位址，10.0.1.3 不可指派；而且客體 OS 應設為 DHCP，靜態指派要做在 Azure 網路介面上。\n② AD DS 的名稱解析依賴動態註冊的 SRV 記錄，Azure 私人 DNS 區域不支援，必須把虛擬網路的 DNS 指向網域控制站本身。\n把網域控制站搬上 Azure 的標準做法就是：NIC 設靜態私人 IP（OS 內維持 DHCP）＋ 虛擬網路 DNS 指向該 DC。"
     }
   },
   {
