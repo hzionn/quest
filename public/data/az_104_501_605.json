@@ -93,6 +93,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 510,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜East US｜與 VNet2 對等互連\n・VNet2｜East US｜與 VNet1、VNet3 對等互連\n・VNet3｜West US｜與 VNet2 對等互連\n\n訂用帳戶中的虛擬機器：\n・VM1｜Windows｜連線到 VNet1\n・VM2｜Linux｜連線到 VNet2\n・VM3｜Windows｜連線到 VNet3\n\n每台虛擬機器都「只有私人 IP 位址」。\n你為 VNet1 建立了一個 Azure Bastion，設定如下：\n・資源群組 RG1、名稱 Bastion1、區域 East US\n・層級 (Tier)：「基本 (Basic)」；執行個體計數 2\n・虛擬網路 VNet1、子網路 AzureBastionSubnet (10.0.2.0/24)\n・公用 IP：新建 VNet1-ip，SKU Standard，指派方式 靜態\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "可以用遠端桌面連線用戶端 (mstsc.exe) 透過 Bastion1 連線到 VM1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Azure 入口網站可以透過 Bastion1 使用 SSH 連線到 VM2。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "Azure 入口網站可以透過 Bastion1 連線到 VM3。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。用「原生用戶端」（mstsc.exe、az network bastion rdp／ssh）透過 Bastion 連線是 Standard 層級以上才有的功能。本題的 Bastion1 是「基本」層級，只支援從 Azure 入口網站開啟瀏覽器內的 RDP／SSH 工作階段。",
+      "2": "是。Bastion 可以連線到「與它所在虛擬網路對等互連」的虛擬網路中的 VM。VNet1（Bastion 所在）與 VNet2（VM2 所在）直接對等互連，因此連得到；而從入口網站對 Linux VM 開 SSH 工作階段是基本層級就支援的功能。",
+      "3": "否。VM3 在 VNet3，而 VNet3 只與 VNet2 對等互連、「沒有」與 VNet1 對等互連。對等互連不具傳遞性，所以位於 VNet1 的 Bastion1 到不了 VNet3。（要連 VM3 就得再建立 VNet1↔VNet3 的對等互連，或在 VNet3 另建一個 Bastion。）",
+      "_full": "三個要點：\n① 層級差異：基本層級只有「入口網站瀏覽器」工作階段；原生用戶端、主機調整、共用連結、IP 型連線等都要 Standard 以上。\n② Bastion 可跨「直接對等互連」的虛擬網路連線。\n③ 但對等互連不具傳遞性——隔了一層的虛擬網路連不到。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 511,
     "type": "matching",
     "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜West Europe　・VNet2｜Southeast Asia　・VNet3｜South Central US\n\n訂用帳戶中的子網路如下：\n・Subnet1｜VNet1｜服務端點：無\n・Subnet2｜VNet2｜服務端點：Microsoft.Storage\n・Subnet3｜VNet3｜服務端點：Microsoft.Storage\n・Subnet4｜VNet4｜服務端點：無\n\n訂用帳戶中的儲存體帳戶如下：\n・storage1｜West Europe｜StorageV2\n・storage2｜South Central US｜BlobStorage\n・storage3｜Southeast Asia｜StorageV2\n\n你在 South Central US 這個 Azure 區域建立了一個名為 Policy1 的服務端點原則，允許連線到「訂用帳戶中所有的」儲存體帳戶。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -163,6 +193,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 514,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜10.0.0.4｜VNET1\n・VM2｜172.16.0.4｜VNET2\n・VM3｜192.168.0.4｜VNET3\n・VM4｜192.168.0.5｜VNET3\n\nVNET1、VNET2 與 VNET3 已對等互連。\nVM4 上有一台 DNS 伺服器，是名為 contoso.com 區域的權威伺服器，內含下列記錄：\n・Server1｜A｜131.107.3.3\n・Server2｜A｜131.107.3.4\n\n這些虛擬網路的 DNS 伺服器設定如下：\n・VNET1｜預設（Azure 提供）\n・VNET2｜自訂：192.168.0.5\n・VNET3｜自訂：192.168.0.5\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "從 VM1 查詢，server1.contoso.com 會解析為 131.107.3.3。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "從 VM2 查詢，server1.contoso.com 會解析為 131.107.3.3。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "從 VM3 查詢，server2.contoso.com 會解析為 131.107.2.4。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。VNET1 使用「預設（Azure 提供）」的 DNS，也就是 Azure 遞迴解析程式 168.63.129.16。它只知道 Azure 內部名稱與公用網際網路的名稱，完全不知道 VM4 上那個私有的 contoso.com 區域，所以查不到 server1.contoso.com。",
+      "2": "是。VNET2 的 DNS 伺服器設為自訂的 192.168.0.5，正是 VM4；而 VNET1／VNET2／VNET3 已對等互連，所以 VM2 連得到 VM4。VM4 是 contoso.com 的權威伺服器，區域中 Server1 的 A 記錄是 131.107.3.3，因此解析結果正確。",
+      "3": "否——注意這題考的是「數值」。VM3 確實會去問 VM4（VNET3 的自訂 DNS 是 192.168.0.5），而 VM4 上 Server2 的 A 記錄是 131.107.3.4，但敘述寫的是 131.107.2.4（第三個位元組不同）。查詢會成功，但結果與敘述不符。",
+      "_full": "兩個層次都要檢查：\n① 「這台 VM 會去問誰」——由虛擬網路（或網路介面）的 DNS 設定決定。用 Azure 提供的 DNS 就查不到自建區域（第 1 項）。\n② 「查到的值對不對」——要逐位元組核對記錄內容，本題第 3 項就是把 131.107.3.4 寫成 131.107.2.4 的陷阱。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 516,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，正在建立一個新的 Azure 容器實例，設定如下：\n• 容器名稱：cont1\n• SKU：Standard\n• OS 類型：Windows\n• 網路類型：公用\n• 記憶體 (GiB)：2.5\n• CPU 核心數：2\n你發現網路類型的「私人」設定無法使用。你必須確保 cont1 可以設定為使用私人網路。你應該變更哪一項設定？\n\n（註：本題屬有爭議題目，作答請以官方標示為準，詳見解析。）",
@@ -199,6 +259,36 @@
       "B": "錯誤。復原計畫是把多台機器的容錯移轉順序組織起來，屬於後期作業。",
       "C": "錯誤。OVA 範本用於部署 Azure Migrate 的設備，屬於「Azure Migrate」的評估與遷移流程；本題以復原服務保存庫為起點，走的是 Site Recovery 路徑。",
       "D": "正確。以復原服務保存庫進行遷移時，必須先準備目標端資源——最關鍵的就是虛擬網路，遷移過來的虛擬機器才有網路可以連接。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 520,
+    "type": "matching",
+    "question": "你有下列虛擬網路：\n・VNet1｜East US｜與 VNet2 對等互連\n・VNet2｜East US｜與 VNet1 對等互連\n\n每個虛擬網路各有 50 台連線的虛擬機器。\n你必須實作 Azure Bastion，且解決方案必須滿足下列要求：\n• 支援主機調整 (host scaling)。\n• 支援上傳與下載檔案。\n• 支援 VNet1 與 VNet2 上的虛擬機器。\n• 盡量減少 Azure Bastion 子網路上的位址數量。\n你應該如何設定 Azure Bastion？（每個正確答案得一分）",
+    "available_options": [
+      "/24",
+      "/26",
+      "/28",
+      "/29",
+      "Basic SKU、動態配置",
+      "Basic SKU、靜態配置",
+      "Standard SKU、靜態配置"
+    ],
+    "matches": [
+      {
+        "use_case": "子網路大小：",
+        "correct_answer": "/26"
+      },
+      {
+        "use_case": "公用 IP：",
+        "correct_answer": "Standard SKU、靜態配置"
+      }
+    ],
+    "explanations": {
+      "1": "/26。「主機調整」與「檔案上傳／下載」都是 Standard 層級的功能，而 Standard（尤其是要調整執行個體數量時）要求 AzureBastionSubnet 至少 /26。題目又要求「盡量減少位址數量」，所以取下限 /26——/28 與 /29 太小；/24 雖然可行但遠超需求。",
+      "2": "Standard SKU、靜態配置。Azure Bastion 的公用 IP 必須是「Standard SKU 且靜態配置」——這是硬性要求，Basic SKU 或動態配置都不被接受。（順帶一提，Bastion 只需要「一個」公用 IP，不會因為 VM 數量而增加。）",
+      "_full": "本題四個要求各自對應：\n・主機調整、檔案上傳下載 → 必須用 Standard 層級的 Bastion（基本層級沒有）。\n・支援兩個虛擬網路 → 兩者已直接對等互連，一個 Bastion 就涵蓋得到。\n・盡量少位址 → 取 Standard 允許的最小子網路 /26。\n另外記住 Bastion 公用 IP 的固定要求：Standard SKU + 靜態配置。"
     }
   },
   {
@@ -256,6 +346,33 @@
       "B": "錯誤。啟用郵件的安全性群組屬於 Exchange／Entra 的通訊物件，Azure 監視器的警示規則不會直接以它作為通知目標。",
       "C": "錯誤。通訊群組同樣是郵件通訊物件，不是 Azure 監視器的通知設定。",
       "D": "錯誤。Microsoft 365 群組用於協作，也不是警示規則的通知機制。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 527,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storage1 的 Azure 儲存體帳戶，以及下列使用者：\n・User1｜隸屬 Group1\n・User2｜隸屬 Group2\n・User3｜隸屬 Group1\n\n你打算監視 storage1，並為下列訊號設定電子郵件通知：\n・Ingress｜類型 計量 (Metric)｜要通知的使用者：只有 User1 和 User3\n・Egress｜類型 計量｜只有 User1\n・Delete storage account｜類型 活動記錄｜User1、User2 和 User3\n・Restore blob ranges｜類型 活動記錄｜只有 User1 和 User3\n\n你必須找出這個監視規劃「最少」需要幾條警示規則與幾個動作群組。（每個正確選擇得一分）",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "警示規則 (Alert rules)：",
+        "correct_answer": "4"
+      },
+      {
+        "use_case": "動作群組 (Action groups)：",
+        "correct_answer": "3"
+      }
+    ],
+    "explanations": {
+      "1": "4 條。一條警示規則只對應「一個訊號（條件）」——計量警示與活動記錄警示更是完全不同類型的規則，不能合併。四個訊號 Ingress、Egress、Delete storage account、Restore blob ranges 各需一條規則，所以最少 4 條。",
+      "2": "3 個。動作群組是「通知對象的集合」，可以被多條警示規則「重複使用」，因此只要看有幾組「不同的收件人組合」：\n・{User1, User3} → Ingress 與 Restore blob ranges「共用同一個」動作群組。\n・{User1} → Egress。\n・{User1, User2, User3} → Delete storage account。\n三種不同組合 → 最少 3 個動作群組。",
+      "_full": "這類「最少要幾個」的題目有固定算法：\n・警示規則數 = 訊號（條件）數，不能合併不同訊號。\n・動作群組數 = 「不同通知對象組合」的數量，相同組合可以共用。\n本題四個訊號中有兩個的通知對象完全相同（都是 User1 與 User3），所以 4 條規則只需要 3 個動作群組。\n（題目提到的 Group1／Group2 是干擾項——通知對象是逐一列出的使用者，不是以群組為單位。）"
     }
   },
   {
