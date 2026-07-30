@@ -910,6 +910,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 552,
+    "type": "matching",
+    "question": "You have the resource groups RG1 (subscription Sub1) and RG2 (Sub2). You have the virtual machines VM1 (RG1), VM2 (RG2) and VM3 (RG2). You assign roles to users as follows: User1 = Virtual Machine Contributor on MG1 (management group); User1 = Virtual Machine User Login on Sub2; User2 = Virtual Machine Contributor on MG2 (management group); User2 = Virtual Machine User Login on Sub1; User2 = Virtual Machine User Login on VM3. (Sub1 is under management group MG1; Sub2 is under management group MG2.) For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 can sign in to VM1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User2 can manage disks and disk snapshots of VM1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User2 can manage disks and disk snapshots of VM3.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。「登入 VM」需要的是「虛擬機器使用者登入」這個角色，而 User1 的該角色範圍是 Sub2；VM1 在 RG1、屬於 Sub1，不在範圍內。他在 MG1 上雖然是「虛擬機器參與者」（涵蓋 Sub1／VM1），但那個角色管的是資源設定，「不」包含登入 VM 的資料平面權限。",
+      "2": "否。「虛擬機器參與者」確實能管理虛擬機器與其磁碟，但 User2 的該角色範圍是 MG2（涵蓋 Sub2／RG2／VM2、VM3），而 VM1 在 Sub1 之下，不在 MG2 的範圍內。他在 Sub1 上只有「虛擬機器使用者登入」——那只能登入，不能管理磁碟。",
+      "3": "否。這一項容易誤判。User2 在 MG2 上是「虛擬機器參與者」，範圍確實涵蓋 VM3，而該角色可以管理虛擬機器與「附加的磁碟」。但「磁碟快照」是 Microsoft.Compute/snapshots 這個獨立的資源類型——虛擬機器參與者「不」包含快照的管理權限（要管快照得用磁碟快照參與者 Disk Snapshot Contributor 或參與者等更廣的角色）。敘述同時要求磁碟「與」磁碟快照，因此不成立。",
+      "_full": "兩個判斷維度：\n① 範圍：管理群組 → 訂用帳戶 → 資源群組 → 資源，權限只向下繼承。User1 的登入權在 Sub2、User2 的參與者權在 MG2，都涵蓋不到 Sub1 的 VM1。\n② 角色能力：「虛擬機器參與者」= 管理平面（含磁碟），但「不含登入 VM」也「不含磁碟快照」；「虛擬機器使用者登入」= 只能登入，不能管理。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 553,
     "type": "single",
     "question": "You have an Azure Active Directory (Azure AD) tenant that is linked to 10 Azure subscriptions. You need to centrally monitor user activity across all the subscriptions. What should you use?",
@@ -986,6 +1016,33 @@
   },
   {
     "exam": "AZ-104",
+    "id": 559,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains RG1 (resource group) and VM1 (virtual machine, created in RG1). The subscription contains the alert rules Alert1 (scope RG1, condition All Administrative operations) and Alert2 (scope VM1, condition All Administrative operations). The users perform the following actions: User1 creates a new virtual disk and attaches the disk to VM1; User2 creates a new resource tag and assigns the tag to RG1 and VM1. Which alert rules are triggered by each user?",
+    "available_options": [
+      "No alert is triggered",
+      "Only Alert1 is triggered",
+      "Only Alert2 is triggered",
+      "Alert1 and Alert2 are triggered"
+    ],
+    "matches": [
+      {
+        "use_case": "User1:",
+        "correct_answer": "Alert1 and Alert2 are triggered"
+      },
+      {
+        "use_case": "User2:",
+        "correct_answer": "Alert1 and Alert2 are triggered"
+      }
+    ],
+    "explanations": {
+      "1": "Alert1 與 Alert2 都會觸發。User1 的動作包含兩件事：① 在 RG1 中「建立」一顆磁碟——這是 RG1 範圍內的系統管理作業，觸發 Alert1；② 把磁碟「連結」到 VM1——這是對 VM1 的寫入作業（更新 VM），觸發 Alert2。而且 VM1 本身在 RG1 之內，所以第二個動作同時也落在 Alert1 的範圍中。",
+      "2": "同樣兩個都會觸發。指派標記是 Microsoft.Resources/tags/write 這類系統管理作業，會寫進活動記錄。User2 把標記指派給「RG1」（命中 Alert1 的範圍）與「VM1」（命中 Alert2 的範圍，同時也在 RG1 內）。",
+      "_full": "活動記錄警示的判斷方式：\n① 動作要屬於「系統管理 (Administrative)」類別——建立／更新／刪除資源、指派標記、指派角色都算；讀取則不算。\n② 再看動作發生的資源是否落在警示規則的「範圍」內——範圍是資源群組時，其中「所有資源」的作業都算。\n本題兩位使用者的動作都同時觸及 RG1 與 VM1，所以兩條規則都會觸發。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 560,
     "type": "multiple",
     "question": "You have an Azure subscription that contains multiple virtual machines in the West US Azure region. You need to use Traffic Analytics in Azure Network Watcher to monitor virtual machine traffic. Which two resources should you create? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
@@ -1025,6 +1082,36 @@
       "B": "Incorrect. 錯誤。資料收集端點服務的是 Azure 監視器代理程式的客體資料收集，與 NSG 流量無關。",
       "C": "Incorrect. 錯誤。私人連結解決的是連線路徑的私有化，不產生任何流量資料。",
       "D": "Correct. 正確。要能分析網路流量並對可疑流量發出警示，必須先啟用 NSG 流量記錄把流量資料蒐集起來（寫入儲存體並匯入工作區），網路見解才有資料可以判讀。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 563,
+    "type": "matching",
+    "question": "You have an Azure subscription named Sub1 that contains RG1 (resource group) and Action1 (an action group that sends an email message to admin1@contoso.com). Sub1 contains the alert rule Alert1: scope = all resource groups in Sub1 (include all future resources), condition = all administrative operations, actions = Action1. Sub1 contains the alert processing rule Rule1: scope = Sub1, rule type = Suppress notifications, apply the rule on a specific time, start August 10 2022, end August 13 2022. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "If you create a resource group in Sub1 on August 11, 2022, Alert1 is listed in the Azure portal.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "If you create a resource group in Sub1 on August 12, 2022, an email message is sent to admin1@contoso.com.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "If you add a tag to RG1 on August 15, 2022, an email message is sent to admin1@contoso.com.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。這是「警示處理規則」最容易搞混的地方：類型為「隱藏通知」時，它只擋掉「動作」（電子郵件、簡訊、Webhook 等），「警示本身仍然會被觸發並記錄下來」，在入口網站的警示清單中照樣看得到。",
+      "2": "否。8 月 12 日落在 Rule1 的生效期間（8/10～8/13）之內，所以 Alert1 雖然觸發，但 Action1 的電子郵件通知被隱藏，不會寄出。",
+      "3": "是。8 月 15 日已超過 Rule1 的結束日期 8 月 13 日，隱藏規則不再生效。而對 RG1 加標記屬於系統管理作業、RG1 也在 Alert1 的範圍內，因此警示觸發並執行 Action1，電子郵件會寄出。",
+      "_full": "本題只考一個觀念：警示處理規則的「隱藏通知」只停掉「動作／通知」，不會阻止警示產生——警示照樣出現在入口網站與 API 中。\n另外要注意生效期間：只有落在起訖時間內的警示才會被隱藏，期間外一切照常。（警示處理規則的另一種類型是「套用動作群組」，用來替一批警示統一加上通知動作。）"
     }
   },
   {
@@ -1142,6 +1229,37 @@
       "B": "Incorrect. 錯誤。Azure 監視器的通知目標是動作群組，不能直接指定 Microsoft 365 群組。",
       "C": "Incorrect. 錯誤。活動記錄警示直接讀取訂用帳戶的活動記錄，不需要先建立 Log Analytics 工作區。",
       "D": "Incorrect. 錯誤。這三項都與活動記錄警示無關：資料收集端點服務代理程式資料收集、應用程式安全性群組屬於網路安全、資源群組只是容器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 570,
+    "type": "matching",
+    "question": "You have an Azure subscription whose Alerts page shows: total alerts 4; Critical 0, Error 0, Warning 0, Informational 0, Verbose 4. The list (no grouping) contains: Alert2, severity 4 - Verbose, alert condition Fired, user response New, fired 4/29/2022 2:09 PM; Alert2, 4 - Verbose, Fired, New, 4/29/2022 2:09 PM; Alert1, 4 - Verbose, Fired, user response Closed, 4/29/2022 2:04 PM; Alert1, 4 - Verbose, Fired, Closed, 4/29/2022 2:04 PM. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "[Alert1] cannot be changed",
+      "[Alert1] can be changed to New only",
+      "[Alert1] can be changed to Acknowledged only",
+      "[Alert1] can be changed to New or Acknowledged",
+      "[Alert2] cannot be changed",
+      "[Alert2] can be changed to Acknowledged only",
+      "[Alert2] can be changed to closed only",
+      "[Alert2] can be changed to Acknowledged or Closed"
+    ],
+    "matches": [
+      {
+        "use_case": "For Alert1, User response [answer choice].",
+        "correct_answer": "[Alert1] can be changed to New or Acknowledged"
+      },
+      {
+        "use_case": "For Alert2, User response [answer choice].",
+        "correct_answer": "[Alert2] can be changed to Acknowledged or Closed"
+      }
+    ],
+    "explanations": {
+      "1": "可以改成「新增」或「已確認」。警示的「使用者回應」有三種狀態：新增 (New)、已確認 (Acknowledged)、已關閉 (Closed)，而且「可以在三者之間任意切換」——沒有單向限制。Alert1 目前是「已關閉」，所以還能改成的就是另外兩個：新增與已確認。",
+      "2": "可以改成「已確認」或「已關閉」。Alert2 目前是「新增」，同理還能改成另外兩個狀態：已確認與已關閉。",
+      "_full": "警示狀態的兩個層次要分開：\n・「警示條件 (Alert condition)」= 已引發 / 已解決，由監視系統自己判定，使用者「不能」修改。\n・「使用者回應 (User response)」= 新增 / 已確認 / 已關閉，由人維護處理進度，三種狀態可以任意互轉。\n所以答案永遠是「目前狀態以外的另外兩個」。"
     }
   },
   {
