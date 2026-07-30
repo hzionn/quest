@@ -840,6 +840,43 @@
   },
   {
     "exam": "AZ-104",
+    "id": 461,
+    "type": "matching",
+    "question": "You have a virtual network named VNet1 that contains a VPN gateway and the subnets Subnet0 (10.0.0.0/24), Subnet1 (10.0.1.0/24), Subnet2 (10.0.2.0/24) and GatewaySubnet (10.0.254.0/24). Subnet1 contains a virtual appliance named VM1 that operates as a router. You create a routing table named RT1. You need to route all inbound traffic from the VPN gateway to VNet1 through VM1. How should you configure RT1?",
+    "available_options": [
+      "10.0.0.0/16",
+      "10.0.1.0/24",
+      "10.0.254.0/24",
+      "Virtual appliance",
+      "Virtual network",
+      "Virtual network gateway",
+      "GatewaySubnet",
+      "Subnet0",
+      "Subnet1 and Subnet2"
+    ],
+    "matches": [
+      {
+        "use_case": "Address prefix:",
+        "correct_answer": "10.0.0.0/16"
+      },
+      {
+        "use_case": "Next hop type:",
+        "correct_answer": "Virtual appliance"
+      },
+      {
+        "use_case": "Assigned to:",
+        "correct_answer": "GatewaySubnet"
+      }
+    ],
+    "explanations": {
+      "1": "10.0.0.0/16。要攔截「所有前往 VNet1 的流量」，前置詞就要涵蓋整個虛擬網路的位址空間——四個子網路（10.0.0.0/24、10.0.1.0/24、10.0.2.0/24、10.0.254.0/24）都落在 10.0.0.0/16 之內。只寫 10.0.1.0/24 或 10.0.254.0/24 都只涵蓋單一子網路。",
+      "2": "虛擬設備。下一個躍點要指向擔任路由器的 VM1，類型就是「虛擬設備」（並填入 VM1 的私人 IP 作為下一個躍點位址）。選「虛擬網路」等於維持系統預設的直連；選「虛擬網路閘道」則是把流量送回閘道，會造成迴圈。",
+      "3": "GatewaySubnet。路由表要套用在「流量進入的那個子網路」——從 VPN 閘道進來的流量是先落在 GatewaySubnet，在這裡覆寫路由才能把後續流量導向 VM1。把路由表掛在 Subnet1／Subnet2 只會影響「從那些子網路發出」的流量，來不及攔截入向流量。",
+      "_full": "使用者定義路由的三個要素，本題各考一個：\n① 位址前置詞 = 「要導向哪些目的地」→ 全網路就用整個位址空間 10.0.0.0/16。\n② 下一個躍點 = 「導去哪裡」→ 虛擬設備（NVA），並填其私人 IP。\n③ 關聯的子網路 = 「在哪裡攔截」→ 流量的「入口」子網路，本題入口是 GatewaySubnet（這正是強制通道／NVA 檢查的標準做法）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 462,
     "type": "single",
     "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
@@ -855,6 +892,36 @@
       "B": "Incorrect. 錯誤。停用浮動 IP 是預設值，同樣與黏著性無關。",
       "C": "Incorrect. 錯誤。健康情況探查只負責判斷後端是否健康、決定是否繼續派送流量，不影響流量分配的黏著性。",
       "D": "Correct. 正確。工作階段持續性設為「用戶端 IP 和通訊協定」會依三元組雜湊分配，讓同一用戶端的請求固定落在同一台後端伺服器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 463,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual machines VM1 (Windows Server 2019, connects to Subnet1) and VM2 (Windows Server 2019, connects to Subnet2). VM1 and VM2 use public IP addresses. From Windows Server 2019 on VM1 and VM2, you allow inbound Remote Desktop connections. Subnet1 and Subnet2 are in a virtual network named VNET1. The subscription contains two network security groups (NSGs) named NSG1 and NSG2. NSG1 uses only the default rules. NSG2 uses the default rules and the following custom incoming rule: Priority 100, Name Rule1, Port 3389, Protocol TCP, Source Any, Destination Any, Action Allow. NSG1 is associated to Subnet1. NSG2 is associated to the network interface of VM2. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "From the Internet, you can connect to VM1 by using Remote Desktop.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "From the Internet, you can connect to VM2 by using Remote Desktop.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "From VM1, you can connect to VM2 by using Remote Desktop.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。NSG1 只有預設規則，而預設輸入規則中優先順序最低的是 DenyAllInBound（只允許 AllowVnetInBound 與 AllowAzureLoadBalancerInBound）——來自網際網路的 3389 沒有任何允許規則，會被 DenyAllInBound 拒絕。在 Windows 內部允許遠端桌面只是作業系統防火牆，管不到 Azure 的 NSG。",
+      "2": "是。NSG2 除了預設規則外還有 Rule1（優先順序 100，允許來源「任何」的 TCP 3389），數字比 DenyAllInBound（65500）小很多，會先命中並放行。而且 VM2 有公用 IP，所以從網際網路連得進來。",
+      "3": "是。方向拆開看：VM1 送出的流量受 NSG1 的「輸出」規則管——預設有 AllowVnetOutBound，同一虛擬網路內的流量允許放行；VM2 收到的流量受 NSG2 的「輸入」規則管——預設的 AllowVnetInBound 就已足夠，再加上 Rule1 更是明確允許 3389。兩端都通，因此連得上。",
+      "_full": "三個要點：\n① NSG 的預設規則「拒絕所有來自網際網路的輸入」，但「允許虛擬網路內部互通」。\n② 作業系統防火牆與 Azure NSG 是兩層，兩層都要放行才通。\n③ 判斷跨 VM 的連線要同時看「來源端的輸出規則」與「目的端的輸入規則」；NSG 可以掛在子網路或網路介面上，兩者都會被評估。"
     }
   },
   {
@@ -896,6 +963,66 @@
       "A": "Incorrect. 錯誤。基本 SKU 的公用 IP 不具備區域備援能力，無法支撐跨可用性區域的部署情境。",
       "B": "Correct. 正確。虛擬機器分散在多個可用性區域，VPN 閘道也應具備區域備援；區域備援的閘道要求使用「標準 SKU」的公用 IP，而標準 SKU 的公用 IP 只支援靜態指派。",
       "C": "Incorrect. 錯誤。除了 SKU 不符之外，動態指派會讓閘道位址可能變動，內部部署的 VPN 裝置組態將無法穩定對應。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 466,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual machines VM1 (public IP 131.107.10.10, connected to VNet1/Subnet1), VM2 (150.120.10.10, VNet1/Subnet2) and VM3 (170.20.10.10, VNet1/Subnet1). The subscription contains a storage account named contoso2024 whose Firewalls and virtual networks settings are: public network access = Enabled from selected virtual networks and IP addresses; Virtual networks = VNet1 / Subnet1 with endpoint status Enabled; Firewall address ranges = 131.107.10.10, 150.120.10.10, 170.20.10.10. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 can connect to contoso2024 by using 131.107.10.10.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM2 can connect to contoso2024 by using 150.120.10.10.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "VM3 must use its private IP address to connect to contoso2024.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。【答案校正】官方標示為「是」，理由是 131.107.10.10 出現在防火牆的允許清單中。但 VM1 所在的 Subnet1「已啟用服務端點」——服務端點一旦啟用，該子網路前往儲存體的流量就會把來源位址從「公用 IPv4」切換成「私人位址」，因此針對公用 IP 撰寫的防火牆規則對它「不再生效」（Microsoft 文件明確指出既有的 IP 防火牆規則會停止作用）。VM1 確實連得到 contoso2024，但是靠「虛擬網路規則」而不是「用 131.107.10.10」，所以這句敘述不成立。",
+      "2": "是。VM2 在 Subnet2，而服務端點只設在 Subnet1——Subnet2 沒有服務端點，流量仍以 VM2 的公用 IP 150.120.10.10 送出，而該位址正好在防火牆允許清單中，因此可以連線。",
+      "3": "是。【答案校正】官方標示為「否」（理由是 170.20.10.10 也在允許清單中）。但 VM3 與 VM1 同在啟用了服務端點的 Subnet1，它前往儲存體的流量一律改用私人位址、走 Azure 骨幹的服務端點路徑，沒有選擇「改用公用 IP」的餘地。因此「必須使用私人 IP」成立。",
+      "_full": "本題的樞紐是「服務端點會改變來源位址」：\n・啟用服務端點的子網路（Subnet1）→ 流量以「私人位址」送出，由虛擬網路規則授權；針對公用 IP 的防火牆規則對它失效。\n・沒有服務端點的子網路（Subnet2）→ 流量仍以「公用 IP」送出，靠 IP 防火牆規則授權。\n【答案校正】官方三格都只看「公用 IP 有沒有在允許清單裡」，完全忽略了設定中已明確標示「端點狀態：已啟用」，因此第一、三項已依服務端點的實際行為改判。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 467,
+    "type": "matching",
+    "question": "You have two Azure virtual machines: vm1 (Windows Server 2019, private IP 10.0.1.4, public IP 131.107.50.20, DNS suffix configured in the operating system Contoso.com, connected to vnet1) and vm2 (SUSE Linux Enterprise Server 15 (SLES) SP2, private IP 10.0.1.5, public IP 131.107.90.80, DNS suffix None, connected to vnet1). You create the Azure DNS zones Contoso.com (DNS zone) and Fabrikam.com (Private DNS zone). You perform the following actions: for fabrikam.com, you add a virtual network link to vnet1 and enable auto registration; for contoso.com, you assign vm1 and vm2 the Owner role. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The DNS A record for vm1 is added to contoso.com and has the IP address of 131.107.50.20.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The DNS A record for vm1 is added to fabrikam.com and has the IP address of 10.0.1.4.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The DNS A record for vm2 is added to fabrikam.com and has the IP address of 10.0.1.5.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。contoso.com 是「公用」DNS 區域，公用區域「不支援自動註冊」——記錄必須手動建立。把「擁有者」角色指派給虛擬機器只是給了它們管理該區域的權限，並不會讓 Azure 幫它們自動寫入 A 記錄。作業系統中設定的 DNS 後置字元同樣不會觸發註冊。",
+      "2": "是。fabrikam.com 是私人 DNS 區域，且已連結 vnet1 並啟用自動註冊，所以 vnet1 中的虛擬機器啟動時會自動註冊。私人區域的自動註冊登記的是「私人 IP」，因此 vm1 的記錄是 10.0.1.4。",
+      "3": "是。vm2 同樣在 vnet1 中，一樣會自動註冊私人 IP 10.0.1.5。作業系統是 Linux、DNS 後置字元為「無」都不影響——自動註冊用的是 Azure 的虛擬機器名稱，與客體作業系統的設定無關。",
+      "_full": "三條規則就能全部判完：\n① 自動註冊只有「私人」DNS 區域支援，公用區域一律手動維護記錄。\n② 自動註冊登記的是「私人 IP」，不是公用 IP。\n③ 註冊範圍是「已連結且啟用自動註冊的虛擬網路中的所有 VM」，與作業系統類型、DNS 後置字元、RBAC 角色都無關（本題三者都是干擾項）。"
     }
   },
   {
