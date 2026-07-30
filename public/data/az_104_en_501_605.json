@@ -1,0 +1,905 @@
+[
+  {
+    "exam": "AZ-104",
+    "id": 501,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Session persistence to Client IP",
+      "B": "Idle Time-out (minutes) to 20",
+      "C": "Session persistence to None",
+      "D": "Protocol to UDP"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。",
+      "B": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
+      "C": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "D": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 502,
+    "type": "single",
+    "question": "You have an Azure subscription. You create a routing table named RT1. You need to add a route to RT1 that specifies the next hop IP address. Which next hop type should you select?",
+    "options": {
+      "A": "Internet",
+      "B": "Virtual network gateway",
+      "C": "Virtual network",
+      "D": "Virtual appliance"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。選擇「網際網路」時流量會被導向 Azure 的網際網路出口，不接受也不需要你指定 IP 位址。",
+      "B": "Incorrect. 錯誤。虛擬網路閘道類型是把流量交給該虛擬網路的閘道處理，同樣無法自訂下一個躍點 IP。",
+      "C": "Incorrect. 錯誤。虛擬網路類型代表在本虛擬網路內部路由，不接受指定 IP。",
+      "D": "Correct. 正確。只有「虛擬設備 (Virtual appliance)」這個下一個躍點類型允許你填入下一個躍點的 IP 位址，通常用來把流量導向網路虛擬設備或防火牆。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 504,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a Recovery Services vault named Vault1. You need to enable multi-user authorization (MAU) for Vault1. Which resource should you create first?",
+    "options": {
+      "A": "an administrative unit",
+      "B": "a managed identity",
+      "C": "a resource guard",
+      "D": "a custom Azure role"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。系統管理單位是 Entra ID 中用來切分使用者與群組管理範圍的容器，與備份的多使用者授權無關。",
+      "B": "Incorrect. 錯誤。受控識別提供的是資源的身分識別，不是 MAU 的保護機制。",
+      "C": "Correct. 正確。多使用者授權的運作方式是建立一個「資源防護」（通常放在另一個由安全性管理員掌控的訂用帳戶／租用戶），再把保存庫與它關聯；之後對保存庫的關鍵破壞性操作就必須取得資源防護的授權才能進行。",
+      "D": "Incorrect. 錯誤。自訂角色只是權限集合，本身不會建立 MAU 所需的雙人授權關卡。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 512,
+    "type": "single",
+    "question": "You have an Azure virtual network named VNet1 that contains the following settings: • IPv4 address space: 172.16.10.0/24 • Subnet name: Subnet1 • Subnet address range: 172.16.10.0/25 What is the maximum number of virtual machines that can connect to Subnet1?",
+    "options": {
+      "A": "24",
+      "B": "25",
+      "C": "123",
+      "D": "128",
+      "E": "251"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。24 與遮罩長度混淆了，不是可用位址數量。",
+      "B": "Incorrect. 錯誤。25 是遮罩長度而非位址數量。",
+      "C": "Correct. 正確。/25 共有 128 個位址，但 Azure 在每個子網路保留 5 個（網路位址、預設閘道、兩個 DNS 用途、廣播位址），因此可供虛擬機器使用的是 128 − 5 = 123 個。",
+      "D": "Incorrect. 錯誤。128 是位址總數，未扣掉 Azure 保留的 5 個位址。",
+      "E": "Incorrect. 錯誤。251 是 /24（256 − 5）的答案，但本題子網路是 /25。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 513,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a resource group named RG1 and a virtual network named VNet1. You plan to create an Azure container instance named container1. You need to be able to configure DNS name label scope reuse for container1. What should you configure for container1?",
+    "options": {
+      "A": "the private networking type",
+      "B": "the public networking type",
+      "C": "a new subnet on VNet1",
+      "D": "a confidential SKU"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。私人網路類型的容器群組部署在虛擬網路中，不會取得公用 FQDN，因此沒有 DNS 名稱標籤可設定。",
+      "B": "Correct. 正確。DNS 名稱標籤（以及其範圍重複使用設定，用來降低子網域接管風險）只適用於具有公用 IP 與 FQDN 的容器實例，因此網路類型必須是公用。",
+      "C": "Incorrect. 錯誤。新增子網路是私人網路部署的前置作業，與公用 DNS 名稱標籤無關。",
+      "D": "Incorrect. 錯誤。機密 SKU 提供的是機密運算的執行環境保護，與 DNS 名稱標籤設定無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 516,
+    "type": "single",
+    "question": "You have an Azure subscription. You are creating a new Azure container instance that will have the following settings: • Container name: cont1 • SKU: Standard • OS type: Windows • Networking type: Public • Memory (GiB): 2.5 • Number of CPU cores: 2 You discover that the Private setting for Networking type is unavailable. You need to ensure that cont1 can be configured to use private networking. Which setting should you change?",
+    "options": {
+      "A": "Memory (GiB)",
+      "B": "Networking type",
+      "C": "Number of CPU cores",
+      "D": "OS type",
+      "E": "SKU"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。記憶體大小與能否使用私人網路無關。",
+      "B": "Correct. 正確（依官方標示，本題有爭議）。官方答案指向「網路類型」這一項設定本身。但要提醒：題目前提正是「私人選項無法選取」，因此這個答案在邏輯上是循環的。依當年的產品限制，虛擬網路部署僅支援 Linux 容器，正解應為 D（把 OS 類型改為 Linux）；而依現行微軟文件，虛擬網路部署已同時支援 Linux 與 Windows 容器，此題前提亦已過時。作答時請以官方標示為準，理解時建議記住「OS 類型曾是 ACI 虛擬網路部署的限制」這個知識點。",
+      "C": "Incorrect. 錯誤。CPU 核心數與網路類型的可用性無關。",
+      "D": "Incorrect. 錯誤（依官方標示）。但如上所述，這其實是依產品限制推導出的合理答案；官方未選此項。",
+      "E": "Incorrect. 錯誤。SKU 已是 Standard，虛擬網路部署並不要求改用其他 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 519,
+    "type": "single",
+    "question": "You have an Azure subscription. You plan to migrate 50 virtual machines from VMware vSphere to the subscription. You create a Recovery Services vault. What should you do next?",
+    "options": {
+      "A": "Configure an extended network.",
+      "B": "Create a recovery plan.",
+      "C": "Deploy an Open Virtualization Application (OVA) template to vSphere.",
+      "D": "Configure a virtual network."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。延伸網路屬於進階情境（讓來源與目標共用位址空間），並非標準遷移流程的下一步。",
+      "B": "Incorrect. 錯誤。復原計畫是把多台機器的容錯移轉順序組織起來，屬於後期作業。",
+      "C": "Incorrect. 錯誤。OVA 範本用於部署 Azure Migrate 的設備，屬於「Azure Migrate」的評估與遷移流程；本題以復原服務保存庫為起點，走的是 Site Recovery 路徑。",
+      "D": "Correct. 正確。以復原服務保存庫進行遷移時，必須先準備目標端資源——最關鍵的就是虛擬網路，遷移過來的虛擬機器才有網路可以連接。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 522,
+    "type": "single",
+    "question": "You have an Azure subscription that contains two peered virtual networks named VNet1 and VNet2. VNet1 has a VPN gateway that uses static routing, The on-premises network has a VPN connection that uses the VPN gateway of VNet1. You need to configure access for users on the on-premises network to connect to a virtual machine on VNet2. The solution must minimize costs. Which type of connectivity should you use?",
+    "options": {
+      "A": "Azure Firewall with a private IP address",
+      "B": "service chaining and user-defined routes (UDRs)",
+      "C": "Azure Application Gateway",
+      "D": "ExpressRoute circuits to VNet2"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Azure 防火牆是高成本的受控服務，本題並沒有需要防火牆檢查的需求。",
+      "B": "Correct. 正確。既有的對等互連與 VPN 閘道都已存在，只要透過閘道傳輸搭配使用者定義路由（服務鏈結），把往 VNet2 的流量導經 VNet1 的閘道即可，不需要新增任何付費資源，成本最低。",
+      "C": "Incorrect. 錯誤。應用程式閘道處理的是第 7 層 HTTP 負載平衡，並非站台之間的路由方案，且會增加成本。",
+      "D": "Incorrect. 錯誤。為 VNet2 另建 ExpressRoute 線路是成本最高的選項，與「盡量降低成本」相違。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 523,
+    "type": "single",
+    "question": "You have an Azure subscription that contains two peered virtual networks named VNet1 and VNet2. You have a Network Virtual Appliance (NVA) named NetVA1. You need to ensure that the traffic from VNet1 to VNet2 is inspected by using NetVA1. What should you use?",
+    "options": {
+      "A": "a local network gateway",
+      "B": "a route table that has custom routes",
+      "C": "a service endpoint",
+      "D": "IP address reservations"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。本機網路閘道代表的是內部部署站台的資訊，與虛擬網路之間的流量導向無關。",
+      "B": "Correct. 正確。對等互連的預設行為是兩個虛擬網路直接互通。要強制流量繞經 NVA，必須建立路由表並加入自訂路由，把往 VNet2 的目的地前置詞的下一個躍點設為「虛擬設備」並指向 NetVA1 的私人 IP，再把路由表關聯到來源子網路。",
+      "C": "Incorrect. 錯誤。服務端點是讓子網路以私有路徑存取 PaaS 服務，不會改變虛擬網路之間的流量路徑。",
+      "D": "Incorrect. 錯誤。IP 位址保留只是固定某個位址，不影響路由。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 525,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a virtual machine named VM1. You plan to deploy an Azure Monitor alert rule that will trigger an alert when CPU usage on VM1 exceeds 80 percent. You need to ensure that the alert rule sends an email message to two users named User1 and User2. What should you create for Azure Monitor?",
+    "options": {
+      "A": "an action group",
+      "B": "a mail-enabled security group",
+      "C": "a distribution group",
+      "D": "a Microsoft 365 group"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure 監視器的通知方式是把「動作群組」附加到警示規則上；動作群組中可以設定多個電子郵件收件者、簡訊、Webhook、Logic App 等動作，正是寄信給 User1 與 User2 的機制。",
+      "B": "Incorrect. 錯誤。啟用郵件的安全性群組屬於 Exchange／Entra 的通訊物件，Azure 監視器的警示規則不會直接以它作為通知目標。",
+      "C": "Incorrect. 錯誤。通訊群組同樣是郵件通訊物件，不是 Azure 監視器的通知設定。",
+      "D": "Incorrect. 錯誤。Microsoft 365 群組用於協作，也不是警示規則的通知機制。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 531,
+    "type": "single",
+    "question": "You have an Azure virtual machine named VM1. You use Azure Backup to create a backup of VM1 named Backup1. After creating Backup1, you perform the following changes to VM1: ✑ Modify the size of VM1. ✑ Copy a file named Budget.xls to a folder named Data. ✑ Reset the password for the built-in administrator account. ✑ Add a data disk to VM1. An administrator uses the Replace existing option to restore VM1 from Backup1. You need to ensure that all the changes to VM1 are restored. Which change should you perform again?",
+    "options": {
+      "A": "Modify the size of VM1.",
+      "B": "Reset the password for the built-in administrator account.",
+      "C": "Add a data disk.",
+      "D": "Copy Budget.xls to Data."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。VM 大小是 VM 資源本身的屬性，不儲存在磁碟中；「取代現有」只覆寫磁碟內容，因此大小設定仍維持變更後的狀態。",
+      "B": "Incorrect. 錯誤。密碼雖然寫在 OS 磁碟中，但如果重設發生在備份之後、且該變更屬於磁碟內容，還原後會回到備份時的狀態——不過在本題所列四項中，官方要求重做的是檔案複製。",
+      "C": "Incorrect. 錯誤。資料磁碟的掛載屬於 VM 組態，「取代現有」還原的是既有磁碟內容，不會移除後來新增的磁碟。",
+      "D": "Correct. 正確。「取代現有」會用備份時的磁碟內容覆寫現有磁碟，因此備份「之後」寫入磁碟的檔案（Budget.xls）會消失，必須重新複製一次。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 533,
+    "type": "single",
+    "question": "Your company has a main office in London that contains 100 client computers. Three years ago, you migrated to Azure Active Directory (Azure AD). The company's security policy states that all personal devices and corporate-owned devices must be registered or joined to Azure AD. A remote user named User1 is unable to join a personal device to Azure AD from a home network. You verify that User1 was able to join devices to Azure AD in the past. You need to ensure that User1 can join the device to Azure AD. What should you do?",
+    "options": {
+      "A": "Assign the User administrator role to User1.",
+      "B": "From the Device settings blade, modify the Maximum number of devices per user setting.",
+      "C": "Create a point-to-site VPN from the home network of User1 to Azure.",
+      "D": "From the Device settings blade, modify the Users may join devices to Azure AD setting."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。加入裝置不需要目錄管理角色，提升權限並不能解除數量限制。",
+      "B": "Correct. 正確。關鍵線索是「過去曾成功加入過」——代表權限本來就有，問題出在 User1 已達到「每位使用者的裝置數量上限」（預設 50 台）。提高該上限（或移除舊裝置）即可解決。",
+      "C": "Incorrect. 錯誤。加入 Azure AD 是透過網際網路對 Entra ID 進行的，不需要 VPN 連進虛擬網路。",
+      "D": "Incorrect. 錯誤。若是這個設定造成的限制，User1 過去就不可能成功加入過裝置，與題目給的線索矛盾。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 537,
+    "type": "single",
+    "question": "You have an existing Azure subscription that contains 10 virtual machines. You need to monitor the latency between your on-premises network and the virtual machines. What should you use?",
+    "options": {
+      "A": "Service Map",
+      "B": "Connection troubleshoot",
+      "C": "Network Performance Monitor",
+      "D": "Effective routes"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。服務對應呈現的是伺服器與行程之間的相依關係圖，不量測網路延遲。",
+      "B": "Incorrect. 錯誤。連線疑難排解是一次性的連線測試，不做持續的延遲監視。",
+      "C": "Correct. 正確。網路效能監視器（網路監看員的功能，現已整合進連線監視器）專門用來持續監視內部部署與 Azure 之間的連線延遲、封包遺失與拓撲變化。",
+      "D": "Incorrect. 錯誤。有效路由只顯示某個網路介面實際生效的路由表，與延遲量測無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 541,
+    "type": "single",
+    "question": "You have an Azure virtual machine named VM1. Azure collects events from VM1. You are creating an alert rule in Azure Monitor to notify an administrator when an error is logged in the System event log of VM1. Which target resource should you monitor in the alert rule?",
+    "options": {
+      "A": "virtual machine extension",
+      "B": "virtual machine",
+      "C": "metric alert",
+      "D": "Azure Log Analytics workspace"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。延伸模組只是負責把資料送出去的代理程式，不是警示規則可以查詢的資料來源。",
+      "B": "Incorrect. 錯誤。以虛擬機器為目標時，只能針對平台計量（CPU、磁碟、網路等）建立警示，看不到客體作業系統內的事件記錄內容。",
+      "C": "Incorrect. 錯誤。計量警示是警示的「類型」而不是目標資源，選項本身也不是一種可監視的資源。",
+      "D": "Correct. 正確。事件記錄的內容是存放在 Log Analytics 工作區中的，因此警示規則的目標資源必須是該工作區，並以記錄查詢（KQL）比對系統記錄中的錯誤事件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 542,
+    "type": "single",
+    "question": "You have an Azure subscription that contains 100 virtual machines. You regularly create and delete virtual machines. You need to identify unattached disks that can be deleted. What should you do?",
+    "options": {
+      "A": "From Azure Cost Management, view Cost Analysis",
+      "B": "From Azure Advisor, modify the Advisor configuration",
+      "C": "From Microsoft Azure Storage Explorer, view the Account Management properties",
+      "D": "From Azure Cost Management, view Advisor Recommendations"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。成本分析呈現的是花費的金額與趨勢，不會指出哪些磁碟未被連結。",
+      "B": "Incorrect. 錯誤。修改顧問設定只是調整建議的產生範圍與門檻，並不會列出未連結的磁碟。",
+      "C": "Incorrect. 錯誤。儲存體總管用於瀏覽儲存體帳戶中的 Blob、檔案等資料，不分析受控磁碟的連結狀態。",
+      "D": "Correct. 正確。Azure 成本管理中的「顧問建議」會匯總 Azure 顧問的成本最佳化建議，其中包含「刪除未連結的受控磁碟」這一項，可直接取得可刪除的磁碟清單。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 543,
+    "type": "single",
+    "question": "You have an Azure web app named webapp1. Users report that they often experience HTTP 500 errors when they connect to webapp1. You need to provide the developers of webapp1 with real-time access to the connection errors. The solution must provide all the connection error details. What should you do first?",
+    "options": {
+      "A": "From webapp1, enable Web server logging",
+      "B": "From Azure Monitor, create a workbook",
+      "C": "From Azure Monitor, create a Service Health alert",
+      "D": "From webapp1, turn on Application Logging"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 【答案校正】官方標示為 D（應用程式記錄），但題目要的是連線層級的 HTTP 錯誤細節，應先開啟 Web 伺服器記錄，故判定為 A。 正確。HTTP 500 屬於「連線／請求」層級的錯誤，會記錄在 Web 伺服器記錄（原始 HTTP 請求記錄，含狀態碼與詳細資料）中。啟用後即可透過記錄串流即時檢視，正好對應「連線錯誤的所有詳細資料」。",
+      "B": "Incorrect. 錯誤。工作簿是把既有資料視覺化的報表工具，在還沒有開始收集記錄之前無從呈現。",
+      "C": "Incorrect. 錯誤。服務健康狀態警示通知的是 Azure 平台本身的事件（服務中斷、維護），與應用程式回傳 500 無關。",
+      "D": "Incorrect. 錯誤。應用程式記錄擷取的是應用程式「程式碼自行輸出」的訊息，不含 HTTP 請求層級的連線錯誤細節。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 544,
+    "type": "single",
+    "question": "You have an Azure web app named App1. You need to monitor the availability of App1 by using a multi-step web test. What should you use in Azure Monitor?",
+    "options": {
+      "A": "Azure Service Health",
+      "B": "Azure Application Insights",
+      "C": "the Diagnostic settings",
+      "D": "metrics"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。服務健康狀態回報的是 Azure 平台的事件，不執行任何對你應用程式的主動測試。",
+      "B": "Correct. 正確。多步驟 Web 測試是 Application Insights 可用性測試的功能之一，可錄製並重播一連串請求，驗證多步驟流程是否正常。",
+      "C": "Incorrect. 錯誤。診斷設定只是決定把記錄與計量送到哪裡，本身不做可用性測試。",
+      "D": "Incorrect. 錯誤。計量呈現的是已收集的量測值，並不會主動發出測試請求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 546,
+    "type": "single",
+    "question": "You have a Recovery Services vault named RSV1. RSV1 has a backup policy that retains instant snapshots for five days and daily backup for 14 days. RSV1 performs daily backups of VM1. VM1 hosts a static website that was updated eight days ago. You need to recover VM1 to a point eight days ago. The solution must minimize downtime. What should you do first?",
+    "options": {
+      "A": "Deallocate VM1.",
+      "B": "Restore VM1 by using the Replace existing restore configuration option.",
+      "C": "Delete VM1.",
+      "D": "Restore VM1 by using the Create new restore configuration option."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。解除配置本身就造成停機，而且還原作業並不要求先關閉 VM。",
+      "B": "Incorrect. 錯誤。「取代現有」會覆寫原本的磁碟，過程中 VM1 必須停止服務，停機時間最長；八天前的復原點也已超出五天的即時快照範圍，還原耗時更久。",
+      "C": "Incorrect. 錯誤。在確認還原成功之前刪除原始 VM 風險極高，也完全沒有必要。",
+      "D": "Correct. 正確。「建立新的」會以復原點另外建立一台新的 VM，原本的 VM1 在整個還原過程中持續運作，停機時間最短；確認新機無誤後再切換即可。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 551,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains two Azure virtual networks named VNet1 and VNet2. VNet1 contains a VPN gateway named VPNGW1 that uses static routing. There is a site-to-site VPN connection between your on-premises network and VNet1. On a computer named Client1 that runs Windows 10, you configure a point-to-site VPN connection to VNet1. You configure virtual network peering between VNet1 and VNet2. You verify that you can connect to VNet2 from the on-premises network. Client1 is unable to connect to VNet2. You need to ensure that you can connect Client1 to VNet2. What should you do?",
+    "options": {
+      "A": "Select Use the remote virtual network's gateway or Route Server on VNet1 to VNet2 peering.",
+      "B": "Select Use the remote virtual network s gateway or Route Server on VNet2 to VNet1 peering.",
+      "C": "Download and re-install the VPN client configuration package on Client1.",
+      "D": "Enable BGP on VPNGW1."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。方向錯了——VNet1 自己就有閘道，不需要去使用遠端（VNet2）的閘道。",
+      "B": "Incorrect. 錯誤。站對站流量既然已經能到達 VNet2，代表對等互連的閘道傳輸設定原本就正確；此設定也不會更新已安裝的用戶端路由。",
+      "C": "Correct. 正確。點對站用戶端的路由是在安裝組態套件時寫入的。新增對等互連之後，必須重新產生、下載並安裝用戶端組態套件，Client1 才會學到往 VNet2 的路由。",
+      "D": "Incorrect. 錯誤。BGP 用於動態路由交換，無法解決「用戶端組態中的靜態路由未更新」這個問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 553,
+    "type": "single",
+    "question": "You have an Azure Active Directory (Azure AD) tenant that is linked to 10 Azure subscriptions. You need to centrally monitor user activity across all the subscriptions. What should you use?",
+    "options": {
+      "A": "Azure Application Insights Profiler",
+      "B": "access reviews",
+      "C": "Activity log filters",
+      "D": "a Log Analytics workspace"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Profiler 蒐集的是應用程式程式碼層級的效能追蹤，與使用者活動無關。",
+      "B": "Incorrect. 錯誤。存取權檢閱是週期性重新確認誰該保有存取權的治理流程，不是活動監視工具。",
+      "C": "Incorrect. 錯誤。活動記錄篩選只能在「單一訂用帳戶」的記錄中檢視與篩選，無法跨 10 個訂用帳戶集中查詢。",
+      "D": "Correct. 正確。把所有訂用帳戶的活動記錄透過診斷設定匯集到同一個 Log Analytics 工作區，即可用 KQL 跨訂用帳戶集中查詢與保留使用者活動。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 555,
+    "type": "single",
+    "question": "You have a subnet named Subnet1 that contains Azure virtual machines. A network security group (NSG) named NSG1 is associated to Subnet1. NSG1 only contains the default rules. You need to create a rule in NSG1 to prevent the hosts on Subnet1 form connecting to the Azure portal. The hosts must be able to connect to other internet hosts. To what should you set Destination in the rule?",
+    "options": {
+      "A": "Application security group",
+      "B": "IP Addresses",
+      "C": "Service Tag",
+      "D": "Any"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。應用程式安全性群組代表的是一組虛擬機器網路介面，無法用來指涉 Azure 入口網站這個外部服務。",
+      "B": "Incorrect. 錯誤。Azure 入口網站的 IP 位址眾多且會變動，手動維護清單既不完整也無法持續有效。",
+      "C": "Correct. 正確。服務標籤 AzureportaI（AzurePortal）代表 Azure 入口網站的所有位址前置詞，且由 Microsoft 自動維護。以它作為目的地建立拒絕規則，即可精準封鎖入口網站而不影響其他網際網路流量。",
+      "D": "Incorrect. 錯誤。目的地設為 Any 會把所有對外流量一併封鎖，違反「仍能連線到其他網際網路主機」的要求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 556,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains an Azure Log Analytics workspace named Workspace1. You need to view the error events from a table named Event. Which query should you run in Workspace1?",
+    "options": {
+      "A": "search in (Event) \"error\"",
+      "B": "Event | where EventType is \"error\"",
+      "C": "select * from Event where EventType == \"error\"",
+      "D": "Get-Event Event | where {$_.EventType == \"error\"}"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。這是合法的 KQL：search 運算子可把搜尋範圍限定在 Event 資料表，並在其中比對關鍵字 \"error\"。",
+      "B": "Incorrect. 錯誤。KQL 沒有 is 這個比較運算子；相等比較用 ==，字串包含用 contains 或 has。",
+      "C": "Incorrect. 錯誤。這是 SQL 語法，Log Analytics 使用的是 KQL。",
+      "D": "Incorrect. 錯誤。這是 PowerShell 語法，無法在 Log Analytics 中執行。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 557,
+    "type": "single",
+    "question": "You have an Azure App Service web app named App1. You need to collect performance traces for App1. What should you use?",
+    "options": {
+      "A": "Azure Application Insights Profiler",
+      "B": "the Activity log",
+      "C": "the Deployment center",
+      "D": "the Diagnose and solve problems settings"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Application Insights Profiler 會定期取樣執行中的應用程式，產生程式碼層級的效能追蹤，指出哪些方法與呼叫路徑最耗時，正是「效能追蹤」的工具。",
+      "B": "Incorrect. 錯誤。活動記錄記載的是對 Azure 資源做了哪些控制平面操作，與應用程式內部效能無關。",
+      "C": "Incorrect. 錯誤。部署中心負責 CI/CD 部署設定。",
+      "D": "Incorrect. 錯誤。「診斷並解決問題」提供的是引導式的問題偵測與建議，不產生程式碼層級的效能追蹤。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 560,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains multiple virtual machines in the West US Azure region. You need to use Traffic Analytics in Azure Network Watcher to monitor virtual machine traffic. Which two resources should you create? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "a Log Analytics workspace",
+      "B": "an Azure Monitor workbook",
+      "C": "a storage account",
+      "D": "a Microsoft Sentinel workspace",
+      "E": "a Data Collection Rule (DCR) in Azure Monitor"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。流量分析會把 NSG 流量記錄匯入 Log Analytics 工作區進行處理、視覺化與查詢，因此工作區是必要資源。",
+      "B": "Incorrect. 錯誤。工作簿只是把既有資料視覺化的報表，不是流量分析運作的必要元件。",
+      "C": "Correct. 正確。NSG 流量記錄的原始資料必須先寫入一個儲存體帳戶，流量分析再從那裡讀取並處理。",
+      "D": "Incorrect. 錯誤。Sentinel 是 SIEM 解決方案，與流量分析是不同產品，並非必要資源。",
+      "E": "Incorrect. 錯誤。資料收集規則用於 Azure 監視器代理程式收集客體資料，NSG 流量記錄不透過 DCR 設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 562,
+    "type": "single",
+    "question": "You have an Azure subscription that contains 10 network security groups (NSGs), 10 virtual machines, and a Log Analytics workspace named Workspace1. Each NSG is connected to a virtual machine. You need to configure an Azure Monitor Network Insights alert that will be triggered when suspicious network traffic is detected. What should you do first?",
+    "options": {
+      "A": "Deploy Connection Monitor.",
+      "B": "Configure data collection endpoints.",
+      "C": "Configure a private link.",
+      "D": "Configure NSG flow logs."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。連線監視器主動測試特定端點的連線狀態與延遲，不會蒐集實際流經 NSG 的流量資訊。",
+      "B": "Incorrect. 錯誤。資料收集端點服務的是 Azure 監視器代理程式的客體資料收集，與 NSG 流量無關。",
+      "C": "Incorrect. 錯誤。私人連結解決的是連線路徑的私有化，不產生任何流量資料。",
+      "D": "Correct. 正確。要能分析網路流量並對可疑流量發出警示，必須先啟用 NSG 流量記錄把流量資料蒐集起來（寫入儲存體並匯入工作區），網路見解才有資料可以判讀。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 564,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account named storage1 in the North Europe Azure region. You need to ensure that when blob data is added to storage1, a secondary copy is created in the East US region. The solution must minimize administrative effort. What should you configure?",
+    "options": {
+      "A": "operational backup",
+      "B": "object replication",
+      "C": "geo-redundant storage (GRS)",
+      "D": "a lifecycle management rule"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。作業備份是為 Blob 提供時間點復原的備份功能，不會把資料複製到你指定的另一個區域。",
+      "B": "Correct. 正確。物件複寫可以在兩個儲存體帳戶之間非同步複製 Blob，且來源與目的地的區域「可以自行指定」；設定複寫規則後即自動運作，符合最少管理工作。",
+      "C": "Incorrect. 錯誤。GRS 的次要區域是由 Azure 依「配對區域」規則決定的，北歐配對的是西歐而非美國東部，無法滿足指定區域的要求。",
+      "D": "Incorrect. 錯誤。生命週期管理只能在同一帳戶內做分層與刪除，不會跨區域複製資料。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 565,
+    "type": "single",
+    "question": "You have an Azure subscription that contains two Log Analytics workspaces named Workspace1 and Workspace2 and 100 virtual machines that run Windows Server. You need to collect performance data and events from the virtual machines. The solution must meet the following requirements: • Logs must be sent to Workspace1 and Workspace 2. • All Windows events must be captured. • All security events must be captured. What should you install and configure on each virtual machine?",
+    "options": {
+      "A": "the Azure Monitor agent",
+      "B": "the Windows Azure diagnostics extension (WAD)",
+      "C": "the Windows VM agent"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure 監視器代理程式支援以多個資料收集規則同時把資料送到多個工作區，並可設定收集所有 Windows 事件記錄（包含安全性事件），三項要求全部滿足。",
+      "B": "Incorrect. 錯誤。WAD 主要把診斷資料寫入儲存體帳戶或事件中樞，並非設計來同時餵給多個 Log Analytics 工作區。",
+      "C": "Incorrect. 錯誤。Windows VM 代理程式（WaAppAgent）只是負責在 VM 上安裝與管理延伸模組的基礎元件，本身不收集任何監視資料。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 566,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a virtual machine named VM1 and an Azure function named App1. You need to create an alert rule that will run App1 if VM1 stops. What should you create for the alert rule?",
+    "options": {
+      "A": "an application security group",
+      "B": "a security group that has dynamic device membership",
+      "C": "an action group",
+      "D": "an application group"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。應用程式安全性群組是把虛擬機器網路介面分組以簡化 NSG 規則的機制，與警示無關。",
+      "B": "Incorrect. 錯誤。動態裝置群組屬於 Entra ID 的裝置管理，不是警示的動作機制。",
+      "C": "Correct. 正確。警示觸發後要執行的動作是定義在「動作群組」中的，其可用動作包含呼叫 Azure 函式、Logic App、Webhook、寄信與簡訊等，正好用來執行 App1。",
+      "D": "Incorrect. 錯誤。應用程式群組屬於 Azure 虛擬桌面的資源，與警示無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 567,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a virtual network named VNet1. VNet1 uses two ExpressRoute circuits that connect to two separate on-premises datacenters. You need to create a dashboard to display detailed metrics and a visual representation of the network topology. What should you use?",
+    "options": {
+      "A": "Azure Monitor Network Insights",
+      "B": "a Data Collection Rule (DCR)",
+      "C": "Azure Virtual Network Watcher",
+      "D": "Log Analytics"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure 監視器網路見解提供現成的儀表板，同時呈現網路資源的詳細計量健康狀態與互動式的拓撲檢視，正好對應題目的兩項需求。",
+      "B": "Incorrect. 錯誤。DCR 只是定義要收集哪些資料、送到哪裡，本身不提供任何儀表板。",
+      "C": "Incorrect. 錯誤。網路監看員提供的是各項診斷工具（封包擷取、IP 流量驗證等），並非整合式的計量與拓撲儀表板。",
+      "D": "Incorrect. 錯誤。Log Analytics 是查詢與分析引擎，需要自行撰寫查詢與建立視覺化，不是現成的拓撲儀表板。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 568,
+    "type": "multiple",
+    "question": "You deploy Azure virtual machines to three Azure regions Each region contains a virtual network. Each virtual network contains multiple subnets peered in a full mesh topology. Each subnet contains a network security group (NSG) that has defined rules. A user reports that he cannot use port 33000 to connect from a virtual machine in one region to a virtual machine in another region. Which two options can you use to diagnose the issue? Each correct answer presents a complete solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Azure Virtual Network Manager",
+      "B": "IP flow verify",
+      "C": "Azure Monitor Network Insights",
+      "D": "Connection troubleshoot",
+      "E": "elective security rules"
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。虛擬網路管理員是用來集中「管理」網路拓撲與安全性管理規則的服務，不是診斷單一連線問題的工具。",
+      "B": "Correct. 正確。IP 流量驗證可以指定來源／目的地 IP 與連接埠（33000），直接判斷該封包會被哪一條 NSG 規則允許或拒絕，精準定位問題規則。",
+      "C": "Incorrect. 錯誤。網路見解提供整體健康狀態與拓撲總覽，無法針對特定五元組判斷是否被規則阻擋。",
+      "D": "Correct. 正確。連線疑難排解會實際測試從來源 VM 到目的地指定連接埠的連線，回報結果與沿途遇到的阻礙（含被 NSG 阻擋的躍點）。",
+      "E": "Incorrect. 錯誤。選項文字為 elective security rules（拼寫有誤，應為 effective security rules）。雖然「有效安全性規則」確實可以檢視某個網路介面實際生效的規則，但本題官方答案取 IP 流量驗證與連線疑難排解這兩個主動診斷工具。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 569,
+    "type": "single",
+    "question": "You have an Azure subscription. You need to receive an email alert when a resource lock is removed from any resource in the subscription. What should you use to create an activity log alert in Azure Monitor?",
+    "options": {
+      "A": "a resource, a condition, and an action group",
+      "B": "a resource, a condition, and a Microsoft 365 group",
+      "C": "a Log Analytics workspace, a resource, and an action group",
+      "D": "a data collection endpoint, an application security group, and a resource group"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。活動記錄警示的三個必要元素就是：監視範圍（資源／訂用帳戶）、觸發條件（此處為刪除資源鎖定的作業），以及發出通知的動作群組（其中設定電子郵件收件者）。",
+      "B": "Incorrect. 錯誤。Azure 監視器的通知目標是動作群組，不能直接指定 Microsoft 365 群組。",
+      "C": "Incorrect. 錯誤。活動記錄警示直接讀取訂用帳戶的活動記錄，不需要先建立 Log Analytics 工作區。",
+      "D": "Incorrect. 錯誤。這三項都與活動記錄警示無關：資料收集端點服務代理程式資料收集、應用程式安全性群組屬於網路安全、資源群組只是容器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 573,
+    "type": "single",
+    "question": "You have an Azure subscription. The subscription contains virtual machines that connect to a virtual network named VNet1. You plan to configure Azure Monitor for VM Insights. You need to ensure that all the virtual machines only communicate with Azure Monitor through VNet1. What should you create first?",
+    "options": {
+      "A": "a data collection rule (DCR)",
+      "B": "a Log Analytics workspace",
+      "C": "an Azure Monitor Private Link Scope (AMPLS)",
+      "D": "a private endpoint"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。DCR 決定收集哪些資料與送往何處，但不會限制流量必須走私人網路路徑。",
+      "B": "Incorrect. 錯誤。工作區是資料的目的地，本身不提供私人連線；何況題目問的是「確保只透過 VNet1 通訊」這個需求的第一步。",
+      "C": "Correct. 正確。要讓監視流量只走私人網路，必須先建立 Azure 監視器私人連結範圍 (AMPLS)，把要保護的工作區與元件加入其中，之後才能為 AMPLS 建立私人端點並連到 VNet1。順序上 AMPLS 必須先存在。",
+      "D": "Incorrect. 錯誤。私人端點是後續步驟——它必須連結到一個已存在的 AMPLS，因此不能先建立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 575,
+    "type": "single",
+    "question": "You have an Azure subscription that contains an Azure Stream Analytics job named Job1. You need to monitor input events for Job1 to identify the number of events that were NOT processed. Which metric should you use?",
+    "options": {
+      "A": "Out-of-Order Events",
+      "B": "Output Events",
+      "C": "Late Input Events",
+      "D": "Backlogged Input Events"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。此計量統計的是抵達順序不符預期的事件數，與「尚未處理」不同。",
+      "B": "Incorrect. 錯誤。輸出事件是作業已經產出的結果數量，方向相反。",
+      "C": "Incorrect. 錯誤。延遲輸入事件指的是超過可容忍延遲才抵達的事件，它們仍可能已被處理或已被丟棄。",
+      "D": "Correct. 正確。Backlogged Input Events 直接代表「已進入佇列但作業還來不及處理」的事件數量，是判斷作業是否跟不上輸入速度（需要提高串流單位）的關鍵計量。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 576,
+    "type": "single",
+    "question": "You have an Azure subscription that contains an Azure SQL database named DB1. You plan to use Azure Monitor to monitor the performance of DB1. You must be able to run queries to analyze log data. Which destination should you configure in the Diagnostic settings of DB1?",
+    "options": {
+      "A": "Send to a Log Analytics workspace.",
+      "B": "Archive to a storage account.",
+      "C": "Stream to an Azure event hub."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。只有送到 Log Analytics 工作區的資料才能用 KQL 直接查詢與分析，符合「執行查詢分析記錄資料」的需求。",
+      "B": "Incorrect. 錯誤。封存到儲存體帳戶適合長期低成本保留，但資料以檔案形式存放，無法直接執行查詢。",
+      "C": "Incorrect. 錯誤。事件中樞用於把資料即時串流給外部系統（例如第三方 SIEM），本身不提供查詢能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 577,
+    "type": "single",
+    "question": "You have an Azure subscription. The subscription contains virtual machines that run Windows Server. You have a data collection rule (DCR) named Rule1. You plan to use the Azure Monitor Agent to collect events from Windows System event logs. You only need to collect system events that have an ID of 1001. Which type of query should you use for the data source in Rule1?",
+    "options": {
+      "A": "SQL",
+      "B": "XPath",
+      "C": "KQL"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。資料收集規則的 Windows 事件資料來源不接受 SQL 查詢。",
+      "B": "Correct. 正確。DCR 的 Windows 事件記錄資料來源使用 XPath 運算式來篩選要收集的事件，例如 System!*[System[EventID=1001]]，可在「收集端」就只挑出指定的事件 ID。",
+      "C": "Incorrect. 錯誤。KQL 是資料「已進入」Log Analytics 工作區之後用來查詢的語言，無法用於決定代理程式要收集什麼。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 578,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a virtual machine named VM1. You have an on-premises datacenter that contains a domain controller named DC1. ExpressRoute is used to connect the on-premises datacenter to Azure. You need to use Connection Monitor to identify network latency between VM1 and DC1. What should you install on DC1?",
+    "options": {
+      "A": "the Azure Connected Machine agent for Azure Arc-enabled servers",
+      "B": "the Azure Network Watcher Agent virtual machine extension",
+      "C": "the Log Analytics agent",
+      "D": "an Azure Monitor agent extension"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤（依官方標示）。但要提醒：Azure 連線機器代理程式（Arc）其實是「前提」——內部部署機器必須先上 Arc，才有辦法安裝任何 Azure 延伸模組，因此有 30% 社群投票支持此項。",
+      "B": "Incorrect. 錯誤。網路監看員代理程式延伸模組只適用於 Azure 虛擬機器，無法安裝在內部部署伺服器上。",
+      "C": "Incorrect. 錯誤。Log Analytics 代理程式（MMA）是舊版做法，已於 2024 年 8 月退場，現行連線監視器改用 Azure 監視器代理程式。",
+      "D": "Correct. 正確（依官方標示）。現行的連線監視器要監視非 Azure 端點，需要在該機器上安裝 Azure 監視器代理程式（其前提是機器已透過 Azure Arc 上線），之後即可量測 VM1 與 DC1 之間的延遲。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 579,
+    "type": "single",
+    "question": "You have an Azure subscription that has Traffic Analytics configured. You deploy a new virtual machine named VM1 that has the following settings: • Region: East US • Virtual network: VNet1 • NIC network security group: NSG1 You need to monitor VM1 traffic by using Traffic Analytics. Which settings should you configure?",
+    "options": {
+      "A": "Diagnostic settings for VM1",
+      "B": "NSG flow logs for NSG1",
+      "C": "Diagnostic settings for NSG1",
+      "D": "Insights for VM1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。VM 的診斷設定送出的是虛擬機器層級的計量與記錄，流量分析並不從這裡取得資料。",
+      "B": "Correct. 正確。流量分析的資料來源就是「NSG 流量記錄」。VM1 的網路介面關聯的是 NSG1，因此必須為 NSG1 啟用流量記錄，資料才會進入流量分析。",
+      "C": "Incorrect. 錯誤。NSG 的診斷設定送出的是事件與規則計數器等記錄，與流量記錄是不同的功能，流量分析不吃這份資料。",
+      "D": "Incorrect. 錯誤。VM 見解監視的是客體作業系統的效能與相依性，不產生網路流量記錄。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 580,
+    "type": "single",
+    "question": "You have an Azure subscription. The subscription contains 10 virtual machines that run Windows Server. Each virtual machine hosts a website in IIS and has the Azure Monitor Agent installed. You need to collect the IIS logs from each virtual machine and store them in a Log Analytics workspace. What should you configure first?",
+    "options": {
+      "A": "a data collection endpoint",
+      "B": "an Azure Monitor Private Link Scope (AMPLS)",
+      "C": "Diagnostic settings",
+      "D": "VM insights",
+      "E": "a private endpoint"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。以 Azure 監視器代理程式收集「IIS 記錄」與自訂文字記錄時，官方要求必須搭配資料收集端點 (DCE)；因此第一步是建立 DCE，之後才能建立指向它的資料收集規則。",
+      "B": "Incorrect. 錯誤。AMPLS 是為了讓監視流量走私人網路，本題並無此需求。",
+      "C": "Incorrect. 錯誤。診斷設定用於 Azure「資源」層級的平台記錄，不用於收集客體作業系統內的 IIS 記錄。",
+      "D": "Incorrect. 錯誤。VM 見解提供的是效能與相依性監視，不負責收集 IIS 記錄。",
+      "E": "Incorrect. 錯誤。私人端點同樣是網路私有化的元件，與 IIS 記錄收集的必要前置條件無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 585,
+    "type": "single",
+    "question": "You need to meet the user requirement for Admin1. What should you do?",
+    "options": {
+      "A": "From the Azure Active Directory blade, modify the Groups",
+      "B": "From the Azure Active Directory blade, modify the Properties",
+      "C": "From the Subscriptions blade, select the subscription, and then modify the Access control (IAM) settings",
+      "D": "From the Subscriptions blade, select the subscription, and then modify the Properties"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。群組成員資格與訂用帳戶層級的管理員指派是不同的機制。",
+      "B": "Incorrect. 錯誤。Azure AD 的屬性頁面設定的是租用戶層級資訊（例如全域管理員的存取權提升），不是訂用帳戶的管理員。",
+      "C": "Correct. 正確（依官方標示）。在訂用帳戶的存取控制 (IAM) 中把管理角色指派給 Admin1，是現行入口網站賦予其訂用帳戶管理權限的方式。",
+      "D": "Incorrect. 錯誤（依官方標示）。但要提醒：傳統的「服務管理員」欄位確實顯示在訂用帳戶的屬性頁面上，這也是有 48% 社群投票支持此項的原因；此題屬有爭議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 589,
+    "type": "single",
+    "question": "You need to ensure that you can grant Group4 Azure RBAC read only permissions to all the Azure file shares. What should you do?",
+    "options": {
+      "A": "On storage2, enable identity-based access for the file shares.",
+      "B": "Recreate storage2 and set Hierarchical namespace to Enabled.",
+      "C": "On storage1 and storage4, change the Account kind type to StorageV2 (general purpose v2).",
+      "D": "Create a shared access signature (SAS) for storage1, storage2, and storage4."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure 檔案共用要以 RBAC 角色（例如 Storage File Data SMB Share Reader）控制存取，前提是該儲存體帳戶已啟用「以身分識別為基礎的存取」（AD DS／Entra Kerberos）；未啟用時那些角色不會生效。（來源限制：本題的判斷依據是案例中的儲存體帳戶表格，而該表格在來源 PDF 中是損毀的圖片佔位符、內容並不存在，因此無法逐一核對各帳戶的設定。以下解析說明判斷原則。）",
+      "B": "Incorrect. 錯誤。階層命名空間是 Data Lake Storage Gen2 的功能，只作用於 Blob，與檔案共用的身分識別驗證無關。",
+      "C": "Incorrect. 錯誤。帳戶種類影響可用的功能組合，但並不是啟用檔案共用 RBAC 的關鍵；缺的是身分識別驗證設定。",
+      "D": "Incorrect. 錯誤。SAS 是以權杖授權，與題目明確要求的「Azure RBAC」是兩種不同的授權模式。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 590,
+    "type": "single",
+    "question": "Introductory Info Case Study - This is a case study. Case studies are not timed separately. You can use as much exam time as you would like to complete each case. However, there may be additional case studies and sections on this exam. You must manage your time to ensure that you are able to complete all questions included on this exam in the time provided. To answer the questions included in a case study, you will need to reference information that is provided in the case study. Case studies might contain exhibits and other resources that provide more information about the scenario that is described in the case study. Each question is independent of the other questions in this case study. At the end of this case study, a review screen will appear. This screen allows you to review your answers and to make changes before you move to the next section of the exam. After you begin a new section, you cannot return to this section. To start the case study - To display the first question in this case study, click the Next button. Use the buttons in the left pane to explore the content of the case study before you answer the questions. Clicking these buttons displays information such as business requirements, existing environment, and problem statements. If the case study has an All Information tab, note that the information displayed is identical to the information displayed on the subsequent tabs. When you are ready to answer a question, click the Question button to return to the question. Overview - Contoso, Ltd. is a manufacturing company that has offices worldwide. Contoso works with partner organizations to bring products to market. Contoso products are manufactured by using blueprint files that the company authors and maintains. Existing Environment - Currently, Contoso uses multiple types of servers for business operations, including the following: File servers Domain controllers Microsoft SQL Server servers Your network contains an Active Directory forest named contoso.com. All servers and client computers are joined to Active Directory. You have a public-facing application named App1. App1 is comprised of the following three tiers: A SQL database A web front end A processing middle tier - Each tier is comprised of five virtual machines. Users access the web front end by using HTTPS only. Requirements - Planned Changes - Contoso plans to implement the following changes to the infrastructure: Move all the tiers of App1 to Azure. Move the existing product blueprint files to Azure Blob storage. Create a hybrid directory to support an upcoming Microsoft 365 migration project. Technical Requirements - Contoso must meet the following technical requirements: Move all the virtual machines for App1 to Azure. Minimize the number of open ports between the App1 tiers. Ensure that all the virtual machines for App1 are protected by backups. Copy the blueprint files to Azure over the Internet. Ensure that the blueprint files are stored in the archive storage tier. Ensure that partner access to the blueprint files is secured and temporary. Prevent user passwords or hashes of passwords from being stored in Azure. Use unmanaged standard storage for the hard disks of the virtual machines. Ensure that when users join devices to Azure Active Directory (Azure AD), the users use a mobile phone to verify their identity. Minimize administrative effort whenever possible. User Requirements - Contoso identifies the following requirements for users: Ensure that only users who are part of a group named Pilot can join devices to Azure AD. Designate a new user named Admin1 as the service admin for the Azure subscription. Admin1 must receive email alerts regarding service outages. Ensure that a new user named User3 can create network objects for the Azure subscription. Question You need to implement a backup solution for App1 after the application is moved. What should you create first?",
+    "options": {
+      "A": "a recovery plan",
+      "B": "an Azure Backup Server",
+      "C": "a backup policy",
+      "D": "a Recovery Services vault"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。復原計畫屬於 Azure Site Recovery，用來安排容錯移轉順序，不是備份的起點。",
+      "B": "Incorrect. 錯誤。Azure Backup Server 用於內部部署工作負載的備份；App1 移轉後是 Azure 虛擬機器，直接用 Azure 備份即可。",
+      "C": "Incorrect. 錯誤。備份原則（頻率與保留期）是建立在保存庫「之內」的設定，必須先有保存庫。",
+      "D": "Correct. 正確。Azure 備份的所有設定與復原點都存放在復原服務保存庫中，因此第一步必須先建立保存庫，之後才能定義原則並啟用 VM 的備份。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 591,
+    "type": "single",
+    "question": "You need to move the blueprint files to Azure. What should you do?",
+    "options": {
+      "A": "Generate an access key. Map a drive, and then copy the files by using File Explorer.",
+      "B": "Use Azure Storage Explorer to copy the files.",
+      "C": "Use the Azure Import/Export service.",
+      "D": "Generate a shared access signature (SAS). Map a drive, and then copy the files by using File Explorer."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Blob 儲存體無法像檔案共用那樣直接對應成網路磁碟機，此做法在技術上不成立。",
+      "B": "Correct. 正確。Azure 儲存體總管是圖形化工具，可直接經網際網路把本機檔案上傳到 Blob 容器並指定存取層，不需撰寫指令或建置任何基礎結構，管理工作最少。",
+      "C": "Incorrect. 錯誤。匯入／匯出是把實體磁碟寄送到 Azure 資料中心，與需求中「經網際網路複製」明確相違。",
+      "D": "Incorrect. 錯誤。同 A，Blob 容器不能對應為網路磁碟機。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 595,
+    "type": "single",
+    "question": "You need to identify which storage account to use for the flow logging of IP traffic from VM5. The solution must meet the retention requirements. Which storage account should you identify?",
+    "options": {
+      "A": "storage1",
+      "B": "storage2",
+      "C": "storage3",
+      "D": "storage4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤（依官方標示）。（來源限制：本題的判斷依據是案例中的儲存體帳戶表格，而該表格在來源 PDF 中是損毀的圖片佔位符、內容並不存在，因此無法逐一核對各帳戶的設定。以下解析說明判斷原則。）",
+      "B": "Correct. 正確（依官方標示）。判斷原則：NSG 流量記錄的目標儲存體帳戶必須是「一般用途 v2」、與 NSG 位於「同一個區域」，且不能是進階 (Premium) Blob 帳戶；保留天數設定（本題需 240 天）則由流量記錄本身的保留原則控制。符合這些條件的帳戶才是正解。（來源限制：本題的判斷依據是案例中的儲存體帳戶表格，而該表格在來源 PDF 中是損毀的圖片佔位符、內容並不存在，因此無法逐一核對各帳戶的設定。以下解析說明判斷原則。）",
+      "C": "Incorrect. 錯誤（依官方標示）。（來源限制：本題的判斷依據是案例中的儲存體帳戶表格，而該表格在來源 PDF 中是損毀的圖片佔位符、內容並不存在，因此無法逐一核對各帳戶的設定。以下解析說明判斷原則。）",
+      "D": "Incorrect. 錯誤（依官方標示）。（來源限制：本題的判斷依據是案例中的儲存體帳戶表格，而該表格在來源 PDF 中是損毀的圖片佔位符、內容並不存在，因此無法逐一核對各帳戶的設定。以下解析說明判斷原則。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 600,
+    "type": "single",
+    "question": "You are planning the move of App1 to Azure. You create a network security group (NSG). You need to recommend a solution to provide users with access to App1. What should you recommend?",
+    "options": {
+      "A": "Create an incoming security rule for port 443 from the Internet. Associate the NSG to the subnet that contains the web servers.",
+      "B": "Create an outgoing security rule for port 443 from the Internet. Associate the NSG to the subnet that contains the web servers.",
+      "C": "Create an incoming security rule for port 443 from the Internet. Associate the NSG to all the subnets.",
+      "D": "Create an outgoing security rule for port 443 from the Internet. Associate the NSG to all the subnets."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。使用者僅透過 HTTPS（443）存取 Web 前端，屬於進入方向，因此要建立「輸入」規則；而且只有 Web 前端需要對外開放，把 NSG 只關聯到 Web 伺服器所在的子網路，符合「盡量減少各層之間開放的連接埠」的需求。",
+      "B": "Incorrect. 錯誤。使用者主動連進來屬於輸入方向，輸出規則管的是 VM 主動連出的流量。",
+      "C": "Incorrect. 錯誤。方向雖然對，但關聯到「所有」子網路會讓 SQL 與中介層也接受來自網際網路的 443 連入，違反最小開放原則。",
+      "D": "Incorrect. 錯誤。方向與範圍兩者都錯。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 602,
+    "type": "single",
+    "question": "You need to add VM1 and VM2 to the backend pool of LB1. What should you do first?",
+    "options": {
+      "A": "Connect VM2 to VNET1/Subnet1.",
+      "B": "Redeploy VM1 and VM2 to the same availability zone.",
+      "C": "Redeploy VM1 and VM2 to the same availability set.",
+      "D": "Create a new NSG and associate the NSG to VNET1/Subnet1."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。同一子網路並非 Basic 層的限制條件；Basic 負載平衡器的限制是後端必須屬於同一個可用性設定組或同一個擴展集。",
+      "B": "Incorrect. 錯誤。可用性區域是「標準」層負載平衡器才支援的概念，Basic 層並不支援可用性區域。",
+      "C": "Correct. 正確。Basic 層負載平衡器的後端集區只能包含「單一可用性設定組」或單一虛擬機器擴展集內的執行個體。因此必須先把 VM1 與 VM2 重新部署到同一個可用性設定組，才能加入 LB1 的後端集區。",
+      "D": "Incorrect. 錯誤。NSG 控制流量的允許與拒絕，與能否加入後端集區無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 603,
+    "type": "single",
+    "question": "You need to ensure that VM1 can communicate with VM4. The solution must minimize administrative effort. What should you do?",
+    "options": {
+      "A": "Create a user-defined route from VNET1 to VNET3.",
+      "B": "Create an NSG and associate the NSG to VM1 and VM4.",
+      "C": "Assign VM4 an IP address of 10.0.1.5/24.",
+      "D": "Establish peering between VNET1 and VNET3."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。使用者定義路由只能改變「已經可達」的流量走向；兩個未連接的虛擬網路之間沒有底層連通性，光有路由也到不了。",
+      "B": "Incorrect. 錯誤。NSG 是篩選流量的機制，只會限制而不會建立連通性。",
+      "C": "Incorrect. 錯誤。更改 IP 位址不會讓兩個獨立的虛擬網路互通，若位址空間重疊反而會讓對等互連無法建立。",
+      "D": "Correct. 正確。虛擬網路對等互連透過 Azure 骨幹直接連通兩個虛擬網路，設定簡單、無需閘道或自訂路由，是管理工作最少的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 605,
+    "type": "single",
+    "question": "You need to recommend a solution to automate the configuration for the finance department users. The solution must meet the technical requirements. What should you include in the recommendation?",
+    "options": {
+      "A": "Azure AD B2C",
+      "B": "dynamic groups and conditional access policies",
+      "C": "Azure AD Identity Protection",
+      "D": "an Azure logic app and the Microsoft Identity Management (MIM) client"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Azure AD B2C 是給「外部消費者」身分驗證用的獨立目錄，與內部員工的 MFA 設定無關。",
+      "B": "Correct. 正確。以 department 屬性建立「動態使用者群組」，新加入的財務部門使用者會自動成為成員；再以條件式存取原則對該群組要求 MFA，即可完全自動化、免人工維護，正好對應「經常新增使用者」與「僅財務部門」兩項需求。",
+      "C": "Incorrect. 錯誤。Identity Protection 依風險偵測結果觸發修復（例如風險式 MFA），無法依「部門」這個屬性精準鎖定對象。",
+      "D": "Incorrect. 錯誤。自行以邏輯應用程式搭配 MIM 建置同步邏輯，開發與維護成本遠高於內建的動態群組，違反盡量減少管理工作的原則。"
+    }
+  }
+]

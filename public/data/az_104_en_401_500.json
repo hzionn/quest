@@ -403,5 +403,345 @@
       "B": "Correct. 正確。虛擬機器分散在多個可用性區域，VPN 閘道也應具備區域備援；區域備援的閘道要求使用「標準 SKU」的公用 IP，而標準 SKU 的公用 IP 只支援靜態指派。",
       "C": "Incorrect. 錯誤。除了 SKU 不符之外，動態指派會讓閘道位址可能變動，內部部署的 VPN 裝置組態將無法穩定對應。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 468,
+    "type": "single",
+    "question": "You have an on-premises datacenter and an Azure subscription. You plan to connect the datacenter to Azure by using ExpressRoute. You need to deploy an ExpressRoute gateway. The solution must meet the following requirements: ✑ Support up to 10 Gbps of traffic. ✑ Support availability zones. ✑ Support FastPath. ✑ Minimize costs. Which SKU should you deploy?",
+    "options": {
+      "A": "ERGw1AZ",
+      "B": "ERGw2",
+      "C": "ErGw3",
+      "D": "ErGw3AZ"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。ERGw1AZ 雖然支援可用性區域，但其頻寬上限與功能等級不足，且 FastPath 需要 ErGw3AZ（或 Ultra Performance）等級才支援。",
+      "B": "Incorrect. 錯誤。ERGw2 名稱中沒有 AZ，不支援可用性區域，也不支援 FastPath。",
+      "C": "Incorrect. 錯誤。ErGw3 雖然效能等級足以支援 FastPath 與 10 Gbps，但同樣不具備可用性區域備援。",
+      "D": "Correct. 正確。ErGw3AZ 是同時滿足三項功能需求的最低等級 SKU：支援最高 10 Gbps、具備可用性區域備援（AZ 後綴），且達到 FastPath 的效能要求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 471,
+    "type": "single",
+    "question": "Your on-premises network contains an SMB share named Share1. You have an Azure subscription that contains the following resources: ✑ A web app named webapp1 ✑ A virtual network named VNET1 You need to ensure that webapp1 can connect to Share1. What should you deploy?",
+    "options": {
+      "A": "an Azure Application Gateway",
+      "B": "an Azure Active Directory (Azure AD) Application Proxy",
+      "C": "an Azure Virtual Network Gateway"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。應用程式閘道處理的是進入 Azure 的「輸入」HTTP/HTTPS 流量負載平衡，無法讓 Web 應用程式對外連到內部部署的 SMB 共用。",
+      "B": "Incorrect. 錯誤。應用程式代理的方向相反——它是把內部部署的 Web 應用發佈給外部使用者存取，而且只支援 HTTP/HTTPS，不支援 SMB。",
+      "C": "Correct. 正確。webapp1 透過虛擬網路整合進入 VNET1 後，還需要 VNET1 與內部部署網路之間有連線；部署虛擬網路閘道建立站對站 VPN（或 ExpressRoute）即可讓流量到達 Share1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 473,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account named storage1. You need to allow access to storage1 from selected networks and your home office. The solution must minimize administrative effort. What should you do first for storage1?",
+    "options": {
+      "A": "Add a private endpoint.",
+      "B": "Modify the Public network access settings.",
+      "C": "Select Internet routing.",
+      "D": "Modify the Access Control (IAM) settings."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。私人端點是讓虛擬網路內的資源以私人 IP 存取儲存體，無法涵蓋從家庭辦公室的公用網路連入。",
+      "B": "Correct. 正確。預設的公用網路存取是「已針對所有網路啟用」。要限縮成只允許特定來源，第一步就是把公用網路存取改為「已針對選取的虛擬網路和 IP 位址啟用」，之後才能加入允許的虛擬網路與家用公用 IP。",
+      "C": "Incorrect. 錯誤。網際網路路由屬於路由喜好設定，決定流量走 Microsoft 骨幹或一般網際網路，與存取控制無關。",
+      "D": "Incorrect. 錯誤。IAM 控制的是「誰」有權限，本題要限制的是「從哪些網路」可以連入，屬於網路層的防火牆設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 474,
+    "type": "single",
+    "question": "You plan to deploy route-based Site-to-Site VPN connections between several on-premises locations and an Azure virtual network. Which tunneling protocol should you use?",
+    "options": {
+      "A": "IKEv1",
+      "B": "PPTP",
+      "C": "IKEv2",
+      "D": "L2TP"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。IKEv1 只能搭配「基於原則」的閘道使用，不適用於基於路由的組態。",
+      "B": "Incorrect. 錯誤。Azure VPN 閘道完全不支援 PPTP，該協定也已因安全性問題被淘汰。",
+      "C": "Correct. 正確。基於路由的 Azure VPN 閘道使用 IKEv2 建立 IPsec 通道，且支援多個站台同時連線，符合題目情境。",
+      "D": "Incorrect. 錯誤。L2TP 並非 Azure 站對站 VPN 支援的通道通訊協定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 476,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Protocol to UDP",
+      "B": "Session persistence to None",
+      "C": "Floating IP (direct server return) to Disabled",
+      "D": "Session persistence to Client IP"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
+      "B": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "C": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。",
+      "D": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 478,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Disabled",
+      "B": "Session persistence to Client IP",
+      "C": "Protocol to UDP",
+      "D": "Idle Time-out (minutes) to 20"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。",
+      "B": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。",
+      "C": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
+      "D": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 479,
+    "type": "single",
+    "question": "You have an Azure subscription that contains 20 virtual machines, a network security group (NSG) named NSG1, and two virtual networks named VNET1 and VNET2 that are peered. You plan to deploy an Azure Bastion Basic SKU host named Bastion1 to VNET1. You need to configure NSG1 to allow inbound access to the virtual machines via Bastion1. Which port should you configure for the inbound security rule?",
+    "options": {
+      "A": "22",
+      "B": "443",
+      "C": "389",
+      "D": "8080"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。22 是 SSH，屬於 Bastion 連到目標 VM 的「內部」連接埠之一，而題目問的是允許使用者經由 Bastion 進來所需的連接埠。",
+      "B": "Correct. 正確。使用者透過瀏覽器以 HTTPS（TCP 443）連到 Azure Bastion，因此 NSG 的輸入規則必須允許來源 Internet 的 443；Bastion 再以 RDP/SSH 連到後端 VM。",
+      "C": "Incorrect. 錯誤。389 是 LDAP，與 Bastion 無關。",
+      "D": "Incorrect. 錯誤。8080 不是 Bastion 使用的連接埠。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 481,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Session persistence to None",
+      "B": "a health probe",
+      "C": "Session persistence to Client IP",
+      "D": "Idle Time-out (minutes) to 20"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "B": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "C": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。",
+      "D": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 485,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account. The account stores website data. You need to ensure that inbound user traffic uses the Microsoft point-of-presence (POP) closest to the user's location. What should you configure?",
+    "options": {
+      "A": "private endpoints",
+      "B": "Azure Firewall rules",
+      "C": "Routing preference",
+      "D": "load balancing"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。私人端點是把儲存體帳戶接到虛擬網路的私人 IP，與流量從哪個公用臨界點進入無關。",
+      "B": "Incorrect. 錯誤。防火牆規則決定允許或封鎖，不影響流量的路由路徑。",
+      "C": "Correct. 正確。儲存體帳戶的路由喜好設定可以選擇「Microsoft 網路路由」，讓流量在離使用者最近的 Microsoft POP 就進入 Microsoft 全球骨幹網路傳輸；另一個選項則是走 ISP 網路盡量晚才進入骨幹。",
+      "D": "Incorrect. 錯誤。負載平衡是在多個後端之間分配流量，不決定流量從哪個臨界點進網。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 486,
+    "type": "single",
+    "question": "You have two Azure virtual machines named VM1 and VM2 that run Windows Server. The virtual machines are in a subnet named Subnet1. Subnet1 is in a virtual network named VNet1. You need to prevent VM1 from accessing VM2 on port 3389. What should you do?",
+    "options": {
+      "A": "Create a network security group (NSG) that has an outbound security rule to deny destination port 3389 and apply the NSG to the network interface of VM1.",
+      "B": "Configure Azure Bastion in VNet1.",
+      "C": "Create a network security group (NSG) that has an outbound security rule to deny source port 3389 and apply the NSG to Subnet1.",
+      "D": "Create a network security group (NSG) that has an inbound security rule to deny source port 3389 and apply the NSG to Subnet1."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。要阻止 VM1「主動連出」，應在 VM1 的網路介面上以輸出規則拒絕「目的地」連接埠 3389。套用在網路介面而非子網路，也不會影響同一子網路中其他機器之間的 RDP。",
+      "B": "Incorrect. 錯誤。Bastion 提供的是從入口網站安全連入 VM 的方式，不會限制 VM 之間的流量。",
+      "C": "Incorrect. 錯誤。3389 是「目的地」連接埠；RDP 用戶端的來源連接埠是隨機高號連接埠，以來源連接埠 3389 撰寫規則不會命中任何流量。另外套用在子網路會連帶影響其他機器。",
+      "D": "Incorrect. 錯誤。同樣誤用了來源連接埠；而且輸入規則作用在「進入」方向，而題目要阻擋的是 VM1 發出的連線。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 489,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Session persistence to None",
+      "B": "a health probe",
+      "C": "Session persistence to Client IP and protocol",
+      "D": "Idle Time-out (minutes) to 20"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "B": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "C": "Correct. 正確。此設定採三元組雜湊（用戶端 IP + 通訊協定），同一用戶端以同一通訊協定發出的連線會固定落在同一台後端伺服器，同樣達成黏著工作階段。",
+      "D": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 490,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "a health probe",
+      "B": "Floating IP (direct server return) to Enabled",
+      "C": "Session persistence to Client IP and protocol",
+      "D": "Protocol to UDP"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "B": "Incorrect. 錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。",
+      "C": "Correct. 正確。此設定採三元組雜湊（用戶端 IP + 通訊協定），同一用戶端以同一通訊協定發出的連線會固定落在同一台後端伺服器，同樣達成黏著工作階段。",
+      "D": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 492,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Session persistence to Client IP and protocol",
+      "B": "Protocol to UDP",
+      "C": "Session persistence to None",
+      "D": "Floating IP (direct server return) to Disabled"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。此設定採三元組雜湊（用戶端 IP + 通訊協定），同一用戶端以同一通訊協定發出的連線會固定落在同一台後端伺服器，同樣達成黏著工作階段。",
+      "B": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
+      "C": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "D": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 494,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Enabled",
+      "B": "Session persistence to Client IP",
+      "C": "Protocol to UDP",
+      "D": "Idle Time-out (minutes) to 20"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。",
+      "B": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。",
+      "C": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
+      "D": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 496,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Disabled",
+      "B": "Floating IP (direct server return) to Enabled",
+      "C": "a health probe",
+      "D": "Session persistence to Client IP"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。",
+      "B": "Incorrect. 錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。",
+      "C": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "D": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 497,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Enabled",
+      "B": "Idle Time-out (minutes) to 20",
+      "C": "a health probe",
+      "D": "Session persistence to Client IP"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。",
+      "B": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
+      "C": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "D": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 499,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Session persistence to Client IP and protocol",
+      "B": "Idle Time-out (minutes) to 20",
+      "C": "Session persistence to None",
+      "D": "Floating IP (direct server return) to Enabled"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。此設定採三元組雜湊（用戶端 IP + 通訊協定），同一用戶端以同一通訊協定發出的連線會固定落在同一台後端伺服器，同樣達成黏著工作階段。",
+      "B": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
+      "C": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
+      "D": "Incorrect. 錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 500,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Disabled",
+      "B": "Idle Time-out (minutes) to 20",
+      "C": "a health probe",
+      "D": "Session persistence to Client IP"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。",
+      "B": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
+      "C": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
+      "D": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
   }
 ]
