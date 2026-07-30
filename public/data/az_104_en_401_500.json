@@ -589,6 +589,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 444,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual networks VNET1 (West US), VNET2 (West US) and VNET3 (East US). The subscription contains the private DNS zones Zone1.com (West US), Zone2.com (West US) and Zone3.com (East US). You add virtual network links to the private DNS zones as follows: Link1 (zone Zone1.com, virtual network VNET1, enable auto registration Yes); Link2 (Zone2.com, VNET2, No); Link3 (Zone3.com, VNET3, No). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can enable auto registration for Link2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can add a virtual network link for VNET1 to Zone3.com.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can add a virtual network link for VNET2 to Zone1.com and enable auto registration.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。限制是「一個虛擬網路最多只能對一個私人 DNS 區域啟用自動註冊」。VNET2 目前唯一的連結（Link2）自動註冊是關閉的，也沒有對其他區域啟用過自動註冊，所以可以直接把 Link2 的自動註冊打開。",
+      "2": "是。私人 DNS 區域是「全域」資源，區域屬性只是中繼資料的存放位置——虛擬網路連結完全不要求兩者同區域。所以 West US 的 VNET1 可以連到 East US 的 Zone3.com（而且一個虛擬網路可以連到很多個私人區域，只是自動註冊只能挑一個）。",
+      "3": "是。兩個方向的限制都沒有被違反：VNET2 還沒有對任何區域啟用自動註冊；而「一個私人 DNS 區域可以有多個啟用自動註冊的虛擬網路連結」（Zone1.com 已有 VNET1，再加 VNET2 沒問題）。",
+      "_full": "私人 DNS 區域連結的三條規則：\n① 一個「虛擬網路」最多只能對一個區域啟用自動註冊（限制在虛擬網路這一側）。\n② 一個「區域」可以有多個啟用自動註冊的連結（區域這一側沒有 1 對 1 限制）。\n③ 私人區域是全域資源，連結不受區域（location）限制。\n本題三項都沒有違反這些規則，所以全部可行。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 445,
+    "type": "matching",
+    "question": "You need to create a virtual network by using an Azure Resource Manager (ARM) template and deploy Azure Bastion into it. How should you complete the template?  { \"type\": \"Microsoft.Network/virtualNetworks\", \"name\": \"VNET1\", \"apiVersion\": \"2019-02-01\", \"location\": \"[resourceGroup().location]\", \"properties\": { \"addressSpace\": { \"addressPrefixes\": [\"10.10.10.0/24\"] }, \"subnets\": [ { \"name\": [box 1], \"properties\": { \"addressPrefix\": [box 2] } }, { \"name\": \"LAN02\", \"properties\": { \"addressPrefix\": \"10.10.10.128/25\" } } ] } }",
+    "available_options": [
+      "AzureBastionSubnet",
+      "AzureFirewallSubnet",
+      "LAN01",
+      "RemoteAccessSubnet",
+      "10.10.10.0/27",
+      "10.10.10.0/29",
+      "10.10.10.0/30"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the subnet name):",
+        "correct_answer": "AzureBastionSubnet"
+      },
+      {
+        "use_case": "Box 2 (the address prefix):",
+        "correct_answer": "10.10.10.0/27"
+      }
+    ],
+    "explanations": {
+      "1": "Azure Bastion 必須部署在一個「名稱固定為 AzureBastionSubnet」的專用子網路中——這個名稱是硬性規定，寫成 LAN01 或 RemoteAccessSubnet 都不會被 Bastion 認可。（同理，Azure 防火牆的專用子網路必須叫 AzureFirewallSubnet，但本題部署的是 Bastion。）",
+      "2": "在這些選項中只有 /27 夠大。Azure Bastion 的子網路有最小大小要求，/29 與 /30 都太小（Azure 每個子網路本身還會保留 5 個位址）。選 10.10.10.0/27（32 個位址）也剛好不會與第二個子網路 10.10.10.128/25 重疊。\n（實務提醒：現行的 Azure Bastion 已把最小需求提高到 /26；本題的選項只到 /27，是舊版需求下的題目。）",
+      "_full": "兩個硬性規定：\n① 專用子網路的「名稱」不能自訂——Bastion 必須是 AzureBastionSubnet，Azure 防火牆必須是 AzureFirewallSubnet，閘道必須是 GatewaySubnet。\n② 子網路要夠大：本題選項中只有 /27 符合（現行需求已提高到 /26），而且不能與同一個虛擬網路中其他子網路重疊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 446,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You manage a virtual network named VNet1 that is hosted in the West US Azure region. VNet1 hosts two virtual machines named VM1 and VM2 that run Windows Server. You need to inspect all the network traffic from VM1 to VM2 for a period of three hours. Solution: From Azure Network Watcher, you create a packet capture. Does this meet the goal?",
@@ -645,6 +705,84 @@
     "explanations": {
       "A": "Incorrect. 錯誤。Network In／Out 只是進出流量的總位元組數，看不出流量的來源、目的、通訊協定或內容。",
       "B": "Correct. 正確。計量只提供彙總數據；要檢查流量內容必須使用網路監看員的封包擷取。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 453,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual networks VNET1 (peered with VNET2, DNS server Default (Azure-provided)) and VNET2 (peered with VNET1, DNS server 10.10.0.4). You have the virtual machines Server1 (10.10.0.4, NIC1, VNET1/Subnet1), Server2 (172.16.0.4, NIC2, VNET1/Subnet2) and Server3 (192.168.0.4, NIC3, VNET2/Subnet2). The network interfaces have these DNS server settings: NIC1 Inherit from virtual network; NIC2 10.10.0.4; NIC3 Inherit from virtual network. Server1 is a DNS server that contains contoso.com (Primary DNS zone) and Host1.contoso.com (A record, 131.107.10.15). You have an Azure private DNS zone named contoso.com that has a virtual network link to VNET2 and the records Host1 (A record, 131.107.200.20) and Host2 (A record, 131.107.50.50). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "Server2 resolves host2.contoso.com to 131.107.50.50.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "Server2 resolves host1.contoso.com to 131.107.10.15.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "Server3 resolves host2.contoso.com to 131.107.50.50.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。NIC2 直接指定 DNS 伺服器為 10.10.0.4，也就是 Server1。Server1 對 contoso.com 持有「主要區域」，所以它是這個網域的權威伺服器——查不到 host2 時會直接回「不存在」，不會再去問 Azure 的私人區域。而 Server1 的區域裡只有 Host1，因此 host2.contoso.com 解析失敗。",
+      "2": "是。同樣走 Server1，而 Server1 的 contoso.com 區域中有 Host1 → 131.107.10.15，因此解析結果是 131.107.10.15（不是 Azure 私人區域裡的 131.107.200.20）。",
+      "3": "否。NIC3 設為「從虛擬網路繼承」，而 VNET2 的 DNS 伺服器是自訂的 10.10.0.4——也就是 Server1。所以 Server3 的查詢同樣被送到 Server1，而不是 Azure 提供的解析程式；私人 DNS 區域必須經由 Azure 的 DNS（168.63.129.16）才查得到。因此 Server3 也解析不到 host2。",
+      "_full": "這題的關鍵是「私人 DNS 區域只有在虛擬機器使用『Azure 提供的 DNS』時才會被查到」。一旦虛擬網路或網路介面指定了自訂 DNS 伺服器，查詢就全部送去那台伺服器，Azure 私人區域就繞過了（除非那台自訂 DNS 再把查詢轉送到 168.63.129.16）。\n本題三台的 DNS 都指向 Server1（NIC2 直接指定；NIC3 繼承 VNET2 的自訂設定），而 Server1 是 contoso.com 的權威伺服器，所以答案完全由 Server1 的區域內容決定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 456,
+    "type": "matching",
+    "question": "You have a network security group (NSG) named NSG1 whose rules are: ALLOW_HTTPS (protocol TCP, source port range *, destination port range 443, source address prefix *, destination address prefix *, access Allow, priority 100, direction Inbound) and DENY_PING (protocol ICMP, source port range *, destination port range *, source address prefix VirtualNetwork, destination address prefix *, access Deny, priority 111, direction Outbound). NSG1 is associated to a subnet named Subnet1. Subnet1 contains the virtual machines VM1 (10.1.0.10) and VM2 (10.1.0.11). You need to add a rule to NSG1 to ensure that VM1 can ping VM2. The solution must use the principle of least privilege. How should the rule be configured?",
+    "available_options": [
+      "Inbound",
+      "Outbound",
+      "Any (source)",
+      "10.1.0.10 (source)",
+      "10.1.0.11 (source)",
+      "10.1.0.10; 10.1.0.11 (source)",
+      "10.1.0.0/28 (source)",
+      "Any (destination)",
+      "10.1.0.10 (destination)",
+      "10.1.0.11 (destination)",
+      "10.1.0.10; 10.1.0.11 (destination)",
+      "10.1.0.0/28 (destination)",
+      "110",
+      "111",
+      "112"
+    ],
+    "matches": [
+      {
+        "use_case": "Direction:",
+        "correct_answer": "Outbound"
+      },
+      {
+        "use_case": "Source:",
+        "correct_answer": "10.1.0.10 (source)"
+      },
+      {
+        "use_case": "Destination:",
+        "correct_answer": "10.1.0.11 (destination)"
+      },
+      {
+        "use_case": "Priority:",
+        "correct_answer": "110"
+      }
+    ],
+    "explanations": {
+      "1": "輸出。阻擋 ping 的 DENY_PING 是一條「輸出」規則，要放行就必須在同一個方向上加規則——輸入方向的規則不會覆蓋輸出方向的拒絕。",
+      "2": "10.1.0.10。題目只要求「VM1 可以 ping VM2」，所以來源只放 VM1 的位址。用 Any、整個 /28 或兩個位址都會多開權限，違反最小權限原則。",
+      "3": "10.1.0.11。同理，目的地只放 VM2 的位址。",
+      "4": "110。NSG 規則按優先順序「數字小的先評估、命中即停」，而 DENY_PING 的優先順序是 111，所以新規則必須用「小於 111」的數字才會先命中。選項中只有 110 符合；112 會排在拒絕規則之後、永遠輪不到；111 已被佔用（同一個 NSG 內優先順序不可重複）。",
+      "_full": "四個欄位各對應一個判斷：\n① 方向要與被擋的規則相同（DENY_PING 是輸出 → 新規則也放輸出）。\n② ③ 來源與目的地只填必要的單一位址，落實最小權限。\n④ 優先順序必須比拒絕規則「小」才能先命中，而且不能與既有規則重複。"
     }
   },
   {
