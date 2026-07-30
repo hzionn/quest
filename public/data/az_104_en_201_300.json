@@ -695,6 +695,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 234,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains a storage account named storage1. You need to configure a shared access signature (SAS) to ensure that users can only download blobs securely by name. Allowed services already has Blob selected. Which two settings should you configure?",
+    "options": {
+      "A": "Allowed resource types: Service",
+      "B": "Allowed resource types: Container",
+      "C": "Allowed resource types: Object",
+      "D": "Allowed permissions: Read",
+      "E": "Allowed permissions: List"
+    },
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。「服務」這個資源類型允許的是帳戶／服務層級的作業（例如取得服務屬性、列出容器），與下載個別 Blob 無關，給了反而超出需求。",
+      "B": "Incorrect. 錯誤。「容器」資源類型是用來做容器層級作業（最典型的就是列出容器內的 Blob）。題目說「依名稱」下載——使用者已經知道 Blob 名稱，不需要列舉，所以不必給容器層級權限。",
+      "C": "Correct. 正確。下載單一個 Blob 屬於「物件」層級的作業（Get Blob），因此允許的資源類型必須勾選「物件」。",
+      "D": "Correct. 正確。下載就是讀取，因此權限勾「讀取」即可。不需要寫入、刪除或列出——這正是最小權限。",
+      "E": "Incorrect. 錯誤。「列出」是用來列舉容器內容的權限。題目明確說是「依名稱」下載，代表不需要列舉能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 235,
     "type": "single",
     "question": "You have an Azure subscription that contains a storage account named storage1. The storage1 account contains a container named container1. You need to configure access to container1. The solution must meet the following requirements: • Only allow read access. • Allow both HTTP and HTTPS protocols. • Apply access permissions to all the content in the container. What should you use?",
@@ -739,6 +763,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 237,
+    "type": "matching",
+    "question": "You have an Azure Storage account named storage1 that contains two containers named container1 and container2. Blob versioning is enabled for both containers. You periodically take blob snapshots of critical blobs. You create the following lifecycle management policy: rules[0] enabled true, name rule1, type Lifecycle, definition.actions.version with tierToCool { daysAfterCreationGreaterThan: 15 } and tierToArchive { daysAfterLastTierChangeGreaterThan: 7, daysAfterCreationGreaterThan: 30 }, definition.filters with blobTypes [\"blockBlob\"] and prefixMatch [\"container1/\"]. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "A blob snapshot automatically moves to the Cool access tier after 15 days.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "A blob version in container2 automatically moves to the Archive access tier after 30 days.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "A rehydrated version automatically moves to the Archive access tier after 30 days.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。規則的 actions.version.tierToCool 設定 daysAfterCreationGreaterThan = 15，所以建立滿 15 天的版本會自動移到冷層；在已啟用版本設定的帳戶上，快照與版本由同一組版本規則管理。（嚴格說規則的 prefixMatch 限定在 container1/，因此這只對 container1 內的快照成立；本敘述未指定容器，官方判定為「是」。）",
+      "2": "否。filters.prefixMatch 是 [\"container1/\"]，規則只作用在 container1 之下的 Blob。container2 完全不在範圍內，所以它的版本不會被自動移到封存層。",
+      "3": "否。tierToArchive 同時設了「兩個」條件，必須「都」滿足才會執行：距建立超過 30 天，「而且」距上一次層級變更超過 7 天。已解除凍結的版本剛剛才發生過層級變更（從封存回到熱／冷層），所以還得再等 7 天以上才可能被移回封存，不會「30 天後就」移過去。",
+      "_full": "三項各測一件事：\n① actions 的動作群組（baseBlob／snapshot／version）決定規則管的是哪一種物件——本規則管的是 version，門檻 15 天移冷層。\n② filters.prefixMatch 決定作用範圍，container2 不在其中。\n③ daysAfterLastTierChangeGreaterThan 是「額外」的且條件，剛解除凍結的 Blob 因為才變更過層級，會被這個條件卡住。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 240,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Storage account named storage1. You need to enable a user named User1 to list and regenerate storage account keys for storage1. Solution: You assign the Storage Account Key Operator Service Role to User1. Does this meet the goal?",
@@ -750,6 +804,60 @@
     "explanations": {
       "A": "Correct. 正確。這個內建角色的設計用途正是允許列出與重新產生儲存體帳戶的存取金鑰（listkeys 與 regeneratekey 權限），完全對應需求且權限範圍最小。",
       "B": "Incorrect. 錯誤。此角色確實具備列出與重新產生金鑰的權限，因此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 241,
+    "type": "matching",
+    "question": "You have an Azure Storage account named storage1 that contains a container named container1. The container1 container stores thousands of image files. You plan to use an Azure Resource Manager (ARM) template to create a blob inventory rule named rule1. You need to ensure that only blobs whose names start with the word finance are stored daily as a CSV file in container1. How should you complete rule1?  \"definition\": { \"filters\": { \"blobTypes\": [box 1], \"includeBlobVersions\": true, \"includeSnapshots\": true, \"prefixMatch\": [box 2] }, \"format\": \"string\", \"objectType\": \"blob\", \"schedule\": \"daily\", \"schemaFields\": [\"Name\"] }, \"destination\": \"CSV\", \"enabled\": true, \"name\": \"rule1\"",
+    "available_options": [
+      "appendBlob",
+      "blockBlob",
+      "pageBlob",
+      "container1/*",
+      "container1/finance",
+      "finance"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (blobTypes):",
+        "correct_answer": "blockBlob"
+      },
+      {
+        "use_case": "Box 2 (prefixMatch):",
+        "correct_answer": "container1/finance"
+      }
+    ],
+    "explanations": {
+      "1": "影像檔是以「區塊 Blob」形式儲存，所以 blobTypes 填 blockBlob。另外要注意：規則同時設了 includeBlobVersions 與 includeSnapshots 為 true，而這兩個選項只有在 blobTypes 僅含 blockBlob 時才允許使用——填 appendBlob 或 pageBlob 會讓規則直接無效。",
+      "2": "prefixMatch 的值必須從「容器名稱」開始寫，格式是 <容器>/<Blob 名稱前置詞>。要抓 container1 中名稱以 finance 開頭的 Blob，就寫 container1/finance。只寫 finance 會被當成容器名稱（不存在）；container1/* 會涵蓋整個容器，且清查規則的前置詞不使用萬用字元。",
+      "_full": "兩個重點：\n① Blob 清查規則若要包含版本與快照 (includeBlobVersions／includeSnapshots)，blobTypes 必須只含 blockBlob。\n② prefixMatch 一律寫成「容器/前置詞」的形式，不用萬用字元；純粹寫名稱前置詞而不帶容器是無效的。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 242,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains a storage account named storage1. The storage1 account contains blobs in a container named container1. You plan to share access to storage1. You need to generate a shared access signature (SAS). The solution must meet the following requirements: ensure that the SAS can only be used to enumerate and download blobs stored in container1; use the principle of least privilege. Allowed services already has Blob selected. Which three settings should you enable?",
+    "options": {
+      "A": "Allowed resource types: Service",
+      "B": "Allowed resource types: Container",
+      "C": "Allowed resource types: Object",
+      "D": "Allowed permissions: Read",
+      "E": "Allowed permissions: List"
+    },
+    "answer": [
+      "B",
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。「服務」資源類型允許的是帳戶／服務層級作業（例如列出整個帳戶的容器、取得服務屬性），超出「只針對 container1」的需求。",
+      "B": "Correct. 正確。「列舉」container1 中的 Blob（List Blobs）是容器層級的作業，因此必須勾選「容器」這個資源類型。",
+      "D": "Correct. 正確。下載 Blob 需要「讀取」權限。",
+      "E": "Correct. 正確。列舉容器內容需要「列出」權限；少了它就只能在已知名稱的情況下下載，無法列舉。",
+      "C": "Incorrect. 錯誤（依官方標示）。官方只選了容器 + 讀取 + 列出三項。\n【爭議提醒】嚴格照 SAS 的資源類型語意，下載個別 Blob（Get Blob）屬於「物件」層級作業，應該連「物件」一起勾選才真的下載得到——本題庫的 id 234 就是為了「下載」而選「物件」。但本題只要求「三項」，官方標示不含物件。作答時以官方標示為準，實作時請記得列舉要容器層級、下載要物件層級。"
     }
   },
   {

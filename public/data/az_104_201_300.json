@@ -695,6 +695,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 234,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storage1 的儲存體帳戶。\n你必須設定一個共用存取簽章 (SAS)，確保使用者「只能依名稱安全地下載 Blob」。\n在產生 SAS 的畫面上，「允許的服務」已勾選 Blob。你還應該設定哪兩項？",
+    "options": {
+      "A": "允許的資源類型：服務 (Service)",
+      "B": "允許的資源類型：容器 (Container)",
+      "C": "允許的資源類型：物件 (Object)",
+      "D": "允許的權限：讀取 (Read)",
+      "E": "允許的權限：列出 (List)"
+    },
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanations": {
+      "A": "錯誤。「服務」這個資源類型允許的是帳戶／服務層級的作業（例如取得服務屬性、列出容器），與下載個別 Blob 無關，給了反而超出需求。",
+      "B": "錯誤。「容器」資源類型是用來做容器層級作業（最典型的就是列出容器內的 Blob）。題目說「依名稱」下載——使用者已經知道 Blob 名稱，不需要列舉，所以不必給容器層級權限。",
+      "C": "正確。下載單一個 Blob 屬於「物件」層級的作業（Get Blob），因此允許的資源類型必須勾選「物件」。",
+      "D": "正確。下載就是讀取，因此權限勾「讀取」即可。不需要寫入、刪除或列出——這正是最小權限。",
+      "E": "錯誤。「列出」是用來列舉容器內容的權限。題目明確說是「依名稱」下載，代表不需要列舉能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 235,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶，storage1 中有一個名為 container1 的容器。你必須設定對 container1 的存取，且解決方案必須滿足下列要求：\n• 只允許讀取存取。\n• 同時允許 HTTP 與 HTTPS 通訊協定。\n• 存取權限套用到容器中的所有內容。\n你應該使用什麼？",
@@ -739,6 +763,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 237,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中有兩個容器 container1 與 container2，兩者都已啟用 Blob 版本設定。你會定期為關鍵 Blob 建立快照。\n你建立了下列生命週期管理原則：\n　\"rules\": [ { \"enabled\": true, \"name\": \"rule1\", \"type\": \"Lifecycle\",\n　　\"definition\": {\n　　　\"actions\": { \"version\": {\n　　　　\"tierToCool\": { \"daysAfterCreationGreaterThan\": 15 },\n　　　　\"tierToArchive\": { \"daysAfterLastTierChangeGreaterThan\": 7,\n　　　　　\"daysAfterCreationGreaterThan\": 30 } } },\n　　　\"filters\": { \"blobTypes\": [\"blockBlob\"],\n　　　　\"prefixMatch\": [\"container1/\"] } } } ]\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Blob 快照會在 15 天後自動移到冷 (Cool) 存取層。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "container2 中的 Blob 版本會在 30 天後自動移到封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "已解除凍結 (rehydrated) 的版本會在 30 天後自動移到封存存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。規則的 actions.version.tierToCool 設定 daysAfterCreationGreaterThan = 15，所以建立滿 15 天的版本會自動移到冷層；在已啟用版本設定的帳戶上，快照與版本由同一組版本規則管理。（嚴格說規則的 prefixMatch 限定在 container1/，因此這只對 container1 內的快照成立；本敘述未指定容器，官方判定為「是」。）",
+      "2": "否。filters.prefixMatch 是 [\"container1/\"]，規則只作用在 container1 之下的 Blob。container2 完全不在範圍內，所以它的版本不會被自動移到封存層。",
+      "3": "否。tierToArchive 同時設了「兩個」條件，必須「都」滿足才會執行：距建立超過 30 天，「而且」距上一次層級變更超過 7 天。已解除凍結的版本剛剛才發生過層級變更（從封存回到熱／冷層），所以還得再等 7 天以上才可能被移回封存，不會「30 天後就」移過去。",
+      "_full": "三項各測一件事：\n① actions 的動作群組（baseBlob／snapshot／version）決定規則管的是哪一種物件——本規則管的是 version，門檻 15 天移冷層。\n② filters.prefixMatch 決定作用範圍，container2 不在其中。\n③ daysAfterLastTierChangeGreaterThan 是「額外」的且條件，剛解除凍結的 Blob 因為才變更過層級，會被這個條件卡住。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 240,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶金鑰操作員服務角色 (Storage Account Key Operator Service Role)」指派給 User1。\n此解法是否達成目標？",
@@ -750,6 +804,60 @@
     "explanations": {
       "A": "正確。這個內建角色的設計用途正是允許列出與重新產生儲存體帳戶的存取金鑰（listkeys 與 regeneratekey 權限），完全對應需求且權限範圍最小。",
       "B": "錯誤。此角色確實具備列出與重新產生金鑰的權限，因此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 241,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中的容器 container1 存放了數千個影像檔。\n你打算用 ARM 範本建立一條名為 rule1 的 Blob 清查規則。\n你必須確保「只有名稱以 finance 開頭」的 Blob 每天以 CSV 檔的形式存放在 container1。\n你應該如何完成 rule1？\n\n　\"definition\": { \"filters\": {\n　　\"blobTypes\": 【下拉 1】,\n　　\"includeBlobVersions\": true, \"includeSnapshots\": true,\n　　\"prefixMatch\": 【下拉 2】 },\n　　\"format\": \"string\", \"objectType\": \"blob\", \"schedule\": \"daily\",\n　　\"schemaFields\": [\"Name\"] },\n　\"destination\": \"CSV\", \"enabled\": true, \"name\": \"rule1\"\n\n（每個正確答案得一分）",
+    "available_options": [
+      "appendBlob",
+      "blockBlob",
+      "pageBlob",
+      "container1/*",
+      "container1/finance",
+      "finance"
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（blobTypes）：",
+        "correct_answer": "blockBlob"
+      },
+      {
+        "use_case": "下拉 2（prefixMatch）：",
+        "correct_answer": "container1/finance"
+      }
+    ],
+    "explanations": {
+      "1": "影像檔是以「區塊 Blob」形式儲存，所以 blobTypes 填 blockBlob。另外要注意：規則同時設了 includeBlobVersions 與 includeSnapshots 為 true，而這兩個選項只有在 blobTypes 僅含 blockBlob 時才允許使用——填 appendBlob 或 pageBlob 會讓規則直接無效。",
+      "2": "prefixMatch 的值必須從「容器名稱」開始寫，格式是 <容器>/<Blob 名稱前置詞>。要抓 container1 中名稱以 finance 開頭的 Blob，就寫 container1/finance。只寫 finance 會被當成容器名稱（不存在）；container1/* 會涵蓋整個容器，且清查規則的前置詞不使用萬用字元。",
+      "_full": "兩個重點：\n① Blob 清查規則若要包含版本與快照 (includeBlobVersions／includeSnapshots)，blobTypes 必須只含 blockBlob。\n② prefixMatch 一律寫成「容器/前置詞」的形式，不用萬用字元；純粹寫名稱前置詞而不帶容器是無效的。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 242,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storage1 的儲存體帳戶，storage1 的容器 container1 裡有一些 Blob。\n你打算分享 storage1 的存取權，必須產生一個共用存取簽章 (SAS)，並滿足下列要求：\n• 確保這個 SAS 只能用來「列舉」與「下載」container1 中的 Blob。\n• 遵循最小權限原則。\n在產生 SAS 的畫面上，「允許的服務」已勾選 Blob。你還應該啟用哪三項？",
+    "options": {
+      "A": "允許的資源類型：服務 (Service)",
+      "B": "允許的資源類型：容器 (Container)",
+      "C": "允許的資源類型：物件 (Object)",
+      "D": "允許的權限：讀取 (Read)",
+      "E": "允許的權限：列出 (List)"
+    },
+    "answer": [
+      "B",
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "錯誤。「服務」資源類型允許的是帳戶／服務層級作業（例如列出整個帳戶的容器、取得服務屬性），超出「只針對 container1」的需求。",
+      "B": "正確。「列舉」container1 中的 Blob（List Blobs）是容器層級的作業，因此必須勾選「容器」這個資源類型。",
+      "D": "正確。下載 Blob 需要「讀取」權限。",
+      "E": "正確。列舉容器內容需要「列出」權限；少了它就只能在已知名稱的情況下下載，無法列舉。",
+      "C": "錯誤（依官方標示）。官方只選了容器 + 讀取 + 列出三項。\n【爭議提醒】嚴格照 SAS 的資源類型語意，下載個別 Blob（Get Blob）屬於「物件」層級作業，應該連「物件」一起勾選才真的下載得到——本題庫的 id 234 就是為了「下載」而選「物件」。但本題只要求「三項」，官方標示不含物件。作答時以官方標示為準，實作時請記得列舉要容器層級、下載要物件層級。"
     }
   },
   {
