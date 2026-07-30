@@ -220,6 +220,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 213,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中某個容器 container1 的「存取原則」頁面顯示如下：\n・預存存取原則 (Stored access policies)：\n　Policy1｜權限 rcw\n　Policy2｜權限 c\n・不可變 Blob 儲存體 (Immutable blob storage)：\n　以時間為基準的保留 (Time-based retention)｜範圍 容器｜保留間隔 14 天｜狀態 已解除鎖定\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "0",
+      "1",
+      "3",
+      "5",
+      "6",
+      "2",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "你還可以為 container1 建立的「預存存取原則」最多有【答案】個。",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "你還可以為 container1 建立的「不可變 Blob 儲存體原則」最多有【答案】個。",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "每個容器最多可以有 5 個預存存取原則。目前已經有 Policy1 與 Policy2 兩個，所以還能再建立 5 − 2 = 3 個。",
+      "2": "不可變 Blob 儲存體在同一個容器上只能有「一個以時間為基準的保留原則」與「一個合法保留 (legal hold)」。時間保留原則已經存在，因此只剩下合法保留可以再加，答案是 1。",
+      "_full": "兩個容易記混的上限：\n・預存存取原則：每個容器（或檔案共用／佇列／表格）最多 5 個。\n・不可變儲存體原則：時間保留 1 個 + 合法保留 1 個，同一容器合計 2 種。\n本題已有 2 個存取原則與 1 個時間保留原則，所以各自還能加 3 個與 1 個。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 214,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -239,6 +269,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 216,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列儲存體帳戶：\n・storage1｜種類 StorageV2｜備援：異地區域備援儲存體 (GZRS)\n・storage2｜種類 BlobStorage｜備援：讀取權限異地備援儲存體 (RA-GRS)\n・storage3｜種類 BlockBlobStorage｜備援：區域備援儲存體 (ZRS)\n\n你必須找出哪些儲存體帳戶支援生命週期管理，以及哪些支援把資料移到封存存取層。\n你應該使用哪些儲存體帳戶？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 storage1",
+      "只有 storage2",
+      "只有 storage1 和 storage3",
+      "只有 storage2 和 storage3",
+      "storage1、storage2 和 storage3"
+    ],
+    "matches": [
+      {
+        "use_case": "生命週期管理：",
+        "correct_answer": "storage1、storage2 和 storage3"
+      },
+      {
+        "use_case": "封存存取層：",
+        "correct_answer": "只有 storage2"
+      }
+    ],
+    "explanations": {
+      "1": "生命週期管理支援一般用途 v2 (StorageV2)、（舊版的）BlobStorage，以及進階區塊 Blob (BlockBlobStorage) 帳戶，三種都在支援清單內，備援類型也不影響是否能設定生命週期規則。→ 三個都可以。",
+      "2": "封存層有兩層限制：① 帳戶必須支援分層（進階的 BlockBlobStorage 不支援移到冷層或封存層）；② 封存層只支援 LRS、GRS、RA-GRS 這類「非區域備援」的備援組態，ZRS／GZRS／RA-GZRS 都不支援封存層。\nstorage1 是 GZRS → 不支援；storage3 是 BlockBlobStorage 且 ZRS → 兩個條件都不符；storage2 是 BlobStorage + RA-GRS → 支援。→ 只有 storage2。",
+      "_full": "這題的陷阱在於「生命週期管理」與「封存層」的支援條件並不相同：\n・生命週期管理：看帳戶「種類」，GPv2／BlobStorage／BlockBlobStorage 都支援，備援不影響。\n・封存層：除了種類（進階區塊 Blob 不支援分層），還要看「備援」——區域備援 (ZRS/GZRS/RA-GZRS) 一律不支援封存層。\n所以第一格三個全選、第二格只剩 RA-GRS 的那一個。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 217,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -254,6 +312,35 @@
       "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
       "D": "錯誤。Data Factory 是資料整合服務而非儲存體，不能作為匯入目的地。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 218,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 包含一個名為 container1 的容器。\n你建立了一條名為 rule1 的 Blob 生命週期規則。\n你必須設定 rule1，讓 container1 中「45 天未更新」的 Blob 自動移到冷 (Cool) 存取層。\n你應該如何完成這條規則？\n\n　\"actions\": { \"baseBlob\": { \"tierToCool\": { 【下拉 1】: 45 } } }\n　\"filters\": { \"blobTypes\": [ 【下拉 2】 ], \"prefixMatch\": [ \"container1\" ] }\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "\"daysAfterCreationCreaterThan\"",
+      "\"daysAfterLastAccessTimeGreaterThan\"",
+      "\"daysAfterModificationGreaterThan\"",
+      "\"AppendBlob\"",
+      "\"Blockblob\"",
+      "\"Pageblob\""
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（天數條件）：",
+        "correct_answer": "\"daysAfterModificationGreaterThan\""
+      },
+      {
+        "use_case": "下拉 2（Blob 類型）：",
+        "correct_answer": "\"Blockblob\""
+      }
+    ],
+    "explanations": {
+      "1": "題目說的是「未更新 (NOT updated)」，對應的條件是以「最後修改時間」起算的 daysAfterModificationGreaterThan。daysAfterLastAccessTimeGreaterThan 是以「最後存取時間」起算（要先啟用存取時間追蹤，語意是「沒被讀取」而不是「沒被修改」）；以建立時間起算的條件則完全不看更新與否。",
+      "2": "存取層（熱／冷／封存）只適用於「區塊 Blob」，所以 blobTypes 要填 blockBlob。附加 Blob 只支援刪除類動作、不支援分層；分頁 Blob（例如 VHD）也不支援存取層。",
+      "_full": "生命週期規則的兩個常考欄位：\n・天數條件三選一：daysAfterModificationGreaterThan（最後修改）、daysAfterLastAccessTimeGreaterThan（最後存取，需啟用追蹤）、daysAfterCreationGreaterThan（建立至今）。題目說「未更新」就選最後修改。\n・blobTypes：分層動作只支援 blockBlob。"
     }
   },
   {
@@ -338,6 +425,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 223,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源群組：\n・RG1｜West US　・RG2｜West US　・RG3｜East US\n\n訂用帳戶中的虛擬網路如下：\n・VNet1｜資源群組 RG1｜區域 West US｜子網路 Subnet1｜子網路位址空間 10.1.0.0/16\n・VNet2｜資源群組 RG2｜區域 Central US｜子網路 Subnet2｜10.2.0.0/24\n・VNet3｜資源群組 RG3｜區域 East US｜子網路 Subnet3｜10.3.0.0/24\n\n你打算部署下列 Azure Kubernetes Service (AKS) 叢集：\n・AKS1｜RG1｜West US｜節點數 30｜網路設定 Azure Container Network Interface (CNI)\n・AKS2｜RG2｜West US｜節點數 100｜網路設定 Azure CNI\n・AKS3｜RG3｜East US｜節點數 50｜網路設定 Kubenet\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把 AKS1 部署到 VNet2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "你可以把 AKS2 部署到 VNet1。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "你可以把 AKS3 部署到 VNet3。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。AKS 叢集的節點必須放在「同一個區域」的虛擬網路子網路中。AKS1 在 West US，而 VNet2 在 Central US，區域不同就無法使用（資源群組可以不同，區域不行）。",
+      "2": "是。AKS2 與 VNet1 都在 West US（跨資源群組沒問題）。IP 也夠用：Azure CNI 會為「每個節點與每個 Pod」各配一個子網路 IP，以預設每節點 30 個 Pod 計算，100 個節點約需 100 × 31 ≈ 3,100 個位址，而 Subnet1 是 10.1.0.0/16（約 65,000 個位址），非常充裕。",
+      "3": "是。AKS3 與 VNet3 都在 East US。Kubenet 模式下「只有節點」會取得子網路 IP，Pod 使用叢集內部另一段位址並透過 NAT 對外，所以 50 個節點在 10.3.0.0/24（約 250 個可用位址）裡完全放得下。",
+      "_full": "兩個判斷點：\n① 區域必須相同——AKS 叢集與它使用的虛擬網路一定要同區域（第 1 項否）。\n② 子網路 IP 是否足夠，取決於網路模式：\n・Azure CNI：節點與 Pod 都吃子網路 IP，需求量大（約 節點數 × (每節點 Pod 數 + 1)）。\n・Kubenet：只有節點吃子網路 IP，需求量小。\n本題兩個 Yes 的子網路都算得過來，所以成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 224,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶加密範圍參與者 (Storage Account Encryption Scope Contributor)」角色指派給 User1。\n此解法是否達成目標？",
@@ -349,6 +466,68 @@
     "explanations": {
       "A": "錯誤。加密範圍參與者只能管理儲存體帳戶的加密範圍設定，不含列出或重新產生帳戶金鑰的權限。",
       "B": "正確。列出與重新產生帳戶金鑰需要 Microsoft.Storage/storageAccounts/listkeys 與 regeneratekey 權限，具備者為「儲存體帳戶參與者」或「參與者」等角色；加密範圍參與者無此權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 225,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，辦公室分別位於美國東部 (East US) 與美國西部 (West US) 兩個 Azure 區域。\n你打算建立一個儲存體帳戶，「檢閱 + 建立」頁面顯示如下（節錄）：\n【基本】訂用帳戶 Azure subscription 1、資源群組 RG1、位置 eastus、名稱 adatum22、部署模型 Resource manager、效能 Premium、進階帳戶類型 File shares、複寫 區域備援儲存體 (ZRS)\n【進階】安全傳輸 已啟用、允許儲存體帳戶金鑰存取 已啟用、允許跨租用戶複寫 已停用、Blob 公用存取 已啟用、最低 TLS 版本 1.2、階層命名空間／NFS v3／SFTP／大型檔案共用 皆停用\n【網路】網路連線 公用端點（所有網路）、預設路由層 Microsoft 網路路由、端點類型 標準\n【資料保護】檔案共用軟性刪除 已啟用（保留 7 天），其餘（時間點還原、Blob 軟性刪除、容器軟性刪除、版本設定、Blob 變更摘要、版本層級不可變性）皆停用\n【加密】加密類型 Microsoft 受控金鑰 (MMK)、啟用客戶管理金鑰的支援 僅 Blob 和檔案、啟用基礎結構加密 已停用\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "預設路由層 (Default routing tier)",
+      "端點類型 (Endpoint type)",
+      "位置 (Location)",
+      "網路連線 (Network connectivity)",
+      "效能 (Performance)",
+      "啟用基礎結構加密 (Enable infrastructure encryption)",
+      "啟用客戶管理金鑰的支援 (Enable support for customer-managed keys)",
+      "加密類型 (Encryption type)",
+      "進階帳戶類型 (Premium account type)"
+    ],
+    "matches": [
+      {
+        "use_case": "若要盡量降低存取 adatum22 的「網路成本」，請修改【答案】設定。",
+        "correct_answer": "預設路由層 (Default routing tier)"
+      },
+      {
+        "use_case": "adatum22 建立「之後」，你可以修改【答案】設定。",
+        "correct_answer": "加密類型 (Encryption type)"
+      }
+    ],
+    "explanations": {
+      "1": "預設路由層目前是「Microsoft 網路路由」——流量會在離使用者最近的 Microsoft 臨界點就進入Microsoft 全球骨幹網路，延遲低但頻寬計費較貴。改成「網際網路路由」會讓流量盡量走一般 ISP 網路、最後才進入骨幹，網路成本較低（代價是延遲與穩定性較差）。這是唯一與「網路成本」直接相關的設定。",
+      "2": "加密類型（Microsoft 受控金鑰 ↔ 客戶管理金鑰）在帳戶「建立之後」隨時可以切換。\n另外三個都是建立時就固定的：「啟用基礎結構加密」與「啟用客戶管理金鑰的支援（範圍）」必須在建立時決定、事後無法變更；「進階帳戶類型」（區塊 Blob／檔案共用／分頁 Blob）也是建立時就決定，不能改。",
+      "_full": "兩個獨立的知識點：\n① 路由喜好設定：Microsoft 網路路由 = 低延遲、成本較高；網際網路路由 = 成本較低、延遲較高。要省網路費就改這一項。\n② 哪些加密相關設定可以事後修改：只有「加密類型」可以；「基礎結構加密」與「客戶管理金鑰支援範圍」都是建立時一次定案，進階帳戶類型同樣不可事後變更。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 226,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算部署一個新的儲存體帳戶，並為該帳戶設定加密，解決方案必須滿足下列要求：\n• 使用存放在金鑰保存庫中的「客戶管理金鑰」。\n• 使用「支援的最大位元長度」。\n你應該使用哪一種金鑰、哪一種位元長度？（每個正確選擇得一分）",
+    "available_options": [
+      "AES",
+      "3DES",
+      "RSA",
+      "2048",
+      "3072",
+      "4096",
+      "8192"
+    ],
+    "matches": [
+      {
+        "use_case": "金鑰 (Key)：",
+        "correct_answer": "RSA"
+      },
+      {
+        "use_case": "位元長度 (Bit length)：",
+        "correct_answer": "4096"
+      }
+    ],
+    "explanations": {
+      "1": "儲存體帳戶的客戶管理金鑰必須是 Azure 金鑰保存庫中的「RSA 金鑰」（RSA 或 RSA-HSM），用來包裝／解開實際加密資料的金鑰。AES 與 3DES 是對稱式演算法，Azure 金鑰保存庫的金鑰類型不提供它們（金鑰保存庫支援的是 RSA 與 EC；而儲存體加密只接受 RSA）。",
+      "2": "金鑰保存庫的 RSA 金鑰支援 2048、3072 與 4096 位元，最大就是 4096。8192 不是支援的長度，所以「支援的最大位元長度」是 4096。",
+      "_full": "兩個要記的事實：① 儲存體帳戶的客戶管理金鑰只能用 RSA（含 RSA-HSM）；② 可選的 RSA 長度是 2048／3072／4096，上限 4096。\n另外提醒：使用客戶管理金鑰時，儲存體帳戶需要有存取該金鑰保存庫的身分（受控識別 + 保存庫存取原則或 RBAC），且保存庫必須啟用軟性刪除與清除保護。"
     }
   },
   {
@@ -395,6 +574,35 @@
   },
   {
     "exam": "AZ-104",
+    "id": 229,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算建立一個角色定義以滿足下列要求：\n• 使用者必須能夠檢視儲存體帳戶的「設定資料」。\n• 使用者必須能夠對虛擬網路執行「所有」動作。\n• 解決方案必須遵循最小權限原則。\n針對每一項要求，角色定義中應該包含什麼？（每個正確選擇得一分）",
+    "available_options": [
+      "\"Microsoft.Network/virtualNetworks/*\"",
+      "\"Microsoft.Network/virtualNetworks/delete\"",
+      "\"Microsoft.Network/virtualNetworks/write\"",
+      "\"Microsoft.Storage/StorageAccounts/*\"",
+      "\"Microsoft.Storage/StorageAccounts/read\"",
+      "\"Microsoft.Storage/StorageAccounts/blobServices/containers/blob/read\""
+    ],
+    "matches": [
+      {
+        "use_case": "對虛擬網路執行所有動作：",
+        "correct_answer": "\"Microsoft.Network/virtualNetworks/*\""
+      },
+      {
+        "use_case": "檢視儲存體帳戶的設定資料：",
+        "correct_answer": "\"Microsoft.Storage/StorageAccounts/read\""
+      }
+    ],
+    "explanations": {
+      "1": "「所有動作」就用萬用字元把該資源類型底下的作業全部包含進來：Microsoft.Network/virtualNetworks/*。單獨列 write 或 delete 都只涵蓋一種作業，不符合「所有動作」。",
+      "2": "檢視儲存體帳戶的「設定資料」屬於管理平面的讀取作業，對應 Microsoft.Storage/StorageAccounts/read，這正是最小權限的寫法。用 /* 會連建立、刪除、列出金鑰等權限都給出去，違反最小權限；而 blobServices/containers/blob/read 是資料平面的「讀取 Blob 內容」，與檢視帳戶設定是不同層面的權限。",
+      "_full": "自訂角色 actions 的兩個判斷技巧：\n① 需求說「所有動作」→ 用 <資源類型>/* 萬用字元。\n② 需求說「檢視設定」→ 只給 /read，別用 /*（最小權限）。\n另外要分清「管理平面」與「資料平面」：StorageAccounts/read 看的是帳戶組態；blobServices/.../blob/read 才是讀取 Blob 的內容（而且屬於 dataActions 的範疇）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 230,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -410,6 +618,36 @@
       "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
       "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 231,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器。\n你打算為 VM1 新增一個 1 TB 的資料磁碟，並滿足下列要求：\n• 在資料中心中斷時仍提供資料復原能力。\n• 提供最低的延遲與最高的效能。\n• 確保主機故障時不會發生資料遺失。\n你必須建議這個新資料磁碟要使用哪一種儲存體類型與主機快取設定。（每個正確選擇得一分）",
+    "available_options": [
+      "使用本地備援儲存體 (LRS) 的進階 SSD",
+      "使用區域備援儲存體 (ZRS) 的進階 SSD",
+      "使用本地備援儲存體 (LRS) 的標準 SSD",
+      "使用區域備援儲存體 (ZRS) 的標準 SSD",
+      "無 (None)",
+      "唯讀 (Read-only)",
+      "讀取／寫入 (Read/Write)"
+    ],
+    "matches": [
+      {
+        "use_case": "儲存體類型：",
+        "correct_answer": "使用區域備援儲存體 (ZRS) 的進階 SSD"
+      },
+      {
+        "use_case": "主機快取：",
+        "correct_answer": "唯讀 (Read-only)"
+      }
+    ],
+    "explanations": {
+      "1": "兩個要求各排除一半的選項：「資料中心中斷仍有復原能力」→ 備援必須跨可用性區域，所以要 ZRS（LRS 三份複本都在同一個資料中心）；「最低延遲、最高效能」→ 在這些選項中要選進階 SSD 而非標準 SSD。兩者相交即為「使用 ZRS 的進階 SSD」。",
+      "2": "主機快取有三種：無、唯讀、讀取／寫入。「讀取／寫入」快取會把寫入先放在主機的快取中，主機故障時尚未寫回磁碟的資料會遺失，違反「主機故障不得資料遺失」。「無」雖然安全，但讀取完全不使用快取、效能較差。「唯讀」只快取讀取、寫入一律直接落到磁碟——既提升讀取效能，又不會因主機故障而遺失資料，是同時滿足兩項要求的選擇。",
+      "_full": "三個要求對應三個判斷：\n・資料中心中斷仍可用 → ZRS（跨可用性區域），排除 LRS。\n・最低延遲最高效能 → 進階 SSD（比標準 SSD 好；若選項有 Ultra Disk 會更快，但 Ultra Disk 目前不支援 ZRS）。\n・主機故障不遺失資料 + 要效能 → 主機快取設為「唯讀」（讀取／寫入快取有遺失風險，無快取則沒有效能好處）。"
     }
   },
   {
