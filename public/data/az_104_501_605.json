@@ -1645,6 +1645,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 588,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\nSub1 包含兩個資源群組 RG1 與 RG2。User1 管理 RG1 中的資源，User4 管理 RG2 中的資源。\n技術需求之一：使用最低權限原則 (principle of least privilege)。\n\n你需要確保 User1 可以「建立計劃定義 (initiative definitions)」，而 User4 可以「將計劃指派到 RG2」。解決方案必須符合技術需求。\n你應該為每位使用者指派哪一個角色？（每個正確選擇得一分）",
+    "available_options": [
+      "RG1 的參與者 (Contributor)",
+      "Sub1 的參與者 (Contributor)",
+      "RG1 的安全性系統管理員 (Security Admin)",
+      "Sub1 的資源原則參與者 (Resource Policy Contributor)",
+      "RG2 的參與者 (Contributor)",
+      "Sub1 的安全性系統管理員 (Security Admin)",
+      "RG2 的資源原則參與者 (Resource Policy Contributor)"
+    ],
+    "matches": [
+      {
+        "use_case": "User1（要能建立計劃定義）：",
+        "correct_answer": "Sub1 的資源原則參與者 (Resource Policy Contributor)"
+      },
+      {
+        "use_case": "User4（要能將計劃指派到 RG2）：",
+        "correct_answer": "RG2 的資源原則參與者 (Resource Policy Contributor)"
+      }
+    ],
+    "explanations": {
+      "1": "Sub1 的資源原則參與者。這一格有兩個重點：\n① 角色要選「資源原則參與者 (Resource Policy Contributor)」——它才帶有 Microsoft.Authorization/policyDefinitions 與 policySetDefinitions 的寫入權限；「參與者」雖然權限更大，但違反最低權限原則。\n② 範圍必須是「訂用帳戶」而不是資源群組——原則定義與計劃（原則集）定義只能建立在管理群組或訂用帳戶層級，資源群組層級「不能」存放定義。所以 User1 即使只管 RG1，也得在 Sub1 上取得這個角色。",
+      "2": "RG2 的資源原則參與者。指派 (assign) 一個計劃時，權限的範圍只要涵蓋「指派的目標」就好——這裡的目標是 RG2。\n資源原則參與者包含 Microsoft.Authorization/policyAssignments 的寫入權限，在 RG2 這個範圍給它，就剛好夠 User4 把計劃指派到 RG2，同時滿足最低權限原則（不必給到 Sub1，也不必給參與者）。",
+      "_full": "Azure Policy 的權限題，抓兩個維度就解得開：\n\n【角色】幾乎都是「資源原則參與者」。它專門負責原則定義與原則指派，比「參與者」窄，符合最低權限；「安全性系統管理員」則是 Microsoft Defender for Cloud 的角色，跟 Azure Policy 無關。\n\n【範圍】看動作是「定義」還是「指派」：\n・建立定義（policy／initiative definition）→ 只能放在管理群組或訂用帳戶 → 範圍給訂用帳戶。\n・指派 (assignment) → 範圍給指派的目標即可（管理群組／訂用帳戶／資源群組都行）。\n\n本題 User1 是建立定義 → Sub1；User4 是指派到 RG2 → RG2。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 589,
     "type": "single",
     "question": "【案例摘要】Contoso 顧問公司有一個 Azure 訂用帳戶 Sub1，連結到 Azure AD 租用戶，並與內部部署 AD 網域同步。Sub1 中有資源群組 RG1 與 RG2、多個虛擬網路、執行 Windows Server 2019 的虛擬機器，以及多個儲存體帳戶。\n相關需求：使用最小權限原則；建立 Azure AD 安全性群組 Group4；以 Azure 備份保護檔案共用與虛擬機器；建立「內部 Basic 層」負載平衡器 LB1 並連接到 VNET1/Subnet1；為來自 VM5 的 IP 流量啟用流量記錄並保留八個月；在可行的情況下，授與 Group4 對 Azure 檔案共用的 RBAC 唯讀權限。\n\n你必須確保能夠授與 Group4 對「所有 Azure 檔案共用」的 Azure RBAC 唯讀權限。你應該怎麼做？",
@@ -1698,6 +1728,98 @@
       "B": "正確。Azure 儲存體總管是圖形化工具，可直接經網際網路把本機檔案上傳到 Blob 容器並指定存取層，不需撰寫指令或建置任何基礎結構，管理工作最少。",
       "C": "錯誤。匯入／匯出是把實體磁碟寄送到 Azure 資料中心，與需求中「經網際網路複製」明確相違。",
       "D": "錯誤。同 A，Blob 容器不能對應為網路磁碟機。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 592,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\nContoso 是一家製造公司，產品是依照公司自行編寫與維護的「藍圖檔案」製造的。\n公開的應用程式 App1 由三層組成：SQL 資料庫、Web 前端、處理中介層，每層各 5 台虛擬機器。\n\n規劃的變更：\n・將 App1 的所有層級移轉到 Azure。\n・將現有的產品藍圖檔案移到 Azure Blob 儲存體。\n\n技術需求：\n・將藍圖檔案透過網際網路複製到 Azure。\n・確保藍圖檔案存放在「封存 (Archive)」儲存層。\n・確保合作夥伴對藍圖檔案的存取是安全且「暫時性」的。\n・虛擬機器的硬碟使用「非受控標準儲存體」。\n\n你需要找出 Contoso 的儲存體需求。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Contoso 需要一個支援 Blob 儲存體的儲存體帳戶。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "Contoso 需要一個支援 Azure 表格儲存體的儲存體帳戶。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Contoso 需要一個支援 Azure 檔案儲存體的儲存體帳戶。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。需求裡有兩個地方都指向 Blob：\n① 藍圖檔案要移到 Azure Blob 儲存體，而且要放在「封存」存取層——存取層是 Blob 專屬的功能。\n② 虛擬機器要用「非受控」標準磁碟，而非受控磁碟其實就是儲存體帳戶裡的「分頁 Blob (page blob)」——你得自己準備一個支援 Blob 的儲存體帳戶來放它們。",
+      "2": "否。表格儲存體是 NoSQL 的索引鍵／屬性存放區，而 Contoso 的結構化資料是放在 App1 的 SQL 資料庫層。整份需求沒有任何一條提到需要表格儲存體。",
+      "3": "否。Azure 檔案儲存體提供的是 SMB／NFS 檔案共用。藍圖檔案的需求寫得很明確：放進 Blob 儲存體、用封存層、以及用（暫時性的）安全方式分享給合作夥伴——這是 Blob + SAS 的組合，不是檔案共用。整份需求同樣沒有任何一條提到檔案共用。",
+      "_full": "這種「找出需求」的是非題，做法是把每個選項回頭去比對需求清單，有明確對應才算「是」，靠想像補出來的一律算「否」。\n\n本題只有 Blob 有對應（藍圖檔案 + 封存層、非受控磁碟的分頁 Blob），表格與檔案共用在整份案例裡連提都沒提到。\n\n順帶記住兩個常考的對應：\n・「非受控磁碟」→ 儲存體帳戶中的分頁 Blob。\n・「安全且暫時的外部存取」→ 共用存取簽章 (SAS)。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 593,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\nSub1 包含下列儲存體帳戶：\n・storage1｜Storage（一般用途 v1）｜West US\n・storage2｜StorageV2（一般用途 v2）｜East US\n・storage3｜BlobStorage｜East US 2\n・storage4｜FileStorage｜Central US\n\n規劃的變更之一：建立一個名為 container1 的 Blob 容器，以及一個名為 share1 的檔案共用，兩者都要使用「冷 (Cool)」儲存層。\n\n你需要建立 container1 與 share1。每個資源可以使用哪些儲存體帳戶？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 storage2",
+      "只有 storage2 和 storage3",
+      "只有 storage1、storage2 和 storage3",
+      "只有 storage2、storage3 和 storage4",
+      "storage1、storage2、storage3 和 storage4",
+      "只有 storage4",
+      "只有 storage2 和 storage4",
+      "只有 storage1、storage2 和 storage4"
+    ],
+    "matches": [
+      {
+        "use_case": "container1（要使用冷儲存層的 Blob 容器）：",
+        "correct_answer": "只有 storage2 和 storage3"
+      },
+      {
+        "use_case": "share1（要使用冷儲存層的檔案共用）：",
+        "correct_answer": "只有 storage2"
+      }
+    ],
+    "explanations": {
+      "1": "只有 storage2 和 storage3。先看「誰能放 Blob」，再看「誰支援存取層」：\n・storage4 是 FileStorage 帳戶，只能放進階檔案共用，連 Blob 服務都沒有 → 出局。\n・storage1 是一般用途 v1，它雖然有 Blob 服務，但 v1 完全「不支援」熱／冷／封存存取層 → 出局。\n・storage2（StorageV2）與 storage3（BlobStorage）都支援 Blob 存取層 → 兩個都可以。",
+      "2": "只有 storage2。檔案共用的部分反而更窄：\n・storage3 是 BlobStorage 帳戶，根本沒有檔案服務 → 出局。\n・storage1 是一般用途 v1，雖然能建檔案共用，但 v1 不支援檔案共用的層級設定 → 出局。\n・storage4 是 FileStorage 帳戶，它提供的是「進階」檔案共用；進階檔案共用只有一種效能層，沒有交易最佳化／熱／冷這組「標準」層 → 出局。\n・只剩 storage2（StorageV2）能建立設為「冷」層的標準檔案共用。",
+      "_full": "這題的骨架是「帳戶種類 × 服務 × 層級」三層過濾：\n\n【帳戶種類支援哪些服務】\n・一般用途 v1／v2：Blob、檔案、佇列、資料表全都有。\n・BlobStorage、BlockBlobStorage：只有 Blob。\n・FileStorage：只有檔案（而且是進階）。\n\n【誰支援存取層／層級】\n・Blob 的熱／冷／冷卻／封存層：一般用途 v2、BlobStorage、BlockBlobStorage 支援，「一般用途 v1 不支援」。\n・檔案共用的交易最佳化／熱／冷層：只有一般用途 v2 的「標準」檔案共用有；FileStorage 的進階檔案共用沒有這組層級。\n\n把 v1 不支援分層、FileStorage 沒有 Blob、BlobStorage 沒有檔案這三件事記牢，這類題目就是純粹的刪去法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 594,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\nSub1 已包含下列儲存體帳戶：\n・storage1｜Storage（一般用途 v1）｜West US\n・storage2｜StorageV2（一般用途 v2）｜East US\n・storage3｜BlobStorage｜East US 2\n・storage4｜FileStorage｜Central US\n\n規劃的變更之一：建立一個名為 storage5 的儲存體帳戶，並為「Blob 服務」設定儲存體複寫（物件複寫）。\n\n你需要建立 storage5，且解決方案必須支援上述規劃變更。\n你應該使用哪一種帳戶種類？應該把哪一個帳戶設定為目的地儲存體帳戶？（每個正確選擇得一分）",
+    "available_options": [
+      "〔帳戶種類〕BlobStorage",
+      "〔帳戶種類〕BlockBlobStorage",
+      "〔帳戶種類〕Storage（一般用途 v1）",
+      "〔帳戶種類〕StorageV2（一般用途 v2）",
+      "〔目的地〕storage1",
+      "〔目的地〕storage2",
+      "〔目的地〕storage3",
+      "〔目的地〕storage4"
+    ],
+    "matches": [
+      {
+        "use_case": "帳戶種類 (Account kind)：",
+        "correct_answer": "〔帳戶種類〕StorageV2（一般用途 v2）"
+      },
+      {
+        "use_case": "目的地 (Destination)：",
+        "correct_answer": "〔目的地〕storage2"
+      }
+    ],
+    "explanations": {
+      "1": "StorageV2（一般用途 v2）。Blob 的「物件複寫 (object replication)」要求來源與目的地都是一般用途 v2 或進階區塊 Blob 帳戶。\n・一般用途 v1 與 BlobStorage 都是舊世代帳戶，不支援物件複寫 → 出局。\n・BlockBlobStorage 雖然支援，但它是「進階」帳戶，成本高很多，而案例沒有任何效能上的理由要用進階；標準做法就是一般用途 v2。",
+      "2": "storage2。目的地也必須是支援物件複寫的帳戶種類：\n・storage1 是一般用途 v1 → 不支援。\n・storage3 是 BlobStorage → 不支援。\n・storage4 是 FileStorage → 連 Blob 服務都沒有。\n・只剩 storage2（StorageV2）符合條件。",
+      "_full": "物件複寫（把某個容器的區塊 Blob 非同步複製到另一個帳戶的容器）的前提條件：\n① 來源與目的地帳戶都必須是「一般用途 v2」或「進階區塊 Blob」。\n② 來源要啟用「Blob 變更摘要 (change feed)」與 Blob 版本設定。\n③ 目的地要啟用 Blob 版本設定。\n④ 只複製區塊 Blob；快照、附加／分頁 Blob 都不會複製。\n\n本題把條件①套到四個既有帳戶上就只剩 storage2；新建的 storage5 同理選一般用途 v2。\n順帶注意：物件複寫跟 LRS／GRS 這類「儲存體備援」是兩回事——備援是帳戶層級、自動的；物件複寫是容器層級、要自己設定規則的。"
     }
   },
   {
