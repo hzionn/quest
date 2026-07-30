@@ -1019,6 +1019,32 @@
   },
   {
     "exam": "AZ-104",
+    "id": 360,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列 Azure 容器登錄：\n・ContReg1｜服務層級 Premium\n・ContReg2｜服務層級 Standard\n・ContReg3｜服務層級 Basic\n\n你打算使用 ACR 工作 (ACR Tasks) 並設定私人端點連線。\n哪些容器登錄支援 ACR 工作，哪些支援私人端點？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 ContReg1",
+      "只有 ContReg1 和 ContReg2",
+      "ContReg1、ContReg2 和 ContReg3"
+    ],
+    "matches": [
+      {
+        "use_case": "ACR 工作 (ACR Tasks)：",
+        "correct_answer": "ContReg1、ContReg2 和 ContReg3"
+      },
+      {
+        "use_case": "私人端點 (Private endpoints)：",
+        "correct_answer": "只有 ContReg1"
+      }
+    ],
+    "explanations": {
+      "1": "ACR 工作（在雲端建置、測試、修補容器映像）是「所有」服務層級都提供的功能——Basic、Standard、Premium 都可以用。三個登錄都支援。",
+      "2": "私人端點屬於 Premium 專屬的網路功能，只有 ContReg1 支援。同樣只有 Premium 才有的功能還包括：異地複寫、專用資料端點、客戶管理金鑰、信任的服務、範圍對應權杖與內容信任。",
+      "_full": "把 ACR 各層級的差異記成一句話：\n・所有層級都有：映像儲存、ACR 工作、Webhook、Azure AD 驗證。\n・Premium 才有：私人端點、異地複寫、專用資料端點、客戶管理金鑰、內容信任、範圍對應權杖（以及最大的儲存容量與最高的處理量）。\n看到「網路隔離」或「跨區域複寫」類的需求，就要選 Premium。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 361,
     "type": "single",
     "question": "你打算使用 Azure Resource Manager 範本，在虛擬機器擴展集中部署數台執行 Windows Server 2022 的 Azure 虛擬機器。你必須確保這些虛擬機器部署完成後，所有機器上都有 NGINX 可用。你應該使用什麼？",
@@ -1055,6 +1081,35 @@
       "C": "正確。Container Apps 以 KEDA 為基礎提供事件驅動的自動調整（可縮至零），App Service 也提供依計量或排程的自動調整；Container Instances 則不具備此能力。",
       "D": "錯誤。Container Instances 不支援自動調整。",
       "E": "錯誤。同樣誤把 Container Instances 納入。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 364,
+    "type": "matching",
+    "question": "你有一個使用 Azure 容器實例的 Azure 訂用帳戶，以及一台已安裝 Azure CLI 與 Docker 的電腦。\n你建立了一個名為 image1 的容器映像。\n你必須佈建一個新的 Azure 容器登錄，並把 image1 加入該登錄。\n針對每一項需求，你應該執行哪個命令？（每個正確答案得一分）",
+    "available_options": [
+      "az acr build",
+      "az acr create",
+      "az container create",
+      "docker create",
+      "docker pull",
+      "docker push"
+    ],
+    "matches": [
+      {
+        "use_case": "佈建一個新的容器登錄：",
+        "correct_answer": "az acr create"
+      },
+      {
+        "use_case": "把 image1 加入該登錄：",
+        "correct_answer": "docker push"
+      }
+    ],
+    "explanations": {
+      "1": "建立容器登錄這個「Azure 資源」要用 Azure CLI 的 az acr create。az acr build 是在登錄中「建置」映像（登錄必須已存在）；az container create 建立的是容器實例（執行中的容器）而不是登錄；docker create 只是在本機建立一個容器。",
+      "2": "本機已經有 image1，要把它上傳到登錄就用 docker push（流程是先 az acr login 登入登錄、docker tag 打上 <登錄名稱>.azurecr.io/image1 的標籤，再 docker push）。docker pull 是「下載」方向；az acr create 是建立登錄。",
+      "_full": "兩個容易混淆的命令族：\n・az acr *（管理登錄本身）：create 建立登錄、build 在雲端建置映像、login 取得登錄認證、import 從其他登錄匯入。\n・docker *（操作映像）：tag 打標籤、push 上傳、pull 下載。\n本題是「先建立登錄（az acr create），再把本機映像推上去（docker push）」。"
     }
   },
   {
@@ -1170,6 +1225,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 374,
+    "type": "matching",
+    "question": "你打算部署一個多層式應用程式，包含下列各層：\n・前端 Web 伺服器｜可從網際網路存取：是｜虛擬機器數量 10\n・商業邏輯層｜可從網際網路存取：否｜虛擬機器數量 100\n・Microsoft SQL Server 資料庫｜可從網際網路存取：否｜虛擬機器數量 5\n\n你必須建議一個網路解決方案，滿足下列要求：\n✑ 確保 Web 伺服器與商業邏輯層之間的通訊「平均分散」到各台虛擬機器。\n✑ 保護 Web 伺服器免於 SQL 注入攻擊。\n針對每一項要求，你應該建議哪一種 Azure 資源？（每個正確選擇得一分）",
+    "available_options": [
+      "使用 Standard 層的應用程式閘道",
+      "使用 WAF 層的應用程式閘道",
+      "一個內部負載平衡器",
+      "一個網路安全性群組 (NSG)",
+      "一個公用負載平衡器"
+    ],
+    "matches": [
+      {
+        "use_case": "確保 Web 伺服器與商業邏輯層之間的通訊平均分散到各台虛擬機器：",
+        "correct_answer": "一個內部負載平衡器"
+      },
+      {
+        "use_case": "保護 Web 伺服器免於 SQL 注入攻擊：",
+        "correct_answer": "使用 WAF 層的應用程式閘道"
+      }
+    ],
+    "explanations": {
+      "1": "商業邏輯層「不可從網際網路存取」，所以要用「內部」負載平衡器——它使用私人 IP，只在虛擬網路內部把流量平均分散到後端的 100 台虛擬機器。公用負載平衡器會給該層一個公用 IP，違反不可從網際網路存取的條件；NSG 只做流量篩選，完全不做負載平衡。",
+      "2": "SQL 注入是應用層 (Layer 7) 的攻擊，要靠 Web 應用程式防火牆來偵測與封鎖——也就是「WAF 層」的應用程式閘道（其規則集以 OWASP 核心規則為基礎，涵蓋 SQL 注入、跨網站指令碼等常見弱點）。Standard 層的應用程式閘道只有第 7 層負載平衡，沒有 WAF；NSG 是第 3/4 層的位址與連接埠篩選，看不懂 HTTP 內容。",
+      "_full": "兩個需求對應兩種資源，判斷關鍵各不相同：\n・「平均分散流量」+「不可從網際網路存取」→ 內部負載平衡器（私人 IP）。\n・「SQL 注入」這類應用層攻擊 → 必須是 WAF；在這些選項中就是 WAF 層的應用程式閘道。\n順帶記住層級分工：NSG 是 L3/L4 篩選、負載平衡器是 L4、應用程式閘道是 L7。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 375,
     "type": "single",
     "question": "貴公司有三個辦公室，分別位於邁阿密、洛杉磯與紐約，每個辦公室都有資料中心。你有一個 Azure 訂用帳戶，資源分布在美國東部與美國西部兩個 Azure 區域，每個區域各有一個虛擬網路，且兩個虛擬網路已建立對等互連。你必須把這些資料中心連接到該訂用帳戶，且解決方案必須「盡量降低資料中心之間的網路延遲」。你應該建立什麼？",
@@ -1185,6 +1268,35 @@
       "B": "正確。Azure 虛擬 WAN 提供中樞輻射式的全球骨幹網路：建立「一個」虛擬 WAN 作為整體資源，再在各區域建立「虛擬中樞」讓辦公室就近連入。站台之間的流量走 Microsoft 骨幹傳輸，延遲最低。",
       "C": "錯誤。層級關係顛倒了——虛擬中樞是隸屬於虛擬 WAN 之下的資源，不會反過來由多個 WAN 共用一個中樞。",
       "D": "錯誤。這兩種閘道都不提供資料中心之間的網路互連能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 376,
+    "type": "matching",
+    "question": "你打算把五台虛擬機器部署到一個虛擬網路子網路。\n每台虛擬機器都會有一個公用 IP 位址與一個私人 IP 位址。\n每台虛擬機器需要「相同」的輸入與輸出安全性規則。\n你最少需要幾張網路介面與幾個網路安全性群組？（每個正確選擇得一分）",
+    "available_options": [
+      "1",
+      "2",
+      "5",
+      "10",
+      "15",
+      "20"
+    ],
+    "matches": [
+      {
+        "use_case": "網路介面的最少數量：",
+        "correct_answer": "5"
+      },
+      {
+        "use_case": "網路安全性群組的最少數量：",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "同一張網路介面的 IP 設定可以「同時」帶一個私人 IP 與一個公用 IP，不需要為公用 IP 另外開一張介面。每台虛擬機器至少要一張網路介面，所以 5 台 VM 最少 5 張。",
+      "2": "同一個網路安全性群組可以「重複關聯」到任意多個子網路與網路介面。既然五台虛擬機器需要相同的規則，最省的做法是建立一個 NSG 並關聯到該子網路，五台 VM 一起適用。→ 最少 1 個。",
+      "_full": "兩個容易誤判的規則：\n① 公用 IP 不需要獨立的網路介面——一個 IP 設定就能同時掛私人 IP 與公用 IP。\n② NSG 可以被多個子網路／網路介面共用，規則相同時共用一個即可（而每個子網路或網路介面最多只能關聯「一個」NSG）。"
     }
   },
   {
