@@ -1264,6 +1264,63 @@
   },
   {
     "exam": "AZ-104",
+    "id": 571,
+    "type": "matching",
+    "question": "You have a backup policy named Policy1: backup schedule frequency Daily, time 11:00 PM, timezone (UTC) Coordinated Universal Time; Instant Restore - retain instant recovery snapshots for 2 days; retention range - retention of daily backup point at 11:00 PM for 30 days; retention of weekly backup point on Sunday at 11:00 PM for 10 weeks; retention of monthly backup point (day based) on 1 at 11:00 PM for 36 months; retention of yearly backup point (day based) in March on 1 at 11:00 PM for 10 years. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "30 days",
+      "10 weeks",
+      "36 months",
+      "10 years"
+    ],
+    "matches": [
+      {
+        "use_case": "The backup that occurs on Sunday, March 1, will be retained for [answer choice].",
+        "correct_answer": "10 years"
+      },
+      {
+        "use_case": "The backup that occurs on Sunday, November 1, will be retained for [answer choice].",
+        "correct_answer": "36 months"
+      }
+    ],
+    "explanations": {
+      "1": "10 年。3 月 1 日同時符合四條保留規則：每日（30 天）、每週（星期日，10 週）、每月（每月 1 日，36 個月）、每年（三月 1 日，10 年）。當同一個復原點被多條規則標記時，「保留期最長的那一條勝出」，因此是 10 年。",
+      "2": "36 個月。11 月 1 日符合每日、每週（星期日）與每月（每月 1 日）三條規則，但不符合每年規則（年度保留只針對「三月」1 日）。三者中最長的是每月的 36 個月。",
+      "_full": "備份保留的判斷口訣：先看這個日期「符合哪幾條保留規則」，再取其中「保留期最長」的那一條。\n本題兩個日期都是星期日、也都是當月 1 日，差別只在是不是「三月」——是三月就多命中年度規則（10 年），不是就止於每月規則（36 個月）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 572,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains Recovery1 (Recovery Services vault) and Backup1 (Azure Backup vault). You deploy the virtual machines VM1 (Windows Server, security configuration Azure Disk Encryption) and VM2 (Linux, Trusted launch). You have the backup policies Policy1 (type Standard, in vault Recovery1), Policy2 (Enhanced, in vault Recovery2) and Policy3 (not applicable, in vault Backup1). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 can be backed up by using Policy1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "VM2 can be backed up by using Policy3.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM2 can be backed up by using Policy2.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。Policy1 是 Recovery Services 保存庫中的「標準」原則，而 Azure VM 備份正是由 Recovery Services 保存庫負責。VM1 使用 Azure 磁碟加密 (ADE) 也沒問題——Azure 備份支援備份已用 ADE 加密的 VM。",
+      "2": "否。Policy3 位於「Azure 備份保存庫 (Backup vault)」中，而備份保存庫保護的是 Blob、Azure 受控磁碟、Azure Database for PostgreSQL 等較新的工作負載，「不」支援 Azure 虛擬機器。VM 一律要用 Recovery Services 保存庫。",
+      "3": "是。VM2 使用「信任的啟動」，而信任的啟動 VM 必須使用「增強 (Enhanced)」備份原則——標準原則不支援。Policy2 正好是增強原則，因此適用。",
+      "_full": "三個要點：\n① 保存庫類型決定能保護什麼：Recovery Services 保存庫 → VM、檔案共用、VM 內的 SQL/SAP HANA；備份保存庫 → Blob、受控磁碟、PostgreSQL、Kubernetes。\n② 「信任的啟動」VM 必須搭配「增強」備份原則。\n③ Azure 磁碟加密的 VM 可以正常備份，不是限制條件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 573,
     "type": "single",
     "question": "You have an Azure subscription. The subscription contains virtual machines that connect to a virtual network named VNet1. You plan to configure Azure Monitor for VM Insights. You need to ensure that all the virtual machines only communicate with Azure Monitor through VNet1. What should you create first?",
@@ -1279,6 +1336,33 @@
       "B": "Incorrect. 錯誤。工作區是資料的目的地，本身不提供私人連線；何況題目問的是「確保只透過 VNet1 通訊」這個需求的第一步。",
       "C": "Correct. 正確。要讓監視流量只走私人網路，必須先建立 Azure 監視器私人連結範圍 (AMPLS)，把要保護的工作區與元件加入其中，之後才能為 AMPLS 建立私人端點並連到 VNet1。順序上 AMPLS 必須先存在。",
       "D": "Incorrect. 錯誤。私人端點是後續步驟——它必須連結到一個已存在的 AMPLS，因此不能先建立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 574,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains Backup1 (Backup vault) and Recovery1 (Recovery Services vault). You create a storage account that contains cont1 (Blob container) and share1 (File share). To which vault can you back up cont1 and share1?",
+    "available_options": [
+      "Backup1 only",
+      "Recovery1 only",
+      "Backup1 or Recovery1",
+      "Cannot be backed up to Backup1 or Recovery1"
+    ],
+    "matches": [
+      {
+        "use_case": "cont1:",
+        "correct_answer": "Backup1 only"
+      },
+      {
+        "use_case": "share1:",
+        "correct_answer": "Recovery1 only"
+      }
+    ],
+    "explanations": {
+      "1": "只有 Backup1。Blob 的備份（操作備份與保存庫備份）是由「備份保存庫」負責的——這是較新的保存庫類型，用來保護 Blob、Azure 受控磁碟、Azure Database for PostgreSQL 與 Kubernetes 等工作負載。Recovery Services 保存庫不支援 Blob。",
+      "2": "只有 Recovery1。Azure 檔案共用的備份走的是「Recovery Services 保存庫」，與 Azure VM 備份同一套機制（保存庫需與儲存體帳戶同區域）。備份保存庫不支援檔案共用。",
+      "_full": "把兩種保存庫的保護對象分開記：\n・Recovery Services 保存庫 → Azure VM、Azure「檔案共用」、VM 內的 SQL Server/SAP HANA、內部部署工作負載（MARS/DPM）。\n・備份保存庫 (Backup vault) → 「Blob」、Azure 受控磁碟、Azure Database for PostgreSQL、AKS。\n同一個儲存體帳戶裡的 Blob 與檔案共用，備份目的地剛好分屬兩種保存庫。"
     }
   },
   {
@@ -1391,6 +1475,36 @@
       "C": "Incorrect. 錯誤。診斷設定用於 Azure「資源」層級的平台記錄，不用於收集客體作業系統內的 IIS 記錄。",
       "D": "Incorrect. 錯誤。VM 見解提供的是效能與相依性監視，不負責收集 IIS 記錄。",
       "E": "Incorrect. 錯誤。私人端點同樣是網路私有化的元件，與 IIS 記錄收集的必要前置條件無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 581,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains VM1 (connected to VNet1/Subnet1, public IP address SKU Basic) and VM2 (VNet1/Subnet2, Standard). VNet1 has service endpoints configured: Microsoft.AzureActiveDirectory on Subnet2 (Succeeded, locations *) and Microsoft.Storage on Subnet1 (Succeeded, locations *). The Microsoft.Storage service endpoint has a service endpoint policy named Policy1: subscription Azure Pass - Sponsorship, resource group RG1, region East US, name Policy1, resources Microsoft.Storage = contoso101 (storage account). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 can access contoso102.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM2 can access contoso101.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM2 uses a private IP address to access Azure AD.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。VM1 在 Subnet1，而 Subnet1 啟用了 Microsoft.Storage 服務端點並套用了 Policy1。服務端點原則是一份「白名單」——它只允許清單中的儲存體帳戶（本題只有 contoso101），其餘的儲存體帳戶（包含 contoso102）一律被拒絕。",
+      "2": "否。VM2 在 Subnet2，而 Subnet2「沒有」啟用 Microsoft.Storage 服務端點（它只啟用了 Microsoft.AzureActiveDirectory）。\n這一格的關鍵其實在別處：VM2 的公用 IP 是 Standard SKU，而 Standard 公用 IP 的輸出流量預設是「安全的」——沒有服務端點也沒有其他輸出路徑設定時，它連不到儲存體帳戶的公用端點。官方判定為否。",
+      "3": "是。Subnet2 已啟用 Microsoft.AzureActiveDirectory 服務端點。服務端點一旦啟用，該子網路前往該服務的流量就會改走 Azure 骨幹網路，來源位址也從公用 IP 切換成「私人」IP——這正是服務端點的核心行為。",
+      "_full": "服務端點的三個要點：\n① 啟用服務端點後，來源位址由公用 IP 切換成私人 IP，流量走 Azure 骨幹（第 3 項）。\n② 服務端點「原則」是白名單，只放行清單內的儲存體帳戶，其餘一律拒絕（第 1 項）。\n③ 服務端點是「逐子網路、逐服務」啟用的——Subnet1 有 Storage、Subnet2 有 Azure AD，兩者不會互相涵蓋（第 2 項）。"
     }
   },
   {
