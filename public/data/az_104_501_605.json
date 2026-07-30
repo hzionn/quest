@@ -1509,6 +1509,89 @@
   },
   {
     "exam": "AZ-104",
+    "id": 582,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含：\n・Backup1｜一個 Azure 備份保存庫 (Azure Backup vault)\n・Recovery1｜一個 Recovery Services 保存庫\n\n訂用帳戶還包含下列資源：\n・VM1｜虛擬機器\n・Disk1｜磁碟\n・App1｜Azure App Service Web 應用程式\n・DB1｜Azure SQL Database\n\n你打算備份這些資源。\n哪一個資源可以備份到 Backup1？哪一個資源可以備份到 Recovery1？（每個正確選擇得一分）",
+    "available_options": [
+      "App1",
+      "DB1",
+      "Disk1",
+      "VM1"
+    ],
+    "matches": [
+      {
+        "use_case": "Backup1：",
+        "correct_answer": "Disk1"
+      },
+      {
+        "use_case": "Recovery1：",
+        "correct_answer": "VM1"
+      }
+    ],
+    "explanations": {
+      "1": "Disk1。「Azure 備份保存庫 (Backup vault)」是較新的保存庫類型，負責的是 Azure 受控磁碟、Azure Blob、Azure Database for PostgreSQL、AKS 等工作負載。四個資源中只有 Disk1 屬於它的守備範圍。",
+      "2": "VM1。「Recovery Services 保存庫」是傳統的保存庫類型，負責 Azure 虛擬機器、Azure 檔案共用、Azure VM 中的 SQL Server／SAP HANA，以及 MARS 代理程式與 DPM／MABS。四個資源中只有 VM1 屬於它。",
+      "_full": "兩種保存庫的分工是 AZ-104 的高頻考點：\n・Recovery Services 保存庫 → 虛擬機器、Azure 檔案共用、VM 內的 SQL／SAP HANA、MARS／DPM／MABS。\n・Azure 備份保存庫 (Backup vault) → 受控磁碟、Blob、Azure Database for PostgreSQL、AKS。\n\n剩下兩個選項都是誘答：App1 是 App Service Web 應用程式，Azure 備份完全不支援它（它有自己的「備份」功能，跟 Azure Backup 無關）；DB1 是 Azure SQL Database 這種 PaaS 資料庫，備份是平台內建的自動備份，同樣不透過 Azure Backup 設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 583,
+    "type": "matching",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\n訂用帳戶包含下列儲存體帳戶：\n・storage1｜StorageV2｜West US｜階層命名空間：是｜容器 cont1｜檔案共用 share1\n・storage2｜StorageV2｜West US｜階層命名空間：否｜容器 cont2｜檔案共用 share2\n\n技術需求之一：使用 Azure 備份 (Azure Backup) 以「盡可能高的頻率」備份 cont1 與 share1。\n\n你需要設定 Azure 備份以符合 cont1 與 share1 的技術需求。\n每個資源的備份頻率應該設定為何？（每個正確選擇得一分）",
+    "available_options": [
+      "每小時",
+      "每 4 小時",
+      "每 6 小時",
+      "每 12 小時",
+      "每日"
+    ],
+    "matches": [
+      {
+        "use_case": "cont1（storage1 中的 Blob 容器）：",
+        "correct_answer": "每日"
+      },
+      {
+        "use_case": "share1（storage1 中的 Azure 檔案共用）：",
+        "correct_answer": "每 4 小時"
+      }
+    ],
+    "explanations": {
+      "1": "每日。cont1 是 Blob 容器，Azure 備份對 Blob 的「保存庫備份 (vaulted backup)」排程只提供「每日」一種頻率，沒有小時級的選項。所以就算需求寫「盡可能頻繁」，能選的上限就是每日。",
+      "2": "每 4 小時。Azure 檔案共用的備份原則除了「每日」之外還支援「每小時」排程，但小時排程的間隔只能挑 4、6、8、12 小時，最短就是 4 小時。清單上的「每小時」是誘答——檔案共用備份無法每 1 小時跑一次。",
+      "_full": "這題考的是兩種資料類型在備份頻率上的天花板不一樣：\n・Blob（cont1）→ 保存庫備份只有「每日」。\n・Azure 檔案共用（share1）→ 每日，或每 4／6／8／12 小時。\n\n看到「as frequently as possible（盡可能高的頻率）」時，不要直接挑清單上最小的數字，要先問「這個資源類型真的支援這個頻率嗎」。本題兩格的正解剛好都不是清單最上面那一項。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 584,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\n・技術需求：確保使用者將裝置加入 Azure AD 時，必須使用「行動電話」驗證自己的身分。\n・使用者需求：確保只有屬於名為 Pilot 的群組的使用者，才能將裝置加入 Azure AD。\n\n你需要設定 Azure AD 的「裝置設定」以符合上述需求。答案區目前的設定如下：\n・使用者可以將裝置加入 Azure AD：【全部】／已選取／無\n・Azure AD 已加入裝置上的其他本機系統管理員：已選取／【無】\n・使用者可以向 Azure AD 註冊其裝置：【全部】／無\n・加入裝置需要多重要素驗證：是／【否】\n・每個使用者的裝置數目上限：50\n\n你應該修改哪兩項設定？（每個正確選擇得一分）",
+    "available_options": [
+      "〔使用者可以將裝置加入 Azure AD〕全部",
+      "〔使用者可以將裝置加入 Azure AD〕已選取",
+      "〔使用者可以將裝置加入 Azure AD〕無",
+      "〔加入裝置需要多重要素驗證〕是",
+      "〔加入裝置需要多重要素驗證〕否"
+    ],
+    "matches": [
+      {
+        "use_case": "「使用者可以將裝置加入 Azure AD」應改為：",
+        "correct_answer": "〔使用者可以將裝置加入 Azure AD〕已選取"
+      },
+      {
+        "use_case": "「加入裝置需要多重要素驗證」應改為：",
+        "correct_answer": "〔加入裝置需要多重要素驗證〕是"
+      }
+    ],
+    "explanations": {
+      "1": "已選取 (Selected)。需求是「只有 Pilot 群組的成員」能加入裝置。\n這個設定的三個值分別是：全部＝租用戶內所有使用者都能加入；已選取＝只有你指定的使用者／群組能加入；無＝誰都不能加入。\n要限定成一個群組，就得切到「已選取」，再把 Pilot 群組加進去。選「無」會連 Pilot 都擋掉，不符合需求。",
+      "2": "是 (Yes)。需求是加入裝置時要用「行動電話」驗證身分——這句話描述的就是多重要素驗證 (MFA)。\n把「加入裝置需要多重要素驗證」打開為「是」之後，使用者在執行加入裝置的動作時就會被要求做第二道驗證。",
+      "_full": "這題的技巧是把需求的白話文翻成入口網站上的設定名稱：\n・「只有某個群組能加入裝置」→『使用者可以將裝置加入 Azure AD』設為「已選取」。\n・「用行動電話驗證身分」→『加入裝置需要多重要素驗證』設為「是」。\n\n另外三個設定都是誘答，跟需求無關：\n・『其他本機系統管理員』控制的是誰在已加入的裝置上有本機管理員權限。\n・『使用者可以向 Azure AD 註冊其裝置』管的是「註冊 (register)」，跟「加入 (join)」是兩回事。\n・『每個使用者的裝置數目上限』只是數量限制。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 585,
     "type": "single",
     "question": "【案例摘要】Contoso 是製造公司，以藍圖檔案生產產品。公開的應用程式 App1 分為 SQL 資料庫、Web 前端與處理中介層三層，每層五台 VM，使用者「僅透過 HTTPS」存取 Web 前端。\n相關需求：App1 全部 VM 移到 Azure 並受備份保護；盡量減少 App1 各層之間開放的連接埠；藍圖檔案經網際網路複製到 Azure 並存放於封存層，夥伴的存取須安全且為臨時性；Admin1 為訂用帳戶的服務管理員並須接收服務中斷的電子郵件警示；盡量減少管理工作。\n\n你必須滿足針對 Admin1 的使用者需求（將 Admin1 指定為訂用帳戶的服務管理員，並讓其接收服務中斷的電子郵件警示）。你應該怎麼做？\n\n（註：本題社群共識偏弱（C 52% / D 48%），屬有爭議題目。）",
@@ -1524,6 +1607,40 @@
       "B": "錯誤。Azure AD 的屬性頁面設定的是租用戶層級資訊（例如全域管理員的存取權提升），不是訂用帳戶的管理員。",
       "C": "正確（依官方標示）。在訂用帳戶的存取控制 (IAM) 中把管理角色指派給 Admin1，是現行入口網站賦予其訂用帳戶管理權限的方式。",
       "D": "錯誤（依官方標示）。但要提醒：傳統的「服務管理員」欄位確實顯示在訂用帳戶的屬性頁面上，這也是有 48% 社群投票支持此項的原因；此題屬有爭議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 586,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\nSub1 包含下列儲存體帳戶：\n・storage1｜Storage（一般用途 v1）｜West US｜檔案共用：sharea\n・storage2｜StorageV2（一般用途 v2）｜East US｜檔案共用：shareb、sharec\n・storage3｜BlobStorage｜East US 2｜檔案共用：不適用\n・storage4｜FileStorage｜Central US｜檔案共用：shared\n\nSub1 包含下列執行 Windows Server 2019 的虛擬機器：\n・VM1｜West US　・VM2｜West US　・VM3｜Central US　・VM4｜West US　・VM5｜East US\n\n技術需求之一：使用 Azure 備份備份這些 Azure 檔案共用與虛擬機器。\n\n你需要設定 Azure 備份來備份這些檔案共用與虛擬機器。\n你至少應該建立幾個復原服務保存庫與幾個備份原則？（每個正確選擇得一分）",
+    "available_options": [
+      "〔復原服務保存庫〕1",
+      "〔復原服務保存庫〕2",
+      "〔復原服務保存庫〕3",
+      "〔復原服務保存庫〕4",
+      "〔復原服務保存庫〕7",
+      "〔備份原則〕1",
+      "〔備份原則〕2",
+      "〔備份原則〕3",
+      "〔備份原則〕4",
+      "〔備份原則〕5",
+      "〔備份原則〕6"
+    ],
+    "matches": [
+      {
+        "use_case": "復原服務保存庫的最少數量：",
+        "correct_answer": "〔復原服務保存庫〕3"
+      },
+      {
+        "use_case": "備份原則的最少數量：",
+        "correct_answer": "〔備份原則〕6"
+      }
+    ],
+    "explanations": {
+      "1": "3。復原服務保存庫必須和它保護的資源「位於同一個區域」，所以有幾個區域、就至少要幾個保存庫。\n本題要備份的東西落在三個區域：\n・West US：VM1、VM2、VM4，以及 storage1 的 sharea\n・East US：VM5，以及 storage2 的 shareb、sharec\n・Central US：VM3，以及 storage4 的 shared\nstorage3 雖然在第四個區域 East US 2，但它是 BlobStorage 帳戶、沒有檔案共用，不在這題的備份範圍內，所以不用為它開保存庫。",
+      "2": "6。備份原則的範圍限定在「單一保存庫」之內——原則不能跨保存庫共用，而且虛擬機器與 Azure 檔案共用是兩種不同類型的原則，也不能合併成一份。\n三個區域每一區都同時有 VM 和檔案共用，所以每個保存庫都需要 2 份原則：1 份給 VM、1 份給檔案共用。3 × 2 = 6。",
+      "_full": "這類「最少要幾個」的題目照兩條規則算就好：\n① 保存庫跟資源必須同區域 → 保存庫數 = 需要備份的資源所在的「不同區域」數。\n② 備份原則屬於某一個保存庫，且依工作負載類型區分 →\n　 原則數 = Σ（每個保存庫內出現的工作負載類型數）。\n\n算區域時記得先把「不需要備份的資源」剔掉——本題的 storage3 在 East US 2，但它沒有檔案共用，把它算進去就會誤選 4 個保存庫。"
     }
   },
   {
