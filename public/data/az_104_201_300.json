@@ -1018,6 +1018,35 @@
   },
   {
     "exam": "AZ-104",
+    "id": 250,
+    "type": "matching",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\nADatum 規劃的變更之一是：在儲存體帳戶 storage1 中建立一個新容器 cont2，並為它設定下列存取原則：\n・三個預存存取原則 (stored access policies)：Stored1、Stored2、Stored3\n・一個用於不可變 Blob 儲存體的合法保留 (legal hold)\n\n你實作了 cont2 的這項規劃變更。\n你「還」可以為 cont2 建立的額外存取原則最多是幾個？（每個正確選擇得一分）",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "預存存取原則 (Stored access policies)：",
+        "correct_answer": "2"
+      },
+      {
+        "use_case": "不可變 Blob 儲存體原則 (Immutable blob storage policies)：",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "每個容器最多 5 個預存存取原則。規劃中已經要建立 Stored1、Stored2、Stored3 共 3 個，所以還剩 5 − 3 = 2 個可用。",
+      "2": "不可變 Blob 儲存體在同一個容器上可以有「一個合法保留」與「一個以時間為基準的保留原則」，兩者各一。規劃中已經要建立合法保留，因此只剩時間保留原則可以再加，也就是 1 個。",
+      "_full": "兩個上限要分開記：\n・預存存取原則：每個容器 5 個（本題用掉 3 個 → 還能加 2）。\n・不可變原則：合法保留 1 個 + 時間保留 1 個（本題用掉合法保留 → 還能加 1）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 253,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你部署了一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，必須把一個 YAML 檔案部署到 AKS1。\n解法：在 Azure CLI 中執行 az aks。\n此解法是否達成目標？",
@@ -1078,6 +1107,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 257,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組　・RG2｜資源群組\n・VNet1｜虛擬網路（位於 RG1）　・VNet2｜虛擬網路（位於 RG2）\n\nVNet1 與 VNet2 之間「沒有」任何連線。\n一位名為 Admin1 的管理員在 RG1 中建立了一台 Azure 虛擬機器 VM1，VM1 使用一個名為 Disk1 的磁碟並連線到 VNet1。接著 Admin1 在 VM1 中安裝了一個自訂應用程式。\n你必須把這個自訂應用程式移到 VNet2，且解決方案必須盡量減少管理工作。\n你應該執行哪兩個動作？（每個正確選擇得一分）",
+    "available_options": [
+      "在 RG2 中建立一張網路介面。",
+      "卸離一張網路介面。",
+      "刪除 VM1。",
+      "把一張網路介面移到 RG2。",
+      "連接一張網路介面。",
+      "建立一台新的虛擬機器。",
+      "把 VM1 移到 RG2。"
+    ],
+    "matches": [
+      {
+        "use_case": "第一個動作：",
+        "correct_answer": "刪除 VM1。"
+      },
+      {
+        "use_case": "第二個動作：",
+        "correct_answer": "建立一台新的虛擬機器。"
+      }
+    ],
+    "explanations": {
+      "1": "虛擬機器「無法」換到另一個虛擬網路——VM 連到哪個 VNet 是由它的網路介面決定的，而網路介面建立後就不能改所屬的虛擬網路。因此第一步是「刪除 VM1」，但刪除時保留 Disk1（刪除 VM 預設不會刪磁碟）。",
+      "2": "第二步是在 VNet2 中「建立一台新的虛擬機器」，並在建立時掛接原本保留下來的 Disk1 作為 OS 磁碟——自訂應用程式就在那顆磁碟裡，因此不需要重新安裝，這是管理工作最少的做法。\n（把 VM1 或網路介面「移到 RG2」都沒用：搬移資源群組不會改變網路介面所屬的虛擬網路。）",
+      "_full": "核心觀念：虛擬機器不能跨虛擬網路搬移，也不能更換網路介面所屬的 VNet；而「移到另一個資源群組」與「移到另一個虛擬網路」是完全不同的兩件事。\n最省事的做法是：① 刪除 VM（保留資料磁碟／OS 磁碟）→ ② 在目標 VNet 中用同一顆磁碟重建 VM。應用程式與設定都隨磁碟一起過去。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 258,
     "type": "single",
     "question": "你依據一台既有虛擬機器下載了一份 Azure Resource Manager 範本，該範本將用來部署 100 台虛擬機器。你必須修改範本以參考系統管理員密碼，並且必須避免密碼以純文字形式儲存。你應該建立什麼來存放這個密碼？",
@@ -1093,6 +1152,63 @@
       "B": "錯誤。儲存體帳戶不是祕密管理服務，ARM 範本也沒有從儲存體帳戶安全取用祕密的原生機制。",
       "C": "錯誤。復原服務保存庫用於備份與災難復原，不存放祕密。",
       "D": "錯誤。Identity Protection 偵測身分風險，Azure 原則負責資源合規，兩者都與存放密碼無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 259,
+    "type": "matching",
+    "question": "你有下列 App Service 方案：\n・ASP1｜作業系統 Windows｜位置 West US\n・ASP2｜作業系統 Windows｜位置 Central US\n・ASP3｜作業系統 Linux｜位置 West US\n\n你打算建立下列 Azure Web 應用程式：\n・WebApp1｜執行階段堆疊 .NET Core 3.0｜位置 West US\n・WebApp2｜執行階段堆疊 ASP.NET 4.7｜位置 West US\n\n你必須找出哪些 App Service 方案可以用於這些 Web 應用程式。（每個正確選擇得一分）",
+    "available_options": [
+      "只有 ASP1",
+      "只有 ASP3",
+      "只有 ASP1 和 ASP2",
+      "只有 ASP1 和 ASP3",
+      "ASP1、ASP2 和 ASP3"
+    ],
+    "matches": [
+      {
+        "use_case": "WebApp1（.NET Core 3.0）：",
+        "correct_answer": "只有 ASP1 和 ASP3"
+      },
+      {
+        "use_case": "WebApp2（ASP.NET 4.7）：",
+        "correct_answer": "只有 ASP1"
+      }
+    ],
+    "explanations": {
+      "1": ".NET Core 是跨平台的，Windows 與 Linux 的 App Service 方案都能執行。但 Web 應用程式的區域「就是」它所屬 App Service 方案的區域，而 WebApp1 要在 West US，所以 Central US 的 ASP2 出局。→ 只有 ASP1（Windows/West US）和 ASP3（Linux/West US）。",
+      "2": "ASP.NET 4.7 是傳統的 .NET Framework，只能在「Windows」上執行，Linux 方案不支援，所以 ASP3 出局；再加上區域必須是 West US，ASP2 也出局。→ 只有 ASP1。",
+      "_full": "兩條規則交叉判斷：\n① 作業系統：.NET Core／.NET 5+ 跨平台（Windows 與 Linux 皆可）；ASP.NET／.NET Framework 只能 Windows。\n② 區域：Web 應用程式沒有自己的區域，它跟隨 App Service 方案的區域，所以方案與應用程式必須同區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 260,
+    "type": "matching",
+    "question": "你建立了一個名為 Scale1 的虛擬機器擴展集，設定如下（「調整」索引標籤）：\n・初始執行個體計數：4\n・調整原則：自訂 (Custom)；VM 數量下限：2；VM 數量上限：20\n・向外延展 (Scale out)：CPU 閾值 80%、持續時間 5 分鐘、每次增加 2 台 VM\n・向內延展 (Scale in)：CPU 閾值 30%、每次減少 4 台 VM\n・診斷記錄：不從自動調整收集（已停用）\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "2 台虛擬機器",
+      "4 台虛擬機器",
+      "6 台虛擬機器",
+      "8 台虛擬機器",
+      "10 台虛擬機器",
+      "20 台虛擬機器"
+    ],
+    "matches": [
+      {
+        "use_case": "如果 Scale1 部署後以 85% 的使用率持續六分鐘，Scale1 會執行【答案】。",
+        "correct_answer": "6 台虛擬機器"
+      },
+      {
+        "use_case": "如果 Scale1 部署後先以 25% 的使用率持續六分鐘，接著以 50% 的使用率持續六分鐘，Scale1 會執行【答案】。",
+        "correct_answer": "2 台虛擬機器"
+      }
+    ],
+    "explanations": {
+      "1": "85% 超過向外延展的門檻 80%，而且持續 6 分鐘（> 設定的 5 分鐘），所以觸發一次向外延展，每次增加 2 台。初始 4 台 + 2 = 6 台。（上限 20 還很遠，不會被截斷。）",
+      "2": "先看第一段：25% 低於向內延展門檻 30%，觸發向內延展、每次減少 4 台。4 − 4 = 0，但 VM 數量下限是 2，所以只會縮到 2 台。\n再看第二段：50% 既不超過 80%（不會向外延展）、也不低於 30%（不會再向內延展），因此維持不動。最終是 2 台。",
+      "_full": "自動調整題的判讀順序：\n① 使用率是否越過門檻，且持續時間是否達標（本題向外延展要求 5 分鐘）。\n② 依「每次增加／減少的數量」加減。\n③ 用「下限／上限」夾住結果——本題向內延展算出 0，被下限 2 截住。\n④ 位於兩個門檻「之間」的使用率（例如 50%）不會觸發任何調整。"
     }
   },
   {
@@ -1117,6 +1233,37 @@
       "C": "錯誤。Azure 原則負責治理與合規稽核，不會在 VM 佈建時安裝軟體。",
       "D": "正確。擴展集範本的 extensionProfile 區段用來宣告要套用在每個執行個體上的延伸模組（例如自訂指令碼延伸模組），新佈建的執行個體就會自動執行該指令碼。",
       "E": "錯誤。題目要求的是「自動化部署」，改用入口網站手動建立與此目標相違。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 262,
+    "type": "matching",
+    "question": "你有一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，以及一台執行 Windows 10 的電腦 Computer1，Computer1 已安裝 Azure CLI。\n你必須在 Computer1 上安裝 kubectl 用戶端。你應該執行哪個命令？\n\n　【下拉 1】 【下拉 2】 install-cli\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "az",
+      "docker",
+      "msiexec.exe",
+      "Install-Module",
+      "aks",
+      "/package",
+      "-name",
+      "pull"
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1：",
+        "correct_answer": "az"
+      },
+      {
+        "use_case": "下拉 2：",
+        "correct_answer": "aks"
+      }
+    ],
+    "explanations": {
+      "1": "題目說 Computer1 已安裝 Azure CLI，而在本機安裝 kubectl 的官方做法就是 Azure CLI 的命令，所以第一個字是 az。docker 是容器引擎的 CLI；msiexec.exe 是 Windows Installer；Install-Module 是 PowerShell 安裝模組用的（都不會裝 kubectl）。",
+      "2": "完整命令是 az aks install-cli——它屬於 az aks 這個命令群組，會下載並安裝 kubectl（必要時也可加 --install-location 指定路徑）。/package、-name、pull 都不是這個命令的組成部分。",
+      "_full": "答案是 az aks install-cli。\n順帶記住 AKS 的兩個常用命令：\n・az aks install-cli → 在本機安裝 kubectl。\n・az aks get-credentials → 把叢集的認證合併到 kubeconfig，之後 kubectl 才連得上。"
     }
   },
   {
@@ -1238,6 +1385,63 @@
   },
   {
     "exam": "AZ-104",
+    "id": 275,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其配額如下：\n・Standard BS Family vCPUs｜West US｜已使用 0 / 20\n・Standard D Family vCPUs｜West US｜已使用 0 / 20\n・Total Regional vCPUs（區域總 vCPU）｜West US｜已使用 0 / 20\n\n你已在 Subscription1 部署下列虛擬機器：\n・VM1｜Standard_B2ms｜2 vCPU｜West US｜狀態 執行中 (Running)\n・VM2｜Standard_B16ms｜16 vCPU｜West US｜狀態 已停止（已解除配置 Deallocated）\n\n你打算再部署下列虛擬機器：\n・VM3｜Standard_B2ms｜1 vCPU\n・VM4｜Standard_D4s_v3｜4 vCPU\n・VM5｜Standard_B16ms｜16 vCPU\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把 VM3 部署到 West US。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "你可以把 VM4 部署到 West US。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "你可以把 VM5 部署到 West US。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。關鍵前提：「已解除配置」的虛擬機器仍然「佔用」vCPU 配額，因此 VM1（2）＋ VM2（16）＝ 18，區域總 vCPU 20 只剩 2 個可用。VM3 需要 1 個 vCPU，2 ≥ 1，配額夠（BS 系列配額同樣剩 2 個）。",
+      "2": "否。VM4 需要 4 個 vCPU，但區域總 vCPU 只剩 2 個。雖然 Standard D Family 的配額 20 完全沒用過，但「區域總 vCPU」是所有系列共用的上限，一樣會擋下這次部署——兩個配額必須「同時」滿足。",
+      "3": "否。VM5 需要 16 個 vCPU，遠超過剩餘的 2 個；BS 系列配額同樣只剩 2 個。要部署它必須先刪除 VM2（不是只停止／解除配置）或申請提高配額。",
+      "_full": "兩個常錯的地方：\n① 解除配置的 VM 仍佔配額——只有「刪除」才會釋出（停止／解除配置只是不收運算費用）。\n② 配額有兩層：系列配額（如 Standard BS Family）與「區域總 vCPU」，兩者都必須有餘額；某個系列還有很多額度，也可能被區域總量卡住。\n本題 18 / 20 已用，只剩 2 個 vCPU，所以只有需要 1 個的 VM3 過關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 276,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 WEBPROD-AS-USE2 的可用性設定組，以 az vm availability-set list -g RG1 查詢的結果如下（節錄）：\n・\"name\": \"WEBPROD-AS-USE2\"、\"location\": \"eastus2\"、\"resourceGroup\": \"RG1\"\n・\"platformFaultDomainCount\": 2\n・\"platformUpdateDomainCount\": 10\n・\"sku\": { \"name\": \"Aligned\" }、\"virtualMachines\": []\n\n你把 14 台虛擬機器加入 WEBPROD-AS-USE2。\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "2",
+      "7",
+      "10",
+      "14"
+    ],
+    "matches": [
+      {
+        "use_case": "當 Microsoft 在 East US 2 執行計劃性維護時，無法使用的虛擬機器數量上限是【答案】。",
+        "correct_answer": "2"
+      },
+      {
+        "use_case": "如果裝載 WEBPROD-AS-USE2 的 Azure 資料中心伺服器機架發生電源故障，無法使用的虛擬機器數量上限是【答案】。",
+        "correct_answer": "7"
+      }
+    ],
+    "explanations": {
+      "1": "計劃性維護（例如主機修補重啟）是「一次只重啟一個更新網域」。更新網域有 10 個，14 台 VM 會依序輪流分配：其中 4 個更新網域各 2 台、6 個各 1 台。最壞情況是重啟的那個更新網域裡有 2 台，所以上限是 2。",
+      "2": "機架電源故障對應的是「錯誤網域」——同一個錯誤網域共用電源與網路交換器。錯誤網域只有 2 個，14 台 VM 平均分成每個 7 台，一個機架（一個錯誤網域）失效就會有 7 台同時離線。",
+      "_full": "把兩個網域概念分清：\n・更新網域 (platformUpdateDomainCount)：對應「計劃性維護」，平台一次只動一個更新網域 → 影響 ⌈14 ÷ 10⌉ = 2 台。\n・錯誤網域 (platformFaultDomainCount)：對應「非計劃性硬體故障」（電源、機架、網路） → 影響 14 ÷ 2 = 7 台。\nVM 加入時會以輪替方式平均分配到各網域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 278,
     "type": "single",
     "question": "你有一個名為 Template1 的部署範本，用來部署 10 個 Azure Web 應用程式。你必須找出在部署 Template1「之前」需要先部署什麼，且解決方案必須盡量降低 Azure 成本。你應該指出什麼？",
@@ -1255,6 +1459,35 @@
       "C": "錯誤。雖然可行，但 10 個方案代表 10 份運算資源費用，成本最高。",
       "D": "錯誤。流量管理員負責跨端點的 DNS 層級流量導向，不是 Web 應用程式的必要前置資源。",
       "E": "錯誤。同 A，應用程式閘道並非部署 Web 應用程式的前提。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 279,
+    "type": "matching",
+    "question": "你打算用下列 ARM 範本部署一個 Azure 容器實例（節錄）：\n・\"type\": \"Microsoft.ContainerInstance/containerGroups\"、\"name\": \"webprod\"、\"location\": \"westus\"\n・containers[0]：name \"webprod\"、image \"microsoft/iis:nanoserver\"、ports [{ protocol TCP, port 80 }]、environmentVariables []、resources.requests { memoryInGB 1.5, cpu 1 }\n・\"restartPolicy\": \"OnFailure\"\n・ipAddress：ports [{ protocol TCP, port 80 }]、ip \"[parameters('IPAddress')]\"、\"type\": \"Public\"\n・\"osType\": \"Windows\"\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "可以從任何裝置連線到該容器",
+      "無法連線到該容器",
+      "只能從執行 Windows 的裝置連線到該容器",
+      "容器會自動重新啟動",
+      "容器只會手動重新啟動",
+      "必須重新部署容器"
+    ],
+    "matches": [
+      {
+        "use_case": "網際網路使用者【答案】。",
+        "correct_answer": "可以從任何裝置連線到該容器"
+      },
+      {
+        "use_case": "如果容器中的 Internet Information Services (IIS) 失敗，【答案】。",
+        "correct_answer": "容器會自動重新啟動"
+      }
+    ],
+    "explanations": {
+      "1": "ipAddress 的 type 是 \"Public\"，並且開放 TCP 連接埠 80，所以這個容器群組有公用 IP、對網際網路開放 HTTP。容器內跑的是 Windows 映像（osType: Windows），但那只決定「容器裡」的作業系統，與「用戶端用什麼裝置連線」毫無關係——任何裝置都能用瀏覽器連上。",
+      "2": "restartPolicy 是 \"OnFailure\"，代表容器程序以非零結束代碼結束（也就是失敗）時，Azure 容器實例會自動重新啟動它。（三種原則：Always 一律重啟；OnFailure 只在失敗時重啟；Never 從不重啟。）",
+      "_full": "兩個欄位各回答一句：\n・ipAddress.type = Public + ports 80 → 對外公開，任何裝置都連得到；osType 只是容器內部的作業系統，不限制用戶端。\n・restartPolicy = OnFailure → 程序失敗時自動重啟；若設 Never 才需要人工介入或重新部署。"
     }
   },
   {
