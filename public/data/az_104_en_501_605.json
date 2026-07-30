@@ -767,6 +767,130 @@
   },
   {
     "exam": "AZ-104",
+    "id": 547,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains VM1 (virtual machine), storage1 (storage account), Workspace1 (Log Analytics workspace) and DB1 (Azure SQL database). You plan to create a data collection rule named DCR1 in Azure Monitor. Which resources can you set as data sources in DCR1, and which resources can you set as destinations in DCR1?",
+    "available_options": [
+      "VM1 only",
+      "VM1 and storage1 only",
+      "VM1, storage1, and DB1 only",
+      "VM1, storage1, Workspace1, and DB1",
+      "storage1 only",
+      "Workspace1 only",
+      "Workspace1 and storage1 only",
+      "Workspace1, storage1, and DB1 only"
+    ],
+    "matches": [
+      {
+        "use_case": "Data sources:",
+        "correct_answer": "VM1 only"
+      },
+      {
+        "use_case": "Destinations:",
+        "correct_answer": "Workspace1 only"
+      }
+    ],
+    "explanations": {
+      "1": "只有 VM1。資料收集規則是給「Azure 監視器代理程式」用的，所以能被關聯的資源只有「裝得了代理程式的計算資源」——虛擬機器、虛擬機器擴展集，以及透過 Azure Arc 納管的伺服器。儲存體帳戶、Log Analytics 工作區與 Azure SQL 資料庫都不能當資料來源（它們要送記錄的話走的是「診斷設定」，不是資料收集規則）。",
+      "2": "只有 Workspace1。DCR 的目的地是「Log Analytics 工作區」（也可以同時送到多個工作區，以及 Azure 監視器計量）。儲存體帳戶不是 DCR 的目的地選項——把記錄封存到儲存體是「診斷設定」的功能；Azure SQL 資料庫更不可能是遙測目的地。",
+      "_full": "把兩個機制分清楚：\n・資料收集規則 (DCR)：搭配 Azure 監視器代理程式，從「有代理程式的機器」收集 OS 層級的事件與效能資料，送往 Log Analytics 工作區。\n・診斷設定：從「Azure 資源本身」（儲存體帳戶、SQL 資料庫等）匯出平台記錄與計量，目的地可以是 Log Analytics 工作區、儲存體帳戶或事件中樞。\n本題問的是 DCR，所以來源只有 VM、目的地只有工作區。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 548,
+    "type": "matching",
+    "question": "You have a role assignment file containing: User1 with scope /subscriptions/fb960108-.../ and role Owner; User2 with scope /subscriptions/fb960108-.../resourceGroups/RG2 and role Owner; User3 with scope /subscriptions/fb960108-.../resourceGroups/RG1/providers/Microsoft.Compute/virtualMachines/VM1 and role Owner; User4 with scope /subscriptions/fb960108-.../resourceGroups/RG1 and role Contributor. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "[Owner] User3 is",
+      "[Owner] User3 and User4 are",
+      "[Owner] User1 and User3 are",
+      "[Owner] User1, User3, and User4 are",
+      "[Owner] User1, User2, User3, and User4",
+      "[Create VM] User1 and User4",
+      "[Create VM] User1, User2, and User3",
+      "[Create VM] User1, User2, and User4",
+      "[Create VM] User1, User3, and User4",
+      "[Create VM] User1, User2, User3, and User4"
+    ],
+    "matches": [
+      {
+        "use_case": "[answer choice] assigned the Owner role for VM1.",
+        "correct_answer": "[Owner] User1 and User3 are"
+      },
+      {
+        "use_case": "[answer choice] can create a virtual machine in RG1.",
+        "correct_answer": "[Create VM] User1 and User4"
+      }
+    ],
+    "explanations": {
+      "1": "User1 和 User3。角色指派會由上往下繼承：\n・User3 的範圍直接就是 VM1 這個資源 → 是 VM1 的擁有者。\n・User1 的範圍是整個「訂用帳戶」，會繼承到底下所有資源群組與資源，當然也包含 RG1 中的 VM1 → 也是 VM1 的擁有者。\n・User2 的範圍是 RG2，與 VM1（在 RG1）無關；User4 在 RG1 是「參與者」而不是擁有者。",
+      "2": "User1 和 User4。要在 RG1 中建立虛擬機器，需要在 RG1（或其上層）具備寫入權限：\n・User1 在訂用帳戶層級是擁有者 → 涵蓋 RG1。\n・User4 在 RG1 是參與者 → 可以建立與管理資源（只是不能指派權限）。\n・User2 的範圍是 RG2，管不到 RG1；User3 的範圍只有 VM1「這一個資源」——資源層級的權限不會往上擴及所屬資源群組，所以他不能在 RG1 中建立新資源。",
+      "_full": "讀角色指派時，先把 Scope 的路徑「拆層」看：\n・/subscriptions/<id> → 訂用帳戶層級，涵蓋底下全部。\n・/subscriptions/<id>/resourceGroups/<rg> → 該資源群組及其中所有資源。\n・/…/providers/…/virtualMachines/VM1 → 只有那一個資源。\n權限只會「向下」繼承，絕不向上擴張——這是本題兩格的判斷關鍵。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 549,
+    "type": "matching",
+    "question": "You have the following custom role-based access control (RBAC) role (excerpt): roleName \"Role1\"; assignableScopes [\"/subscriptions/c691ad84-...-58afd7ef6ab3\"]; actions include Microsoft.Resources/subscription/resourceGroups/resources/read, Microsoft.Resources/subscription/resourceGroups/read, Microsoft.Resourcehealth/*, Microsoft.Authorization/*/read, Microsoft.Compute/*/read, Microsoft.Support/*, Microsoft.Network/virtualNetworks/read, Microsoft.Resources/deployments/*, Microsoft.Storage/storageAccounts/read, Microsoft.Compute/virtualMachines/start|powerOff|deallocate|restart/action, Microsoft.Compute/virtualMachines/*, Microsoft.Compute/disks/*, Microsoft.Compute/availabilitySets/*, Microsoft.Network/virtualNetworks/subnets/join/action, Microsoft.Network/virtualNetworks/subnets/read, Microsoft.Network/virtualNetworks/subnets/virtualMachines/read, Microsoft.Network/networkinterfaces/*, Microsoft.Compute/snapshots/*; notAction includes Microsoft.Authorization/*/Delete, Microsoft.Authorization/*/Write, Microsoft.Authorization/elevateAccess/Action. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "Users that are assigned Role1 can assign Role1 to users.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "Users that are assigned Role1 can deploy new virtual machines.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "Users that are assigned Role1 can set a static IP address on a virtual machine.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。指派角色需要 Microsoft.Authorization/roleAssignments/write 這項權限，而 notAction 明確扣掉了 Microsoft.Authorization/*/Write。actions 中雖然有 Microsoft.Authorization/*/read（可以「檢視」角色指派），但寫入被排除，所以不能指派角色給任何人。",
+      "2": "是。部署一台新 VM 需要的權限都在 actions 裡：Microsoft.Compute/virtualMachines/*（建立與管理 VM）、Microsoft.Compute/disks/*（磁碟）、Microsoft.Network/networkinterfaces/*（網路介面）、以及把網路介面接進子網路所需的 Microsoft.Network/virtualNetworks/subnets/join/action。還有 Microsoft.Resources/deployments/* 讓範本部署也能執行。",
+      "3": "是。虛擬機器的 IP 位址其實是設定在「網路介面」的 IP 組態上，而 actions 有 Microsoft.Network/networkinterfaces/*——萬用字元涵蓋了網路介面的所有作業，包含把私人 IP 配置方式改成靜態。",
+      "_full": "看自訂角色時的判斷步驟：\n① 先找 actions 裡有沒有涵蓋該作業的項目（注意萬用字元 * 的涵蓋範圍）。\n② 再檢查 notActions 有沒有把它扣掉——notActions 一律勝過 actions。\n本題的關鍵是：Microsoft.Authorization/*/Write 被扣掉 → 不能指派角色；而 Compute 與 Network 的萬用字元權限齊全 → 建 VM、改網路介面 IP 都沒問題（別忘了 VM 的 IP 是設定在網路介面上，不是 VM 資源本身）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 550,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains VNET1 (virtual network containing subnet1 and subnet2), subnet1 (10.3.0.0/24), subnet2 (10.4.0.0/24), NSG1 (network security group), vm1 (10.3.0.15), vm2 (10.4.0.16) and storage1 (storage account). NSG1 is associated with 1 subnet and 0 network interfaces. Inbound security rules: 110 HTTPS_VM1_Deny, port 443, TCP, source Internet, destination 10.3.0.15, Deny; 65000 AllowVnetInBound, Any, VirtualNetwork to VirtualNetwork, Allow; 65001 AllowAzureLoadBalancerInBound, Any, AzureLoadBalancer, Allow; 65500 DenyAllInBound, Any, Any to Any, Deny. Outbound security rules: 145 Storage_Access, port 443, TCP, VirtualNetwork to Storage, Allow; 150 Block_Internet, Any, VirtualNetwork to Internet, Deny; 65000 AllowVnetOutBound, Any, VirtualNetwork to VirtualNetwork, Allow; 65001 AllowInternetOutBound, Any, Any to Internet, Allow; 65500 DenyAllOutBound, Any, Any to Any, Deny. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 can access storage1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "VM2 can access VM1 by using the HTTPS protocol.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The security rules for NSG1 apply to any virtual machine on VNET1.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。輸出方向按優先順序評估：145 的 Storage_Access 允許 VirtualNetwork → Storage 的 TCP 443，數字比 150 的 Block_Internet 小，會「先命中並放行」。儲存體帳戶的流量會比對到 Storage 這個服務標籤，因此不受 Block_Internet 影響。",
+      "2": "是。VM2 → VM1 屬於虛擬網路「內部」流量：\n・輸出端命中 65000 AllowVnetOutBound（允許）。\n・輸入端最先看 110 的 HTTPS_VM1_Deny，但那條規則的「來源」是 Internet，而 VM2 的來源是 VirtualNetwork，條件不符、不會命中；接著命中 65000 AllowVnetInBound（允許）。\n所以 VM2 可以用 HTTPS 連到 VM1。",
+      "3": "否。摘要已經寫明 NSG1「關聯到 1 個子網路、0 個網路介面」——只有那「一個」子網路裡的虛擬機器會被套用這些規則。VNET1 有 subnet1 與 subnet2 兩個子網路，另一個子網路上的 VM 完全不受 NSG1 約束。（NSG 是關聯到「子網路或網路介面」，不是關聯到整個虛擬網路。）",
+      "_full": "三個判斷點：\n① 服務標籤：Storage 標籤的流量與 Internet 標籤是分開比對的，而且優先順序小的 Storage_Access 先命中，Block_Internet 擋不到它。\n② 規則的「來源」欄位要對得上：來源寫 Internet 的規則不會攔截虛擬網路內部流量。\n③ NSG 的作用範圍由「關聯對象」決定（子網路或網路介面），不是整個虛擬網路。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 551,
     "type": "single",
     "question": "You have an Azure subscription named Subscription1 that contains two Azure virtual networks named VNet1 and VNet2. VNet1 contains a VPN gateway named VPNGW1 that uses static routing. There is a site-to-site VPN connection between your on-premises network and VNet1. On a computer named Client1 that runs Windows 10, you configure a point-to-site VPN connection to VNet1. You configure virtual network peering between VNet1 and VNet2. You verify that you can connect to VNet2 from the on-premises network. Client1 is unable to connect to VNet2. You need to ensure that you can connect Client1 to VNet2. What should you do?",
