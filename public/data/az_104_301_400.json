@@ -1,0 +1,511 @@
+[
+  {
+    "exam": "AZ-104",
+    "id": 301,
+    "type": "single",
+    "question": "你打算部署三台名為 VM1、VM2、VM3 的 Azure 虛擬機器，這些機器會裝載一個名為 App1 的 Web 應用程式。你必須確保在「單一 Azure 資料中心不可用」時，至少有兩台虛擬機器仍可使用。你應該部署什麼？",
+    "options": {
+      "A": "三台虛擬機器全部放在單一可用性區域",
+      "B": "所有虛擬機器放在單一可用性設定組",
+      "C": "每台虛擬機器各放在不同的可用性區域",
+      "D": "每台虛擬機器各放在不同的可用性設定組"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。一個可用性區域對應一或多個資料中心，全部放在同一區域時，該區域故障就會三台全滅。",
+      "B": "錯誤。可用性設定組只在「單一資料中心內」跨機架分散，防護的是機架層級故障；整座資料中心不可用時同樣全部受影響。",
+      "C": "正確。可用性區域是同一 Azure 區域內彼此獨立的實體位置（各有獨立電力、冷卻與網路）。三台各放不同區域，任一資料中心故障時仍有兩台存活，符合需求。",
+      "D": "錯誤。把機器拆到不同的可用性設定組不但無法保證跨資料中心分散，還失去了設定組原本提供的 SLA。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 302,
+    "type": "single",
+    "question": "你有一台執行 Windows Server 2019 的 Azure 虛擬機器 VM1。你把 VM1 儲存為範本 Template1 到 Azure Resource Manager 程式庫中，並打算用 Template1 部署一台名為 VM2 的虛擬機器。在部署 VM2 的過程中，你可以設定什麼？",
+    "options": {
+      "A": "作業系統",
+      "B": "系統管理員使用者名稱",
+      "C": "虛擬機器大小",
+      "D": "資源群組"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。作業系統來自範本所擷取的映像，已經固定，部署時無法變更。",
+      "B": "錯誤。以既有 VM 建立的範本部署時，系統管理員帳戶沿用原映像中的設定，不會在部署時要求重新指定。",
+      "C": "錯誤。VM 大小已經寫在範本的資源定義中；若要改變必須先修改範本，而非在部署對話中選擇。",
+      "D": "正確。部署範本時一定要指定目標訂用帳戶與資源群組（可選既有或新建），這是每次部署都能自由決定的參數。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 303,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一台名為 VM1 的 Azure 虛擬機器。VM1 執行一個名為 App1 的財務報表應用程式，該程式不支援多個作用中執行個體。每個月底 App1 執行時 VM1 的 CPU 使用率會達到高峰。你必須建立一個排程的 Runbook，在每月底提升 VM1 的處理器效能。Runbook 中應該包含什麼工作？",
+    "options": {
+      "A": "為 VM1 新增 Azure 效能診斷代理程式。",
+      "B": "修改 VM1 的 VM 大小屬性。",
+      "C": "把 VM1 加入擴展集。",
+      "D": "提高該訂用帳戶的 vCPU 配額。",
+      "E": "為 VM1 新增 Desired State Configuration (DSC) 延伸模組。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。效能診斷代理程式只收集診斷資料協助分析，不會提升任何運算效能。",
+      "B": "正確。App1 不支援多執行個體，因此無法用水平擴展解決，只能垂直擴充。Runbook 中修改 VM 大小屬性（換成更多 vCPU 的規格）即可提升處理器效能，月底過後也能再自動調回以節省成本。",
+      "C": "錯誤。擴展集是靠增加執行個體來分攤負載，而 App1 明確不支援多個作用中執行個體。",
+      "D": "錯誤。提高配額只是解除訂用帳戶的用量上限，並不會實際改變 VM1 的規格。",
+      "E": "錯誤。DSC 用於維持組態一致性，與運算效能無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 304,
+    "type": "single",
+    "question": "你打算使用 Azure Resource Manager 範本，在虛擬機器擴展集中部署數台執行 Windows Server 2019 的 Azure 虛擬機器。你必須確保這些虛擬機器部署完成後，所有機器上都有 NGINX 可用。你應該使用什麼？",
+    "options": {
+      "A": "Azure App Service 中的部署中心",
+      "B": "Desired State Configuration (DSC) 延伸模組",
+      "C": "New-AzConfigurationAssignment Cmdlet",
+      "D": "Microsoft Intune 裝置設定設定檔"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。部署中心屬於 App Service 的 CI/CD 功能，與虛擬機器擴展集無關。",
+      "B": "正確。DSC 延伸模組可以宣告式地描述機器應有的狀態（例如已安裝並啟動 NGINX），寫在擴展集範本的延伸模組設定中後，每個新佈建的執行個體都會自動套用。",
+      "C": "錯誤。New-AzConfigurationAssignment 用於指派維護設定（維護時段），不會安裝軟體。",
+      "D": "錯誤。Intune 管理的是使用者端點裝置，不用於 Azure IaaS 擴展集的軟體佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 307,
+    "type": "single",
+    "question": "你有一台執行 Windows Server 2019 的 Azure 虛擬機器 VM1，該 VM 是以預設磁碟設定部署的。你以名為 User1 的使用者登入 VM1 並執行下列動作：\n✑ 在磁碟機 C 建立檔案。\n✑ 在磁碟機 D 建立檔案。\n✑ 修改螢幕保護程式逾時。\n✑ 變更桌面背景。\n你打算重新部署 (redeploy) VM1。重新部署後哪些變更會遺失？",
+    "options": {
+      "A": "修改後的螢幕保護程式逾時",
+      "B": "新的桌面背景",
+      "C": "磁碟機 D 上的新檔案",
+      "D": "磁碟機 C 上的新檔案"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。此設定寫在 OS 磁碟的登錄中，OS 磁碟會隨 VM 一起遷移，因此會保留。",
+      "B": "錯誤。桌面背景同樣儲存在 OS 磁碟的使用者設定檔中，重新部署後仍存在。",
+      "C": "正確。以預設磁碟設定部署的 Windows VM，磁碟機 D 是「暫存磁碟」，資料存在本機主機的實體儲存體上。重新部署會把 VM 遷移到新主機，暫存磁碟隨之重建，D 槽上的檔案全部遺失。",
+      "D": "錯誤。磁碟機 C 是持續性的 OS 受控磁碟，內容會完整保留。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 313,
+    "type": "single",
+    "question": "你打算備份一台名為 VM1 的 Azure 虛擬機器，卻發現「備份預先檢查 (Backup Pre-Check)」狀態顯示為「警告」。下列哪一項是造成警告狀態的可能原因？",
+    "options": {
+      "A": "VM1 已停止。",
+      "B": "VM1 未安裝最新版本的 Azure VM 代理程式 (WaAppAgent.exe)。",
+      "C": "VM1 有未受控磁碟。",
+      "D": "復原服務保存庫不可用。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。已停止的 VM 仍可備份（只是取得的是檔案系統一致的備份），不會產生預先檢查警告。",
+      "B": "正確。備份預先檢查會檢驗 VM 是否具備成功備份的條件，最常見的警告原因就是 VM 代理程式版本過舊或未安裝，以及網路設定阻擋代理程式對外通訊——這類問題可修正，因此標示為「警告」而非「嚴重」。",
+      "C": "錯誤。Azure 備份同時支援受控與未受控磁碟，磁碟類型本身不會觸發警告。",
+      "D": "錯誤。若保存庫本身不可用，問題會表現為作業失敗，而不是預先檢查的警告狀態。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 314,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 VM1 的 Azure 虛擬機器，它是以名為 ARM1.json 的自訂 Azure Resource Manager 範本部署的。你收到通知說 VM1 將受到維護影響，必須「立即」把 VM1 移到另一台主機。\n解法：你在「概觀」刀鋒中把該虛擬機器移到另一個資源群組。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。變更資源群組只是調整資源在管理階層中的歸屬，VM 仍執行於同一台實體主機。",
+      "B": "正確。移動資源群組不會更換底層主機。要立即換主機必須使用「重新部署 (Redeploy)」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 316,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台執行 Windows Server 2016 的 Azure 虛擬機器 VM1。你必須在 VM1 的系統事件記錄「一小時內記錄超過兩個錯誤事件」時，於 Azure 中建立警示。\n解法：你建立一個 Azure Log Analytics 工作區並設定「代理程式設定」，在 VM1 上安裝 Microsoft Monitoring Agent，然後在 Azure 監視器中建立警示並指定該 Log Analytics 工作區作為來源。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。在工作區的代理程式設定中指定要收集的 Windows 事件記錄（系統記錄的錯誤層級），透過 MMA 把事件送進工作區，再以工作區為來源建立記錄查詢警示，即可對「一小時內超過兩個錯誤事件」設定條件，完整達成目標。",
+      "B": "錯誤。這條路徑（工作區收集設定 + 代理程式 + 記錄查詢警示）正是官方建議的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 319,
+    "type": "single",
+    "question": "你打算使用 Azure Resource Manager 範本，在虛擬機器擴展集中部署數台執行 Windows Server 2019 的 Azure 虛擬機器。你必須確保這些虛擬機器部署完成後，所有機器上都有 NGINX 可用。你應該使用什麼？",
+    "options": {
+      "A": "New-AzConfigurationAssignment Cmdlet",
+      "B": "Desired State Configuration (DSC) 延伸模組",
+      "C": "Azure Active Directory (Azure AD) 應用程式代理",
+      "D": "Azure Application Insights"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。此 Cmdlet 用於指派維護設定，不會在機器上安裝軟體。",
+      "B": "正確。DSC 延伸模組可在擴展集範本中宣告每個執行個體應達到的狀態（安裝並執行 NGINX），新佈建的執行個體會自動套用。",
+      "C": "錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理服務，與 VM 軟體佈建無關。",
+      "D": "錯誤。Application Insights 是應用程式效能監視服務，不負責安裝軟體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 321,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你部署了一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，必須把一個 YAML 檔案部署到 AKS1。\n解法：你在 Azure Cloud Shell 中執行 az aks。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。換到 Cloud Shell 執行並不改變工具本身的能力；az aks 管理的是叢集層級作業，不能套用 YAML 資源清單。",
+      "B": "正確。無論在本機或 Cloud Shell，部署 YAML 都必須使用 kubectl（kubectl apply -f）；az aks 只負責建立、擴縮、升級叢集等管理動作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 322,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台執行 Windows Server 2016 的 Azure 虛擬機器 VM1。你必須在 VM1 的系統事件記錄「一小時內記錄超過兩個錯誤事件」時，於 Azure 中建立警示。\n解法：你建立一個 Azure Log Analytics 工作區並設定資料設定，為 VM1 新增 Microsoft Monitoring Agent VM 延伸模組，然後在 Azure 監視器中建立警示並指定該 Log Analytics 工作區作為來源。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "【答案校正】官方標示為 B（否），但「Log Analytics 工作區 + MMA 代理程式 + 以工作區為來源的記錄警示」確實是可行且標準的做法。更關鍵的是本題庫的 id 323 解法幾乎完全相同（差別僅在「安裝 MMA」與「新增 MMA VM 延伸模組」的措辭），官方卻標示為 A（是）——兩者功能等價，官方標示自相矛盾，故本題判定為 A（是）。 正確。以 VM 延伸模組安裝 Microsoft Monitoring Agent，與手動安裝代理程式在功能上完全等價；資料同樣會流入 Log Analytics 工作區，再以工作區為來源建立記錄查詢警示即可達成目標。",
+      "B": "錯誤。此路徑（工作區資料設定 + MMA 延伸模組 + 記錄查詢警示）可以正常運作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 323,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台執行 Windows Server 2016 的 Azure 虛擬機器 VM1。你必須在 VM1 的系統事件記錄「一小時內記錄超過兩個錯誤事件」時，於 Azure 中建立警示。\n解法：你建立一個 Azure Log Analytics 工作區並設定資料設定，在 VM1 上安裝 Microsoft Monitoring Agent，然後在 Azure 監視器中建立警示並指定該 Log Analytics 工作區作為來源。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。工作區的資料設定決定要收集哪些 Windows 事件記錄，MMA 負責把 VM1 的系統記錄送上去，最後以工作區為來源的記錄查詢警示即可設定「一小時內超過兩個錯誤事件」的條件，三個步驟齊備。",
+      "B": "錯誤。這是官方建議的標準做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 331,
+    "type": "single",
+    "question": "你打算使用 Azure Resource Manager 範本，在虛擬機器擴展集中部署數台執行 Windows Server 2019 的 Azure 虛擬機器。你必須確保這些虛擬機器部署完成後，所有機器上都有 NGINX 可用。你應該使用什麼？",
+    "options": {
+      "A": "Publish-AzVMDscConfiguration Cmdlet",
+      "B": "Azure Application Insights",
+      "C": "Azure 自訂指令碼延伸模組 (Custom Script Extension)",
+      "D": "Microsoft Endpoint Manager 裝置設定設定檔"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。此 Cmdlet 只是把 DSC 組態封裝並上傳到儲存體，它本身不會把組態套用到擴展集的執行個體。",
+      "B": "錯誤。Application Insights 是應用程式監視服務，不安裝軟體。",
+      "C": "正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定的指令碼，用它執行安裝 NGINX 的指令即可；本題選項中沒有 DSC 延伸模組，自訂指令碼延伸模組是達成相同目的的標準方式。",
+      "D": "錯誤。Endpoint Manager（Intune）管理的是使用者端點裝置，不用於 Azure 擴展集佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 333,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含三台虛擬機器 VM1、VM2、VM3，全部位於名為 AVSet1 的可用性設定組中。你必須把 VM1 垂直擴充到一個新的虛擬機器大小，但目標大小無法使用。你應該「最先」做什麼？",
+    "options": {
+      "A": "建立一個近似放置群組。",
+      "B": "解除配置 (Deallocate) VM1。",
+      "C": "把 AvSet1 轉換為受控可用性設定組。",
+      "D": "關閉 VM3 與 VM3。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。近似放置群組是為了降低執行個體之間的網路延遲，與能否取得某個 VM 大小無關。",
+      "B": "正確。目標大小無法使用，代表目前所在的叢集硬體不支援它。先解除配置 VM1 讓它脫離該叢集，Azure 就能在調整大小後把它配置到支援新規格的硬體上。",
+      "C": "錯誤。受控可用性設定組指的是使用受控磁碟，與可用的 VM 大小無關。",
+      "D": "錯誤。此選項本身有誤（重複列出 VM3）；而且若整組都必須釋出，正確做法是解除配置設定組中的所有 VM，而非只關閉其中兩台。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 337,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Registry1 的 Azure 容器登錄，其中有一個名為 image1 的映像。當你嘗試使用 image1 部署容器實例時收到錯誤訊息。你必須讓自己能夠使用 image1 部署容器實例。\n解法：你把 Registry1 的「管理員使用者 (Admin user)」設定為啟用。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。從容器登錄部署容器實例時必須提供登錄的認證。啟用管理員使用者會產生一組使用者名稱與密碼，容器實例即可用它來驗證並拉取 image1，解決原本的驗證失敗錯誤。",
+      "B": "錯誤。啟用管理員使用者正是最直接可行的做法（雖然生產環境更建議改用服務主體或受控識別）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 350,
+    "type": "single",
+    "question": "你有一個名為 contoso.com 的 Azure AD 租用戶，以及一個 Azure 訂用帳戶，其中包含名為 App1 的 Azure App Service Web 應用程式與名為 KV1 的 Azure 金鑰保存庫。KV1 中存有 contoso.com 的萬用字元憑證。你有一位使用者對 App1 與 KV1 都被指派了「擁有者」角色。你必須設定 App1 使用 KV1 中的萬用字元憑證。你應該「最先」做什麼？",
+    "options": {
+      "A": "為 KV1 建立存取原則，並把 Microsoft Azure App Service 主體指派給該原則。",
+      "B": "為 App1 指派一個受控使用者識別。",
+      "C": "把 KV1 設定為使用角色型存取控制 (RBAC) 授權系統。",
+      "D": "為 KV1 建立存取原則，並把該原則指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。授權給共用的 Microsoft Azure App Service 主體是較舊的做法，不是目前建議的第一步；現行做法是讓應用程式擁有自己的身分識別。",
+      "B": "正確。要讓 App1 自行從 KV1 取得憑證，必須先讓 App1 具備身分識別。指派受控識別後，才有對象可以在 KV1 上被授權讀取憑證與祕密。",
+      "C": "錯誤。切換授權模式只是選擇用 RBAC 或存取原則來授權，本身並未賦予 App1 任何身分識別或權限。",
+      "D": "錯誤。授權給使用者只讓「人」能讀取憑證，執行中的 App1 仍然無法自行取用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 353,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 RG1 的資源群組。你打算建立一個名為 storage1 的儲存體帳戶，並有一個名為 File1 的 Bicep 檔案。你必須修改 File1，讓它可以用來自動化把 storage1 部署到 RG1。你應該修改哪一個屬性？",
+    "options": {
+      "A": "kind",
+      "B": "scope",
+      "C": "sku",
+      "D": "location"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。kind 決定儲存體帳戶的種類（StorageV2、BlobStorage 等），與部署到哪個資源群組無關。",
+      "B": "正確。Bicep 以 targetScope／scope 決定部署的目標範圍。要把資源部署到特定資源群組，必須設定部署範圍指向 RG1。",
+      "C": "錯誤。sku 指定的是效能與備援層級（例如 Standard_LRS），不影響部署目標。",
+      "D": "錯誤。location 決定資源建立在哪個 Azure 區域，與資源群組的歸屬是不同的概念。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 358,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 ContReg1 的 Azure 容器登錄。你為 ContReg1 啟用了管理員使用者。你可以使用哪一個使用者名稱登入 ContReg1？",
+    "options": {
+      "A": "root",
+      "B": "admin",
+      "C": "administrator",
+      "D": "ContReg1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。root 是 Linux 系統的超級使用者，不是容器登錄的管理員帳戶名稱。",
+      "B": "錯誤。ACR 的管理員帳戶名稱不是固定字串 admin。",
+      "C": "錯誤。同樣不是 ACR 使用的名稱。",
+      "D": "正確。啟用管理員使用者後，其使用者名稱就是「登錄本身的名稱」（本題為 ContReg1），密碼則由 ACR 產生兩組可輪替的密碼。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 359,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，打算建立一個名為 ContReg1 的 Azure 容器登錄。你必須確保能夠為 ContReg1 推送與提取「已簽署」的映像。你應該為 ContReg1 做什麼？",
+    "options": {
+      "A": "使用客戶自控金鑰啟用加密。",
+      "B": "建立連線的登錄 (connected registry)。",
+      "C": "新增權杖 (token)。",
+      "D": "啟用內容信任 (content trust)。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。客戶自控金鑰處理的是待用資料加密，與映像簽署驗證無關。",
+      "B": "錯誤。連線的登錄用於邊緣或斷線環境的映像同步，不提供簽署功能。",
+      "C": "錯誤。權杖用於範圍式的存取驗證，與映像簽章無關。",
+      "D": "正確。內容信任（基於 Docker Content Trust／Notary）啟用後即可推送與提取已簽署的映像，並在提取時驗證發行者簽章，確保映像未被篡改。此功能需要進階 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 361,
+    "type": "single",
+    "question": "你打算使用 Azure Resource Manager 範本，在虛擬機器擴展集中部署數台執行 Windows Server 2022 的 Azure 虛擬機器。你必須確保這些虛擬機器部署完成後，所有機器上都有 NGINX 可用。你應該使用什麼？",
+    "options": {
+      "A": "Azure 自訂指令碼延伸模組",
+      "B": "Azure App Service 中的部署中心",
+      "C": "Microsoft Entra 應用程式代理",
+      "D": "Publish-AzVMDscConfiguration Cmdlet"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定指令碼，用它安裝 NGINX 即可；把延伸模組宣告在擴展集範本中，所有執行個體都會自動套用。",
+      "B": "錯誤。部署中心是 App Service 的 CI/CD 功能，與虛擬機器擴展集無關。",
+      "C": "錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理，不安裝軟體。",
+      "D": "錯誤。此 Cmdlet 只負責把 DSC 組態封裝上傳到儲存體，本身不會把組態套用到執行個體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 363,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，打算部署一個容器。你必須建議哪些 Azure 服務可以「自動」調整容器規模。你應該建議什麼？",
+    "options": {
+      "A": "僅 Azure Container Apps",
+      "B": "僅 Azure Container Instances",
+      "C": "僅 Azure Container Apps 或 Azure App Service",
+      "D": "僅 Azure Container Instances 或 Azure App Service",
+      "E": "Azure Container Apps、Azure Container Instances 或 Azure App Service"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Container Apps 確實支援自動調整，但 App Service 同樣具備自動調整能力，選項範圍不完整。",
+      "B": "錯誤。Azure Container Instances 沒有內建的自動調整機制，需要外部邏輯自行增減容器群組。",
+      "C": "正確。Container Apps 以 KEDA 為基礎提供事件驅動的自動調整（可縮至零），App Service 也提供依計量或排程的自動調整；Container Instances 則不具備此能力。",
+      "D": "錯誤。Container Instances 不支援自動調整。",
+      "E": "錯誤。同樣誤把 Container Instances 納入。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 365,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Registry1 的 Azure 容器登錄，其中有一個名為 image1 的映像。當你嘗試使用 image1 部署容器實例時收到錯誤訊息。你必須讓自己能夠使用 image1 部署容器實例。\n解法：你為 Registry1 把 AcrPull 角色指派給 ACR-Tasks-Network。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。ACR-Tasks-Network 並非部署容器實例時用來提取映像的身分識別，把權限給它無法解決驗證問題。",
+      "B": "正確。要讓容器實例能提取 image1，必須提供有效的登錄認證（啟用管理員使用者，或使用具 AcrPull 權限的服務主體／受控識別）；指派給 ACR-Tasks-Network 並不屬於這條路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 366,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Registry1 的 Azure 容器登錄，其中有一個名為 image1 的映像。當你嘗試使用 image1 部署容器實例時收到錯誤訊息。你必須讓自己能夠使用 image1 部署容器實例。\n解法：你為 Registry1 選取「使用專用資料端點」。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。專用資料端點改變的是資料傳輸所使用的主機名稱（有利於防火牆規則精準化），與驗證失敗無關。",
+      "B": "正確。此設定屬於網路層面的最佳化，無法解決部署容器實例時缺少登錄認證的問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 367,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Registry1 的 Azure 容器登錄，其中有一個名為 image1 的映像。當你嘗試使用 image1 部署容器實例時收到錯誤訊息。你必須讓自己能夠使用 image1 部署容器實例。\n解法：你為 Registry1 建立一個私人端點連線。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。私人端點只是把登錄的存取路徑改為透過虛擬網路的私人 IP，並未提供任何拉取映像所需的認證。",
+      "B": "正確。錯誤來自認證而非網路可達性；私人端點甚至可能因為關閉公用存取而使問題更複雜。正確做法是提供登錄認證。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 368,
+    "type": "single",
+    "question": "你有一個名為 Plan1 的標準 (Standard) Azure App Service 方案。你必須確保當 Web 應用程式的 CPU 使用率超過 80% 時 Plan1 會自動調整規模。你應該為 Plan1 選擇什麼？",
+    "options": {
+      "A": "「向外擴增方法」設定中的「自動」",
+      "B": "「向外擴增方法」設定中的「規則式 (Rules Based)」",
+      "C": "「垂直擴充 (App Service 方案)」設定中的 Premium P1",
+      "D": "「垂直擴充 (App Service 方案)」設定中的 Standard S1",
+      "E": "「向外擴增方法」設定中的「手動」"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。「自動」模式由平台自行決定執行個體數量，不接受你自訂的 CPU 閾值條件。",
+      "B": "正確。要依「CPU 超過 80%」這種自訂條件觸發調整，必須選擇規則式的向外擴增，並在其中建立以 CPU 百分比為計量的自動調整規則。",
+      "C": "錯誤。升級到 Premium 只是提升方案層級與資源上限，本身不會建立任何自動調整規則。",
+      "D": "錯誤。Standard S1 同樣只是規格選擇，與自動調整規則無關；而且方案已是標準層。",
+      "E": "錯誤。手動模式必須由人工設定固定的執行個體數，完全不會自動調整。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 370,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 VM1 的 Azure 虛擬機器，它是以名為 ARM1.json 的自訂 Azure Resource Manager 範本部署的。你收到通知說 VM1 將受到維護影響，必須「立即」把 VM1 移到另一台主機。\n解法：你在資源群組刀鋒中把 VM1 移到另一個訂用帳戶。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。搬移訂用帳戶只改變資源的計費與管理歸屬，VM 仍執行在同一台實體主機上。",
+      "B": "正確。更換訂用帳戶不會遷移底層主機；要立即換主機必須使用「重新部署」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 371,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 VM1 的 Azure 虛擬機器，它是以名為 ARM1.json 的自訂 Azure Resource Manager 範本部署的。你收到通知說 VM1 將受到維護影響，必須「立即」把 VM1 移到另一台主機。\n解法：你在 VM1 的「重新部署 + 重新套用」刀鋒中選取「重新部署」。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。「重新部署」會關閉 VM、把它遷移到 Azure 基礎結構中的新主機再開機，同時保留所有設定與關聯資源，正是為了規避主機層問題與維護而設計的功能。",
+      "B": "錯誤。重新部署正是本情境的官方解法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 372,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 VM1 的 Azure 虛擬機器，它是以名為 ARM1.json 的自訂 Azure Resource Manager 範本部署的。你收到通知說 VM1 將受到維護影響，必須「立即」把 VM1 移到另一台主機。\n解法：你在 VM1 的「更新」刀鋒中選取「一次性更新」。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。一次性更新是對客體作業系統安裝修補程式的作業，與 VM 執行在哪台實體主機無關。",
+      "B": "正確。安裝 OS 更新不會遷移 VM；要更換主機必須使用「重新部署」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 375,
+    "type": "single",
+    "question": "貴公司有三個辦公室，分別位於邁阿密、洛杉磯與紐約，每個辦公室都有資料中心。你有一個 Azure 訂用帳戶，資源分布在美國東部與美國西部兩個 Azure 區域，每個區域各有一個虛擬網路，且兩個虛擬網路已建立對等互連。你必須把這些資料中心連接到該訂用帳戶，且解決方案必須「盡量降低資料中心之間的網路延遲」。你應該建立什麼？",
+    "options": {
+      "A": "三個 Azure 應用程式閘道與一個內部部署資料閘道",
+      "B": "三個虛擬中樞與一個虛擬 WAN",
+      "C": "三個虛擬 WAN 與一個虛擬中樞",
+      "D": "三個內部部署資料閘道與一個 Azure 應用程式閘道"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。應用程式閘道是第 7 層負載平衡器，內部部署資料閘道用於 Power BI／Logic Apps 等服務存取內部資料，兩者都不是站台互連方案。",
+      "B": "正確。Azure 虛擬 WAN 提供中樞輻射式的全球骨幹網路：建立「一個」虛擬 WAN 作為整體資源，再在各區域建立「虛擬中樞」讓辦公室就近連入。站台之間的流量走 Microsoft 骨幹傳輸，延遲最低。",
+      "C": "錯誤。層級關係顛倒了——虛擬中樞是隸屬於虛擬 WAN 之下的資源，不會反過來由多個 WAN 共用一個中樞。",
+      "D": "錯誤。這兩種閘道都不提供資料中心之間的網路互連能力。"
+    }
+  }
+]

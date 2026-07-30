@@ -1,0 +1,511 @@
+[
+  {
+    "exam": "AZ-104",
+    "id": 301,
+    "type": "single",
+    "question": "You plan to deploy three Azure virtual machines named VM1, VM2, and VM3. The virtual machines will host a web app named App1. You need to ensure that at least two virtual machines are available if a single Azure datacenter becomes unavailable. What should you deploy?",
+    "options": {
+      "A": "all three virtual machines in a single Availability Zone",
+      "B": "all virtual machines in a single Availability Set",
+      "C": "each virtual machine in a separate Availability Zone",
+      "D": "each virtual machine in a separate Availability Set"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。一個可用性區域對應一或多個資料中心，全部放在同一區域時，該區域故障就會三台全滅。",
+      "B": "Incorrect. 錯誤。可用性設定組只在「單一資料中心內」跨機架分散，防護的是機架層級故障；整座資料中心不可用時同樣全部受影響。",
+      "C": "Correct. 正確。可用性區域是同一 Azure 區域內彼此獨立的實體位置（各有獨立電力、冷卻與網路）。三台各放不同區域，任一資料中心故障時仍有兩台存活，符合需求。",
+      "D": "Incorrect. 錯誤。把機器拆到不同的可用性設定組不但無法保證跨資料中心分散，還失去了設定組原本提供的 SLA。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 302,
+    "type": "single",
+    "question": "You have an Azure virtual machine named VM1 that runs Windows Server 2019. You save VM1 as a template named Template1 to the Azure Resource Manager library. You plan to deploy a virtual machine named VM2 from Template1. What can you configure during the deployment of VM2?",
+    "options": {
+      "A": "operating system",
+      "B": "administrator username",
+      "C": "virtual machine size",
+      "D": "resource group"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。作業系統來自範本所擷取的映像，已經固定，部署時無法變更。",
+      "B": "Incorrect. 錯誤。以既有 VM 建立的範本部署時，系統管理員帳戶沿用原映像中的設定，不會在部署時要求重新指定。",
+      "C": "Incorrect. 錯誤。VM 大小已經寫在範本的資源定義中；若要改變必須先修改範本，而非在部署對話中選擇。",
+      "D": "Correct. 正確。部署範本時一定要指定目標訂用帳戶與資源群組（可選既有或新建），這是每次部署都能自由決定的參數。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 303,
+    "type": "single",
+    "question": "You have an Azure subscription that contains an Azure virtual machine named VM1. VM1 runs a financial reporting app named App1 that does not support multiple active instances. At the end of each month, CPU usage for VM1 peaks when App1 runs. You need to create a scheduled runbook to increase the processor performance of VM1 at the end of each month. What task should you include in the runbook?",
+    "options": {
+      "A": "Add the Azure Performance Diagnostics agent to VM1.",
+      "B": "Modify the VM size property of VM1.",
+      "C": "Add VM1 to a scale set.",
+      "D": "Increase the vCPU quota for the subscription.",
+      "E": "Add a Desired State Configuration (DSC) extension to VM1."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。效能診斷代理程式只收集診斷資料協助分析，不會提升任何運算效能。",
+      "B": "Correct. 正確。App1 不支援多執行個體，因此無法用水平擴展解決，只能垂直擴充。Runbook 中修改 VM 大小屬性（換成更多 vCPU 的規格）即可提升處理器效能，月底過後也能再自動調回以節省成本。",
+      "C": "Incorrect. 錯誤。擴展集是靠增加執行個體來分攤負載，而 App1 明確不支援多個作用中執行個體。",
+      "D": "Incorrect. 錯誤。提高配額只是解除訂用帳戶的用量上限，並不會實際改變 VM1 的規格。",
+      "E": "Incorrect. 錯誤。DSC 用於維持組態一致性，與運算效能無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 304,
+    "type": "single",
+    "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
+    "options": {
+      "A": "Deployment Center in Azure App Service",
+      "B": "A Desired State Configuration (DSC) extension",
+      "C": "the New-AzConfigurationAssignment cmdlet",
+      "D": "a Microsoft Intune device configuration profile"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。部署中心屬於 App Service 的 CI/CD 功能，與虛擬機器擴展集無關。",
+      "B": "Correct. 正確。DSC 延伸模組可以宣告式地描述機器應有的狀態（例如已安裝並啟動 NGINX），寫在擴展集範本的延伸模組設定中後，每個新佈建的執行個體都會自動套用。",
+      "C": "Incorrect. 錯誤。New-AzConfigurationAssignment 用於指派維護設定（維護時段），不會安裝軟體。",
+      "D": "Incorrect. 錯誤。Intune 管理的是使用者端點裝置，不用於 Azure IaaS 擴展集的軟體佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 307,
+    "type": "single",
+    "question": "You have an Azure virtual machine named VM1 that runs Windows Server 2019. The VM was deployed using default drive settings. You sign in to VM1 as a user named User1 and perform the following actions: ✑ Create files on drive C. ✑ Create files on drive D. ✑ Modify the screen saver timeout. ✑ Change the desktop background. You plan to redeploy VM1. Which changes will be lost after you redeploy VM1?",
+    "options": {
+      "A": "the modified screen saver timeout",
+      "B": "the new desktop background",
+      "C": "the new files on drive D",
+      "D": "the new files on drive C"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。此設定寫在 OS 磁碟的登錄中，OS 磁碟會隨 VM 一起遷移，因此會保留。",
+      "B": "Incorrect. 錯誤。桌面背景同樣儲存在 OS 磁碟的使用者設定檔中，重新部署後仍存在。",
+      "C": "Correct. 正確。以預設磁碟設定部署的 Windows VM，磁碟機 D 是「暫存磁碟」，資料存在本機主機的實體儲存體上。重新部署會把 VM 遷移到新主機，暫存磁碟隨之重建，D 槽上的檔案全部遺失。",
+      "D": "Incorrect. 錯誤。磁碟機 C 是持續性的 OS 受控磁碟，內容會完整保留。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 313,
+    "type": "single",
+    "question": "You plan to back up an Azure virtual machine named VM1. You discover that the Backup Pre-Check status displays a status of Warning. What is a possible cause of the Warning status?",
+    "options": {
+      "A": "VM1 is stopped.",
+      "B": "VM1 does not have the latest version of the Azure VM Agent (WaAppAgent.exe) installed.",
+      "C": "VM1 has an unmanaged disk.",
+      "D": "A Recovery Services vault is unavailable."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。已停止的 VM 仍可備份（只是取得的是檔案系統一致的備份），不會產生預先檢查警告。",
+      "B": "Correct. 正確。備份預先檢查會檢驗 VM 是否具備成功備份的條件，最常見的警告原因就是 VM 代理程式版本過舊或未安裝，以及網路設定阻擋代理程式對外通訊——這類問題可修正，因此標示為「警告」而非「嚴重」。",
+      "C": "Incorrect. 錯誤。Azure 備份同時支援受控與未受控磁碟，磁碟類型本身不會觸發警告。",
+      "D": "Incorrect. 錯誤。若保存庫本身不可用，問題會表現為作業失敗，而不是預先檢查的警告狀態。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 314,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1. VM1 was deployed by using a custom Azure Resource Manager template named ARM1.json. You receive a notification that VM1 will be affected by maintenance. You need to move VM1 to a different host immediately. Solution: From the Overview blade, you move the virtual machine to a different resource group. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。變更資源群組只是調整資源在管理階層中的歸屬，VM 仍執行於同一台實體主機。",
+      "B": "Correct. 正確。移動資源群組不會更換底層主機。要立即換主機必須使用「重新部署 (Redeploy)」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 316,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1 that runs Windows Server 2016. You need to create an alert in Azure when more than two error events are logged to the System event log on VM1 within an hour. Solution: You create an Azure Log Analytics workspace and configure the Agent configuration settings. You install the Microsoft Monitoring Agent on VM1. You create an alert in Azure Monitor and specify the Log Analytics workspace as the source. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。在工作區的代理程式設定中指定要收集的 Windows 事件記錄（系統記錄的錯誤層級），透過 MMA 把事件送進工作區，再以工作區為來源建立記錄查詢警示，即可對「一小時內超過兩個錯誤事件」設定條件，完整達成目標。",
+      "B": "Incorrect. 錯誤。這條路徑（工作區收集設定 + 代理程式 + 記錄查詢警示）正是官方建議的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 319,
+    "type": "single",
+    "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
+    "options": {
+      "A": "the New-AzConfigurationAssignment cmdlet",
+      "B": "a Desired State Configuration (DSC) extension",
+      "C": "Azure Active Directory (Azure AD) Application Proxy",
+      "D": "Azure Application Insights"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。此 Cmdlet 用於指派維護設定，不會在機器上安裝軟體。",
+      "B": "Correct. 正確。DSC 延伸模組可在擴展集範本中宣告每個執行個體應達到的狀態（安裝並執行 NGINX），新佈建的執行個體會自動套用。",
+      "C": "Incorrect. 錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理服務，與 VM 軟體佈建無關。",
+      "D": "Incorrect. 錯誤。Application Insights 是應用程式效能監視服務，不負責安裝軟體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 321,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some questions sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You deploy an Azure Kubernetes Service (AKS) cluster named AKS1. You need to deploy a YAML file to AKS1. Solution: From Azure Cloud Shell, you run az aks. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。換到 Cloud Shell 執行並不改變工具本身的能力；az aks 管理的是叢集層級作業，不能套用 YAML 資源清單。",
+      "B": "Correct. 正確。無論在本機或 Cloud Shell，部署 YAML 都必須使用 kubectl（kubectl apply -f）；az aks 只負責建立、擴縮、升級叢集等管理動作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 322,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1 that runs Windows Server 2016. You need to create an alert in Azure when more than two error events are logged to the System event log on VM1 within an hour. Solution: You create an Azure Log Analytics workspace and configure the data settings. You add the Microsoft Monitoring Agent VM extension to VM1. You create an alert in Azure Monitor and specify the Log Analytics workspace as the source. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 【答案校正】官方標示為 B（否），但「Log Analytics 工作區 + MMA 代理程式 + 以工作區為來源的記錄警示」確實是可行且標準的做法。更關鍵的是本題庫的 id 323 解法幾乎完全相同（差別僅在「安裝 MMA」與「新增 MMA VM 延伸模組」的措辭），官方卻標示為 A（是）——兩者功能等價，官方標示自相矛盾，故本題判定為 A（是）。 正確。以 VM 延伸模組安裝 Microsoft Monitoring Agent，與手動安裝代理程式在功能上完全等價；資料同樣會流入 Log Analytics 工作區，再以工作區為來源建立記錄查詢警示即可達成目標。",
+      "B": "Incorrect. 錯誤。此路徑（工作區資料設定 + MMA 延伸模組 + 記錄查詢警示）可以正常運作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 323,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1 that runs Windows Server 2016. You need to create an alert in Azure when more than two error events are logged to the System event log on VM1 within an hour. Solution: You create an Azure Log Analytics workspace and configure the data settings. You install the Microsoft Monitoring Agent on VM1. You create an alert in Azure Monitor and specify the Log Analytics workspace as the source. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。工作區的資料設定決定要收集哪些 Windows 事件記錄，MMA 負責把 VM1 的系統記錄送上去，最後以工作區為來源的記錄查詢警示即可設定「一小時內超過兩個錯誤事件」的條件，三個步驟齊備。",
+      "B": "Incorrect. 錯誤。這是官方建議的標準做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 331,
+    "type": "single",
+    "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
+    "options": {
+      "A": "the Publish-AzVMDscConfiguration cmdlet",
+      "B": "Azure Application Insights",
+      "C": "Azure Custom Script Extension",
+      "D": "a Microsoft Endpoint Manager device configuration profile"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。此 Cmdlet 只是把 DSC 組態封裝並上傳到儲存體，它本身不會把組態套用到擴展集的執行個體。",
+      "B": "Incorrect. 錯誤。Application Insights 是應用程式監視服務，不安裝軟體。",
+      "C": "Correct. 正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定的指令碼，用它執行安裝 NGINX 的指令即可；本題選項中沒有 DSC 延伸模組，自訂指令碼延伸模組是達成相同目的的標準方式。",
+      "D": "Incorrect. 錯誤。Endpoint Manager（Intune）管理的是使用者端點裝置，不用於 Azure 擴展集佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 333,
+    "type": "single",
+    "question": "You have an Azure subscription that contains three virtual machines named VM1, VM2, and VM3. All the virtual machines are in an availability set named AVSet1. You need to scale up VM1 to a new virtual machine size, but the intended size is unavailable. What should you do first?",
+    "options": {
+      "A": "Create a proximity placement group.",
+      "B": "Deallocate VM1.",
+      "C": "Convert AvSet1 into a managed availability set.",
+      "D": "Shut down VM3 and VM3."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。近似放置群組是為了降低執行個體之間的網路延遲，與能否取得某個 VM 大小無關。",
+      "B": "Correct. 正確。目標大小無法使用，代表目前所在的叢集硬體不支援它。先解除配置 VM1 讓它脫離該叢集，Azure 就能在調整大小後把它配置到支援新規格的硬體上。",
+      "C": "Incorrect. 錯誤。受控可用性設定組指的是使用受控磁碟，與可用的 VM 大小無關。",
+      "D": "Incorrect. 錯誤。此選項本身有誤（重複列出 VM3）；而且若整組都必須釋出，正確做法是解除配置設定組中的所有 VM，而非只關閉其中兩台。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 337,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You set Admin user to Enable for Registry1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。從容器登錄部署容器實例時必須提供登錄的認證。啟用管理員使用者會產生一組使用者名稱與密碼，容器實例即可用它來驗證並拉取 image1，解決原本的驗證失敗錯誤。",
+      "B": "Incorrect. 錯誤。啟用管理員使用者正是最直接可行的做法（雖然生產環境更建議改用服務主體或受控識別）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 350,
+    "type": "single",
+    "question": "You have an Azure AD tenant named contoso.com. You have an Azure subscription that contains an Azure App Service web app named App1 and an Azure key vault named KV1. KV1 contains a wildcard certificate for contoso.com. You have a user named [email protected] that is assigned the Owner role for App1 and KV1. You need to configure App1 to use the wildcard certificate of KV1. What should you do first?",
+    "options": {
+      "A": "Create an access policy for KV1 and assign the Microsoft Azure App Service principal to the policy.",
+      "B": "Assign a managed user identity to App1.",
+      "C": "Configure KV1 to use the role-based access control (RBAC) authorization system.",
+      "D": "Create an access policy for KV1 and assign the policy to User1."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。授權給共用的 Microsoft Azure App Service 主體是較舊的做法，不是目前建議的第一步；現行做法是讓應用程式擁有自己的身分識別。",
+      "B": "Correct. 正確。要讓 App1 自行從 KV1 取得憑證，必須先讓 App1 具備身分識別。指派受控識別後，才有對象可以在 KV1 上被授權讀取憑證與祕密。",
+      "C": "Incorrect. 錯誤。切換授權模式只是選擇用 RBAC 或存取原則來授權，本身並未賦予 App1 任何身分識別或權限。",
+      "D": "Incorrect. 錯誤。授權給使用者只讓「人」能讀取憑證，執行中的 App1 仍然無法自行取用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 353,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a resource group named RG1. You plan to create a storage account named storage1. You have a Bicep file named File1. You need to modify File1 so that it can be used to automate the deployment of storage1 to RG1. Which property should you modify?",
+    "options": {
+      "A": "kind",
+      "B": "scope",
+      "C": "sku",
+      "D": "location"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。kind 決定儲存體帳戶的種類（StorageV2、BlobStorage 等），與部署到哪個資源群組無關。",
+      "B": "Correct. 正確。Bicep 以 targetScope／scope 決定部署的目標範圍。要把資源部署到特定資源群組，必須設定部署範圍指向 RG1。",
+      "C": "Incorrect. 錯誤。sku 指定的是效能與備援層級（例如 Standard_LRS），不影響部署目標。",
+      "D": "Incorrect. 錯誤。location 決定資源建立在哪個 Azure 區域，與資源群組的歸屬是不同的概念。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 358,
+    "type": "single",
+    "question": "You have an Azure subscription that contains an Azure container registry named ContReg1. You enable the Admin user for ContReg1. Which username can you use to sign in to ContReg1?",
+    "options": {
+      "A": "root",
+      "B": "admin",
+      "C": "administrator",
+      "D": "ContReg1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。root 是 Linux 系統的超級使用者，不是容器登錄的管理員帳戶名稱。",
+      "B": "Incorrect. 錯誤。ACR 的管理員帳戶名稱不是固定字串 admin。",
+      "C": "Incorrect. 錯誤。同樣不是 ACR 使用的名稱。",
+      "D": "Correct. 正確。啟用管理員使用者後，其使用者名稱就是「登錄本身的名稱」（本題為 ContReg1），密碼則由 ACR 產生兩組可輪替的密碼。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 359,
+    "type": "single",
+    "question": "You have an Azure subscription. You plan to create an Azure container registry named ContReg1. You need to ensure that you can push and pull signed images for ContReg1. What should you do for ContReg1?",
+    "options": {
+      "A": "Enable encryption by using a customer-managed key.",
+      "B": "Create a connected registry.",
+      "C": "Add a token.",
+      "D": "Enable content trust."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。客戶自控金鑰處理的是待用資料加密，與映像簽署驗證無關。",
+      "B": "Incorrect. 錯誤。連線的登錄用於邊緣或斷線環境的映像同步，不提供簽署功能。",
+      "C": "Incorrect. 錯誤。權杖用於範圍式的存取驗證，與映像簽章無關。",
+      "D": "Correct. 正確。內容信任（基於 Docker Content Trust／Notary）啟用後即可推送與提取已簽署的映像，並在提取時驗證發行者簽章，確保映像未被篡改。此功能需要進階 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 361,
+    "type": "single",
+    "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2022 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
+    "options": {
+      "A": "Azure Custom Script Extension",
+      "B": "Deployment Center in Azure App Service",
+      "C": "Microsoft Entra Application Proxy",
+      "D": "the Publish-AzVMDscConfiguration cmdlet"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定指令碼，用它安裝 NGINX 即可；把延伸模組宣告在擴展集範本中，所有執行個體都會自動套用。",
+      "B": "Incorrect. 錯誤。部署中心是 App Service 的 CI/CD 功能，與虛擬機器擴展集無關。",
+      "C": "Incorrect. 錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理，不安裝軟體。",
+      "D": "Incorrect. 錯誤。此 Cmdlet 只負責把 DSC 組態封裝上傳到儲存體，本身不會把組態套用到執行個體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 363,
+    "type": "single",
+    "question": "You have an Azure subscription. You plan to deploy a container. You need to recommend which Azure services can scale the container automatically. What should you recommend?",
+    "options": {
+      "A": "Azure Container Apps only",
+      "B": "Azure Container Instances only",
+      "C": "Azure Container Apps or Azure App Service only",
+      "D": "Azure Container Instances or Azure App Service only",
+      "E": "Azure Container Apps, Azure Container Instances, or Azure App Service"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。Container Apps 確實支援自動調整，但 App Service 同樣具備自動調整能力，選項範圍不完整。",
+      "B": "Incorrect. 錯誤。Azure Container Instances 沒有內建的自動調整機制，需要外部邏輯自行增減容器群組。",
+      "C": "Correct. 正確。Container Apps 以 KEDA 為基礎提供事件驅動的自動調整（可縮至零），App Service 也提供依計量或排程的自動調整；Container Instances 則不具備此能力。",
+      "D": "Incorrect. 錯誤。Container Instances 不支援自動調整。",
+      "E": "Incorrect. 錯誤。同樣誤把 Container Instances 納入。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 365,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You assign the AcrPull role to ACR-Tasks-Network for Registry1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。ACR-Tasks-Network 並非部署容器實例時用來提取映像的身分識別，把權限給它無法解決驗證問題。",
+      "B": "Correct. 正確。要讓容器實例能提取 image1，必須提供有效的登錄認證（啟用管理員使用者，或使用具 AcrPull 權限的服務主體／受控識別）；指派給 ACR-Tasks-Network 並不屬於這條路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 366,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You select Use dedicated data endpoint for Registry1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。專用資料端點改變的是資料傳輸所使用的主機名稱（有利於防火牆規則精準化），與驗證失敗無關。",
+      "B": "Correct. 正確。此設定屬於網路層面的最佳化，無法解決部署容器實例時缺少登錄認證的問題。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 367,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You create a private endpoint connection for Registry1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。私人端點只是把登錄的存取路徑改為透過虛擬網路的私人 IP，並未提供任何拉取映像所需的認證。",
+      "B": "Correct. 正確。錯誤來自認證而非網路可達性；私人端點甚至可能因為關閉公用存取而使問題更複雜。正確做法是提供登錄認證。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 368,
+    "type": "single",
+    "question": "You have a Standard Azure App Service plan named Plan1. You need to ensure that Plan1 will scale automatically when the CPU usage of the web app exceeds 80 percent. What should you select for Plan1?",
+    "options": {
+      "A": "Automatic in the Scale out method settings",
+      "B": "Rules Based in the Scale out method settings",
+      "C": "Premium P1 in the Scale up (App Service plan) settings",
+      "D": "Standard S1 in the Scale up (App Service plan) settings",
+      "E": "Manual in the Scale out method settings"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。「自動」模式由平台自行決定執行個體數量，不接受你自訂的 CPU 閾值條件。",
+      "B": "Correct. 正確。要依「CPU 超過 80%」這種自訂條件觸發調整，必須選擇規則式的向外擴增，並在其中建立以 CPU 百分比為計量的自動調整規則。",
+      "C": "Incorrect. 錯誤。升級到 Premium 只是提升方案層級與資源上限，本身不會建立任何自動調整規則。",
+      "D": "Incorrect. 錯誤。Standard S1 同樣只是規格選擇，與自動調整規則無關；而且方案已是標準層。",
+      "E": "Incorrect. 錯誤。手動模式必須由人工設定固定的執行個體數，完全不會自動調整。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 370,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1. VM1 was deployed by using a custom Azure Resource Manager template named ARM1.json. You receive a notification that VM1 will be affected by maintenance. You need to move VM1 to a different host immediately. Solution: From the resource group blade, move VM1 to another subscription. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。搬移訂用帳戶只改變資源的計費與管理歸屬，VM 仍執行在同一台實體主機上。",
+      "B": "Correct. 正確。更換訂用帳戶不會遷移底層主機；要立即換主機必須使用「重新部署」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 371,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1. VM1 was deployed by using a custom Azure Resource Manager template named ARM1.json. You receive a notification that VM1 will be affected by maintenance. You need to move VM1 to a different host immediately. Solution: From the VM1 Redeploy + reapply blade, you select Redeploy. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。「重新部署」會關閉 VM、把它遷移到 Azure 基礎結構中的新主機再開機，同時保留所有設定與關聯資源，正是為了規避主機層問題與維護而設計的功能。",
+      "B": "Incorrect. 錯誤。重新部署正是本情境的官方解法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 372,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1. VM1 was deployed by using a custom Azure Resource Manager template named ARM1.json. You receive a notification that VM1 will be affected by maintenance. You need to move VM1 to a different host immediately. Solution: From the VM1 Updates blade, select One-time update. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。一次性更新是對客體作業系統安裝修補程式的作業，與 VM 執行在哪台實體主機無關。",
+      "B": "Correct. 正確。安裝 OS 更新不會遷移 VM；要更換主機必須使用「重新部署」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 375,
+    "type": "single",
+    "question": "Your company has three offices. The offices are located in Miami, Los Angeles, and New York. Each office contains datacenter. You have an Azure subscription that contains resources in the East US and West US Azure regions. Each region contains a virtual network. The virtual networks are peered. You need to connect the datacenters to the subscription. The solution must minimize network latency between the datacenters. What should you create?",
+    "options": {
+      "A": "three Azure Application Gateways and one On-premises data gateway",
+      "B": "three virtual hubs and one virtual WAN",
+      "C": "three virtual WANs and one virtual hub",
+      "D": "three On-premises data gateways and one Azure Application Gateway"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。應用程式閘道是第 7 層負載平衡器，內部部署資料閘道用於 Power BI／Logic Apps 等服務存取內部資料，兩者都不是站台互連方案。",
+      "B": "Correct. 正確。Azure 虛擬 WAN 提供中樞輻射式的全球骨幹網路：建立「一個」虛擬 WAN 作為整體資源，再在各區域建立「虛擬中樞」讓辦公室就近連入。站台之間的流量走 Microsoft 骨幹傳輸，延遲最低。",
+      "C": "Incorrect. 錯誤。層級關係顛倒了——虛擬中樞是隸屬於虛擬 WAN 之下的資源，不會反過來由多個 WAN 共用一個中樞。",
+      "D": "Incorrect. 錯誤。這兩種閘道都不提供資料中心之間的網路互連能力。"
+    }
+  }
+]
