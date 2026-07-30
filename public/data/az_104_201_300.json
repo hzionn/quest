@@ -20,6 +20,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 203,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 有下列生命週期管理規則：\n・Rule1｜Blob 前置詞 container1/｜若基底 Blob 最後修改超過 3 天 → 移到封存儲存體\n・Rule2｜Blob 前置詞：不適用（全部）｜若超過 5 天 → 移到冷儲存體\n・Rule3｜Blob 前置詞 container2/｜若超過 10 天 → 刪除 Blob\n・Rule4｜Blob 前置詞 container2/｜若超過 15 天 → 移到封存儲存體\n\n6 月 1 日，你在 storage1 中存入兩個 Blob：\n・File1｜位置 container1｜存取層 熱層 (Hot)\n・File2｜位置 container2｜存取層 熱層 (Hot)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "6 月 6 日，File1 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 1 日，File2 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 16 日，File2 會存放在封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1（前置詞 container1/）與 Rule2（全部）。Rule1 的門檻較短：超過 3 天就移到封存層，也就是 6 月 4 日。所以 6 月 6 日時 File1 已經在「封存層」，不是冷層。",
+      "2": "否。6 月 1 日是存入當天，Blob 還是原本的熱層。Rule2 要「超過 5 天未修改」才會移到冷層（最早 6 月 6 日），時間根本還沒到。",
+      "3": "否。File2 在 container2，符合 Rule2、Rule3 與 Rule4。門檻最短的先發生：6 月 6 日移到冷層（Rule2），6 月 11 日被「刪除」（Rule3）。Blob 在 6 月 11 日就已經不存在，因此 6 月 16 日不會在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "生命週期規則的判讀要訣：\n① 先看前置詞決定哪些規則適用於這個 Blob；\n② 多條規則同時適用時，「天數門檻較小的先觸發」，按時間軸排出事件順序；\n③ 一旦觸發「刪除」，後面天數更長的規則就沒有意義了。\n另外別忘了計時基準是「最後修改時間」，存入當天天數為 0。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 204,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算用下列 ARM 範本部署一個名為 storage1 的儲存體帳戶（內容節錄）：\n資源 1：Microsoft.Storage/storageAccounts，名稱 storage1，location \"East US\"\n　properties：\"allowBlobPublicAccess\": true、\"defaultToOAuthAuthentication\": false\n　networkAcls：\"bypass\": \"AzureServices\"、\"defaultAction\": \"Allow\"、\"ipRules\": []\n　sku：{ \"name\": \"Standard_LRS\" }、kind：\"StorageV2\"\n\n資源 2：Microsoft.Storage/storageAccounts/blobServices，名稱 storage1/default\n　properties：\n　　\"restorePolicy\": { \"enabled\": true, \"days\": 6 }\n　　\"deleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }\n　　\"containerDeleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }\n　　\"changeFeed\": { \"enabled\": true }、\"isVersioningEnabled\": true\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "storage1 中的資料變更可以在「七天後」回復。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "只有位於美國東部 (East US) Azure 區域的使用者可以連線到 storage1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "storage1 會在美國東部 Azure 區域中保留三份複本。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。時間點還原 (point-in-time restore) 的可回復範圍由 restorePolicy.days 決定，這裡設的是 6 天，所以最多只能回復到 6 天前，「七天後」已超出範圍。（順帶說明為什麼是 6：還原天數必須小於軟性刪除保留天數 deleteRetentionPolicy.days = 7，不能設成相同或更大。）",
+      "2": "否。networkAcls 的 defaultAction 是 \"Allow\"、ipRules 是空陣列，等於「允許所有網路」，沒有任何來源 IP 或虛擬網路限制。而且儲存體帳戶的 location 只代表資料放在哪個區域，與「使用者從哪裡連線」完全無關。",
+      "3": "是。sku 是 Standard_LRS（本地備援），LRS 會在主要位置（East US）內保留三份複本，用來承受磁碟、節點、機架層級的故障。",
+      "_full": "三個判斷點分別藏在範本的三個地方：\n・restorePolicy.days = 6 → 只能回復 6 天（且必須小於軟性刪除的 7 天）。\n・networkAcls.defaultAction = Allow 且無 ipRules → 網路完全開放；帳戶 location 不會限制連線來源。\n・sku = Standard_LRS → 同區域三份複本。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 205,
     "type": "single",
     "question": "你有一台內部部署伺服器，其中有一個資料夾 D:\\Folder1。你必須把 D:\\Folder1 的內容複製到名為 contosodata 的 Azure 儲存體帳戶中的 public 容器。你應該執行哪一個命令？",
@@ -35,6 +95,35 @@
       "B": "錯誤。sync 的用途是讓兩端保持一致（會刪除目的地多餘檔案），且 --snapshot 不是有效參數。",
       "C": "正確。azcopy copy 搭配 --recursive 才會連同子資料夾遞迴複製整個本機資料夾的內容到 Blob 容器。",
       "D": "錯誤。start-batch 同樣是伺服器端批次複製，來源不接受本機檔案系統路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 206,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 包含一個名為 container1 的容器。\n你必須為 storage1 建立一條生命週期管理規則，讓 container1 中的 Blob 在 90 天後自動移到「成本最低」的層級。\n你應該如何完成這條規則？\n\n　\"actions\": { \"baseBlob\": { 【下拉 1】 \"daysAfterModificationGreaterThan\": 90 … } }\n　\"filters\": { 【下拉 2】 \"container1/\" … }\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "\"enableAutoTierToHotFromCool\":{",
+      "\"tierToArchive\":{",
+      "\"tierToCool\":{",
+      "\"blobIndexMatch\":[",
+      "\"blobTypes\":[",
+      "\"prefixMatch\":["
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（actions.baseBlob 之下）：",
+        "correct_answer": "\"tierToArchive\":{"
+      },
+      {
+        "use_case": "下拉 2（filters 之下）：",
+        "correct_answer": "\"prefixMatch\":["
+      }
+    ],
+    "explanations": {
+      "1": "「成本最低」的存取層是封存層 (Archive)，對應的動作是 tierToArchive。tierToCool 只會移到冷層（比熱層便宜但比封存層貴）；enableAutoTierToHotFromCool 是方向相反的自動回熱設定。",
+      "2": "要把規則限定在 container1，就用 prefixMatch 指定 \"container1/\" 這個前置詞。blobTypes 是限定 Blob 類型（blockBlob／appendBlob），blobIndexMatch 是依 Blob 索引標籤比對，兩者都不是用來鎖定容器的。",
+      "_full": "完整規則的形狀是：\nactions.baseBlob.tierToArchive.daysAfterModificationGreaterThan = 90，\nfilters.prefixMatch = [\"container1/\"]。\n記住三個層級的成本高低：熱 > 冷 > 封存（封存最便宜但取用需解除凍結），以及 filters 的三個欄位分工：prefixMatch（路徑）、blobTypes（類型）、blobIndexMatch（索引標籤）。"
     }
   },
   {
@@ -58,6 +147,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 210,
+    "type": "multiple",
+    "question": "你有一個 Azure AD 使用者 User1，以及一個名為 contoso2023 的讀取權限異地備援儲存體 (RA-GRS) 帳戶。\n你必須滿足下列要求：\n• User1 必須能夠把 Blob 資料寫入 contoso2023。\n• contoso2023 帳戶必須容錯移轉到它的次要端點。\n你應該設定儲存體帳戶刀鋒視窗中的哪兩個項目？",
+    "options": {
+      "A": "存取控制 (IAM)",
+      "B": "地理複寫 (Geo-replication)",
+      "C": "存取金鑰 (Access keys)",
+      "D": "資料保護 (Data protection)",
+      "E": "共用存取簽章 (Shared access signature)"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "正確。要讓某個 Azure AD 使用者能「寫入 Blob 資料」，就在存取控制 (IAM) 中把資料平面的角色（例如「儲存體 Blob 資料參與者」）指派給 User1。這是以身分為基礎的授權，也是最小權限的做法。",
+      "B": "正確。帳戶層級的容錯移轉是在「地理複寫」刀鋒視窗執行的——該頁面會顯示主要與次要區域的複寫狀態與上次同步時間，並提供「準備容錯移轉 (Prepare for failover)」動作把次要區域升級為主要。",
+      "C": "錯誤。存取金鑰是整個帳戶的最高權限共用祕密，雖然拿到金鑰確實能寫入，但那不是「授權給某位使用者」的做法，也不符合最小權限；而且它跟容錯移轉毫無關係。",
+      "D": "錯誤。資料保護設定的是軟性刪除、版本設定、時間點還原這類「資料復原」功能，不是跨區域的帳戶容錯移轉。",
+      "E": "錯誤。共用存取簽章是產生有時限的權杖給「沒有 Azure AD 身分」的用戶端用，本題的 User1 是 Azure AD 使用者，應該用 RBAC 角色指派。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 211,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。你打算建立一個名為 container1 的 Blob 容器，並必須為 container1 使用「客戶自控金鑰」加密。你應該使用哪一種金鑰？",
@@ -75,6 +188,34 @@
       "C": "錯誤。無論哪一種曲線，EC 金鑰都不能用於儲存體的客戶自控金鑰加密。",
       "D": "錯誤。4096 確實可用，但並非「僅」限於此，範圍描述過窄。",
       "E": "正確。Azure 儲存體的客戶自控金鑰必須是 RSA（或 RSA-HSM）金鑰，且支援的金鑰大小為 2048、3072 與 4096 三種。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 212,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一位名為 User1 的使用者與一個名為 storage1 的儲存體帳戶。\nstorage1 中有下列資源：\n・container1｜容器 (Container)\n・folder1｜檔案共用 (File share)\n・Table1｜表格 (Table)\n\nUser1 在 storage1 上被指派下列角色：\n• 儲存體 Blob 資料讀取者 (Storage Blob Data Reader)\n• 儲存體表格資料參與者 (Storage Table Data Contributor)\n• 儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n你為 storage1 建立了一個名為 SAS1 的共用存取簽章，設定如下：\n・允許的服務：僅勾選「表格 (Table)」（Blob、檔案、佇列未勾選）\n・允許的資源類型：服務、容器、物件（三者皆勾選）\n・允許的權限：讀取、寫入、刪除、列出、新增、建立、更新（Process 與不可變儲存體未勾選）\n・有效期間：2022-01-01 至 2030-01-01（UTC+01:00）\n・允許的 IP：未設定；允許的通訊協定：僅 HTTPS；簽署金鑰：key1\n\n使用 SAS1 與 key1，User1 分別可以寫入哪些資源？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 Table1",
+      "只有 Table1 和 container1",
+      "只有 folder1 和 Table1",
+      "只有 folder1 和 container1",
+      "Table1、folder1 和 container1"
+    ],
+    "matches": [
+      {
+        "use_case": "使用 key1：",
+        "correct_answer": "Table1、folder1 和 container1"
+      },
+      {
+        "use_case": "使用 SAS1：",
+        "correct_answer": "只有 Table1"
+      }
+    ],
+    "explanations": {
+      "1": "帳戶存取金鑰 (key1) 是「共用金鑰」驗證，等同於整個儲存體帳戶的完整權限——所有服務（Blob、檔案、佇列、表格）、所有資源、讀寫全開，而且完全「繞過」Azure RBAC。所以拿 key1 可以寫入 container1、folder1 與 Table1 全部三個。（這也是為什麼實務上要盡量避免發放帳戶金鑰。）",
+      "2": "SAS1 的「允許的服務」只勾了表格，因此這個權杖只能用於表格服務——即使權限欄位把讀寫刪都勾滿了，也管不到 Blob 與檔案。所以用 SAS1 只能寫入 Table1。（同樣要注意：SAS 是由 key1 簽署的共用金鑰型憑證，授權完全由 SAS 本身的條件決定，User1 的 RBAC 角色在這裡不生效。）",
+      "_full": "本題的核心是三種授權管道彼此獨立：\n・帳戶金鑰 → 全帳戶全權限，繞過 RBAC。\n・服務 SAS／帳戶 SAS → 權限由 SAS 的服務／資源類型／權限／期間／IP／協定欄位決定，同樣繞過 RBAC。\n・Azure RBAC 角色 → 只在使用「Azure AD 身分」存取時才生效。\n因此 User1 的三個 RBAC 角色在本題兩個下拉中完全不影響答案，純粹是干擾資訊；判斷只看 key1（全開）與 SAS1（僅表格）。"
     }
   },
   {

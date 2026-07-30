@@ -20,6 +20,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 203,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains a storage account named storage1 that has the following lifecycle management rules: Rule1 (blob prefix container1/, if base were last modified more than 3 days ago, move to archive storage); Rule2 (no prefix, more than 5 days, move to cool storage); Rule3 (prefix container2/, more than 10 days, delete the blob); Rule4 (prefix container2/, more than 15 days, move to archive storage). On June 1, you store two blobs in storage1: File1 (container1, Hot access tier) and File2 (container2, Hot access tier). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "On June 6, File1 will be stored in the Cool access tier.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "On June 1, File2 will be stored in the Cool access tier.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "On June 16, File2 will be stored in the Archive access tier.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1（前置詞 container1/）與 Rule2（全部）。Rule1 的門檻較短：超過 3 天就移到封存層，也就是 6 月 4 日。所以 6 月 6 日時 File1 已經在「封存層」，不是冷層。",
+      "2": "否。6 月 1 日是存入當天，Blob 還是原本的熱層。Rule2 要「超過 5 天未修改」才會移到冷層（最早 6 月 6 日），時間根本還沒到。",
+      "3": "否。File2 在 container2，符合 Rule2、Rule3 與 Rule4。門檻最短的先發生：6 月 6 日移到冷層（Rule2），6 月 11 日被「刪除」（Rule3）。Blob 在 6 月 11 日就已經不存在，因此 6 月 16 日不會在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "生命週期規則的判讀要訣：\n① 先看前置詞決定哪些規則適用於這個 Blob；\n② 多條規則同時適用時，「天數門檻較小的先觸發」，按時間軸排出事件順序；\n③ 一旦觸發「刪除」，後面天數更長的規則就沒有意義了。\n另外別忘了計時基準是「最後修改時間」，存入當天天數為 0。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 204,
+    "type": "matching",
+    "question": "You have an Azure subscription. You plan to deploy a storage account named storage1 by using an ARM template containing: resource 1 = Microsoft.Storage/storageAccounts named storage1, location \"East US\", properties \"allowBlobPublicAccess\": true, \"defaultToOAuthAuthentication\": false, networkAcls with \"bypass\": \"AzureServices\", \"defaultAction\": \"Allow\", \"ipRules\": [], sku { \"name\": \"Standard_LRS\" }, kind \"StorageV2\"; resource 2 = Microsoft.Storage/storageAccounts/blobServices named storage1/default with \"restorePolicy\": { \"enabled\": true, \"days\": 6 }, \"deleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }, \"containerDeleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }, \"changeFeed\": { \"enabled\": true }, \"isVersioningEnabled\": true. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "Changes made to the data in storage1 can be rolled back after seven days.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "Only users located in the East US Azure region can connect to storage1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "Three copies of storage1 will be maintained in the East US Azure region.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。時間點還原 (point-in-time restore) 的可回復範圍由 restorePolicy.days 決定，這裡設的是 6 天，所以最多只能回復到 6 天前，「七天後」已超出範圍。（順帶說明為什麼是 6：還原天數必須小於軟性刪除保留天數 deleteRetentionPolicy.days = 7，不能設成相同或更大。）",
+      "2": "否。networkAcls 的 defaultAction 是 \"Allow\"、ipRules 是空陣列，等於「允許所有網路」，沒有任何來源 IP 或虛擬網路限制。而且儲存體帳戶的 location 只代表資料放在哪個區域，與「使用者從哪裡連線」完全無關。",
+      "3": "是。sku 是 Standard_LRS（本地備援），LRS 會在主要位置（East US）內保留三份複本，用來承受磁碟、節點、機架層級的故障。",
+      "_full": "三個判斷點分別藏在範本的三個地方：\n・restorePolicy.days = 6 → 只能回復 6 天（且必須小於軟性刪除的 7 天）。\n・networkAcls.defaultAction = Allow 且無 ipRules → 網路完全開放；帳戶 location 不會限制連線來源。\n・sku = Standard_LRS → 同區域三份複本。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 205,
     "type": "single",
     "question": "You have an on-premises server that contains a folder named D:\\Folder1. You need to copy the contents of D:\\Folder1 to the public container in an Azure Storage account named contosodata. Which command should you run?",
@@ -35,6 +95,35 @@
       "B": "Incorrect. 錯誤。sync 的用途是讓兩端保持一致（會刪除目的地多餘檔案），且 --snapshot 不是有效參數。",
       "C": "Correct. 正確。azcopy copy 搭配 --recursive 才會連同子資料夾遞迴複製整個本機資料夾的內容到 Blob 容器。",
       "D": "Incorrect. 錯誤。start-batch 同樣是伺服器端批次複製，來源不接受本機檔案系統路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 206,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a storage account named storage1. The storage1 account contains a container named container1. You need to create a lifecycle management rule for storage1 that will automatically move the blobs in container1 to the lowest-cost tier after 90 days. How should you complete the rule?  \"actions\": { \"baseBlob\": { [box 1] \"daysAfterModificationGreaterThan\": 90 ... } }  \"filters\": { [box 2] \"container1/\" ... }",
+    "available_options": [
+      "\"enableAutoTierToHotFromCool\":{",
+      "\"tierToArchive\":{",
+      "\"tierToCool\":{",
+      "\"blobIndexMatch\":[",
+      "\"blobTypes\":[",
+      "\"prefixMatch\":["
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (inside actions.baseBlob):",
+        "correct_answer": "\"tierToArchive\":{"
+      },
+      {
+        "use_case": "Box 2 (inside filters):",
+        "correct_answer": "\"prefixMatch\":["
+      }
+    ],
+    "explanations": {
+      "1": "「成本最低」的存取層是封存層 (Archive)，對應的動作是 tierToArchive。tierToCool 只會移到冷層（比熱層便宜但比封存層貴）；enableAutoTierToHotFromCool 是方向相反的自動回熱設定。",
+      "2": "要把規則限定在 container1，就用 prefixMatch 指定 \"container1/\" 這個前置詞。blobTypes 是限定 Blob 類型（blockBlob／appendBlob），blobIndexMatch 是依 Blob 索引標籤比對，兩者都不是用來鎖定容器的。",
+      "_full": "完整規則的形狀是：\nactions.baseBlob.tierToArchive.daysAfterModificationGreaterThan = 90，\nfilters.prefixMatch = [\"container1/\"]。\n記住三個層級的成本高低：熱 > 冷 > 封存（封存最便宜但取用需解除凍結），以及 filters 的三個欄位分工：prefixMatch（路徑）、blobTypes（類型）、blobIndexMatch（索引標籤）。"
     }
   },
   {
@@ -58,6 +147,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 210,
+    "type": "multiple",
+    "question": "You have an Azure AD user named User1 and a read-access geo-redundant storage (RA-GRS) account named contoso2023. You need to meet the following requirements: User1 must be able to write blob data to contoso2023; the contoso2023 account must fail over to its secondary endpoint. Which two settings should you configure?",
+    "options": {
+      "A": "Access Control (IAM)",
+      "B": "Geo-replication",
+      "C": "Access keys",
+      "D": "Data protection",
+      "E": "Shared access signature"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。要讓某個 Azure AD 使用者能「寫入 Blob 資料」，就在存取控制 (IAM) 中把資料平面的角色（例如「儲存體 Blob 資料參與者」）指派給 User1。這是以身分為基礎的授權，也是最小權限的做法。",
+      "B": "Correct. 正確。帳戶層級的容錯移轉是在「地理複寫」刀鋒視窗執行的——該頁面會顯示主要與次要區域的複寫狀態與上次同步時間，並提供「準備容錯移轉 (Prepare for failover)」動作把次要區域升級為主要。",
+      "C": "Incorrect. 錯誤。存取金鑰是整個帳戶的最高權限共用祕密，雖然拿到金鑰確實能寫入，但那不是「授權給某位使用者」的做法，也不符合最小權限；而且它跟容錯移轉毫無關係。",
+      "D": "Incorrect. 錯誤。資料保護設定的是軟性刪除、版本設定、時間點還原這類「資料復原」功能，不是跨區域的帳戶容錯移轉。",
+      "E": "Incorrect. 錯誤。共用存取簽章是產生有時限的權杖給「沒有 Azure AD 身分」的用戶端用，本題的 User1 是 Azure AD 使用者，應該用 RBAC 角色指派。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 211,
     "type": "single",
     "question": "You have an Azure subscription that contains a storage account named storage1. You plan to create a blob container named container1. You need to use customer-managed key encryption for container1. Which key should you use?",
@@ -75,6 +188,34 @@
       "C": "Incorrect. 錯誤。無論哪一種曲線，EC 金鑰都不能用於儲存體的客戶自控金鑰加密。",
       "D": "Incorrect. 錯誤。4096 確實可用，但並非「僅」限於此，範圍描述過窄。",
       "E": "Correct. 正確。Azure 儲存體的客戶自控金鑰必須是 RSA（或 RSA-HSM）金鑰，且支援的金鑰大小為 2048、3072 與 4096 三種。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 212,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a user named User1 and a storage account named storage1. The storage1 account contains container1 (Container), folder1 (File share) and Table1 (Table). User1 is assigned the following roles for storage1: Storage Blob Data Reader; Storage Table Data Contributor; Storage File Data SMB Share Contributor. For storage1, you create a shared access signature (SAS) named SAS1 with these settings: Allowed services = Table only; Allowed resource types = Service, Container, Object; Allowed permissions = Read, Write, Delete, List, Add, Create, Update; valid 01/01/2022 to 01/01/2030 (UTC+01:00); no allowed IP restriction; HTTPS only; signing key = key1. To which resources can User1 write by using SAS1 and key1?",
+    "available_options": [
+      "Table1 only",
+      "Table1 and container1 only",
+      "folder1 and Table1 only",
+      "folder1 and container1 only",
+      "Table1, folder1, and container1"
+    ],
+    "matches": [
+      {
+        "use_case": "key1:",
+        "correct_answer": "Table1, folder1, and container1"
+      },
+      {
+        "use_case": "SAS1:",
+        "correct_answer": "Table1 only"
+      }
+    ],
+    "explanations": {
+      "1": "帳戶存取金鑰 (key1) 是「共用金鑰」驗證，等同於整個儲存體帳戶的完整權限——所有服務（Blob、檔案、佇列、表格）、所有資源、讀寫全開，而且完全「繞過」Azure RBAC。所以拿 key1 可以寫入 container1、folder1 與 Table1 全部三個。（這也是為什麼實務上要盡量避免發放帳戶金鑰。）",
+      "2": "SAS1 的「允許的服務」只勾了表格，因此這個權杖只能用於表格服務——即使權限欄位把讀寫刪都勾滿了，也管不到 Blob 與檔案。所以用 SAS1 只能寫入 Table1。（同樣要注意：SAS 是由 key1 簽署的共用金鑰型憑證，授權完全由 SAS 本身的條件決定，User1 的 RBAC 角色在這裡不生效。）",
+      "_full": "本題的核心是三種授權管道彼此獨立：\n・帳戶金鑰 → 全帳戶全權限，繞過 RBAC。\n・服務 SAS／帳戶 SAS → 權限由 SAS 的服務／資源類型／權限／期間／IP／協定欄位決定，同樣繞過 RBAC。\n・Azure RBAC 角色 → 只在使用「Azure AD 身分」存取時才生效。\n因此 User1 的三個 RBAC 角色在本題兩個下拉中完全不影響答案，純粹是干擾資訊；判斷只看 key1（全開）與 SAS1（僅表格）。"
     }
   },
   {

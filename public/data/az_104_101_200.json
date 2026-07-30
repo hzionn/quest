@@ -1658,6 +1658,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 193,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storageaccount1 的 Azure 儲存體帳戶。\n你把 storageaccount1 匯出成 Azure Resource Manager 範本，內容節錄如下：\n・\"type\": \"Microsoft.Storage/storageAccount\"、\"location\": \"eastus\"\n・\"sku\": { \"name\": \"Standard_LRS\", \"tier\": \"Standard\" }\n・\"kind\": \"StorageV2\"\n・properties.networkAcls：\"bypass\": \"AzureServices\"、\"virtualNetworkRules\": []、\"ipRules\": []、\"defaultAction\": \"Allow\"\n・\"supportsHttpsTrafficOnly\": true\n・properties.encryption：file 與 blob 皆 \"keyType\": \"Account\"、\"enabled\": true；\"keySource\": \"Microsoft.Storage\"\n・\"accessTier\": \"Hot\"\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "公用 IP 位址為 131.107.103.10 的伺服器可以存取 storageaccount1。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "storageaccount1 中的個別 Blob 可以設定為使用封存層。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "Azure Active Directory (Azure AD) 的全域管理員可以用自己的 Azure AD 認證，存取 storageaccount1 上託管的檔案共用。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。networkAcls 的 defaultAction 是 \"Allow\"，而且 ipRules 與 virtualNetworkRules 都是空的——等於「允許所有網路」，沒有任何來源限制，因此任何公用 IP 都連得到（實際能否讀寫資料還要看授權，但網路層是通的）。",
+      "2": "是。帳戶種類是 StorageV2（一般用途 v2），支援 Blob 存取層，而且存取層可以「逐個 Blob」設定——帳戶層級的 accessTier: Hot 只是新 Blob 的預設值，個別 Blob 仍可改成冷層或封存層。",
+      "3": "否。要用身分認證（而非帳戶金鑰）掛接 Azure 檔案共用，必須在儲存體帳戶上啟用檔案的識別式驗證——也就是 azureFilesIdentityBasedAuthentication 設為 AD DS 或 Microsoft Entra Domain Services。本範本完全沒有這一段設定，所以只能用儲存體帳戶名稱與存取金鑰掛接；而且「Azure AD 全域管理員」這個目錄角色本身也不會授予檔案共用的存取權。",
+      "_full": "逐段讀範本就能作答：\n・networkAcls.defaultAction = Allow 且兩個規則陣列皆空 → 網路完全開放（第 1 項是）。\n・kind = StorageV2 → 支援存取層，且可逐個 Blob 設定（第 2 項是）。\n・沒有 azureFilesIdentityBasedAuthentication → 檔案共用不支援身分驗證，只能用帳戶金鑰（第 3 項否）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 195,
     "type": "single",
     "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中有一個名為 container1 的 Blob 容器。你必須防止新加入 container1 的內容在「一年內」被修改。你應該設定什麼？",
@@ -1673,6 +1703,36 @@
       "B": "正確。在容器的存取原則中設定「不可變 Blob 儲存體」的時間型保留原則 (time-based retention policy)，指定保留期間一年，即可讓期間內的 Blob 進入 WORM 狀態而無法修改或刪除。",
       "C": "錯誤。IAM 只是授與或移除某些身分的權限，具備權限者依然能修改內容，無法達成不可變的保證。",
       "D": "錯誤。容器的公用存取等級（私人／Blob／容器）控制的是匿名讀取範圍，與防止修改無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 196,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中的 Blob 容器預設存取層為熱層 (Hot)，並包含一個名為 container1 的容器。\n你在 storage1 中建立了下列生命週期管理規則：\n・Rule1｜範圍：以篩選條件限定 Blob｜Blob 類型：區塊 Blob｜子類型：基底 Blob｜前置詞比對：container1/Dep1\n　規則內容：基底 Blob 若「2 天」未修改 → 移到封存儲存體；若「9 天」未修改 → 刪除 Blob。\n・Rule2｜範圍：套用到 storage1 中所有 Blob｜Blob 類型：區塊 Blob｜子類型：基底 Blob｜前置詞比對：不適用\n　規則內容：基底 Blob 若「3 天」未修改 → 移到冷儲存體；若「9 天」未修改 → 移到封存儲存體。\n\n你執行了下列動作：\n・10 月 1 日：上傳 Dep1File1.docx、File2.docx、File3.docx 三個檔案到 container1。\n・10 月 2 日：編輯 Dep1File1.docx 與 File3.docx。\n・10 月 5 日：編輯 File2.docx。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "10 月 10 日，你可以讀取 Dep1File1.docx。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "10 月 10 日，你可以讀取 File2.docx。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "10 月 10 日，你可以讀取 File3.docx。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。Dep1File1.docx 的名稱符合 Rule1 的前置詞 container1/Dep1，所以 Rule1 生效：最後修改是 10 月 2 日，2 天未修改（10 月 4 日）就被移到「封存層」。封存層的 Blob 處於離線狀態，必須先解除凍結 (rehydrate) 才能讀取，所以 10 月 10 日無法直接讀取。",
+      "2": "是。File2.docx 不符合 Dep1 前置詞，只受 Rule2 約束。最後修改是 10 月 5 日：3 天未修改（10 月 8 日）移到冷層；9 天未修改要到 10 月 14 日才會進封存層。10 月 10 日時它在冷層，而冷層可以直接讀取。",
+      "3": "是。File3.docx 同樣只受 Rule2 約束。最後修改是 10 月 2 日：10 月 5 日移到冷層；9 天未修改要到 10 月 11 日才進封存層。10 月 10 日仍在冷層，可以直接讀取。",
+      "_full": "作答步驟固定：① 先看檔名符不符合前置詞篩選，決定哪些規則適用；② 從「最後修改日」起算天數；③ 判斷當天所在的存取層。\n關鍵觀念是「熱層與冷層都能直接讀取，只有封存層不能」——封存層的 Blob 必須先解除凍結（通常數小時）。\n本題只有 Dep1File1.docx 落入封存層，另外兩個都還在冷層。"
     }
   },
   {
@@ -1697,6 +1757,37 @@
       "C": "正確。要在入口網站中瀏覽到該儲存體帳戶並進入容器畫面，使用者還需要管理平面的讀取權限；讀者角色正好只給檢視資源的最小權限。",
       "D": "錯誤。參與者能完整管理資源（含取得金鑰），權限過大。",
       "E": "錯誤。Blob 資料讀取者只能讀取，無法上傳檔案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 198,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶用來存放影像。\n你必須建立一個新的儲存體帳戶，並用「物件複寫 (object replication)」把 storage1 中的影像複寫到新帳戶。\n你應該如何設定新帳戶？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 StorageV2",
+      "只有 StorageV2 或 FileStorage",
+      "只有 StorageV2 或 BlobStorage",
+      "StorageV2、BlobStorage 或 FileStorage",
+      "容器 (Container)",
+      "檔案共用 (File share)",
+      "表格 (Table)",
+      "佇列 (Queue)"
+    ],
+    "matches": [
+      {
+        "use_case": "帳戶類型：",
+        "correct_answer": "只有 StorageV2 或 BlobStorage"
+      },
+      {
+        "use_case": "要在新帳戶中建立的物件類型：",
+        "correct_answer": "容器 (Container)"
+      }
+    ],
+    "explanations": {
+      "1": "物件複寫只支援「區塊 Blob」，因此來源與目的帳戶都必須是支援區塊 Blob 的一般用途 v2 (StorageV2) 或 BlobStorage 帳戶。FileStorage 是檔案專用帳戶、沒有 Blob 服務，所以含 FileStorage 的選項都不對。",
+      "2": "物件複寫的規則是「來源容器 → 目的容器」，所以必須先在新帳戶中建立一個「容器」作為複寫目的地。檔案共用、表格、佇列都不是物件複寫的對象。",
+      "_full": "物件複寫的三個前提：① 只支援區塊 Blob（因此帳戶必須是 StorageV2 或 BlobStorage）；② 複寫單位是「容器」，來源與目的都要有容器；③ 兩邊都必須啟用 Blob 版本設定（來源另需變更摘要）。它也不要求兩個帳戶同區域——這正是它常被用來做跨區域散發的原因。"
     }
   },
   {
