@@ -862,6 +862,126 @@
   },
   {
     "exam": "AZ-104",
+    "id": 243,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 有下列生命週期管理規則：\n・Rule1｜Blob 前置詞 container1/｜若基底 Blob 最後修改超過 3 天 → 移到封存儲存體\n・Rule2｜Blob 前置詞：不適用（全部）｜若超過 5 天 → 移到冷儲存體\n・Rule3｜Blob 前置詞 container2/｜若超過 10 天 → 刪除 Blob\n・Rule4｜Blob 前置詞 container2/｜若超過 15 天 → 移到封存儲存體\n\n6 月 1 日，你在 storage1 中存入兩個 Blob：\n・File1｜位置 container1｜存取層 熱層 (Hot)\n・File2｜位置 container2｜存取層 熱層 (Hot)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "6 月 6 日，File1 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 7 日，File2 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "6 月 16 日，File2 會存放在封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1 與 Rule2，而 Rule1 的門檻較短：超過 3 天（6 月 4 日）就直接移到「封存層」。所以 6 月 6 日時 File1 在封存層，不是冷層。",
+      "2": "是。File2 在 container2，適用 Rule2（全部）、Rule3 與 Rule4。門檻最短的 Rule2 在超過 5 天（6 月 6 日）把它移到冷層；Rule3 的刪除要到 6 月 11 日才發生。因此 6 月 7 日時 File2 正在冷層。",
+      "3": "否。Rule3 會在超過 10 天（6 月 11 日）刪除 File2，Blob 在那時就不存在了，所以 6 月 16 日不可能在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "同一組規則、三個不同的時間點：\n・6 月 4 日：File1 進封存層（Rule1，3 天）。\n・6 月 6 日：File2 進冷層（Rule2，5 天）。\n・6 月 11 日：File2 被刪除（Rule3，10 天）→ Rule4 的 15 天再也不會觸發。\n多條規則同時適用時，一律按「天數門檻由小到大」排出事件順序，而且一旦觸發刪除，後面的規則就沒有意義了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 244,
+    "type": "matching",
+    "question": "你有一個名為 contoso2024 的 Azure 儲存體帳戶，其中包含下列資源：\n・container1｜Blob 容器｜內容 File1\n・share1｜Azure 檔案共用｜內容 File2\n\n使用者對 contoso2024 的權限如下：\n・User1｜讀取者 (Reader) 角色\n・User2｜儲存體帳戶參與者 (Storage Account Contributor) 角色\n・User3｜持有 contoso2024 的一組存取金鑰\n\ncontoso2024 的「設定」頁面顯示如下（節錄）：\n・帳戶種類 StorageV2（一般用途 v2）、效能 標準\n・需要安全傳輸：已啟用\n・允許 Blob 公用存取：已啟用\n・允許儲存體帳戶金鑰存取：「已停用」\n・允許 SAS 到期間隔的建議上限：已停用\n・在 Azure 入口網站中預設為 Azure AD 授權：已停用\n・最低 TLS 版本 1.2、Blob 存取層（預設）熱層\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以讀取 File1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User2 可以讀取 File2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User3 可以讀取 File1 與 File2。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。「讀取者」是管理平面的角色，只能檢視儲存體帳戶的組態，不含任何讀取資料的權限。要讀 Blob 內容必須有資料平面角色（例如儲存體 Blob 資料讀取者）。",
+      "2": "否。「儲存體帳戶參與者」同樣是管理平面角色——可以管理帳戶、而且平常可以透過「列出金鑰」再用金鑰存取資料；但本帳戶已把「允許儲存體帳戶金鑰存取」停用，這條路被封住了。該角色本身不含檔案共用的資料存取權，所以讀不到 File2。",
+      "3": "否。關鍵就是「允許儲存體帳戶金鑰存取：已停用」——停用之後，任何以共用金鑰（或由金鑰簽署的 SAS）發出的請求都會被拒絕，即使手上握有正確的金鑰也一樣。此時只有 Azure AD 身分授權的請求會被接受。",
+      "_full": "本題的樞紐是一個設定：「允許儲存體帳戶金鑰存取 = 停用」。\n・停用後：共用金鑰與 SAS 全面失效（第 3 項否），連「先列出金鑰再用金鑰」的迂迴路徑也走不通（第 2 項否）。\n・剩下唯一可行的是 Azure AD 授權，但那需要「資料平面」角色；讀取者與儲存體帳戶參與者都只是管理平面角色（第 1、2 項否）。\n管理平面角色 ≠ 資料存取權，這是儲存體題目最常見的分界。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 245,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶連結到一個混合式 Microsoft Entra 租用戶，其中包含下列使用者：\n・User1｜已啟用內部部署同步：否（純雲端帳戶）\n・User2｜已啟用內部部署同步：是（混合式身分）\n\n你建立了下列 Azure 檔案共用：\n・share1｜儲存體帳戶 contoso2024\n・share2｜儲存體帳戶 contoso2024\n・share3｜儲存體帳戶 contoso2025\n\n你為 contoso2024 設定識別式存取如下：\n・步驟 1「啟用 Active Directory 來源」：Active Directory 已啟用（Azure AD DS 與 Azure AD Kerberos 顯示「已設定其他存取方法」）\n　畫面提示：Azure AD 不是網域控制站，只以 Azure AD 為基礎的使用者帳戶目前不支援。\n・步驟 2「設定共用層級權限」：預設共用層級權限 = 「為所有已驗證的使用者和群組啟用權限」；選取的角色 = 儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n（contoso2025 未設定識別式存取。）\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以存取 share1 中的內容。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User2 可以存取 share2 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User2 可以存取 share3 中的內容。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。contoso2024 啟用的識別來源是「Active Directory（內部部署 AD DS）」，而 User1 是純雲端帳戶、沒有對應的 AD DS 身分。刀鋒視窗上的提示已經寫明：只存在於 Azure AD 的使用者帳戶不受支援，因此 User1 無法通過 Kerberos 驗證來存取 share1。",
+      "2": "是。User2 是混合式身分（有內部部署 AD DS 帳戶並同步到 Entra），符合 AD DS 識別來源的要求；而共用層級權限設為「為所有已驗證的使用者和群組啟用權限」並給了「SMB 共用參與者」角色，所以不需要個別指派也能讀寫。share2 與 share1 同屬 contoso2024，設定一體適用。",
+      "3": "否。識別式存取是設定在「儲存體帳戶」層級的，而這些設定只做在 contoso2024 上。share3 位於 contoso2025，該帳戶沒有啟用任何識別來源，因此無法用網域身分掛接（只能用帳戶金鑰）。",
+      "_full": "三個判斷點：\n① 識別來源決定「誰能驗證」——選 AD DS 時，純雲端帳戶不支援（要支援純雲端身分得用 Azure AD Kerberos，但那要求混合式身分；或改用 Azure AD DS）。\n② 預設共用層級權限「為所有已驗證的使用者和群組啟用」會給每個通過驗證的身分一個預設角色，不必逐一指派。\n③ 識別式存取是「儲存體帳戶」層級設定，不會跨帳戶生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 246,
+    "type": "matching",
+    "question": "你的網路中有一個內部部署 Active Directory Domain Services (AD DS) 網域，包含下列身分：\n・User1｜使用者｜位於組織單位 OU2\n・User2｜使用者｜位於組織單位 OU1\n・Group1｜全域群組，成員包含 User1｜位於組織單位 OU1\n\n你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。storage1 中的檔案共用識別來源是 AD DS，且「預設共用層級權限」設為「為所有已驗證的使用者和群組啟用權限」。\n你建立了一個名為 share1 的 Azure 檔案共用，其角色指派如下：\n・User2｜儲存體檔案資料 SMB 共用讀取者 (Storage File Data SMB Share Reader)\n・Group1｜儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n你有一個 Microsoft Entra 租用戶，其中有一個純雲端使用者 User3。\n你使用 Microsoft Entra Connect 只把 OU1 從 AD DS 網域同步到 Entra 租用戶。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以存取 share1 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User2 可以存取 share1 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User3 可以存取 share1 中的內容。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。雖然 User1 在 OU2、沒有被同步到 Entra，因此拿不到任何 RBAC 角色指派，但「預設共用層級權限：為所有已驗證的使用者和群組啟用權限」會給「每一個通過 AD DS 驗證的身分」一個預設角色。User1 是網域中的有效帳戶，能通過 Kerberos 驗證，所以靠預設權限就存取得到。",
+      "2": "是。User2 在 OU1、已同步到 Entra，而且被明確指派了「SMB 共用讀取者」角色，可以讀取 share1 的內容（即使沒有這個指派，預設共用層級權限也已足夠）。",
+      "3": "否。share1 的識別來源是 AD DS，存取時必須以網域身分通過 Kerberos 驗證。User3 是純雲端帳戶、在 AD DS 網域中不存在，因此無法驗證，「所有已驗證的使用者」這個預設權限也套不到他身上。",
+      "_full": "兩個容易混淆的機制要分清：\n① 共用「層級」權限：預設共用層級權限開啟後，所有通過識別來源驗證的身分都取得指定角色，不需要個別 RBAC 指派——這就是 User1 明明沒同步也能存取的原因。\n② 是否同步到 Entra：只影響「能不能被指派 RBAC 角色」，不影響能不能通過 AD DS 的 Kerberos 驗證。\n而純雲端帳戶（User3）在 AD DS 識別來源下根本無法驗證，兩個機制都幫不了他。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 248,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「讀者及資料存取 (Reader and Data Access)」角色指派給 User1。\n此解法是否達成目標？",

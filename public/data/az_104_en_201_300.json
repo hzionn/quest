@@ -862,6 +862,126 @@
   },
   {
     "exam": "AZ-104",
+    "id": 243,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains a storage account named storage1 that has the following lifecycle management rules: Rule1 (blob prefix container1/, if base were last modified more than 3 days ago, move to archive storage); Rule2 (no prefix, more than 5 days, move to cool storage); Rule3 (prefix container2/, more than 10 days, delete the blob); Rule4 (prefix container2/, more than 15 days, move to archive storage). On June 1, you store two blobs in storage1: File1 (container1, Hot access tier) and File2 (container2, Hot access tier). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "On June 6, File1 will be stored in the Cool access tier.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "On June 7, File2 will be stored in the Cool access tier.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "On June 16, File2 will be stored in the Archive access tier.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1 與 Rule2，而 Rule1 的門檻較短：超過 3 天（6 月 4 日）就直接移到「封存層」。所以 6 月 6 日時 File1 在封存層，不是冷層。",
+      "2": "是。File2 在 container2，適用 Rule2（全部）、Rule3 與 Rule4。門檻最短的 Rule2 在超過 5 天（6 月 6 日）把它移到冷層；Rule3 的刪除要到 6 月 11 日才發生。因此 6 月 7 日時 File2 正在冷層。",
+      "3": "否。Rule3 會在超過 10 天（6 月 11 日）刪除 File2，Blob 在那時就不存在了，所以 6 月 16 日不可能在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "同一組規則、三個不同的時間點：\n・6 月 4 日：File1 進封存層（Rule1，3 天）。\n・6 月 6 日：File2 進冷層（Rule2，5 天）。\n・6 月 11 日：File2 被刪除（Rule3，10 天）→ Rule4 的 15 天再也不會觸發。\n多條規則同時適用時，一律按「天數門檻由小到大」排出事件順序，而且一旦觸發刪除，後面的規則就沒有意義了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 244,
+    "type": "matching",
+    "question": "You have an Azure Storage account named contoso2024 that contains container1 (Blob container, contents File1) and share1 (Azure Files share, contents File2). You have users with permissions for contoso2024 as follows: User1 (Reader role); User2 (Storage Account Contributor role); User3 (has an access key for contoso2024). The contoso2024 account is configured as follows: account kind StorageV2 (general purpose v2), performance Standard, secure transfer required Enabled, allow Blob public access Enabled, allow storage account key access DISABLED, allow recommended upper limit for SAS expiry interval Disabled, default to Azure Active Directory authorization in the Azure portal Disabled, minimum TLS version 1.2, blob access tier (default) Hot. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 can read File1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User2 can read File2.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User3 can read File1 and File2.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。「讀取者」是管理平面的角色，只能檢視儲存體帳戶的組態，不含任何讀取資料的權限。要讀 Blob 內容必須有資料平面角色（例如儲存體 Blob 資料讀取者）。",
+      "2": "否。「儲存體帳戶參與者」同樣是管理平面角色——可以管理帳戶、而且平常可以透過「列出金鑰」再用金鑰存取資料；但本帳戶已把「允許儲存體帳戶金鑰存取」停用，這條路被封住了。該角色本身不含檔案共用的資料存取權，所以讀不到 File2。",
+      "3": "否。關鍵就是「允許儲存體帳戶金鑰存取：已停用」——停用之後，任何以共用金鑰（或由金鑰簽署的 SAS）發出的請求都會被拒絕，即使手上握有正確的金鑰也一樣。此時只有 Azure AD 身分授權的請求會被接受。",
+      "_full": "本題的樞紐是一個設定：「允許儲存體帳戶金鑰存取 = 停用」。\n・停用後：共用金鑰與 SAS 全面失效（第 3 項否），連「先列出金鑰再用金鑰」的迂迴路徑也走不通（第 2 項否）。\n・剩下唯一可行的是 Azure AD 授權，但那需要「資料平面」角色；讀取者與儲存體帳戶參與者都只是管理平面角色（第 1、2 項否）。\n管理平面角色 ≠ 資料存取權，這是儲存體題目最常見的分界。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 245,
+    "type": "matching",
+    "question": "You have an Azure subscription linked to a hybrid Microsoft Entra tenant. The tenant contains User1 (on-premises sync enabled No) and User2 (on-premises sync enabled Yes). You create the Azure Files shares share1 (storage account contoso2024), share2 (contoso2024) and share3 (contoso2025). You configure identity-based access for contoso2024 as follows: Step 1 Enable an Active Directory source - Active Directory Enabled (Azure AD DS and Azure AD Kerberos show 'Another access method is already configured'; the blade notes that Azure AD is not a domain controller and user accounts solely based in Azure AD are not supported). Step 2 Set share-level permissions - Default share-level permissions = Enable permissions for all authenticated users and groups, with the role Storage File Data SMB Share Contributor. contoso2025 has no identity-based access configured. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 can access the content in share1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User2 can access the content in share2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "User2 can access the content in share3.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。contoso2024 啟用的識別來源是「Active Directory（內部部署 AD DS）」，而 User1 是純雲端帳戶、沒有對應的 AD DS 身分。刀鋒視窗上的提示已經寫明：只存在於 Azure AD 的使用者帳戶不受支援，因此 User1 無法通過 Kerberos 驗證來存取 share1。",
+      "2": "是。User2 是混合式身分（有內部部署 AD DS 帳戶並同步到 Entra），符合 AD DS 識別來源的要求；而共用層級權限設為「為所有已驗證的使用者和群組啟用權限」並給了「SMB 共用參與者」角色，所以不需要個別指派也能讀寫。share2 與 share1 同屬 contoso2024，設定一體適用。",
+      "3": "否。識別式存取是設定在「儲存體帳戶」層級的，而這些設定只做在 contoso2024 上。share3 位於 contoso2025，該帳戶沒有啟用任何識別來源，因此無法用網域身分掛接（只能用帳戶金鑰）。",
+      "_full": "三個判斷點：\n① 識別來源決定「誰能驗證」——選 AD DS 時，純雲端帳戶不支援（要支援純雲端身分得用 Azure AD Kerberos，但那要求混合式身分；或改用 Azure AD DS）。\n② 預設共用層級權限「為所有已驗證的使用者和群組啟用」會給每個通過驗證的身分一個預設角色，不必逐一指派。\n③ 識別式存取是「儲存體帳戶」層級設定，不會跨帳戶生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 246,
+    "type": "matching",
+    "question": "Your network contains an on-premises Active Directory Domain Services (AD DS) domain. The domain contains User1 (User, in OU2), User2 (User, in OU1) and Group1 (Global group that contains User1, in OU1). You have an Azure subscription that contains a storage account named storage1. The file shares in storage1 have an identity source of AD DS and Default share-level permissions set to Enable permissions for all authenticated users and groups. You create an Azure Files share named share1 that has these roles: User2 = Storage File Data SMB Share Reader; Group1 = Storage File Data SMB Share Contributor. You have a Microsoft Entra tenant that contains a cloud-only user named User3. You use Microsoft Entra Connect to sync OU1 from the AD DS domain to the Microsoft Entra tenant. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 can access content in share1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "User2 can access content in share1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "User3 can access content in share1.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。雖然 User1 在 OU2、沒有被同步到 Entra，因此拿不到任何 RBAC 角色指派，但「預設共用層級權限：為所有已驗證的使用者和群組啟用權限」會給「每一個通過 AD DS 驗證的身分」一個預設角色。User1 是網域中的有效帳戶，能通過 Kerberos 驗證，所以靠預設權限就存取得到。",
+      "2": "是。User2 在 OU1、已同步到 Entra，而且被明確指派了「SMB 共用讀取者」角色，可以讀取 share1 的內容（即使沒有這個指派，預設共用層級權限也已足夠）。",
+      "3": "否。share1 的識別來源是 AD DS，存取時必須以網域身分通過 Kerberos 驗證。User3 是純雲端帳戶、在 AD DS 網域中不存在，因此無法驗證，「所有已驗證的使用者」這個預設權限也套不到他身上。",
+      "_full": "兩個容易混淆的機制要分清：\n① 共用「層級」權限：預設共用層級權限開啟後，所有通過識別來源驗證的身分都取得指定角色，不需要個別 RBAC 指派——這就是 User1 明明沒同步也能存取的原因。\n② 是否同步到 Entra：只影響「能不能被指派 RBAC 角色」，不影響能不能通過 AD DS 的 Kerberos 驗證。\n而純雲端帳戶（User3）在 AD DS 識別來源下根本無法驗證，兩個機制都幫不了他。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 248,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Storage account named storage1. You need to enable a user named User1 to list and regenerate storage account keys for storage1. Solution: You assign the Reader and Data Access role to User1. Does this meet the goal?",
