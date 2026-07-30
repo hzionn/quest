@@ -561,13 +561,13 @@
       },
       {
         "use_case": "To ensure that you can integrate AKS1 with an Azure container registry, you must modify the [answer choice] setting.",
-        "correct_answer": "AKS-managed Azure Active Directory"
+        "correct_answer": "Authentication method"
       }
     ],
     "explanations": {
       "1": "要在 AKS 中執行 Windows 節點集區（也就是 Windows 容器），網路外掛程式必須是 Azure CNI；目前設定是 Kubenet，而 Kubenet「不支援」Windows 節點集區。所以必須修改「網路設定」把它改成 Azure CNI。（虛擬節點是 ACI 型的無伺服器節點，與 Windows 節點集區是不同的東西；增加節點集區數量或改 Kubernetes 版本都無法突破 Kubenet 的限制。）",
-      "2": "官方標示為「AKS 管理的 Azure Active Directory」。與 Azure 容器登錄整合的標準做法是讓叢集擁有一個身分（受控識別），再把 AcrPull 角色指派給它。目前叢集用的是「服務主體」而 AKS 管理的 AAD 為停用。\n【爭議提醒】依 Microsoft 文件，az aks update --attach-acr 對「服務主體」型叢集同樣可行（把角色指派給該服務主體），因此更貼近題意的選項應該是「驗證方法 (Authentication method)」——改用受控識別；而 AKS 管理的 AAD 管的是「使用者登入叢集」的驗證，與存取容器登錄無關。本題保留官方標示，作答時請留意。",
-      "_full": "第一格是明確的產品限制：Windows 節點集區「必須」搭配 Azure CNI，Kubenet 只支援 Linux 節點——這是常考的硬性規則。\n第二格則是官方標示有疑義的一格：與 ACR 整合靠的是叢集身分（受控識別或服務主體）加上 AcrPull 角色指派，而「AKS 管理的 AAD」處理的是使用者登入叢集的驗證，兩者並不相同；解析中已標明爭議。"
+      "2": "「驗證方法 (Authentication method)」。【答案校正】官方標示為「AKS 管理的 Azure Active Directory」，但那一項管的是「使用者登入叢集」（把 Kubernetes RBAC 綁到 Entra 身分），與叢集去「提取容器映像」完全無關。\n與 ACR 整合靠的是「叢集本身的身分」加上 AcrPull 角色指派，而目前叢集的驗證方法是「服務主體」——現行建議與 az aks update --attach-acr 的標準路徑都是改用「受控識別」，這正是「驗證方法」這一項在設定的東西。因此判定為「驗證方法」。",
+      "_full": "第一格是明確的產品限制：Windows 節點集區「必須」搭配 Azure CNI，Kubenet 只支援 Linux 節點——這是常考的硬性規則。\n第二格要分清兩件事：「AKS 管理的 Azure AD」= 使用者登入叢集的驗證；「驗證方法」= 叢集本身用什麼身分去存取其他 Azure 資源（服務主體或受控識別）。與 ACR 整合屬於後者，所以要改的是驗證方法（官方標示前者，已校正）。"
     }
   },
   {
@@ -805,7 +805,7 @@
     "matches": [
       {
         "use_case": "The operating system disk of VM1 can be used as a source for a version of Image1.",
-        "correct_answer": "Yes"
+        "correct_answer": "No"
       },
       {
         "use_case": "The operating system disk of VM2 can be used as a source for a version of Image1.",
@@ -817,10 +817,10 @@
       }
     ],
     "explanations": {
-      "1": "是（官方判定）。來源 VM 不必與映像定義同區域——建立映像版本時可以指定來源區域，再複寫到目標區域，所以 West Europe 沒問題；而且 Image1 的 OS 狀態是「特製化」，代表可以直接拿「未經 Sysprep 一般化」的 VM 磁碟當來源。\n【爭議提醒】VM1 是「世代 2」，而 Image1 的 VM 世代是 V1。實務上映像定義的世代必須與來源相符（Gen2 的磁碟不能放進 V1 的定義），照此本項應為「否」。本題保留官方標示。",
+      "1": "否。【答案校正】官方標示為「是」。區域確實不是問題（來源 VM 不必與映像定義同區域），OS 狀態「特製化」也符合直接沿用磁碟的做法。但 VM1 是「世代 2」，而 Image1 的 VM 世代欄位是「V1」——映像定義的世代是一項固定屬性，必須與來源磁碟相符，Gen2 的作業系統磁碟不能作為 V1 映像定義的版本來源（要用它得另建一個 V2 的映像定義）。因此判定為「否」。",
       "2": "是。VM2 在 East US（與 Image1 定義同區域）、世代 1 與 V1 相符。vCPU 只有 2 個、低於「建議的 VM vCPU 數 4-16」，但那個欄位只是「建議」——它是給使用者挑選映像時參考的中繼資料，並不會被強制檢查。",
       "3": "是。VM3 世代 1 與 V1 相符；位於 West US 與定義區域不同，但如前所述來源區域不受限制；12 vCPU 也落在建議範圍內。",
-      "_full": "三個判斷要素：\n① 區域：來源 VM 與映像定義「不需要」同區域，映像版本可以指定來源並複寫到多個區域。\n② OS 狀態：「一般化 (Generalized)」要求來源先經過 Sysprep／waagent -deprovision；「特製化 (Specialized)」則直接沿用磁碟現狀——本題是特製化。\n③ 「建議的 vCPU／記憶體」純屬中繼資料，不構成限制。\n唯一有疑義的是 VM 世代：官方三項全判「是」，但 VM1 的 Gen2 與定義的 V1 並不相符，解析中已標明。"
+      "_full": "三個判斷要素：\n① 區域：來源 VM 與映像定義「不需要」同區域，映像版本可以指定來源並複寫到多個區域。\n② OS 狀態：「一般化 (Generalized)」要求來源先經過 Sysprep／waagent -deprovision；「特製化 (Specialized)」則直接沿用磁碟現狀——本題是特製化。\n③ 「建議的 vCPU／記憶體」純屬中繼資料，不構成限制。\n④ VM 世代：映像定義的世代必須與來源磁碟相符，V1 的定義只能收 Gen1 的磁碟。\n【答案校正】官方三項全判「是」，但 VM1 是 Gen2、與定義的 V1 不符，已改判為「否」；VM2 與 VM3 都是 Gen1，維持「是」。"
     }
   },
   {
@@ -969,14 +969,14 @@
       },
       {
         "use_case": "WebApp2 can communicate with VM1.",
-        "correct_answer": "No"
+        "correct_answer": "Yes"
       }
     ],
     "explanations": {
       "1": "是。WebApp1 使用 Premium 層的「區域虛擬網路整合」接入 VNet1，而 VNet1 與 VNet2 已對等互連，所以它的「輸出」流量可以到達 VNet2 中的 VM2（若要讓所有輸出流量都走虛擬網路，記得把 WEBSITE_VNET_ROUTE_ALL／「輸出流量的路由」開啟）。",
       "2": "否。虛擬網路整合只影響「輸出」方向——應用程式仍然是透過 App Service 的公用前端接收請求，並不存在於子網路中，因此子網路上的 NSG1 管不到進入 WebApp1 的輸入流量。要限制輸入必須用應用程式本身的「存取限制」規則，或改用私人端點／App Service 環境。",
-      "3": "否（官方判定）。\n【爭議提醒】WebApp2 是 Isolated 層、部署在 VNet2 的 Subnet2 中（App Service 環境），而 VNet2 與 VNet1「直接」對等互連，因此照一般的網路規則它應該連得到 Subnet1 的 VM1，答案該是「是」。本題保留官方標示，但這一項與第一項的情境幾乎對稱，官方給出相反答案，依據並不可靠。",
-      "_full": "本題的核心是「虛擬網路整合是單向的（只管輸出）」：應用程式可以主動連進虛擬網路（含對等互連的網路），但外界進入應用程式的流量不經過子網路，所以 NSG 管不到——要控制輸入得用存取限制、私人端點或 App Service 環境。\n第三項的官方答案與第一項對稱卻相反，解析中已標明爭議。"
+      "3": "是。【答案校正】官方標示為「否」，但這與第一項的情境幾乎對稱，判準卻相反。\nWebApp2 是 Isolated 層、直接部署在 VNet2 的 Subnet2 中（App Service 環境），它本身就是虛擬網路裡的一員；而 VNet2 與 VNet1 是「直接」對等互連（不是需要傳遞的多層對等），因此它連得到 Subnet1 的 VM1。既然第一項（僅透過虛擬網路整合接入 VNet1）都判定能連到對等網路的 VM2，位置更「深」的 App Service 環境沒有理由連不到，故判定為「是」。",
+      "_full": "本題的核心是「虛擬網路整合是單向的（只管輸出）」：應用程式可以主動連進虛擬網路（含對等互連的網路），但外界進入應用程式的流量不經過子網路，所以 NSG 管不到——要控制輸入得用存取限制、私人端點或 App Service 環境。\n【答案校正】第三項官方判「否」，但它與第一項情境對稱（都是透過直接對等互連的虛擬網路通訊），已改判為「是」。"
     }
   },
   {

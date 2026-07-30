@@ -1508,17 +1508,17 @@
     "matches": [
       {
         "use_case": "儲存體帳戶：",
-        "correct_answer": "storage1、storage2 和 storage3"
+        "correct_answer": "只有 storage3"
       },
       {
         "use_case": "Log Analytics 工作區：",
-        "correct_answer": "只有 Analytics3"
+        "correct_answer": "Analytics1、Analytics2 和 Analytics3"
       }
     ],
     "explanations": {
-      "1": "官方標示為三個都可以——也就是把診斷記錄「封存到儲存體帳戶」時不限區域。\n【爭議提醒】Azure 監視器的診斷設定文件寫的是相反的規則：封存目的地的儲存體帳戶必須與被監視的區域性資源「位於同一區域」，照此只有 storage3（West Europe，與 Vault1 同區域）合格。而且來源給第一格的解釋文字其實是在講 Log Analytics 工作區與保存庫位置無關，明顯是貼錯位置。本題保留官方標示，但這一格的依據並不可靠。",
-      "2": "官方標示為只有 Analytics3——理由是 Vault1 與 Analytics3 同在 West Europe。\n（要提醒的是：這一格與第一格的判準正好相反，官方對「儲存體帳戶不限區域、工作區必須同區域」的說法本身並不一致。作答時以官方標示為準，但實務上請以當下的 Azure 監視器文件為依據。）",
-      "_full": "這是一題官方答案與文件說法互相衝突的題目，兩格的判準彼此矛盾：第一格採「不限區域」、第二格採「必須同區域」。\n考試作答建議記官方標示（儲存體三個都可以、工作區只有同區域的 Analytics3）；實務上請以 Azure 監視器診斷設定的最新文件為準——資源群組在本題完全不是判斷依據，這一點兩種說法都同意。"
+      "1": "只有 storage3。【答案校正】官方標示為「三個都可以」，但這與 Azure 監視器診斷設定的規則相反：封存目的地的儲存體帳戶必須與被監視的「區域性資源」位於同一區域。Vault1 在 West Europe，因此只有同區域的 storage3 合格；storage1（East US）與 storage2（West US）都不行。",
+      "2": "Analytics1、Analytics2 和 Analytics3 都可以。【答案校正】官方標示為「只有 Analytics3」，理由是它與 Vault1 同區域——但 Log Analytics 工作區「不需要」與被監視的資源同區域（可以跨區域、甚至跨訂用帳戶），因此三個工作區都能當診斷目的地。",
+      "_full": "【答案校正】本題官方答案的兩格判準互相矛盾（第一格採「不限區域」、第二格採「必須同區域」），而且來源給第一格的解釋文字其實是在講工作區，明顯貼錯位置。依 Azure 監視器診斷設定的實際規則改判：\n・封存到「儲存體帳戶」→ 必須與區域性資源同區域（只有 storage3）。\n・傳送到「Log Analytics 工作區」→ 不受區域限制（三個都可以）。\n資源群組在本題完全不是判斷依據。"
     }
   },
   {
