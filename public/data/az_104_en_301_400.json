@@ -413,6 +413,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 325,
+    "type": "matching",
+    "question": "You need to complete an ARM template so that it creates a number of data disks determined by a parameter:  \"parameters\": { \"numberOfDataDisks\": { \"type\": \"int\", \"metadata\": { \"description\": \"The number of dataDisks to create.\" } }, ... }, \"resources\": [ { \"type\": \"Microsoft.Compute/virtualMachines\", \"apiVersion\": \"2017-03-30\", ... \"properties\": { \"storageProfile\": { ... [box 1] { \"name\": \"dataDisks\", \"count\": \"[parameters('numberOfDataDisks')]\", \"input\": { \"diskSizeGB\": 1023, \"lun\": [box 2]('dataDisks')]\", \"createOption\": \"Empty\" } } ... } } } ]",
+    "available_options": [
+      "\"copy\":[",
+      "\"copyIndex\":[",
+      "\"dependsOn\":[",
+      "\"[copy",
+      "\"[copyIndex",
+      "\"[dependsOn"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the section inside storageProfile):",
+        "correct_answer": "\"copy\":["
+      },
+      {
+        "use_case": "Box 2 (the value of lun):",
+        "correct_answer": "\"[copyIndex"
+      }
+    ],
+    "explanations": {
+      "1": "要在「資源的屬性內」重複產生一個陣列（這裡是多顆資料磁碟），用的是屬性層級的 copy 區段——它接受 name（目標屬性名稱）、count（重複次數）與 input（每次產生的內容）。dependsOn 是宣告部署相依性，與重複無關；copyIndex 是函式而不是區段名稱。",
+      "2": "每顆資料磁碟的 lun（邏輯單元編號）必須各不相同，所以用 copyIndex() 函式取得目前這一輪的索引：\"[copyIndex('dataDisks')]\"。帶名稱的 copyIndex('dataDisks') 是指定要取「哪一個 copy 區塊」的索引，在屬性層級的 copy 中是必要寫法。",
+      "_full": "ARM 範本的 copy 有兩種用法：\n・「資源層級」copy → 放在資源物件裡，重複產生多個「資源」。\n・「屬性層級」copy → 放在 properties 內，重複產生某個「屬性陣列」的元素（本題的資料磁碟就是這種）。\n兩者都用 copyIndex() 取當前索引；屬性層級要傳入 copy 區塊的名稱，例如 copyIndex('dataDisks')。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 330,
+    "type": "matching",
+    "question": "You have an Azure App Service app named WebApp1 that contains two folders named Folder1 and Folder2. You need to configure a daily backup of WebApp1. The solution must ensure that Folder2 is excluded from the backup. What should you create first, and what should you use to exclude Folder2?",
+    "available_options": [
+      "An Azure Storage account",
+      "A Backup vault",
+      "A Recovery Services vault",
+      "A resource group",
+      "A _backup.filter file",
+      "A backup policy",
+      "A lock",
+      "A WebJob"
+    ],
+    "matches": [
+      {
+        "use_case": "First create:",
+        "correct_answer": "An Azure Storage account"
+      },
+      {
+        "use_case": "To exclude Folder2, use:",
+        "correct_answer": "A _backup.filter file"
+      }
+    ],
+    "explanations": {
+      "1": "App Service 的備份「不是」存到保存庫，而是存到你自己的 Azure 儲存體帳戶與容器裡（該儲存體帳戶必須與應用程式在同一個訂用帳戶）。因此第一步是先建立儲存體帳戶。Recovery Services 保存庫是給 VM 與檔案共用用的；備份保存庫是給 Blob、磁碟等用的；兩者都不是 App Service 備份的目的地。",
+      "2": "要從 App Service 備份中排除特定檔案或資料夾，做法是在網站的 wwwroot 之下（D:\\home\\site\\wwwroot）放一個名為 _backup.filter 的文字檔，每行寫一個要排除的相對路徑。備份原則只設定排程與保留，無法指定排除清單。",
+      "_full": "App Service 備份的兩個特點：\n① 目的地是「自己的儲存體帳戶 + 容器」，不是任何保存庫，且必須同訂用帳戶。\n② 排除規則寫在 _backup.filter 檔案裡（放在 wwwroot 下），一行一個路徑。\n另外提醒：App Service 備份需要 Standard 或 Premium 以上的方案等級。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 331,
     "type": "single",
     "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
@@ -428,6 +488,35 @@
       "B": "Incorrect. 錯誤。Application Insights 是應用程式監視服務，不安裝軟體。",
       "C": "Correct. 正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定的指令碼，用它執行安裝 NGINX 的指令即可；本題選項中沒有 DSC 延伸模組，自訂指令碼延伸模組是達成相同目的的標準方式。",
       "D": "Incorrect. 錯誤。Endpoint Manager（Intune）管理的是使用者端點裝置，不用於 Azure 擴展集佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 332,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains a virtual machine that runs Windows 10. You need to join the virtual machine to an Active Directory domain. How should you complete the Azure Resource Manager (ARM) template?  { \"apiVersion\": \"2017-03-30\", \"type\": [box 1] \"name\": \"[concat(parameters('VName'), '/joindomain')]\", \"location\": \"[parameter('location')]\", \"properties\": { \"publisher\": \"Microsoft.Compute\", \"type\": \"JsonADDomainExtension\", \"typeHandlerVersion\": \"1.3\", \"autoUpgradeMinorVersion\": true, \"settings\": { \"Name\": \"[parameters('domainName')]\", \"User\": \"[parameters('domainusername')]\", \"Restart\": \"true\", \"Options\": \"3\" }, [box 2] \"Password\": \"[parameters('domainPassword')]\" } } }",
+    "available_options": [
+      "\"Extensions\",",
+      "\"Microsoft.Compute/VirtualMachines\",",
+      "\"Microsoft.Compute/virtualMachines/extensions\",",
+      "\"ProtectedSettings\":{",
+      "\"Settings\":{",
+      "\"Statuses\":{"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the resource type):",
+        "correct_answer": "\"Microsoft.Compute/virtualMachines/extensions\","
+      },
+      {
+        "use_case": "Box 2 (the section holding the password):",
+        "correct_answer": "\"ProtectedSettings\":{"
+      }
+    ],
+    "explanations": {
+      "1": "加入網域是靠「VM 擴充功能」JsonADDomainExtension 完成的，而擴充功能是虛擬機器的子資源，資源類型必須寫 Microsoft.Compute/virtualMachines/extensions。Microsoft.Compute/VirtualMachines 是虛擬機器本身，單寫 \"Extensions\" 不是合法的資源類型。（也留意 name 寫成 \"<VM 名稱>/joindomain\"，正是子資源的命名方式。）",
+      "2": "密碼這類機密值要放在 protectedSettings 區段裡——這個區段會被加密，不會出現在部署歷程或範本輸出中。settings 是「明文」設定（本題已經用來放網域名稱與使用者名稱），把密碼放進去會被記錄下來；statuses 是擴充功能回報的狀態，不是輸入。",
+      "_full": "VM 擴充功能範本的兩個要點：\n① 類型是子資源 Microsoft.Compute/virtualMachines/extensions，名稱寫成「VM 名稱/擴充功能名稱」。\n② 輸入分成兩塊：settings（明文，會被記錄）與 protectedSettings（加密）。任何密碼、金鑰、連接字串都必須放在 protectedSettings。"
     }
   },
   {
@@ -451,6 +540,99 @@
   },
   {
     "exam": "AZ-104",
+    "id": 334,
+    "type": "matching",
+    "question": "You have an Azure subscription. You deploy a Kubernetes cluster whose Review + create page shows (validation passed): Basics - subscription Visual Studio Premium with MSDN, resource group RG1, region West Europe, Kubernetes cluster name AKS1, Kubernetes version 1.20.9; Node pools - node pools 1, enable virtual nodes Disabled, enable virtual machine scale sets Enabled; Authentication - authentication method Service principal, role-based access control (RBAC) Enabled, AKS-managed Azure Active Directory Disabled, encryption type (Default) Encryption at-rest with a platform-managed key; Networking - network configuration Kubenet, DNS name prefix AKS1-dns, load balancer Standard, private cluster Disabled, authorized IP ranges Disabled, network policy None, HTTP application routing No. Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "enable virtual nodes",
+      "increase the number of node pools",
+      "modify the Kubernetes version setting",
+      "modify the Network configuration setting",
+      "AKS-managed Azure Active Directory",
+      "Authentication method",
+      "Authorized IP ranges",
+      "Kubernetes version",
+      "Network configuration"
+    ],
+    "matches": [
+      {
+        "use_case": "To ensure that you can create Windows containers in AKS1, you must [answer choice].",
+        "correct_answer": "modify the Network configuration setting"
+      },
+      {
+        "use_case": "To ensure that you can integrate AKS1 with an Azure container registry, you must modify the [answer choice] setting.",
+        "correct_answer": "AKS-managed Azure Active Directory"
+      }
+    ],
+    "explanations": {
+      "1": "要在 AKS 中執行 Windows 節點集區（也就是 Windows 容器），網路外掛程式必須是 Azure CNI；目前設定是 Kubenet，而 Kubenet「不支援」Windows 節點集區。所以必須修改「網路設定」把它改成 Azure CNI。（虛擬節點是 ACI 型的無伺服器節點，與 Windows 節點集區是不同的東西；增加節點集區數量或改 Kubernetes 版本都無法突破 Kubenet 的限制。）",
+      "2": "官方標示為「AKS 管理的 Azure Active Directory」。與 Azure 容器登錄整合的標準做法是讓叢集擁有一個身分（受控識別），再把 AcrPull 角色指派給它。目前叢集用的是「服務主體」而 AKS 管理的 AAD 為停用。\n【爭議提醒】依 Microsoft 文件，az aks update --attach-acr 對「服務主體」型叢集同樣可行（把角色指派給該服務主體），因此更貼近題意的選項應該是「驗證方法 (Authentication method)」——改用受控識別；而 AKS 管理的 AAD 管的是「使用者登入叢集」的驗證，與存取容器登錄無關。本題保留官方標示，作答時請留意。",
+      "_full": "第一格是明確的產品限制：Windows 節點集區「必須」搭配 Azure CNI，Kubenet 只支援 Linux 節點——這是常考的硬性規則。\n第二格則是官方標示有疑義的一格：與 ACR 整合靠的是叢集身分（受控識別或服務主體）加上 AcrPull 角色指派，而「AKS 管理的 AAD」處理的是使用者登入叢集的驗證，兩者並不相同；解析中已標明爭議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 335,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains an Azure Kubernetes Service (AKS) cluster named Cluster1. Cluster1 hosts a node pool named Pool1 that has four nodes. You need to perform a coordinated upgrade of Cluster1. The solution must meet the following requirements: deploy two new nodes to perform the upgrade; minimize costs. How should you complete the command?  az aks nodepool [box 1] -n pool1 -g RG1 --cluster-name cluster1 [box 2]",
+    "available_options": [
+      "add",
+      "get-updates",
+      "scale",
+      "updates",
+      "--max-count 2",
+      "--max-pods 2",
+      "--max-surge 2",
+      "--node-count 2"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the subcommand):",
+        "correct_answer": "updates"
+      },
+      {
+        "use_case": "Box 2 (the parameter):",
+        "correct_answer": "--max-surge 2"
+      }
+    ],
+    "explanations": {
+      "1": "升級節點集區的設定要用 update 這一組子命令（本題選項寫成 updates）。add 是新增一個節點集區；scale 是改節點數量；get-updates 不是用來設定升級參數的。",
+      "2": "--max-surge 控制「升級期間可以額外配置多少個節點」（暴增節點）。設成 2 就是多開兩個新節點來輪替升級——節點越多升級越快但成本越高，所以題目要求「部署兩個新節點」且「盡量降低成本」時就正好是 2。--node-count 是改集區的節點總數（不是升級用的暫時節點）；--max-count 是自動調整的節點上限；--max-pods 是每個節點的 Pod 數上限。",
+      "_full": "AKS 升級時的關鍵參數是 --max-surge（預設 1，也可以寫成百分比如 33%）：它決定升級過程額外開幾個節點來搬移工作負載。數值越大升級越快、但期間要多付這些節點的費用；本題要求剛好兩個新節點又要省錢，所以 --max-surge 2。\n別和另外三個容易混淆的參數搞混：--node-count（集區節點數）、--max-count（自動調整上限）、--max-pods（每節點 Pod 上限）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 336,
+    "type": "matching",
+    "question": "You have an Azure subscription. You create the following file named Deploy.json (excerpt): \"parameters\": { \"location\": { \"type\": \"string\", \"defaultValue\": \"westus\" } }, \"resources\": [ { \"apiVersion\": \"2019-04-01\", \"type\": \"Microsoft.Storage/storageAccounts\", \"name\": \"[concat(copyIndex(),'storage', uniqueString(resourceGroup().id))]\", \"location\": \"[resourceGroup().location]\", \"sku\": { \"name\": \"Premium_LRS\" }, \"kind\": \"StorageV2\", \"properties\": {}, \"copy\": { \"name\": \"storagecopy\", \"count\": 3 } } ]. You connect to the subscription and run the following commands: New-AzResourceGroup -Name RG1 -Location \"centralus\"; New-AzResourceGroupDeployment -ResourceGroupName RG1 -TemplateFile \"deploy.json\". For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The commands will create four new resources.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The commands will create storage accounts in the West US Azure region.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The first storage account that is created will have a prefix of 0.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是，一共四個：New-AzResourceGroup 建立「資源群組 RG1」本身算一個資源，接著範本的 copy count = 3 會建立三個儲存體帳戶。1 + 3 = 4。",
+      "2": "否。儲存體帳戶的 location 寫的是 \"[resourceGroup().location]\"——也就是「資源群組所在的區域」，而 RG1 是以 -Location \"centralus\" 建立的，所以帳戶會建在 Central US。參數 location 的 defaultValue \"westus\" 從頭到尾沒被任何資源使用，純粹是干擾項。",
+      "3": "是。名稱是 concat(copyIndex(), 'storage', uniqueString(...))，而 copyIndex() 預設「從 0 開始」計數，因此第一個帳戶的名稱以 0 起頭（第二、三個則是 1 和 2）。（若想從 1 開始，得寫成 copyIndex(1)。）",
+      "_full": "三個判斷點：\n① 計算「建立幾個資源」時別忘了資源群組本身也是一個資源。\n② resourceGroup().location 取的是資源群組的區域，與範本裡沒被使用的 location 參數無關——要看資源實際引用了什麼。\n③ copyIndex() 從 0 起算（copyIndex(1) 才從 1 起算）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 337,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You set Admin user to Enable for Registry1. Does this meet the goal?",
@@ -462,6 +644,68 @@
     "explanations": {
       "A": "Correct. 正確。從容器登錄部署容器實例時必須提供登錄的認證。啟用管理員使用者會產生一組使用者名稱與密碼，容器實例即可用它來驗證並拉取 image1，解決原本的驗證失敗錯誤。",
       "B": "Incorrect. 錯誤。啟用管理員使用者正是最直接可行的做法（雖然生產環境更建議改用服務主體或受控識別）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 338,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a resource group named RG1. You plan to use an Azure Resource Manager (ARM) template named template1 to deploy resources. The solution must meet the following requirements: deploy new resources to RG1; remove all the existing resources from RG1 before deploying the new resources. How should you complete the command?  New-AzResourceGroupDeployment -TemplateUri \"https://contoso.com/template1\" -TemplateParameterfile params.json [box 1] RG1 -Mode [box 2]",
+    "available_options": [
+      "-Name",
+      "-QueryString",
+      "-ResourceGroupName",
+      "-Tag",
+      "All",
+      "Complete",
+      "Incremental"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the parameter that names the target):",
+        "correct_answer": "-ResourceGroupName"
+      },
+      {
+        "use_case": "Box 2 (the value of -Mode):",
+        "correct_answer": "Complete"
+      }
+    ],
+    "explanations": {
+      "1": "New-AzResourceGroupDeployment 是資源群組層級的部署，要用 -ResourceGroupName 指定 RG1。-Name 是給這次「部署」命名（不是資源群組）；-Tag 是加標記；-QueryString 是搭配連結範本時附加在 URI 上的查詢字串。",
+      "2": "部署模式決定「範本裡沒有列出的既有資源」怎麼處理：\n・Complete：資源群組中「不在範本裡」的資源會被「刪除」——正好符合「部署前移除所有既有資源」的要求。\n・Incremental（預設）：只新增或更新範本中的資源，既有資源保留不動。\nAll 不是有效的模式值。",
+      "_full": "-Mode 只有兩個值：Incremental（預設，保留範本外的既有資源）與 Complete（刪除範本外的既有資源）。看到題目要求「清空後再部署」就選 Complete。\n實務提醒：Complete 模式很危險，會刪掉範本沒寫到的一切，執行前務必用 -WhatIf 或「假設 (what-if)」作業先確認影響範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 339,
+    "type": "matching",
+    "question": "You have an Azure App Service web app named app1. You configure autoscaling as follows: scale mode Scale based on a metric; rule (scale out) - when (Average) CpuPercentage > 70, increase count by 1; instance limits minimum 1, maximum 5, default 1; no scale-in rule. The autoscale rule criteria are: time aggregation Maximum; metric namespace App Service plans standard metrics; metric name CPU Percentage; dimension Instance = All values; operator Greater than; metric threshold to trigger scale action 70%; duration 10 minutes; time grain 1 minute; time grain statistic Average; action Increase count by, cool down 5 minutes, instance count 1. Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "1 instance",
+      "2 instances",
+      "3 instances",
+      "4 instances",
+      "5 instances",
+      "1 minute",
+      "5 minutes",
+      "10 minutes",
+      "15 minutes"
+    ],
+    "matches": [
+      {
+        "use_case": "After CPU usage has reached 80 percent for 15 minutes, [answer choice] will be running.",
+        "correct_answer": "2 instances"
+      },
+      {
+        "use_case": "Once the first scale-out instance is created, the minimum time before an additional instance is created will be [answer choice].",
+        "correct_answer": "15 minutes"
+      }
+    ],
+    "explanations": {
+      "1": "預設執行個體數是 1。80% 超過門檻 70%，但必須「持續 10 分鐘」才觸發第一次向外延展，所以在第 10 分鐘加 1 台，變成 2 台。接著進入 5 分鐘冷卻（到第 15 分鐘結束），冷卻期間不會再調整——因此第 15 分鐘時剛好還是 2 台。",
+      "2": "第一次調整之後要再加一台，必須同時滿足兩件事：先過完 5 分鐘的「冷卻時間」，然後計量還要再「持續 10 分鐘」超過門檻。5 + 10 = 15 分鐘。\n（常見錯誤是只算冷卻時間 5 分鐘，忘了持續時間也要重新累積。）",
+      "_full": "自動調整的兩個時間參數要一起算：\n・持續時間 (Duration)：條件必須連續成立多久才觸發（本題 10 分鐘）。\n・冷卻時間 (Cool down)：一次調整後多久內不再調整（本題 5 分鐘）。\n所以第一次調整在第 10 分鐘；下一次最快要再等 5 + 10 = 15 分鐘。第 15 分鐘時仍然只加了一台，共 2 台。"
     }
   },
   {
