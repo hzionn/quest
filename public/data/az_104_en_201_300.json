@@ -1794,5 +1794,32 @@
       "C": "Incorrect. 錯誤。AzurePerformanceDiagnostics 延伸模組是 Windows 專用的效能問題疑難排解工具，不適用於 Linux VM。",
       "D": "Incorrect. 錯誤。Analysis Services 是語意資料模型與 BI 分析引擎，與 VM 監視無關。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 300,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1. Subscription1 contains a virtual machine named VM1. You install and configure a web server and a DNS server on VM1. VM1 has the following effective network security rules (network interface vm1441, NSG VM1-nsg, inbound port rules): priority 100 Rule2, port 50-60, protocol Any, source Any, destination Any, Deny; priority 300 RDP, port 3389, TCP, Any, Any, Allow; priority 400 Rule1, port 50-500, Any, Any, Any, Allow; priority 65000 AllowVnetInBound, Any, VirtualNetwork to VirtualNetwork, Allow; priority 65001 AllowAzureLoadBalancerInBound, Any, AzureLoadBalancer, Allow; priority 65500 DenyAllInBound, Any, Any to Any, Deny. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "can connect to only the DNS server on VM1",
+      "can connect to only the web server on VM1",
+      "can connect to the web server and the DNS server on VM1",
+      "cannot connect to the web server and the DNS server on VM1"
+    ],
+    "matches": [
+      {
+        "use_case": "Internet users [answer choice].",
+        "correct_answer": "can connect to only the web server on VM1"
+      },
+      {
+        "use_case": "If you delete Rule2, Internet users [answer choice].",
+        "correct_answer": "can connect to the web server and the DNS server on VM1"
+      }
+    ],
+    "explanations": {
+      "1": "NSG 規則按「優先順序數字由小到大」評估，一命中就停止，後面的規則不再處理。\n・DNS 用連接埠 53，落在 Rule2（優先順序 100，拒絕 50-60）的範圍內 → 先被拒絕，優先順序 400 的 Rule1（允許 50-500）根本輪不到。\n・Web 伺服器用連接埠 80，不在 50-60 內，會往下命中 Rule1（允許 50-500）→ 通行。\n→ 只能連到 Web 伺服器。",
+      "2": "刪掉 Rule2 之後，連接埠 53 的流量不再被拒絕，會往下命中 Rule1（允許 50-500）；連接埠 80 原本就命中 Rule1。兩者都通，所以 Web 伺服器與 DNS 伺服器都連得到。",
+      "_full": "作答只要抓住 NSG 的兩條規則：\n① 依優先順序「數字小的先評估」，一旦命中就停止，不會再看後面的規則——所以低優先順序（數字大）的允許規則救不回已經被拒絕的流量。\n② 逐一把服務的連接埠（DNS 53、HTTP 80）套進規則範圍去找「第一個命中」的規則。\n本題 Rule2（100，拒絕 50-60）擋掉 DNS，但擋不到 80；刪掉它之後兩者都由 Rule1 放行。"
+    }
   }
 ]

@@ -79,6 +79,60 @@
   },
   {
     "exam": "AZ-104",
+    "id": 305,
+    "type": "matching",
+    "question": "You deploy an Azure Kubernetes Service (AKS) cluster that has the following network profile: Type (plugin) Basic (Kubenet); Pod CIDR 10.244.0.0/16; Service CIDR 10.0.0.0/16; DNS service IP 10.0.0.10; Docker bridge CIDR 172.17.0.1/16; Network options - HTTP application routing Disabled. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "10.244.0.0/16",
+      "10.0.0.0/16",
+      "172.17.0.1/16"
+    ],
+    "matches": [
+      {
+        "use_case": "Containers will be assigned an IP address in the [answer choice] subnet.",
+        "correct_answer": "10.244.0.0/16"
+      },
+      {
+        "use_case": "Services in the AKS cluster will be assigned an IP address in the [answer choice] subnet.",
+        "correct_answer": "10.0.0.0/16"
+      }
+    ],
+    "explanations": {
+      "1": "容器是跑在 Pod 裡的，因此取得的是「Pod CIDR」範圍內的位址，也就是 10.244.0.0/16。（Kubenet 模式下這是叢集內部的虛擬位址空間，Pod 對外時透過節點做 NAT；這個範圍在叢集建立後就不能再改，所以要一開始就開得夠大。）",
+      "2": "Kubernetes 的「服務」使用叢集 IP，來自「服務 CIDR」，也就是 10.0.0.0/16。DNS 服務 IP（10.0.0.10）落在這個範圍內正好印證這一點——它必須是服務 CIDR 中的一個位址。",
+      "_full": "三個 CIDR 的分工要記牢：\n・Pod CIDR → 給 Pod／容器用（Kubenet 才有；Azure CNI 是直接用子網路 IP）。\n・服務 CIDR → 給 Kubernetes Service 的叢集 IP 用，DNS 服務 IP 必須在其中。\n・Docker 橋接器 CIDR → 節點上的 Docker 橋接網路，不給 Pod 或服務使用。\n這三個範圍彼此、以及與虛擬網路的既有位址都不能重疊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 306,
+    "type": "matching",
+    "question": "You have an App Service plan whose autoscale (default auto created scale condition) is configured as follows: scale mode Scale based on a metric; scale out rule - when homepage (Maximum) CpuPercentage > 85, increase count by 1; scale in rule - when homepage (Average) CpuPercentage < 30, decrease count by 1; instance limits minimum 1, maximum 5, default 1. The scale-in settings are: operator Less than, metric threshold 30%, duration 5 minutes, time grain statistic Average, action Decrease count by, instance count 1, cool down 5 minutes. The scale out rule is configured with the same duration and cool down as the scale in rule. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "If after deployment CPU usage is 70 percent for one hour and then reaches 90 percent for five minutes, at that time the total number of instances will be [answer choice].",
+        "correct_answer": "5"
+      },
+      {
+        "use_case": "If after deployment the CPU maintains constant usage of 90 percent for one hour, and then the average CPU usage is below 25 percent for nine minutes, at that point the number of instances will be [answer choice].",
+        "correct_answer": "3"
+      }
+    ],
+    "explanations": {
+      "1": "70% 既不超過 85%（不向外延展）、也不低於 30%（不向內延展），所以第一小時維持在 1 台。接著 CPU 到 90%（> 85%）並持續超過 5 分鐘 → 觸發向外延展，每次 +1，冷卻 5 分鐘後只要條件仍成立就再 +1。在整段高負載期間會一路加到「執行個體上限 5」為止，所以答案是 5。\n（陷阱：不要只算一次調整；持續超標會反覆觸發，直到達到上限。）",
+      "2": "先前 90% 持續一小時已經把執行個體加到上限 5。接著平均 CPU 低於 30%：第一次滿足 5 分鐘的持續時間 → 減 1（5 → 4）；冷卻 5 分鐘後（累計約 10 分鐘）才可能再減一次。題目只給了「九分鐘」，在第 5 分鐘減 1、第 10 分鐘才會再減——官方判定在這段時間內共減了 2 次，得到 3。\n（官方解釋原文為「低於 30% 時先減 1，經過 5 分鐘冷卻後再減 1，到達 3」。）",
+      "_full": "自動調整的四個判斷要素：門檻、統計方式（最大值／平均值）、持續時間、冷卻時間，再加上執行個體的上下限。\n・介於兩個門檻之間的使用率（如 70%）不會觸發任何調整。\n・條件持續成立時會「反覆」觸發，每次間隔一個冷卻時間，直到碰到上限或下限。\n・本題上限 5、下限 1，所以長時間高負載一定停在 5。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 307,
     "type": "single",
     "question": "You have an Azure virtual machine named VM1 that runs Windows Server 2019. The VM was deployed using default drive settings. You sign in to VM1 as a user named User1 and perform the following actions: ✑ Create files on drive C. ✑ Create files on drive D. ✑ Modify the screen saver timeout. ✑ Change the desktop background. You plan to redeploy VM1. Which changes will be lost after you redeploy VM1?",
@@ -94,6 +148,61 @@
       "B": "Incorrect. 錯誤。桌面背景同樣儲存在 OS 磁碟的使用者設定檔中，重新部署後仍存在。",
       "C": "Correct. 正確。以預設磁碟設定部署的 Windows VM，磁碟機 D 是「暫存磁碟」，資料存在本機主機的實體儲存體上。重新部署會把 VM 遷移到新主機，暫存磁碟隨之重建，D 槽上的檔案全部遺失。",
       "D": "Incorrect. 錯誤。磁碟機 C 是持續性的 OS 受控磁碟，內容會完整保留。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 309,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a virtual machine scale set. The scale set contains four instances that have the following configurations: Operating system Windows Server 2016; Size Standard_D1_v2. You run the Get-AzVmss cmdlet and see: (Get-AzVmss -Name WebProd -ResourceGroupName RG1).VirtualMachineProfile.OsProfile.WindowsConfiguration with ProvisionVMAgent True, EnableAutomaticUpdates False, and TimeZone / AdditionalUnattendContent / WinRM blank; and Get-AzVmss -Name WebProd -ResourceGroupName RG1 | Select -ExpandProperty UpgradePolicy with Mode Automatic, RollingUpgradePolicy blank, AutomaticOSUpgradePolicy Microsoft.Azure.Management.Compute.Models.AutomaticOSUpgradePolicy. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "When an administrator changes the virtual machine size, the size will be changed on up to [answer choice] virtual machines simultaneously.",
+        "correct_answer": "4"
+      },
+      {
+        "use_case": "When a new build of the Windows Server 2016 image is released, the new build will be deployed to up to [answer choice] virtual machines simultaneously.",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "UpgradePolicy 的 Mode 是 Automatic。自動模式下，只要擴展集的「模型」有變更（例如改 VM 大小），平台會「立刻對所有執行個體」套用，不分批、不保證可用性。擴展集有 4 個執行個體，所以最多 4 台同時變更。\n（相對地，Rolling 模式會分批更新並在批次之間等待；Manual 模式則要自己逐一升級。）",
+      "2": "作業系統映像的新版本走的是「自動 OS 映像升級」流程，這條路徑「一定是分批」的：每批最多為執行個體總數的 20%，且至少 1 台。4 × 20% = 0.8，不足 1 台，因此取下限 1——一次只升級 1 台。\n（這也是為什麼兩格答案不同：模型變更走 UpgradePolicy.Mode，映像升級走 AutomaticOSUpgradePolicy，兩者的批次規則完全不一樣。）",
+      "_full": "本題在測「模型變更」與「OS 映像升級」是兩條不同的路徑：\n・模型變更（大小、擴充功能、組態）→ 由 UpgradePolicy.Mode 決定；Automatic 表示一次全部套用（本題 4 台）。\n・OS 映像有新版本 → 由自動 OS 映像升級處理，固定分批，每批最多 20% 且至少 1 台（本題 1 台）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 312,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1. Subscription1 contains two Azure virtual machines VM1 and VM2. VM1 and VM2 run Windows Server 2016. VM1 is backed up daily by Azure Backup without using the Azure Backup agent. VM1 is affected by ransomware that encrypts data. You need to restore the latest backup of VM1. To which location can you restore the backup?",
+    "available_options": [
+      "VM1 only",
+      "VM1 or a new Azure virtual machine only",
+      "VM1 and VM2 only",
+      "A new Azure virtual machine only",
+      "Any Windows computer that has Internet connectivity"
+    ],
+    "matches": [
+      {
+        "use_case": "You can perform a file recovery of VM1 to:",
+        "correct_answer": "Any Windows computer that has Internet connectivity"
+      },
+      {
+        "use_case": "You can restore VM1 to:",
+        "correct_answer": "VM1 or a new Azure virtual machine only"
+      }
+    ],
+    "explanations": {
+      "1": "檔案層級復原 (file recovery) 的做法是：從復原點產生一個掛接指令碼，在任何一台「作業系統相符、且能連上網際網路」的電腦上執行，它會把復原點以 iSCSI 掛接成本機磁碟，你再從中複製檔案出來。因此目的地不限於原本的 VM——任何具備網際網路連線的 Windows 電腦都可以。",
+      "2": "整台 VM 還原有兩種選擇：「取代現有」（覆寫回 VM1 本身）或「建立新的虛擬機器」。所以可以還原到 VM1 或一台新的 Azure 虛擬機器。但不能還原到「另一台既有的 VM」（例如 VM2）——Azure 備份不提供覆寫到其他既有 VM 的選項。",
+      "_full": "Azure 備份（VM 層級、不裝代理程式）的兩種還原粒度：\n・檔案復原：掛接復原點成 iSCSI 磁碟，可在任何相容且能上網的電腦執行，最靈活。\n・整台還原：只能「取代現有的原 VM」或「建立一台新的 VM」，不能覆蓋到另一台既有的虛擬機器。"
     }
   },
   {
@@ -132,6 +241,40 @@
   },
   {
     "exam": "AZ-104",
+    "id": 315,
+    "type": "matching",
+    "question": "You have an Azure subscription. You plan to use Azure Resource Manager templates to deploy 50 Azure virtual machines that will be part of the same availability set. You need to ensure that as many virtual machines as possible are available if the fabric fails or during servicing. How should you configure the template?  \"type\": \"Microsoft.Compute/availabilitySets\", \"name\": \"ha\", \"apiVersion\": \"2017-12-01\", \"location\": \"eastus\", \"properties\": { \"platformFaultDomainCount\": [box 1], \"platformUpdateDomainCount\": [box 2] }",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "10",
+      "20",
+      "25",
+      "30",
+      "40",
+      "50"
+    ],
+    "matches": [
+      {
+        "use_case": "platformFaultDomainCount:",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "platformUpdateDomainCount:",
+        "correct_answer": "20"
+      }
+    ],
+    "explanations": {
+      "1": "錯誤網域對應「網狀架構故障」（機架的電源、網路交換器）。可用性設定組的錯誤網域上限是 3（部分區域只支援 2），要把故障影響降到最小就取最大值 3——50 台平均分成 3 組，單一機架失效時最多只影響約 17 台。選項中的 4 超過上限，會部署失敗。",
+      "2": "更新網域對應「維護服務期間」（平台一次只重啟一個更新網域）。更新網域最多可設 20，取 20 時 50 台會分成 20 組（每組 2～3 台），每次維護只有一組離線，可用的 VM 數量最多。25／30／40／50 都超過上限 20，不是有效值。",
+      "_full": "兩個上限要記牢：可用性設定組的錯誤網域最多 3、更新網域最多 20。題目要「盡可能多的 VM 保持可用」，所以兩者都取最大值——網域切得越細，單一故障或單次維護影響的 VM 就越少。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 316,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1 that runs Windows Server 2016. You need to create an alert in Azure when more than two error events are logged to the System event log on VM1 within an hour. Solution: You create an Azure Log Analytics workspace and configure the Agent configuration settings. You install the Microsoft Monitoring Agent on VM1. You create an alert in Azure Monitor and specify the Log Analytics workspace as the source. Does this meet the goal?",
@@ -143,6 +286,34 @@
     "explanations": {
       "A": "Correct. 正確。在工作區的代理程式設定中指定要收集的 Windows 事件記錄（系統記錄的錯誤層級），透過 MMA 把事件送進工作區，再以工作區為來源建立記錄查詢警示，即可對「一小時內超過兩個錯誤事件」設定條件，完整達成目標。",
       "B": "Incorrect. 錯誤。這條路徑（工作區收集設定 + 代理程式 + 記錄查詢警示）正是官方建議的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 317,
+    "type": "matching",
+    "question": "You have an Azure subscription. You deploy a virtual machine scale set configured as follows (Scaling tab): Initial instance count 2; Scaling policy Custom; Minimum number of VMs 1; Maximum number of VMs 10; Scale out - CPU threshold 75%, duration 10 minutes, number of VMs to increase by 1; Scale in - CPU threshold 25%, number of VMs to decrease by 1; Collect diagnostic logs from Autoscale Disabled; Scale-in policy Default (balance across availability zones and fault domains, then delete VMs). Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "At 9:00 AM, the scale set starts and CPU utilization is 90 percent for 15 minutes. How many virtual machine instances will be running at 9:15 AM?",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "At 10:00 AM, the scale set has five virtual machine instances running and CPU utilization falls to less than 15 percent for 60 minutes. How many virtual machine instances will be running at 11:00 AM?",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "起始是 2 台。CPU 90% 超過向外延展門檻 75%，但必須「持續 10 分鐘」才會觸發，所以第一次調整發生在 9:10，加 1 台變成 3 台。到 9:15 只過了 5 分鐘（還沒滿下一個評估週期），因此仍是 3 台。",
+      "2": "起始是 5 台。CPU 低於向內延展門檻 25%，且持續整整 60 分鐘——足以反覆觸發多次向內延展，每次減 1：5 → 4 → 3 → 2 → 1。碰到「VM 數量下限 1」就停住，所以 11:00 時是 1 台。",
+      "_full": "自動調整的兩個時間感要抓住：\n① 條件必須「持續」滿足設定的分鐘數才會觸發第一次調整（本題 10 分鐘）——所以 15 分鐘的高負載只來得及加 1 台。\n② 條件長時間持續時會反覆觸發，一路加或減到上限／下限為止——本題 60 分鐘的低負載足以從 5 台一路縮到下限 1 台。"
     }
   },
   {
@@ -162,6 +333,37 @@
       "B": "Correct. 正確。DSC 延伸模組可在擴展集範本中宣告每個執行個體應達到的狀態（安裝並執行 NGINX），新佈建的執行個體會自動套用。",
       "C": "Incorrect. 錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理服務，與 VM 軟體佈建無關。",
       "D": "Incorrect. 錯誤。Application Insights 是應用程式效能監視服務，不負責安裝軟體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 320,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the following resources: ManagementGroup1 (management group); RG1 (resource group); 9c8bc1cd-7655-4c66-b3ea-a8ee101d8f75 (subscription ID); Tag1 (tag). In Azure Cloud Shell, you need to create a virtual machine by using an Azure Resource Manager (ARM) template. How should you complete the command?  $adminPassword = Read-Host -Prompt \"Enter the administrator password\" -AsSecureString  [box 1] [box 2] ` -TemplateUri \"https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/101-vm-simple-windows/azuredeploy.json\" ` -adminUsername LocalAdministrator -adminPassword $adminPassword -dnsLabelPrefix ContosoVM1",
+    "available_options": [
+      "New-AzVm",
+      "New-AzResource",
+      "New-AzTemplateSpec",
+      "New-AzResourceGroupDeployment",
+      "-Tag Tag1 `",
+      "-ResourceGroupName RG1 `",
+      "-GroupName ManagementGroup1 `",
+      "-Subscription 9c8bc1cd-7655-4c66-b3ea-a8ee101d8f75"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the cmdlet):",
+        "correct_answer": "New-AzResourceGroupDeployment"
+      },
+      {
+        "use_case": "Box 2 (the parameter):",
+        "correct_answer": "-ResourceGroupName RG1 `"
+      }
+    ],
+    "explanations": {
+      "1": "要「用 ARM 範本部署」就得用部署類的 cmdlet，而 -TemplateUri 這個參數屬於 New-AzResourceGroupDeployment。New-AzVm 是直接指定參數建立 VM（不吃範本）；New-AzResource 是建立單一資源；New-AzTemplateSpec 只是把範本存成範本規格，並不會部署。",
+      "2": "New-AzResourceGroupDeployment 是「資源群組層級」的部署，必須用 -ResourceGroupName 指定目標資源群組，也就是 RG1。-GroupName 是管理群組層級部署（New-AzManagementGroupDeployment）用的；-Tag 是加標記、-Subscription 是切換內容，都不是這個 cmdlet 的必要目標參數。",
+      "_full": "PowerShell 的 ARM 部署 cmdlet 依「範圍」分成四個，各自要不同的目標參數：\n・資源群組層級 → New-AzResourceGroupDeployment，要 -ResourceGroupName。\n・訂用帳戶層級 → New-AzSubscriptionDeployment（舊名 New-AzDeployment），要 -Location。\n・管理群組層級 → New-AzManagementGroupDeployment，要 -ManagementGroupId。\n・租用戶層級 → New-AzTenantDeployment。\n看到 -TemplateUri／-TemplateFile 就知道是部署 cmdlet，再依範圍挑目標參數。"
     }
   },
   {

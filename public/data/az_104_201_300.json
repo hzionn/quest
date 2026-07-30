@@ -1794,5 +1794,32 @@
       "C": "錯誤。AzurePerformanceDiagnostics 延伸模組是 Windows 專用的效能問題疑難排解工具，不適用於 Linux VM。",
       "D": "錯誤。Analysis Services 是語意資料模型與 BI 分析引擎，與 VM 監視無關。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 300,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器。\n你在 VM1 上安裝並設定了一個 Web 伺服器與一個 DNS 伺服器。\nVM1 的有效網路安全性規則如下（網路介面 vm1441，NSG「VM1-nsg」，輸入連接埠規則）：\n・優先順序 100｜Rule2｜連接埠 50-60｜任何通訊協定｜來源 任何｜目的地 任何｜「拒絕」\n・優先順序 300｜RDP｜連接埠 3389｜TCP｜來源 任何｜目的地 任何｜允許\n・優先順序 400｜Rule1｜連接埠 50-500｜任何通訊協定｜來源 任何｜目的地 任何｜允許\n・優先順序 65000｜AllowVnetInBound｜任何｜VirtualNetwork → VirtualNetwork｜允許\n・優先順序 65001｜AllowAzureLoadBalancerInBound｜任何｜AzureLoadBalancer｜允許\n・優先順序 65500｜DenyAllInBound｜任何｜任何 → 任何｜拒絕\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "只能連線到 VM1 上的 DNS 伺服器",
+      "只能連線到 VM1 上的 Web 伺服器",
+      "可以連線到 VM1 上的 Web 伺服器與 DNS 伺服器",
+      "無法連線到 VM1 上的 Web 伺服器與 DNS 伺服器"
+    ],
+    "matches": [
+      {
+        "use_case": "網際網路使用者【答案】。",
+        "correct_answer": "只能連線到 VM1 上的 Web 伺服器"
+      },
+      {
+        "use_case": "如果你刪除 Rule2，網際網路使用者【答案】。",
+        "correct_answer": "可以連線到 VM1 上的 Web 伺服器與 DNS 伺服器"
+      }
+    ],
+    "explanations": {
+      "1": "NSG 規則按「優先順序數字由小到大」評估，一命中就停止，後面的規則不再處理。\n・DNS 用連接埠 53，落在 Rule2（優先順序 100，拒絕 50-60）的範圍內 → 先被拒絕，優先順序 400 的 Rule1（允許 50-500）根本輪不到。\n・Web 伺服器用連接埠 80，不在 50-60 內，會往下命中 Rule1（允許 50-500）→ 通行。\n→ 只能連到 Web 伺服器。",
+      "2": "刪掉 Rule2 之後，連接埠 53 的流量不再被拒絕，會往下命中 Rule1（允許 50-500）；連接埠 80 原本就命中 Rule1。兩者都通，所以 Web 伺服器與 DNS 伺服器都連得到。",
+      "_full": "作答只要抓住 NSG 的兩條規則：\n① 依優先順序「數字小的先評估」，一旦命中就停止，不會再看後面的規則——所以低優先順序（數字大）的允許規則救不回已經被拒絕的流量。\n② 逐一把服務的連接埠（DNS 53、HTTP 80）套進規則範圍去找「第一個命中」的規則。\n本題 Rule2（100，拒絕 50-60）擋掉 DNS，但擋不到 80；刪掉它之後兩者都由 Rule1 放行。"
+    }
   }
 ]
