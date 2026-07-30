@@ -58,6 +58,71 @@
   },
   {
     "exam": "AZ-104",
+    "id": 508,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜East US｜位址空間 10.1.128.0/23｜子網路 Subnet1\n・VNet2｜East US｜位址空間 192.168.0.0/16｜子網路 Subnet21、Subnet22\n・VNet3｜East US｜位址空間 172.16.0.0/16｜子網路 Subnet3\n\n子網路的位址空間如下：\n・Subnet1｜10.1.128.0/24\n・Subnet21｜192.168.0.0/17\n・Subnet22｜192.168.128.0/17\n・Subnet3｜172.16.1.0/24\n\n你打算在美國東部 (East US) 區域建立一個名為 contapp1 的容器應用程式。\n你必須建立一個名為 con-env1 的容器應用程式環境，並滿足下列要求：\n• 使用它「自己的」虛擬網路。\n• 使用它「自己的」子網路。\n• 連線到「可能的最小」子網路。\n你可以把 con-env1 連到哪些虛擬網路，以及應該使用哪個子網路遮罩？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 VNet1",
+      "只有 VNet2",
+      "只有 VNet3",
+      "只有 VNet1 或 VNet2",
+      "只有 VNet2 或 VNet3",
+      "只有 VNet1 或 VNet3",
+      "VNet1、VNet2 或 VNet3 皆可",
+      "/16",
+      "/23",
+      "/24",
+      "/26",
+      "/28"
+    ],
+    "matches": [
+      {
+        "use_case": "虛擬網路：",
+        "correct_answer": "只有 VNet3"
+      },
+      {
+        "use_case": "子網路遮罩：",
+        "correct_answer": "/23"
+      }
+    ],
+    "explanations": {
+      "1": "只有 VNet3。容器應用程式環境需要一個「專用的空子網路」，而且該子網路至少要 /23。逐一檢查每個虛擬網路還剩多少連續空間：\n・VNet1 位址空間本身就是 /23（10.1.128.0/23），而其中 10.1.128.0/24 已被 Subnet1 佔用，剩下的 10.1.129.0/24 切不出 /23。\n・VNet2 的 192.168.0.0/16 已被 Subnet21 與 Subnet22 兩個 /17 完全用光，沒有剩餘空間。\n・VNet3 的 172.16.0.0/16 只用掉 Subnet3（172.16.1.0/24），還有大量連續空間可以切出 /23（例如 172.16.2.0/23）。→ 只有 VNet3。",
+      "2": "/23。容器應用程式環境的子網路「最小」就是 /23（工作負載設定檔環境需要 /27，但傳統的耗用型環境要求 /23）。題目要「可能的最小」，所以直接取下限 /23——/24、/26、/28 都太小，/16 雖然可行但遠大於需求。",
+      "_full": "兩個判斷步驟：\n① 先算「哪個虛擬網路還切得出一個 /23 的空子網路」——要把已存在的子網路佔掉的範圍扣掉再看剩餘連續空間。\n② 再取「符合最小需求的最小遮罩」——容器應用程式環境的子網路下限是 /23。\n這類題目的關鍵是別忘了子網路必須「專用且為空」，所以不能把既有子網路算進可用空間。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 511,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜West Europe　・VNet2｜Southeast Asia　・VNet3｜South Central US\n\n訂用帳戶中的子網路如下：\n・Subnet1｜VNet1｜服務端點：無\n・Subnet2｜VNet2｜服務端點：Microsoft.Storage\n・Subnet3｜VNet3｜服務端點：Microsoft.Storage\n・Subnet4｜VNet4｜服務端點：無\n\n訂用帳戶中的儲存體帳戶如下：\n・storage1｜West Europe｜StorageV2\n・storage2｜South Central US｜BlobStorage\n・storage3｜Southeast Asia｜StorageV2\n\n你在 South Central US 這個 Azure 區域建立了一個名為 Policy1 的服務端點原則，允許連線到「訂用帳戶中所有的」儲存體帳戶。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Policy1 可以套用到 Subnet3。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "從 VNet2「只能」存取 storage1 與 storage2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "從 VNet3「只能」存取 storage2。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。服務端點原則有兩個前提，Subnet3 都滿足：① 原則必須與虛擬網路「同區域」——Policy1 在 South Central US，而 Subnet3 所屬的 VNet3 也在 South Central US；② 子網路必須已啟用 Microsoft.Storage 服務端點——Subnet3 正是如此。",
+      "2": "否。Subnet2 雖然啟用了 Microsoft.Storage 服務端點，但「沒有套用任何服務端點原則」。沒有原則就沒有白名單限制，從 VNet2 可以連到訂用帳戶中任何一個儲存體帳戶（實際能否存取還取決於各帳戶自己的防火牆設定），因此「只能存取 storage1 與 storage2」不成立。",
+      "3": "否。就算把 Policy1 套用到 Subnet3，Policy1 允許的是「訂用帳戶中所有的儲存體帳戶」——白名單涵蓋 storage1、storage2、storage3 三個，不是只有 storage2。（服務端點原則是用來「縮小」可存取的儲存體帳戶範圍；本題的原則刻意設為全部允許，所以沒有縮小任何範圍。）",
+      "_full": "服務端點原則的三個要點：\n① 原則必須與虛擬網路同區域，且子網路要先啟用 Microsoft.Storage 服務端點。\n② 沒有套用原則的子網路 = 沒有白名單限制（可連任何儲存體帳戶）。\n③ 原則的內容決定白名單範圍——本題設為「訂用帳戶中所有帳戶」，等於沒有做任何限縮。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 512,
     "type": "single",
     "question": "你有一個名為 VNet1 的 Azure 虛擬網路，設定如下：\n• IPv4 位址空間：172.16.10.0/24\n• 子網路名稱：Subnet1\n• 子網路位址範圍：172.16.10.0/25\n最多可以有幾台虛擬機器連接到 Subnet1？",

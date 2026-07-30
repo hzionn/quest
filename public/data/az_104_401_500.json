@@ -1298,6 +1298,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 484,
+    "type": "matching",
+    "question": "你打算部署下列 ARM 範本（節錄）：\n　\"variables\": {\n　　\"vnetId\": \"[resourceId('Microsoft.Network/virtualNetworks/', 'VNET1')]\",\n　　\"lbId\": \"[resourceId('Microsoft.Network/loadBalancers/', 'LB1')]\",\n　　\"sku\": \"Standard\",\n　　\"netname\": \"APP1\" },\n　\"parameters\": {},\n　\"resources\": [ {\n　　\"type\": \"Microsoft.Network/loadBalancers/\", \"name\": \"LB1\",\n　　\"location\": \"EastUS\", \"sku\": { \"name\": \"[variables('sku')]\" },\n　　\"properties\": {\n　　　\"frontendIPConfiguration\": [ { \"name\": \"[variables('netname')]\",\n　　　　\"properties\": { \"subnet\": { \"id\":\n　　　　　\"[concat(variables('vnetId'),'/subnets/', variables('netname'))]\" },\n　　　　　\"privateIPAllocationMethod\": \"Dynamic\" } } ],\n　　　\"backendAddressPools\": [ { \"name\": \"concat(variables('netname'), '-Servers')\" } ],\n　　　\"loadBalancingRules\": [ … backendPort 8080、protocol Tcp、frontendPort 80、enableFloatingIP false、idleTimeoutInMinutes 4、loadDistribution SourceIPProtocol … ],\n　　　\"probes\": [ { \"name\": \"probe\", \"properties\": { \"protocol\": \"Tcp\", \"port\": 8080, \"intervalInSeconds\": 15, \"numberOfProbes\": 2 } } ] } } ]\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "LB1 會連線到一個名為 VNET1/netname 的子網路。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "LB1 只能部署到包含 VNET1 的那個資源群組。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "從命令提示字元部署這個範本時，可以把 sku 變數的值當成參數傳入。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。子網路 id 是 concat(vnetId, '/subnets/', variables('netname'))，而 netname 變數的值是 \"APP1\"——範本語言會「求值」後代入，所以實際指向的子網路是 VNET1/subnets/APP1，名稱是 APP1，不是字面上的 netname。",
+      "2": "否。負載平衡器與它引用的虛擬網路「不需要」在同一個資源群組——資源群組是管理與生命週期的容器，不是網路邊界，跨資源群組引用是允許的。\n（實務補充：範本裡的 resourceId() 若沒有明確傳入資源群組參數，會以「本次部署的資源群組」來組出 ID；因此若 VNET1 真的在別的資源群組，要改寫成 resourceId('<那個資源群組>', 'Microsoft.Network/virtualNetworks', 'VNET1')。但這是寫法問題，不代表 Azure 限制兩者必須同群組。）",
+      "3": "否。sku 定義在 \"variables\" 區段裡，而變數是「範本內部」計算出來的值，部署時無法從外部覆寫。只有 \"parameters\" 區段的項目才能在部署時傳入（本範本的 parameters 是空的 {}）。要讓 sku 可從命令列指定，必須把它從 variables 移到 parameters。",
+      "_full": "三個 ARM 範本的基本觀念：\n① 變數與函式會先求值再代入——看到 variables('netname') 要換成它的值 APP1。\n② 資源群組不是網路或引用的邊界，資源可以跨資源群組互相引用（但 resourceId() 預設以本次部署的資源群組解析）。\n③ parameters 才是「部署時可傳入」的輸入；variables 是範本內部固定計算的值，不能從外部覆寫。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 485,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中有一個儲存體帳戶存放網站資料。你必須確保輸入的使用者流量使用「離使用者位置最近」的 Microsoft 網路臨界點 (POP)。你應該設定什麼？",

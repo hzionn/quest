@@ -1298,6 +1298,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 484,
+    "type": "matching",
+    "question": "You plan to deploy the following Azure Resource Manager (ARM) template (excerpt): variables vnetId = \"[resourceId('Microsoft.Network/virtualNetworks/', 'VNET1')]\", lbId = \"[resourceId('Microsoft.Network/loadBalancers/', 'LB1')]\", sku = \"Standard\", netname = \"APP1\"; parameters {}; resources[0] type \"Microsoft.Network/loadBalancers/\", name \"LB1\", location \"EastUS\", sku.name \"[variables('sku')]\", properties.frontendIPConfiguration[0].name \"[variables('netname')]\" with subnet.id \"[concat(variables('vnetId'),'/subnets/', variables('netname'))]\" and privateIPAllocationMethod \"Dynamic\", backendAddressPools[0].name \"concat(variables('netname'), '-Servers')\", loadBalancingRules with backendPort 8080, protocol Tcp, frontendPort 80, enableFloatingIP false, idleTimeoutInMinutes 4, loadDistribution SourceIPProtocol, and probes[0] name \"probe\" with protocol Tcp, port 8080, intervalInSeconds 15, numberOfProbes 2. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "LB1 will be connected to a subnet named VNET1/netname.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "LB1 can be deployed only to the resource group that contains VNET1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The value of the sku variable can be provided as a parameter when the template is deployed from a command prompt.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。子網路 id 是 concat(vnetId, '/subnets/', variables('netname'))，而 netname 變數的值是 \"APP1\"——範本語言會「求值」後代入，所以實際指向的子網路是 VNET1/subnets/APP1，名稱是 APP1，不是字面上的 netname。",
+      "2": "否。負載平衡器與它引用的虛擬網路「不需要」在同一個資源群組——資源群組是管理與生命週期的容器，不是網路邊界，跨資源群組引用是允許的。\n（實務補充：範本裡的 resourceId() 若沒有明確傳入資源群組參數，會以「本次部署的資源群組」來組出 ID；因此若 VNET1 真的在別的資源群組，要改寫成 resourceId('<那個資源群組>', 'Microsoft.Network/virtualNetworks', 'VNET1')。但這是寫法問題，不代表 Azure 限制兩者必須同群組。）",
+      "3": "否。sku 定義在 \"variables\" 區段裡，而變數是「範本內部」計算出來的值，部署時無法從外部覆寫。只有 \"parameters\" 區段的項目才能在部署時傳入（本範本的 parameters 是空的 {}）。要讓 sku 可從命令列指定，必須把它從 variables 移到 parameters。",
+      "_full": "三個 ARM 範本的基本觀念：\n① 變數與函式會先求值再代入——看到 variables('netname') 要換成它的值 APP1。\n② 資源群組不是網路或引用的邊界，資源可以跨資源群組互相引用（但 resourceId() 預設以本次部署的資源群組解析）。\n③ parameters 才是「部署時可傳入」的輸入；variables 是範本內部固定計算的值，不能從外部覆寫。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 485,
     "type": "single",
     "question": "You have an Azure subscription that contains a storage account. The account stores website data. You need to ensure that inbound user traffic uses the Microsoft point-of-presence (POP) closest to the user's location. What should you configure?",
