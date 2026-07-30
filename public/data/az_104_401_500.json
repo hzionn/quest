@@ -259,6 +259,93 @@
   },
   {
     "exam": "AZ-104",
+    "id": 417,
+    "type": "matching",
+    "question": "你有一台名為 VM1 的 Azure 虛擬機器，連線到虛擬網路 VNet1，設定如下：\n✑ 子網路：10.0.0.0/24\n✑ 可用性設定組：AVSet\n✑ 網路安全性群組 (NSG)：無\n✑ 私人 IP 位址：10.0.0.4（動態）\n✑ 公用 IP 位址：40.90.219.6（動態）\n\n你部署了一個名為 slb1 的「Standard」SKU、面向網際網路的負載平衡器。\n你必須設定 slb1 以允許連線到 VM1。\n在設定 slb1 的過程中，你應該對 VM1 套用哪些變更？（每個正確選擇得一分）",
+    "available_options": [
+      "建立一個 NSG 並指派給 VM1",
+      "從 VM1 移除公用 IP 位址",
+      "把 VM1 的私人 IP 位址改為靜態",
+      "建立並設定一個 NSG"
+    ],
+    "matches": [
+      {
+        "use_case": "在你於 slb1 上建立後端集區「之前」，你必須：",
+        "correct_answer": "從 VM1 移除公用 IP 位址"
+      },
+      {
+        "use_case": "在你能夠從 slb1 連線到 VM1「之前」，你必須：",
+        "correct_answer": "建立並設定一個 NSG"
+      }
+    ],
+    "explanations": {
+      "1": "從 VM1 移除公用 IP 位址。Standard SKU 的負載平衡器要求後端執行個體的公用 IP 「SKU 必須一致」——而 VM1 目前的公用 IP 是「動態」配置，動態公用 IP 一律是 Basic SKU。SKU 不相符的執行個體無法加入 Standard 負載平衡器的後端集區，所以要先把這個 Basic 公用 IP 移除（之後由負載平衡器的前端公用 IP 對外服務）。",
+      "2": "建立並設定一個 NSG。Standard SKU 負載平衡器是「預設安全」的——後端執行個體如果沒有 NSG 明確允許流量，進來的流量會被拒絕（Basic SKU 則是預設開放）。因此要能從 slb1 連到 VM1，必須先建立 NSG 並加入允許規則（允許來自 AzureLoadBalancer 與所需來源的流量）。",
+      "_full": "Standard SKU 負載平衡器與 Basic 的兩個關鍵差異，本題各考一個：\n① SKU 必須一致：後端 VM 若掛著 Basic 公用 IP（動態公用 IP 就是 Basic），不能加入 Standard 負載平衡器的後端集區。\n② 預設安全：Standard 要求 NSG 明確允許流量才通；Basic 預設開放。\n（另外提醒：私人 IP 是動態或靜態不影響加入後端集區，那是干擾項。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 420,
+    "type": "matching",
+    "question": "你打算使用 Azure 網路監看員執行下列工作：\n✑ Task1：找出「阻止網路封包到達某台 Azure 虛擬機器」的安全性規則。\n✑ Task2：驗證某台 Azure 虛擬機器「對外部主機」的輸出連線能力。\n針對每一項工作，你應該使用哪一個功能？（每個正確選擇得一分）",
+    "available_options": [
+      "IP 流量驗證 (IP flow verify)",
+      "下一個躍點 (Next hop)",
+      "封包擷取 (Packet capture)",
+      "安全性群組檢視 (Security group view)",
+      "流量分析 (Traffic Analytics)",
+      "連線疑難排解 (Connection troubleshoot)",
+      "NSG 流程記錄 (NSG flow logs)"
+    ],
+    "matches": [
+      {
+        "use_case": "Task1：",
+        "correct_answer": "IP 流量驗證 (IP flow verify)"
+      },
+      {
+        "use_case": "Task2：",
+        "correct_answer": "連線疑難排解 (Connection troubleshoot)"
+      }
+    ],
+    "explanations": {
+      "1": "IP 流量驗證。你指定來源與目的 IPv4 位址、連接埠、通訊協定 (TCP/UDP) 與方向（輸入或輸出），它會判斷該封包會被允許還是拒絕，「而且會直接告訴你是哪一條安全性規則造成的」——正好對應 Task1。\n安全性群組檢視只是把有效規則列出來給你自己看，不會針對某個封包給出判定；封包擷取是抓實際流量、不做規則分析。",
+      "2": "連線疑難排解。它可以測試從某台 VM 到另一台 VM、FQDN、URI 或 IPv4 位址的連線，回報是否可達、延遲與經過的躍點——這正是「驗證對外部主機的輸出連線」。\n（相近的「連線監視員 Connection Monitor」是「持續」監控；連線疑難排解則是「當下」測一次。）下一個躍點只回答封包會被路由到哪裡；NSG 流程記錄與流量分析是事後的記錄與分析，不是即時測試。",
+      "_full": "把網路監看員的工具按「用途」分開記：\n・IP 流量驗證 → 判斷某個封包會不會被允許，並指出是哪條規則。\n・連線疑難排解 → 當下測試一條連線是否可達（含到外部主機）。\n・下一個躍點 → 診斷路由。\n・安全性群組檢視 → 檢視有效安全性規則。\n・封包擷取 → 抓實際封包。\n・NSG 流程記錄／流量分析 → 事後的流量記錄與趨勢分析。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 421,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列 Azure 虛擬機器：\n・VM1｜Windows Server 2019｜子網路 Subnet1｜虛擬網路 VNET1\n・VM2｜Windows Server 2019｜子網路 Subnet2｜虛擬網路 VNET1\n・VM3｜Red Hat Enterprise Linux 7.7｜子網路 Subnet3｜虛擬網路 VNET1\n\n你把這些虛擬機器「網路介面」的 DNS 伺服器設定如下：\n・VM1｜無 (None)\n・VM2｜192.168.10.15\n・VM3｜192.168.10.15\n\n在 VNET1 的設定中，你把 DNS 伺服器設為「自訂」，值為 193.77.134.10。\n這些虛擬機器都可以成功連線到 192.168.10.15 與 193.77.134.10 這兩台 DNS 伺服器。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 會連到 193.77.134.10 執行 DNS 查詢。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "VM2 會連到 193.77.134.10 執行 DNS 查詢。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "VM3 會連到 192.168.10.15 執行 DNS 查詢。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "是。VM1 的網路介面 DNS 設定是「無」，代表沿用虛擬網路層級的設定；而 VNET1 的自訂 DNS 伺服器是 193.77.134.10，所以 VM1 會用它做查詢。",
+      "2": "否。DNS 設定的優先順序是「網路介面層級 > 虛擬網路層級」——網路介面上一旦指定了 DNS 伺服器，就會「覆寫」虛擬網路的設定。VM2 的介面指定了 192.168.10.15，因此它查詢時只會用 192.168.10.15，不會用 193.77.134.10。",
+      "3": "是。同樣的覆寫規則：VM3 的網路介面指定了 192.168.10.15，覆寫掉虛擬網路的 193.77.134.10，所以 VM3 會用 192.168.10.15（作業系統是 Linux 不影響這個判斷）。",
+      "_full": "一條規則就能全部判完：DNS 設定「網路介面層級優先於虛擬網路層級」。\n・介面設為「無」→ 繼承虛擬網路的設定。\n・介面指定了 IP → 覆寫虛擬網路的設定，虛擬網路那組完全不會被使用。\n另外提醒：改完 DNS 設定後，VM 要重新啟動（或更新租用）才會生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 426,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 Computer1 的電腦，它有一個到 Azure 虛擬網路 VNet1 的點對站 VPN 連線，該連線使用自我簽署憑證。你從 Azure 下載並在另一台名為 Computer2 的電腦上安裝了 VPN 用戶端組態套件。你必須確保可以從 Computer2 建立到 VNet1 的點對站 VPN 連線。\n解法：你從 Computer1 匯出用戶端憑證，並把該憑證安裝到 Computer2。\n此解法是否達成目標？",
