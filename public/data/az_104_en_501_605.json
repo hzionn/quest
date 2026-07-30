@@ -531,6 +531,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 535,
+    "type": "matching",
+    "question": "You have an Azure AD tenant that syncs with an on-premises Active Directory domain. The domain contains SecAdmin1 (Security administrator), BillAdmin1 (Billing administrator) and User1 (Reports reader). You enable self-service password reset (SSPR) for all users and configure SSPR to have the following authentication methods: number of methods required to reset = 2; methods available to users = Mobile phone, Security questions; number of questions required to register = 3; number of questions required to reset = 3. You select the security questions: What is your favorite food? In what city was your first job? What was the name of your first pet? For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "SecAdmin1 must answer the following question during the self-service password reset: In what city was your first job?",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "BillAdmin1 must answer the following question during the self-service password reset: What is your favorite food?",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User1 must answer the following question during the self-service password reset: What was the name of your first pet?",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。SecAdmin1 具備「安全性系統管理員」這個「特殊權限」管理員角色，而 Azure 對管理員套用的是一套「不可修改」的強制密碼重設原則：管理員必須使用兩種驗證方法，而且「安全性問題不在管理員可用的方法之列」。因此他不會被要求回答任何安全性問題。",
+      "2": "否。「計費系統管理員」同樣是管理員角色，適用同一條規則——管理員的重設流程只能用電子郵件、行動電話、驗證器應用程式等較強的方法，不能用安全性問題。",
+      "3": "是。「報表讀取者」是一個「非特殊權限」的角色，就 SSPR 而言 User1 算是一般使用者，適用租用戶設定的方法。設定中安全性問題是可用方法之一，而且重設所需的問題數目是 3、選取的問題也正好是這三題，所以她必須回答包含「你的第一隻寵物叫什麼名字？」在內的三題（另外還要再通過一種方法，因為重設所需的方法數目是 2）。",
+      "_full": "本題只考一條規則：SSPR 的驗證方法設定「只套用於一般使用者」。\n・管理員角色（安全性系統管理員、計費系統管理員等）一律強制啟用 SSPR、一律需要兩種方法，而且「不能使用安全性問題」。\n・報表讀取者這類非特殊權限角色則視同一般使用者，適用租用戶的設定。\n判斷時先看使用者有沒有管理員角色，再決定套用哪一套規則。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 537,
     "type": "single",
     "question": "You have an existing Azure subscription that contains 10 virtual machines. You need to monitor the latency between your on-premises network and the virtual machines. What should you use?",
@@ -546,6 +576,67 @@
       "B": "Incorrect. 錯誤。連線疑難排解是一次性的連線測試，不做持續的延遲監視。",
       "C": "Correct. 正確。網路效能監視器（網路監看員的功能，現已整合進連線監視器）專門用來持續監視內部部署與 Azure 之間的連線延遲、封包遺失與拓撲變化。",
       "D": "Incorrect. 錯誤。有效路由只顯示某個網路介面實際生效的路由表，與延遲量測無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 538,
+    "type": "matching",
+    "question": "You have an App Service plan named ASP1. CPU usage for ASP1 is shown in a metrics chart with time range 'Local Time: Last 30 days (Automatic - 6 hours)' and two series, ASP1 CPU Percentage (Avg) and ASP1 CPU Percentage (Max). The legend shows CPU Percentage (Avg) uses2Shared = 3.6684% and CPU Percentage (Max) uses2Shared = 100%. The maximum line sits at or near 100% for most of the period while the average line stays below 10%. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "once",
+      "four times",
+      "six times",
+      "24 times",
+      "scaled up",
+      "scaled down",
+      "scaled out"
+    ],
+    "matches": [
+      {
+        "use_case": "The average CPU percentage is calculated [answer choice] per day.",
+        "correct_answer": "four times"
+      },
+      {
+        "use_case": "ASP1 must be [answer choice] to optimize CPU usage.",
+        "correct_answer": "scaled up"
+      }
+    ],
+    "explanations": {
+      "1": "四次。圖表標題已經寫明時間粒紋是「Automatic - 6 hours」，也就是每 6 小時彙總出一個資料點。一天 24 小時 ÷ 6 小時 = 4，所以平均值每天被計算四次。",
+      "2": "相應增加規模 (scale up)。CPU 的最大值長期貼在 100%，代表現有執行個體的「規格」已經打到上限——這時要換更大的方案層級／執行個體大小，也就是垂直的 scale up。\n「相應放大 (scale out)」是增加執行個體「數量」，適合處理併發請求量大的情況；但本題的方案是 Shared 層級（uses2Shared），而共用層級「不支援」向外延展，只能先升級層級。「相應減少規模」則與現況完全相反。",
+      "_full": "兩個要點：\n① 計量圖表的「時間粒紋」決定一天有幾個資料點——6 小時粒紋 = 每天 4 個。\n② scale up（垂直，換更大規格）vs scale out（水平，增加執行個體數）：單一執行個體的 CPU 打滿 → 先 scale up；請求量大但單機資源還有餘裕 → scale out。而 Free/Shared 層級不支援 scale out，只能先升級層級。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 540,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains an Azure virtual machine named VM1. You need to configure the backup of VM1. In which location should you store the backups, and which object should you use to configure the protection for VM1?",
+    "available_options": [
+      "A blob container",
+      "A file share",
+      "A Recovery Services vault",
+      "A storage account",
+      "A backup policy",
+      "A batch job",
+      "A batch schedule",
+      "A recovery plan"
+    ],
+    "matches": [
+      {
+        "use_case": "Location in which to store the backups:",
+        "correct_answer": "A Recovery Services vault"
+      },
+      {
+        "use_case": "Object to use to configure the protection for VM1:",
+        "correct_answer": "A backup policy"
+      }
+    ],
+    "explanations": {
+      "1": "Recovery Services 保存庫。Azure VM 的備份一律存放在 Recovery Services 保存庫中——保存庫替你管理底層的儲存體（含備援設定），你不需要、也不能指定自己的 Blob 容器或儲存體帳戶當備份目的地。（自訂儲存體帳戶是 App Service 備份的做法，不是 VM 備份。）",
+      "2": "備份原則。備份原則定義「多久備份一次」與「復原點保留多久」，設定 VM 保護時就是挑一個現有原則或新建一個（也可以沿用預設原則：每天備份一次、保留 30 天）。\n「復原計畫」是 Azure Site Recovery 用來編排容錯移轉順序的物件，屬於災難復原而不是備份；批次工作與批次排程則與備份無關。",
+      "_full": "把 Azure 備份的兩個核心物件記起來：\n・Recovery Services 保存庫 = 「備份資料存放與管理的容器」（VM、檔案共用、SQL in VM 等）。\n・備份原則 = 「排程 + 保留」的設定，可被多個受保護項目共用。\n另外別和 Site Recovery 的「復原計畫」混淆——那是災難復原的容錯移轉編排。"
     }
   },
   {
@@ -622,6 +713,37 @@
       "B": "Correct. 正確。多步驟 Web 測試是 Application Insights 可用性測試的功能之一，可錄製並重播一連串請求，驗證多步驟流程是否正常。",
       "C": "Incorrect. 錯誤。診斷設定只是決定把記錄與計量送到哪裡，本身不做可用性測試。",
       "D": "Incorrect. 錯誤。計量呈現的是已收集的量測值，並不會主動發出測試請求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 545,
+    "type": "matching",
+    "question": "You have an Azure subscription and a Log Analytics workspace. You need to write a Kusto query that lists Critical entries from the activity log and outputs only the time, operation name and resource ID columns. How should you complete the query?  [box 1]  | where Level == 'Critical'  [box 2] TimeGenerated, OperationNameValue, _ResourceId",
+    "available_options": [
+      "AzureActivity",
+      "Heartbeat",
+      "NetworkMonitoring",
+      "Perf",
+      "| extend",
+      "| join",
+      "| print",
+      "| project"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the table):",
+        "correct_answer": "AzureActivity"
+      },
+      {
+        "use_case": "Box 2 (the operator):",
+        "correct_answer": "| project"
+      }
+    ],
+    "explanations": {
+      "1": "AzureActivity。這張資料表存放的正是「Azure 活動記錄」——訂用帳戶或管理群組層級的控制平面事件（誰在什麼時候對哪個資源做了什麼）。Heartbeat 是代理程式的存活訊號；NetworkMonitoring 是網路效能監視器的資料；Perf 是作業系統的效能計數器，三者都不是活動記錄。",
+      "2": "| project。在 KQL 中 project 用來「選出並排列要輸出的欄位」，正好對應「只輸出這三欄」的需求。\nextend 是「新增」計算欄位（原有欄位仍會保留）；print 是輸出一列常數運算式、不接資料表；join 是把兩張資料表合併，都不符合本題。",
+      "_full": "兩個 KQL 基本功：\n① 常用資料表的用途：AzureActivity（活動記錄）、AzureDiagnostics（診斷記錄）、Heartbeat（代理程式存活）、Perf（效能計數器）、AzureMetrics（計量）、SecurityEvent（安全性事件）。\n② 欄位運算子：project（選欄位）、project-away（排除欄位）、extend（新增計算欄位）、summarize（彙總）。"
     }
   },
   {
