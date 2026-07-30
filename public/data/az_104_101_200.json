@@ -681,6 +681,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 142,
+    "type": "matching",
+    "question": "你有一個 Microsoft Entra 租用戶，連結到下列訂用帳戶：\n・Sub1｜所屬管理群組 Tenant Root Group｜（無父管理群組）\n・Sub2｜所屬管理群組 MG1｜父管理群組 Tenant Root Group\n・Sub3｜所屬管理群組 MG2｜父管理群組 Tenant Root Group\n\n資源群組如下：\n・RG1｜位於 Sub1｜內含儲存體帳戶 storage1\n・RG2｜位於 Sub2｜內含 Web 應用程式 App1\n・RG3｜位於 Sub3｜內含虛擬機器 VM1\n\n你指派給使用者的角色如下：\n・User1｜參與者 (Contributor)｜範圍 MG2\n・User2｜儲存體帳戶參與者 (Storage Account Contributor)｜範圍 storage1\n・User3｜使用者存取管理員 (User Access Administrator)｜範圍 Tenant Root Group\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以調整 VM1 的大小。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User2 可以在 RG1 中建立新的儲存體帳戶。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User3 可以為 RG3 把擁有者角色指派給 User1。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "是。User1 在 MG2 上是「參與者」，而 Sub3 屬於 MG2，RG3 又在 Sub3 之下，VM1 在 RG3 裡。角色沿著階層向下繼承，參與者可以管理資源（包含調整 VM 大小），只不能指派權限。",
+      "2": "否。User2 的範圍是「storage1 這個資源」，不是 RG1。在資源範圍上取得的權限不會往上擴及所屬資源群組，因此他只能管理 storage1 本身，不能在 RG1 裡建立新的儲存體帳戶。",
+      "3": "是。User3 在 Tenant Root Group 上是「使用者存取管理員」，這是整個階層的最上層，會繼承到所有管理群組、訂用帳戶、資源群組與資源。該角色的職責正是建立與移除角色指派，所以他可以在 RG3 上把擁有者指派給 User1。",
+      "_full": "三項都是同一個判斷框架：權限 =「角色能做什麼」×「指派在哪個範圍」，而範圍只會「向下」繼承，絕不向上擴張。\n・MG2 的參與者 → 涵蓋 Sub3/RG3/VM1（可管資源，不可指派權限）。\n・storage1 這個資源上的角色 → 只涵蓋 storage1，管不到 RG1。\n・Tenant Root Group 的使用者存取管理員 → 涵蓋整個租用戶的所有範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 144,
     "type": "multiple",
     "question": "你有一個 Microsoft Entra 租用戶，打算執行使用者的大量匯入。你必須確保匯入的使用者物件會依照各自的部門，自動成為特定群組的成員，且解決方案必須盡量減少管理工作。你應該執行哪兩個動作？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）",
@@ -724,6 +754,68 @@
       "C": "錯誤。生命週期管理是依規則自動搬移或刪除 Blob，管理的是資料而非金鑰。",
       "D": "正確。把儲存體帳戶的存取金鑰以「受控儲存體帳戶金鑰」的形式交給 Azure 金鑰保存庫管理後，即可設定輪替週期讓保存庫定期自動重新產生金鑰，這是官方的自動輪替機制。",
       "E": "錯誤。復原服務保存庫用於 VM 備份與 Site Recovery，與存取金鑰無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 148,
+    "type": "matching",
+    "question": "你有一個 Microsoft Entra 租用戶，其中包含下列使用者：\n・User1｜隸屬 Group1｜已指派授權：Microsoft Entra ID P2\n・User2｜隸屬 Group2｜已指派授權：無\n・User3｜隸屬於：無｜已指派授權：Microsoft Entra ID P2\n・User4｜隸屬於：無｜已指派授權：無\n\n該租用戶包含下列群組：\n・Group1｜隸屬於：無｜已指派授權：無\n・Group2｜隸屬 Group3｜已指派授權：Microsoft Entra ID P2\n・Group3｜隸屬 Group4｜已指派授權：無\n・Group4｜隸屬於：無｜已指派授權：Microsoft Entra ID P2\n\n哪些使用者與群組可以被刪除？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 User4",
+      "只有 User3 和 User4",
+      "只有 User2 和 User4",
+      "User1、User2、User3 和 User4",
+      "只有 Group1",
+      "只有 Group4",
+      "只有 Group1 和 Group3",
+      "Group1、Group2、Group3 和 Group4"
+    ],
+    "matches": [
+      {
+        "use_case": "使用者：",
+        "correct_answer": "User1、User2、User3 和 User4"
+      },
+      {
+        "use_case": "群組：",
+        "correct_answer": "只有 Group1 和 Group3"
+      }
+    ],
+    "explanations": {
+      "1": "使用者帳戶不受授權限制，隨時可以刪除——有沒有指派授權、隸屬哪個群組都不影響（刪除時授權自動釋出，帳戶進入 30 天軟刪除期可還原）。→ User1、User2、User3 和 User4 全部可以。",
+      "2": "群組只要「本身」還有指派的授權就不能刪除，必須先移除該群組的授權指派。Group2 與 Group4 都有 Microsoft Entra ID P2，因此不能刪；Group1 與 Group3 本身沒有授權（Group3 只是 Group4 的成員，而群組授權不會沿著巢狀關係傳給子群組），可以刪除。→ 只有 Group1 和 Group3。",
+      "_full": "兩條規則：① 授權掛在使用者身上不阻止刪除使用者；② 授權掛在群組身上會阻止刪除該群組。\n第二個下拉的陷阱在 Group3：它是 Group4（有授權）的成員，看起來像「間接有授權」，但群組授權不支援巢狀繼承，Group3 本身沒有授權，所以刪得掉。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 149,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・app1｜資源群組 RG1｜類型：容器應用程式 (Container app)｜位置：East US\n・Vault1｜資源群組 RG1｜類型：Azure Key Vault｜位置：East US\n・Vault2｜資源群組 RG1｜類型：Azure Key Vault｜位置：West US\n・Vault3｜資源群組 RG2｜類型：Azure Key Vault｜位置：East US\n\n你打算用 Azure 金鑰保存庫提供一個祕密給 app1。\n你應該為 app1 建立什麼，才能存取金鑰保存庫？又可以使用哪些金鑰保存庫中的祕密？（每個正確選擇得一分）",
+    "available_options": [
+      "受控識別 (Managed identity)",
+      "私人端點 (Private endpoint)",
+      "服務主體 (Service principal)",
+      "使用者帳戶 (User account)",
+      "只有 Vault1",
+      "只有 Vault1 和 Vault2",
+      "只有 Vault1 和 Vault3",
+      "Vault1、Vault2 或 Vault3 皆可"
+    ],
+    "matches": [
+      {
+        "use_case": "建立：",
+        "correct_answer": "受控識別 (Managed identity)"
+      },
+      {
+        "use_case": "可以使用下列保存庫的祕密：",
+        "correct_answer": "Vault1、Vault2 或 Vault3 皆可"
+      }
+    ],
+    "explanations": {
+      "1": "容器應用程式存取金鑰保存庫的建議做法是啟用「受控識別」——由 Azure 代管身分與憑證輪替，程式碼裡不需要放任何密碼或憑證。服務主體雖然技術上可行，但要自行保管與輪替用戶端祕密，不符合最佳實務；私人端點是網路連線層面的設定（讓流量走私有 IP），不是「身分」；使用者帳戶則是給人用的，不該給應用程式使用。",
+      "2": "金鑰保存庫的存取沒有「同區域」或「同資源群組」的限制——取用祕密走的是 Azure AD 驗證加上保存庫的存取原則或 RBAC 授權，只要授權給 app1 的受控識別，任一個保存庫都可以使用。→ Vault1、Vault2 或 Vault3 皆可。",
+      "_full": "兩個觀念：① 應用程式對 Azure 服務驗證，首選「受控識別」（免祕密管理）；② 金鑰保存庫的可用性由「授權」決定，不是由位置或資源群組決定，跨區域、跨資源群組都能存取（跨區域只會多一點網路延遲，並非限制）。"
     }
   },
   {
@@ -773,6 +865,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 152,
+    "type": "matching",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\nADatum 有一個名為 adatum.com 的 Microsoft Entra 租用戶，已連結到 Azure 訂用帳戶，其中包含下列身分：\n・Admin1｜Microsoft Entra 角色：全域管理員 (Global Administrator)｜Azure 角色：無\n・Admin2｜Microsoft Entra 角色：屬性定義管理員 (Attribute Definition Administrator)｜Azure 角色：無\n・Admin3｜Microsoft Entra 角色：屬性指派管理員 (Attribute Assignment Administrator)｜Azure 角色：無\n・User1｜Microsoft Entra 角色：無｜Azure 角色：RG2 與 RG3 的讀取者 (Reader)\n\n租用戶包含下列群組：\n・Group1｜安全性群組 (Security group)\n・Group2｜Microsoft 365 群組\n\nadatum.com 租用戶有一個名為 Attribute1 的自訂安全性屬性。\n規劃的變更之一是：把 Attribute1 指派給 adatum.com「支援的」資源。\n你必須實作 Attribute1 的這項規劃變更。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Admin1 可以把 Attribute1 指派給 Group1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Admin2 可以把 Attribute1 指派給 User1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Admin3 可以把 Attribute1 指派給 Group2。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否，有兩個理由都成立。① 自訂安全性屬性刻意「不」包含在全域管理員的權限中——為了保護敏感屬性，必須明確指派屬性定義管理員或屬性指派管理員等專用角色。② 自訂安全性屬性只支援使用者、服務主體（應用程式）與裝置，「群組」不在支援清單內。",
+      "2": "否。「屬性定義管理員」負責的是「定義」——建立與管理屬性集和屬性定義（名稱、資料類型、允許值），但沒有把屬性值「指派」到物件上的權限。要指派值必須是「屬性指派管理員」。",
+      "3": "否。Admin3 的「屬性指派管理員」確實有指派屬性值的權限，但指派對象必須是「支援」自訂安全性屬性的物件類型——使用者、服務主體與裝置。Group2 是 Microsoft 365 群組，群組本身不支援自訂安全性屬性，所以做不到。",
+      "_full": "自訂安全性屬性有兩個獨立的考點，本題三項各命中一個或兩個：\n① 權限分工：定義屬性 → 屬性定義管理員；指派屬性值 → 屬性指派管理員；而全域管理員預設「沒有」自訂安全性屬性的權限（這是刻意的安全設計）。\n② 支援的物件類型：只有使用者、服務主體（應用程式）與裝置，群組一律不支援。\n把兩條規則套上去，三個敘述都不成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 154,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含一個儲存體帳戶，該帳戶內有存放影像的 Blob。用戶端是透過共用存取簽章 (SAS) 取得存取權。你必須確保當使用者產生「超過七天」有效期的 SAS 時會收到警告訊息。你應該對該儲存體帳戶做什麼？",
@@ -788,6 +910,269 @@
       "B": "錯誤。警示規則是在事件或計量達到條件後才觸發通知，無法在使用者「產生 SAS 的當下」就於介面上提出警告。",
       "C": "錯誤。生命週期管理規則處理的是 Blob 的分層與刪除，不會檢查 SAS 到期時間。",
       "D": "正確。這個設定會為儲存體帳戶定義建議的 SAS 到期上限（預設七天）；當有人產生超過該期間的 SAS 時，Azure 會在介面上顯示建議警告，也會在 Microsoft Defender for Cloud 中被標示為不符合建議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 156,
+    "type": "matching",
+    "question": "你有下列 Azure 儲存體帳戶（全部位於資源群組 ContosoRG1、訂用帳戶 Subscription 1）：\n・storageaccount1｜種類 (Kind)：Storage｜位置 East US｜存取層：—｜複寫：讀取權限異地備援 (RA-GRS)\n・storageaccount2｜種類：StorageV2｜位置 Central US｜存取層：熱層 (Hot)｜複寫：異地備援 (GRS)\n・storageaccount3｜種類：BlobStorage｜位置 East US｜存取層：熱層 (Hot)｜複寫：本地備援 (LRS)\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "只有 storageaccount1",
+      "只有 storageaccount2",
+      "只有 storageaccount3",
+      "只有 storageaccount1 和 storageaccount2",
+      "只有 storageaccount2 和 storageaccount3",
+      "只有 storageaccount1 和 storageaccount3",
+      "所有儲存體帳戶"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把【答案】用於 Azure 表格儲存體 (Table Storage)。",
+        "correct_answer": "只有 storageaccount1 和 storageaccount2"
+      },
+      {
+        "use_case": "你可以把【答案】用於 Azure Blob 儲存體。",
+        "correct_answer": "所有儲存體帳戶"
+      }
+    ],
+    "explanations": {
+      "1": "表格、佇列、檔案這些非 Blob 的服務只有「一般用途」帳戶支援——也就是 Storage（一般用途 v1）與 StorageV2（一般用途 v2）。storageaccount3 的種類是 BlobStorage，這是專用的 Blob 儲存體帳戶，只能放區塊 Blob，沒有表格服務。→ 只有 storageaccount1 和 storageaccount2。",
+      "2": "三種帳戶種類都支援 Blob：一般用途 v1、一般用途 v2 都含 Blob 服務，而 BlobStorage 帳戶本來就是專門用來放 Blob 的。→ 所有儲存體帳戶。",
+      "_full": "帳戶種類決定「支援哪些服務」：\n・Storage（GPv1）／StorageV2（GPv2）→ Blob、檔案、佇列、表格全支援（GPv2 還多了存取層、最新功能與最低的每 GB 價格）。\n・BlobStorage → 只有區塊 Blob。\n所以「表格」把 BlobStorage 排除掉，「Blob」則三者皆可。位置與複寫類型在這一題不是判斷依據。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 158,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶。\n你有一個名為 App1 的 Azure App Service 應用程式，以及一個在 Azure 容器實例中執行的應用程式 App2。兩個應用程式都使用受控識別。\n你必須確保 App1 與 App2 都能從 storage1 讀取 Blob，並滿足下列要求：\n✑ 盡量減少所使用的祕密數量。\n✑ 確保 App2 只能在「接下來的 30 天內」從 storage1 讀取。\n針對每個應用程式，你應該在 storage1 中設定什麼？（每個正確選擇得一分）",
+    "available_options": [
+      "存取金鑰 (Access keys)",
+      "進階安全性 (Advanced security)",
+      "存取控制 (IAM)",
+      "共用存取簽章 (SAS)"
+    ],
+    "matches": [
+      {
+        "use_case": "App1：",
+        "correct_answer": "存取控制 (IAM)"
+      },
+      {
+        "use_case": "App2：",
+        "correct_answer": "共用存取簽章 (SAS)"
+      }
+    ],
+    "explanations": {
+      "1": "App1 沒有期限要求，只要求「盡量減少祕密」。在存取控制 (IAM) 中把「儲存體 Blob 資料讀取者」角色指派給 App1 的受控識別，完全不需要任何祕密或金鑰——這是最少祕密的做法。",
+      "2": "App2 多了「只能用 30 天」這個限制，而 Azure RBAC 的角色指派沒有內建到期時間。共用存取簽章可以直接指定開始與到期時間，並限定為唯讀，正好對應 30 天的需求。（SAS 權杖本身算是一個祕密，但這是唯一能表達時間限制的選項。）",
+      "_full": "判斷關鍵是「有沒有時間限制」：\n・沒有期限、要求最少祕密 → 用 Azure RBAC（存取控制 IAM）搭配受控識別，零祕密。\n・要限定有效期間 → 用共用存取簽章 (SAS)，可設定起訖時間與權限。\n存取金鑰是整個帳戶的最高權限（且無法限定範圍或期限）；進階安全性（Defender for Storage）是威脅偵測功能，兩者都不是授權機制。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 159,
+    "type": "matching",
+    "question": "你必須建立一個 Azure 儲存體帳戶，並滿足下列要求：\n✑ 盡量降低成本\n✑ 支援 Blob 的熱層、冷層與封存層\n✑ 若災難影響到該帳戶所在的 Azure 區域，仍具備容錯能力\n\n你應該如何完成這個命令？\n　az storage account create -g RG1 -n storageaccount1 --kind 【下拉 1】 --sku 【下拉 2】\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "FileStorage",
+      "Storage",
+      "StorageV2",
+      "Standard_GRS",
+      "Standard_LRS",
+      "Standard_RAGRS",
+      "Premium_LRS"
+    ],
+    "matches": [
+      {
+        "use_case": "--kind",
+        "correct_answer": "StorageV2"
+      },
+      {
+        "use_case": "--sku",
+        "correct_answer": "Standard_GRS"
+      }
+    ],
+    "explanations": {
+      "1": "只有一般用途 v2（StorageV2）與 BlobStorage 帳戶支援熱／冷／封存存取層；一般用途 v1（Storage）不支援分層，FileStorage 是檔案專用的進階帳戶（沒有 Blob）。而 StorageV2 同時提供最低的每 GB 容量價格，符合「盡量降低成本」。",
+      "2": "要在「整個區域發生災難」時仍有容錯，複寫必須跨區域，所以 LRS（本地備援，同一區域內）與 Premium_LRS 都不合格。跨區域的選項有 GRS 與 RA-GRS，而 RA-GRS 多了「可讀取次要區域」的能力、價格也較高——題目沒有要求讀取次要複本，因此以成本為優先選 Standard_GRS。",
+      "_full": "三個要求各對應一個判斷：\n・「支援熱／冷／封存」→ --kind 必須是 StorageV2（GPv1 不支援分層）。\n・「區域災難仍容錯」→ 複寫必須跨區域，排除所有 LRS。\n・「盡量降低成本」→ 跨區域選項中選較便宜的 GRS，而不是 RA-GRS。\n→ --kind StorageV2 --sku Standard_GRS。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 161,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNET1｜虛擬網路｜資源群組 RG1\n・VNET2｜虛擬網路｜資源群組 RG2\n・VM1｜虛擬機器｜資源群組 RG2\n\nVM1 的狀態是「執行中 (Running)」。\n你指派了一個 Azure 原則，設定如下：\n・範圍：Azure Pass/RG2；排除項目：無\n・原則定義／指派名稱：不允許的資源類型 (Not allowed resource types)\n・參數（已選 3 項）：\n　Microsoft.ClassicNetwork/virtualNetworks\n　Microsoft.Network/virtualNetworks\n　Microsoft.Compute/virtualMachines\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "管理員可以把 VNET1 移動到 RG2。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "VM1 的狀態變成「已解除配置 (deallocated)」。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "管理員可以修改 VNET2 的位址空間。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。Azure Policy 的 Deny 效果是由「建立或更新資源」這類作業觸發的；把既有資源搬到另一個資源群組並不是對該資源做建立或屬性更新，因此不會觸發拒絕，搬移會成功——只是搬進去之後 VNET1 會在合規性報告中被標為「不符合規範」。",
+      "2": "否。指派原則不會去動既有資源的執行狀態。「不允許的資源類型」只會阻擋後續的建立與更新，既有的 VM1 仍然照常執行，只是被標記為不符合規範（要處理得自己刪除或改用補救方式）。",
+      "3": "否。修改虛擬網路的位址空間是對 Microsoft.Network/virtualNetworks 這個資源做「更新」，而更新正是會觸發原則評估的作業。VNET2 位於 RG2（原則範圍內），且該資源類型在不允許清單中，因此這個更新會被拒絕。",
+      "_full": "一句話總結：「不允許的資源類型」= 對範圍內「建立／更新」該類型資源時拒絕。\n・既有資源：不會被刪除、不會被停止，只會標為不符合規範（第 2 項否）。\n・對既有資源做屬性更新：會被拒絕（第 3 項否）。\n・把資源搬進來：不是建立也不是屬性更新，不觸發拒絕，搬完變成不符合規範（第 1 項是）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 163,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列 Azure 檔案共用：\n・share1｜位於儲存體帳戶 storage1｜位置 West US\n・share2｜位於儲存體帳戶 storage1｜位置 West US\n\n你有下列內部部署伺服器：\n・Server1｜資料夾 D:\\Folder1、E:\\Folder2\n・Server2｜資料夾 D:\\Data\n\n你建立了一個名為 Sync1 的儲存體同步服務，以及一個名為 Group1 的 Azure 檔案同步群組。\nGroup1 以 share1 作為雲端端點。\n你把 Server1 與 Server2 都註冊到 Sync1，並把 Server1 上的 D:\\Folder1 加為 Group1 的伺服器端點。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "share2 可以加為 Group1 的雲端端點。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Server1 上的 E:\\Folder2 可以加為 Group1 的伺服器端點。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Server2 上的 D:\\Data 可以加為 Group1 的伺服器端點。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。一個同步群組「只能有一個」雲端端點（一個 Azure 檔案共用）。Group1 已經用 share1 當雲端端點，因此 share2 無法再加進同一個群組——要用 share2 就得另外建立一個同步群組。",
+      "2": "否。同一台已註冊伺服器在「同一個同步群組」中只能有一個伺服器端點。Server1 已經以 D:\\Folder1 加入 Group1，所以 E:\\Folder2 不能再加到 Group1（可以加到另一個同步群組）。",
+      "3": "是。Server2 已註冊到 Sync1，而且在 Group1 中還沒有任何伺服器端點，因此 D:\\Data 可以加為 Group1 的伺服器端點，與 Server1 的 D:\\Folder1 及雲端的 share1 同步。",
+      "_full": "Azure 檔案同步的三條結構規則：\n① 每個同步群組只有「一個」雲端端點；\n② 同一台伺服器在同一個同步群組中只能有「一個」伺服器端點（同一台伺服器的不同資料夾要同步，就得分到不同的同步群組）；\n③ 不同伺服器可以各自在同一個群組中有自己的伺服器端點。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 165,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個 Azure 儲存體帳戶。\n你打算把一個內部部署的虛擬機器映像複製到名為 vmimages 的容器。\n你必須先為這個映像建立該容器。你應該執行哪個命令？\n\n　azcopy 【下拉 1】 'https://mystorageaccount.【下拉 2】.core.windows.net/vmimages'\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "make",
+      "sync",
+      "copy",
+      "blob",
+      "dfs",
+      "queue",
+      "table",
+      "images",
+      "file"
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（azcopy 子命令）：",
+        "correct_answer": "make"
+      },
+      {
+        "use_case": "下拉 2（服務端點）：",
+        "correct_answer": "blob"
+      }
+    ],
+    "explanations": {
+      "1": "azcopy make 是用來「建立容器或檔案共用」的子命令。copy 是複製資料（前提是目的容器已存在），sync 是讓來源與目的內容同步，兩者都不會替你建立容器。",
+      "2": "虛擬機器映像是以「Blob」形式存放（VHD 是分頁 Blob），所以端點必須是 blob.core.windows.net。dfs 是 Data Lake Storage Gen2 的端點，queue／table／file 分別是佇列、表格、檔案服務，images 根本不是 Azure 的服務端點。",
+      "_full": "完整命令是 azcopy make 'https://mystorageaccount.blob.core.windows.net/vmimages'。\n記住 azcopy 的三個常用子命令：make（建立容器／共用）、copy（複製）、sync（單向同步）；以及各服務的端點網域：blob／file／queue／table／dfs。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 166,
+    "type": "matching",
+    "question": "你有一個 Azure 檔案同步群組，其端點如下：\n・Endpoint1｜雲端端點 (Cloud endpoint)\n・Endpoint2｜伺服器端點 (Server endpoint)\n・Endpoint3｜伺服器端點 (Server endpoint)\n\nEndpoint3 已啟用雲端分層 (cloud tiering)。\n你把一個名為 File1 的檔案加到 Endpoint1，並把一個名為 File2 的檔案加到 Endpoint2。\n在加入檔案後的「24 小時內」，File1 與 File2 會在哪些端點上可用？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 Endpoint1",
+      "只有 Endpoint3",
+      "只有 Endpoint2 和 Endpoint3",
+      "Endpoint1、Endpoint2 和 Endpoint3",
+      "只有 Endpoint2"
+    ],
+    "matches": [
+      {
+        "use_case": "File1（加在雲端端點）：",
+        "correct_answer": "只有 Endpoint1"
+      },
+      {
+        "use_case": "File2（加在伺服器端點）：",
+        "correct_answer": "Endpoint1、Endpoint2 和 Endpoint3"
+      }
+    ],
+    "explanations": {
+      "1": "File1 是「直接在 Azure 檔案共用（雲端端點）」新增的。直接在雲端做的變更不會即時被偵測——Azure 檔案同步靠一個每 24 小時執行一次的變更偵測作業去掃描檔案共用，所以在 24 小時內還不保證會同步到伺服器端點。→ 只有 Endpoint1。",
+      "2": "File2 是在「伺服器端點」新增的。伺服器上有 Azure File Sync 代理程式，會透過 USN 日誌立即偵測到變更並很快上傳到雲端，接著再同步給其他伺服器端點。Endpoint3 雖然啟用了雲端分層，檔案仍會以「指標 (stub)」形式出現、可被列出與開啟（開啟時自動從雲端取回），所以仍算「可用」。→ Endpoint1、Endpoint2 和 Endpoint3。",
+      "_full": "這題的關鍵是變更偵測的「方向不對稱」：\n・伺服器端變更 → 代理程式即時偵測，很快傳播到所有端點。\n・雲端（Azure 檔案共用）端變更 → 由每 24 小時一次的變更偵測作業掃出，慢得多。\n另外要記得雲端分層不影響檔案「可見性」，被分層的檔案仍會顯示在命名空間中，只是實際內容存在雲端、開啟時才取回。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 167,
+    "type": "matching",
+    "question": "你在一個名為 VNet1 的虛擬網路上有數台 Azure 虛擬機器。\n你把一個 Azure 儲存體帳戶（contoso）的「防火牆和虛擬網路」設定為：\n・允許存取來源：選取的網路 (Selected networks)\n・虛擬網路：VNet1 的子網路 Prod，位址範圍 10.2.0.0/24，服務端點狀態：已啟用\n・防火牆位址範圍：未設定任何 IP\n・例外狀況：三項全部「未」勾選（不允許受信任的 Microsoft 服務存取此儲存體帳戶、不允許從任何網路讀取儲存體記錄、不允許從任何網路讀取儲存體計量）\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "永遠可以 (always)",
+      "只有在備份期間 (during a backup)",
+      "永遠不會 (never)"
+    ],
+    "matches": [
+      {
+        "use_case": "10.2.9.0/24 子網路上的虛擬機器【答案】能夠連線到該儲存體帳戶中的檔案共用。",
+        "correct_answer": "永遠不會 (never)"
+      },
+      {
+        "use_case": "Azure 備份【答案】能夠備份該儲存體帳戶中虛擬機器的非受控硬碟。",
+        "correct_answer": "永遠不會 (never)"
+      }
+    ],
+    "explanations": {
+      "1": "永遠不會。帳戶設為「選取的網路」時，只有清單中的子網路能連進來，而清單裡只有 Prod（10.2.0.0/24）。10.2.9.0/24 是另一個子網路，既沒有被加入允許清單，防火牆的 IP 位址範圍也是空的，因此流量一律被拒。",
+      "2": "永遠不會。Azure 備份屬於「受信任的 Microsoft 服務」，要讓它存取被網路限制的儲存體帳戶，必須勾選例外狀況中的「允許受信任的 Microsoft 服務存取此儲存體帳戶」。本題三個例外全部未勾選，所以備份服務同樣被防火牆擋在外面。",
+      "_full": "儲存體帳戶防火牆的兩個判斷點：\n① 虛擬網路允許清單是「逐子網路」的，不是整個虛擬網路——同一個 VNet 中沒被加入的子網路一樣連不進來。\n② Azure 的第一方服務（備份、Site Recovery、Monitor 等）走的不是你的虛擬網路，必須靠「允許受信任的 Microsoft 服務」這個例外才能通過。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 168,
+    "type": "matching",
+    "question": "你有一個名為 Sync1 的同步群組，它有一個雲端端點，該雲端端點中包含一個名為 File1.txt 的檔案。\n你的內部部署網路中有執行 Windows Server 2016 的伺服器，設定如下：\n・Server1｜共用 Share1｜共用內容：File1.txt、File2.txt\n・Server2｜共用 Share2｜共用內容：File2.txt、File3.txt\n\n你把 Share1 加為 Sync1 的端點；一小時後，再把 Share2 加為 Sync1 的端點。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "在雲端端點上，File1.txt 會被 Share1 的 File1.txt 覆寫。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "在 Server1 上，File1.txt 會被雲端端點的 File1.txt 覆寫。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "Share1 的 File1.txt 會複寫到 Share2。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。Azure 檔案同步遇到同名不同版本的檔案時「不會覆寫任何一邊」，而是保留兩個版本：勝出的一份保留原檔名，另一份被改名成含來源伺服器名稱的衝突檔（例如 File1-Server1.txt）。因此雲端上的 File1.txt 不會被覆寫掉。",
+      "2": "否。理由相同——衝突解決的方式是「兩份都留、其中一份改名」，所以 Server1 上的 File1.txt 也不會被雲端版本覆寫，內容不會遺失。",
+      "3": "是。同步群組的用途就是讓所有端點的命名空間趨於一致。Share1 加入後其內容會上傳到雲端端點，一小時後 Share2 加入時，雲端上已有的檔案（含來自 Share1 的 File1.txt，以及可能產生的衝突檔）就會同步下去給 Share2。",
+      "_full": "一句話：Azure 檔案同步的衝突處理原則是「不覆寫、改名保留兩份」，檔名格式為 <原檔名>-<伺服器名稱>.<副檔名>。\n所以前兩項「被覆寫」的敘述都不成立；而第三項只是同步群組的正常行為——所有端點最終會看到同一組檔案。"
     }
   },
   {
