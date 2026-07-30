@@ -193,5 +193,255 @@
       "A": "Correct. 正確。New-MgInvitation 是 Microsoft Graph PowerShell 的 B2B 邀請指令（對應舊版 AzureAD 模組的 New-AzureADMSInvitation），會為指定的外部電子郵件地址建立來賓使用者帳戶，搭配 CSV 逐筆執行即可完成 500 位使用者。",
       "B": "Incorrect. 錯誤。這正是以程式方式大量建立來賓帳戶的正確指令。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 124,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains virtual network named VNet1. VNet1 is in a resource group named RG1. A user named User1 has the following roles for Subscription1: • Reader • Security Admin • Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
+    "options": {
+      "A": "Assign User1 the Contributor role for VNet1.",
+      "B": "Assign User1 the Network Contributor role for VNet1.",
+      "C": "Assign User1 the User Access Administrator role for VNet1.",
+      "D": "Remove User1 from the Security Reader and Reader roles for Subscription1. Assign User1 the Contributor role for Subscription1."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "B": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "C": "Correct. 正確。使用者存取管理員是專門用來管理他人存取權的內建角色，具備 Microsoft.Authorization/roleAssignments/write 權限；指派在 VNet1 這個最小必要範圍即可滿足需求。",
+      "D": "Incorrect. 錯誤。參與者不含角色指派權限，而且把範圍放大到整個訂用帳戶還違反最小權限原則。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 125,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains virtual network named VNet1. VNet1 is in a resource group named RG1. User named User1 has the following roles for Subscription1: • Reader • Security Admin • Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
+    "options": {
+      "A": "Remove User1 from the Security Reader and Reader roles for Subscription1. Assign User1 the Contributor role for Subscription1.",
+      "B": "Remove User1 from the Security Reader role for Subscription1. Assign User1 the Contributor role for RG1.",
+      "C": "Assign User1 the Network Contributor role for VNet1.",
+      "D": "Assign User1 the User Access Administrator role for VNet1."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。參與者不含角色指派權限，而且把範圍放大到整個訂用帳戶還違反最小權限原則。",
+      "B": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "C": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "D": "Correct. 正確。內建角色中只有「擁有者」與「使用者存取管理員」具備指派角色的權限；後者權限範圍更小，指派在 VNet1 上正好符合需求與最小權限原則。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 129,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains virtual network named VNet1. VNet1 is in a resource group named RG1. A user named User1 has the following roles for Subscription1: • Reader • Security Admin • Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
+    "options": {
+      "A": "Remove User1 from the Security Reader and Reader roles for Subscription1. Assign User1 the Contributor role for Subscription1.",
+      "B": "Assign User1 the Contributor role for VNet1.",
+      "C": "Assign User1 the Owner role for VNet1.",
+      "D": "Assign User1 the Network Contributor role for RG1."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。參與者不含角色指派權限，而且把範圍放大到整個訂用帳戶還違反最小權限原則。",
+      "B": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "C": "Correct. 正確。本題選項中沒有「使用者存取管理員」，而具備 roleAssignments/write 權限的另一個內建角色就是擁有者；指派在 VNet1 範圍即可讓 User1 把讀者角色指派給其他人。",
+      "D": "Incorrect. 錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 134,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure Active Directory (Azure AD) tenant named contoso.com. You have a CSV file that contains the names and email addresses of 500 external users. You need to create a guest user account in contoso.com for each of the 500 external users. Solution: You create a PowerShell script that runs the New-MgUser cmdlet for each user. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。New-MgUser 建立的是租用戶內的「成員」帳戶並需指定密碼，產生的不是來賓帳戶。",
+      "B": "Correct. 正確。來賓帳戶必須經由 B2B 邀請流程產生；在 Microsoft Graph PowerShell 中對應的指令是 New-MgInvitation，而非 New-MgUser。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 144,
+    "type": "multiple",
+    "question": "You have a Microsoft Entra tenant. You plan to perform a bulk import of users. You need to ensure that imported user objects are added automatically as the members of a specific group based on each user's department. The solution must minimize administrative effort. Which two actions should you perform? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Create groups that use the Assigned membership type.",
+      "B": "Create an Azure Resource Manager (ARM) template.",
+      "C": "Create groups that use the Dynamic User membership type.",
+      "D": "Write a PowerShell script that parses an import file.",
+      "E": "Create an XML file that contains user information and the appropriate attributes.",
+      "F": "Create a CSV file that contains user information and the appropriate attributes."
+    },
+    "answer": [
+      "C",
+      "F"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。「指派」型群組的成員必須手動加入或以程式維護，無法在匯入後「自動」依部門歸戶，不符合最少管理工作的要求。",
+      "B": "Incorrect. 錯誤。ARM 範本用於部署 Azure 資源，不能用來大量匯入 Entra 使用者。",
+      "C": "Correct. 正確。動態使用者群組以規則（例如 user.department -eq \"Sales\"）決定成員，匯入的使用者只要帶有正確的部門屬性，就會被自動納入對應群組，完全免人工維護。",
+      "D": "Incorrect. 錯誤。入口網站已內建大量匯入功能，自行寫指令碼解析檔案反而增加開發與維護成本。",
+      "E": "Incorrect. 錯誤。Entra 的大量匯入只接受 CSV 格式，不支援 XML。",
+      "F": "Correct. 正確。大量匯入使用者必須提供符合範本格式的 CSV 檔案，並在其中填入部門等屬性，動態群組規則才有依據可以比對。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 145,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account named storage1. You need to ensure that the access keys for storage1 rotate automatically. What should you configure?",
+    "options": {
+      "A": "a backup vault",
+      "B": "redundancy for storage1",
+      "C": "lifecycle management for storage1",
+      "D": "an Azure key vault",
+      "E": "a Recovery Services vault"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。備份保存庫是存放備份資料的容器，與儲存體存取金鑰的管理無關。",
+      "B": "Incorrect. 錯誤。備援設定（LRS／ZRS／GRS 等）決定資料複寫方式，不涉及金鑰輪替。",
+      "C": "Incorrect. 錯誤。生命週期管理是依規則自動搬移或刪除 Blob，管理的是資料而非金鑰。",
+      "D": "Correct. 正確。把儲存體帳戶的存取金鑰以「受控儲存體帳戶金鑰」的形式交給 Azure 金鑰保存庫管理後，即可設定輪替週期讓保存庫定期自動重新產生金鑰，這是官方的自動輪替機制。",
+      "E": "Incorrect. 錯誤。復原服務保存庫用於 VM 備份與 Site Recovery，與存取金鑰無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 150,
+    "type": "single",
+    "question": "You have a Microsoft Entra tenant named contoso.com. You collaborate with an external partner named fabrikam.com. You plan to invite users in fabrikam.com to the contoso.com tenant. You need to ensure that invitations can be sent only to fabrikam.com users. What should you do in the Microsoft Entra admin center?",
+    "options": {
+      "A": "From Cross-tenant access settings, configure the Tenant restrictions settings.",
+      "B": "From Cross-tenant access settings, configure the Microsoft cloud settings.",
+      "C": "From External collaboration settings, configure the Guest user access restrictions settings.",
+      "D": "From External collaboration settings, configure the Collaboration restrictions settings."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。租用戶限制管的是「本組織的使用者能登入哪些外部租用戶」，方向與本題（限制可邀請誰進來）相反。",
+      "B": "Incorrect. 錯誤。Microsoft 雲端設定用於跨主權雲（如 Azure Government、中國區）的協同作業，與限制網域無關。",
+      "C": "Incorrect. 錯誤。來賓使用者存取限制決定「來賓進來後能看到多少目錄資訊」，不影響可以邀請哪些網域。",
+      "D": "Correct. 正確。協同作業限制正是設定網域允許／封鎖清單的地方；選擇「只允許邀請指定網域」並填入 fabrikam.com，即可讓邀請僅能寄給該網域的使用者。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 151,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains a storage account named storage1. The storage1 account contains blob data. You need to assign a role to a user named User1 to ensure that the user can access the blob data in storage1. The role assignment must support conditions. Which two roles can you assign to User1? Each correct answer presents a complete solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Owner",
+      "B": "Storage Account Contributor",
+      "C": "Storage Account Backup Contributor",
+      "D": "Storage Blob Data Contributor",
+      "E": "Storage Blob Data Owner",
+      "F": "Storage Blob Delegator"
+    },
+    "answer": [
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。擁有者是管理平面角色，雖然權限極大，但它並不在支援 ABAC 條件的資料動作角色清單中。",
+      "B": "Incorrect. 錯誤。儲存體帳戶參與者管理的是儲存體帳戶本身（例如取得金鑰、變更設定），不提供 Blob 資料層的存取權，也不支援條件。",
+      "C": "Incorrect. 錯誤。此角色用於備份情境的特定管理操作，同樣不是支援條件的 Blob 資料存取角色。",
+      "D": "Correct. 正確。儲存體 Blob 資料參與者是資料平面角色，具備讀寫刪除 Blob 的資料動作，且支援以 ABAC 條件（例如依標籤或路徑）進一步限縮存取範圍。",
+      "E": "Correct. 正確。儲存體 Blob 資料擁有者同樣是資料平面角色（額外含 POSIX ACL 管理權），也在支援 ABAC 條件的角色之列。",
+      "F": "Incorrect. 錯誤。此角色只用於取得使用者委派金鑰以簽發使用者委派 SAS，本身不提供 Blob 資料存取權。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 154,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a storage account named storage. The storage account contains a blob that stores images. Client access to storage1 is granted by using a shared access signature (SAS). You need to ensure that users receive a warning message when they generate a SAS that exceeds a seven-day time period. What should you do for storage?",
+    "options": {
+      "A": "Enable a read-only lock.",
+      "B": "Configure an alert rule.",
+      "C": "Add a lifecycle management rule.",
+      "D": "Set Allow recommended upper limit for shared access signature (SAS) expiry interval to Enabled."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。唯讀鎖定防止的是資源被修改或刪除，與 SAS 的有效期完全無關。",
+      "B": "Incorrect. 錯誤。警示規則是在事件或計量達到條件後才觸發通知，無法在使用者「產生 SAS 的當下」就於介面上提出警告。",
+      "C": "Incorrect. 錯誤。生命週期管理規則處理的是 Blob 的分層與刪除，不會檢查 SAS 到期時間。",
+      "D": "Correct. 正確。這個設定會為儲存體帳戶定義建議的 SAS 到期上限（預設七天）；當有人產生超過該期間的 SAS 時，Azure 會在介面上顯示建議警告，也會在 Microsoft Defender for Cloud 中被標示為不符合建議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 170,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains a storage account named account1. You plan to upload the disk files of a virtual machine to account1 from your on-premises network. The on-premises network uses a public IP address space of 131.107.1.0/24. You plan to use the disk files to provision an Azure virtual machine named VM1. VM1 will be attached to a virtual network named VNet1. VNet1 uses an IP address space of 192.168.0.0/24. You need to configure account1 to meet the following requirements: ✑ Ensure that you can upload the disk files to account1. ✑ Ensure that you can attach the disks to VM1. ✑ Prevent all other access to account1. Which two actions should you perform? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "From the Networking blade of account1, select Selected networks.",
+      "B": "From the Networking blade of account1, select Allow trusted Microsoft services to access this storage account.",
+      "C": "From the Networking blade of account1, add the 131.107.1.0/24 IP address range.",
+      "D": "From the Networking blade of account1, add VNet1.",
+      "E": "From the Service endpoints blade of VNet1, add a service endpoint."
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。要「阻擋所有其他存取」，第一步就是把公用網路存取從預設的「所有網路」改為「選取的網路」，之後才能逐項列出允許的來源。",
+      "B": "Incorrect. 錯誤。這個選項是開放給 Azure 平台服務（如備份、監控）使用，並不是本題所需，反而擴大了存取面。",
+      "C": "Correct. 正確。加入內部部署的公用位址範圍 131.107.1.0/24 到防火牆允許清單，才能從公司網路把磁碟檔案上傳上去。",
+      "D": "Incorrect. 錯誤。VM1 掛載受控磁碟不需要經由儲存體帳戶的防火牆；而且此處要加入的是虛擬網路的「子網路」規則，前提是該子網路已啟用服務端點。就本題三項要求而言並非必要動作。",
+      "E": "Incorrect. 錯誤。服務端點是為了讓虛擬網路內的資源以私有路徑存取儲存體，但磁碟一旦轉為受控磁碟後由平台管理，VM1 並不需要透過服務端點存取 account1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 173,
+    "type": "multiple",
+    "question": "You plan to use the Azure Import/Export service to copy files to a storage account. Which two files should you create before you prepare the drives for the import job? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "an XML manifest file",
+      "B": "a dataset CSV file",
+      "C": "a JSON configuration file",
+      "D": "a PowerShell PS1 file",
+      "E": "a driveset CSV file"
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。XML 資訊清單是 WAImportExport 工具在準備磁碟機的過程中「自動產生」的，不需要你事先建立。",
+      "B": "Correct. 正確。資料集 CSV 用來描述要匯入的來源檔案／資料夾，以及它們在儲存體帳戶中的目標位置，必須在執行準備磁碟機指令前備妥。",
+      "C": "Incorrect. 錯誤。匯入／匯出作業的準備流程不使用 JSON 組態檔。",
+      "D": "Incorrect. 錯誤。工具本身即為命令列程式，不需要另外撰寫 PS1 指令碼。",
+      "E": "Correct. 正確。磁碟機集 CSV 指定要使用哪些磁碟機、格式化與加密方式，同樣是執行 WAImportExport PrepImport 前必須先建立的檔案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 174,
+    "type": "single",
+    "question": "You have a Recovery Service vault that you use to test backups. The test backups contain two protected virtual machines. You need to delete the Recovery Services vault. What should you do first?",
+    "options": {
+      "A": "From the Recovery Service vault, delete the backup data.",
+      "B": "Modify the disaster recovery properties of each virtual machine.",
+      "C": "Modify the locks of each virtual machine.",
+      "D": "From the Recovery Service vault, stop the backup of each backup item."
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。順序不對——在停止備份之前無法直接刪除備份資料；停止備份時系統才會提供「刪除備份資料」的選項。",
+      "B": "Incorrect. 錯誤。災難復原屬性屬於 Site Recovery 的設定，本題的保存庫中只有備份項目。",
+      "C": "Incorrect. 錯誤。這裡的阻礙來自保存庫中仍有受保護項目，而不是虛擬機器上的資源鎖定。",
+      "D": "Correct. 正確。保存庫只要還有受保護的備份項目就無法刪除。必須先對每個備份項目執行「停止備份」並選擇刪除備份資料，待保存庫中沒有任何受保護項目後，才能刪除保存庫。"
+    }
   }
 ]
