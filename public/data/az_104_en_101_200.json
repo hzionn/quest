@@ -1201,6 +1201,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 172,
+    "type": "matching",
+    "question": "You plan to create an Azure Storage account in the Azure region of East US 2. You need to create a storage account that meets the following requirements: replicates synchronously; remains available if a single data center in the region fails. How should you configure the storage account?",
+    "available_options": [
+      "Geo-redundant storage (GRS)",
+      "Locally-redundant storage (LRS)",
+      "Read-access geo-redundant storage (RA GRS)",
+      "Zone-redundant storage (ZRS)",
+      "Blob storage",
+      "Storage (general purpose v1)",
+      "StorageV2 (general purpose v2)"
+    ],
+    "matches": [
+      {
+        "use_case": "Replication:",
+        "correct_answer": "Zone-redundant storage (ZRS)"
+      },
+      {
+        "use_case": "Account type:",
+        "correct_answer": "StorageV2 (general purpose v2)"
+      }
+    ],
+    "explanations": {
+      "1": "區域備援儲存體 (ZRS) 把資料「同步」複寫到同一區域內的三個可用性區域，因此單一資料中心故障時帳戶仍然可用，正好同時滿足兩項要求。LRS 雖然也是同步，但三份複本都在同一個資料中心，資料中心故障就不可用；GRS 與 RA-GRS 跨區域複寫「但是非同步」的（主要區域內部仍是 LRS），不符合「同步」這項要求。",
+      "2": "ZRS 只有一般用途 v2（StorageV2）帳戶支援。一般用途 v1 不支援 ZRS，Blob 儲存體帳戶也不支援，所以帳戶類型必須選 StorageV2。",
+      "_full": "把兩個要求拆開看：\n・「同步複寫」→ 排除 GRS／RA-GRS（跨區域是非同步）。\n・「單一資料中心故障仍可用」→ 排除 LRS（複本都在同一個資料中心）。\n剩下的只有 ZRS，而 ZRS 又只有 StorageV2 支援。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 173,
     "type": "multiple",
     "question": "You plan to use the Azure Import/Export service to copy files to a storage account. Which two files should you create before you prepare the drives for the import job? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
@@ -1244,6 +1274,38 @@
   },
   {
     "exam": "AZ-104",
+    "id": 175,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources: RG1 (resource group, West US); RG2 (resource group, West US); Vault1 (Recovery Services vault, Central US, in RG1); Vault2 (Recovery Services vault, West US, in RG2); VM1 (virtual machine, Central US, in RG2); storage1 (storage account, West US, in RG1); SQL1 (Azure SQL database, East US, in RG2). In storage1, you create a blob container named blob1 and a file share named share1. Which resources can be backed up to Vault1 and Vault2?",
+    "available_options": [
+      "VM1 only",
+      "VM1 and share1 only",
+      "VM1 and SQL1 only",
+      "VM1, storage1, and SQL1 only",
+      "VM1, blob1, share1, and SQL1",
+      "storage1 only",
+      "share1 only",
+      "blob1 and share1 only",
+      "storage1 and SQL1 only"
+    ],
+    "matches": [
+      {
+        "use_case": "Can use Vault1 for backups:",
+        "correct_answer": "VM1 only"
+      },
+      {
+        "use_case": "Can use Vault2 for backups:",
+        "correct_answer": "share1 only"
+      }
+    ],
+    "explanations": {
+      "1": "Recovery Services 保存庫只能保護「同一個區域」的資源。Vault1 在 Central US，而該區域中只有 VM1（Central US）。share1 所在的 storage1 在 West US、SQL1 在 East US，區域都不符；Blob 也不能備份到 Recovery Services 保存庫（Blob 的操作備份用的是「備份保存庫 Backup vault」，不是 Recovery Services 保存庫）。→ 只有 VM1。",
+      "2": "Vault2 在 West US。同區域的資源是 storage1（West US）中的檔案共用 share1——Azure 檔案共用備份要求保存庫與儲存體帳戶同區域，這裡符合。VM1 在 Central US 不符；SQL1 是 PaaS 的 Azure SQL 資料庫，Recovery Services 保存庫不支援（它支援的是「執行在 Azure VM 中的 SQL Server」）；blob1 同樣不是 Recovery Services 保存庫能保護的對象。另外注意「storage1」整個帳戶並不是備份項目——備份的單位是「檔案共用」。→ 只有 share1。",
+      "_full": "三條規則就能全部判完：\n① 區域必須相同——Recovery Services 保存庫只保護同區域的資源。\n② 備份的單位是「檔案共用」而不是「儲存體帳戶」。\n③ Recovery Services 保存庫支援 Azure VM 與 Azure 檔案共用；Blob 要用備份保存庫，PaaS 的 Azure SQL 資料庫則走自己的長期保留機制，兩者都不在此列。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 176,
     "type": "single",
     "question": "You have an Azure subscription named Subscription1. You have 5 TB of data that you need to transfer to Subscription1. You plan to use an Azure Import/Export job. What can you use as the destination of the imported data?",
@@ -1259,6 +1321,37 @@
       "B": "Incorrect. 錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "Correct. 正確。匯入作業支援的目的地有兩種：Azure Blob 儲存體與 Azure 檔案儲存體。本題選項中符合的是 Azure 檔案儲存體。",
       "D": "Incorrect. 錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 177,
+    "type": "matching",
+    "question": "You have an Azure subscription. You create an Azure Storage account with this configuration: Subscription1, resource group RG1, location North Europe; storage account name storage16852; deployment model Resource manager; account kind StorageV2 (general purpose v2); replication Locally-redundant storage (LRS); performance Standard; access tier (default) Hot; connectivity method Private endpoint (new StorageEndpoint1 (blob)); secure transfer required Enabled; large file shares, blob soft delete, blob change feed, hierarchical namespace and NFS v3 all Disabled. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "Access tier (default)",
+      "Performance",
+      "Account kind",
+      "Replication"
+    ],
+    "matches": [
+      {
+        "use_case": "The minimum number of copies of the storage account will be [answer choice]",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "To reduce the cost of infrequently accessed data in the storage account, you must modify the [answer choice] setting",
+        "correct_answer": "Access tier (default)"
+      }
+    ],
+    "explanations": {
+      "1": "複寫設定是 LRS（本地備援）。LRS 會在主要位置內保留「三份」複本，足以應付磁碟、節點、機架層級的常見故障。（其他複寫等級的複本數：ZRS 也是 3 份但分散在三個可用性區域；GRS／RA-GRS 是主要區域 3 份加次要區域 3 份，共 6 份。）",
+      "2": "要降低「不常存取」資料的成本，就把存取層從熱層改成冷層（或封存層）——也就是修改「存取層（預設）」這項設定。效能（標準／進階）決定的是硬體等級；帳戶種類決定支援哪些服務；複寫決定備援與耐用性；三者都不是針對「存取頻率」的成本最佳化手段。",
+      "_full": "兩個獨立的知識點：\n① 各複寫等級的複本數：LRS 3 份（同一位置）、ZRS 3 份（跨三個可用性區域）、GRS／RA-GRS 6 份（兩個區域各 3 份）。\n② 存取層才是「按存取頻率省錢」的設定：熱層（常存取）→ 冷層（至少存 30 天）→ 封存層（至少存 180 天、取回需數小時）。"
     }
   },
   {
@@ -1280,6 +1373,34 @@
       "C": "Incorrect. 錯誤。file 正確但 table 不受支援，且遺漏了 blob。",
       "D": "Incorrect. 錯誤。範圍太窄，AzCopy 同樣支援 Blob。",
       "E": "Incorrect. 錯誤。table 與 queue 都不受支援，且遺漏了 file。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 179,
+    "type": "matching",
+    "question": "You have an Azure Storage account named storage1 that uses Azure Blob storage and Azure File storage. You need to use AzCopy to copy data to the blob storage and file storage in storage1. Which authentication method should you use for each type of storage?",
+    "available_options": [
+      "Azure Active Directory (Azure AD) only",
+      "Shared access signatures (SAS) only",
+      "Access keys and shared access signatures (SAS) only",
+      "Azure Active Directory (Azure AD) and shared access signatures (SAS) only",
+      "Azure Active Directory (Azure AD), access keys, and shared access signatures (SAS)"
+    ],
+    "matches": [
+      {
+        "use_case": "Blob storage:",
+        "correct_answer": "Azure Active Directory (Azure AD) and shared access signatures (SAS) only"
+      },
+      {
+        "use_case": "File storage:",
+        "correct_answer": "Shared access signatures (SAS) only"
+      }
+    ],
+    "explanations": {
+      "1": "AzCopy 存取 Blob 儲存體支援兩種授權方式：Azure AD（先 azcopy login，再靠 RBAC 角色如「儲存體 Blob 資料參與者」授權）或在 URL 後附加 SAS 權杖。AzCopy 並不支援直接用「帳戶存取金鑰」驗證，所以含存取金鑰的選項都不對。→ 只有 Azure AD 與 SAS。",
+      "2": "AzCopy 存取 Azure 檔案儲存體「只」支援 SAS 權杖。Azure 檔案服務的識別式驗證（AD DS／Microsoft Entra Domain Services）是為 SMB 掛接設計的，AzCopy 走的是 REST 介面，無法用 Azure AD 權杖存取檔案共用。→ 只有 SAS。",
+      "_full": "記法：AzCopy + Blob → Azure AD 或 SAS；AzCopy + Files → 只能 SAS；而「存取金鑰」在 AzCopy 兩者皆不支援（那是 SDK／連接字串的用法）。\n常見誤解是「Azure 檔案儲存體支援 Azure AD 驗證」——那指的是透過 SMB 掛接時用網域認證，與 AzCopy 走的 REST 路徑是兩件事。"
     }
   },
   {
@@ -1337,6 +1458,126 @@
       "B": "Correct. 正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
       "C": "Incorrect. 錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "D": "Incorrect. 錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 184,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the following file shares: share1 (West US), share2 (West US), share3 (East US). You have the following on-premises file shares: data1 (Server1, D:\\Folder1), data2 (Server2, E:\\Folder2), data3 (Server3, E:\\Folder2). You create an Azure file sync group named Sync1 and perform the following actions: add share1 as the cloud endpoint for Sync1; add data1 as a server endpoint for Sync1; register Server1 and Server2 to Sync1. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can add share3 as an additional cloud endpoint for Sync1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "You can add data2 as an additional server endpoint for Sync1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can add data3 as an additional server endpoint for Sync1.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。一個同步群組只能有「一個」雲端端點（一個 Azure 檔案共用），加上一或多個伺服器端點。Sync1 已經用 share1 當雲端端點，因此不能再加 share3（區域不同只是次要問題，結構上就不允許第二個雲端端點）。",
+      "2": "是。data2 位於 Server2，而 Server2 已經註冊到 Sync1；Server2 在這個同步群組中還沒有任何伺服器端點，所以可以把 E:\\Folder2 加進來。",
+      "3": "否。data3 位於 Server3，而 Server3「沒有」註冊到 Sync1。只有已註冊到該儲存體同步服務的伺服器，其資料夾才能加為伺服器端點——要先註冊 Server3 才行。",
+      "_full": "三項各測一條規則：\n① 一個同步群組只有一個雲端端點（第 1 項否）。\n② 不同的已註冊伺服器可以各自加自己的伺服器端點（第 2 項是）。\n③ 未註冊的伺服器不能加端點（第 3 項否）。\n順帶一提：同一台伺服器在同一個同步群組中也只能有一個伺服器端點。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 185,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources: RG1 (resource group, East US); RG2 (resource group, West US); Vault1 (Recovery Services vault, West Europe, RG1); storage1 (storage account, East US, RG2); storage2 (storage account, West US, RG1); storage3 (storage account, West Europe, RG2); Analytics1 (Log Analytics workspace, East US, RG1); Analytics2 (Log Analytics workspace, West US, RG2); Analytics3 (Log Analytics workspace, West Europe, RG1). You plan to configure Azure Backup reports for Vault1. You are configuring the Diagnostics settings for the AzureBackupReports log. Which storage accounts and which Log Analytics workspaces can you use for the Azure Backup reports of Vault1?",
+    "available_options": [
+      "storage1 only",
+      "storage2 only",
+      "storage3 only",
+      "storage1, storage2, and storage3",
+      "Analytics1 only",
+      "Analytics2 only",
+      "Analytics3 only",
+      "Analytics1, Analytics2, and Analytics3"
+    ],
+    "matches": [
+      {
+        "use_case": "Storage accounts:",
+        "correct_answer": "storage1, storage2, and storage3"
+      },
+      {
+        "use_case": "Log Analytics workspaces:",
+        "correct_answer": "Analytics3 only"
+      }
+    ],
+    "explanations": {
+      "1": "官方標示為三個都可以——也就是把診斷記錄「封存到儲存體帳戶」時不限區域。\n【爭議提醒】Azure 監視器的診斷設定文件寫的是相反的規則：封存目的地的儲存體帳戶必須與被監視的區域性資源「位於同一區域」，照此只有 storage3（West Europe，與 Vault1 同區域）合格。而且來源給第一格的解釋文字其實是在講 Log Analytics 工作區與保存庫位置無關，明顯是貼錯位置。本題保留官方標示，但這一格的依據並不可靠。",
+      "2": "官方標示為只有 Analytics3——理由是 Vault1 與 Analytics3 同在 West Europe。\n（要提醒的是：這一格與第一格的判準正好相反，官方對「儲存體帳戶不限區域、工作區必須同區域」的說法本身並不一致。作答時以官方標示為準，但實務上請以當下的 Azure 監視器文件為依據。）",
+      "_full": "這是一題官方答案與文件說法互相衝突的題目，兩格的判準彼此矛盾：第一格採「不限區域」、第二格採「必須同區域」。\n考試作答建議記官方標示（儲存體三個都可以、工作區只有同區域的 Analytics3）；實務上請以 Azure 監視器診斷設定的最新文件為準——資源群組在本題完全不是判斷依據，這一點兩種說法都同意。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 186,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the following storage accounts (all in resource group RG1, East US): contoso101 (Kind StorageV2), contoso102 (Kind Storage), contoso103 (Kind BlobStorage), contoso104 (Kind FileStorage). Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "contoso101 only",
+      "contoso104 only",
+      "contoso101 or contoso104 only",
+      "contoso101, contoso102, or contoso104 only",
+      "contoso101, contoso102, contoso103, or contoso104",
+      "contoso101 or contoso103 only",
+      "contoso101, contoso102, and contoso103 only",
+      "contoso101, contoso102, and contoso104 only",
+      "contoso101, contoso102, contoso103, and contoso104"
+    ],
+    "matches": [
+      {
+        "use_case": "You can create a premium file share in [answer choice]",
+        "correct_answer": "contoso104 only"
+      },
+      {
+        "use_case": "You can use the Archive access tier in [answer choice]",
+        "correct_answer": "contoso101 or contoso103 only"
+      }
+    ],
+    "explanations": {
+      "1": "進階（premium）檔案共用必須建立在種類為「FileStorage」的帳戶上——這是專為進階檔案儲存體設計的帳戶種類（使用 SSD、效能層為 Premium）。StorageV2 與 Storage 帳戶只能放標準檔案共用，BlobStorage 根本沒有檔案服務。→ 只有 contoso104。",
+      "2": "封存存取層只適用於 Blob，而且只有一般用途 v2（StorageV2）與 BlobStorage 帳戶支援分層。一般用途 v1（contoso102）不支援存取層；FileStorage（contoso104）沒有 Blob 服務。→ 只有 contoso101 或 contoso103。",
+      "_full": "把帳戶種類與功能對起來記：\n・FileStorage → 進階檔案共用（只有它能做）。\n・StorageV2 / BlobStorage → 支援 Blob 存取層（熱／冷／封存）。\n・Storage（GPv1）→ 服務齊全但沒有存取層、也沒有最新功能。\n・BlobStorage → 只有區塊 Blob，沒有檔案、佇列、表格。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 187,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1. In Subscription1, you create an Azure file share named share1. You create a shared access signature (SAS) named SAS1 with these settings: Allowed services = File only; Allowed resource types = Service, Container and Object; Allowed permissions = Read, Write, List; Start = 2018-09-01 2:00:00 PM, End = 2018-09-14 2:00:00 PM (UTC+02:00); Allowed IP addresses = 193.77.134.10-193.77.134.50; Allowed protocols = HTTPS only; Signing key = key1. To answer, select the appropriate options in the answer area.",
+    "available_options": [
+      "will be prompted for credentials",
+      "will have no access",
+      "will have read, write, and list access",
+      "will have read-only access"
+    ],
+    "matches": [
+      {
+        "use_case": "If on September 2, 2018, you run Microsoft Azure Storage Explorer on a computer that has an IP address of 193.77.134.1, and you use SAS1 to connect to the storage account, you [answer choice].",
+        "correct_answer": "will have no access"
+      },
+      {
+        "use_case": "If on September 10, 2018, you run the net use command on a computer that has an IP address of 193.77.134.50, and you use SAS1 as the password to connect to share1, you [answer choice].",
+        "correct_answer": "will have no access"
+      }
+    ],
+    "explanations": {
+      "1": "不會有任何存取權。日期（9/2）在有效期間內、權限也夠，但 IP 位址 193.77.134.1 不在允許範圍 193.77.134.10-193.77.134.50 之內（.1 小於 .10），SAS 的 IP 限制會直接拒絕這個請求。",
+      "2": "不會有任何存取權。IP（193.77.134.50）與日期（9/10）這次都符合，但 net use 是透過「SMB 通訊協定」掛接檔案共用，而 SAS 權杖只能用於 REST/HTTPS 呼叫——SMB 掛接必須使用儲存體帳戶名稱與存取金鑰（或網域認證），不接受 SAS。此外這個 SAS 還限定「僅 HTTPS」，更確定與 SMB 無關。",
+      "_full": "檢查 SAS 是否可用時，把條件逐項核對：允許的服務 → 資源類型 → 權限 → 有效期間 → 允許的 IP → 通訊協定。\n・第一格卡在「允許的 IP」：193.77.134.1 不在 .10–.50 範圍內。\n・第二格卡在「存取方式」：net use 走 SMB，SAS 只適用於 REST/HTTPS；SMB 掛接要用帳戶金鑰或網域認證。"
     }
   },
   {
