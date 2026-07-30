@@ -1557,6 +1557,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 285,
+    "type": "matching",
+    "question": "You have a pay-as-you-go Azure subscription that contains the virtual machines VM1 (resource group RG1, daily cost 20 euros) and VM2 (RG2, daily cost 30 euros). You create a budget: name Budget1; scope RG1 (resource group); filters none; amount 1,000.00 EUR; budget period resets billing month; start date 6/20/2019; end date 6/19/2021; alert conditions 50% (EUR 500) with action group AG1 (1 Email), 70% (EUR 700) with AG2 (1 SMS), 100% (EUR 1,000) with AG3 (1 Azure app); alert recipients (email) User1@Contoso.com. The AG1 action group contains one user only. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "VM1 and VM2 are turned off",
+      "VM1 and VM2 continue to run",
+      "VM1 is turned off, and VM2 continues to run",
+      "no email notifications will be sent each month",
+      "one email notification will be sent each month",
+      "two email notifications will be sent each month",
+      "three email notifications will be sent each month"
+    ],
+    "matches": [
+      {
+        "use_case": "When the maximum amount in Budget1 is reached, [answer choice].",
+        "correct_answer": "VM1 and VM2 continue to run"
+      },
+      {
+        "use_case": "Based on the current usage costs of the virtual machines, [answer choice].",
+        "correct_answer": "one email notification will be sent each month"
+      }
+    ],
+    "explanations": {
+      "1": "Azure 成本管理的「預算」只是「監控與通知」機制——超過門檻時只會發出警示，「不會」停用、關閉或限制任何資源，消費也不會被中止。所以即使達到 1,000 歐元上限，VM1 與 VM2 都照常執行。（要真的自動關機得自己搭配動作群組觸發 Runbook 或 Logic App。）",
+      "2": "Budget1 的範圍是 RG1，所以只計算 RG1 裡的 VM1（每日 20 歐元），VM2 不算在內。一個月約 20 × 30 = 600 歐元：\n・50%（500 歐元）在第 25 天達到 → 觸發 AG1，寄出 1 封電子郵件。\n・70%（700 歐元）與 100%（1,000 歐元）在一個月內都達不到；而且這兩個門檻的動作是簡訊與 Azure 應用程式通知，本來就不是電子郵件。\n→ 每個月一封。",
+      "_full": "兩個常見誤解：\n① 預算不會限制或關閉資源，只會通知（第 1 格）。\n② 計算門檻時只算「範圍內」的資源——本題範圍是 RG1，所以 RG2 的 VM2 完全不計入。每月約 600 歐元只跨過 50% 這一個門檻，而只有該門檻掛的是電子郵件動作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 286,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription named Subscription1. Subscription1 contains a resource group named RG1. RG1 contains resources that were deployed by using templates. You need to view the date and time when the resources were created in RG1. Solution: From the Subscriptions blade, you select the subscription, and then click Programmatic deployment. Does this meet the goal?",
@@ -1568,6 +1598,94 @@
     "explanations": {
       "A": "Incorrect. 錯誤。「以程式設計方式部署」是用來檢視與接受 Marketplace 項目的法律條款，與資源建立時間無關。",
       "B": "Correct. 正確。資源的建立時間要看資源群組的「部署」歷程；此選項的位置完全不提供這項資訊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 289,
+    "type": "matching",
+    "question": "You have two Azure subscriptions. Subscription1 has the following resource groups: RG1 (West Europe, lock type None) and RG2 (West Europe, lock type Read Only). RG1 includes a web app named App1 in the West Europe location. Subscription2 contains the following resource groups: RG3 (East Europe, lock type Delete) and RG4 (Central US, lock type none). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "App1 can be moved to RG2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "App1 can be moved to RG3.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "App1 can be moved to RG4.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是（官方判定）。資源群組本身的「區域」只是中繼資料存放位置，不限制裡面資源可以位於哪個區域，因此跨區域搬移資源群組沒有問題。\n【爭議提醒】RG2 有「唯讀」鎖定。把資源搬進 RG2 等於在 RG2 中「建立」一個資源，屬於寫入作業，照鎖定的語意應該會被拒絕，答案該是「否」。本題保留官方標示，但這一格的依據並不可靠。",
+      "2": "是。RG3 只有「刪除」鎖定，僅阻止刪除，不阻止在其中建立資源；而搬移的「刪除」動作發生在來源端 RG1（無鎖定），所以不受影響。East Europe 與 App1 的 West Europe 不同也沒關係——資源群組的區域不限制資源的區域。",
+      "3": "是。RG4 沒有任何鎖定，位於 Central US 也不影響（同上，資源群組區域不是限制）。跨訂用帳戶搬移 App Service 需要把整個 App Service 方案與其上的所有應用程式一起搬，但這是操作上的要求，不改變「可以搬移」的判定。",
+      "_full": "兩個判斷點：\n① 資源群組的「區域」只是它自己的中繼資料位置，不會限制內部資源的區域——所以跨區域搬移一律可行。\n② 鎖定：「刪除」鎖定只擋刪除；「唯讀」鎖定擋所有寫入。官方在本題把三格都判為「是」，其中 RG2（唯讀）那一格與鎖定語意有衝突，解析中已標明。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 290,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resource group: Name RG1, Region West US, Tag `tag1`: `value1`. You assign an Azure policy named Policy1 to Subscription1 by using the following configurations: Exclusions None; Policy definition 'Append a tag and its value to resources'; Assignment name Policy1; Parameters Tag name tag2, Tag value value2. After Policy1 is assigned, you create a storage account that has the following configuration: Name storage1, Location West US, Resource group RG1, Tags `tag3`: `value3`. You need to identify which tags are assigned to each resource. What should you identify?",
+    "available_options": [
+      "\"tag1\": \"value1\" only",
+      "\"tag2\": \"value2\" only",
+      "\"tag1\": \"value1\" and \"tag2\": \"value2\"",
+      "\"tag3\": \"value3\" only",
+      "\"tag1\": \"value1\" and \"tag3\": \"value3\" only",
+      "\"tag2\": \"value2\" and \"tag3\": \"value3\" only",
+      "\"tag1\": \"value1\", \"tag2\": \"value2\", and \"tag3\": \"value3\""
+    ],
+    "matches": [
+      {
+        "use_case": "Tags assigned to RG1:",
+        "correct_answer": "\"tag1\": \"value1\" only"
+      },
+      {
+        "use_case": "Tags assigned to storage1:",
+        "correct_answer": "\"tag2\": \"value2\" and \"tag3\": \"value3\" only"
+      }
+    ],
+    "explanations": {
+      "1": "RG1 只保有自己原本的 tag1: value1。內建定義「對資源附加標記及其值」的 mode 是 indexed，而 indexed 模式刻意「不」評估資源群組與訂用帳戶——要對資源群組加標記必須改用另一個定義「對資源群組附加標記及其值」。所以 Policy1 不會在 RG1 上加 tag2。",
+      "2": "storage1 是原則指派「之後」才建立的新資源，因此建立時被附加 tag2: value2；再加上自己帶的 tag3: value3，共兩個。它「不會」繼承資源群組 RG1 的 tag1——Azure 的標記不會自動由資源群組傳給資源。",
+      "_full": "兩條規則：\n① 「對資源附加標記及其值」是 indexed 模式，只作用於「資源」，不動資源群組與訂用帳戶。\n② 標記不會從資源群組繼承到資源（要繼承得用 Inherit a tag from the resource group 這類原則）。\n→ RG1 只有 tag1；storage1 有 tag2（原則附加）＋ tag3（自己帶的）。\n【交叉參照】本題官方答案正好證實了 indexed 模式不評估資源群組。本題庫 id 88 的第一項用的是同一個原則定義，官方卻判定它「會」把標記加到資源群組——兩題的官方標示互相矛盾，該題解析中已標明爭議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 291,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1. In Subscription1, you create an alert rule named Alert1. The Alert1 action group is configured as follows: ResourceGroupName default-activitylogalerts; GroupShortName AG1; Enabled True; EmailReceivers { Action1_ \"EmailAction\" }; SmsReceivers { Action1_ \"SMSAction\" }; WebhookReceivers { }; Name ActionGroup1; Type Microsoft.Insights/ActionGroups; Location Global. Alert1 alert criteria triggered every minute. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "0",
+      "4",
+      "6",
+      "12",
+      "60"
+    ],
+    "matches": [
+      {
+        "use_case": "The number of email messages that Alert1 will send in an hour is [answer choice].",
+        "correct_answer": "60"
+      },
+      {
+        "use_case": "The number of SMS messages that Alert1 will send in an hour is [answer choice].",
+        "correct_answer": "12"
+      }
+    ],
+    "explanations": {
+      "1": "電子郵件的速率限制是「每個收件地址每小時最多 100 封」。警示每分鐘觸發一次 → 一小時 60 次，60 < 100，因此不會被限流，每次都會寄出一封 → 60 封。",
+      "2": "簡訊的速率限制嚴格得多：「同一個電話號碼每 5 分鐘最多 1 則」。即使警示每分鐘觸發，60 分鐘 ÷ 5 分鐘 = 12，所以一小時最多 12 則。",
+      "_full": "動作群組的通知有「速率限制」，各通道的門檻不同，這是本題的唯一考點：\n・電子郵件：每個地址每小時 100 封。\n・簡訊 (SMS)：每個號碼每 5 分鐘 1 則（等於每小時 12 則）。\n・語音：每個號碼每 5 分鐘 1 通。\n・Webhook／推播等：不受此限流。\n所以每分鐘觸發一次時：電子郵件 60 封（未達上限）、簡訊被限成 12 則。"
     }
   },
   {
