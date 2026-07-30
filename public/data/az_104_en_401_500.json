@@ -376,6 +376,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 429,
+    "type": "matching",
+    "question": "Subscription1 has the following virtual networks: VNET1 (address space 10.10.10.0/24, West Europe) and VNET2 (172.16.0.0/16, West US). The virtual networks contain the subnets Subnet11 (10.10.10.0/24, in VNET1), Subnet21 (172.16.0.0/18, in VNET2) and Subnet22 (172.16.128.0/18, in VNET2). Subscription2 contains the virtual network VNETA (address space 10.10.128.0/17, Canada Central) with the subnets SubnetA1 (10.10.130.0/24) and SubnetA2 (10.10.131.0/24). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "A Site-to-Site connection can be established between VNET1 and VNET2.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VNET1 and VNET2 can be peered.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "VNET1 and VNETA can be peered.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。「站對站 (Site-to-Site)」連線的定義是把「內部部署站台」透過 IPsec/IKE VPN 通道連到 Azure 虛擬網路——它需要一個代表實體站台的「本機網路閘道」。兩個 Azure 虛擬網路之間要用 VPN 連的話，那叫「VNet 對 VNet (VNet-to-VNet)」連線（或直接用對等互連），不是站對站。",
+      "2": "是。對等互連唯一的硬性限制是「位址空間不可重疊」：10.10.10.0/24 與 172.16.0.0/16 完全不相交。區域不同也沒問題——跨區域用「全域虛擬網路對等互連」即可。",
+      "3": "是。VNET1 是 10.10.10.0/24（10.10.10.0～10.10.10.255）；VNETA 是 10.10.128.0/17（10.10.128.0～10.10.255.255），兩者沒有重疊。而且跨訂用帳戶、跨區域的對等互連都受支援（只要對兩邊的虛擬網路都有足夠權限）。",
+      "_full": "兩個觀念：\n① 名詞要分清：站對站 = 內部部署 ↔ Azure；VNet 對 VNet = Azure ↔ Azure（走 VPN 閘道）；對等互連 = Azure ↔ Azure（走骨幹網路，不需閘道）。\n② 對等互連的唯一硬限制是位址空間不可重疊；跨區域、跨訂用帳戶、跨租用戶都做得到。\n所以本題只要動手算 CIDR 有沒有交集就能判斷後兩項——10.10.10.0/24 與 10.10.128.0/17 是不同段，沒有衝突。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 433,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains 10 virtual networks. The virtual networks are hosted in separate resource groups. Another administrator plans to create several network security groups (NSGs) in the subscription. You need to ensure that when an NSG is created, it automatically blocks TCP port 8080 between the virtual networks. Solution: You assign a built-in policy definition to the subscription. Does this meet the goal?",
@@ -444,6 +474,65 @@
   },
   {
     "exam": "AZ-104",
+    "id": 438,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the public load balancers LB1 (SKU Basic) and LB2 (SKU Standard). You plan to create six virtual machines and to load balance requests to the virtual machines. Each load balancer will load balance three virtual machines. You need to create the virtual machines for the planned solution. How should you create the virtual machines?",
+    "available_options": [
+      "be connected to the same virtual network",
+      "be created in the same resource group",
+      "be created in the same availability set or virtual machine scale set",
+      "run the same operating system"
+    ],
+    "matches": [
+      {
+        "use_case": "The virtual machines that will be load balanced by using LB1 must:",
+        "correct_answer": "be created in the same availability set or virtual machine scale set"
+      },
+      {
+        "use_case": "The virtual machines that will be load balanced by using LB2 must:",
+        "correct_answer": "be connected to the same virtual network"
+      }
+    ],
+    "explanations": {
+      "1": "LB1 是 Basic SKU，限制較嚴：後端集區只能包含「同一個可用性設定組」或「同一個虛擬機器擴展集」中的執行個體（或單一台 VM）。因此要給 LB1 用的三台虛擬機器必須建立在同一個可用性設定組或擴展集裡。",
+      "2": "LB2 是 Standard SKU，放寬成「同一個虛擬網路內的任何虛擬機器」——可以混搭獨立 VM、可用性設定組與擴展集，不必同屬一組。所以要求只有「連線到同一個虛擬網路」。",
+      "_full": "這是 Basic 與 Standard 負載平衡器最常考的差異：\n・Basic：後端集區 = 單一可用性設定組或單一擴展集（或一台 VM）。\n・Standard：後端集區 = 同一個虛擬網路中的任何 VM（可混搭）。\n資源群組與作業系統從來不是後端集區的限制條件，兩格都是干擾項。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 439,
+    "type": "matching",
+    "question": "You have an on-premises data center and an Azure subscription. The data center contains two VPN devices. The subscription contains an Azure virtual network named VNet1. VNet1 contains a gateway subnet. You need to create a site-to-site VPN. The solution must ensure that if a single instance of an Azure VPN gateway fails, or a single on-premises VPN device fails, the failure will not cause an interruption that is longer than two minutes. What is the minimum number of public IP addresses, virtual network gateways, and local network gateways required in Azure?",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "Public IP addresses:",
+        "correct_answer": "2"
+      },
+      {
+        "use_case": "Virtual network gateways:",
+        "correct_answer": "1"
+      },
+      {
+        "use_case": "Local network gateways:",
+        "correct_answer": "2"
+      }
+    ],
+    "explanations": {
+      "1": "2 個。要讓「單一 Azure VPN 閘道執行個體故障」不造成長時間中斷，閘道必須設為「主動-主動 (active-active)」模式；此模式下同一個閘道有兩個閘道執行個體，各自需要「一個」公用 IP，因此共 2 個。（相對的主動-被動模式只有 1 個公用 IP，但容錯移轉需要約 1.5 分鐘以上、而且是靠重建通道，風險較高。）",
+      "2": "1 個。主動-主動是「同一個」虛擬網路閘道的部署模式，不是兩個閘道——而且一個虛擬網路的閘道子網路中也只能有一個 VPN 類型的虛擬網路閘道。所以最少（也是最多）1 個。",
+      "3": "2 個。【答案校正】官方標示為 1，但「本機網路閘道」代表的是「一台內部部署 VPN 裝置」（它的公用 IP 與所通告的位址空間），一個本機網路閘道只能填一個閘道 IP 位址。題目有「兩台」內部部署 VPN 裝置，而且要求任一台故障都不中斷，因此必須各建一個本機網路閘道（共 2 個），再各自建立連線——這正是 Microsoft 文件中「雙重備援 (dual-redundancy)」的拓撲，Azure 端 2 個執行個體 × 內部 2 台裝置 = 4 條 IPsec 通道。",
+      "_full": "「雙重備援」的標準組態：\n・Azure 端：1 個虛擬網路閘道，設為主動-主動 → 2 個公用 IP、2 個閘道執行個體。\n・內部部署端：2 台 VPN 裝置 → 2 個本機網路閘道、2 條連線。\n・合計 4 條 IPsec 通道，任一側單點故障都還有通道存活。\n【答案校正】官方把本機網路閘道標為 1，但那樣只涵蓋一台內部部署裝置，無法滿足「單一台內部部署 VPN 裝置故障也不中斷」的要求，故改判為 2。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 442,
     "type": "multiple",
     "question": "You have an Azure subscription that contains a policy-based virtual network gateway named GW1 and a virtual network named VNet1. You need to ensure that you can configure a point-to-site connection from an on-premises computer to VNet1. Which two actions should you perform? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
@@ -466,6 +555,36 @@
       "D": "Incorrect. 錯誤。在既有的基於原則閘道上新增連線無法解決類型限制。",
       "E": "Correct. 正確。一個虛擬網路只能有一個虛擬網路閘道，且閘道類型無法就地變更，因此必須先刪除 GW1 才能建立基於路由的新閘道。",
       "F": "Incorrect. 錯誤。虛擬網路使用的是私人位址空間，不能加入公用 IP 位址空間，此選項本身也不成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 443,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resources: VMRG (resource group), VNet1 (virtual network), VNet2 (virtual network), VM5 (virtual machine connected to VNet1) and VM6 (virtual machine connected to VNet2). In Azure, you create a private DNS zone named adatum.com. You set the registration virtual network to VNet2. The adatum.com zone is configured as follows: resource group vmrg, subscription Azure Pass, name servers 1-4 empty, record sets @ (SOA, TTL 3600), vm1 (A, TTL 3600, 10.1.0.4) and vm9 (A, TTL 3600, 10.1.0.12). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The A record for VM5 will be registered automatically in the adatum.com zone.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM5 can resolve VM9.adatum.com.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VM6 can resolve VM9.adatum.com.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。自動註冊只會發生在「註冊虛擬網路」中的虛擬機器上，而註冊虛擬網路設為 VNet2。VM5 在 VNet1，因此不會被自動註冊。（一個私人 DNS 區域只能有一個註冊虛擬網路。）",
+      "2": "否。要能對私人區域做名稱「解析」，該虛擬網路必須以「解析虛擬網路」的身分連結到區域。本題只設定了 VNet2 為註冊虛擬網路，VNet1 完全沒有連結到 adatum.com，所以 VM5 查不到這個區域裡的任何記錄。",
+      "3": "是。VM6 在 VNet2——也就是註冊虛擬網路裡；而「註冊虛擬網路預設同時也是解析虛擬網路」，所以 VM6 可以解析區域內的記錄。區域中確實存在 vm9 的 A 記錄 (10.1.0.12)，因此 VM6 解析 VM9.adatum.com 會成功。",
+      "_full": "私人 DNS 區域的兩種虛擬網路連結要分清：\n・「註冊」虛擬網路：其中的 VM 會自動註冊 A 記錄，而且「預設同時具備解析能力」。每個區域只能有一個。\n・「解析」虛擬網路：只能查詢、不會自動註冊。可以有多個。\n沒有任何連結的虛擬網路（本題的 VNet1）既不會註冊、也查不到記錄。"
     }
   },
   {
