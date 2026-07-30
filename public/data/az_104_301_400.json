@@ -1301,6 +1301,62 @@
   },
   {
     "exam": "AZ-104",
+    "id": 378,
+    "type": "matching",
+    "question": "你有執行 Windows Server 2019 的 Azure 虛擬機器，設定如下：\n・VM1｜私人 IP 10.1.0.4｜公用 IP 52.186.85.63｜虛擬網路 VNET1｜Windows Server 中設定的 DNS 後置字元 Adatum.com\n・VM2｜私人 IP 10.1.0.5｜公用 IP 13.92.181.13｜虛擬網路 VNET1｜Windows Server 中設定的 DNS 後置字元 Contoso.com\n\n你建立了一個名為 adatum.com 的私人 Azure DNS 區域，並把 adatum.com 區域設定為允許來自 VNET1 的自動註冊。\nadatum.com 區域中會為每台虛擬機器加入哪些 A 記錄？（每個正確選擇得一分）",
+    "available_options": [
+      "無 (None)",
+      "只有私人 IP 位址",
+      "只有公用 IP 位址",
+      "私人 IP 位址與公用 IP 位址"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 的 A 記錄：",
+        "correct_answer": "只有私人 IP 位址"
+      },
+      {
+        "use_case": "VM2 的 A 記錄：",
+        "correct_answer": "只有私人 IP 位址"
+      }
+    ],
+    "explanations": {
+      "1": "私人 DNS 區域的自動註冊只登記「私人 IP 位址」——公用 IP 不會被寫進私人區域（私人區域的用途就是虛擬網路內部的名稱解析）。因此 VM1 只有一筆指向 10.1.0.4 的 A 記錄。",
+      "2": "同樣只有私人 IP。要注意的是：自動註冊使用的是「虛擬機器的名稱」，與 VM 作業系統裡設定的 DNS 後置字元完全無關——VM2 在 Windows 裡設的是 Contoso.com，但它仍然會以 vm2.adatum.com 註冊到這個區域。所以答案同樣是「只有私人 IP 位址」。",
+      "_full": "私人 DNS 自動註冊的三個要點：\n① 只註冊私人 IP，公用 IP 不會出現在私人區域中。\n② 使用的是 Azure 資源的「虛擬機器名稱」，作業系統裡的 DNS 後置字元不影響註冊結果（本題 VM2 的 Contoso.com 純粹是干擾項）。\n③ 一個虛擬網路只能連結到「一個」啟用自動註冊的私人區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 379,
+    "type": "matching",
+    "question": "你有一個名為 VNet1 的 Azure 虛擬網路，透過站對站 VPN 連線到內部部署網路。\nVNet1 只有一個子網路 Subnet1，Subnet1 關聯到一個名為 NSG1 的網路安全性群組。\nSubnet1 中有一個基本 SKU 的內部負載平衡器 ILB1，ILB1 的後端集區有三台 Azure 虛擬機器。\n你必須收集「連線到 ILB1 的 IP 位址」相關資料，而且必須能夠從 Azure 入口網站對收集到的資料執行互動式查詢。\n你應該怎麼做？（每個正確選擇得一分）",
+    "available_options": [
+      "一個 Azure 事件方格 (Event Grid)",
+      "一個 Azure Log Analytics 工作區",
+      "一個 Azure 儲存體帳戶",
+      "ILB1",
+      "NSG1",
+      "那些 Azure 虛擬機器"
+    ],
+    "matches": [
+      {
+        "use_case": "要建立的資源：",
+        "correct_answer": "一個 Azure Log Analytics 工作區"
+      },
+      {
+        "use_case": "要啟用診斷的資源：",
+        "correct_answer": "NSG1"
+      }
+    ],
+    "explanations": {
+      "1": "要「從入口網站執行互動式查詢」，資料就必須送進 Log Analytics 工作區（用 KQL 查詢）。送到儲存體帳戶只能封存，無法互動查詢；事件方格是事件路由服務，不是分析資料存放區。",
+      "2": "要看「哪些 IP 連進來」，資料來源是 NSG 的流量記錄——在 NSG1 上啟用診斷（NSG 流程記錄／流量記錄）就會記下來源與目的 IP、連接埠與允許或拒絕的規則。基本 SKU 的內部負載平衡器本身「不提供」診斷記錄（Standard SKU 才有豐富的計量），所以在 ILB1 上啟用診斷得不到需要的資料；在虛擬機器上啟用診斷收集的是客體 OS 的效能與事件，不是連線來源 IP。",
+      "_full": "兩個判斷點：\n① 「互動式查詢」→ Log Analytics 工作區（KQL）；儲存體帳戶只適合長期封存。\n② 「誰連進來的 IP」→ NSG 流量記錄。基本 SKU 的負載平衡器沒有可用的診斷記錄，這是本題最容易選錯的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 381,
     "type": "multiple",
     "question": "你有一個 Azure 訂用帳戶，其中包含名為 VNet1 的虛擬網路。VNet1 有四個子網路：Gateway、Perimeter、NVA 與 Production。NVA 子網路中有兩台網路虛擬設備 (NVA)，負責檢查 Perimeter 與 Production 子網路之間的網路流量。你必須為這些 NVA 實作 Azure 負載平衡器，且解決方案必須滿足下列要求：\n✑ NVA 必須以主動－主動組態執行，並具備自動容錯移轉。\n✑ 負載平衡器必須把流量負載平衡到 Production 子網路上的「兩個服務」，這兩個服務有「不同的 IP 位址」。\n你應該執行哪三個動作？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）\n\n（註：本題社群投票分歧較大：BCF 48% / BDE 27% / BCE 22%，屬有爭議題目。）",
@@ -1343,6 +1399,66 @@
       "B": "錯誤。站對站流量既然已經可以到達 VNet2，代表閘道傳輸相關設定本來就沒問題；這個設定不會更新已安裝的用戶端路由。",
       "C": "錯誤。「允許閘道傳輸」要勾在擁有閘道的那一端（VNet1），勾在 VNet2 上沒有意義。",
       "D": "錯誤。BGP 用於動態路由交換，對於「用戶端組態套件中的靜態路由未更新」這個問題並無幫助。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 383,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的虛擬機器（執行 Windows Server 2016）設定如下：\n・VM1｜虛擬網路 VNET2｜Windows Server 中設定的 DNS 後置字元 Contoso.com\n・VM2｜虛擬網路 VNET2｜DNS 後置字元：無\n・VM3｜虛擬網路 VNET2｜DNS 後置字元 Adatum.com\n\n你建立了一個「公用」Azure DNS 區域 adatum.com，以及一個「私人」Azure DNS 區域 contoso.com。\n你為 contoso.com 建立了一個虛擬網路連結 link1，設定如下：\n・連結名稱 link1、連結狀態 已完成、佈建狀態 成功\n・虛擬網路：VNET2（位於資源群組 RG2）\n・組態：已勾選「啟用自動註冊 (Enable auto registration)」\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "VM1 啟動時，contoso.com DNS 區域中會加入一筆 VM1 的記錄。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "VM2 啟動時，contoso.com DNS 區域中會加入一筆 VM2 的記錄。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "VM3 啟動時，adatum.com DNS 區域中會加入一筆 VM3 的記錄。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。link1 把 VNET2 連結到私人區域 contoso.com 並啟用了自動註冊，因此 VNET2 中「所有」虛擬機器啟動時都會自動註冊到 contoso.com。VM1 剛好在 OS 裡也設了 Contoso.com 後置字元，但那與註冊無關。",
+      "2": "是。自動註冊是「以虛擬網路為單位」生效的，與虛擬機器有沒有設定 DNS 後置字元無關。VM2 雖然沒有後置字元，仍然會以 vm2.contoso.com 註冊。",
+      "3": "否。adatum.com 是「公用」DNS 區域，而自動註冊只有「私人」DNS 區域才支援——公用區域的記錄必須手動建立（或用指令碼／API 維護）。VM3 在 OS 裡設了 Adatum.com 後置字元也不會改變這一點。",
+      "_full": "兩條規則就能全部判完：\n① 自動註冊只支援「私人」DNS 區域；公用區域一律要手動建立記錄。\n② 自動註冊的範圍是「已連結且啟用自動註冊的虛擬網路中的所有 VM」，與 VM 作業系統裡的 DNS 後置字元完全無關（本題三個後置字元都是干擾項）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 386,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源群組：\n・RG1｜位置 West US　・RG2｜位置 East US\n\nRG1 中包含下列資源（全部位於 West US）：\n・storage1｜儲存體帳戶　・VNet1｜虛擬網路　・NIC1｜網路介面\n・Disk1｜磁碟　・VM1｜虛擬機器\n\nVM1 正在執行，並連線到 NIC1 與 Disk1；NIC1 連線到 VNET1。\nRG2 中包含一個名為 IP2 的公用 IP 位址，位於 East US，且尚未指派給任何虛擬機器。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把 storage1 移動到 RG2。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "你可以把 NIC1 移動到 RG2。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "如果你把 IP2 移動到 RG1，IP2 的位置會改變。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。儲存體帳戶可以搬移到另一個資源群組（甚至另一個訂用帳戶），而且目標資源群組的位置不需要與資源相同。搬移不會影響帳戶內的資料。",
+      "2": "是。網路介面同樣可以搬移資源群組。（前提是相依的資源要一起處理——實務上把 NIC 搬走時，Azure 會要求同時搬移它相依的虛擬機器等資源；但就「可不可以搬」這個判斷而言是可以的。）",
+      "3": "否。搬移資源群組「不會」改變資源的位置——資源群組的位置只是它自身中繼資料的存放區域，與其中資源實際部署在哪個區域互不相干。IP2 搬到 RG1 之後仍然位於 East US。（要換區域必須重新建立資源，不能靠搬移。）",
+      "_full": "兩個核心觀念：\n① 資源可以在資源群組之間搬移，目標資源群組的位置不需要與資源相同。\n② 搬移只改變「歸屬」，不改變「位置」——想換區域只能重建資源。\n實務補充：搬移時所有相依資源必須一起搬，而且來源與目標資源群組在搬移期間會被鎖定。"
     }
   },
   {

@@ -1301,6 +1301,62 @@
   },
   {
     "exam": "AZ-104",
+    "id": 378,
+    "type": "matching",
+    "question": "You have Azure virtual machines that run Windows Server 2019 and are configured as follows: VM1 (private IP 10.1.0.4, public IP 52.186.85.63, virtual network VNET1, DNS suffix configured in Windows Server Adatum.com); VM2 (private IP 10.1.0.5, public IP 13.92.181.13, VNET1, DNS suffix Contoso.com). You create a private Azure DNS zone named adatum.com. You configure the adatum.com zone to allow auto registration from VNET1. Which A records will be added to the adatum.com zone for each virtual machine?",
+    "available_options": [
+      "None",
+      "Private IP address only",
+      "Public IP address only",
+      "Private IP address and public IP address"
+    ],
+    "matches": [
+      {
+        "use_case": "A records for VM1:",
+        "correct_answer": "Private IP address only"
+      },
+      {
+        "use_case": "A records for VM2:",
+        "correct_answer": "Private IP address only"
+      }
+    ],
+    "explanations": {
+      "1": "私人 DNS 區域的自動註冊只登記「私人 IP 位址」——公用 IP 不會被寫進私人區域（私人區域的用途就是虛擬網路內部的名稱解析）。因此 VM1 只有一筆指向 10.1.0.4 的 A 記錄。",
+      "2": "同樣只有私人 IP。要注意的是：自動註冊使用的是「虛擬機器的名稱」，與 VM 作業系統裡設定的 DNS 後置字元完全無關——VM2 在 Windows 裡設的是 Contoso.com，但它仍然會以 vm2.adatum.com 註冊到這個區域。所以答案同樣是「只有私人 IP 位址」。",
+      "_full": "私人 DNS 自動註冊的三個要點：\n① 只註冊私人 IP，公用 IP 不會出現在私人區域中。\n② 使用的是 Azure 資源的「虛擬機器名稱」，作業系統裡的 DNS 後置字元不影響註冊結果（本題 VM2 的 Contoso.com 純粹是干擾項）。\n③ 一個虛擬網路只能連結到「一個」啟用自動註冊的私人區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 379,
+    "type": "matching",
+    "question": "You have an Azure virtual network named VNet1 that connects to your on-premises network by using a site-to-site VPN. VNet1 contains one subnet named Subnet1. Subnet1 is associated to a network security group (NSG) named NSG1. Subnet1 contains a basic internal load balancer named ILB1. ILB1 has three Azure virtual machines in the backend pool. You need to collect data about the IP addresses that connect to ILB1. You must be able to run interactive queries from the Azure portal against the collected data. What should you do?",
+    "available_options": [
+      "An Azure Event Grid",
+      "An Azure Log Analytics workspace",
+      "An Azure Storage account",
+      "ILB1",
+      "NSG1",
+      "The Azure virtual machines"
+    ],
+    "matches": [
+      {
+        "use_case": "Resource to create:",
+        "correct_answer": "An Azure Log Analytics workspace"
+      },
+      {
+        "use_case": "Resource on which to enable diagnostics:",
+        "correct_answer": "NSG1"
+      }
+    ],
+    "explanations": {
+      "1": "要「從入口網站執行互動式查詢」，資料就必須送進 Log Analytics 工作區（用 KQL 查詢）。送到儲存體帳戶只能封存，無法互動查詢；事件方格是事件路由服務，不是分析資料存放區。",
+      "2": "要看「哪些 IP 連進來」，資料來源是 NSG 的流量記錄——在 NSG1 上啟用診斷（NSG 流程記錄／流量記錄）就會記下來源與目的 IP、連接埠與允許或拒絕的規則。基本 SKU 的內部負載平衡器本身「不提供」診斷記錄（Standard SKU 才有豐富的計量），所以在 ILB1 上啟用診斷得不到需要的資料；在虛擬機器上啟用診斷收集的是客體 OS 的效能與事件，不是連線來源 IP。",
+      "_full": "兩個判斷點：\n① 「互動式查詢」→ Log Analytics 工作區（KQL）；儲存體帳戶只適合長期封存。\n② 「誰連進來的 IP」→ NSG 流量記錄。基本 SKU 的負載平衡器沒有可用的診斷記錄，這是本題最容易選錯的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 381,
     "type": "multiple",
     "question": "You have an Azure subscription that contains a virtual network named VNet1. VNet1 contains four subnets named Gateway, Perimeter, NVA, and Production. The NVA subnet contains two network virtual appliances (NVAs) that will perform network traffic inspection between the Perimeter subnet and the Production subnet. You need to implement an Azure load balancer for the NVAs. The solution must meet the following requirements: ✑ The NVAs must run in an active-active configuration that uses automatic failover. ✑ The load balancer must load balance traffic to two services on the Production subnet. The services have different IP addresses. Which three actions should you perform? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
@@ -1343,6 +1399,66 @@
       "B": "Incorrect. 錯誤。站對站流量既然已經可以到達 VNet2，代表閘道傳輸相關設定本來就沒問題；這個設定不會更新已安裝的用戶端路由。",
       "C": "Incorrect. 錯誤。「允許閘道傳輸」要勾在擁有閘道的那一端（VNet1），勾在 VNet2 上沒有意義。",
       "D": "Incorrect. 錯誤。BGP 用於動態路由交換，對於「用戶端組態套件中的靜態路由未更新」這個問題並無幫助。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 383,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains virtual machines that run Windows Server 2016 and are configured as follows: VM1 (virtual network VNET2, DNS suffix configured in Windows Server Contoso.com); VM2 (VNET2, DNS suffix None); VM3 (VNET2, DNS suffix Adatum.com). You create a public Azure DNS zone named adatum.com and a private Azure DNS zone named contoso.com. You create a virtual network link for contoso.com named link1: link state Completed, provisioning state Succeeded, virtual network VNET2 (in resource group RG2), configuration Enable auto registration selected. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "When VM1 starts, a record for VM1 is added to the contoso.com DNS zone.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "When VM2 starts, a record for VM2 is added to the contoso.com DNS zone.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "When VM3 starts, a record for VM3 is added to the adatum.com DNS zone.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。link1 把 VNET2 連結到私人區域 contoso.com 並啟用了自動註冊，因此 VNET2 中「所有」虛擬機器啟動時都會自動註冊到 contoso.com。VM1 剛好在 OS 裡也設了 Contoso.com 後置字元，但那與註冊無關。",
+      "2": "是。自動註冊是「以虛擬網路為單位」生效的，與虛擬機器有沒有設定 DNS 後置字元無關。VM2 雖然沒有後置字元，仍然會以 vm2.contoso.com 註冊。",
+      "3": "否。adatum.com 是「公用」DNS 區域，而自動註冊只有「私人」DNS 區域才支援——公用區域的記錄必須手動建立（或用指令碼／API 維護）。VM3 在 OS 裡設了 Adatum.com 後置字元也不會改變這一點。",
+      "_full": "兩條規則就能全部判完：\n① 自動註冊只支援「私人」DNS 區域；公用區域一律要手動建立記錄。\n② 自動註冊的範圍是「已連結且啟用自動註冊的虛擬網路中的所有 VM」，與 VM 作業系統裡的 DNS 後置字元完全無關（本題三個後置字元都是干擾項）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 386,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resource groups RG1 (West US) and RG2 (East US). RG1 contains the following resources, all in West US: storage1 (storage account), VNet1 (virtual network), NIC1 (network interface), Disk1 (disk), VM1 (virtual machine). VM1 is running and connects to NIC1 and Disk1. NIC1 connects to VNET1. RG2 contains a public IP address named IP2 that is in the East US location. IP2 is not assigned to a virtual machine. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can move storage1 to RG2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can move NIC1 to RG2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "If you move IP2 to RG1, the location of IP2 will change.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。儲存體帳戶可以搬移到另一個資源群組（甚至另一個訂用帳戶），而且目標資源群組的位置不需要與資源相同。搬移不會影響帳戶內的資料。",
+      "2": "是。網路介面同樣可以搬移資源群組。（前提是相依的資源要一起處理——實務上把 NIC 搬走時，Azure 會要求同時搬移它相依的虛擬機器等資源；但就「可不可以搬」這個判斷而言是可以的。）",
+      "3": "否。搬移資源群組「不會」改變資源的位置——資源群組的位置只是它自身中繼資料的存放區域，與其中資源實際部署在哪個區域互不相干。IP2 搬到 RG1 之後仍然位於 East US。（要換區域必須重新建立資源，不能靠搬移。）",
+      "_full": "兩個核心觀念：\n① 資源可以在資源群組之間搬移，目標資源群組的位置不需要與資源相同。\n② 搬移只改變「歸屬」，不改變「位置」——想換區域只能重建資源。\n實務補充：搬移時所有相依資源必須一起搬，而且來源與目標資源群組在搬移期間會被鎖定。"
     }
   },
   {
