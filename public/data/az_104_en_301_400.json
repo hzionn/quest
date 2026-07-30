@@ -710,6 +710,179 @@
   },
   {
     "exam": "AZ-104",
+    "id": 341,
+    "type": "multiple",
+    "question": "You have an Azure container registry named contoso2023 whose blade contains: Overview, Activity log, Access control (IAM), Tags, Quick start, Events; Settings - Access keys, Encryption, Identity, Networking, Microsoft Defender for Cloud, Properties, Locks; Services - Repositories, Webhooks, Geo-replications, Tasks, Connected registries (Preview), Cache. You need to enable contoso2023 to use a dedicated data endpoint. Which two settings should you configure for contoso2023?",
+    "options": {
+      "A": "Networking",
+      "B": "Connected registries (Preview)",
+      "C": "Encryption",
+      "D": "Identity",
+      "E": "Geo-replications"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。「專用資料端點」的開關就在容器登錄的「網路」刀鋒視窗中（公用存取設定的下方）。啟用後，資料（映像層）會改走 <registry>.<region>.data.azurecr.io 這種登錄專屬的網域，而不是所有客戶共用的區域端點——這是為了讓防火牆規則能精確鎖定。（另外要注意：這個功能需要 Premium 服務層級。）",
+      "B": "Correct. 正確（官方標示）。「連線的登錄」這項功能相依於專用資料端點，所以入口網站在這個刀鋒視窗中也會提示並提供啟用資料端點的入口——兩處合起來完成本題的設定。",
+      "C": "Incorrect. 錯誤。加密設定的是登錄內容的待用加密金鑰（客戶管理金鑰），與端點網域無關。",
+      "D": "Incorrect. 錯誤。身分識別設定的是登錄本身的受控識別（例如讓工作去存取金鑰保存庫），與資料端點無關。",
+      "E": "Incorrect. 錯誤。異地複寫是把登錄內容複寫到多個區域以就近提取，雖然同樣是 Premium 功能，但它不是啟用專用資料端點的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 343,
+    "type": "matching",
+    "question": "You have an Azure subscription. You need to deploy a virtual machine by using an Azure Resource Manager (ARM) template. How should you complete the template?  \"type\": \"Microsoft.Compute/virtualMachines\", ... \"dependsOn\": [ \"[[box 1]('Microsoft.Network/networkInterfaces/', 'VM1')]\" ], \"properties\": { \"storageProfile\": { \"[box 2]\": { \"publisher\": \"MicrosoftWindowsServer\", \"Offer\": \"WindowsServer\", \"sku\": \"2019-Datacenter\", \"version\": \"latest\" } ... } }",
+    "available_options": [
+      "reference",
+      "resourceId",
+      "Union",
+      "Array",
+      "Image",
+      "ImageReference",
+      "vhd"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the function inside dependsOn):",
+        "correct_answer": "resourceId"
+      },
+      {
+        "use_case": "Box 2 (the property inside storageProfile):",
+        "correct_answer": "ImageReference"
+      }
+    ],
+    "explanations": {
+      "1": "dependsOn 必須填「資源 ID」，取得資源 ID 的函式就是 resourceId()——它會把資源類型與名稱組成完整的識別碼。reference() 取的是另一個資源的「執行階段屬性值」（會隱含建立相依性，但不能放在 dependsOn，會造成循環評估）；union() 是合併陣列或物件的函式。",
+      "2": "要指定 VM 從哪個平台映像建立，用 storageProfile 之下的 imageReference 屬性，其中包含 publisher／offer／sku／version 四個欄位——題目給的正是這四個。vhd 是用自己的 VHD 當來源時才會出現（非受控磁碟的舊寫法）；Image 與 Array 都不是 storageProfile 的屬性。",
+      "_full": "兩個常考的範本要素：\n・dependsOn 用 resourceId() 產生資源 ID，宣告部署順序。\n・storageProfile.imageReference 用 publisher/offer/sku/version 指定平台映像（version 寫 \"latest\" 就是每次部署都取最新版）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 344,
+    "type": "matching",
+    "question": "You need to configure a new Azure App Service app named WebApp1. The solution must meet the following requirements: WebApp1 must be able to verify a custom domain name of app.contoso.com; WebApp1 must be able to automatically scale up to eight instances; costs and administrative effort must be minimized. Which pricing plan should you choose, and which type of record should you use to verify the domain?",
+    "available_options": [
+      "Basic",
+      "Free",
+      "Shared",
+      "Standard",
+      "A",
+      "AAAA",
+      "PTR",
+      "TXT"
+    ],
+    "matches": [
+      {
+        "use_case": "Pricing plan:",
+        "correct_answer": "Standard"
+      },
+      {
+        "use_case": "Record type:",
+        "correct_answer": "TXT"
+      }
+    ],
+    "explanations": {
+      "1": "三項要求一起看：自訂網域需要 Shared 以上；「自動」調整需要 Standard 以上（Basic 只能手動改執行個體數，而且上限是 3）；要能到 8 個執行個體，Standard 的上限 10 足夠。在滿足全部要求的方案中 Standard 最便宜，因此選 Standard（Premium 雖然可以到更多執行個體，但成本更高、超出需求）。",
+      "2": "驗證自訂網域「擁有權」用的是 TXT 記錄——在 DNS 中建立 asuid.<子網域> 的 TXT 記錄，值填 App Service 給的驗證識別碼。A 或 CNAME 記錄是用來把流量「指向」應用程式（對應是另一個步驟），AAAA 是 IPv6 位址記錄，PTR 是反向查詢，都不是擁有權驗證用的。",
+      "_full": "兩個知識點：\n① App Service 方案層級的能力分界：Free/Shared 不能自動調整；Basic 可自訂網域但只能手動調整（上限 3）；Standard 起才有自動調整（上限 10）。要「自動到 8 個」又要最省 → Standard。\n② 自訂網域要做兩件事：用 TXT（asuid.<name>）證明擁有權，再用 A 或 CNAME 把網域指向應用程式。本題問的是「驗證」，所以是 TXT。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 345,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual machines VM1 (West Europe, 8 vCPUs, generation 2), VM2 (East US, 2 vCPUs, generation 1) and VM3 (West US, 12 vCPUs, generation 1). You create an Azure Compute Gallery named ComputeGallery1 (resource group RG1, region West Europe). In ComputeGallery1, you create a virtual machine image definition named Image1: resource group RG1, region East US, target Azure compute gallery ComputeGallery1, OS type Windows, security type Standard, VM generation V1, OS state Specialized, publisher Contoso, offer WindowsServer2022, SKU Datacenter; publishing options - recommended VM vCPUs 4-16, recommended VM memory 1-32 GB, everything else None. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The operating system disk of VM1 can be used as a source for a version of Image1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The operating system disk of VM2 can be used as a source for a version of Image1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The operating system disk of VM3 can be used as a source for a version of Image1.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是（官方判定）。來源 VM 不必與映像定義同區域——建立映像版本時可以指定來源區域，再複寫到目標區域，所以 West Europe 沒問題；而且 Image1 的 OS 狀態是「特製化」，代表可以直接拿「未經 Sysprep 一般化」的 VM 磁碟當來源。\n【爭議提醒】VM1 是「世代 2」，而 Image1 的 VM 世代是 V1。實務上映像定義的世代必須與來源相符（Gen2 的磁碟不能放進 V1 的定義），照此本項應為「否」。本題保留官方標示。",
+      "2": "是。VM2 在 East US（與 Image1 定義同區域）、世代 1 與 V1 相符。vCPU 只有 2 個、低於「建議的 VM vCPU 數 4-16」，但那個欄位只是「建議」——它是給使用者挑選映像時參考的中繼資料，並不會被強制檢查。",
+      "3": "是。VM3 世代 1 與 V1 相符；位於 West US 與定義區域不同，但如前所述來源區域不受限制；12 vCPU 也落在建議範圍內。",
+      "_full": "三個判斷要素：\n① 區域：來源 VM 與映像定義「不需要」同區域，映像版本可以指定來源並複寫到多個區域。\n② OS 狀態：「一般化 (Generalized)」要求來源先經過 Sysprep／waagent -deprovision；「特製化 (Specialized)」則直接沿用磁碟現狀——本題是特製化。\n③ 「建議的 vCPU／記憶體」純屬中繼資料，不構成限制。\n唯一有疑義的是 VM 世代：官方三項全判「是」，但 VM1 的 Gen2 與定義的 V1 並不相符，解析中已標明。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 347,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resource groups RG1 (East US) and RG2 (West US). You create the following Azure Resource Manager (ARM) template named deploy.json: \"resources\": [ { \"type\": \"Microsoft.Resources/resourceGroups\", \"apiVersion\": \"2018-05-01\", \"location\": \"eastus\", \"name\": \"[concat('RG', copyIndex())]\", \"copy\": { \"name\": \"copy\", \"count\": 4 } } ]. You deploy the template by running the following cmdlet: New-AzSubscriptionDeployment -Location westus -TemplateFile deploy.json. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The template creates a resource group named RG0 in the East US Azure region.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The template creates four new resource groups.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The template creates a resource group named RG3 in the West US Azure region.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。copyIndex() 從 0 起算，所以四次迭代的名稱是 RG0、RG1、RG2、RG3；而資源的 location 寫死為 \"eastus\"，因此 RG0 會建立在 East US。",
+      "2": "否。四個名稱中的 RG1 與 RG2「已經存在」，所以實際上「新建」的只有 RG0 與 RG3 兩個。（ARM 部署是宣告式的：名稱已存在時視為更新而不是新建。）",
+      "3": "否。RG3 確實會被建立，但區域是資源自己的 location「eastus」——命令上的 -Location westus 只決定「訂用帳戶層級部署本身的中繼資料」存放在哪個區域，不會影響範本中資源指定的位置。",
+      "_full": "三個判斷點：\n① copyIndex() 由 0 起算 → RG0~RG3。\n② 「新建幾個」要扣掉已存在的名稱（RG1、RG2 已存在）。\n③ 訂用帳戶層級部署的 -Location 是部署記錄的位置，資源實際建立在各自 location 指定的區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 349,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a container registry with the images Image1 (operating system Windows Server) and Image2 (Linux). You plan to use the following services: Azure Container Instances; Azure Container Apps; Azure App Service. In which services can you run the images?",
+    "available_options": [
+      "Azure Container Instances only",
+      "Azure Container Apps only",
+      "Azure Container Instances and App Services only",
+      "Azure Container Apps and App Services only",
+      "Azure Container Instances, Azure Container Apps, and App Services"
+    ],
+    "matches": [
+      {
+        "use_case": "Image1:",
+        "correct_answer": "Azure Container Instances and App Services only"
+      },
+      {
+        "use_case": "Image2:",
+        "correct_answer": "Azure Container Instances, Azure Container Apps, and App Services"
+      }
+    ],
+    "explanations": {
+      "1": "Windows 容器的支援情況不一致：Azure 容器實例支援 Windows 容器；App Service 也支援 Windows 容器（自訂容器）。但 Azure Container Apps「只支援 Linux 容器」，因此 Windows 映像跑不了。→ 只有 Azure 容器實例與 App Service。",
+      "2": "Linux 容器是三個服務共同的基礎支援對象——容器實例、Container Apps 與 App Service（Linux 版）都可以執行。→ 三者皆可。",
+      "_full": "一句話記住這個差異：Azure Container Apps 是建構在 AKS 之上的 Linux 專用平台，「不支援 Windows 容器」；而 Azure 容器實例與 App Service 兩者都支援 Windows 與 Linux。所以 Linux 映像三處都能跑，Windows 映像只能扣掉 Container Apps。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 350,
     "type": "single",
     "question": "You have an Azure AD tenant named contoso.com. You have an Azure subscription that contains an Azure App Service web app named App1 and an Azure key vault named KV1. KV1 contains a wildcard certificate for contoso.com. You have a user named [email protected] that is assigned the Owner role for App1 and KV1. You need to configure App1 to use the wildcard certificate of KV1. What should you do first?",
@@ -744,6 +917,66 @@
       "B": "Correct. 正確。Bicep 以 targetScope／scope 決定部署的目標範圍。要把資源部署到特定資源群組，必須設定部署範圍指向 RG1。",
       "C": "Incorrect. 錯誤。sku 指定的是效能與備援層級（例如 Standard_LRS），不影響部署目標。",
       "D": "Incorrect. 錯誤。location 決定資源建立在哪個 Azure 區域，與資源群組的歸屬是不同的概念。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 354,
+    "type": "matching",
+    "question": "You have an Azure subscription and the following ARM template named deploy.json (excerpt): resource 1 = Microsoft.Resources/resourceGroups, location \"eastus\", name [concat('RG', copyIndex())], copy count 3; resource 2 = Microsoft.Resources/deployments (nested, name lockDeployment) targeting resourceGroup \"RG1\", dependsOn RG1, mode Incremental, whose inner template creates a Microsoft.Authorization/locks named rgLock with level \"CanNotDelete\"; resource 3 = Microsoft.Resources/deployments (nested, name lockDeployment) targeting resourceGroup \"RG2\", dependsOn RG2, mode Incremental, whose inner template creates a Microsoft.Authorization/locks named rgLock with level \"ReadOnly\". You connect to the subscription and run: New-AzDeployment -Location westus -TemplateFile \"deploy.json\". For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can deploy a virtual machine to RG1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can deploy a virtual machine to RG2.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "You can manually create a resource group named RG3.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。RG1 上的鎖定層級是「CanNotDelete」——只禁止「刪除」，授權的使用者仍然可以讀取與「修改／建立」資源。所以在 RG1 中部署新的 VM 沒有問題。",
+      "2": "否。RG2 上的鎖定層級是「ReadOnly」——這是限制較嚴的一種，等於把該範圍的所有資源變成唯讀：不能建立、不能修改、也不能刪除。因此無法在 RG2 中部署虛擬機器。",
+      "3": "是。範本的 copy count 是 3，copyIndex() 從 0 起算，所以只建立了 RG0、RG1、RG2——RG3 並不存在，也沒有任何鎖定或原則阻止你手動建立它。",
+      "_full": "兩個知識點：\n① 兩種鎖定層級的差別：CanNotDelete 只擋刪除（仍可建立與修改）；ReadOnly 連建立與修改都擋。\n② copy count 3 + copyIndex() 由 0 起算 → 只有 RG0、RG1、RG2，沒有 RG3。\n另外注意鎖定必須用「巢狀部署」指向該資源群組才能在同一個訂用帳戶層級範本中套用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 356,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual networks VNet1 (Subnet1, subnet-associated NSG1, peered with VNet2) and VNet2 (Subnet2, subnet-associated NSG2, peered with VNet1). The subscription contains the virtual machines VM1 (connected to Subnet1) and VM2 (connected to Subnet2). The subscription contains the Azure App Service web apps WebApp1 (uses the Premium pricing tier and has virtual network integration with VNet1) and WebApp2 (uses the Isolated pricing tier and is deployed to Subnet2). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "WebApp1 can communicate with VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "NSG1 controls inbound traffic to WebApp1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "WebApp2 can communicate with VM1.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。WebApp1 使用 Premium 層的「區域虛擬網路整合」接入 VNet1，而 VNet1 與 VNet2 已對等互連，所以它的「輸出」流量可以到達 VNet2 中的 VM2（若要讓所有輸出流量都走虛擬網路，記得把 WEBSITE_VNET_ROUTE_ALL／「輸出流量的路由」開啟）。",
+      "2": "否。虛擬網路整合只影響「輸出」方向——應用程式仍然是透過 App Service 的公用前端接收請求，並不存在於子網路中，因此子網路上的 NSG1 管不到進入 WebApp1 的輸入流量。要限制輸入必須用應用程式本身的「存取限制」規則，或改用私人端點／App Service 環境。",
+      "3": "否（官方判定）。\n【爭議提醒】WebApp2 是 Isolated 層、部署在 VNet2 的 Subnet2 中（App Service 環境），而 VNet2 與 VNet1「直接」對等互連，因此照一般的網路規則它應該連得到 Subnet1 的 VM1，答案該是「是」。本題保留官方標示，但這一項與第一項的情境幾乎對稱，官方給出相反答案，依據並不可靠。",
+      "_full": "本題的核心是「虛擬網路整合是單向的（只管輸出）」：應用程式可以主動連進虛擬網路（含對等互連的網路），但外界進入應用程式的流量不經過子網路，所以 NSG 管不到——要控制輸入得用存取限制、私人端點或 App Service 環境。\n第三項的官方答案與第一項對稱卻相反，解析中已標明爭議。"
     }
   },
   {
