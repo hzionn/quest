@@ -377,6 +377,62 @@
   },
   {
     "exam": "AZ-104",
+    "id": 529,
+    "type": "matching",
+    "question": "You create a backup policy named Policy1: backup schedule frequency Daily, time 2:00 AM, timezone (UTC) Coordinated Universal Time; retention range - retention of daily backup point at 2:00 AM for 5 days; retention of weekly backup point on Sunday at 2:00 AM for 20 weeks; retention of monthly backup point (day based) on 2 at 2:00 AM for 24 months; retention of yearly backup point (day based) in January on 9 at 2:00 AM for 5 years. You configure the backup of VM1 to use Policy1 on Thursday, January 1 at 1:00 AM. How many recovery points will VM1 have at each of the following times?",
+    "available_options": [
+      "5",
+      "6",
+      "8",
+      "9",
+      "17",
+      "19"
+    ],
+    "matches": [
+      {
+        "use_case": "January 8 at 2:00 PM (14:00):",
+        "correct_answer": "6"
+      },
+      {
+        "use_case": "January 15 at 2:00 PM (14:00):",
+        "correct_answer": "8"
+      }
+    ],
+    "explanations": {
+      "1": "6 個。從 1 月 1 日上午 2:00 起每天備份一次，到 1 月 8 日下午 2:00 為止已經跑過 1/1～1/8 共 8 次備份，但「每日」保留只留最近 5 天，所以剩下 1/4～1/8 這 5 個每日復原點。\n另外 1 月 4 日是星期日，那天的備份同時被標記為「每週」復原點（保留 20 週），不會被每日保留期滿的規則清掉——不過它本來就已經算在上面那 5 個裡。真正額外多出來的是 1 月 2 日的「每月」復原點（原則設定為每月 2 日，保留 24 個月）。5 + 1 = 6。",
+      "2": "8 個。到 1 月 15 日下午 2:00 為止：\n・每日：保留最近 5 天 → 1/11～1/15，共 5 個。\n・每週（星期日）：1 月 4 日與 1 月 11 日各一個；1/11 已被算在每日的 5 個裡，所以只額外多出 1/4，共 +1。\n・每月（每月 2 日）：1 月 2 日，+1。\n・每年（一月 9 日）：1 月 9 日，+1。\n5 + 1 + 1 + 1 = 8。",
+      "_full": "算復原點數量的固定步驟：\n① 先算「每日」保留期內還留著幾個（保留 N 天就是最近 N 個）。\n② 再把落在保留期外、但被「每週／每月／每年」規則額外保留的日期加進來。\n③ 注意「已經算過的日期不要重複計算」——例如某個星期日剛好還在每日保留期內，就不能再加一次。\n本題第二格正是 5（每日）+ 1（1/4 週）+ 1（1/2 月）+ 1（1/9 年）= 8。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 530,
+    "type": "matching",
+    "question": "You have the web apps App1 (web framework Microsoft ASP.NET, hosting environment an on-premises physical server that runs Windows Server 2019 and has Internet Information Services (IIS) configured) and App2 (Microsoft ASP.NET Core, an Azure virtual machine that runs Windows Server 2019 and has IIS configured). You need to monitor the performance and usage of the apps by using Azure Application Insights. The solution must minimize modifications to the application code. What should you do on each app?",
+    "available_options": [
+      "Install the Log Analytics agent",
+      "Install the Azure Monitor agent",
+      "Use the Application Insights SDK",
+      "Install the Application Insights Agent"
+    ],
+    "matches": [
+      {
+        "use_case": "App1:",
+        "correct_answer": "Install the Application Insights Agent"
+      },
+      {
+        "use_case": "App2:",
+        "correct_answer": "Install the Application Insights Agent"
+      }
+    ],
+    "explanations": {
+      "1": "安裝 Application Insights Agent。這個代理程式（舊稱 Status Monitor）是專門為「不改程式碼」而設計的：它在 IIS 主機上以執行階段檢測的方式attach 到已部署的應用程式，自動收集要求、相依性與例外狀況。而且它支援「內部部署」伺服器，所以 App1 雖然不在 Azure 上也能用。",
+      "2": "同樣是安裝 Application Insights Agent。App2 在 Azure VM 上、一樣跑 IIS，代理程式的做法完全相同（Azure VM 還可以直接用擴充功能部署）。雖然 ASP.NET Core 也能用 SDK，但 SDK 必須改程式碼並重新編譯，違反「盡量減少程式碼變動」的要求。",
+      "_full": "四個選項的分工要記清楚：\n・Application Insights Agent → 「應用程式效能監視」且「免改程式碼」，支援 IIS 上的 .NET／.NET Core，Azure 與內部部署皆可。\n・Application Insights SDK → 功能最完整、可自訂遙測，但必須改程式碼。\n・Log Analytics 代理程式／Azure 監視器代理程式 → 收集的是「作業系統層級」的效能計數器與事件記錄，不是應用程式層級的要求與相依性追蹤。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 531,
     "type": "single",
     "question": "You have an Azure virtual machine named VM1. You use Azure Backup to create a backup of VM1 named Backup1. After creating Backup1, you perform the following changes to VM1: ✑ Modify the size of VM1. ✑ Copy a file named Budget.xls to a folder named Data. ✑ Reset the password for the built-in administrator account. ✑ Add a data disk to VM1. An administrator uses the Replace existing option to restore VM1 from Backup1. You need to ensure that all the changes to VM1 are restored. Which change should you perform again?",
@@ -396,6 +452,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 532,
+    "type": "matching",
+    "question": "You have an Azure Active Directory (Azure AD) tenant named contoso.onmicrosoft.com that contains User1 (member of Group1, no role assigned), User2 (Group2, no role) and User3 (Group1 and Group2, User administrator). You enable password reset for contoso.onmicrosoft.com: self service password reset enabled = Selected, selected group = Group2 (the blade notes that these settings only apply to end users; admins are always enabled for self-service password reset and are required to use two authentication methods). You configure the authentication methods for password reset: number of methods required to reset = 2; methods available to users = Mobile phone and Security questions only (mobile app notification, mobile app code, email and office phone are not selected); number of questions required to register = 5; number of questions required to reset = 3; 10 security questions selected. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "After User2 answers three security questions correctly, he can reset his password immediately.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "If User1 forgets her password, she can reset the password by using the mobile phone app.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "User3 can add security questions to the password reset process.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否。「重設所需的方法數目」設為 2——使用者必須通過「兩種」驗證方法才能重設密碼。只答對三個安全性問題只完成了其中一種方法（安全性問題），還必須再通過另一種（本租用戶唯一可用的另一種是「行動電話」）。",
+      "2": "否，有兩個理由。① 自助式密碼重設的範圍設為「已選取：Group2」，而 User1 只隸屬 Group1，根本不在啟用範圍內。② 就算她在範圍內，「行動應用程式通知」與「行動應用程式代碼」都沒有被勾選為可用方法，所以也不能用行動電話「應用程式」來重設（可用的是「行動電話」簡訊／語音）。",
+      "3": "否。「安全性問題」屬於租用戶層級的驗證方法設定，而且本題的重點是：這些設定「只套用於一般使用者」——管理員一律必須使用兩種驗證方法，而且「安全性問題不適用於管理員帳戶」。User3 具備使用者管理員角色，因此他自己的重設流程中不會有安全性問題可用。",
+      "_full": "自助式密碼重設的三個常考點：\n① 「重設所需的方法數目」決定要通過幾種方法——設 2 就不能只靠安全性問題。\n② 啟用範圍（無／已選取的群組／全部）決定「誰」可以自助重設。\n③ 管理員例外：管理員一律啟用、一律需要兩種方法，而且不能使用安全性問題這種較弱的方法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 533,
     "type": "single",
     "question": "Your company has a main office in London that contains 100 client computers. Three years ago, you migrated to Azure Active Directory (Azure AD). The company's security policy states that all personal devices and corporate-owned devices must be registered or joined to Azure AD. A remote user named User1 is unable to join a personal device to Azure AD from a home network. You verify that User1 was able to join devices to Azure AD in the past. You need to ensure that User1 can join the device to Azure AD. What should you do?",
@@ -411,6 +497,36 @@
       "B": "Correct. 正確。關鍵線索是「過去曾成功加入過」——代表權限本來就有，問題出在 User1 已達到「每位使用者的裝置數量上限」（預設 50 台）。提高該上限（或移除舊裝置）即可解決。",
       "C": "Incorrect. 錯誤。加入 Azure AD 是透過網際網路對 Entra ID 進行的，不需要 VPN 連進虛擬網路。",
       "D": "Incorrect. 錯誤。若是這個設定造成的限制，User1 過去就不可能成功加入過裝置，與題目給的線索矛盾。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 534,
+    "type": "matching",
+    "question": "You have two Azure App Service apps named App1 and App2, each with a production slot and a test slot. The Backup Configuration settings for the production slots are: App1 - backup every 1 day, start backup schedule from January 6 2021, retention 0 days, keep at least one backup Yes; App2 - backup every 1 day, start January 6 2021, retention 30 days, keep at least one backup Yes. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "On January 15, 2021, App1 will have only one backup in storage.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "On February 6, 2021, you can access the backup of the App2 test slot from January 15, 2021.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "On January 15, 2021, you can restore the App2 production slot backup from January 6 to the App2 test slot.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。保留天數設為「0」代表「無限期保留」，不是「不保留」——所以從 1 月 6 日起每天的備份都會累積下來，到 1 月 15 日已經有 10 個備份，不會只剩一個。（「至少保留一個備份」是另一道保險，確保即使保留期滿也不會把最後一份刪光。）",
+      "2": "否。題目給的備份設定是「生產位置」的——測試位置有它自己的備份設定，而題目並未說明有為測試位置設定備份。沒有設定就沒有備份可存取。（App Service 的備份是「逐位置 (per-slot)」設定的，生產位置的排程不會涵蓋測試位置。）",
+      "3": "是。App Service 的備份可以還原到「同一個應用程式的其他部署位置」（也可以覆寫原位置，或還原到新的應用程式）。App2 的保留天數是 30 天，1 月 6 日的備份到 1 月 15 日還在保留期內，因此可以還原。",
+      "_full": "App Service 備份的三個要點：\n① 保留天數 0 = 「無限期保留」，不是不保留。\n② 備份設定是「逐位置」的——生產位置與測試位置各自設定，互不涵蓋。\n③ 還原目的地可以是原位置、同一應用程式的另一個位置，或一個新的應用程式。"
     }
   },
   {
