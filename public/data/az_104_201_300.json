@@ -1,0 +1,553 @@
+[
+  {
+    "exam": "AZ-104",
+    "id": 202,
+    "type": "single",
+    "question": "你建立了一個 Azure 儲存體帳戶，打算在其中新增 10 個 Blob 容器。其中有一個容器，你需要使用「不同的金鑰」來加密其待用資料。在建立該容器「之前」你應該做什麼？",
+    "options": {
+      "A": "產生共用存取簽章 (SAS)。",
+      "B": "修改最低 TLS 版本。",
+      "C": "輪替存取金鑰。",
+      "D": "建立加密範圍 (encryption scope)。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。SAS 是委派存取權的權杖，與待用資料使用哪把金鑰加密無關。",
+      "B": "錯誤。最低 TLS 版本影響的是傳輸中的加密，不是待用加密。",
+      "C": "錯誤。輪替存取金鑰換的是驗證用的帳戶金鑰，並非資料加密金鑰。",
+      "D": "正確。加密範圍可以為個別容器或 Blob 指定獨立的加密金鑰。必須先建立好加密範圍，才能在建立容器時把它指定給該容器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 205,
+    "type": "single",
+    "question": "你有一台內部部署伺服器，其中有一個資料夾 D:\\Folder1。你必須把 D:\\Folder1 的內容複製到名為 contosodata 的 Azure 儲存體帳戶中的 public 容器。你應該執行哪一個命令？",
+    "options": {
+      "A": "az storage blob copy start D:\\Folder1 https://contosodata.blob.core.windows.net/public",
+      "B": "azcopy sync D:\\folder1 https://contosodata.blob.core.windows.net/public --snapshot",
+      "C": "azcopy copy D:\\folder1 https://contosodata.blob.core.windows.net/public --recursive",
+      "D": "az storage blob copy start-batch D:\\Folder1 https://contosodata.blob.core.windows.net/public"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。az storage blob copy start 是伺服器端複製，來源必須是另一個 Azure 儲存體 URL，不能是本機路徑。",
+      "B": "錯誤。sync 的用途是讓兩端保持一致（會刪除目的地多餘檔案），且 --snapshot 不是有效參數。",
+      "C": "正確。azcopy copy 搭配 --recursive 才會連同子資料夾遞迴複製整個本機資料夾的內容到 Blob 容器。",
+      "D": "錯誤。start-batch 同樣是伺服器端批次複製，來源不接受本機檔案系統路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 208,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Cosmos DB 資料庫",
+      "B": "Azure 檔案儲存體",
+      "C": "Azure SQL Database",
+      "D": "虛擬機器"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "B": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
+      "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "D": "錯誤。匯入／匯出是把資料寫進儲存體帳戶，虛擬機器不是其目的地類型。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 211,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。你打算建立一個名為 container1 的 Blob 容器，並必須為 container1 使用「客戶自控金鑰」加密。你應該使用哪一種金鑰？",
+    "options": {
+      "A": "僅使用 P-384 曲線的 EC 金鑰",
+      "B": "僅使用 P-521 曲線的 EC 金鑰",
+      "C": "僅使用 P-384 或 P-521 曲線的 EC 金鑰",
+      "D": "僅金鑰大小為 4096 的 RSA 金鑰",
+      "E": "僅金鑰大小為 2048、3072 或 4096 的 RSA 金鑰類型"
+    },
+    "answer": "E",
+    "explanations": {
+      "A": "錯誤。Azure 儲存體的客戶自控金鑰不支援橢圓曲線 (EC) 金鑰。",
+      "B": "錯誤。同上，EC 金鑰不受支援。",
+      "C": "錯誤。無論哪一種曲線，EC 金鑰都不能用於儲存體的客戶自控金鑰加密。",
+      "D": "錯誤。4096 確實可用，但並非「僅」限於此，範圍描述過窄。",
+      "E": "正確。Azure 儲存體的客戶自控金鑰必須是 RSA（或 RSA-HSM）金鑰，且支援的金鑰大小為 2048、3072 與 4096 三種。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 214,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Blob 儲存體",
+      "B": "Azure Data Lake Store",
+      "C": "Azure SQL Database",
+      "D": "虛擬機器"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
+      "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "D": "錯誤。虛擬機器不是匯入／匯出作業的目的地類型。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 217,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Cosmos DB 資料庫",
+      "B": "Azure Data Lake Store",
+      "C": "Azure Blob 儲存體",
+      "D": "Azure Data Factory"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "C": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
+      "D": "錯誤。Data Factory 是資料整合服務而非儲存體，不能作為匯入目的地。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 219,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Cosmos DB 資料庫",
+      "B": "Azure Blob 儲存體",
+      "C": "Azure SQL Database",
+      "D": "Azure 檔案同步的儲存體同步服務"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "B": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
+      "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 220,
+    "type": "single",
+    "question": "你打算建立一個名為 storage1 的 Azure 儲存體帳戶，其中包含一個名為 share1 的檔案共用。你必須確保 share1 能夠支援 SMB 多重通道 (SMB Multichannel)，且解決方案必須盡量降低成本。你應該如何設定儲存體？",
+    "options": {
+      "A": "進階效能搭配本機備援儲存體 (LRS)",
+      "B": "標準效能搭配區域備援儲存體 (ZRS)",
+      "C": "進階效能搭配異地備援儲存體 (GRS)",
+      "D": "標準效能搭配本機備援儲存體 (LRS)"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。SMB 多重通道僅支援「進階」檔案共用（FileStorage 帳戶），因此效能必須選進階；在進階可用的備援選項中，LRS 成本最低，同時滿足功能與成本要求。",
+      "B": "錯誤。標準效能的檔案共用不支援 SMB 多重通道。",
+      "C": "錯誤。效能雖然正確，但進階檔案共用本身不支援 GRS，且異地備援成本更高，違反最低成本要求。",
+      "D": "錯誤。標準效能不支援 SMB 多重通道，成本再低也不符合功能需求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 221,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Data Lake Store",
+      "B": "Azure 檔案儲存體",
+      "C": "Azure SQL Database",
+      "D": "Azure 檔案同步的儲存體同步服務"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "B": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
+      "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 222,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。你打算在為 storage1 指派角色型存取控制 (RBAC) 角色時使用「條件 (conditions)」。storage1 的哪些服務在指派角色時支援條件？",
+    "options": {
+      "A": "僅容器",
+      "B": "僅檔案共用",
+      "C": "僅表格",
+      "D": "僅佇列",
+      "E": "僅容器與佇列",
+      "F": "僅檔案共用與表格"
+    },
+    "answer": "E",
+    "explanations": {
+      "A": "錯誤。容器（Blob）確實支援，但佇列也支援，範圍描述不完整。",
+      "B": "錯誤。Azure 檔案共用的角色指派不支援 ABAC 條件。",
+      "C": "錯誤。表格儲存體不在支援條件的服務之列。",
+      "D": "錯誤。佇列確實支援，但遺漏了容器。",
+      "E": "正確。Azure 儲存體中支援在角色指派使用 ABAC 條件的服務為 Blob（容器）與佇列；檔案共用與表格皆不支援。",
+      "F": "錯誤。這兩者都不支援條件，剛好與正確答案相反。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 224,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶加密範圍參與者 (Storage Account Encryption Scope Contributor)」角色指派給 User1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。加密範圍參與者只能管理儲存體帳戶的加密範圍設定，不含列出或重新產生帳戶金鑰的權限。",
+      "B": "正確。列出與重新產生帳戶金鑰需要 Microsoft.Storage/storageAccounts/listkeys 與 regeneratekey 權限，具備者為「儲存體帳戶參與者」或「參與者」等角色；加密範圍參與者無此權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 227,
+    "type": "single",
+    "question": "你有一個 Azure 儲存體帳戶，其中有 5,000 個由多位使用者存取的 Blob。你必須確保使用者只能依「Blob 索引標籤」檢視特定的 Blob。解決方案中應該包含什麼？",
+    "options": {
+      "A": "角色指派條件 (role assignment condition)",
+      "B": "預存存取原則 (stored access policy)",
+      "C": "即時 (JIT) VM 存取",
+      "D": "共用存取簽章 (SAS)"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure ABAC 的角色指派條件可以直接以 Blob 索引標籤作為判斷依據（例如 @Resource[...tags:Project<$key_case_sensitive$>] StringEquals 'X'），讓同一個角色指派對不同標籤的 Blob 產生不同的存取結果，完全對應需求。",
+      "B": "錯誤。預存存取原則是用來集中管理 SAS 的有效期與權限，無法依索引標籤做細緻篩選。",
+      "C": "錯誤。JIT VM 存取是限制虛擬機器管理連接埠的開放時間，與 Blob 存取無關。",
+      "D": "錯誤。SAS 授與的是指定路徑或容器的存取權，本身無法依索引標籤動態決定可見範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 228,
+    "type": "single",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶。你為 storage1 建立了一個名為 Scope1 的加密範圍。使用這個加密範圍可以加密哪些儲存體類型？",
+    "options": {
+      "A": "僅檔案共用",
+      "B": "僅容器",
+      "C": "僅檔案共用與容器",
+      "D": "僅容器與表格",
+      "E": "僅檔案共用、容器與表格",
+      "F": "檔案共用、容器、表格與佇列"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。加密範圍不適用於 Azure 檔案共用。",
+      "B": "正確。加密範圍只支援 Blob 儲存體，也就是容器（與其中的個別 Blob）；檔案共用、表格與佇列都不支援。",
+      "C": "錯誤。容器正確，但檔案共用不支援加密範圍。",
+      "D": "錯誤。容器正確，但表格不支援。",
+      "E": "錯誤。三者中只有容器支援。",
+      "F": "錯誤。四種服務中只有容器支援加密範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 230,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Data Factory",
+      "B": "Azure 檔案同步的儲存體同步服務",
+      "C": "Azure 檔案儲存體",
+      "D": "Azure SQL Database"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Data Factory 是資料整合服務而非儲存體，不能作為匯入目的地。",
+      "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "C": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 232,
+    "type": "multiple",
+    "question": "你有一台名為 VM1 的 Azure 虛擬機器與一個名為 Vault1 的 Azure 金鑰保存庫。你打算在 VM1 上設定 Azure 磁碟加密並使用金鑰加密金鑰 (KEK)。你必須先為 Azure 磁碟加密準備好 Vault1。你應該在 Vault1 上執行哪兩個動作？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）",
+    "options": {
+      "A": "選取「Azure 虛擬機器用於部署」。",
+      "B": "建立一個新的金鑰。",
+      "C": "建立一個新的祕密。",
+      "D": "設定金鑰輪替原則。",
+      "E": "選取「Azure 磁碟加密用於磁碟區加密」。"
+    },
+    "answer": [
+      "B",
+      "E"
+    ],
+    "explanations": {
+      "A": "錯誤。「Azure 虛擬機器用於部署」是讓 VM 在部署時能取得保存庫中的憑證，與磁碟加密的存取原則不同。",
+      "B": "正確。使用 KEK 時必須在保存庫中有一把金鑰來包裝（wrap）磁碟加密金鑰，因此需要先建立金鑰。",
+      "C": "錯誤。磁碟加密金鑰本身會由平台以祕密形式自動寫入保存庫，不需要你手動建立祕密。",
+      "D": "錯誤。輪替原則是後續的金鑰生命週期管理，並非啟用磁碟加密的必要準備。",
+      "E": "正確。必須在保存庫的存取原則中啟用「Azure 磁碟加密用於磁碟區加密」，授權磁碟加密服務存取此保存庫，否則加密作業會失敗。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 233,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器與一個名為 KV1 的 Azure 金鑰保存庫。你必須為 VM1 設定加密，且解決方案必須滿足下列要求：\n• 加密金鑰存放並使用於 KV1。\n• 即使 VM1 被從 Azure 下載，仍維持加密狀態。\n• 同時加密作業系統磁碟與資料磁碟。\n你應該使用哪一種加密方式？",
+    "options": {
+      "A": "客戶自控金鑰 (customer-managed keys)",
+      "B": "機密磁碟加密 (Confidential disk encryption)",
+      "C": "Azure 磁碟加密 (Azure Disk Encryption)",
+      "D": "主機加密 (encryption at host)"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。客戶自控金鑰只是替換平台受控金鑰的金鑰來源，加密仍由儲存體服務在平台端執行；磁碟一旦被下載，內容就不再受保護。",
+      "B": "錯誤。機密磁碟加密僅適用於機密運算 (Confidential VM) 系列的特定機型，且主要保護 OS 磁碟，不是本題通用情境的答案。",
+      "C": "正確。Azure 磁碟加密在「客體作業系統內部」使用 BitLocker（Windows）或 dm-crypt（Linux）進行加密，金鑰存放於金鑰保存庫，可同時涵蓋 OS 與資料磁碟；因為加密發生在磁碟內容本身，即使 VHD 被下載到別處也依然是加密狀態。",
+      "D": "錯誤。主機加密是在主機端對資料進行加密後才寫入儲存體，磁碟檔案本身在下載後並不保持加密。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 235,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶，storage1 中有一個名為 container1 的容器。你必須設定對 container1 的存取，且解決方案必須滿足下列要求：\n• 只允許讀取存取。\n• 同時允許 HTTP 與 HTTPS 通訊協定。\n• 存取權限套用到容器中的所有內容。\n你應該使用什麼？",
+    "options": {
+      "A": "存取原則 (access policy)",
+      "B": "共用存取簽章 (SAS)",
+      "C": "Azure 內容傳遞網路 (CDN)",
+      "D": "存取金鑰"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。預存存取原則本身不是授權憑證，它只是為 SAS 提供集中管理的權限與有效期範本，仍必須搭配 SAS 才能授與存取。",
+      "B": "正確。服務 SAS 可以指定容器層級的範圍（涵蓋其中所有 Blob）、只勾選讀取權限，並在允許的通訊協定中同時選擇 HTTPS 與 HTTP，三項要求完全對應。",
+      "C": "錯誤。CDN 是內容快取與加速服務，不是存取控制機制。",
+      "D": "錯誤。存取金鑰給的是儲存體帳戶的完整權限，無法限制為唯讀，也無法只針對單一容器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 236,
+    "type": "multiple",
+    "question": "你必須建立一個名為 storage1 的 Azure 儲存體帳戶，且解決方案必須滿足下列要求：\n• 支援 Azure Data Lake Storage。\n• 盡量降低不常存取資料的成本。\n• 自動把資料複寫到次要 Azure 區域。\n你應該為 storage1 設定哪三個選項？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）",
+    "options": {
+      "A": "區域備援儲存體 (ZRS)",
+      "B": "冷 (Cool) 存取層",
+      "C": "異地備援儲存體 (GRS)",
+      "D": "熱 (Hot) 存取層",
+      "E": "階層命名空間"
+    },
+    "answer": [
+      "B",
+      "C",
+      "E"
+    ],
+    "explanations": {
+      "A": "錯誤。ZRS 只在同一區域內跨可用性區域複寫，資料不會離開該區域，無法滿足「複寫到次要區域」的要求。",
+      "B": "正確。冷存取層專為不常存取的資料設計，儲存單價低於熱層，符合降低成本的要求。",
+      "C": "正確。GRS 會自動把資料複寫到配對的次要區域，正是「自動複寫到次要 Azure 區域」的做法。",
+      "D": "錯誤。熱層適合頻繁存取的資料，儲存成本較高，與題目要求相反。",
+      "E": "正確。啟用階層命名空間是讓儲存體帳戶成為 Azure Data Lake Storage Gen2 的必要設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 240,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶金鑰操作員服務角色 (Storage Account Key Operator Service Role)」指派給 User1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。這個內建角色的設計用途正是允許列出與重新產生儲存體帳戶的存取金鑰（listkeys 與 regeneratekey 權限），完全對應需求且權限範圍最小。",
+      "B": "錯誤。此角色確實具備列出與重新產生金鑰的權限，因此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 248,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「讀者及資料存取 (Reader and Data Access)」角色指派給 User1。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這個角色允許「使用」帳戶金鑰去讀取資料（含 listkeys），但並不具備重新產生金鑰的權限。",
+      "B": "正確。題目要求同時能「列出並重新產生」金鑰。讀者及資料存取角色缺少 regeneratekey 權限，因此無法完整達成目標。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 249,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個標準 (Standard) SKU 的 Azure 容器登錄 ContReg1。你必須確保 ContReg1 支援異地複寫。你應該「最先」為 ContReg1 做什麼？",
+    "options": {
+      "A": "啟用管理員使用者。",
+      "B": "新增範圍對應 (scope map)。",
+      "C": "新增自動化工作。",
+      "D": "建立快取規則。",
+      "E": "升級 SKU。"
+    },
+    "answer": "E",
+    "explanations": {
+      "A": "錯誤。管理員使用者只是提供一組單一的登入憑證，與異地複寫無關。",
+      "B": "錯誤。範圍對應用於權杖式的細緻存取控制，不影響複寫能力。",
+      "C": "錯誤。自動化工作用於映像的自動建置與修補，與異地複寫無關。",
+      "D": "錯誤。快取規則用於從上游登錄快取映像，不是異地複寫。",
+      "E": "正確。異地複寫是 Azure 容器登錄「進階 (Premium)」SKU 的專屬功能，標準 SKU 不支援，因此必須先升級 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 253,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你部署了一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，必須把一個 YAML 檔案部署到 AKS1。\n解法：在 Azure CLI 中執行 az aks。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。az aks 管理的是叢集本身（建立、擴縮、升級、取得憑證等），並不提供把 YAML 資源清單套用到叢集的功能。",
+      "B": "正確。要部署 YAML 到叢集必須使用 Kubernetes 原生用戶端 kubectl（kubectl apply -f）；az aks 只負責叢集層級的管理作業。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 254,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你部署了一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，必須把一個 YAML 檔案部署到 AKS1。\n解法：在 Azure CLI 中執行 kubectl 用戶端。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。kubectl 是 Kubernetes 的原生命令列用戶端，透過 kubectl apply -f 即可把 YAML 資源清單部署到 AKS1；Azure CLI 也可用 az aks install-cli 與 get-credentials 完成前置設定。",
+      "B": "錯誤。kubectl 正是部署 YAML 的正確工具。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 255,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你部署了一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，必須把一個 YAML 檔案部署到 AKS1。\n解法：在 Azure CLI 中執行 azcopy。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。azcopy 是儲存體資料複製工具，只能在檔案系統與 Azure 儲存體之間搬移資料。",
+      "B": "正確。azcopy 完全不認識 Kubernetes API，無法把資源清單套用到叢集；正確工具是 kubectl。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 256,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台執行 Windows Server 2016 的 Azure 虛擬機器 VM1。你必須在 VM1 的系統事件記錄「一小時內記錄超過兩個錯誤事件」時，於 Azure 中建立警示。\n解法：你建立一個 Azure 儲存體帳戶並設定共用存取簽章 (SAS)，在 VM1 上安裝 Microsoft Monitoring Agent，然後在 Azure 監視器中建立警示並指定該儲存體帳戶作為來源。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。儲存體帳戶只能作為診斷資料的存放位置，Azure 監視器無法對存放在儲存體帳戶中的事件執行記錄查詢警示。",
+      "B": "正確。要對事件記錄的內容設定條件式警示，必須把資料送進 Log Analytics 工作區，再以工作區為來源建立記錄查詢警示；以儲存體帳戶為來源無法達成。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 258,
+    "type": "single",
+    "question": "你依據一台既有虛擬機器下載了一份 Azure Resource Manager 範本，該範本將用來部署 100 台虛擬機器。你必須修改範本以參考系統管理員密碼，並且必須避免密碼以純文字形式儲存。你應該建立什麼來存放這個密碼？",
+    "options": {
+      "A": "一個 Azure 金鑰保存庫與一個存取原則",
+      "B": "一個 Azure 儲存體帳戶與一個存取原則",
+      "C": "一個復原服務保存庫與一個備份原則",
+      "D": "Azure Active Directory (AD) Identity Protection 與一個 Azure 原則"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。ARM 範本可以在參數中以 reference 語法指向金鑰保存庫中的祕密，部署時才即時取值，密碼因此從未出現在範本或參數檔中；保存庫需設定存取原則並啟用「用於範本部署」。",
+      "B": "錯誤。儲存體帳戶不是祕密管理服務，ARM 範本也沒有從儲存體帳戶安全取用祕密的原生機制。",
+      "C": "錯誤。復原服務保存庫用於備份與災難復原，不存放祕密。",
+      "D": "錯誤。Identity Protection 偵測身分風險，Azure 原則負責資源合規，兩者都與存放密碼無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 261,
+    "type": "multiple",
+    "question": "你打算自動化部署一個使用 Windows Server 2016 Datacenter 映像的虛擬機器擴展集。你必須確保擴展集的虛擬機器在佈建時就安裝好 Web 伺服器元件。你應該執行哪兩個動作？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）",
+    "options": {
+      "A": "上傳一個設定指令碼",
+      "B": "建立一個自動化帳戶",
+      "C": "建立一個 Azure 原則",
+      "D": "修改 Azure Resource Manager 範本的 extensionProfile 區段",
+      "E": "在 Azure 入口網站中建立一個新的虛擬機器擴展集"
+    },
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanations": {
+      "A": "正確。自訂指令碼延伸模組需要一個可存取的指令碼檔案（通常放在儲存體帳戶或公開 URL），因此必須先上傳安裝 Web 伺服器元件的設定指令碼。",
+      "B": "錯誤。自動化帳戶用於 Runbook 與設定管理，並非擴展集在佈建時執行指令碼的機制。",
+      "C": "錯誤。Azure 原則負責治理與合規稽核，不會在 VM 佈建時安裝軟體。",
+      "D": "正確。擴展集範本的 extensionProfile 區段用來宣告要套用在每個執行個體上的延伸模組（例如自訂指令碼延伸模組），新佈建的執行個體就會自動執行該指令碼。",
+      "E": "錯誤。題目要求的是「自動化部署」，改用入口網站手動建立與此目標相違。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 265,
+    "type": "single",
+    "question": "你建立了一個名為 Plan1 的 App Service 方案與一個名為 webapp1 的 Azure Web 應用程式。你發現建立預備 (staging) 位置的選項無法使用，必須為 Plan1 建立預備位置。你應該「最先」做什麼？",
+    "options": {
+      "A": "在 Plan1 中垂直擴充 (scale up) App Service 方案",
+      "B": "在 webapp1 中修改應用程式設定",
+      "C": "在 webapp1 中新增自訂網域",
+      "D": "在 Plan1 中水平擴展 (scale out) App Service 方案"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。部署位置是「標準 (Standard)」層級以上才提供的功能，免費與共用層完全沒有、基本層也不支援。必須先垂直擴充方案的定價層，選項才會出現。",
+      "B": "錯誤。應用程式設定調整的是環境變數與連線字串，不會解鎖部署位置功能。",
+      "C": "錯誤。自訂網域與部署位置是兩個各自獨立的功能。",
+      "D": "錯誤。水平擴展增加的是執行個體「數量」，而部署位置取決於定價「層級」，因此要 scale up 而非 scale out。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 266,
+    "type": "single",
+    "question": "你打算把一個分散式的內部部署應用程式 App1 移到 Azure 訂用帳戶。移轉後 App1 會裝載在數台 Azure 虛擬機器上。你必須確保在 Azure「計畫性維護」期間，App1 始終有至少八台虛擬機器在執行。你應該建立什麼？",
+    "options": {
+      "A": "一個含 10 個虛擬機器執行個體的虛擬機器擴展集",
+      "B": "一個含三個錯誤網域與一個更新網域的可用性設定組",
+      "C": "一個含 10 個更新網域與一個錯誤網域的可用性設定組",
+      "D": "一個含 12 個虛擬機器執行個體的虛擬機器擴展集"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。虛擬機器擴展集預設會把執行個體分散到 5 個更新網域，計畫性維護一次只影響其中一個網域，也就是最多 10÷5 = 2 台同時重新啟動，因此至少有 8 台維持執行，剛好滿足需求且執行個體數最少。",
+      "B": "錯誤。只有一個更新網域意味著所有 VM 屬於同一維護批次，維護時會全部一起重新啟動。",
+      "C": "錯誤。單一錯誤網域讓所有 VM 共用同一組硬體，可用性設計不良；而且題目也沒有提供足夠的 VM 數量資訊來保證八台在線。",
+      "D": "錯誤。12 台雖然也能滿足「至少八台」（12÷5 取整後一次影響 3 台，剩 9 台），但比 10 台多用了兩個執行個體，成本較高而非最佳解。"
+    }
+  }
+]
