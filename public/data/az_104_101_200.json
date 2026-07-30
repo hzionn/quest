@@ -1,0 +1,197 @@
+[
+  {
+    "exam": "AZ-104",
+    "id": 101,
+    "type": "single",
+    "question": "你有兩個 Azure 訂用帳戶 Sub1 與 Sub2。一位管理員建立了一個自訂角色，其可指派範圍設定為 Sub1 中的資源群組 RG1。你必須讓這個自訂角色能夠套用到 Sub1 與 Sub2 中的「任何」資源群組，且要盡量減少管理工作。你應該怎麼做？",
+    "options": {
+      "A": "選取該自訂角色，把 Sub1 與 Sub2 加入可指派範圍，並將 RG1 從可指派範圍中移除。",
+      "B": "為 Sub1 建立一個新的自訂角色，為 Sub2 再建立一個新的自訂角色，並把原本 RG1 上的角色移除。",
+      "C": "為 Sub1 建立一個新的自訂角色並把 Sub2 加入其可指派範圍，並把原本 RG1 上的角色移除。",
+      "D": "選取該自訂角色，把 Sub1 加入可指派範圍並移除 RG1，然後為 Sub2 建立一個新的自訂角色。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。自訂角色的 AssignableScopes 可以列出多個範圍，直接把兩個訂用帳戶都加進去即可涵蓋其下所有資源群組；移除 RG1 是因為訂用帳戶範圍已包含它。整個過程只需修改一個既有角色，管理工作最少。",
+      "B": "錯誤。建立兩個重複的自訂角色會造成不必要的維護負擔，日後任何權限調整都得改兩個地方。",
+      "C": "錯誤。既然可以直接修改原有角色的可指派範圍，另外新建一個角色是多餘的動作。",
+      "D": "錯誤。同樣多建了一個角色，未達到「盡量減少管理工作」的要求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 103,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含名為 Workspace1 的 Azure Log Analytics 工作區。你需要檢視名為 Event 的資料表中的錯誤事件。你應該在 Workspace1 中執行哪一個查詢？",
+    "options": {
+      "A": "select * from Event where EventType == \"error\"",
+      "B": "Event | search \"error\"",
+      "C": "Event | where EventType is \"error\"",
+      "D": "Get-Event Event | where {$_.EventType == \"error\"}"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這是 SQL 語法；Log Analytics 使用的是 Kusto 查詢語言 (KQL)，不支援 SELECT ... FROM ... WHERE。",
+      "B": "正確。KQL 的寫法是先指定資料表，再用管線接運算子。Event | search \"error\" 會在 Event 資料表中比對關鍵字，正是題目所需。",
+      "C": "錯誤。KQL 沒有 is 這個比較運算子，相等比較要用 ==（字串包含則用 contains 或 has）。",
+      "D": "錯誤。這是 PowerShell 語法，不能在 Log Analytics 中執行。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 104,
+    "type": "single",
+    "question": "你有一個名為 App1 的 Azure App Service Web 應用程式，打算使用 Web Deploy 部署 App1。你必須讓 App1 的開發人員能夠使用他們的 Azure AD 認證，把內容部署到 App1，且解決方案必須遵循最小權限原則。你應該怎麼做？",
+    "options": {
+      "A": "把「擁有者」角色指派給開發人員",
+      "B": "為 FTPS 設定應用程式層級認證",
+      "C": "把「網站參與者 (Website Contributor)」角色指派給開發人員",
+      "D": "為 FTPS 設定使用者層級認證"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。擁有者權限遠超部署所需，且包含指派角色等高風險權限，明顯違反最小權限原則。",
+      "B": "錯誤。應用程式層級的 FTPS 認證是獨立於 Azure AD 的一組帳密，與題目要求「使用 Azure AD 認證」相違。",
+      "C": "正確。網站參與者是專為管理 Web 應用程式（包含部署內容）設計的內建 RBAC 角色，基於 Azure AD 身分識別運作，同時滿足「用 Azure AD 認證」與「最小權限」兩項要求。",
+      "D": "錯誤。FTPS 使用者層級認證同樣是另一組獨立憑證，並非透過 Azure AD 身分識別進行驗證。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 105,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你在 Azure 入口網站的 Azure AD 中，使用「大量邀請使用者 (Bulk invite users)」作業。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤（依官方標示）。但要提醒：入口網站的「大量邀請使用者」本來就是官方文件用來大量建立來賓帳戶的功能，因此有 33% 社群投票支持選「是」。",
+      "B": "正確（依官方標示，本題有爭議）。官方判為「否」，推測理由是題目的 CSV 僅含姓名與電子郵件，未具備大量邀請範本要求的必填欄位（受邀者電子郵件、重新導向 URL 等）。社群投票為 B 67% / A 33%，屬於有爭議的題目——實務上「大量邀請使用者」確實可以建立來賓帳戶，作答時請以官方標示為準。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 108,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含 10 台虛擬機器、一個名為 Vault1 的金鑰保存庫，以及一個名為 NSG1 的網路安全性群組，所有資源都部署在美國東部區域。這些虛擬機器由 NSG1 保護，而 NSG1 設定為封鎖所有連往網際網路的輸出流量。你必須讓這些虛擬機器能夠存取 Vault1，且解決方案必須遵循最小權限原則並盡量減少管理工作。NSG1 的輸出安全性規則「目的地」應該設定為什麼？",
+    "options": {
+      "A": "應用程式安全性群組",
+      "B": "服務標籤 (service tag)",
+      "C": "IP 位址範圍"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。應用程式安全性群組是用來把「虛擬機器的網路介面」分組，作為規則的來源或目的地時代表的是那些 VM，無法代表 Key Vault 這個 PaaS 服務。",
+      "B": "正確。服務標籤（例如 AzureKeyVault，可再限定為 AzureKeyVault.EastUS）代表該服務的位址前置詞集合，且由 Microsoft 自動維護更新。既能把開放範圍精準限縮在 Key Vault，又不需要人工追蹤 IP 變動，同時滿足最小權限與最少管理工作。",
+      "C": "錯誤。手動維護 IP 位址範圍不僅範圍難以精準，Azure 服務的 IP 還會變動，必須持續人工更新，管理成本高且容易失效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 111,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n• 讀者 (Reader)\n• 安全性管理員 (Security Admin)\n• 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "將 VNet1 的「網路參與者」角色指派給 User1。",
+      "B": "把 User1 從 Subscription1 的安全性讀取者角色中移除，並將 RG1 的參與者角色指派給 User1。",
+      "C": "將 VNet1 的「擁有者」角色指派給 User1。",
+      "D": "將 RG1 的「網路參與者」角色指派給 User1。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "B": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "C": "正確。要指派角色給其他人需要 Microsoft.Authorization/roleAssignments/write 權限，內建角色中只有「擁有者」與「使用者存取管理員」具備。本題選項僅提供擁有者，因此在 VNet1 範圍指派擁有者即可。",
+      "D": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 113,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n• 讀者 (Reader)\n• 安全性管理員 (Security Admin)\n• 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "把 User1 從 Subscription1 的安全性讀取者角色中移除，並將 RG1 的參與者角色指派給 User1。",
+      "B": "將 VNet1 的「擁有者」角色指派給 User1。",
+      "C": "把 User1 從 Subscription1 的安全性讀取者與讀者角色中移除，並將 Subscription1 的參與者角色指派給 User1。",
+      "D": "將 VNet1 的「參與者」角色指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "B": "正確。擁有者是本題選項中唯一具備 roleAssignments/write 權限的角色；指派在 VNet1 這個最小必要範圍上，即可讓 User1 把讀者角色指派給其他使用者。",
+      "C": "錯誤。參與者不含角色指派權限，而且把範圍放大到整個訂用帳戶還違反最小權限原則。",
+      "D": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 116,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n• 讀者 (Reader)\n• 安全性管理員 (Security Admin)\n• 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "把 User1 從 Subscription1 的安全性讀取者角色中移除，並將 RG1 的參與者角色指派給 User1。",
+      "B": "將 VNet1 的「存取管理員 (Access Administrator)」角色指派給 User1。",
+      "C": "把 User1 從 Subscription1 的安全性讀取者與讀者角色中移除，並將 Subscription1 的參與者角色指派給 User1。",
+      "D": "將 RG1 的「網路參與者」角色指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "B": "正確。此選項指的是「使用者存取管理員 (User Access Administrator)」，它是專門用來管理其他人存取權的內建角色，具備 roleAssignments/write 權限，指派在 VNet1 範圍即符合需求且權限最小。",
+      "C": "錯誤。參與者不含角色指派權限，範圍也放得過大。",
+      "D": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 119,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。Subscription1 中有一位使用者 User1，目前具備下列角色：\n• 讀者 (Reader)\n• 安全性管理員 (Security Admin)\n• 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
+    "options": {
+      "A": "把 User1 從 Subscription1 的安全性讀取者角色中移除，並將 RG1 的參與者角色指派給 User1。",
+      "B": "將 VNet1 的「使用者存取管理員 (User Access Administrator)」角色指派給 User1。",
+      "C": "把 User1 從 Subscription1 的安全性讀取者與讀者角色中移除。",
+      "D": "將 VNet1 的「參與者」角色指派給 User1。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
+      "B": "正確。使用者存取管理員正是專為「管理他人存取權」設計的內建角色，具備 roleAssignments/write 權限。指派在 VNet1 這個最小必要範圍，比給擁有者更符合最小權限原則。",
+      "C": "錯誤。只移除角色只會讓 User1 權限更少，不會獲得指派角色的能力。",
+      "D": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 122,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你撰寫一個 PowerShell 指令碼，為每位外部使用者執行 New-MgUser Cmdlet。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。New-MgUser 是 Microsoft Graph PowerShell 中建立「成員」帳戶的指令，需要提供密碼設定檔，建立出來的不是來賓帳戶。",
+      "B": "正確。來賓帳戶必須經由 B2B 邀請流程產生。在 Microsoft Graph PowerShell 中對應的指令是 New-MgInvitation，而不是 New-MgUser。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 123,
+    "type": "single",
+    "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 contoso.com 的 Azure Active Directory (Azure AD) 租用戶，以及一個內含 500 位外部使用者姓名與電子郵件地址的 CSV 檔案。你需要為這 500 位外部使用者，各自在 contoso.com 中建立一個來賓 (guest) 使用者帳戶。\n解法：你撰寫一個 PowerShell 指令碼，為每位外部使用者執行 New-MgInvitation Cmdlet。\n此解法是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。New-MgInvitation 是 Microsoft Graph PowerShell 的 B2B 邀請指令（對應舊版 AzureAD 模組的 New-AzureADMSInvitation），會為指定的外部電子郵件地址建立來賓使用者帳戶，搭配 CSV 逐筆執行即可完成 500 位使用者。",
+      "B": "錯誤。這正是以程式方式大量建立來賓帳戶的正確指令。"
+    }
+  }
+]
