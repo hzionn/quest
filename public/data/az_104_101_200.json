@@ -443,5 +443,240 @@
       "C": "錯誤。這裡的阻礙來自保存庫中仍有受保護項目，而不是虛擬機器上的資源鎖定。",
       "D": "正確。保存庫只要還有受保護的備份項目就無法刪除。必須先對每個備份項目執行「停止備份」並選擇刪除備份資料，待保存庫中沒有任何受保護項目後，才能刪除保存庫。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 176,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "虛擬機器",
+      "B": "Azure Cosmos DB 資料庫",
+      "C": "Azure 檔案儲存體 (Azure File Storage)",
+      "D": "Azure 檔案同步的儲存體同步服務"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。匯入／匯出是把資料寫進儲存體帳戶的服務，虛擬機器不是它的目的地類型。",
+      "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "C": "正確。匯入作業支援的目的地有兩種：Azure Blob 儲存體與 Azure 檔案儲存體。本題選項中符合的是 Azure 檔案儲存體。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 178,
+    "type": "single",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，打算使用 AzCopy 把資料複製到 storage1。你必須確認 storage1 中「哪些儲存體服務」可以作為複製的目標。你應該指出哪些服務？",
+    "options": {
+      "A": "blob、file、table 與 queue",
+      "B": "僅 blob 與 file",
+      "C": "僅 file 與 table",
+      "D": "僅 file",
+      "E": "僅 blob、table 與 queue"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。AzCopy 不支援表格與佇列；表格資料的搬移需改用其他工具。",
+      "B": "正確。AzCopy 支援的是 Blob 儲存體與 Azure 檔案儲存體兩種服務，不處理 Table 與 Queue。",
+      "C": "錯誤。file 正確但 table 不受支援，且遺漏了 blob。",
+      "D": "錯誤。範圍太窄，AzCopy 同樣支援 Blob。",
+      "E": "錯誤。table 與 queue 都不受支援，且遺漏了 file。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 180,
+    "type": "single",
+    "question": "你有一個包含 Azure 儲存體帳戶的 Azure 訂用帳戶。你打算建立一個名為 container1 的 Azure 容器實例，使用名為 Image1 的 Docker 映像。Image1 內含一個需要「持續性儲存體」的 Microsoft SQL Server 實例。你必須為 container1 設定儲存體服務，應該使用什麼？",
+    "options": {
+      "A": "Azure 檔案 (Azure Files)",
+      "B": "Azure Blob 儲存體",
+      "C": "Azure 佇列儲存體",
+      "D": "Azure 表格儲存體"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure 容器實例只能掛載 Azure 檔案共用作為持續性磁碟區；容器重新啟動後資料仍會保留，SQL Server 的資料檔也需要這種可掛載為檔案系統的儲存體。",
+      "B": "錯誤。Blob 儲存體無法直接掛載為 ACI 的容器磁碟區，SQL Server 也無法把資料檔直接寫在 Blob 上。",
+      "C": "錯誤。佇列儲存體是訊息傳遞機制，不是檔案系統。",
+      "D": "錯誤。表格儲存體是 NoSQL 索引鍵值存放區，無法作為持續性磁碟區掛載。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 181,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式執行在兩台 Azure 虛擬機器 VM1 與 VM2 上。你打算為 App1 實作 Azure 可用性設定組，且解決方案必須確保在「裝載 VM1 與 VM2 的硬體進行計畫性維護」期間 App1 仍可使用。可用性設定組中應該包含什麼？",
+    "options": {
+      "A": "一個更新網域",
+      "B": "兩個錯誤網域",
+      "C": "一個錯誤網域",
+      "D": "兩個更新網域"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。只有一個更新網域時，兩台 VM 會落在同一個維護批次，計畫性維護會同時重新啟動它們，App1 將中斷。",
+      "B": "錯誤。錯誤網域防護的是「非計畫性」的硬體故障（電源、網路交換器），與計畫性維護的批次無關。",
+      "C": "錯誤。單一錯誤網域反而讓兩台 VM 共用同一組硬體，可用性更差，且仍未解決計畫性維護的問題。",
+      "D": "正確。計畫性維護是依「更新網域」分批進行的，平台一次只會重新啟動一個更新網域內的 VM。設定兩個更新網域可讓 VM1 與 VM2 分屬不同批次，維護時始終有一台在線。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 182,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure Cosmos DB 資料庫",
+      "B": "Azure Blob 儲存體",
+      "C": "Azure Data Lake Store",
+      "D": "Azure 檔案同步的儲存體同步服務"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "B": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
+      "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 188,
+    "type": "single",
+    "question": "你有兩台 Azure 虛擬機器 VM1 與 VM2，以及兩個復原服務保存庫 RSV1 與 RSV2。VM2 目前備份到 RSV1，你必須把 VM2 改為備份到 RSV2。你應該「最先」做什麼？",
+    "options": {
+      "A": "在 RSV1 刀鋒中點選「備份項目」，並停止 VM2 的備份",
+      "B": "在 RSV2 刀鋒中點選「備份」，在備份刀鋒中選取該虛擬機器的備份，然後點選「備份」",
+      "C": "在 VM2 刀鋒中點選「災難復原」→「複寫設定」，並選擇 RSV2 作為復原服務保存庫",
+      "D": "在 RSV1 刀鋒中點選「備份作業」並匯出 VM2 的作業"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。一台 VM 同時只能受一個復原服務保存庫保護。必須先在 RSV1 停止 VM2 的備份（並刪除備份資料），解除既有保護關係後，才能改由 RSV2 保護它。",
+      "B": "錯誤。在 VM2 仍受 RSV1 保護的情況下，RSV2 無法將它加入備份，會直接被拒絕。",
+      "C": "錯誤。災難復原／複寫設定屬於 Azure Site Recovery，與備份保存庫的歸屬是不同機制。",
+      "D": "錯誤。匯出備份作業紀錄只是取得報表資料，不會改變 VM2 的保護關係。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 189,
+    "type": "single",
+    "question": "你有一個使用本機備援儲存體 (LRS) 的一般用途 v1 Azure 儲存體帳戶 storage1。你必須確保該儲存體帳戶中的資料在「某個區域 (zone) 故障」時仍受保護，且解決方案必須盡量降低成本與管理工作。你應該「最先」做什麼？",
+    "options": {
+      "A": "建立一個新的儲存體帳戶。",
+      "B": "設定物件複寫規則。",
+      "C": "把帳戶升級為一般用途 v2。",
+      "D": "修改 storage1 的「複寫」設定。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。建立新帳戶還得自行搬移資料並更新所有連線字串，成本與管理工作都最高，而且並非必要。",
+      "B": "錯誤。物件複寫是在兩個帳戶之間非同步複製 Blob，並不能把單一帳戶轉為區域備援。",
+      "C": "正確。要防護區域故障必須使用區域備援儲存體 (ZRS)，而 ZRS 僅支援一般用途 v2 帳戶。因此第一步是就地升級為 v2（免費且不需搬移資料），之後才能把複寫設定改為 ZRS。",
+      "D": "錯誤。順序錯了——在 v1 帳戶上找不到 ZRS 這個選項，必須先完成升級才能修改複寫設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 191,
+    "type": "single",
+    "question": "你建立了一個名為 contosostorage 的 Azure 儲存體帳戶，並打算建立一個名為 data 的檔案共用。使用者需要從家中執行 Windows 10 的電腦「對應網路磁碟機」到 data 檔案共用。你應該在家用電腦與該檔案共用之間開放哪一個輸出連接埠？",
+    "options": {
+      "A": "80",
+      "B": "443",
+      "C": "445",
+      "D": "3389"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。連接埠 80 是 HTTP，不是 SMB 通訊協定使用的連接埠。",
+      "B": "錯誤。443 是 HTTPS，用於 REST API 存取檔案共用，但「對應網路磁碟機」走的是 SMB。",
+      "C": "正確。對應網路磁碟機使用 SMB 通訊協定，其連接埠為 TCP 445。許多 ISP 會封鎖 445，這也是家用網路掛載 Azure 檔案共用最常見的失敗原因。",
+      "D": "錯誤。3389 是遠端桌面 (RDP) 的連接埠，與檔案共用無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 192,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
+    "options": {
+      "A": "Azure 檔案儲存體 (Azure File Storage)",
+      "B": "Azure Cosmos DB 資料庫",
+      "C": "Azure Data Factory",
+      "D": "Azure SQL Database"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。匯入作業支援的目的地為 Azure Blob 儲存體與 Azure 檔案儲存體，本題選項中符合的是後者。",
+      "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
+      "C": "錯誤。Data Factory 是資料整合與協調服務，本身不是儲存體，不能作為匯入目的地。",
+      "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 195,
+    "type": "single",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中有一個名為 container1 的 Blob 容器。你必須防止新加入 container1 的內容在「一年內」被修改。你應該設定什麼？",
+    "options": {
+      "A": "存取層級 (access tier)",
+      "B": "存取原則 (access policy)",
+      "C": "存取控制 (IAM) 設定",
+      "D": "存取等級 (access level)"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。存取層（熱、冷、封存）決定的是儲存成本與擷取延遲，完全不會限制內容能否被修改。",
+      "B": "正確。在容器的存取原則中設定「不可變 Blob 儲存體」的時間型保留原則 (time-based retention policy)，指定保留期間一年，即可讓期間內的 Blob 進入 WORM 狀態而無法修改或刪除。",
+      "C": "錯誤。IAM 只是授與或移除某些身分的權限，具備權限者依然能修改內容，無法達成不可變的保證。",
+      "D": "錯誤。容器的公用存取等級（私人／Blob／容器）控制的是匿名讀取範圍，與防止修改無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 197,
+    "type": "multiple",
+    "question": "你正在為一個名為 storage1 的 Azure 儲存體帳戶設定 Azure Active Directory (Azure AD) 驗證。你必須讓名為 Group1 的群組成員能夠「透過 Azure 入口網站上傳檔案」，且解決方案必須遵循最小權限原則。你應該為 storage1 設定哪兩個角色？（每個正確答案各為解決方案的一部分，每個正確選項各得一分）",
+    "options": {
+      "A": "儲存體帳戶參與者 (Storage Account Contributor)",
+      "B": "儲存體 Blob 資料參與者 (Storage Blob Data Contributor)",
+      "C": "讀者 (Reader)",
+      "D": "參與者 (Contributor)",
+      "E": "儲存體 Blob 資料讀取者 (Storage Blob Data Reader)"
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "錯誤。儲存體帳戶參與者可以取得帳戶金鑰等高風險權限，遠超過「上傳檔案」所需，違反最小權限原則。",
+      "B": "正確。這是資料平面角色，提供寫入 Blob 的權限，是實際「上傳檔案」的能力來源。",
+      "C": "正確。要在入口網站中瀏覽到該儲存體帳戶並進入容器畫面，使用者還需要管理平面的讀取權限；讀者角色正好只給檢視資源的最小權限。",
+      "D": "錯誤。參與者能完整管理資源（含取得金鑰），權限過大。",
+      "E": "錯誤。Blob 資料讀取者只能讀取，無法上傳檔案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 199,
+    "type": "single",
+    "question": "你有一台內部部署伺服器，其中有一個資料夾 D:\\Folder1。你必須把 D:\\Folder1 的內容複製到名為 contosodata 的 Azure 儲存體帳戶中的 public 容器。你應該執行哪一個命令？",
+    "options": {
+      "A": "https://contosodata.blob.core.windows.net/public",
+      "B": "azcopy sync D:\\folder1 https://contosodata.blob.core.windows.net/public --snapshot",
+      "C": "azcopy copy D:\\folder1 https://contosodata.blob.core.windows.net/public --recursive",
+      "D": "az storage blob copy start-batch D:\\Folder1 https://contosodata.blob.core.windows.net/public"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。這只是一個 URL，不是可執行的命令。",
+      "B": "錯誤。azcopy sync 是用來讓來源與目的地保持同步（會刪除目的地多餘檔案），而且 --snapshot 並非有效參數；本題只需單向複製。",
+      "C": "正確。azcopy copy 是標準的複製命令，加上 --recursive 才會連同子資料夾一併複製整個資料夾內容。",
+      "D": "錯誤。az storage blob copy start-batch 的來源必須是另一個 Azure 儲存體位置（伺服器端複製），不能是本機檔案系統路徑。"
+    }
   }
 ]
