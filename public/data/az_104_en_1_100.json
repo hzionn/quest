@@ -1492,6 +1492,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 86,
+    "type": "matching",
+    "question": "You have the following Azure resources, from the top of the hierarchy down: Tenant Root Group (management group), MG1 (management group), Sub1 (subscription), RG1 (resource group), VM1 (virtual machine). You plan to track resource usage and prevent the deletion of resources. To which resources can you apply locks and tags?",
+    "available_options": [
+      "RG1 and VM1 only",
+      "Sub1 and RG1 only",
+      "Sub1, RG1, and VM1 only",
+      "MG1, Sub1, RG1, and VM1 only",
+      "Tenant Root Group, MG1, Sub1, RG1, and VM1"
+    ],
+    "matches": [
+      {
+        "use_case": "Locks:",
+        "correct_answer": "Sub1, RG1, and VM1 only"
+      },
+      {
+        "use_case": "Tags:",
+        "correct_answer": "Sub1, RG1, and VM1 only"
+      }
+    ],
+    "explanations": {
+      "1": "資源鎖定（CanNotDelete／ReadOnly）可以套用在訂用帳戶、資源群組或個別資源上，用來防止組織中其他人誤刪或誤改重要資源。但「管理群組」不支援鎖定，所以 Tenant Root Group 與 MG1 都不行。→ 只有 Sub1、RG1 和 VM1。",
+      "2": "標記可以套用在 Azure 資源、資源群組與訂用帳戶上，管理群組則不支援標記。→ 同樣是只有 Sub1、RG1 和 VM1。",
+      "_full": "鎖定與標記的可套用範圍其實一致：訂用帳戶、資源群組、個別資源都可以，但「管理群組」兩者都不支援。管理群組能套用的是原則 (Azure Policy) 與 RBAC 角色指派，這是很容易混淆的地方。另外提醒：資源群組或訂用帳戶上的標記不會自動繼承給底下的資源。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 87,
     "type": "single",
     "question": "You have an Azure Active Directory (Azure AD) tenant. You plan to delete multiple users by using Bulk delete in the Azure Active Directory admin center. You need to create and upload a file for the bulk delete. Which user attributes should you include in the file?",
@@ -1509,6 +1537,36 @@
       "C": "Incorrect. 錯誤。顯示名稱可能重複，無法唯一識別帳戶，不能作為刪除依據。",
       "D": "Incorrect. 錯誤。兩個欄位都不是大量刪除所需，顯示名稱更無法唯一識別使用者。",
       "E": "Incorrect. 錯誤。雖然包含了 UPN，但多出的顯示名稱並非必要欄位；範本要求的僅有 UPN。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 88,
+    "type": "matching",
+    "question": "You have an Azure subscription named Sub1 that contains these Azure resources: RG1 (resource group), storage1 (storage account), VNET1 (virtual network). You assign an Azure policy that has the following settings: Scope: Sub1; Exclusions: Sub1/RG1/VNET1; Policy definition: Append a tag and its value to resources; Policy enforcement: Enabled; Tag name: Tag4; Tag value: value4. You assign tags to the resources as follows: Sub1 = Tag1:subscription; RG1 = Tag2:IT; storage1 = Tag3:value1; VNET1 = Tag3:value2. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "RG1 has the Tag2:IT tag assigned only.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "Storage1 has the Tag1:subscription, Tag2:IT, Tag3:value1, and Tag4:value4 tags assigned.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "VNET1 has the Tag2:IT and Tag3:value2 tags assigned only.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "否（官方判定）。官方的理由是原則也會把 Tag4 附加到 RG1，所以 RG1 不只有 Tag2:IT。\n【爭議提醒】內建定義「對資源附加標記及其值」的 mode 是 indexed，而 indexed 模式刻意「不」評估資源群組與訂用帳戶（要對資源群組加標記得用另一個定義「對資源群組附加標記及其值」）。照這個規則走，RG1 不會拿到 Tag4，本項應為「是」。本題保留官方標示，但這一點在社群長期有爭議，作答時請留意。",
+      "2": "否。標記不會從訂用帳戶或資源群組繼承給資源，所以 storage1 不會有 Tag1:subscription 或 Tag2:IT。它實際上只有自己的 Tag3:value1，加上原則附加的 Tag4:value4——敘述多列了兩個標記，因此為否。",
+      "3": "否。同樣地，VNET1 不會繼承 RG1 的 Tag2:IT；而且 VNET1 正是原則的排除項目（Sub1/RG1/VNET1），所以連 Tag4 也不會加上。VNET1 實際上只有 Tag3:value2，敘述多了一個 Tag2:IT，因此為否。",
+      "_full": "本題的核心是兩件事：① Azure 標記「不會」自動由訂用帳戶或資源群組繼承給資源（要繼承得用 Inherit a tag 這類原則）；② 原則的排除項目 (notScopes) 會讓該資源完全不受原則影響。逐一比對後：storage1 = Tag3:value1 + Tag4:value4；VNET1 = Tag3:value2（被排除，沒有 Tag4）；三個敘述都不成立。"
     }
   },
   {
@@ -1562,6 +1620,35 @@
   },
   {
     "exam": "AZ-104",
+    "id": 92,
+    "type": "matching",
+    "question": "You have an Azure Load Balancer named LB1. You assign a user named User1 the following roles (as shown for the LB1 scope, 2 role assignments): User Access Administrator with scope 'This resource', and Virtual Machine Contributor with scope 'Resource group (inherited)'. Use the drop-down menus to select the answer choice that completes each statement.",
+    "available_options": [
+      "delete",
+      "create a NAT rule for",
+      "assign access to other users for",
+      "delete a virtual machine from",
+      "modify the load balancing rules in",
+      "deploy an Azure Kubernetes Service (AKS) cluster to"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 can [answer choice] LB1.",
+        "correct_answer": "assign access to other users for"
+      },
+      {
+        "use_case": "User1 can [answer choice] the resource group.",
+        "correct_answer": "delete a virtual machine from"
+      }
+    ],
+    "explanations": {
+      "1": "在 LB1 這個資源上，User1 只有「使用者存取管理員」。這個角色的能力很單一——管理其他人的存取權（建立／移除角色指派），但「不能」管理資源本身。因此他不能刪除 LB1，也不能建立 NAT 規則或改負載平衡規則，只能為其他使用者指派存取權。",
+      "2": "在資源群組層級，User1 繼承的是「虛擬機器參與者」，可以管理虛擬機器（包含建立、修改、刪除 VM，以及掛接既有的網路介面與磁碟），因此可以從該資源群組刪除虛擬機器。但這個角色不能改網路資源的組態（所以改不了負載平衡規則），也不足以部署 AKS 叢集。",
+      "_full": "兩個下拉題都在測「角色能做什麼」與「範圍在哪裡」的交集：\n・LB1 這個資源上只有使用者存取管理員 → 只能管存取權，不能碰資源設定。\n・資源群組上繼承了虛擬機器參與者 → 能管 VM，但管不到網路資源，也不能指派權限。\n順帶提醒：虛擬機器參與者可以「掛接」既有的網路介面與磁碟，但不能建立或修改虛擬網路、負載平衡器等網路資源。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 93,
     "type": "single",
     "question": "You have an Azure subscription named Subscription1 that contains a virtual network named VNet1. VNet1 is in a resource group named RG1. Subscription1 has a user named User1. User1 has the following roles: ✑ Reader ✑ Security Admin ✑ Security Reader You need to ensure that User1 can assign the Reader role for VNet1 to other users. What should you do?",
@@ -1577,6 +1664,35 @@
       "B": "Correct. 正確。內建角色中具備 Microsoft.Authorization/roleAssignments/write 權限的只有「擁有者」與「使用者存取管理員」。本題選項中沒有使用者存取管理員，因此在 VNet1 範圍指派擁有者即可讓 User1 把讀者角色指派給其他人。",
       "C": "Incorrect. 錯誤。參與者明確被排除了指派角色的權限，這正是它與擁有者最主要的差別。",
       "D": "Incorrect. 錯誤。網路參與者能管理網路資源，但同樣不含角色指派權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 94,
+    "type": "matching",
+    "question": "You configure a custom role with the following definition (excerpt): roleName \"role1\"; roletype \"true\"; assignableScopes [ \"/subscriptions/3d6209d5-c714-4440-9556-d6342086c2d7\" ]; actions including Microsoft.Authorization/*/read, Microsoft.Compute/virtualMachines/*, Microsoft.Compute/virtualMachineScaleSets/*, Microsoft.Compute/disks/write|read|delete, Microsoft.Network/networkInterfaces/*, Microsoft.Network/virtualNetworks/read, Microsoft.Resources/deployments/*; notActions []; dataActions []; notDataActions []. Use the drop-down menus to select the answer choice that completes each statement.",
+    "available_options": [
+      "actions",
+      "roletype",
+      "notActions",
+      "dataActions",
+      "notDataActions",
+      "assignableScopes"
+    ],
+    "matches": [
+      {
+        "use_case": "To ensure that users can sign in to virtual machines that are assigned role1, modify the [answer choice] section",
+        "correct_answer": "dataActions"
+      },
+      {
+        "use_case": "To ensure that role1 can be assigned only to a resource group named RG1, modify the [answer choice] section",
+        "correct_answer": "assignableScopes"
+      }
+    ],
+    "explanations": {
+      "1": "登入虛擬機器所需的權限是 Microsoft.Compute/virtualMachines/login/action（或 loginAsAdmin），而這類「對資料平面的操作」在角色定義中屬於 dataActions，不是 actions。目前 dataActions 是空的，所以必須在這裡加入登入權限（內建的「虛擬機器使用者登入」角色也是用 dataActions 實作的）。",
+      "2": "assignableScopes 決定「這個角色可以被指派到哪些範圍」。目前設為整個訂用帳戶，代表可以指派到該訂用帳戶及其下任何資源群組。要限制成只有 RG1，就把值改成 RG1 的完整資源 ID（/subscriptions/<id>/resourceGroups/RG1）。",
+      "_full": "自訂角色的欄位分工要記牢：\n・actions／notActions → 管理平面 (control plane) 的作業，例如建立 VM、改網路設定。\n・dataActions／notDataActions → 資料平面的作業，例如登入 VM、讀取 Blob 內容。\n・assignableScopes → 角色能被指派到哪些範圍，與角色有什麼權限無關。\n所以「能不能登入 VM」改 dataActions；「能指派到哪裡」改 assignableScopes。"
     }
   },
   {
@@ -1615,6 +1731,38 @@
       "B": "Correct. 正確。使用者存取管理員正好只提供管理角色指派的權限；指派在根管理群組上，權限會自動涵蓋租用戶中所有現有與「日後新建」的訂用帳戶，不必為新訂用帳戶重複設定，同時滿足最小權限與最少管理工作。",
       "C": "Incorrect. 錯誤。新建的管理群組不會自動包含既有的 15 個訂用帳戶，也不會自動納入未來新增的訂用帳戶，你必須逐一搬移，管理工作反而增加。",
       "D": "Incorrect. 錯誤。同時犯了兩個問題：範圍不會自動涵蓋新訂用帳戶，而擁有者角色的權限也過大。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 97,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the following hierarchy, from the top down: Tenant Root Group (management group) > ManagementGroup1 (management group) > Subscription1 (subscription) > RG1 (resource group) > VM1 (virtual machine). You create an Azure Policy definition named Policy1. To which Azure resources can you assign Policy1 and which Azure resources can you specify as exclusions from Policy1?",
+    "available_options": [
+      "Subscription1 and RG1 only",
+      "ManagementGroup1 and Subscription1 only",
+      "Tenant Root Group, ManagementGroup1, and Subscription1 only",
+      "Tenant Root Group, ManagementGroup1, Subscription1, and RG1 only",
+      "Tenant Root Group, ManagementGroup1, Subscription1, RG1, and VM1",
+      "VM1 only",
+      "RG1 and VM1 only",
+      "Subscription1, RG1, and VM1 only",
+      "ManagementGroup1, Subscription1, RG1, and VM1 only"
+    ],
+    "matches": [
+      {
+        "use_case": "You can assign Policy1 to:",
+        "correct_answer": "Tenant Root Group, ManagementGroup1, Subscription1, and RG1 only"
+      },
+      {
+        "use_case": "You can exclude Policy1 from:",
+        "correct_answer": "ManagementGroup1, Subscription1, RG1, and VM1 only"
+      }
+    ],
+    "explanations": {
+      "1": "原則指派的範圍只能是管理群組、訂用帳戶或資源群組——也就是「容器」層級，不能直接指派到個別資源。因此 Tenant Root Group、ManagementGroup1、Subscription1、RG1 都可以，但 VM1 不行。",
+      "2": "排除項目 (notScopes) 的粒度比指派範圍細，可以一路指定到「個別資源」，因此 VM1 可以被排除。但排除項目必須是指派範圍「底下」的子範圍——最上層的 Tenant Root Group 本身不可能被排除（它是整棵樹的根，沒有任何指派會把它當成子範圍）。→ ManagementGroup1、Subscription1、RG1 和 VM1。",
+      "_full": "記住兩條粒度規則：\n・指派範圍：管理群組／訂用帳戶／資源群組（容器），不含個別資源。\n・排除範圍：可到個別資源，但必須位於指派範圍之下，因此根管理群組不會出現在排除清單。\n這也解釋了兩個答案的差異：指派清單止於 RG1，排除清單延伸到 VM1 卻少了 Tenant Root Group。"
     }
   }
 ]
