@@ -507,5 +507,157 @@
       "C": "Incorrect. 錯誤。層級關係顛倒了——虛擬中樞是隸屬於虛擬 WAN 之下的資源，不會反過來由多個 WAN 共用一個中樞。",
       "D": "Incorrect. 錯誤。這兩種閘道都不提供資料中心之間的網路互連能力。"
     }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 381,
+    "type": "multiple",
+    "question": "You have an Azure subscription that contains a virtual network named VNet1. VNet1 contains four subnets named Gateway, Perimeter, NVA, and Production. The NVA subnet contains two network virtual appliances (NVAs) that will perform network traffic inspection between the Perimeter subnet and the Production subnet. You need to implement an Azure load balancer for the NVAs. The solution must meet the following requirements: ✑ The NVAs must run in an active-active configuration that uses automatic failover. ✑ The load balancer must load balance traffic to two services on the Production subnet. The services have different IP addresses. Which three actions should you perform? Each correct answer presents part of the solution. NOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Deploy a basic load balancer",
+      "B": "Deploy a standard load balancer",
+      "C": "Add two load balancing rules that have HA Ports and Floating IP enabled",
+      "D": "Add two load balancing rules that have HA Ports enabled and Floating IP disabled",
+      "E": "Add a frontend IP configuration, a backend pool, and a health probe",
+      "F": "Add a frontend IP configuration, two backend pools, and a health probe"
+    },
+    "answer": [
+      "B",
+      "C",
+      "F"
+    ],
+    "explanations": {
+      "A": "Incorrect. 錯誤。HA 連接埠功能僅標準負載平衡器支援，基本負載平衡器無法滿足 NVA 主動－主動的需求。",
+      "B": "Correct. 正確。HA 連接埠（一條規則涵蓋所有連接埠與通訊協定）是 NVA 情境的必要功能，而它只有標準負載平衡器提供。",
+      "C": "Correct. 正確。NVA 檢查流量時必須看到「原始的目的 IP」，因此要啟用浮動 IP (Direct Server Return)；再加上 HA 連接埠讓所有連接埠的流量都能通過，兩條規則分別對應 Production 上那兩個不同 IP 的服務。",
+      "D": "Incorrect. 錯誤。停用浮動 IP 時封包的目的 IP 會被改寫為後端 NVA 的位址，NVA 便無法依原始目的地正確轉送與檢查流量。",
+      "E": "Incorrect. 錯誤。題目明確指出要導向兩個「不同 IP」的服務，單一後端集區無法區分這兩個目標。",
+      "F": "Correct. 正確。兩個後端集區分別對應 Production 上的兩個服務，搭配前端 IP 組態與健康情況探查，才能把流量分別導向不同 IP 的服務。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 382,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains two Azure virtual networks named VNet1 and VNet2. VNet1 contains a VPN gateway named VPNGW1 that uses static routing. There is a site-to-site VPN connection between your on-premises network and VNet1. On a computer named Client1 that runs Windows 10, you configure a point-to-site VPN connection to VNet1. You configure virtual network peering between VNet1 and VNet2. You verify that you can connect to VNet2 from the on-premises network. Client1 is unable to connect to VNet2. You need to ensure that you can connect Client1 to VNet2. What should you do?",
+    "options": {
+      "A": "Download and re-install the VPN client configuration package on Client1.",
+      "B": "Select Allow gateway transit on VNet1.",
+      "C": "Select Allow gateway transit on VNet2.",
+      "D": "Enable BGP on VPNGW1"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。點對站用戶端的路由是在安裝組態套件時寫入的。新增對等互連之後，必須重新產生、下載並安裝用戶端組態套件，Client1 才會學到往 VNet2 的路由。",
+      "B": "Incorrect. 錯誤。站對站流量既然已經可以到達 VNet2，代表閘道傳輸相關設定本來就沒問題；這個設定不會更新已安裝的用戶端路由。",
+      "C": "Incorrect. 錯誤。「允許閘道傳輸」要勾在擁有閘道的那一端（VNet1），勾在 VNet2 上沒有意義。",
+      "D": "Incorrect. 錯誤。BGP 用於動態路由交換，對於「用戶端組態套件中的靜態路由未更新」這個問題並無幫助。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 387,
+    "type": "single",
+    "question": "You have an Azure web app named webapp1. You have a virtual network named VNET1 and an Azure virtual machine named VM1 that hosts a MySQL database. VM1 connects to VNET1. You need to ensure that webapp1 can access the data hosted on VM1. What should you do?",
+    "options": {
+      "A": "Deploy an internal load balancer",
+      "B": "Peer VNET1 to another virtual network",
+      "C": "Connect webapp1 to VNET1",
+      "D": "Deploy an Azure Application Gateway"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。內部負載平衡器解決的是把流量分散到多個後端，而本題的問題是 App Service 與虛擬網路之間沒有連通路徑。",
+      "B": "Incorrect. 錯誤。對等互連是連接兩個虛擬網路；Web 應用程式並不在任何虛擬網路中，因此無法藉此取得存取權。",
+      "C": "Correct. 正確。App Service 使用「虛擬網路整合」把 Web 應用程式的輸出流量帶進指定的虛擬網路，之後 webapp1 就能以私人 IP 存取同一網路中 VM1 上的 MySQL。",
+      "D": "Incorrect. 錯誤。應用程式閘道處理的是「輸入」流量的第 7 層負載平衡，本題需要的是 Web 應用程式的「輸出」連通性。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 389,
+    "type": "single",
+    "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
+    "options": {
+      "A": "Floating IP (direct server return) to Disabled",
+      "B": "Session persistence to None",
+      "C": "Floating IP (direct server return) to Enabled",
+      "D": "Session persistence to Client IP"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。浮動 IP 影響的是封包目的 IP 是否被保留，與同一用戶端是否固定導向同一後端無關。",
+      "B": "Incorrect. 錯誤。設為「無」時，負載平衡器會以五元組雜湊分配每個新連線，同一用戶端可能被導到不同伺服器，正好與需求相反。",
+      "C": "Incorrect. 錯誤。同 A，浮動 IP 不是工作階段黏著性的機制。",
+      "D": "Correct. 正確。把工作階段持續性設為「用戶端 IP」（二元組雜湊）後，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，達成黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 390,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains the following resources: ✑ A virtual network that has a subnet named Subnet1 ✑ Two network security groups (NSGs) named NSG-VM1 and NSG-Subnet1 ✑ A virtual machine named VM1 that has the required Windows Server configurations to allow Remote Desktop connections NSG-Subnet1 has the default inbound security rules only. NSG-VM1 has the default inbound security rules and the following custom inbound security rule: ✑ Priority: 100 ✑ Source: Any ✑ Source port range: * ✑ Destination: * ✑ Destination port range: 3389 ✑ Protocol: UDP ✑ Action: Allow VM1 has a public IP address and is connected to Subnet1. NSG-VM1 is associated to the network interface of VM1. NSG-Subnet1 is associated to Subnet1. You need to be able to establish Remote Desktop connections from the internet to VM1. Solution: You add an inbound security rule to NSG-Subnet1 that allows connections from the Any source to the *destination for port range 3389 and uses the TCP protocol. You remove NSG-VM1 from the network interface of VM1. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。遠端桌面使用 TCP 3389，而原本 NSG-VM1 上的自訂規則寫的是 UDP，因此會擋住連線。把 NSG-VM1 移除後只剩下 NSG-Subnet1，並在其中加入允許 TCP 3389 的規則，流量便能通行。",
+      "B": "Incorrect. 錯誤。這個組合同時解決了兩個問題：移除了以 UDP 誤設的 NSG，並在剩下的 NSG 上開放正確的 TCP 3389。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 392,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains the following resources: ✑ A virtual network that has a subnet named Subnet1 ✑ Two network security groups (NSGs) named NSG-VM1 and NSG-Subnet1 ✑ A virtual machine named VM1 that has the required Windows Server configurations to allow Remote Desktop connections NSG-Subnet1 has the default inbound security rules only. NSG-VM1 has the default inbound security rules and the following custom inbound security rule: ✑ Priority: 100 ✑ Source: Any ✑ Source port range: * ✑ Destination: * ✑ Destination port range: 3389 ✑ Protocol: UDP ✑ Action: Allow VM1 has a public IP address and is connected to Subnet1. NSG-VM1 is associated to the network interface of VM1. NSG-Subnet1 is associated to Subnet1. You need to be able to establish Remote Desktop connections from the internet to VM1. Solution: You add an inbound security rule to NSG-Subnet1 and NSG-VM1 that allows connections from the internet source to the VirtualNetwork destination for port range 3389 and uses the TCP protocol. Does this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。流量必須同時通過子網路層與網路介面層的 NSG，因此兩個 NSG 都要放行。以 Internet 為來源、VirtualNetwork 為目的地並指定 TCP 3389，正確涵蓋了從網際網路連入 VM1 的路徑。",
+      "B": "Incorrect. 錯誤。兩層 NSG 都已加入正確的 TCP 規則，連線可以成功建立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 396,
+    "type": "single",
+    "question": "Your company has an Azure subscription named Subscription1. The company also has two on-premises servers named Server1 and Server2 that run Windows Server 2016. Server1 is configured as a DNS server that has a primary DNS zone named adatum.com. Adatum.com contains 1,000 DNS records. You manage Server1 and Subscription1 from Server2. Server2 has the following tools installed: ✑ The DNS Manager console ✑ Azure PowerShell ✑ Azure CLI 2.0 You need to move the adatum.com zone to an Azure DNS zone in Subscription1. The solution must minimize administrative effort. What should you use?",
+    "options": {
+      "A": "Azure CLI",
+      "B": "Azure PowerShell",
+      "C": "the Azure portal",
+      "D": "the DNS Manager console"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure CLI 的 az network dns zone import 可以直接匯入 BIND 格式的區域檔案，一次把 1,000 筆記錄全部建立完成，管理工作最少。",
+      "B": "Incorrect. 錯誤。Azure PowerShell 沒有等同的區域檔案匯入指令，必須逐筆建立記錄集，工作量遠大於 CLI。",
+      "C": "Incorrect. 錯誤。入口網站只能手動一筆一筆新增記錄，1,000 筆完全不可行。",
+      "D": "Incorrect. 錯誤。DNS 管理員主控台管理的是 Windows DNS 伺服器，無法把區域寫入 Azure DNS。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 397,
+    "type": "single",
+    "question": "You have a public load balancer that balances ports 80 and 443 across three virtual machines named VM1, VM2, and VM3. You need to direct all the Remote Desktop Protocol (RDP) connections to VM3 only. What should you configure?",
+    "options": {
+      "A": "an inbound NAT rule",
+      "B": "a new public load balancer for VM3",
+      "C": "a frontend IP configuration",
+      "D": "a load balancing rule"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。輸入 NAT 規則會把前端某個連接埠的流量「一對一」轉送到指定的單一後端執行個體，正好用來把 RDP 只導向 VM3。",
+      "B": "Incorrect. 錯誤。多建一個負載平衡器是不必要的成本與複雜度，既有負載平衡器已能透過 NAT 規則達成。",
+      "C": "Incorrect. 錯誤。前端 IP 組態只是定義負載平衡器對外的位址，不決定流量送往哪一台後端。",
+      "D": "Incorrect. 錯誤。負載平衡規則的本質是把流量「分散」到後端集區中的多台機器，無法指定只送往單一 VM。"
+    }
   }
 ]
