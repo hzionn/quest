@@ -1320,6 +1320,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 263,
+    "type": "ordering",
+    "question": "You onboard 10 Azure virtual machines to Azure Automation State Configuration. You need to use Azure Automation State Configuration to manage the ongoing consistency of the virtual machine configurations. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Assign tags to the virtual machines",
+      "Check the compliance status of the node",
+      "Compile a configuration into a node configuration",
+      "Upload a configuration to Azure Automation State Configuration",
+      "Create a management group"
+    ],
+    "ordered_steps": [
+      "Upload a configuration to Azure Automation State Configuration",
+      "Compile a configuration into a node configuration",
+      "Check the compliance status of the node"
+    ],
+    "explanations": {
+      "步驟 1": "把組態上傳到 Azure 自動化 State Configuration。\n先把你寫好的 DSC 組態檔（.ps1，描述「機器應該長什麼樣」）匯入自動化帳戶。\n這時它還只是一份「原始碼」，機器還套不上去。",
+      "步驟 2": "把組態編譯成節點組態。\n編譯會把組態轉成 MOF 檔，也就是「節點組態 (node configuration)」——這才是真正可以指派給機器的成品。\n編譯完成後，才能把節點組態指派給那 10 台已上線的機器。\n順序不能顛倒：沒有上傳就沒有東西可以編譯。",
+      "步驟 3": "檢查節點的合規狀態。\n指派之後，每台機器上的 DSC 代理程式會定期回報自己「符合／不符合」目標組態。\n題目要的是管理「持續」一致性，所以最後這一步是持續監看合規狀態，看有沒有機器發生組態漂移。",
+      "_full": "Azure 自動化 State Configuration 的流程：\n上傳組態 → 編譯成節點組態（MOF）→ 指派給節點 → 檢查合規狀態。\n\n記憶點：「組態」和「節點組態」是兩個不同的東西。\n・組態 (configuration)：你寫的 DSC 指令碼，可以帶參數。\n・節點組態 (node configuration)：編譯後的 MOF，是真正下發給機器的東西。\n中間那一步「編譯」就是把前者變成後者，永遠不能跳過。\n\n兩個誘答：標籤只是用來分類與計費的中繼資料，管理群組是用來把多個訂用帳戶組織起來做治理的，兩者都跟 DSC 無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 265,
     "type": "single",
     "question": "You create an App Service plan named Plan1 and an Azure web app named webapp1. You discover that the option to create a staging slot is unavailable. You need to create a staging slot for Plan1. What should you do first?",

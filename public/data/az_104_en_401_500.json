@@ -694,6 +694,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 449,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains vm1 (a virtual machine that uses a basic public IP address), vm2 (a virtual machine that uses a basic public IP address), nsg1 (a network security group that allows incoming traffic from port 443) and lb1 (an Azure Standard Load Balancer). You need to load balance HTTPS connections to vm1 and vm2 by using lb1. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Remove nsg1.",
+      "Remove the public IP addresses from vm1 and vm2.",
+      "Create a health probe and backend pool on lb1.",
+      "Create an availability set.",
+      "Create a load balancing rule on lb1."
+    ],
+    "ordered_steps": [
+      "Remove the public IP addresses from vm1 and vm2.",
+      "Create a health probe and backend pool on lb1.",
+      "Create a load balancing rule on lb1."
+    ],
+    "explanations": {
+      "步驟 1": "從 vm1 與 vm2 移除公用 IP 位址。\n這是本題的核心：lb1 是「標準」SKU 的負載平衡器，而 vm1／vm2 掛的是「基本」SKU 的公用 IP。\nAzure 不允許把帶有基本 SKU 公用 IP 的 VM 加進標準負載平衡器的後端集區——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n所以要先把那兩個基本公用 IP 拔掉，VM 才有資格進後端集區。",
+      "步驟 2": "在 lb1 上建立健康情況探查與後端集區。\n後端集區負責「流量要送去哪些機器」，把 vm1 與 vm2 加進去；\n健康情況探查負責「這台機器還活著嗎」，探查失敗的執行個體會被自動移出輪替。\n兩者都是下一步負載平衡規則的必要輸入。",
+      "步驟 3": "在 lb1 上建立負載平衡規則。\n規則把「前端 IP + 連接埠 443」對應到「後端集區 + 連接埠 443」，並指定要用哪一個健康情況探查。\n它必須最後建立，因為建立時就要選前面做好的後端集區與探查。",
+      "_full": "解這題只要抓住一條 SKU 規則：\n「標準」負載平衡器只能搭配「標準」公用 IP；後端 VM 若帶著基本 SKU 的公用 IP，就加不進標準 LB 的後端集區。\n所以第一步永遠是把那些基本公用 IP 移除。\n\n接著是負載平衡器本身的組裝順序：後端集區與探查 → 規則。規則會引用前兩者，所以規則一定在最後。\n\n兩個誘答：\n・「移除 nsg1」反而會弄壞需求——nsg1 放行的正是 443，而標準負載平衡器預設是「安全的」，本來就需要 NSG 明確放行才進得來。\n・「建立可用性設定組」跟負載平衡無關，而且可用性設定組只能在建立 VM 的當下指定，事後加不了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 450,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You manage a virtual network named VNet1 that is hosted in the West US Azure region. VNet1 hosts two virtual machines named VM1 and VM2 that run Windows Server. You need to inspect all the network traffic from VM1 to VM2 for a period of three hours. Solution: From Azure Monitor, you create a metric on Network In and Network Out. Does this meet the goal?",
