@@ -1843,6 +1843,67 @@
   },
   {
     "exam": "AZ-104",
+    "id": 598,
+    "type": "matching",
+    "question": "【案例研究：Litware, Inc.（僅列出本題判斷所需的資訊）】\nLitware 的主要辦公室在蒙特婁，另有西雅圖與紐約兩個分公司。\n所有辦公室之間以私人連線互連；每個辦公室都有一台「可以設定為 VPN 裝置」的防火牆。\n\n規劃的變更之一：將 Azure ExpressRoute 部署到「蒙特婁」辦公室。\n技術需求之一：透過「網際網路」以「加密的連線」把紐約辦公室連到 VNet1。\n另外還要求：盡可能降低成本。\n\n你需要滿足紐約辦公室的連線需求。你應該怎麼做？（每個正確選擇得一分）",
+    "available_options": [
+      "只建立一個 ExpressRoute 線路。",
+      "只建立一個虛擬網路閘道。",
+      "建立一個虛擬網路閘道和一個本機網路閘道。",
+      "建立一個 ExpressRoute 線路和一個內部部署資料閘道。",
+      "建立一個虛擬網路閘道和一個內部部署資料閘道。",
+      "部署 ExpressRoute。",
+      "部署一台 DirectAccess 伺服器。",
+      "實作一個 Web 應用程式 Proxy。",
+      "設定一個站對站 VPN 連線。"
+    ],
+    "matches": [
+      {
+        "use_case": "在 Azure 入口網站中：",
+        "correct_answer": "建立一個虛擬網路閘道和一個本機網路閘道。"
+      },
+      {
+        "use_case": "在紐約辦公室中：",
+        "correct_answer": "設定一個站對站 VPN 連線。"
+      }
+    ],
+    "explanations": {
+      "1": "建立一個虛擬網路閘道和一個本機網路閘道。\n「透過網際網路的加密連線」＝站對站 (S2S) VPN。Azure 這一端要備齊兩個物件：\n・虛擬網路閘道 (VPN Gateway)：VNet1 裡的虛擬 VPN 設備，負責 Azure 側的 IPsec 通道。\n・本機網路閘道 (Local network gateway)：代表「對方」那台內部部署 VPN 設備的抽象物件，裡面登記對方的公用 IP 與內部網路位址範圍。\n少了本機網路閘道，Azure 就不知道要撥給誰、也不知道哪些網段要導回去。\nExpressRoute 是私人專線、不走網際網路（而且案例只把它規劃給蒙特婁），成本也高得多，違反「盡可能降低成本」；「內部部署資料閘道」則是 Power BI／Logic Apps 用來存取內部資料來源的元件，跟網路連線無關。",
+      "2": "設定一個站對站 VPN 連線。\n紐約辦公室已經有一台「可以設定為 VPN 裝置」的防火牆，所以在辦公室這一端只要把它設成 S2S VPN 的對接端，指向 Azure 虛擬網路閘道的公用 IP 即可。\nDirectAccess 是給用戶端電腦遠端連回公司的技術，不是站對站；Web 應用程式 Proxy 是把內部網站發佈到外部，兩者都不會建立網路層的加密通道。",
+      "_full": "看到「over the Internet + encrypted」就直接對應到「站對站 VPN」，看到「private / dedicated connection」才對應到 ExpressRoute。\n\n站對站 VPN 的四個必備零件：\n① 閘道子網路 (GatewaySubnet)　② 虛擬網路閘道 (VPN 類型)\n③ 本機網路閘道（描述對方設備的公用 IP 與網段）　④ 連線 (Connection，帶共用金鑰)\nAzure 入口網站負責 ①～③，對方辦公室的 VPN 設備負責自己那一端的 IPsec 設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 599,
+    "type": "matching",
+    "question": "【案例研究：Contoso, Ltd.（僅列出本題判斷所需的資訊）】\n公開的應用程式 App1 由下列三層組成：\n・一個 SQL 資料庫\n・一個 Web 前端\n・一個處理中介層\n每一層各由 5 台虛擬機器組成。使用者只透過 HTTPS 存取 Web 前端。\n\n技術需求：\n・將 App1 的所有虛擬機器移到 Azure。\n・盡量減少 App1 各層之間開放的連接埠數量。\n\n你需要為 App1 提出建議，且必須符合技術需求。建議中應該包含什麼？（每個正確選擇得一分）",
+    "available_options": [
+      "〔虛擬網路的數量〕1",
+      "〔虛擬網路的數量〕2",
+      "〔虛擬網路的數量〕3",
+      "〔每個虛擬網路的子網路數量〕1",
+      "〔每個虛擬網路的子網路數量〕2",
+      "〔每個虛擬網路的子網路數量〕3"
+    ],
+    "matches": [
+      {
+        "use_case": "虛擬網路的數量：",
+        "correct_answer": "〔虛擬網路的數量〕1"
+      },
+      {
+        "use_case": "每個虛擬網路的子網路數量：",
+        "correct_answer": "〔每個虛擬網路的子網路數量〕3"
+      }
+    ],
+    "explanations": {
+      "1": "1。三層屬於同一個應用程式，彼此要頻繁互相呼叫。放在「同一個」虛擬網路裡，它們就能直接用私人 IP 互通，不需要 VNet 對等互連、也不需要任何閘道。\n拆成 2 或 3 個 VNet 只會多出對等互連的設定與費用，而且對「減少開放的連接埠」這個需求毫無幫助——隔離是靠 NSG 做的，不是靠切 VNet。",
+      "2": "3。每一層各配一個子網路：Web 層子網路、中介層子網路、資料層子網路。\n這樣才能對每個子網路各掛一個 NSG，逐層只放行「上一層 → 下一層」所需的那一個連接埠：網際網路 → Web 層只開 443、Web 層 → 中介層只開應用程式的埠、中介層 → 資料層只開 1433，其他一律拒絕。\n如果三層擠在同一個子網路裡，NSG 是套在子網路上的，同一個子網路內的機器會落在同一組規則下，就沒辦法在層與層之間做區隔。",
+      "_full": "「多層式應用程式 + 盡量減少開放連接埠」是 Azure 的經典 N 層參考架構：\n1 個虛擬網路，每一層一個子網路，每個子網路一個 NSG。\n\n背後的兩個原則：\n・同一個應用程式的元件放同一個 VNet → 私人 IP 直接互通，最省事也最省錢。\n・安全界線用「子網路 + NSG」畫，不是用 VNet 畫 →有幾個需要彼此隔離的層，就切幾個子網路。\n\n順帶一提，實務上的參考架構還會再加管理子網路（跳板機）與 AD DS 子網路，但本題只問 App1 這三層。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 600,
     "type": "single",
     "question": "【案例摘要】Contoso 是製造公司，以藍圖檔案生產產品。公開的應用程式 App1 分為 SQL 資料庫、Web 前端與處理中介層三層，每層五台 VM，使用者「僅透過 HTTPS」存取 Web 前端。\n相關需求：App1 全部 VM 移到 Azure 並受備份保護；盡量減少 App1 各層之間開放的連接埠；藍圖檔案經網際網路複製到 Azure 並存放於封存層，夥伴的存取須安全且為臨時性；Admin1 為訂用帳戶的服務管理員並須接收服務中斷的電子郵件警示；盡量減少管理工作。\n\n你正在規劃把 App1 移到 Azure，並已建立一個網路安全性群組 (NSG)。你必須建議一個讓使用者能夠存取 App1 的解決方案。你應該建議什麼？",
@@ -1896,6 +1957,37 @@
       "B": "錯誤。NSG 是篩選流量的機制，只會限制而不會建立連通性。",
       "C": "錯誤。更改 IP 位址不會讓兩個獨立的虛擬網路互通，若位址空間重疊反而會讓對等互連無法建立。",
       "D": "正確。虛擬網路對等互連透過 Azure 骨幹直接連通兩個虛擬網路，設定簡單、無需閘道或自訂路由，是管理工作最少的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 604,
+    "type": "matching",
+    "question": "【案例研究：Litware, Inc.（僅列出本題判斷所需的資訊）】\n技術需求之一：建立一個以內建的「讀取者 (Reader)」角色為基礎的自訂 Azure 角色，名稱為 Role1。\n\n你需要實作 Role1。在建立 Role1「之前」，你應該執行哪一個命令？\n命令的形式如下（請補上兩個空格）：\n\n　【空格 1】 -Name \"Reader\" | 【空格 2】\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "〔空格 1〕Find-RoleCapability",
+      "〔空格 1〕Get-AzureADDirectoryRole",
+      "〔空格 1〕Get-AzRoleDefinition",
+      "〔空格 1〕Get-AzResourceProvider",
+      "〔空格 2〕ConvertFrom-Json",
+      "〔空格 2〕ConvertFrom-String",
+      "〔空格 2〕ConvertTo-Json",
+      "〔空格 2〕ConvertTo-Xml"
+    ],
+    "matches": [
+      {
+        "use_case": "空格 1（命令）：",
+        "correct_answer": "〔空格 1〕Get-AzRoleDefinition"
+      },
+      {
+        "use_case": "空格 2（管線之後）：",
+        "correct_answer": "〔空格 2〕ConvertTo-Json"
+      }
+    ],
+    "explanations": {
+      "1": "Get-AzRoleDefinition。建立自訂 RBAC 角色的標準流程是「先把一個現有的內建角色匯出成範本，改完再匯入」，而負責讀取 Azure RBAC 角色定義的就是 Get-AzRoleDefinition。\n・Get-AzureADDirectoryRole 取的是 Microsoft Entra 的「目錄角色」（全域管理員那一套），跟 Azure 資源的 RBAC 角色是兩個完全不同的角色系統。\n・Find-RoleCapability 是 PowerShellGet 的 cmdlet，用來找哪個模組提供某個 DSC 角色功能。\n・Get-AzResourceProvider 查的是資源提供者與資源類型，跟角色無關。",
+      "2": "ConvertTo-Json。Azure 的角色定義格式就是 JSON，所以要把取回來的角色物件「轉成」JSON 存成檔案，再去編輯 Name、Id、Actions、AssignableScopes 等欄位，最後用 New-AzRoleDefinition 匯入。\n・ConvertTo-Xml 方向對但格式錯——自訂角色不吃 XML。\n・ConvertFrom-Json／ConvertFrom-String 是「反方向」，把 JSON 字串或純文字轉回 PowerShell 物件；這裡手上已經是物件了，不需要再轉回來。",
+      "_full": "自訂角色的完整流程（PowerShell）：\n① Get-AzRoleDefinition -Name \"Reader\" | ConvertTo-Json | Out-File Role1.json\n② 編輯 Role1.json：改 Name／Description、把 Id 清空、在 Actions／NotActions 增減權限、在 AssignableScopes 填上訂用帳戶或資源群組的 ID。\n③ New-AzRoleDefinition -InputFile Role1.json\n\n兩個容易混淆的地方：\n・角色定義是 JSON，不是 XML。\n・Azure RBAC 角色（Get-AzRoleDefinition）≠ Entra 目錄角色（Get-AzureADDirectoryRole／Get-MgDirectoryRole）——前者管 Azure 資源，後者管租用戶身分。"
     }
   },
   {
