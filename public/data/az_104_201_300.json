@@ -1,6 +1,33 @@
 [
   {
     "exam": "AZ-104",
+    "id": 201,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列儲存體帳戶：\n・storage1｜Azure AD 驗證：已啟用｜內容：一個名為 container1 的 Blob 容器（公用存取層級為「無公用存取」）\n・storage2｜Azure AD 驗證：已啟用｜內容：一個名為 share1 的檔案共用\n\n你打算使用 AzCopy 把一個 Blob 從 container1「直接」複製到 share1。\n你需要判斷使用 AzCopy 時要採用哪一種驗證方法。\n你應該為每個帳戶判斷出什麼？（每個正確選擇得一分）",
+    "available_options": [
+      "OAuth",
+      "匿名 (Anonymous)",
+      "儲存體帳戶存取金鑰",
+      "共用存取簽章 (SAS) 權杖"
+    ],
+    "matches": [
+      {
+        "use_case": "storage1（來源：container1）：",
+        "correct_answer": "共用存取簽章 (SAS) 權杖"
+      },
+      {
+        "use_case": "storage2（目的地：share1）：",
+        "correct_answer": "共用存取簽章 (SAS) 權杖"
+      }
+    ],
+    "explanations": {
+      "1": "共用存取簽章 (SAS) 權杖。\n雖然 storage1 有啟用 Azure AD 驗證，單純上傳／下載 Blob 時確實可以用 OAuth（azcopy login）——但本題做的是「直接在兩個帳戶之間複製」的伺服器對伺服器複製。\n在這種複製中，AzCopy 必須在「來源 URL」後面附上 SAS 權杖，這一項沒有例外；可以省略 SAS 的只有目的地那一端。所以來源必須是 SAS。",
+      "2": "共用存取簽章 (SAS) 權杖。\n目的地是「Azure 檔案共用」，而 AzCopy 存取 Azure 檔案服務只吃 SAS 權杖——帳戶上的 Azure AD 驗證設定對檔案服務這條路徑沒有用。\n所以就算目的地在 S2S 複製中「可以」省略 SAS，這裡因為是檔案共用，仍然只能給 SAS。",
+      "_full": "兩格都是 SAS，但理由不一樣，這正是本題的設計：\n\n【來源那一格】伺服器對伺服器複製的規則：來源 URL「一定」要帶 SAS，目的地 URL 才可以省略。跟帳戶有沒有開 Azure AD 無關。\n\n【目的地那一格】服務別的規則：AzCopy 對 Azure 檔案服務只支援 SAS，OAuth／Azure AD 這條路走不通。\n\n另外兩個誘答：\n・「匿名」需要容器開放公用存取，但 container1 明寫「無公用存取」。\n・「儲存體帳戶存取金鑰」不是 AzCopy 命令列直接吃的驗證方式——AzCopy 接受的是 SAS 或 OAuth；金鑰的用途是拿來「產生」SAS。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 202,
     "type": "single",
     "question": "你建立了一個 Azure 儲存體帳戶，打算在其中新增 10 個 Blob 容器。其中有一個容器，你需要使用「不同的金鑰」來加密其待用資料。在建立該容器「之前」你應該做什麼？",
@@ -124,6 +151,30 @@
       "1": "「成本最低」的存取層是封存層 (Archive)，對應的動作是 tierToArchive。tierToCool 只會移到冷層（比熱層便宜但比封存層貴）；enableAutoTierToHotFromCool 是方向相反的自動回熱設定。",
       "2": "要把規則限定在 container1，就用 prefixMatch 指定 \"container1/\" 這個前置詞。blobTypes 是限定 Blob 類型（blockBlob／appendBlob），blobIndexMatch 是依 Blob 索引標籤比對，兩者都不是用來鎖定容器的。",
       "_full": "完整規則的形狀是：\nactions.baseBlob.tierToArchive.daysAfterModificationGreaterThan = 90，\nfilters.prefixMatch = [\"container1/\"]。\n記住三個層級的成本高低：熱 > 冷 > 封存（封存最便宜但取用需解除凍結），以及 filters 的三個欄位分工：prefixMatch（路徑）、blobTypes（類型）、blobIndexMatch（索引標籤）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 207,
+    "type": "ordering",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器。\n你需要備份 VM1，而且解決方案必須確保備份會「跨主要區域中的三個可用性區域」存放。\n\n你應該依序執行哪三個動作？",
+    "available_steps": [
+      "設定複寫原則。",
+      "將「複寫」設定為區域備援儲存體 (ZRS)。",
+      "為 VM1 建立備份原則並設定備份。",
+      "將「複寫」設定為本機備援儲存體 (LRS)。",
+      "建立一個復原服務保存庫。"
+    ],
+    "ordered_steps": [
+      "建立一個復原服務保存庫。",
+      "將「複寫」設定為區域備援儲存體 (ZRS)。",
+      "為 VM1 建立備份原則並設定備份。"
+    ],
+    "explanations": {
+      "步驟 1": "建立一個復原服務保存庫。\nAzure VM 備份由復原服務保存庫負責，備份的備援層級也是保存庫的屬性，所以第一步一定是先把保存庫建出來。",
+      "步驟 2": "將「複寫」設定為區域備援儲存體 (ZRS)。\n題目要的是「跨主要區域中的三個可用性區域」——這正是 ZRS 的定義。\n保存庫的儲存體複寫類型有三種：\n・LRS：只在單一資料中心存三份，撐不住整個區域性的故障。\n・GRS（預設）：主要區域三份 + 配對區域三份，但主要區域內仍是 LRS，不是跨可用性區域。\n・ZRS：在主要區域的三個可用性區域各存一份 → 正解。\n這一步一定要排在「設定備份」之前，因為保存庫的複寫類型「只能在還沒有任何備份項目受保護之前」修改；一旦跑過第一次備份就再也改不回來，只能砍掉重建保存庫。",
+      "步驟 3": "為 VM1 建立備份原則並設定備份。\n保存庫與備援層級都就位之後，最後才建立備份原則（排程與保留規則）並把 VM1 加進去開始備份。",
+      "_full": "這題其實只考兩件事：\n\n① 「跨三個可用性區域」＝ ZRS。（LRS＝單一資料中心、GRS＝跨到配對區域、ZRS＝跨可用性區域。）\n\n② 保存庫的複寫類型是「一次性」設定——只要保存庫裡已經有受保護的項目，這個選項就會變灰、無法再改。\n所以順序必須是「建保存庫 → 改複寫 → 才設定備份」，把後兩步對調就永遠拿不到 ZRS。\n\n「設定複寫原則」是誘答——那是 Site Recovery（災難復原）的用語，不是 Azure 備份的設定。"
     }
   },
   {
