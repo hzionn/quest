@@ -733,6 +733,32 @@
   },
   {
     "exam": "AZ-104",
+    "id": 452,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains two on-premises locations named site1 and site2. You need to connect site1 and site2 by using an Azure Virtual WAN. Which four actions should you perform in sequence?",
+    "available_steps": [
+      "Create a virtual hub.",
+      "Create VPN sites.",
+      "Connect the virtual networks to the hub.",
+      "Create a Virtual WAN resource.",
+      "Connect the VPN sites to the hub."
+    ],
+    "ordered_steps": [
+      "Create a Virtual WAN resource.",
+      "Create a virtual hub.",
+      "Create VPN sites.",
+      "Connect the VPN sites to the hub."
+    ],
+    "explanations": {
+      "步驟 1": "建立虛擬 WAN 資源。\n虛擬 WAN 是最外層的容器，代表整個網路拓撲，底下所有的中樞、站台、連線都住在它裡面，所以它必須第一個建立。",
+      "步驟 2": "建立虛擬中樞 (virtual hub)。\n中樞是「一個區域裡的網路核心」，Azure 會在裡面自動託管 VPN 閘道、ExpressRoute 閘道與路由表——你不用自己建閘道，這正是虛擬 WAN 的賣點。\n站台之後要連的就是這個中樞，所以中樞必須排在站台連線之前。",
+      "步驟 3": "建立 VPN 站台 (VPN sites)。\n每個 VPN 站台代表一個內部部署據點的 VPN 設備，裡面登記它的公用 IP、BGP 設定與私人位址空間。\n本題有 site1 與 site2 兩個據點，所以要建立兩個 VPN 站台。\n（它相當於傳統做法裡的「本機網路閘道」。）",
+      "步驟 4": "把 VPN 站台連線到中樞。\n最後把兩個站台各自連上中樞，並填入共用金鑰。\n連上之後，site1 與 site2 的流量就會經由中樞互通——這就是虛擬 WAN 的「任意對任意」連線：兩個分公司不必彼此拉專線，各自連到中樞就好。",
+      "_full": "虛擬 WAN 的建立順序是標準的「由外而內、最後接線」：\n① 虛擬 WAN 資源（最外層容器）\n② 虛擬中樞（區域核心，閘道由 Azure 託管）\n③ VPN 站台（每個地端據點一個）\n④ 把站台連上中樞\n\n「把虛擬網路連線到中樞」是誘答——那是要讓 Azure 裡的虛擬網路也加入這張網路時才做的事，本題只要求把兩個「內部部署據點」連起來，沒有提到任何虛擬網路。\n\n跟傳統站對站 VPN 的對照：\n・虛擬網路閘道 → 由虛擬中樞自動託管，不用自己建。\n・本機網路閘道 → 換成「VPN 站台」。\n・連線 → 換成「站台連線到中樞」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 453,
     "type": "matching",
     "question": "You have an Azure subscription that contains the virtual networks VNET1 (peered with VNET2, DNS server Default (Azure-provided)) and VNET2 (peered with VNET1, DNS server 10.10.0.4). You have the virtual machines Server1 (10.10.0.4, NIC1, VNET1/Subnet1), Server2 (172.16.0.4, NIC2, VNET1/Subnet2) and Server3 (192.168.0.4, NIC3, VNET2/Subnet2). The network interfaces have these DNS server settings: NIC1 Inherit from virtual network; NIC2 10.10.0.4; NIC3 Inherit from virtual network. Server1 is a DNS server that contains contoso.com (Primary DNS zone) and Host1.contoso.com (A record, 131.107.10.15). You have an Azure private DNS zone named contoso.com that has a virtual network link to VNET2 and the records Host1 (A record, 131.107.200.20) and Host2 (A record, 131.107.50.50). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
@@ -1443,6 +1469,31 @@
       "B": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
       "C": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
       "D": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 493,
+    "type": "ordering",
+    "question": "You have a Windows 11 device named Device1 and an Azure subscription that contains VNET1 (a virtual network), VM1 (a virtual machine that runs Windows Server 2022, does NOT have a public IP address, and is connected to VNET1) and Bastion1 (an Azure Bastion Basic SKU host connected to VNET1). Device1 has Azure PowerShell and Azure Command-Line Interface (CLI) installed. From Device1, you need to establish a Remote Desktop connection to VM1. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "From Azure CLI on Device1, run az network bastion rdp.",
+      "From Bastion1, enable Kerberos authentication.",
+      "From VM1, enable just-in-time (JIT) VM access.",
+      "From Bastion1, select Native Client Support.",
+      "On Device1, run mstsc.exe.",
+      "Upgrade Bastion1 to the Standard SKU."
+    ],
+    "ordered_steps": [
+      "Upgrade Bastion1 to the Standard SKU.",
+      "From Bastion1, select Native Client Support.",
+      "From Azure CLI on Device1, run az network bastion rdp."
+    ],
+    "explanations": {
+      "步驟 1": "把 Bastion1 升級為標準 SKU。\n題目要的是從本機的 RDP 用戶端連進去，這需要 Bastion 的「原生用戶端支援 (native client support)」功能。\n而這個功能「基本 SKU 沒有」——基本 SKU 只能透過 Azure 入口網站的瀏覽器工作階段連線。所以第一步必須先升級 SKU，否則下一步那個選項根本不會出現。",
+      "步驟 2": "在 Bastion1 上選取「原生用戶端支援」。\n升級之後到 Bastion1 的組態頁把這個選項打開，Bastion 才會開始接受來自 Azure CLI 的通道要求。\n（順帶一提，這個開關是 Bastion 主機層級的設定，不是每台 VM 各自設定。）",
+      "步驟 3": "在 Device1 上，從 Azure CLI 執行 az network bastion rdp。\n這道命令會經由 Bastion1 建立一條到 VM1 的通道，並自動叫起本機的 RDP 用戶端連上去——全程 VM1 都不需要公用 IP。\n注意這個命令只有 Azure CLI 有，Azure PowerShell 沒有對應的 Cmdlet。",
+      "_full": "Azure Bastion「原生用戶端」連線的三步驟：\n升級到標準 SKU → 開啟原生用戶端支援 → 用 az network bastion rdp 連線。\n\nSKU 差異是本題的關鍵，值得整組記起來：\n・開發人員 (Developer) SKU：免費、共用、只能瀏覽器連線。\n・基本 (Basic) SKU：只能瀏覽器連線，沒有原生用戶端、沒有 IP 型連線。\n・標準 (Standard) SKU 以上：才有原生用戶端支援、可調整執行個體數、共用連結、IP 型連線等進階功能。\n\n三個誘答：\n・直接跑 mstsc.exe 沒有用——VM1 沒有公用 IP，而且 Device1 與 VNET1 之間沒有任何私人連線。\n・JIT VM 存取是 Microsoft Defender for Cloud 的功能，它做的是「暫時開放 NSG 連接埠」，並不會幫你建立通道。\n・Bastion 沒有「Kerberos 驗證」這個一般性的開關可以解決本題（Kerberos 是給網域環境的驗證選項，跟能不能用原生用戶端無關）。"
     }
   },
   {
