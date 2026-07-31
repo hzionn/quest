@@ -105,6 +105,33 @@
   },
   {
     "exam": "AZ-104",
+    "id": 107,
+    "type": "matching",
+    "question": "你有一個名為 Sub1 的 Azure 訂用帳戶，其中包含兩個使用者 User1 與 User2。\n你需要為 User1 與 User2 指派角色型存取控制 (RBAC) 角色，讓他們可以在 Sub1 中執行下列工作：\n・User1 必須能「檢視任何儲存體帳戶中的資料」。\n・User2 必須能「把儲存體帳戶的參與者角色指派給其他使用者」。\n\n解決方案必須使用最低權限原則。你應該為每位使用者指派哪一個 RBAC 角色？（每個正確選擇得一分）",
+    "available_options": [
+      "擁有者 (Owner)",
+      "參與者 (Contributor)",
+      "讀取者和資料存取 (Reader and Data Access)",
+      "儲存體帳戶參與者 (Storage Account Contributor)"
+    ],
+    "matches": [
+      {
+        "use_case": "User1（要能檢視任何儲存體帳戶中的資料）：",
+        "correct_answer": "讀取者和資料存取 (Reader and Data Access)"
+      },
+      {
+        "use_case": "User2（要能把參與者角色指派給其他使用者）：",
+        "correct_answer": "擁有者 (Owner)"
+      }
+    ],
+    "explanations": {
+      "1": "讀取者和資料存取 (Reader and Data Access)。\n關鍵字是「資料」。Azure 儲存體的權限分成兩層：\n・管理平面：看得到帳戶本身的設定（誰是擁有者、複寫方式、防火牆…）。\n・資料平面：看得到帳戶「裡面」的 Blob／檔案／佇列／資料表內容。\n「參與者」「儲存體帳戶參與者」給的都是管理平面的權限，它們甚至可以列出金鑰再繞路進資料，但角色本身不含資料平面的讀取權。\n四個選項中只有「讀取者和資料存取」明確帶有資料的讀取權限，而且它比「擁有者」窄得多，符合最低權限原則。",
+      "2": "擁有者 (Owner)。\n「把角色指派給別人」需要的是 Microsoft.Authorization/roleAssignments/write 這個權限。\n內建角色裡帶有它的只有「擁有者」與「使用者存取系統管理員」，而本題選項中沒有後者，所以只能選擁有者。\n「參與者」是最容易選錯的答案——它可以管理幾乎所有資源，但被刻意排除了指派角色的權限，正是為了避免有人自我提權。",
+      "_full": "這題把 Azure RBAC 的兩個經典考點放在同一題：\n\n【資料平面 vs 管理平面】\n題目說「檢視資料」就要挑名字裡有 Data 的角色（Reader and Data Access、Storage Blob Data Reader…）；只說「管理儲存體帳戶」才輪到參與者那一類。\n\n【誰能指派角色】\n只有「擁有者」和「使用者存取系統管理員」可以指派角色。參與者故意沒有這個權限。看到「必須能指派角色／授權他人」，在沒有使用者存取系統管理員可選時，答案就是擁有者。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 108,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含 10 台虛擬機器、一個名為 Vault1 的金鑰保存庫，以及一個名為 NSG1 的網路安全性群組，所有資源都部署在美國東部區域。這些虛擬機器由 NSG1 保護，而 NSG1 設定為封鎖所有連往網際網路的輸出流量。你必須讓這些虛擬機器能夠存取 Vault1，且解決方案必須遵循最小權限原則並盡量減少管理工作。NSG1 的輸出安全性規則「目的地」應該設定為什麼？",
@@ -758,6 +785,32 @@
   },
   {
     "exam": "AZ-104",
+    "id": 147,
+    "type": "ordering",
+    "question": "你有一個 Microsoft Entra 租用戶。\n你需要確保建立新的 Microsoft 365 群組時，群組名稱會自動格式化為：\n\n　<Department><Group name>\n\n（也就是在使用者輸入的群組名稱前面，自動加上該使用者的「部門」屬性值。）\n\n你應該在 Microsoft Entra 系統管理中心依序執行哪三個動作？",
+    "available_steps": [
+      "將「新增尾碼」設為 Attribute（屬性）。",
+      "建立一個群組命名原則。",
+      "將「新增前置詞」設為 Attribute（屬性）。",
+      "將「新增尾碼」設為 String（字串）。",
+      "將「新增前置詞」設為 String（字串）。",
+      "將「選取類型」設為 Department（部門）。",
+      "自訂公司商標。"
+    ],
+    "ordered_steps": [
+      "建立一個群組命名原則。",
+      "將「新增前置詞」設為 Attribute（屬性）。",
+      "將「選取類型」設為 Department（部門）。"
+    ],
+    "explanations": {
+      "步驟 1": "建立一個群組命名原則。\n自動在群組名稱前後加東西，靠的是 Microsoft 365 群組的「群組命名原則 (group naming policy)」。\n原則本身是容器，前置詞／尾碼的規則都設定在它裡面，所以一定先建立它。\n（提醒：這個功能需要 Microsoft Entra ID P1 授權，而且只對 Microsoft 365 群組生效。）",
+      "步驟 2": "將「新增前置詞」設為 Attribute（屬性）。\n目標格式是 <Department><Group name>——部門在「前面」，所以動的是「前置詞」。\n前置詞可以填兩種東西：\n・String：固定的字串，每個群組都一樣（例如 GRP_）。\n・Attribute：跟著「建立者」的使用者屬性動態代入。\n題目要的是依部門變動的值，所以必須選 Attribute，不是 String。",
+      "步驟 3": "將「選取類型」設為 Department（部門）。\n上一步只說了「用屬性」，還沒說「用哪一個屬性」。這一步從可用的屬性清單（Department、Company、Office、State、Country、Title）中挑出 Department，格式才會真的變成 <Department><Group name>。\n順序不能顛倒：要先把前置詞的類型設成 Attribute，才會冒出這個屬性選單。",
+      "_full": "群組命名原則的設定順序就是「由外而內」：\n① 建立原則 → ② 決定要加在前面還後面、以及用固定字串還是屬性→ ③ 指定是哪一個屬性。\n\n看格式決定前置詞或尾碼：\n・<Department><Group name> → 部門在前 → 前置詞。\n・<Group name><Department> → 部門在後 → 尾碼。\n\n看值會不會變決定 String 或 Attribute：\n・每個群組都一樣的固定字 → String。\n・跟著建立者的部門／公司／地點變 → Attribute。\n\n「自訂公司商標」是誘答，那只是登入頁的外觀設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 148,
     "type": "matching",
     "question": "你有一個 Microsoft Entra 租用戶，其中包含下列使用者：\n・User1｜隸屬 Group1｜已指派授權：Microsoft Entra ID P2\n・User2｜隸屬 Group2｜已指派授權：無\n・User3｜隸屬於：無｜已指派授權：Microsoft Entra ID P2\n・User4｜隸屬於：無｜已指派授權：無\n\n該租用戶包含下列群組：\n・Group1｜隸屬於：無｜已指派授權：無\n・Group2｜隸屬 Group3｜已指派授權：Microsoft Entra ID P2\n・Group3｜隸屬 Group4｜已指派授權：無\n・Group4｜隸屬於：無｜已指派授權：Microsoft Entra ID P2\n\n哪些使用者與群組可以被刪除？（每個正確選擇得一分）",
@@ -1031,6 +1084,31 @@
   },
   {
     "exam": "AZ-104",
+    "id": 162,
+    "type": "ordering",
+    "question": "你有一個包含儲存體帳戶的 Azure 訂用帳戶。\n你有一台名為 Server1 的內部部署伺服器，執行 Windows Server 2016，上面有 2 TB 的資料。\n你需要使用 Azure 匯入／匯出服務 (Azure Import/Export) 把資料傳送到該儲存體帳戶。\n\n你應該以什麼順序執行下列動作？",
+    "available_steps": [
+      "在 Azure 入口網站中，更新匯入作業。",
+      "在 Azure 入口網站中，建立匯入作業。",
+      "將外接磁碟接上 Server1，然後執行 waimportexport.exe。",
+      "把外接磁碟從 Server1 拔下，並寄送到 Azure 資料中心。"
+    ],
+    "ordered_steps": [
+      "將外接磁碟接上 Server1，然後執行 waimportexport.exe。",
+      "在 Azure 入口網站中，建立匯入作業。",
+      "把外接磁碟從 Server1 拔下，並寄送到 Azure 資料中心。",
+      "在 Azure 入口網站中，更新匯入作業。"
+    ],
+    "explanations": {
+      "步驟 1": "將外接磁碟接上 Server1，然後執行 waimportexport.exe。\n第一步是把資料「複製到磁碟」。WAImportExport 工具做三件事：把資料寫進磁碟、用 BitLocker 加密磁碟、並產生一份「日誌檔 (journal file)」記錄這批磁碟的內容與金鑰。\n這一步必須最先做，因為下一步建立作業時要上傳的正是這份日誌檔。",
+      "步驟 2": "在 Azure 入口網站中，建立匯入作業。\n到目標儲存體帳戶建立匯入作業，把剛才產生的日誌檔上傳上去，並填寫寄回磁碟用的地址與貨運帳號。\n作業建立完成後，Azure 會給你「要把磁碟寄到哪個資料中心」的收件地址——所以這一步必須排在「寄送」之前，不然你根本不知道要寄去哪裡。",
+      "步驟 3": "把外接磁碟從 Server1 拔下，並寄送到 Azure 資料中心。\n照上一步拿到的地址，用你自己的貨運帳號把磁碟寄出去。",
+      "步驟 4": "在 Azure 入口網站中，更新匯入作業。\n寄出之後回到入口網站，把「貨運追蹤號碼」填進作業的詳細資料並送出作業。\n沒有追蹤號碼，Azure 資料中心無法把送達的磁碟對應到你的作業，所以這一步是最後、也是不可省略的收尾。",
+      "_full": "Azure 匯入／匯出的流程可以用「先做本地、再做雲端、再做物流、最後回報」來記：\n① 本地：waimportexport.exe 把資料寫入磁碟、加密、產生日誌檔。\n② 雲端：建立匯入作業、上傳日誌檔 → 取得收件地址。\n③ 物流：寄出磁碟。\n④ 回報：更新作業、填入追蹤號碼並提交。\n\n兩個順序上的因果最好記住：\n・日誌檔是第①步產生的，所以第②步不可能排在它前面。\n・收件地址是第②步才拿到的，所以第③步不可能排在它前面。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 163,
     "type": "matching",
     "question": "你有一個 Azure 訂用帳戶，其中包含下列 Azure 檔案共用：\n・share1｜位於儲存體帳戶 storage1｜位置 West US\n・share2｜位於儲存體帳戶 storage1｜位置 West US\n\n你有下列內部部署伺服器：\n・Server1｜資料夾 D:\\Folder1、E:\\Folder2\n・Server2｜資料夾 D:\\Data\n\n你建立了一個名為 Sync1 的儲存體同步服務，以及一個名為 Group1 的 Azure 檔案同步群組。\nGroup1 以 share1 作為雲端端點。\n你把 Server1 與 Server2 都註冊到 Sync1，並把 Server1 上的 D:\\Folder1 加為 Group1 的伺服器端點。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -1057,6 +1135,42 @@
       "2": "否。同一台已註冊伺服器在「同一個同步群組」中只能有一個伺服器端點。Server1 已經以 D:\\Folder1 加入 Group1，所以 E:\\Folder2 不能再加到 Group1（可以加到另一個同步群組）。",
       "3": "是。Server2 已註冊到 Sync1，而且在 Group1 中還沒有任何伺服器端點，因此 D:\\Data 可以加為 Group1 的伺服器端點，與 Server1 的 D:\\Folder1 及雲端的 share1 同步。",
       "_full": "Azure 檔案同步的三條結構規則：\n① 每個同步群組只有「一個」雲端端點；\n② 同一台伺服器在同一個同步群組中只能有「一個」伺服器端點（同一台伺服器的不同資料夾要同步，就得分到不同的同步群組）；\n③ 不同伺服器可以各自在同一個群組中有自己的伺服器端點。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 164,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶。\n你建立了一個名為 contosostorage 的 Azure 儲存體帳戶，然後在其中建立了一個名為 data 的檔案共用。\n\n在指令碼中要參照 data 檔案共用裡的檔案時，應該使用什麼 UNC 路徑？\n路徑的形式為：\n\n　\\\\【第 1 格】.【第 2 格】\\【第 3 格】\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "blob",
+      "contosostorage",
+      "file",
+      "portal.azure.com",
+      "blob.core.windows.net",
+      "data",
+      "file.core.windows.net",
+      "subscription1"
+    ],
+    "matches": [
+      {
+        "use_case": "第 1 格：",
+        "correct_answer": "contosostorage"
+      },
+      {
+        "use_case": "第 2 格：",
+        "correct_answer": "file.core.windows.net"
+      },
+      {
+        "use_case": "第 3 格：",
+        "correct_answer": "data"
+      }
+    ],
+    "explanations": {
+      "1": "contosostorage。UNC 路徑的第一段永遠是「儲存體帳戶名稱」。\n「subscription1」是訂用帳戶的名字，訂用帳戶不會出現在 URL 或 UNC 路徑裡；「portal.azure.com」是管理入口網站的網址，跟資料端點無關。",
+      "2": "file.core.windows.net。這是 Azure 檔案服務的端點後綴。\n每一種儲存體服務有各自的端點：Blob 是 blob.core.windows.net、檔案是 file.core.windows.net、佇列是 queue.core.windows.net、資料表是 table.core.windows.net。\n本題要掛載的是「檔案共用」，所以必須用 file 那一個；選 blob.core.windows.net 就連不上。",
+      "3": "data。最後一段是「檔案共用的名稱」。\n所以完整路徑是 \\\\contosostorage.file.core.windows.net\\data，可以直接用 net use 掛成磁碟機。",
+      "_full": "Azure 檔案共用的 UNC 路徑固定長這樣：\n\n　\\\\<儲存體帳戶>.file.core.windows.net\\<檔案共用名稱>\n\n對應到本題就是 \\\\contosostorage.file.core.windows.net\\data。\n\n背這個公式時順便記住四個服務端點：\n・Blob　　 <帳戶>.blob.core.windows.net\n・檔案　　 <帳戶>.file.core.windows.net\n・佇列　　 <帳戶>.queue.core.windows.net\n・資料表　 <帳戶>.table.core.windows.net\n\n清單裡的「blob」「file」是誘答——它們是服務名稱，不是可以直接放進路徑的完整端點。"
     }
   },
   {
@@ -1197,6 +1311,31 @@
       "C": "正確。加入內部部署的公用位址範圍 131.107.1.0/24 到防火牆允許清單，才能從公司網路把磁碟檔案上傳上去。",
       "D": "錯誤。VM1 掛載受控磁碟不需要經由儲存體帳戶的防火牆；而且此處要加入的是虛擬網路的「子網路」規則，前提是該子網路已啟用服務端點。就本題三項要求而言並非必要動作。",
       "E": "錯誤。服務端點是為了讓虛擬網路內的資源以私有路徑存取儲存體，但磁碟一旦轉為受控磁碟後由平台管理，VM1 並不需要透過服務端點存取 account1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 171,
+    "type": "ordering",
+    "question": "你有一台名為 Server1 的內部部署檔案伺服器，執行 Windows Server 2016。\n你有一個 Azure 訂用帳戶，其中包含一個 Azure 檔案共用。\n你已經部署了一個 Azure 檔案同步的「儲存體同步服務」，也已經建立了一個同步群組。\n\n你需要把 Server1 上的檔案同步到 Azure。你應該依序執行哪三個動作？",
+    "available_steps": [
+      "在 Server1 上安裝 Azure 檔案同步代理程式",
+      "建立一個 Azure 內部部署資料閘道",
+      "建立一個復原服務保存庫",
+      "註冊 Server1",
+      "新增一個伺服器端點",
+      "在 Server1 上安裝 DFS 複寫伺服器角色"
+    ],
+    "ordered_steps": [
+      "在 Server1 上安裝 Azure 檔案同步代理程式",
+      "註冊 Server1",
+      "新增一個伺服器端點"
+    ],
+    "explanations": {
+      "步驟 1": "在 Server1 上安裝 Azure 檔案同步代理程式。\n代理程式是一個可下載的安裝套件，安裝之後這台 Windows Server 才具備「跟 Azure 檔案共用同步」的能力。\n它同時也是下一步「註冊」的前提——註冊精靈本身就是代理程式帶進來的。",
+      "步驟 2": "註冊 Server1。\n註冊是把這台伺服器登記到「儲存體同步服務」底下，在伺服器與服務之間建立信任關係。\n註冊完成後，這台伺服器才會出現在儲存體同步服務的「已註冊的伺服器」清單裡，也才有資格被選為端點。",
+      "步驟 3": "新增一個伺服器端點。\n最後在同步群組中加入「伺服器端點」——它代表已註冊伺服器上的某一個路徑（例如 D:\\Shares\\Data）。\n同步群組裡的雲端端點（Azure 檔案共用）在題目中已經有了，把伺服器端點加進同一個群組，兩邊就開始同步。",
+      "_full": "Azure 檔案同步的部署順序固定是：\n① 建立儲存體同步服務（本題已完成）\n② 在伺服器上安裝代理程式\n③ 註冊伺服器\n④ 建立同步群組 + 雲端端點（本題已完成）\n⑤ 在同步群組中新增伺服器端點\n\n本題只問剩下的三步，記住「安裝 → 註冊 → 加端點」這個先後即可：\n沒安裝就沒得註冊，沒註冊的伺服器不能被選成端點。\n\n三個誘答都跟 Azure 檔案同步無關：\n・內部部署資料閘道是 Power BI／Logic Apps 存取內部資料用的。\n・復原服務保存庫是備份與 Site Recovery 用的。\n・DFS 複寫是 Windows Server 自己的檔案複寫功能，跟 Azure 檔案同步是兩套獨立機制（而且同一個資料夾不建議同時用兩者）。"
     }
   },
   {
@@ -1458,6 +1597,27 @@
       "B": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
       "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 183,
+    "type": "ordering",
+    "question": "你有一個包含 Azure 檔案共用的 Azure 訂用帳戶。\n你有一台名為 Server1 的內部部署伺服器，執行 Windows Server 2016。\n你打算在 Server1 與該 Azure 檔案共用之間設定 Azure 檔案同步。\n\n你需要為這個規劃準備訂用帳戶。\n你應該在「Azure 訂用帳戶中」依序執行哪兩個動作？",
+    "available_steps": [
+      "建立一個儲存體同步服務 (Storage Sync Service)",
+      "安裝 Azure 檔案同步代理程式",
+      "建立一個同步群組 (sync group)",
+      "執行伺服器註冊 (Server Registration)"
+    ],
+    "ordered_steps": [
+      "建立一個儲存體同步服務 (Storage Sync Service)",
+      "建立一個同步群組 (sync group)"
+    ],
+    "explanations": {
+      "步驟 1": "建立一個儲存體同步服務。\n儲存體同步服務是 Azure 檔案同步在訂用帳戶裡的最上層資源，所有的同步群組、已註冊伺服器、雲端端點都住在它底下。\n它必須第一個建立——沒有它，第二步的同步群組沒有地方可以建。",
+      "步驟 2": "建立一個同步群組。\n同步群組定義「哪一組檔案要彼此同步」。建立時要指定一個「雲端端點」，也就是題目裡那個 Azure 檔案共用。\n做完這兩步，訂用帳戶側就準備好了，剩下的才是到 Server1 上安裝代理程式、註冊伺服器、加入伺服器端點。",
+      "_full": "這題的關鍵限定詞是「在 Azure 訂用帳戶中」——四個選項要先依「做在哪一邊」分成兩類：\n・雲端（訂用帳戶）：建立儲存體同步服務、建立同步群組。\n・地端（Server1）：安裝 Azure 檔案同步代理程式、執行伺服器註冊。\n所以答案只會從前兩個裡面挑，剩下兩個是明確的誘答。\n\n順序同樣是「由外而內」：服務是容器，同步群組建在容器裡面，所以服務一定排在同步群組之前。"
     }
   },
   {

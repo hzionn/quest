@@ -694,6 +694,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 449,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains vm1 (a virtual machine that uses a basic public IP address), vm2 (a virtual machine that uses a basic public IP address), nsg1 (a network security group that allows incoming traffic from port 443) and lb1 (an Azure Standard Load Balancer). You need to load balance HTTPS connections to vm1 and vm2 by using lb1. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Remove nsg1.",
+      "Remove the public IP addresses from vm1 and vm2.",
+      "Create a health probe and backend pool on lb1.",
+      "Create an availability set.",
+      "Create a load balancing rule on lb1."
+    ],
+    "ordered_steps": [
+      "Remove the public IP addresses from vm1 and vm2.",
+      "Create a health probe and backend pool on lb1.",
+      "Create a load balancing rule on lb1."
+    ],
+    "explanations": {
+      "步驟 1": "從 vm1 與 vm2 移除公用 IP 位址。\n這是本題的核心：lb1 是「標準」SKU 的負載平衡器，而 vm1／vm2 掛的是「基本」SKU 的公用 IP。\nAzure 不允許把帶有基本 SKU 公用 IP 的 VM 加進標準負載平衡器的後端集區——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n所以要先把那兩個基本公用 IP 拔掉，VM 才有資格進後端集區。",
+      "步驟 2": "在 lb1 上建立健康情況探查與後端集區。\n後端集區負責「流量要送去哪些機器」，把 vm1 與 vm2 加進去；\n健康情況探查負責「這台機器還活著嗎」，探查失敗的執行個體會被自動移出輪替。\n兩者都是下一步負載平衡規則的必要輸入。",
+      "步驟 3": "在 lb1 上建立負載平衡規則。\n規則把「前端 IP + 連接埠 443」對應到「後端集區 + 連接埠 443」，並指定要用哪一個健康情況探查。\n它必須最後建立，因為建立時就要選前面做好的後端集區與探查。",
+      "_full": "解這題只要抓住一條 SKU 規則：\n「標準」負載平衡器只能搭配「標準」公用 IP；後端 VM 若帶著基本 SKU 的公用 IP，就加不進標準 LB 的後端集區。\n所以第一步永遠是把那些基本公用 IP 移除。\n\n接著是負載平衡器本身的組裝順序：後端集區與探查 → 規則。規則會引用前兩者，所以規則一定在最後。\n\n兩個誘答：\n・「移除 nsg1」反而會弄壞需求——nsg1 放行的正是 443，而標準負載平衡器預設是「安全的」，本來就需要 NSG 明確放行才進得來。\n・「建立可用性設定組」跟負載平衡無關，而且可用性設定組只能在建立 VM 的當下指定，事後加不了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 450,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You manage a virtual network named VNet1 that is hosted in the West US Azure region. VNet1 hosts two virtual machines named VM1 and VM2 that run Windows Server. You need to inspect all the network traffic from VM1 to VM2 for a period of three hours. Solution: From Azure Monitor, you create a metric on Network In and Network Out. Does this meet the goal?",
@@ -705,6 +729,32 @@
     "explanations": {
       "A": "Incorrect. 錯誤。Network In／Out 只是進出流量的總位元組數，看不出流量的來源、目的、通訊協定或內容。",
       "B": "Correct. 正確。計量只提供彙總數據；要檢查流量內容必須使用網路監看員的封包擷取。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 452,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains two on-premises locations named site1 and site2. You need to connect site1 and site2 by using an Azure Virtual WAN. Which four actions should you perform in sequence?",
+    "available_steps": [
+      "Create a virtual hub.",
+      "Create VPN sites.",
+      "Connect the virtual networks to the hub.",
+      "Create a Virtual WAN resource.",
+      "Connect the VPN sites to the hub."
+    ],
+    "ordered_steps": [
+      "Create a Virtual WAN resource.",
+      "Create a virtual hub.",
+      "Create VPN sites.",
+      "Connect the VPN sites to the hub."
+    ],
+    "explanations": {
+      "步驟 1": "建立虛擬 WAN 資源。\n虛擬 WAN 是最外層的容器，代表整個網路拓撲，底下所有的中樞、站台、連線都住在它裡面，所以它必須第一個建立。",
+      "步驟 2": "建立虛擬中樞 (virtual hub)。\n中樞是「一個區域裡的網路核心」，Azure 會在裡面自動託管 VPN 閘道、ExpressRoute 閘道與路由表——你不用自己建閘道，這正是虛擬 WAN 的賣點。\n站台之後要連的就是這個中樞，所以中樞必須排在站台連線之前。",
+      "步驟 3": "建立 VPN 站台 (VPN sites)。\n每個 VPN 站台代表一個內部部署據點的 VPN 設備，裡面登記它的公用 IP、BGP 設定與私人位址空間。\n本題有 site1 與 site2 兩個據點，所以要建立兩個 VPN 站台。\n（它相當於傳統做法裡的「本機網路閘道」。）",
+      "步驟 4": "把 VPN 站台連線到中樞。\n最後把兩個站台各自連上中樞，並填入共用金鑰。\n連上之後，site1 與 site2 的流量就會經由中樞互通——這就是虛擬 WAN 的「任意對任意」連線：兩個分公司不必彼此拉專線，各自連到中樞就好。",
+      "_full": "虛擬 WAN 的建立順序是標準的「由外而內、最後接線」：\n① 虛擬 WAN 資源（最外層容器）\n② 虛擬中樞（區域核心，閘道由 Azure 託管）\n③ VPN 站台（每個地端據點一個）\n④ 把站台連上中樞\n\n「把虛擬網路連線到中樞」是誘答——那是要讓 Azure 裡的虛擬網路也加入這張網路時才做的事，本題只要求把兩個「內部部署據點」連起來，沒有提到任何虛擬網路。\n\n跟傳統站對站 VPN 的對照：\n・虛擬網路閘道 → 由虛擬中樞自動託管，不用自己建。\n・本機網路閘道 → 換成「VPN 站台」。\n・連線 → 換成「站台連線到中樞」。"
     }
   },
   {
@@ -1419,6 +1469,31 @@
       "B": "Incorrect. 錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。",
       "C": "Incorrect. 錯誤。設為「無」時負載平衡器以五元組雜湊分配每個新連線，同一用戶端可能被導向不同伺服器，與需求正好相反（這也是預設值）。",
       "D": "Incorrect. 錯誤。停用浮動 IP 是預設行為，同樣不會影響流量分配的黏著性。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 493,
+    "type": "ordering",
+    "question": "You have a Windows 11 device named Device1 and an Azure subscription that contains VNET1 (a virtual network), VM1 (a virtual machine that runs Windows Server 2022, does NOT have a public IP address, and is connected to VNET1) and Bastion1 (an Azure Bastion Basic SKU host connected to VNET1). Device1 has Azure PowerShell and Azure Command-Line Interface (CLI) installed. From Device1, you need to establish a Remote Desktop connection to VM1. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "From Azure CLI on Device1, run az network bastion rdp.",
+      "From Bastion1, enable Kerberos authentication.",
+      "From VM1, enable just-in-time (JIT) VM access.",
+      "From Bastion1, select Native Client Support.",
+      "On Device1, run mstsc.exe.",
+      "Upgrade Bastion1 to the Standard SKU."
+    ],
+    "ordered_steps": [
+      "Upgrade Bastion1 to the Standard SKU.",
+      "From Bastion1, select Native Client Support.",
+      "From Azure CLI on Device1, run az network bastion rdp."
+    ],
+    "explanations": {
+      "步驟 1": "把 Bastion1 升級為標準 SKU。\n題目要的是從本機的 RDP 用戶端連進去，這需要 Bastion 的「原生用戶端支援 (native client support)」功能。\n而這個功能「基本 SKU 沒有」——基本 SKU 只能透過 Azure 入口網站的瀏覽器工作階段連線。所以第一步必須先升級 SKU，否則下一步那個選項根本不會出現。",
+      "步驟 2": "在 Bastion1 上選取「原生用戶端支援」。\n升級之後到 Bastion1 的組態頁把這個選項打開，Bastion 才會開始接受來自 Azure CLI 的通道要求。\n（順帶一提，這個開關是 Bastion 主機層級的設定，不是每台 VM 各自設定。）",
+      "步驟 3": "在 Device1 上，從 Azure CLI 執行 az network bastion rdp。\n這道命令會經由 Bastion1 建立一條到 VM1 的通道，並自動叫起本機的 RDP 用戶端連上去——全程 VM1 都不需要公用 IP。\n注意這個命令只有 Azure CLI 有，Azure PowerShell 沒有對應的 Cmdlet。",
+      "_full": "Azure Bastion「原生用戶端」連線的三步驟：\n升級到標準 SKU → 開啟原生用戶端支援 → 用 az network bastion rdp 連線。\n\nSKU 差異是本題的關鍵，值得整組記起來：\n・開發人員 (Developer) SKU：免費、共用、只能瀏覽器連線。\n・基本 (Basic) SKU：只能瀏覽器連線，沒有原生用戶端、沒有 IP 型連線。\n・標準 (Standard) SKU 以上：才有原生用戶端支援、可調整執行個體數、共用連結、IP 型連線等進階功能。\n\n三個誘答：\n・直接跑 mstsc.exe 沒有用——VM1 沒有公用 IP，而且 Device1 與 VNET1 之間沒有任何私人連線。\n・JIT VM 存取是 Microsoft Defender for Cloud 的功能，它做的是「暫時開放 NSG 連接埠」，並不會幫你建立通道。\n・Bastion 沒有「Kerberos 驗證」這個一般性的開關可以解決本題（Kerberos 是給網域環境的驗證選項，跟能不能用原生用戶端無關）。"
     }
   },
   {

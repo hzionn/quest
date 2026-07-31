@@ -223,6 +223,31 @@
   },
   {
     "exam": "AZ-104",
+    "id": 515,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains a resource group named RG1. You plan to create an Azure Resource Manager (ARM) template to deploy a new virtual machine named VM1. VM1 must support the capture of performance data. You need to specify resource dependencies for the ARM template. In which order should you deploy the resources?",
+    "available_steps": [
+      "virtual machine",
+      "Azure Monitor extension",
+      "network interface",
+      "virtual network"
+    ],
+    "ordered_steps": [
+      "virtual network",
+      "network interface",
+      "virtual machine",
+      "Azure Monitor extension"
+    ],
+    "explanations": {
+      "步驟 1": "虛擬網路。\n整條相依鏈的最底層。網路介面在建立時必須指定「要接到哪一個子網路」，而子網路屬於虛擬網路，所以虛擬網路一定要最先存在。",
+      "步驟 2": "網路介面。\n網路介面 (NIC) 依賴虛擬網路（要指定子網路），同時它又是虛擬機器的必要零件——VM 的定義裡要引用 NIC 的資源 ID。\n所以它夾在中間：晚於虛擬網路，早於虛擬機器。",
+      "步驟 3": "虛擬機器。\nVM 建立時要引用上一步的網路介面，所以它排在 NIC 之後。",
+      "步驟 4": "Azure 監視器延伸模組。\n「支援擷取效能資料」靠的就是這個延伸模組（Azure 監視器代理程式）。\n延伸模組是「安裝在既有 VM 上」的東西，它的資源類型本身就是 VM 的子資源，所以必須等 VM 建好之後才能部署——排在最後。",
+      "_full": "ARM 範本的相依性照「誰引用誰」推就好：被引用的先建。\n\n本題的引用鏈是：\n延伸模組 → 引用 VM → 引用 NIC → 引用子網路（虛擬網路）\n反過來就是部署順序：虛擬網路 → 網路介面 → 虛擬機器 → 延伸模組。\n\n實作上這是用 dependsOn 屬性（或 reference() 函式產生的隱含相依）表達的；沒有宣告相依時 Resource Manager 會盡量平行部署，所以漏寫 dependsOn 常常會出現「找不到子網路」這類間歇性失敗。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 516,
     "type": "single",
     "question": "You have an Azure subscription. You are creating a new Azure container instance that will have the following settings: • Container name: cont1 • SKU: Standard • OS type: Windows • Networking type: Public • Memory (GiB): 2.5 • Number of CPU cores: 2 You discover that the Private setting for Networking type is unavailable. You need to ensure that cont1 can be configured to use private networking. Which setting should you change?",
@@ -610,6 +635,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 539,
+    "type": "ordering",
+    "question": "You have an Azure Linux virtual machine that is protected by Azure Backup. One week ago, two files were deleted from the virtual machine. You need to restore the deleted files to an on-premises Windows Server 2016 computer as quickly as possible. Which four actions should you perform in sequence?",
+    "available_steps": [
+      "Download and run the script to mount a drive on the local computer",
+      "Select a restore point that contains the deleted files",
+      "From the Azure portal, click Restore VM from the vault",
+      "From the Azure portal, click File Recovery from the vault",
+      "Mount a VHD",
+      "Copy the files by using AZCopy",
+      "Copy the files by using File Explorer"
+    ],
+    "ordered_steps": [
+      "From the Azure portal, click File Recovery from the vault",
+      "Select a restore point that contains the deleted files",
+      "Download and run the script to mount a drive on the local computer",
+      "Copy the files by using File Explorer"
+    ],
+    "explanations": {
+      "步驟 1": "在 Azure 入口網站中，從保存庫點選「檔案復原」。\n關鍵字是「盡快」而且只要「兩個檔案」。\nAzure 備份提供兩種還原：\n・還原 VM：把整台機器還原成一台新 VM 或換掉磁碟——動輒數十分鐘到數小時。\n・檔案復原（項目層級還原 ILR）：把復原點以 iSCSI 掛成磁碟機，直接把檔案抓出來，幾分鐘就好。\n只要兩個檔案，當然選檔案復原。",
+      "步驟 2": "選取一個包含那些被刪除檔案的復原點。\n檔案是「一週前」被刪的，所以必須挑一個「早於刪除時間」的復原點，挑到刪除之後的復原點，掛上去也找不到那兩個檔案。",
+      "步驟 3": "下載並執行指令碼，在本機電腦上掛載磁碟機。\nAzure 會產生一個一次性的可執行指令碼（下載時要輸入密碼）。在目標電腦上執行它，它會透過 iSCSI 把該復原點的磁碟掛成本機磁碟機。\n指令碼有效期是 12 小時。",
+      "步驟 4": "使用檔案總管複製檔案。\n磁碟機掛好之後，它就是一個普通的本機磁碟機，直接用檔案總管把那兩個檔案複製到需要的位置即可。\n複製完記得回入口網站按「卸載磁碟」。\n「使用 AzCopy 複製」是誘答——AzCopy 是用來搬 Azure 儲存體裡的物件的，這裡的來源是已經掛載好的本機磁碟機，用檔案總管最直接。",
+      "_full": "口訣：「少數幾個檔案 + 要快」＝ 檔案復原 (ILR)，不是還原整台 VM。\n\nILR 的四步流程：\n① 保存庫 →「檔案復原」\n② 選一個「早於刪除時間」的復原點\n③ 下載並執行掛載指令碼（iSCSI 掛成磁碟機，指令碼 12 小時內有效）\n④ 用一般的檔案複製工具把檔案抓走，完成後卸載磁碟\n\n「掛載一個 VHD」也是誘答——你不用自己去找 VHD 掛，掛載這件事是指令碼幫你做的。\n\n補充一個原題本身的瑕疵：來源是 Linux VM，而 Azure 為 Linux VM 產生的 ILR 指令碼是 Python 指令碼，實務上需要在 Linux 機器（且已安裝 Python 與 iSCSI 啟動器）上執行，並不能直接在 Windows Server 2016 上跑。本題考的是「還原方式的選擇與先後順序」，這個細節不影響作答。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 540,
     "type": "matching",
     "question": "You have an Azure subscription that contains an Azure virtual machine named VM1. You need to configure the backup of VM1. In which location should you store the backups, and which object should you use to configure the protection for VM1?",
@@ -955,6 +1008,30 @@
       "B": "Incorrect. 錯誤。存取權檢閱是週期性重新確認誰該保有存取權的治理流程，不是活動監視工具。",
       "C": "Incorrect. 錯誤。活動記錄篩選只能在「單一訂用帳戶」的記錄中檢視與篩選，無法跨 10 個訂用帳戶集中查詢。",
       "D": "Correct. 正確。把所有訂用帳戶的活動記錄透過診斷設定匯集到同一個 Log Analytics 工作區，即可用 KQL 跨訂用帳戶集中查詢與保留使用者活動。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 554,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains a virtual machine named VM1. VM1 has an operating system disk named Disk1 and a data disk named Disk2. You need to back up Disk2 by using Azure Backup. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Configure a managed identity",
+      "Create an Azure Backup vault",
+      "Create a Recovery Services vault",
+      "Delegate permissions for the vault",
+      "Create a backup policy and configure the backup"
+    ],
+    "ordered_steps": [
+      "Create an Azure Backup vault",
+      "Create a backup policy and configure the backup",
+      "Configure a managed identity"
+    ],
+    "explanations": {
+      "步驟 1": "建立一個 Azure 備份保存庫 (Backup vault)。\n第一個岔路就在這裡：要備份的是「受控磁碟」這個單一資源，不是整台 VM。\n・整台 VM 的備份 → 復原服務保存庫。\n・單顆受控磁碟的備份 → Azure 備份保存庫 (Backup vault)。\n所以選 Backup vault，不是 Recovery Services vault。",
+      "步驟 2": "建立備份原則並設定備份。\n在保存庫中建立磁碟備份原則（設定快照頻率與保留期），然後執行「設定備份」，選擇要保護的 Disk2、以及要用來存放增量快照的資源群組。",
+      "步驟 3": "設定受控識別。\n磁碟備份是靠保存庫的「受控識別」去來源磁碟建立快照的，所以要授予這個識別兩組權限：\n・在 Disk2 所在的資源群組上給「磁碟備份讀取者 (Disk Backup Reader)」。\n・在存放快照的資源群組上給「磁碟快照參與者 (Disk Snapshot Contributor)」。\n在入口網站的流程裡，這一步正好落在「設定備份」的驗證階段——系統會先檢查權限，缺什麼就提示你在那裡補上，所以它排在最後。\n（若你習慣先把角色指派好再來設定備份，驗證階段就會直接通過；兩種做法都可行，本題採用入口網站實際引導的順序。）",
+      "_full": "這題只有兩個考點：\n\n① 保存庫選哪一種？\n・Recovery Services 保存庫 → VM、Azure 檔案共用、VM 內的 SQL／SAP HANA、MARS。\n・Azure 備份保存庫 (Backup vault) → 受控磁碟、Blob、Azure Database for PostgreSQL、AKS。\n本題備份的是「一顆受控磁碟」，所以是 Backup vault。\n「建立復原服務保存庫」是這題最主要的誘答。\n\n② 磁碟備份需要授權：保存庫的受控識別要能讀取來源磁碟（磁碟備份讀取者）並在快照資源群組建立快照（磁碟快照參與者）。\n沒有這兩個角色，備份會在驗證階段失敗。\n\n「委派保存庫的權限」是誘答——本題要授權的對象是「保存庫的識別」，不是把保存庫的管理權委派給某個人。"
     }
   },
   {
@@ -1641,6 +1718,30 @@
       "1": "3。復原服務保存庫必須和它保護的資源「位於同一個區域」，所以有幾個區域、就至少要幾個保存庫。\n本題要備份的東西落在三個區域：\n・West US：VM1、VM2、VM4，以及 storage1 的 sharea\n・East US：VM5，以及 storage2 的 shareb、sharec\n・Central US：VM3，以及 storage4 的 shared\nstorage3 雖然在第四個區域 East US 2，但它是 BlobStorage 帳戶、沒有檔案共用，不在這題的備份範圍內，所以不用為它開保存庫。",
       "2": "6。備份原則的範圍限定在「單一保存庫」之內——原則不能跨保存庫共用，而且虛擬機器與 Azure 檔案共用是兩種不同類型的原則，也不能合併成一份。\n三個區域每一區都同時有 VM 和檔案共用，所以每個保存庫都需要 2 份原則：1 份給 VM、1 份給檔案共用。3 × 2 = 6。",
       "_full": "這類「最少要幾個」的題目照兩條規則算就好：\n① 保存庫跟資源必須同區域 → 保存庫數 = 需要備份的資源所在的「不同區域」數。\n② 備份原則屬於某一個保存庫，且依工作負載類型區分 →\n　 原則數 = Σ（每個保存庫內出現的工作負載類型數）。\n\n算區域時記得先把「不需要備份的資源」剔掉——本題的 storage3 在 East US 2，但它沒有檔案共用，把它算進去就會誤選 4 個保存庫。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 587,
+    "type": "ordering",
+    "question": "Case study: Contoso, Ltd. Sub1 contains virtual machines named VM1 and VM2 that run Windows Server 2019. A technical requirement states: trigger an alert if VM1 or VM2 has less than 20 GB of free space on volume C. You need to configure the alerts for VM1 and VM2 to meet the technical requirements. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Create a Log Analytics workspace.",
+      "Configure the Diagnostic settings.",
+      "Create an alert rule.",
+      "Collect Windows performance counters from the Log Analytics agents.",
+      "Create an Azure SQL database."
+    ],
+    "ordered_steps": [
+      "Create a Log Analytics workspace.",
+      "Collect Windows performance counters from the Log Analytics agents.",
+      "Create an alert rule."
+    ],
+    "explanations": {
+      "步驟 1": "建立一個 Log Analytics 工作區。\n「C 磁碟區的可用空間」是「來賓作業系統內部」的指標——Azure 平台層級的計量看不到磁碟區的剩餘空間，必須靠 VM 裡的代理程式把資料送出來。\n工作區就是這些資料的落腳處，所以要先有它。",
+      "步驟 2": "從 Log Analytics 代理程式收集 Windows 效能計數器。\n在工作區裡設定要收集哪些效能計數器——本題要的是\n「LogicalDisk(*)\\Free Megabytes」這一個。\n設定完成後，VM1 與 VM2 上的代理程式就會定期把 C 磁碟區的剩餘空間寫進工作區。\n沒有這一步，工作區裡根本沒有資料可以拿來判斷門檻。",
+      "步驟 3": "建立一個警示規則。\n最後建立警示規則：範圍設為這個工作區，條件寫成「LogicalDisk 的 Free Megabytes 小於 20480」（20 GB），再接上動作群組去發通知。\n規則必須最後建立，因為它要選擇前面已經在收集的那個訊號。",
+      "_full": "判斷「這個指標是平台看得到，還是要進到來賓 OS 裡看」是這類題的分水嶺：\n・CPU 百分比、磁碟 IOPS、網路流量 → 平台計量，直接建警示規則就好。\n・磁碟區剩餘空間、記憶體可用量、行程、事件記錄 → 來賓 OS 內部，必須先裝代理程式、設定要收集什麼，才有資料可以警示。\n本題屬於後者，所以是「工作區 → 收集計數器 → 警示規則」三步。\n\n兩個誘答：\n・「設定診斷設定」處理的是平台層級的資源記錄與計量的匯出目的地，它不會讓你拿到 C 磁碟區的可用空間。\n・「建立 Azure SQL 資料庫」跟監視完全無關。"
     }
   },
   {

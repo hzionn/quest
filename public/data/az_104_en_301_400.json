@@ -1433,6 +1433,32 @@
   },
   {
     "exam": "AZ-104",
+    "id": 385,
+    "type": "ordering",
+    "question": "You have an Azure subscription that contains two virtual networks named VNet1 and VNet2. Virtual machines connect to the virtual networks. VNet1 uses the address space 10.1.0.0/16 with the subnets 10.1.0.0/24 and 10.1.1.0/26 and is peered with VNet2; VNet2 uses the address space 10.2.0.0/16 with the subnet 10.2.0.0/24 and is peered with VNet1. You need to add the address space of 10.33.0.0/16 to VNet1. The solution must ensure that the hosts on VNet1 and VNet2 can communicate. Which three actions should you perform in sequence?",
+    "available_steps": [
+      "Remove VNet1.",
+      "Add the 10.33.0.0/16 address space to VNet1.",
+      "Create a new virtual network named VNet1.",
+      "On the peering connection in VNet2, allow gateway transit.",
+      "Recreate peering between VNet1 and VNet2.",
+      "On the peering connection in VNet1, allow gateway transit.",
+      "Remove peering between VNet1 and VNet2."
+    ],
+    "ordered_steps": [
+      "Remove peering between VNet1 and VNet2.",
+      "Add the 10.33.0.0/16 address space to VNet1.",
+      "Recreate peering between VNet1 and VNet2."
+    ],
+    "explanations": {
+      "步驟 1": "移除 VNet1 與 VNet2 之間的對等互連。\n這是本題唯一的考點：虛擬網路一旦與另一個虛擬網路建立對等互連，它的位址空間就被鎖住了——不能新增位址範圍，也不能刪除位址範圍。\n所以要改位址空間，只能先把對等互連拆掉。",
+      "步驟 2": "把 10.33.0.0/16 位址空間加到 VNet1。\n對等互連拆掉之後，VNet1 的位址空間就解鎖了，這時才加得進新的範圍。\n（10.33.0.0/16 與 VNet2 的 10.2.0.0/16 不重疊，所以加完之後兩者還是可以重新對等互連。）",
+      "步驟 3": "重新建立 VNet1 與 VNet2 之間的對等互連。\n最後把對等互連接回去，兩邊的主機才能繼續互相通訊——這正是題目多加的那句限制條件。\n重建之後新的 10.33.0.0/16 也會被納入對等互連的路由。",
+      "_full": "口訣：「對等互連會鎖住位址空間」，所以流程是「拆 → 改 → 接回去」。\n\n兩個誘答陷阱：\n・「移除 VNet1 / 建立新的 VNet1」是把整個虛擬網路砍掉重建——上面的虛擬機器網路卡全部會斷，代價遠大於必要，也不符合「主機仍能通訊」。\n・「允許閘道傳輸」是讓對等的虛擬網路共用 VPN／ExpressRoute 閘道用的設定，跟修改位址空間完全無關。\n\n補充一則實務差異：這道題是舊版行為。Azure 後來放寬了限制，現在可以在維持對等互連的情況下新增位址空間，只要事後在兩端各執行一次「同步對等互連 (sync peering)」即可；但考試仍以「先移除對等互連」這個答案為準。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 386,
     "type": "matching",
     "question": "You have an Azure subscription that contains the resource groups RG1 (West US) and RG2 (East US). RG1 contains the following resources, all in West US: storage1 (storage account), VNet1 (virtual network), NIC1 (network interface), Disk1 (disk), VM1 (virtual machine). VM1 is running and connects to NIC1 and Disk1. NIC1 connects to VNET1. RG2 contains a public IP address named IP2 that is in the East US location. IP2 is not assigned to a virtual machine. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
@@ -1650,6 +1676,33 @@
       "1": "「虛擬網路連結」是「私人」DNS 區域專屬的功能——公用區域對整個網際網路提供解析，根本沒有連結虛擬網路的概念。而私人 DNS 區域是「全域」資源，與虛擬網路不需要同區域，因此 Adatum.pri（West Europe）與 Contoso.pri（Central US）都可以連結到位於 West US 的 VNET1。→ 只有那些私人區域。",
       "2": "自動註冊同樣只有私人區域支援（在建立虛擬網路連結時勾選「啟用自動註冊」），公用區域的記錄一律要手動維護。VM 在 Windows 裡設定的 DNS 後置字元（Adatum.com）不影響註冊目標。→ 只有那些私人區域。\n（補充一個實務限制：同一個虛擬網路「同時只能有一個」啟用自動註冊的連結，所以實際上一次只會註冊到其中一個私人區域；但就選項而言，支援自動註冊的類別就是私人區域。）",
       "_full": "兩格都圍繞同一條界線：虛擬網路連結與自動註冊都是「私人」DNS 區域的功能，公用區域兩者都沒有。\n另外兩個要記的細節：① 私人 DNS 區域是全域資源，連結時不要求與虛擬網路同區域（本題的 West Europe／Central US 都不是問題）；② 每個虛擬網路最多只能有一個啟用自動註冊的連結。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 400,
+    "type": "ordering",
+    "question": "You have an on-premises network that you plan to connect to Azure by using a site-to-site VPN. In Azure, you have an Azure virtual network named VNet1 that uses an address space of 10.0.0.0/16. VNet1 contains a subnet named Subnet1 that uses an address space of 10.0.0.0/24. You need to create a site-to-site VPN to Azure. Which four actions should you perform in sequence?",
+    "available_steps": [
+      "Create a local gateway.",
+      "Create a VPN gateway.",
+      "Create a gateway subnet.",
+      "Create a custom DNS server.",
+      "Create a VPN connection.",
+      "Create an Azure Content Delivery Network (CDN) profile."
+    ],
+    "ordered_steps": [
+      "Create a gateway subnet.",
+      "Create a VPN gateway.",
+      "Create a local gateway.",
+      "Create a VPN connection."
+    ],
+    "explanations": {
+      "步驟 1": "建立閘道子網路。\n虛擬網路閘道一定要住在一個名字就叫 GatewaySubnet 的專用子網路裡，名稱不能改，而且裡面不能放其他資源。\nVNet1 現在只有 Subnet1（10.0.0.0/24），所以要從剩下的位址空間切一段出來當閘道子網路（建議至少 /27，才留得下未來擴充的空間）。\n沒有這個子網路，下一步的 VPN 閘道根本建不起來。",
+      "步驟 2": "建立 VPN 閘道。\n也就是「虛擬網路閘道」，類型選 VPN。它是 Azure 這一端的 IPsec 端點，會自動配一個公用 IP 給對方連線用。\n（這一步是全流程最慢的，通常要 20～45 分鐘。）",
+      "步驟 3": "建立本機網路閘道。\n本機網路閘道是「對方那台內部部署 VPN 設備」在 Azure 裡的代表物件，裡面登記它的公用 IP，以及內部部署有哪些網段要路由過去。\n沒有它，Azure 不知道要撥給誰、也不知道哪些目的地要走通道。",
+      "步驟 4": "建立 VPN 連線。\n最後把「VPN 閘道」與「本機網路閘道」用一條連線串起來，選 Site-to-site (IPsec) 類型並填入共用金鑰 (PSK)。\n地端設備也填上同一把金鑰之後，通道就會建立起來。\n這一步必須最後做，因為它要引用前面兩個閘道。",
+      "_full": "站對站 VPN 的四個零件，順序就是「先有地方 → 再有兩端 → 最後接起來」：\n① GatewaySubnet（閘道要住的子網路，名稱固定）\n② 虛擬網路閘道（Azure 這一端）\n③ 本機網路閘道（地端那一端的代表物件）\n④ 連線（把 ②③ 綁起來，帶共用金鑰）\n\n②③ 之間其實沒有硬性依賴（本機網路閘道可以先建），原題也註明「有多種正確順序」，但①必須在②之前、④必須在最後。\n\n兩個誘答：自訂 DNS 伺服器是名稱解析的設定，CDN 設定檔是靜態內容加速用的，都跟建立 VPN 無關。"
     }
   }
 ]
