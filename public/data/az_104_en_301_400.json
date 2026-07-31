@@ -79,6 +79,60 @@
   },
   {
     "exam": "AZ-104",
+    "id": 305,
+    "type": "matching",
+    "question": "You deploy an Azure Kubernetes Service (AKS) cluster that has the following network profile: Type (plugin) Basic (Kubenet); Pod CIDR 10.244.0.0/16; Service CIDR 10.0.0.0/16; DNS service IP 10.0.0.10; Docker bridge CIDR 172.17.0.1/16; Network options - HTTP application routing Disabled. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "10.244.0.0/16",
+      "10.0.0.0/16",
+      "172.17.0.1/16"
+    ],
+    "matches": [
+      {
+        "use_case": "Containers will be assigned an IP address in the [answer choice] subnet.",
+        "correct_answer": "10.244.0.0/16"
+      },
+      {
+        "use_case": "Services in the AKS cluster will be assigned an IP address in the [answer choice] subnet.",
+        "correct_answer": "10.0.0.0/16"
+      }
+    ],
+    "explanations": {
+      "1": "容器是跑在 Pod 裡的，因此取得的是「Pod CIDR」範圍內的位址，也就是 10.244.0.0/16。（Kubenet 模式下這是叢集內部的虛擬位址空間，Pod 對外時透過節點做 NAT；這個範圍在叢集建立後就不能再改，所以要一開始就開得夠大。）",
+      "2": "Kubernetes 的「服務」使用叢集 IP，來自「服務 CIDR」，也就是 10.0.0.0/16。DNS 服務 IP（10.0.0.10）落在這個範圍內正好印證這一點——它必須是服務 CIDR 中的一個位址。",
+      "_full": "三個 CIDR 的分工要記牢：\n・Pod CIDR → 給 Pod／容器用（Kubenet 才有；Azure CNI 是直接用子網路 IP）。\n・服務 CIDR → 給 Kubernetes Service 的叢集 IP 用，DNS 服務 IP 必須在其中。\n・Docker 橋接器 CIDR → 節點上的 Docker 橋接網路，不給 Pod 或服務使用。\n這三個範圍彼此、以及與虛擬網路的既有位址都不能重疊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 306,
+    "type": "matching",
+    "question": "You have an App Service plan whose autoscale (default auto created scale condition) is configured as follows: scale mode Scale based on a metric; scale out rule - when homepage (Maximum) CpuPercentage > 85, increase count by 1; scale in rule - when homepage (Average) CpuPercentage < 30, decrease count by 1; instance limits minimum 1, maximum 5, default 1. The scale-in settings are: operator Less than, metric threshold 30%, duration 5 minutes, time grain statistic Average, action Decrease count by, instance count 1, cool down 5 minutes. The scale out rule is configured with the same duration and cool down as the scale in rule. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "If after deployment CPU usage is 70 percent for one hour and then reaches 90 percent for five minutes, at that time the total number of instances will be [answer choice].",
+        "correct_answer": "5"
+      },
+      {
+        "use_case": "If after deployment the CPU maintains constant usage of 90 percent for one hour, and then the average CPU usage is below 25 percent for nine minutes, at that point the number of instances will be [answer choice].",
+        "correct_answer": "3"
+      }
+    ],
+    "explanations": {
+      "1": "70% 既不超過 85%（不向外延展）、也不低於 30%（不向內延展），所以第一小時維持在 1 台。接著 CPU 到 90%（> 85%）並持續超過 5 分鐘 → 觸發向外延展，每次 +1，冷卻 5 分鐘後只要條件仍成立就再 +1。在整段高負載期間會一路加到「執行個體上限 5」為止，所以答案是 5。\n（陷阱：不要只算一次調整；持續超標會反覆觸發，直到達到上限。）",
+      "2": "先前 90% 持續一小時已經把執行個體加到上限 5。接著平均 CPU 低於 30%：第一次滿足 5 分鐘的持續時間 → 減 1（5 → 4）；冷卻 5 分鐘後（累計約 10 分鐘）才可能再減一次。題目只給了「九分鐘」，在第 5 分鐘減 1、第 10 分鐘才會再減——官方判定在這段時間內共減了 2 次，得到 3。\n（官方解釋原文為「低於 30% 時先減 1，經過 5 分鐘冷卻後再減 1，到達 3」。）",
+      "_full": "自動調整的四個判斷要素：門檻、統計方式（最大值／平均值）、持續時間、冷卻時間，再加上執行個體的上下限。\n・介於兩個門檻之間的使用率（如 70%）不會觸發任何調整。\n・條件持續成立時會「反覆」觸發，每次間隔一個冷卻時間，直到碰到上限或下限。\n・本題上限 5、下限 1，所以長時間高負載一定停在 5。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 307,
     "type": "single",
     "question": "You have an Azure virtual machine named VM1 that runs Windows Server 2019. The VM was deployed using default drive settings. You sign in to VM1 as a user named User1 and perform the following actions: ✑ Create files on drive C. ✑ Create files on drive D. ✑ Modify the screen saver timeout. ✑ Change the desktop background. You plan to redeploy VM1. Which changes will be lost after you redeploy VM1?",
@@ -94,6 +148,61 @@
       "B": "Incorrect. 錯誤。桌面背景同樣儲存在 OS 磁碟的使用者設定檔中，重新部署後仍存在。",
       "C": "Correct. 正確。以預設磁碟設定部署的 Windows VM，磁碟機 D 是「暫存磁碟」，資料存在本機主機的實體儲存體上。重新部署會把 VM 遷移到新主機，暫存磁碟隨之重建，D 槽上的檔案全部遺失。",
       "D": "Incorrect. 錯誤。磁碟機 C 是持續性的 OS 受控磁碟，內容會完整保留。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 309,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a virtual machine scale set. The scale set contains four instances that have the following configurations: Operating system Windows Server 2016; Size Standard_D1_v2. You run the Get-AzVmss cmdlet and see: (Get-AzVmss -Name WebProd -ResourceGroupName RG1).VirtualMachineProfile.OsProfile.WindowsConfiguration with ProvisionVMAgent True, EnableAutomaticUpdates False, and TimeZone / AdditionalUnattendContent / WinRM blank; and Get-AzVmss -Name WebProd -ResourceGroupName RG1 | Select -ExpandProperty UpgradePolicy with Mode Automatic, RollingUpgradePolicy blank, AutomaticOSUpgradePolicy Microsoft.Azure.Management.Compute.Models.AutomaticOSUpgradePolicy. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "When an administrator changes the virtual machine size, the size will be changed on up to [answer choice] virtual machines simultaneously.",
+        "correct_answer": "4"
+      },
+      {
+        "use_case": "When a new build of the Windows Server 2016 image is released, the new build will be deployed to up to [answer choice] virtual machines simultaneously.",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "UpgradePolicy 的 Mode 是 Automatic。自動模式下，只要擴展集的「模型」有變更（例如改 VM 大小），平台會「立刻對所有執行個體」套用，不分批、不保證可用性。擴展集有 4 個執行個體，所以最多 4 台同時變更。\n（相對地，Rolling 模式會分批更新並在批次之間等待；Manual 模式則要自己逐一升級。）",
+      "2": "作業系統映像的新版本走的是「自動 OS 映像升級」流程，這條路徑「一定是分批」的：每批最多為執行個體總數的 20%，且至少 1 台。4 × 20% = 0.8，不足 1 台，因此取下限 1——一次只升級 1 台。\n（這也是為什麼兩格答案不同：模型變更走 UpgradePolicy.Mode，映像升級走 AutomaticOSUpgradePolicy，兩者的批次規則完全不一樣。）",
+      "_full": "本題在測「模型變更」與「OS 映像升級」是兩條不同的路徑：\n・模型變更（大小、擴充功能、組態）→ 由 UpgradePolicy.Mode 決定；Automatic 表示一次全部套用（本題 4 台）。\n・OS 映像有新版本 → 由自動 OS 映像升級處理，固定分批，每批最多 20% 且至少 1 台（本題 1 台）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 312,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1. Subscription1 contains two Azure virtual machines VM1 and VM2. VM1 and VM2 run Windows Server 2016. VM1 is backed up daily by Azure Backup without using the Azure Backup agent. VM1 is affected by ransomware that encrypts data. You need to restore the latest backup of VM1. To which location can you restore the backup?",
+    "available_options": [
+      "VM1 only",
+      "VM1 or a new Azure virtual machine only",
+      "VM1 and VM2 only",
+      "A new Azure virtual machine only",
+      "Any Windows computer that has Internet connectivity"
+    ],
+    "matches": [
+      {
+        "use_case": "You can perform a file recovery of VM1 to:",
+        "correct_answer": "Any Windows computer that has Internet connectivity"
+      },
+      {
+        "use_case": "You can restore VM1 to:",
+        "correct_answer": "VM1 or a new Azure virtual machine only"
+      }
+    ],
+    "explanations": {
+      "1": "檔案層級復原 (file recovery) 的做法是：從復原點產生一個掛接指令碼，在任何一台「作業系統相符、且能連上網際網路」的電腦上執行，它會把復原點以 iSCSI 掛接成本機磁碟，你再從中複製檔案出來。因此目的地不限於原本的 VM——任何具備網際網路連線的 Windows 電腦都可以。",
+      "2": "整台 VM 還原有兩種選擇：「取代現有」（覆寫回 VM1 本身）或「建立新的虛擬機器」。所以可以還原到 VM1 或一台新的 Azure 虛擬機器。但不能還原到「另一台既有的 VM」（例如 VM2）——Azure 備份不提供覆寫到其他既有 VM 的選項。",
+      "_full": "Azure 備份（VM 層級、不裝代理程式）的兩種還原粒度：\n・檔案復原：掛接復原點成 iSCSI 磁碟，可在任何相容且能上網的電腦執行，最靈活。\n・整台還原：只能「取代現有的原 VM」或「建立一台新的 VM」，不能覆蓋到另一台既有的虛擬機器。"
     }
   },
   {
@@ -132,6 +241,40 @@
   },
   {
     "exam": "AZ-104",
+    "id": 315,
+    "type": "matching",
+    "question": "You have an Azure subscription. You plan to use Azure Resource Manager templates to deploy 50 Azure virtual machines that will be part of the same availability set. You need to ensure that as many virtual machines as possible are available if the fabric fails or during servicing. How should you configure the template?  \"type\": \"Microsoft.Compute/availabilitySets\", \"name\": \"ha\", \"apiVersion\": \"2017-12-01\", \"location\": \"eastus\", \"properties\": { \"platformFaultDomainCount\": [box 1], \"platformUpdateDomainCount\": [box 2] }",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "10",
+      "20",
+      "25",
+      "30",
+      "40",
+      "50"
+    ],
+    "matches": [
+      {
+        "use_case": "platformFaultDomainCount:",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "platformUpdateDomainCount:",
+        "correct_answer": "20"
+      }
+    ],
+    "explanations": {
+      "1": "錯誤網域對應「網狀架構故障」（機架的電源、網路交換器）。可用性設定組的錯誤網域上限是 3（部分區域只支援 2），要把故障影響降到最小就取最大值 3——50 台平均分成 3 組，單一機架失效時最多只影響約 17 台。選項中的 4 超過上限，會部署失敗。",
+      "2": "更新網域對應「維護服務期間」（平台一次只重啟一個更新網域）。更新網域最多可設 20，取 20 時 50 台會分成 20 組（每組 2～3 台），每次維護只有一組離線，可用的 VM 數量最多。25／30／40／50 都超過上限 20，不是有效值。",
+      "_full": "兩個上限要記牢：可用性設定組的錯誤網域最多 3、更新網域最多 20。題目要「盡可能多的 VM 保持可用」，所以兩者都取最大值——網域切得越細，單一故障或單次維護影響的 VM 就越少。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 316,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure virtual machine named VM1 that runs Windows Server 2016. You need to create an alert in Azure when more than two error events are logged to the System event log on VM1 within an hour. Solution: You create an Azure Log Analytics workspace and configure the Agent configuration settings. You install the Microsoft Monitoring Agent on VM1. You create an alert in Azure Monitor and specify the Log Analytics workspace as the source. Does this meet the goal?",
@@ -143,6 +286,34 @@
     "explanations": {
       "A": "Correct. 正確。在工作區的代理程式設定中指定要收集的 Windows 事件記錄（系統記錄的錯誤層級），透過 MMA 把事件送進工作區，再以工作區為來源建立記錄查詢警示，即可對「一小時內超過兩個錯誤事件」設定條件，完整達成目標。",
       "B": "Incorrect. 錯誤。這條路徑（工作區收集設定 + 代理程式 + 記錄查詢警示）正是官方建議的做法。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 317,
+    "type": "matching",
+    "question": "You have an Azure subscription. You deploy a virtual machine scale set configured as follows (Scaling tab): Initial instance count 2; Scaling policy Custom; Minimum number of VMs 1; Maximum number of VMs 10; Scale out - CPU threshold 75%, duration 10 minutes, number of VMs to increase by 1; Scale in - CPU threshold 25%, number of VMs to decrease by 1; Collect diagnostic logs from Autoscale Disabled; Scale-in policy Default (balance across availability zones and fault domains, then delete VMs). Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "At 9:00 AM, the scale set starts and CPU utilization is 90 percent for 15 minutes. How many virtual machine instances will be running at 9:15 AM?",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "At 10:00 AM, the scale set has five virtual machine instances running and CPU utilization falls to less than 15 percent for 60 minutes. How many virtual machine instances will be running at 11:00 AM?",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "起始是 2 台。CPU 90% 超過向外延展門檻 75%，但必須「持續 10 分鐘」才會觸發，所以第一次調整發生在 9:10，加 1 台變成 3 台。到 9:15 只過了 5 分鐘（還沒滿下一個評估週期），因此仍是 3 台。",
+      "2": "起始是 5 台。CPU 低於向內延展門檻 25%，且持續整整 60 分鐘——足以反覆觸發多次向內延展，每次減 1：5 → 4 → 3 → 2 → 1。碰到「VM 數量下限 1」就停住，所以 11:00 時是 1 台。",
+      "_full": "自動調整的兩個時間感要抓住：\n① 條件必須「持續」滿足設定的分鐘數才會觸發第一次調整（本題 10 分鐘）——所以 15 分鐘的高負載只來得及加 1 台。\n② 條件長時間持續時會反覆觸發，一路加或減到上限／下限為止——本題 60 分鐘的低負載足以從 5 台一路縮到下限 1 台。"
     }
   },
   {
@@ -162,6 +333,37 @@
       "B": "Correct. 正確。DSC 延伸模組可在擴展集範本中宣告每個執行個體應達到的狀態（安裝並執行 NGINX），新佈建的執行個體會自動套用。",
       "C": "Incorrect. 錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理服務，與 VM 軟體佈建無關。",
       "D": "Incorrect. 錯誤。Application Insights 是應用程式效能監視服務，不負責安裝軟體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 320,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the following resources: ManagementGroup1 (management group); RG1 (resource group); 9c8bc1cd-7655-4c66-b3ea-a8ee101d8f75 (subscription ID); Tag1 (tag). In Azure Cloud Shell, you need to create a virtual machine by using an Azure Resource Manager (ARM) template. How should you complete the command?  $adminPassword = Read-Host -Prompt \"Enter the administrator password\" -AsSecureString  [box 1] [box 2] ` -TemplateUri \"https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/101-vm-simple-windows/azuredeploy.json\" ` -adminUsername LocalAdministrator -adminPassword $adminPassword -dnsLabelPrefix ContosoVM1",
+    "available_options": [
+      "New-AzVm",
+      "New-AzResource",
+      "New-AzTemplateSpec",
+      "New-AzResourceGroupDeployment",
+      "-Tag Tag1 `",
+      "-ResourceGroupName RG1 `",
+      "-GroupName ManagementGroup1 `",
+      "-Subscription 9c8bc1cd-7655-4c66-b3ea-a8ee101d8f75"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the cmdlet):",
+        "correct_answer": "New-AzResourceGroupDeployment"
+      },
+      {
+        "use_case": "Box 2 (the parameter):",
+        "correct_answer": "-ResourceGroupName RG1 `"
+      }
+    ],
+    "explanations": {
+      "1": "要「用 ARM 範本部署」就得用部署類的 cmdlet，而 -TemplateUri 這個參數屬於 New-AzResourceGroupDeployment。New-AzVm 是直接指定參數建立 VM（不吃範本）；New-AzResource 是建立單一資源；New-AzTemplateSpec 只是把範本存成範本規格，並不會部署。",
+      "2": "New-AzResourceGroupDeployment 是「資源群組層級」的部署，必須用 -ResourceGroupName 指定目標資源群組，也就是 RG1。-GroupName 是管理群組層級部署（New-AzManagementGroupDeployment）用的；-Tag 是加標記、-Subscription 是切換內容，都不是這個 cmdlet 的必要目標參數。",
+      "_full": "PowerShell 的 ARM 部署 cmdlet 依「範圍」分成四個，各自要不同的目標參數：\n・資源群組層級 → New-AzResourceGroupDeployment，要 -ResourceGroupName。\n・訂用帳戶層級 → New-AzSubscriptionDeployment（舊名 New-AzDeployment），要 -Location。\n・管理群組層級 → New-AzManagementGroupDeployment，要 -ManagementGroupId。\n・租用戶層級 → New-AzTenantDeployment。\n看到 -TemplateUri／-TemplateFile 就知道是部署 cmdlet，再依範圍挑目標參數。"
     }
   },
   {
@@ -211,6 +413,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 325,
+    "type": "matching",
+    "question": "You need to complete an ARM template so that it creates a number of data disks determined by a parameter:  \"parameters\": { \"numberOfDataDisks\": { \"type\": \"int\", \"metadata\": { \"description\": \"The number of dataDisks to create.\" } }, ... }, \"resources\": [ { \"type\": \"Microsoft.Compute/virtualMachines\", \"apiVersion\": \"2017-03-30\", ... \"properties\": { \"storageProfile\": { ... [box 1] { \"name\": \"dataDisks\", \"count\": \"[parameters('numberOfDataDisks')]\", \"input\": { \"diskSizeGB\": 1023, \"lun\": [box 2]('dataDisks')]\", \"createOption\": \"Empty\" } } ... } } } ]",
+    "available_options": [
+      "\"copy\":[",
+      "\"copyIndex\":[",
+      "\"dependsOn\":[",
+      "\"[copy",
+      "\"[copyIndex",
+      "\"[dependsOn"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the section inside storageProfile):",
+        "correct_answer": "\"copy\":["
+      },
+      {
+        "use_case": "Box 2 (the value of lun):",
+        "correct_answer": "\"[copyIndex"
+      }
+    ],
+    "explanations": {
+      "1": "要在「資源的屬性內」重複產生一個陣列（這裡是多顆資料磁碟），用的是屬性層級的 copy 區段——它接受 name（目標屬性名稱）、count（重複次數）與 input（每次產生的內容）。dependsOn 是宣告部署相依性，與重複無關；copyIndex 是函式而不是區段名稱。",
+      "2": "每顆資料磁碟的 lun（邏輯單元編號）必須各不相同，所以用 copyIndex() 函式取得目前這一輪的索引：\"[copyIndex('dataDisks')]\"。帶名稱的 copyIndex('dataDisks') 是指定要取「哪一個 copy 區塊」的索引，在屬性層級的 copy 中是必要寫法。",
+      "_full": "ARM 範本的 copy 有兩種用法：\n・「資源層級」copy → 放在資源物件裡，重複產生多個「資源」。\n・「屬性層級」copy → 放在 properties 內，重複產生某個「屬性陣列」的元素（本題的資料磁碟就是這種）。\n兩者都用 copyIndex() 取當前索引；屬性層級要傳入 copy 區塊的名稱，例如 copyIndex('dataDisks')。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 330,
+    "type": "matching",
+    "question": "You have an Azure App Service app named WebApp1 that contains two folders named Folder1 and Folder2. You need to configure a daily backup of WebApp1. The solution must ensure that Folder2 is excluded from the backup. What should you create first, and what should you use to exclude Folder2?",
+    "available_options": [
+      "An Azure Storage account",
+      "A Backup vault",
+      "A Recovery Services vault",
+      "A resource group",
+      "A _backup.filter file",
+      "A backup policy",
+      "A lock",
+      "A WebJob"
+    ],
+    "matches": [
+      {
+        "use_case": "First create:",
+        "correct_answer": "An Azure Storage account"
+      },
+      {
+        "use_case": "To exclude Folder2, use:",
+        "correct_answer": "A _backup.filter file"
+      }
+    ],
+    "explanations": {
+      "1": "App Service 的備份「不是」存到保存庫，而是存到你自己的 Azure 儲存體帳戶與容器裡（該儲存體帳戶必須與應用程式在同一個訂用帳戶）。因此第一步是先建立儲存體帳戶。Recovery Services 保存庫是給 VM 與檔案共用用的；備份保存庫是給 Blob、磁碟等用的；兩者都不是 App Service 備份的目的地。",
+      "2": "要從 App Service 備份中排除特定檔案或資料夾，做法是在網站的 wwwroot 之下（D:\\home\\site\\wwwroot）放一個名為 _backup.filter 的文字檔，每行寫一個要排除的相對路徑。備份原則只設定排程與保留，無法指定排除清單。",
+      "_full": "App Service 備份的兩個特點：\n① 目的地是「自己的儲存體帳戶 + 容器」，不是任何保存庫，且必須同訂用帳戶。\n② 排除規則寫在 _backup.filter 檔案裡（放在 wwwroot 下），一行一個路徑。\n另外提醒：App Service 備份需要 Standard 或 Premium 以上的方案等級。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 331,
     "type": "single",
     "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
@@ -226,6 +488,35 @@
       "B": "Incorrect. 錯誤。Application Insights 是應用程式監視服務，不安裝軟體。",
       "C": "Correct. 正確。自訂指令碼延伸模組會在每個新佈建的執行個體上下載並執行指定的指令碼，用它執行安裝 NGINX 的指令即可；本題選項中沒有 DSC 延伸模組，自訂指令碼延伸模組是達成相同目的的標準方式。",
       "D": "Incorrect. 錯誤。Endpoint Manager（Intune）管理的是使用者端點裝置，不用於 Azure 擴展集佈建。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 332,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains a virtual machine that runs Windows 10. You need to join the virtual machine to an Active Directory domain. How should you complete the Azure Resource Manager (ARM) template?  { \"apiVersion\": \"2017-03-30\", \"type\": [box 1] \"name\": \"[concat(parameters('VName'), '/joindomain')]\", \"location\": \"[parameter('location')]\", \"properties\": { \"publisher\": \"Microsoft.Compute\", \"type\": \"JsonADDomainExtension\", \"typeHandlerVersion\": \"1.3\", \"autoUpgradeMinorVersion\": true, \"settings\": { \"Name\": \"[parameters('domainName')]\", \"User\": \"[parameters('domainusername')]\", \"Restart\": \"true\", \"Options\": \"3\" }, [box 2] \"Password\": \"[parameters('domainPassword')]\" } } }",
+    "available_options": [
+      "\"Extensions\",",
+      "\"Microsoft.Compute/VirtualMachines\",",
+      "\"Microsoft.Compute/virtualMachines/extensions\",",
+      "\"ProtectedSettings\":{",
+      "\"Settings\":{",
+      "\"Statuses\":{"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the resource type):",
+        "correct_answer": "\"Microsoft.Compute/virtualMachines/extensions\","
+      },
+      {
+        "use_case": "Box 2 (the section holding the password):",
+        "correct_answer": "\"ProtectedSettings\":{"
+      }
+    ],
+    "explanations": {
+      "1": "加入網域是靠「VM 擴充功能」JsonADDomainExtension 完成的，而擴充功能是虛擬機器的子資源，資源類型必須寫 Microsoft.Compute/virtualMachines/extensions。Microsoft.Compute/VirtualMachines 是虛擬機器本身，單寫 \"Extensions\" 不是合法的資源類型。（也留意 name 寫成 \"<VM 名稱>/joindomain\"，正是子資源的命名方式。）",
+      "2": "密碼這類機密值要放在 protectedSettings 區段裡——這個區段會被加密，不會出現在部署歷程或範本輸出中。settings 是「明文」設定（本題已經用來放網域名稱與使用者名稱），把密碼放進去會被記錄下來；statuses 是擴充功能回報的狀態，不是輸入。",
+      "_full": "VM 擴充功能範本的兩個要點：\n① 類型是子資源 Microsoft.Compute/virtualMachines/extensions，名稱寫成「VM 名稱/擴充功能名稱」。\n② 輸入分成兩塊：settings（明文，會被記錄）與 protectedSettings（加密）。任何密碼、金鑰、連接字串都必須放在 protectedSettings。"
     }
   },
   {
@@ -249,6 +540,99 @@
   },
   {
     "exam": "AZ-104",
+    "id": 334,
+    "type": "matching",
+    "question": "You have an Azure subscription. You deploy a Kubernetes cluster whose Review + create page shows (validation passed): Basics - subscription Visual Studio Premium with MSDN, resource group RG1, region West Europe, Kubernetes cluster name AKS1, Kubernetes version 1.20.9; Node pools - node pools 1, enable virtual nodes Disabled, enable virtual machine scale sets Enabled; Authentication - authentication method Service principal, role-based access control (RBAC) Enabled, AKS-managed Azure Active Directory Disabled, encryption type (Default) Encryption at-rest with a platform-managed key; Networking - network configuration Kubenet, DNS name prefix AKS1-dns, load balancer Standard, private cluster Disabled, authorized IP ranges Disabled, network policy None, HTTP application routing No. Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "enable virtual nodes",
+      "increase the number of node pools",
+      "modify the Kubernetes version setting",
+      "modify the Network configuration setting",
+      "AKS-managed Azure Active Directory",
+      "Authentication method",
+      "Authorized IP ranges",
+      "Kubernetes version",
+      "Network configuration"
+    ],
+    "matches": [
+      {
+        "use_case": "To ensure that you can create Windows containers in AKS1, you must [answer choice].",
+        "correct_answer": "modify the Network configuration setting"
+      },
+      {
+        "use_case": "To ensure that you can integrate AKS1 with an Azure container registry, you must modify the [answer choice] setting.",
+        "correct_answer": "Authentication method"
+      }
+    ],
+    "explanations": {
+      "1": "要在 AKS 中執行 Windows 節點集區（也就是 Windows 容器），網路外掛程式必須是 Azure CNI；目前設定是 Kubenet，而 Kubenet「不支援」Windows 節點集區。所以必須修改「網路設定」把它改成 Azure CNI。（虛擬節點是 ACI 型的無伺服器節點，與 Windows 節點集區是不同的東西；增加節點集區數量或改 Kubernetes 版本都無法突破 Kubenet 的限制。）",
+      "2": "「驗證方法 (Authentication method)」。【答案校正】官方標示為「AKS 管理的 Azure Active Directory」，但那一項管的是「使用者登入叢集」（把 Kubernetes RBAC 綁到 Entra 身分），與叢集去「提取容器映像」完全無關。\n與 ACR 整合靠的是「叢集本身的身分」加上 AcrPull 角色指派，而目前叢集的驗證方法是「服務主體」——現行建議與 az aks update --attach-acr 的標準路徑都是改用「受控識別」，這正是「驗證方法」這一項在設定的東西。因此判定為「驗證方法」。",
+      "_full": "第一格是明確的產品限制：Windows 節點集區「必須」搭配 Azure CNI，Kubenet 只支援 Linux 節點——這是常考的硬性規則。\n第二格要分清兩件事：「AKS 管理的 Azure AD」= 使用者登入叢集的驗證；「驗證方法」= 叢集本身用什麼身分去存取其他 Azure 資源（服務主體或受控識別）。與 ACR 整合屬於後者，所以要改的是驗證方法（官方標示前者，已校正）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 335,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains an Azure Kubernetes Service (AKS) cluster named Cluster1. Cluster1 hosts a node pool named Pool1 that has four nodes. You need to perform a coordinated upgrade of Cluster1. The solution must meet the following requirements: deploy two new nodes to perform the upgrade; minimize costs. How should you complete the command?  az aks nodepool [box 1] -n pool1 -g RG1 --cluster-name cluster1 [box 2]",
+    "available_options": [
+      "add",
+      "get-updates",
+      "scale",
+      "updates",
+      "--max-count 2",
+      "--max-pods 2",
+      "--max-surge 2",
+      "--node-count 2"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the subcommand):",
+        "correct_answer": "updates"
+      },
+      {
+        "use_case": "Box 2 (the parameter):",
+        "correct_answer": "--max-surge 2"
+      }
+    ],
+    "explanations": {
+      "1": "升級節點集區的設定要用 update 這一組子命令（本題選項寫成 updates）。add 是新增一個節點集區；scale 是改節點數量；get-updates 不是用來設定升級參數的。",
+      "2": "--max-surge 控制「升級期間可以額外配置多少個節點」（暴增節點）。設成 2 就是多開兩個新節點來輪替升級——節點越多升級越快但成本越高，所以題目要求「部署兩個新節點」且「盡量降低成本」時就正好是 2。--node-count 是改集區的節點總數（不是升級用的暫時節點）；--max-count 是自動調整的節點上限；--max-pods 是每個節點的 Pod 數上限。",
+      "_full": "AKS 升級時的關鍵參數是 --max-surge（預設 1，也可以寫成百分比如 33%）：它決定升級過程額外開幾個節點來搬移工作負載。數值越大升級越快、但期間要多付這些節點的費用；本題要求剛好兩個新節點又要省錢，所以 --max-surge 2。\n別和另外三個容易混淆的參數搞混：--node-count（集區節點數）、--max-count（自動調整上限）、--max-pods（每節點 Pod 上限）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 336,
+    "type": "matching",
+    "question": "You have an Azure subscription. You create the following file named Deploy.json (excerpt): \"parameters\": { \"location\": { \"type\": \"string\", \"defaultValue\": \"westus\" } }, \"resources\": [ { \"apiVersion\": \"2019-04-01\", \"type\": \"Microsoft.Storage/storageAccounts\", \"name\": \"[concat(copyIndex(),'storage', uniqueString(resourceGroup().id))]\", \"location\": \"[resourceGroup().location]\", \"sku\": { \"name\": \"Premium_LRS\" }, \"kind\": \"StorageV2\", \"properties\": {}, \"copy\": { \"name\": \"storagecopy\", \"count\": 3 } } ]. You connect to the subscription and run the following commands: New-AzResourceGroup -Name RG1 -Location \"centralus\"; New-AzResourceGroupDeployment -ResourceGroupName RG1 -TemplateFile \"deploy.json\". For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The commands will create four new resources.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The commands will create storage accounts in the West US Azure region.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The first storage account that is created will have a prefix of 0.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是，一共四個：New-AzResourceGroup 建立「資源群組 RG1」本身算一個資源，接著範本的 copy count = 3 會建立三個儲存體帳戶。1 + 3 = 4。",
+      "2": "否。儲存體帳戶的 location 寫的是 \"[resourceGroup().location]\"——也就是「資源群組所在的區域」，而 RG1 是以 -Location \"centralus\" 建立的，所以帳戶會建在 Central US。參數 location 的 defaultValue \"westus\" 從頭到尾沒被任何資源使用，純粹是干擾項。",
+      "3": "是。名稱是 concat(copyIndex(), 'storage', uniqueString(...))，而 copyIndex() 預設「從 0 開始」計數，因此第一個帳戶的名稱以 0 起頭（第二、三個則是 1 和 2）。（若想從 1 開始，得寫成 copyIndex(1)。）",
+      "_full": "三個判斷點：\n① 計算「建立幾個資源」時別忘了資源群組本身也是一個資源。\n② resourceGroup().location 取的是資源群組的區域，與範本裡沒被使用的 location 參數無關——要看資源實際引用了什麼。\n③ copyIndex() 從 0 起算（copyIndex(1) 才從 1 起算）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 337,
     "type": "single",
     "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure container registry named Registry1 that contains an image named image1. You receive an error message when you attempt to deploy a container instance by using image1. You need to be able to deploy a container instance by using image1. Solution: You set Admin user to Enable for Registry1. Does this meet the goal?",
@@ -260,6 +644,241 @@
     "explanations": {
       "A": "Correct. 正確。從容器登錄部署容器實例時必須提供登錄的認證。啟用管理員使用者會產生一組使用者名稱與密碼，容器實例即可用它來驗證並拉取 image1，解決原本的驗證失敗錯誤。",
       "B": "Incorrect. 錯誤。啟用管理員使用者正是最直接可行的做法（雖然生產環境更建議改用服務主體或受控識別）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 338,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a resource group named RG1. You plan to use an Azure Resource Manager (ARM) template named template1 to deploy resources. The solution must meet the following requirements: deploy new resources to RG1; remove all the existing resources from RG1 before deploying the new resources. How should you complete the command?  New-AzResourceGroupDeployment -TemplateUri \"https://contoso.com/template1\" -TemplateParameterfile params.json [box 1] RG1 -Mode [box 2]",
+    "available_options": [
+      "-Name",
+      "-QueryString",
+      "-ResourceGroupName",
+      "-Tag",
+      "All",
+      "Complete",
+      "Incremental"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the parameter that names the target):",
+        "correct_answer": "-ResourceGroupName"
+      },
+      {
+        "use_case": "Box 2 (the value of -Mode):",
+        "correct_answer": "Complete"
+      }
+    ],
+    "explanations": {
+      "1": "New-AzResourceGroupDeployment 是資源群組層級的部署，要用 -ResourceGroupName 指定 RG1。-Name 是給這次「部署」命名（不是資源群組）；-Tag 是加標記；-QueryString 是搭配連結範本時附加在 URI 上的查詢字串。",
+      "2": "部署模式決定「範本裡沒有列出的既有資源」怎麼處理：\n・Complete：資源群組中「不在範本裡」的資源會被「刪除」——正好符合「部署前移除所有既有資源」的要求。\n・Incremental（預設）：只新增或更新範本中的資源，既有資源保留不動。\nAll 不是有效的模式值。",
+      "_full": "-Mode 只有兩個值：Incremental（預設，保留範本外的既有資源）與 Complete（刪除範本外的既有資源）。看到題目要求「清空後再部署」就選 Complete。\n實務提醒：Complete 模式很危險，會刪掉範本沒寫到的一切，執行前務必用 -WhatIf 或「假設 (what-if)」作業先確認影響範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 339,
+    "type": "matching",
+    "question": "You have an Azure App Service web app named app1. You configure autoscaling as follows: scale mode Scale based on a metric; rule (scale out) - when (Average) CpuPercentage > 70, increase count by 1; instance limits minimum 1, maximum 5, default 1; no scale-in rule. The autoscale rule criteria are: time aggregation Maximum; metric namespace App Service plans standard metrics; metric name CPU Percentage; dimension Instance = All values; operator Greater than; metric threshold to trigger scale action 70%; duration 10 minutes; time grain 1 minute; time grain statistic Average; action Increase count by, cool down 5 minutes, instance count 1. Use the drop-down menus to select the answer choice that answers each question based on the information presented in the graphic.",
+    "available_options": [
+      "1 instance",
+      "2 instances",
+      "3 instances",
+      "4 instances",
+      "5 instances",
+      "1 minute",
+      "5 minutes",
+      "10 minutes",
+      "15 minutes"
+    ],
+    "matches": [
+      {
+        "use_case": "After CPU usage has reached 80 percent for 15 minutes, [answer choice] will be running.",
+        "correct_answer": "2 instances"
+      },
+      {
+        "use_case": "Once the first scale-out instance is created, the minimum time before an additional instance is created will be [answer choice].",
+        "correct_answer": "15 minutes"
+      }
+    ],
+    "explanations": {
+      "1": "預設執行個體數是 1。80% 超過門檻 70%，但必須「持續 10 分鐘」才觸發第一次向外延展，所以在第 10 分鐘加 1 台，變成 2 台。接著進入 5 分鐘冷卻（到第 15 分鐘結束），冷卻期間不會再調整——因此第 15 分鐘時剛好還是 2 台。",
+      "2": "第一次調整之後要再加一台，必須同時滿足兩件事：先過完 5 分鐘的「冷卻時間」，然後計量還要再「持續 10 分鐘」超過門檻。5 + 10 = 15 分鐘。\n（常見錯誤是只算冷卻時間 5 分鐘，忘了持續時間也要重新累積。）",
+      "_full": "自動調整的兩個時間參數要一起算：\n・持續時間 (Duration)：條件必須連續成立多久才觸發（本題 10 分鐘）。\n・冷卻時間 (Cool down)：一次調整後多久內不再調整（本題 5 分鐘）。\n所以第一次調整在第 10 分鐘；下一次最快要再等 5 + 10 = 15 分鐘。第 15 分鐘時仍然只加了一台，共 2 台。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 341,
+    "type": "multiple",
+    "question": "You have an Azure container registry named contoso2023 whose blade contains: Overview, Activity log, Access control (IAM), Tags, Quick start, Events; Settings - Access keys, Encryption, Identity, Networking, Microsoft Defender for Cloud, Properties, Locks; Services - Repositories, Webhooks, Geo-replications, Tasks, Connected registries (Preview), Cache. You need to enable contoso2023 to use a dedicated data endpoint. Which two settings should you configure for contoso2023?",
+    "options": {
+      "A": "Networking",
+      "B": "Connected registries (Preview)",
+      "C": "Encryption",
+      "D": "Identity",
+      "E": "Geo-replications"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。「專用資料端點」的開關就在容器登錄的「網路」刀鋒視窗中（公用存取設定的下方）。啟用後，資料（映像層）會改走 <registry>.<region>.data.azurecr.io 這種登錄專屬的網域，而不是所有客戶共用的區域端點——這是為了讓防火牆規則能精確鎖定。（另外要注意：這個功能需要 Premium 服務層級。）",
+      "B": "Correct. 正確（官方標示）。「連線的登錄」這項功能相依於專用資料端點，所以入口網站在這個刀鋒視窗中也會提示並提供啟用資料端點的入口——兩處合起來完成本題的設定。",
+      "C": "Incorrect. 錯誤。加密設定的是登錄內容的待用加密金鑰（客戶管理金鑰），與端點網域無關。",
+      "D": "Incorrect. 錯誤。身分識別設定的是登錄本身的受控識別（例如讓工作去存取金鑰保存庫），與資料端點無關。",
+      "E": "Incorrect. 錯誤。異地複寫是把登錄內容複寫到多個區域以就近提取，雖然同樣是 Premium 功能，但它不是啟用專用資料端點的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 343,
+    "type": "matching",
+    "question": "You have an Azure subscription. You need to deploy a virtual machine by using an Azure Resource Manager (ARM) template. How should you complete the template?  \"type\": \"Microsoft.Compute/virtualMachines\", ... \"dependsOn\": [ \"[[box 1]('Microsoft.Network/networkInterfaces/', 'VM1')]\" ], \"properties\": { \"storageProfile\": { \"[box 2]\": { \"publisher\": \"MicrosoftWindowsServer\", \"Offer\": \"WindowsServer\", \"sku\": \"2019-Datacenter\", \"version\": \"latest\" } ... } }",
+    "available_options": [
+      "reference",
+      "resourceId",
+      "Union",
+      "Array",
+      "Image",
+      "ImageReference",
+      "vhd"
+    ],
+    "matches": [
+      {
+        "use_case": "Box 1 (the function inside dependsOn):",
+        "correct_answer": "resourceId"
+      },
+      {
+        "use_case": "Box 2 (the property inside storageProfile):",
+        "correct_answer": "ImageReference"
+      }
+    ],
+    "explanations": {
+      "1": "dependsOn 必須填「資源 ID」，取得資源 ID 的函式就是 resourceId()——它會把資源類型與名稱組成完整的識別碼。reference() 取的是另一個資源的「執行階段屬性值」（會隱含建立相依性，但不能放在 dependsOn，會造成循環評估）；union() 是合併陣列或物件的函式。",
+      "2": "要指定 VM 從哪個平台映像建立，用 storageProfile 之下的 imageReference 屬性，其中包含 publisher／offer／sku／version 四個欄位——題目給的正是這四個。vhd 是用自己的 VHD 當來源時才會出現（非受控磁碟的舊寫法）；Image 與 Array 都不是 storageProfile 的屬性。",
+      "_full": "兩個常考的範本要素：\n・dependsOn 用 resourceId() 產生資源 ID，宣告部署順序。\n・storageProfile.imageReference 用 publisher/offer/sku/version 指定平台映像（version 寫 \"latest\" 就是每次部署都取最新版）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 344,
+    "type": "matching",
+    "question": "You need to configure a new Azure App Service app named WebApp1. The solution must meet the following requirements: WebApp1 must be able to verify a custom domain name of app.contoso.com; WebApp1 must be able to automatically scale up to eight instances; costs and administrative effort must be minimized. Which pricing plan should you choose, and which type of record should you use to verify the domain?",
+    "available_options": [
+      "Basic",
+      "Free",
+      "Shared",
+      "Standard",
+      "A",
+      "AAAA",
+      "PTR",
+      "TXT"
+    ],
+    "matches": [
+      {
+        "use_case": "Pricing plan:",
+        "correct_answer": "Standard"
+      },
+      {
+        "use_case": "Record type:",
+        "correct_answer": "TXT"
+      }
+    ],
+    "explanations": {
+      "1": "三項要求一起看：自訂網域需要 Shared 以上；「自動」調整需要 Standard 以上（Basic 只能手動改執行個體數，而且上限是 3）；要能到 8 個執行個體，Standard 的上限 10 足夠。在滿足全部要求的方案中 Standard 最便宜，因此選 Standard（Premium 雖然可以到更多執行個體，但成本更高、超出需求）。",
+      "2": "驗證自訂網域「擁有權」用的是 TXT 記錄——在 DNS 中建立 asuid.<子網域> 的 TXT 記錄，值填 App Service 給的驗證識別碼。A 或 CNAME 記錄是用來把流量「指向」應用程式（對應是另一個步驟），AAAA 是 IPv6 位址記錄，PTR 是反向查詢，都不是擁有權驗證用的。",
+      "_full": "兩個知識點：\n① App Service 方案層級的能力分界：Free/Shared 不能自動調整；Basic 可自訂網域但只能手動調整（上限 3）；Standard 起才有自動調整（上限 10）。要「自動到 8 個」又要最省 → Standard。\n② 自訂網域要做兩件事：用 TXT（asuid.<name>）證明擁有權，再用 A 或 CNAME 把網域指向應用程式。本題問的是「驗證」，所以是 TXT。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 345,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual machines VM1 (West Europe, 8 vCPUs, generation 2), VM2 (East US, 2 vCPUs, generation 1) and VM3 (West US, 12 vCPUs, generation 1). You create an Azure Compute Gallery named ComputeGallery1 (resource group RG1, region West Europe). In ComputeGallery1, you create a virtual machine image definition named Image1: resource group RG1, region East US, target Azure compute gallery ComputeGallery1, OS type Windows, security type Standard, VM generation V1, OS state Specialized, publisher Contoso, offer WindowsServer2022, SKU Datacenter; publishing options - recommended VM vCPUs 4-16, recommended VM memory 1-32 GB, everything else None. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The operating system disk of VM1 can be used as a source for a version of Image1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The operating system disk of VM2 can be used as a source for a version of Image1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The operating system disk of VM3 can be used as a source for a version of Image1.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "否。【答案校正】官方標示為「是」。區域確實不是問題（來源 VM 不必與映像定義同區域），OS 狀態「特製化」也符合直接沿用磁碟的做法。但 VM1 是「世代 2」，而 Image1 的 VM 世代欄位是「V1」——映像定義的世代是一項固定屬性，必須與來源磁碟相符，Gen2 的作業系統磁碟不能作為 V1 映像定義的版本來源（要用它得另建一個 V2 的映像定義）。因此判定為「否」。",
+      "2": "是。VM2 在 East US（與 Image1 定義同區域）、世代 1 與 V1 相符。vCPU 只有 2 個、低於「建議的 VM vCPU 數 4-16」，但那個欄位只是「建議」——它是給使用者挑選映像時參考的中繼資料，並不會被強制檢查。",
+      "3": "是。VM3 世代 1 與 V1 相符；位於 West US 與定義區域不同，但如前所述來源區域不受限制；12 vCPU 也落在建議範圍內。",
+      "_full": "三個判斷要素：\n① 區域：來源 VM 與映像定義「不需要」同區域，映像版本可以指定來源並複寫到多個區域。\n② OS 狀態：「一般化 (Generalized)」要求來源先經過 Sysprep／waagent -deprovision；「特製化 (Specialized)」則直接沿用磁碟現狀——本題是特製化。\n③ 「建議的 vCPU／記憶體」純屬中繼資料，不構成限制。\n④ VM 世代：映像定義的世代必須與來源磁碟相符，V1 的定義只能收 Gen1 的磁碟。\n【答案校正】官方三項全判「是」，但 VM1 是 Gen2、與定義的 V1 不符，已改判為「否」；VM2 與 VM3 都是 Gen1，維持「是」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 347,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resource groups RG1 (East US) and RG2 (West US). You create the following Azure Resource Manager (ARM) template named deploy.json: \"resources\": [ { \"type\": \"Microsoft.Resources/resourceGroups\", \"apiVersion\": \"2018-05-01\", \"location\": \"eastus\", \"name\": \"[concat('RG', copyIndex())]\", \"copy\": { \"name\": \"copy\", \"count\": 4 } } ]. You deploy the template by running the following cmdlet: New-AzSubscriptionDeployment -Location westus -TemplateFile deploy.json. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "The template creates a resource group named RG0 in the East US Azure region.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "The template creates four new resource groups.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "The template creates a resource group named RG3 in the West US Azure region.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。copyIndex() 從 0 起算，所以四次迭代的名稱是 RG0、RG1、RG2、RG3；而資源的 location 寫死為 \"eastus\"，因此 RG0 會建立在 East US。",
+      "2": "否。四個名稱中的 RG1 與 RG2「已經存在」，所以實際上「新建」的只有 RG0 與 RG3 兩個。（ARM 部署是宣告式的：名稱已存在時視為更新而不是新建。）",
+      "3": "否。RG3 確實會被建立，但區域是資源自己的 location「eastus」——命令上的 -Location westus 只決定「訂用帳戶層級部署本身的中繼資料」存放在哪個區域，不會影響範本中資源指定的位置。",
+      "_full": "三個判斷點：\n① copyIndex() 由 0 起算 → RG0~RG3。\n② 「新建幾個」要扣掉已存在的名稱（RG1、RG2 已存在）。\n③ 訂用帳戶層級部署的 -Location 是部署記錄的位置，資源實際建立在各自 location 指定的區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 349,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains a container registry with the images Image1 (operating system Windows Server) and Image2 (Linux). You plan to use the following services: Azure Container Instances; Azure Container Apps; Azure App Service. In which services can you run the images?",
+    "available_options": [
+      "Azure Container Instances only",
+      "Azure Container Apps only",
+      "Azure Container Instances and App Services only",
+      "Azure Container Apps and App Services only",
+      "Azure Container Instances, Azure Container Apps, and App Services"
+    ],
+    "matches": [
+      {
+        "use_case": "Image1:",
+        "correct_answer": "Azure Container Instances and App Services only"
+      },
+      {
+        "use_case": "Image2:",
+        "correct_answer": "Azure Container Instances, Azure Container Apps, and App Services"
+      }
+    ],
+    "explanations": {
+      "1": "Windows 容器的支援情況不一致：Azure 容器實例支援 Windows 容器；App Service 也支援 Windows 容器（自訂容器）。但 Azure Container Apps「只支援 Linux 容器」，因此 Windows 映像跑不了。→ 只有 Azure 容器實例與 App Service。",
+      "2": "Linux 容器是三個服務共同的基礎支援對象——容器實例、Container Apps 與 App Service（Linux 版）都可以執行。→ 三者皆可。",
+      "_full": "一句話記住這個差異：Azure Container Apps 是建構在 AKS 之上的 Linux 專用平台，「不支援 Windows 容器」；而 Azure 容器實例與 App Service 兩者都支援 Windows 與 Linux。所以 Linux 映像三處都能跑，Windows 映像只能扣掉 Container Apps。"
     }
   },
   {
@@ -302,6 +921,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 354,
+    "type": "matching",
+    "question": "You have an Azure subscription and the following ARM template named deploy.json (excerpt): resource 1 = Microsoft.Resources/resourceGroups, location \"eastus\", name [concat('RG', copyIndex())], copy count 3; resource 2 = Microsoft.Resources/deployments (nested, name lockDeployment) targeting resourceGroup \"RG1\", dependsOn RG1, mode Incremental, whose inner template creates a Microsoft.Authorization/locks named rgLock with level \"CanNotDelete\"; resource 3 = Microsoft.Resources/deployments (nested, name lockDeployment) targeting resourceGroup \"RG2\", dependsOn RG2, mode Incremental, whose inner template creates a Microsoft.Authorization/locks named rgLock with level \"ReadOnly\". You connect to the subscription and run: New-AzDeployment -Location westus -TemplateFile \"deploy.json\". For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can deploy a virtual machine to RG1.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can deploy a virtual machine to RG2.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "You can manually create a resource group named RG3.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。RG1 上的鎖定層級是「CanNotDelete」——只禁止「刪除」，授權的使用者仍然可以讀取與「修改／建立」資源。所以在 RG1 中部署新的 VM 沒有問題。",
+      "2": "否。RG2 上的鎖定層級是「ReadOnly」——這是限制較嚴的一種，等於把該範圍的所有資源變成唯讀：不能建立、不能修改、也不能刪除。因此無法在 RG2 中部署虛擬機器。",
+      "3": "是。範本的 copy count 是 3，copyIndex() 從 0 起算，所以只建立了 RG0、RG1、RG2——RG3 並不存在，也沒有任何鎖定或原則阻止你手動建立它。",
+      "_full": "兩個知識點：\n① 兩種鎖定層級的差別：CanNotDelete 只擋刪除（仍可建立與修改）；ReadOnly 連建立與修改都擋。\n② copy count 3 + copyIndex() 由 0 起算 → 只有 RG0、RG1、RG2，沒有 RG3。\n另外注意鎖定必須用「巢狀部署」指向該資源群組才能在同一個訂用帳戶層級範本中套用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 356,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the virtual networks VNet1 (Subnet1, subnet-associated NSG1, peered with VNet2) and VNet2 (Subnet2, subnet-associated NSG2, peered with VNet1). The subscription contains the virtual machines VM1 (connected to Subnet1) and VM2 (connected to Subnet2). The subscription contains the Azure App Service web apps WebApp1 (uses the Premium pricing tier and has virtual network integration with VNet1) and WebApp2 (uses the Isolated pricing tier and is deployed to Subnet2). For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "WebApp1 can communicate with VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "NSG1 controls inbound traffic to WebApp1.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "WebApp2 can communicate with VM1.",
+        "correct_answer": "Yes"
+      }
+    ],
+    "explanations": {
+      "1": "是。WebApp1 使用 Premium 層的「區域虛擬網路整合」接入 VNet1，而 VNet1 與 VNet2 已對等互連，所以它的「輸出」流量可以到達 VNet2 中的 VM2（若要讓所有輸出流量都走虛擬網路，記得把 WEBSITE_VNET_ROUTE_ALL／「輸出流量的路由」開啟）。",
+      "2": "否。虛擬網路整合只影響「輸出」方向——應用程式仍然是透過 App Service 的公用前端接收請求，並不存在於子網路中，因此子網路上的 NSG1 管不到進入 WebApp1 的輸入流量。要限制輸入必須用應用程式本身的「存取限制」規則，或改用私人端點／App Service 環境。",
+      "3": "是。【答案校正】官方標示為「否」，但這與第一項的情境幾乎對稱，判準卻相反。\nWebApp2 是 Isolated 層、直接部署在 VNet2 的 Subnet2 中（App Service 環境），它本身就是虛擬網路裡的一員；而 VNet2 與 VNet1 是「直接」對等互連（不是需要傳遞的多層對等），因此它連得到 Subnet1 的 VM1。既然第一項（僅透過虛擬網路整合接入 VNet1）都判定能連到對等網路的 VM2，位置更「深」的 App Service 環境沒有理由連不到，故判定為「是」。",
+      "_full": "本題的核心是「虛擬網路整合是單向的（只管輸出）」：應用程式可以主動連進虛擬網路（含對等互連的網路），但外界進入應用程式的流量不經過子網路，所以 NSG 管不到——要控制輸入得用存取限制、私人端點或 App Service 環境。\n【答案校正】第三項官方判「否」，但它與第一項情境對稱（都是透過直接對等互連的虛擬網路通訊），已改判為「是」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 358,
     "type": "single",
     "question": "You have an Azure subscription that contains an Azure container registry named ContReg1. You enable the Admin user for ContReg1. Which username can you use to sign in to ContReg1?",
@@ -336,6 +1015,32 @@
       "B": "Incorrect. 錯誤。連線的登錄用於邊緣或斷線環境的映像同步，不提供簽署功能。",
       "C": "Incorrect. 錯誤。權杖用於範圍式的存取驗證，與映像簽章無關。",
       "D": "Correct. 正確。內容信任（基於 Docker Content Trust／Notary）啟用後即可推送與提取已簽署的映像，並在提取時驗證發行者簽章，確保映像未被篡改。此功能需要進階 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 360,
+    "type": "matching",
+    "question": "You have an Azure subscription that has the following Azure container registries: ContReg1 (service tier Premium), ContReg2 (Standard), ContReg3 (Basic). You plan to use ACR Tasks and configure private endpoint connections. Which container registries support ACR Tasks and private endpoints?",
+    "available_options": [
+      "ContReg1 only",
+      "ContReg1 and ContReg2 only",
+      "ContReg1, ContReg2, and ContReg3"
+    ],
+    "matches": [
+      {
+        "use_case": "ACR Tasks:",
+        "correct_answer": "ContReg1, ContReg2, and ContReg3"
+      },
+      {
+        "use_case": "Private endpoints:",
+        "correct_answer": "ContReg1 only"
+      }
+    ],
+    "explanations": {
+      "1": "ACR 工作（在雲端建置、測試、修補容器映像）是「所有」服務層級都提供的功能——Basic、Standard、Premium 都可以用。三個登錄都支援。",
+      "2": "私人端點屬於 Premium 專屬的網路功能，只有 ContReg1 支援。同樣只有 Premium 才有的功能還包括：異地複寫、專用資料端點、客戶管理金鑰、信任的服務、範圍對應權杖與內容信任。",
+      "_full": "把 ACR 各層級的差異記成一句話：\n・所有層級都有：映像儲存、ACR 工作、Webhook、Azure AD 驗證。\n・Premium 才有：私人端點、異地複寫、專用資料端點、客戶管理金鑰、內容信任、範圍對應權杖（以及最大的儲存容量與最高的處理量）。\n看到「網路隔離」或「跨區域複寫」類的需求，就要選 Premium。"
     }
   },
   {
@@ -376,6 +1081,35 @@
       "C": "Correct. 正確。Container Apps 以 KEDA 為基礎提供事件驅動的自動調整（可縮至零），App Service 也提供依計量或排程的自動調整；Container Instances 則不具備此能力。",
       "D": "Incorrect. 錯誤。Container Instances 不支援自動調整。",
       "E": "Incorrect. 錯誤。同樣誤把 Container Instances 納入。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 364,
+    "type": "matching",
+    "question": "You have an Azure subscription that uses Azure Container Instances. You have a computer that has Azure Command-Line Interface (CLI) and Docker installed. You create a container image named image1. You need to provision a new Azure container registry and add image1 to the registry. Which command should you run for each requirement?",
+    "available_options": [
+      "az acr build",
+      "az acr create",
+      "az container create",
+      "docker create",
+      "docker pull",
+      "docker push"
+    ],
+    "matches": [
+      {
+        "use_case": "Provision a new container registry:",
+        "correct_answer": "az acr create"
+      },
+      {
+        "use_case": "Add image1 to the registry:",
+        "correct_answer": "docker push"
+      }
+    ],
+    "explanations": {
+      "1": "建立容器登錄這個「Azure 資源」要用 Azure CLI 的 az acr create。az acr build 是在登錄中「建置」映像（登錄必須已存在）；az container create 建立的是容器實例（執行中的容器）而不是登錄；docker create 只是在本機建立一個容器。",
+      "2": "本機已經有 image1，要把它上傳到登錄就用 docker push（流程是先 az acr login 登入登錄、docker tag 打上 <登錄名稱>.azurecr.io/image1 的標籤，再 docker push）。docker pull 是「下載」方向；az acr create 是建立登錄。",
+      "_full": "兩個容易混淆的命令族：\n・az acr *（管理登錄本身）：create 建立登錄、build 在雲端建置映像、login 取得登錄認證、import 從其他登錄匯入。\n・docker *（操作映像）：tag 打標籤、push 上傳、pull 下載。\n本題是「先建立登錄（az acr create），再把本機映像推上去（docker push）」。"
     }
   },
   {
@@ -491,6 +1225,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 374,
+    "type": "matching",
+    "question": "You plan to deploy a multi-tiered application that will contain the following tiers: front-end web server (accessible from the Internet Yes, 10 virtual machines); business logic (accessible from the Internet No, 100 virtual machines); Microsoft SQL Server database (accessible from the Internet No, 5 virtual machines). You need to recommend a networking solution to meet the following requirements: ensure that communication between the web servers and the business logic tier spreads equally across the virtual machines; protect the web servers from SQL injection attacks. Which Azure resource should you recommend for each requirement?",
+    "available_options": [
+      "an application gateway that uses the Standard tier",
+      "an application gateway that uses the WAF tier",
+      "an internal load balancer",
+      "a network security group (NSG)",
+      "a public load balancer"
+    ],
+    "matches": [
+      {
+        "use_case": "Ensure that communication between the web servers and the business logic tier spreads equally across the virtual machines:",
+        "correct_answer": "an internal load balancer"
+      },
+      {
+        "use_case": "Protect the web servers from SQL injection attacks:",
+        "correct_answer": "an application gateway that uses the WAF tier"
+      }
+    ],
+    "explanations": {
+      "1": "商業邏輯層「不可從網際網路存取」，所以要用「內部」負載平衡器——它使用私人 IP，只在虛擬網路內部把流量平均分散到後端的 100 台虛擬機器。公用負載平衡器會給該層一個公用 IP，違反不可從網際網路存取的條件；NSG 只做流量篩選，完全不做負載平衡。",
+      "2": "SQL 注入是應用層 (Layer 7) 的攻擊，要靠 Web 應用程式防火牆來偵測與封鎖——也就是「WAF 層」的應用程式閘道（其規則集以 OWASP 核心規則為基礎，涵蓋 SQL 注入、跨網站指令碼等常見弱點）。Standard 層的應用程式閘道只有第 7 層負載平衡，沒有 WAF；NSG 是第 3/4 層的位址與連接埠篩選，看不懂 HTTP 內容。",
+      "_full": "兩個需求對應兩種資源，判斷關鍵各不相同：\n・「平均分散流量」+「不可從網際網路存取」→ 內部負載平衡器（私人 IP）。\n・「SQL 注入」這類應用層攻擊 → 必須是 WAF；在這些選項中就是 WAF 層的應用程式閘道。\n順帶記住層級分工：NSG 是 L3/L4 篩選、負載平衡器是 L4、應用程式閘道是 L7。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 375,
     "type": "single",
     "question": "Your company has three offices. The offices are located in Miami, Los Angeles, and New York. Each office contains datacenter. You have an Azure subscription that contains resources in the East US and West US Azure regions. Each region contains a virtual network. The virtual networks are peered. You need to connect the datacenters to the subscription. The solution must minimize network latency between the datacenters. What should you create?",
@@ -506,6 +1268,91 @@
       "B": "Correct. 正確。Azure 虛擬 WAN 提供中樞輻射式的全球骨幹網路：建立「一個」虛擬 WAN 作為整體資源，再在各區域建立「虛擬中樞」讓辦公室就近連入。站台之間的流量走 Microsoft 骨幹傳輸，延遲最低。",
       "C": "Incorrect. 錯誤。層級關係顛倒了——虛擬中樞是隸屬於虛擬 WAN 之下的資源，不會反過來由多個 WAN 共用一個中樞。",
       "D": "Incorrect. 錯誤。這兩種閘道都不提供資料中心之間的網路互連能力。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 376,
+    "type": "matching",
+    "question": "You plan to deploy five virtual machines to a virtual network subnet. Each virtual machine will have a public IP address and a private IP address. Each virtual machine requires the same inbound and outbound security rules. What is the minimum number of network interfaces and network security groups that you require?",
+    "available_options": [
+      "1",
+      "2",
+      "5",
+      "10",
+      "15",
+      "20"
+    ],
+    "matches": [
+      {
+        "use_case": "Minimum number of network interfaces:",
+        "correct_answer": "5"
+      },
+      {
+        "use_case": "Minimum number of network security groups:",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "同一張網路介面的 IP 設定可以「同時」帶一個私人 IP 與一個公用 IP，不需要為公用 IP 另外開一張介面。每台虛擬機器至少要一張網路介面，所以 5 台 VM 最少 5 張。",
+      "2": "同一個網路安全性群組可以「重複關聯」到任意多個子網路與網路介面。既然五台虛擬機器需要相同的規則，最省的做法是建立一個 NSG 並關聯到該子網路，五台 VM 一起適用。→ 最少 1 個。",
+      "_full": "兩個容易誤判的規則：\n① 公用 IP 不需要獨立的網路介面——一個 IP 設定就能同時掛私人 IP 與公用 IP。\n② NSG 可以被多個子網路／網路介面共用，規則相同時共用一個即可（而每個子網路或網路介面最多只能關聯「一個」NSG）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 378,
+    "type": "matching",
+    "question": "You have Azure virtual machines that run Windows Server 2019 and are configured as follows: VM1 (private IP 10.1.0.4, public IP 52.186.85.63, virtual network VNET1, DNS suffix configured in Windows Server Adatum.com); VM2 (private IP 10.1.0.5, public IP 13.92.181.13, VNET1, DNS suffix Contoso.com). You create a private Azure DNS zone named adatum.com. You configure the adatum.com zone to allow auto registration from VNET1. Which A records will be added to the adatum.com zone for each virtual machine?",
+    "available_options": [
+      "None",
+      "Private IP address only",
+      "Public IP address only",
+      "Private IP address and public IP address"
+    ],
+    "matches": [
+      {
+        "use_case": "A records for VM1:",
+        "correct_answer": "Private IP address only"
+      },
+      {
+        "use_case": "A records for VM2:",
+        "correct_answer": "Private IP address only"
+      }
+    ],
+    "explanations": {
+      "1": "私人 DNS 區域的自動註冊只登記「私人 IP 位址」——公用 IP 不會被寫進私人區域（私人區域的用途就是虛擬網路內部的名稱解析）。因此 VM1 只有一筆指向 10.1.0.4 的 A 記錄。",
+      "2": "同樣只有私人 IP。要注意的是：自動註冊使用的是「虛擬機器的名稱」，與 VM 作業系統裡設定的 DNS 後置字元完全無關——VM2 在 Windows 裡設的是 Contoso.com，但它仍然會以 vm2.adatum.com 註冊到這個區域。所以答案同樣是「只有私人 IP 位址」。",
+      "_full": "私人 DNS 自動註冊的三個要點：\n① 只註冊私人 IP，公用 IP 不會出現在私人區域中。\n② 使用的是 Azure 資源的「虛擬機器名稱」，作業系統裡的 DNS 後置字元不影響註冊結果（本題 VM2 的 Contoso.com 純粹是干擾項）。\n③ 一個虛擬網路只能連結到「一個」啟用自動註冊的私人區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 379,
+    "type": "matching",
+    "question": "You have an Azure virtual network named VNet1 that connects to your on-premises network by using a site-to-site VPN. VNet1 contains one subnet named Subnet1. Subnet1 is associated to a network security group (NSG) named NSG1. Subnet1 contains a basic internal load balancer named ILB1. ILB1 has three Azure virtual machines in the backend pool. You need to collect data about the IP addresses that connect to ILB1. You must be able to run interactive queries from the Azure portal against the collected data. What should you do?",
+    "available_options": [
+      "An Azure Event Grid",
+      "An Azure Log Analytics workspace",
+      "An Azure Storage account",
+      "ILB1",
+      "NSG1",
+      "The Azure virtual machines"
+    ],
+    "matches": [
+      {
+        "use_case": "Resource to create:",
+        "correct_answer": "An Azure Log Analytics workspace"
+      },
+      {
+        "use_case": "Resource on which to enable diagnostics:",
+        "correct_answer": "NSG1"
+      }
+    ],
+    "explanations": {
+      "1": "要「從入口網站執行互動式查詢」，資料就必須送進 Log Analytics 工作區（用 KQL 查詢）。送到儲存體帳戶只能封存，無法互動查詢；事件方格是事件路由服務，不是分析資料存放區。",
+      "2": "要看「哪些 IP 連進來」，資料來源是 NSG 的流量記錄——在 NSG1 上啟用診斷（NSG 流程記錄／流量記錄）就會記下來源與目的 IP、連接埠與允許或拒絕的規則。基本 SKU 的內部負載平衡器本身「不提供」診斷記錄（Standard SKU 才有豐富的計量），所以在 ILB1 上啟用診斷得不到需要的資料；在虛擬機器上啟用診斷收集的是客體 OS 的效能與事件，不是連線來源 IP。",
+      "_full": "兩個判斷點：\n① 「互動式查詢」→ Log Analytics 工作區（KQL）；儲存體帳戶只適合長期封存。\n② 「誰連進來的 IP」→ NSG 流量記錄。基本 SKU 的負載平衡器沒有可用的診斷記錄，這是本題最容易選錯的地方。"
     }
   },
   {
@@ -552,6 +1399,66 @@
       "B": "Incorrect. 錯誤。站對站流量既然已經可以到達 VNet2，代表閘道傳輸相關設定本來就沒問題；這個設定不會更新已安裝的用戶端路由。",
       "C": "Incorrect. 錯誤。「允許閘道傳輸」要勾在擁有閘道的那一端（VNet1），勾在 VNet2 上沒有意義。",
       "D": "Incorrect. 錯誤。BGP 用於動態路由交換，對於「用戶端組態套件中的靜態路由未更新」這個問題並無幫助。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 383,
+    "type": "matching",
+    "question": "You have an Azure subscription. The subscription contains virtual machines that run Windows Server 2016 and are configured as follows: VM1 (virtual network VNET2, DNS suffix configured in Windows Server Contoso.com); VM2 (VNET2, DNS suffix None); VM3 (VNET2, DNS suffix Adatum.com). You create a public Azure DNS zone named adatum.com and a private Azure DNS zone named contoso.com. You create a virtual network link for contoso.com named link1: link state Completed, provisioning state Succeeded, virtual network VNET2 (in resource group RG2), configuration Enable auto registration selected. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "When VM1 starts, a record for VM1 is added to the contoso.com DNS zone.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "When VM2 starts, a record for VM2 is added to the contoso.com DNS zone.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "When VM3 starts, a record for VM3 is added to the adatum.com DNS zone.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。link1 把 VNET2 連結到私人區域 contoso.com 並啟用了自動註冊，因此 VNET2 中「所有」虛擬機器啟動時都會自動註冊到 contoso.com。VM1 剛好在 OS 裡也設了 Contoso.com 後置字元，但那與註冊無關。",
+      "2": "是。自動註冊是「以虛擬網路為單位」生效的，與虛擬機器有沒有設定 DNS 後置字元無關。VM2 雖然沒有後置字元，仍然會以 vm2.contoso.com 註冊。",
+      "3": "否。adatum.com 是「公用」DNS 區域，而自動註冊只有「私人」DNS 區域才支援——公用區域的記錄必須手動建立（或用指令碼／API 維護）。VM3 在 OS 裡設了 Adatum.com 後置字元也不會改變這一點。",
+      "_full": "兩條規則就能全部判完：\n① 自動註冊只支援「私人」DNS 區域；公用區域一律要手動建立記錄。\n② 自動註冊的範圍是「已連結且啟用自動註冊的虛擬網路中的所有 VM」，與 VM 作業系統裡的 DNS 後置字元完全無關（本題三個後置字元都是干擾項）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 386,
+    "type": "matching",
+    "question": "You have an Azure subscription that contains the resource groups RG1 (West US) and RG2 (East US). RG1 contains the following resources, all in West US: storage1 (storage account), VNet1 (virtual network), NIC1 (network interface), Disk1 (disk), VM1 (virtual machine). VM1 is running and connects to NIC1 and Disk1. NIC1 connects to VNET1. RG2 contains a public IP address named IP2 that is in the East US location. IP2 is not assigned to a virtual machine. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "You can move storage1 to RG2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "You can move NIC1 to RG2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "If you move IP2 to RG1, the location of IP2 will change.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。儲存體帳戶可以搬移到另一個資源群組（甚至另一個訂用帳戶），而且目標資源群組的位置不需要與資源相同。搬移不會影響帳戶內的資料。",
+      "2": "是。網路介面同樣可以搬移資源群組。（前提是相依的資源要一起處理——實務上把 NIC 搬走時，Azure 會要求同時搬移它相依的虛擬機器等資源；但就「可不可以搬」這個判斷而言是可以的。）",
+      "3": "否。搬移資源群組「不會」改變資源的位置——資源群組的位置只是它自身中繼資料的存放區域，與其中資源實際部署在哪個區域互不相干。IP2 搬到 RG1 之後仍然位於 East US。（要換區域必須重新建立資源，不能靠搬移。）",
+      "_full": "兩個核心觀念：\n① 資源可以在資源群組之間搬移，目標資源群組的位置不需要與資源相同。\n② 搬移只改變「歸屬」，不改變「位置」——想換區域只能重建資源。\n實務補充：搬移時所有相依資源必須一起搬，而且來源與目標資源群組在搬移期間會被鎖定。"
     }
   },
   {
@@ -624,6 +1531,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 393,
+    "type": "matching",
+    "question": "You have a virtual network named VNet1 that has the following configuration (excerpt of Get-AzVirtualNetwork output): Name VNet1; ResourceGroupName Production; Location westus; AddressSpace.AddressPrefixes [ \"10.2.0.0/16\" ]; DhcpOptions {}; Subnets [ { \"Name\": \"default\", \"AddressPrefix\": \"10.2.0.0/24\", \"IpConfigurations\": [], \"ServiceEndpoints\": [] } ]; VirtualNetworkPeerings []; EnableDDoSProtection false; EnableVmProtection false. Use the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
+    "available_options": [
+      "add a network interface",
+      "add a subnet",
+      "add an address space",
+      "delete a subnet",
+      "delete an address space"
+    ],
+    "matches": [
+      {
+        "use_case": "Before a virtual machine on VNet1 can receive an IP address from 192.168.1.0/24, you must first [answer choice]",
+        "correct_answer": "add an address space"
+      },
+      {
+        "use_case": "Before a virtual machine on VNet1 can receive an IP address from 10.2.1.0/24, you must first [answer choice]",
+        "correct_answer": "add a subnet"
+      }
+    ],
+    "explanations": {
+      "1": "192.168.1.0/24 完全不在 VNet1 目前的位址空間 10.2.0.0/16 之內，所以第一步必須先「新增一個位址空間」把 192.168.1.0/24 加進 VNet1（之後才能在其中切出子網路）。",
+      "2": "10.2.1.0/24 已經落在位址空間 10.2.0.0/16 之內，位址空間不用動；缺的是子網路——目前只有 default（10.2.0.0/24）。所以只要「新增一個子網路」用 10.2.1.0/24 這個前置詞即可。",
+      "_full": "判斷順序固定兩層：\n① 目標網段在不在「位址空間」內？不在就要先加位址空間。\n② 在位址空間內但沒有對應「子網路」？那就加子網路。\n虛擬機器的 IP 是由「網路介面所在的子網路」配發的，所以這兩層缺哪一層就補哪一層。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 396,
     "type": "single",
     "question": "Your company has an Azure subscription named Subscription1. The company also has two on-premises servers named Server1 and Server2 that run Windows Server 2016. Server1 is configured as a DNS server that has a primary DNS zone named adatum.com. Adatum.com contains 1,000 DNS records. You manage Server1 and Subscription1 from Server2. Server2 has the following tools installed: ✑ The DNS Manager console ✑ Azure PowerShell ✑ Azure CLI 2.0 You need to move the adatum.com zone to an Azure DNS zone in Subscription1. The solution must minimize administrative effort. What should you use?",
@@ -658,6 +1593,63 @@
       "B": "Incorrect. 錯誤。多建一個負載平衡器是不必要的成本與複雜度，既有負載平衡器已能透過 NAT 規則達成。",
       "C": "Incorrect. 錯誤。前端 IP 組態只是定義負載平衡器對外的位址，不決定流量送往哪一台後端。",
       "D": "Incorrect. 錯誤。負載平衡規則的本質是把流量「分散」到後端集區中的多台機器，無法指定只送往單一 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 398,
+    "type": "matching",
+    "question": "You have an Azure subscription named Subscription1 that contains the virtual networks VNet1 (subnets Subnet11 and Subnet12) and VNet2 (Subnet13). Subscription1 contains the virtual machines VM1 (Subnet11, availability set AS1), VM2 (Subnet11, AS1), VM3 (Subnet11, not applicable), VM4 (Subnet11, not applicable), VM5 (Subnet12, not applicable) and VM6 (Subnet12, not applicable). In Subscription1, you create a load balancer with these configurations: Name LB1; SKU Basic; Type Internal; Subnet Subnet12; Virtual network VNET1. For each of the following statements, select Yes if the statement is true. Otherwise, select No.",
+    "available_options": [
+      "Yes",
+      "No"
+    ],
+    "matches": [
+      {
+        "use_case": "LB1 can balance the traffic between VM1 and VM2.",
+        "correct_answer": "Yes"
+      },
+      {
+        "use_case": "LB1 can balance the traffic between VM3 and VM4.",
+        "correct_answer": "No"
+      },
+      {
+        "use_case": "LB1 can balance the traffic between VM5 and VM6.",
+        "correct_answer": "No"
+      }
+    ],
+    "explanations": {
+      "1": "是。Basic SKU 負載平衡器的後端集區成員必須位於「同一個可用性設定組」或「同一個虛擬機器擴展集」之中。VM1 與 VM2 都在 AS1，符合這個限制；同時它們與 LB1 都在 VNET1 內（Basic 內部負載平衡器只要求同一個虛擬網路，不要求與前端在同一個子網路）。",
+      "2": "否。VM3 與 VM4 雖然同在 Subnet11，但都「不屬於任何可用性設定組」，也不在擴展集裡。Basic SKU 的後端集區無法收納這種獨立的虛擬機器組合。（若改用 Standard SKU 就沒有這個限制——這正是本題的考點。）",
+      "3": "否。VM5 與 VM6 位於 LB1 的前端子網路 Subnet12，看起來「最接近」，但它們同樣不在任何可用性設定組或擴展集中，所以 Basic SKU 一樣不能把它們放進後端集區。子網路相同並不能豁免這項限制。",
+      "_full": "本題只考一條規則：Basic SKU 負載平衡器的後端集區「只能」包含同一個可用性設定組或同一個虛擬機器擴展集內的執行個體。\n・VM1/VM2 在 AS1 → 可以。\n・VM3/VM4、VM5/VM6 都沒有可用性設定組 → 不行（與子網路無關）。\nStandard SKU 則放寬為「同一個虛擬網路內的任意 VM」，遇到這類題目先看 SKU 就對了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 399,
+    "type": "matching",
+    "question": "You have an Azure virtual machine that runs Windows Server 2019 and has the following configurations: Name VM1; Location West US; Connected to VNET1; Private IP address 10.1.0.4; Public IP address 52.186.85.63; DNS suffix in Windows Server Adatum.com. You create the Azure DNS zones Adatum.pri (Private, West Europe), Contoso.pri (Private, Central US), Adatum.com (Public, West Europe) and Contoso.com (Public, North Europe). You need to identify which DNS zones you can link to VNET1 and the DNS zones to which VM1 can automatically register. Which zones should you identify?",
+    "available_options": [
+      "Adatum.com only",
+      "Adatum.pri and adatum.com only",
+      "The private zones only",
+      "The public zones only"
+    ],
+    "matches": [
+      {
+        "use_case": "DNS zones that you can link to VNET1:",
+        "correct_answer": "The private zones only"
+      },
+      {
+        "use_case": "DNS zones to which VM1 can automatically register:",
+        "correct_answer": "The private zones only"
+      }
+    ],
+    "explanations": {
+      "1": "「虛擬網路連結」是「私人」DNS 區域專屬的功能——公用區域對整個網際網路提供解析，根本沒有連結虛擬網路的概念。而私人 DNS 區域是「全域」資源，與虛擬網路不需要同區域，因此 Adatum.pri（West Europe）與 Contoso.pri（Central US）都可以連結到位於 West US 的 VNET1。→ 只有那些私人區域。",
+      "2": "自動註冊同樣只有私人區域支援（在建立虛擬網路連結時勾選「啟用自動註冊」），公用區域的記錄一律要手動維護。VM 在 Windows 裡設定的 DNS 後置字元（Adatum.com）不影響註冊目標。→ 只有那些私人區域。\n（補充一個實務限制：同一個虛擬網路「同時只能有一個」啟用自動註冊的連結，所以實際上一次只會註冊到其中一個私人區域；但就選項而言，支援自動註冊的類別就是私人區域。）",
+      "_full": "兩格都圍繞同一條界線：虛擬網路連結與自動註冊都是「私人」DNS 區域的功能，公用區域兩者都沒有。\n另外兩個要記的細節：① 私人 DNS 區域是全域資源，連結時不要求與虛擬網路同區域（本題的 West Europe／Central US 都不是問題）；② 每個虛擬網路最多只能有一個啟用自動註冊的連結。"
     }
   }
 ]

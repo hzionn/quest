@@ -20,6 +20,66 @@
   },
   {
     "exam": "AZ-104",
+    "id": 203,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 有下列生命週期管理規則：\n・Rule1｜Blob 前置詞 container1/｜若基底 Blob 最後修改超過 3 天 → 移到封存儲存體\n・Rule2｜Blob 前置詞：不適用（全部）｜若超過 5 天 → 移到冷儲存體\n・Rule3｜Blob 前置詞 container2/｜若超過 10 天 → 刪除 Blob\n・Rule4｜Blob 前置詞 container2/｜若超過 15 天 → 移到封存儲存體\n\n6 月 1 日，你在 storage1 中存入兩個 Blob：\n・File1｜位置 container1｜存取層 熱層 (Hot)\n・File2｜位置 container2｜存取層 熱層 (Hot)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "6 月 6 日，File1 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 1 日，File2 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 16 日，File2 會存放在封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1（前置詞 container1/）與 Rule2（全部）。Rule1 的門檻較短：超過 3 天就移到封存層，也就是 6 月 4 日。所以 6 月 6 日時 File1 已經在「封存層」，不是冷層。",
+      "2": "否。6 月 1 日是存入當天，Blob 還是原本的熱層。Rule2 要「超過 5 天未修改」才會移到冷層（最早 6 月 6 日），時間根本還沒到。",
+      "3": "否。File2 在 container2，符合 Rule2、Rule3 與 Rule4。門檻最短的先發生：6 月 6 日移到冷層（Rule2），6 月 11 日被「刪除」（Rule3）。Blob 在 6 月 11 日就已經不存在，因此 6 月 16 日不會在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "生命週期規則的判讀要訣：\n① 先看前置詞決定哪些規則適用於這個 Blob；\n② 多條規則同時適用時，「天數門檻較小的先觸發」，按時間軸排出事件順序；\n③ 一旦觸發「刪除」，後面天數更長的規則就沒有意義了。\n另外別忘了計時基準是「最後修改時間」，存入當天天數為 0。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 204,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算用下列 ARM 範本部署一個名為 storage1 的儲存體帳戶（內容節錄）：\n資源 1：Microsoft.Storage/storageAccounts，名稱 storage1，location \"East US\"\n　properties：\"allowBlobPublicAccess\": true、\"defaultToOAuthAuthentication\": false\n　networkAcls：\"bypass\": \"AzureServices\"、\"defaultAction\": \"Allow\"、\"ipRules\": []\n　sku：{ \"name\": \"Standard_LRS\" }、kind：\"StorageV2\"\n\n資源 2：Microsoft.Storage/storageAccounts/blobServices，名稱 storage1/default\n　properties：\n　　\"restorePolicy\": { \"enabled\": true, \"days\": 6 }\n　　\"deleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }\n　　\"containerDeleteRetentionPolicy\": { \"enabled\": true, \"days\": 7 }\n　　\"changeFeed\": { \"enabled\": true }、\"isVersioningEnabled\": true\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "storage1 中的資料變更可以在「七天後」回復。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "只有位於美國東部 (East US) Azure 區域的使用者可以連線到 storage1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "storage1 會在美國東部 Azure 區域中保留三份複本。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。時間點還原 (point-in-time restore) 的可回復範圍由 restorePolicy.days 決定，這裡設的是 6 天，所以最多只能回復到 6 天前，「七天後」已超出範圍。（順帶說明為什麼是 6：還原天數必須小於軟性刪除保留天數 deleteRetentionPolicy.days = 7，不能設成相同或更大。）",
+      "2": "否。networkAcls 的 defaultAction 是 \"Allow\"、ipRules 是空陣列，等於「允許所有網路」，沒有任何來源 IP 或虛擬網路限制。而且儲存體帳戶的 location 只代表資料放在哪個區域，與「使用者從哪裡連線」完全無關。",
+      "3": "是。sku 是 Standard_LRS（本地備援），LRS 會在主要位置（East US）內保留三份複本，用來承受磁碟、節點、機架層級的故障。",
+      "_full": "三個判斷點分別藏在範本的三個地方：\n・restorePolicy.days = 6 → 只能回復 6 天（且必須小於軟性刪除的 7 天）。\n・networkAcls.defaultAction = Allow 且無 ipRules → 網路完全開放；帳戶 location 不會限制連線來源。\n・sku = Standard_LRS → 同區域三份複本。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 205,
     "type": "single",
     "question": "你有一台內部部署伺服器，其中有一個資料夾 D:\\Folder1。你必須把 D:\\Folder1 的內容複製到名為 contosodata 的 Azure 儲存體帳戶中的 public 容器。你應該執行哪一個命令？",
@@ -39,6 +99,35 @@
   },
   {
     "exam": "AZ-104",
+    "id": 206,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 包含一個名為 container1 的容器。\n你必須為 storage1 建立一條生命週期管理規則，讓 container1 中的 Blob 在 90 天後自動移到「成本最低」的層級。\n你應該如何完成這條規則？\n\n　\"actions\": { \"baseBlob\": { 【下拉 1】 \"daysAfterModificationGreaterThan\": 90 … } }\n　\"filters\": { 【下拉 2】 \"container1/\" … }\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "\"enableAutoTierToHotFromCool\":{",
+      "\"tierToArchive\":{",
+      "\"tierToCool\":{",
+      "\"blobIndexMatch\":[",
+      "\"blobTypes\":[",
+      "\"prefixMatch\":["
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（actions.baseBlob 之下）：",
+        "correct_answer": "\"tierToArchive\":{"
+      },
+      {
+        "use_case": "下拉 2（filters 之下）：",
+        "correct_answer": "\"prefixMatch\":["
+      }
+    ],
+    "explanations": {
+      "1": "「成本最低」的存取層是封存層 (Archive)，對應的動作是 tierToArchive。tierToCool 只會移到冷層（比熱層便宜但比封存層貴）；enableAutoTierToHotFromCool 是方向相反的自動回熱設定。",
+      "2": "要把規則限定在 container1，就用 prefixMatch 指定 \"container1/\" 這個前置詞。blobTypes 是限定 Blob 類型（blockBlob／appendBlob），blobIndexMatch 是依 Blob 索引標籤比對，兩者都不是用來鎖定容器的。",
+      "_full": "完整規則的形狀是：\nactions.baseBlob.tierToArchive.daysAfterModificationGreaterThan = 90，\nfilters.prefixMatch = [\"container1/\"]。\n記住三個層級的成本高低：熱 > 冷 > 封存（封存最便宜但取用需解除凍結），以及 filters 的三個欄位分工：prefixMatch（路徑）、blobTypes（類型）、blobIndexMatch（索引標籤）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 208,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -54,6 +143,30 @@
       "B": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
       "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "D": "錯誤。匯入／匯出是把資料寫進儲存體帳戶，虛擬機器不是其目的地類型。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 210,
+    "type": "multiple",
+    "question": "你有一個 Azure AD 使用者 User1，以及一個名為 contoso2023 的讀取權限異地備援儲存體 (RA-GRS) 帳戶。\n你必須滿足下列要求：\n• User1 必須能夠把 Blob 資料寫入 contoso2023。\n• contoso2023 帳戶必須容錯移轉到它的次要端點。\n你應該設定儲存體帳戶刀鋒視窗中的哪兩個項目？",
+    "options": {
+      "A": "存取控制 (IAM)",
+      "B": "地理複寫 (Geo-replication)",
+      "C": "存取金鑰 (Access keys)",
+      "D": "資料保護 (Data protection)",
+      "E": "共用存取簽章 (Shared access signature)"
+    },
+    "answer": [
+      "A",
+      "B"
+    ],
+    "explanations": {
+      "A": "正確。要讓某個 Azure AD 使用者能「寫入 Blob 資料」，就在存取控制 (IAM) 中把資料平面的角色（例如「儲存體 Blob 資料參與者」）指派給 User1。這是以身分為基礎的授權，也是最小權限的做法。",
+      "B": "正確。帳戶層級的容錯移轉是在「地理複寫」刀鋒視窗執行的——該頁面會顯示主要與次要區域的複寫狀態與上次同步時間，並提供「準備容錯移轉 (Prepare for failover)」動作把次要區域升級為主要。",
+      "C": "錯誤。存取金鑰是整個帳戶的最高權限共用祕密，雖然拿到金鑰確實能寫入，但那不是「授權給某位使用者」的做法，也不符合最小權限；而且它跟容錯移轉毫無關係。",
+      "D": "錯誤。資料保護設定的是軟性刪除、版本設定、時間點還原這類「資料復原」功能，不是跨區域的帳戶容錯移轉。",
+      "E": "錯誤。共用存取簽章是產生有時限的權杖給「沒有 Azure AD 身分」的用戶端用，本題的 User1 是 Azure AD 使用者，應該用 RBAC 角色指派。"
     }
   },
   {
@@ -79,6 +192,64 @@
   },
   {
     "exam": "AZ-104",
+    "id": 212,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一位名為 User1 的使用者與一個名為 storage1 的儲存體帳戶。\nstorage1 中有下列資源：\n・container1｜容器 (Container)\n・folder1｜檔案共用 (File share)\n・Table1｜表格 (Table)\n\nUser1 在 storage1 上被指派下列角色：\n• 儲存體 Blob 資料讀取者 (Storage Blob Data Reader)\n• 儲存體表格資料參與者 (Storage Table Data Contributor)\n• 儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n你為 storage1 建立了一個名為 SAS1 的共用存取簽章，設定如下：\n・允許的服務：僅勾選「表格 (Table)」（Blob、檔案、佇列未勾選）\n・允許的資源類型：服務、容器、物件（三者皆勾選）\n・允許的權限：讀取、寫入、刪除、列出、新增、建立、更新（Process 與不可變儲存體未勾選）\n・有效期間：2022-01-01 至 2030-01-01（UTC+01:00）\n・允許的 IP：未設定；允許的通訊協定：僅 HTTPS；簽署金鑰：key1\n\n使用 SAS1 與 key1，User1 分別可以寫入哪些資源？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 Table1",
+      "只有 Table1 和 container1",
+      "只有 folder1 和 Table1",
+      "只有 folder1 和 container1",
+      "Table1、folder1 和 container1"
+    ],
+    "matches": [
+      {
+        "use_case": "使用 key1：",
+        "correct_answer": "Table1、folder1 和 container1"
+      },
+      {
+        "use_case": "使用 SAS1：",
+        "correct_answer": "只有 Table1"
+      }
+    ],
+    "explanations": {
+      "1": "帳戶存取金鑰 (key1) 是「共用金鑰」驗證，等同於整個儲存體帳戶的完整權限——所有服務（Blob、檔案、佇列、表格）、所有資源、讀寫全開，而且完全「繞過」Azure RBAC。所以拿 key1 可以寫入 container1、folder1 與 Table1 全部三個。（這也是為什麼實務上要盡量避免發放帳戶金鑰。）",
+      "2": "SAS1 的「允許的服務」只勾了表格，因此這個權杖只能用於表格服務——即使權限欄位把讀寫刪都勾滿了，也管不到 Blob 與檔案。所以用 SAS1 只能寫入 Table1。（同樣要注意：SAS 是由 key1 簽署的共用金鑰型憑證，授權完全由 SAS 本身的條件決定，User1 的 RBAC 角色在這裡不生效。）",
+      "_full": "本題的核心是三種授權管道彼此獨立：\n・帳戶金鑰 → 全帳戶全權限，繞過 RBAC。\n・服務 SAS／帳戶 SAS → 權限由 SAS 的服務／資源類型／權限／期間／IP／協定欄位決定，同樣繞過 RBAC。\n・Azure RBAC 角色 → 只在使用「Azure AD 身分」存取時才生效。\n因此 User1 的三個 RBAC 角色在本題兩個下拉中完全不影響答案，純粹是干擾資訊；判斷只看 key1（全開）與 SAS1（僅表格）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 213,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中某個容器 container1 的「存取原則」頁面顯示如下：\n・預存存取原則 (Stored access policies)：\n　Policy1｜權限 rcw\n　Policy2｜權限 c\n・不可變 Blob 儲存體 (Immutable blob storage)：\n　以時間為基準的保留 (Time-based retention)｜範圍 容器｜保留間隔 14 天｜狀態 已解除鎖定\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "0",
+      "1",
+      "3",
+      "5",
+      "6",
+      "2",
+      "4"
+    ],
+    "matches": [
+      {
+        "use_case": "你還可以為 container1 建立的「預存存取原則」最多有【答案】個。",
+        "correct_answer": "3"
+      },
+      {
+        "use_case": "你還可以為 container1 建立的「不可變 Blob 儲存體原則」最多有【答案】個。",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "每個容器最多可以有 5 個預存存取原則。目前已經有 Policy1 與 Policy2 兩個，所以還能再建立 5 − 2 = 3 個。",
+      "2": "不可變 Blob 儲存體在同一個容器上只能有「一個以時間為基準的保留原則」與「一個合法保留 (legal hold)」。時間保留原則已經存在，因此只剩下合法保留可以再加，答案是 1。",
+      "_full": "兩個容易記混的上限：\n・預存存取原則：每個容器（或檔案共用／佇列／表格）最多 5 個。\n・不可變儲存體原則：時間保留 1 個 + 合法保留 1 個，同一容器合計 2 種。\n本題已有 2 個存取原則與 1 個時間保留原則，所以各自還能加 3 個與 1 個。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 214,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -98,6 +269,34 @@
   },
   {
     "exam": "AZ-104",
+    "id": 216,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列儲存體帳戶：\n・storage1｜種類 StorageV2｜備援：異地區域備援儲存體 (GZRS)\n・storage2｜種類 BlobStorage｜備援：讀取權限異地備援儲存體 (RA-GRS)\n・storage3｜種類 BlockBlobStorage｜備援：區域備援儲存體 (ZRS)\n\n你必須找出哪些儲存體帳戶支援生命週期管理，以及哪些支援把資料移到封存存取層。\n你應該使用哪些儲存體帳戶？（每個正確選擇得一分）",
+    "available_options": [
+      "只有 storage1",
+      "只有 storage2",
+      "只有 storage1 和 storage3",
+      "只有 storage2 和 storage3",
+      "storage1、storage2 和 storage3"
+    ],
+    "matches": [
+      {
+        "use_case": "生命週期管理：",
+        "correct_answer": "storage1、storage2 和 storage3"
+      },
+      {
+        "use_case": "封存存取層：",
+        "correct_answer": "只有 storage2"
+      }
+    ],
+    "explanations": {
+      "1": "生命週期管理支援一般用途 v2 (StorageV2)、（舊版的）BlobStorage，以及進階區塊 Blob (BlockBlobStorage) 帳戶，三種都在支援清單內，備援類型也不影響是否能設定生命週期規則。→ 三個都可以。",
+      "2": "封存層有兩層限制：① 帳戶必須支援分層（進階的 BlockBlobStorage 不支援移到冷層或封存層）；② 封存層只支援 LRS、GRS、RA-GRS 這類「非區域備援」的備援組態，ZRS／GZRS／RA-GZRS 都不支援封存層。\nstorage1 是 GZRS → 不支援；storage3 是 BlockBlobStorage 且 ZRS → 兩個條件都不符；storage2 是 BlobStorage + RA-GRS → 支援。→ 只有 storage2。",
+      "_full": "這題的陷阱在於「生命週期管理」與「封存層」的支援條件並不相同：\n・生命週期管理：看帳戶「種類」，GPv2／BlobStorage／BlockBlobStorage 都支援，備援不影響。\n・封存層：除了種類（進階區塊 Blob 不支援分層），還要看「備援」——區域備援 (ZRS/GZRS/RA-GZRS) 一律不支援封存層。\n所以第一格三個全選、第二格只剩 RA-GRS 的那一個。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 217,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -113,6 +312,35 @@
       "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "正確。Azure Blob 儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure 檔案儲存體）。",
       "D": "錯誤。Data Factory 是資料整合服務而非儲存體，不能作為匯入目的地。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 218,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 包含一個名為 container1 的容器。\n你建立了一條名為 rule1 的 Blob 生命週期規則。\n你必須設定 rule1，讓 container1 中「45 天未更新」的 Blob 自動移到冷 (Cool) 存取層。\n你應該如何完成這條規則？\n\n　\"actions\": { \"baseBlob\": { \"tierToCool\": { 【下拉 1】: 45 } } }\n　\"filters\": { \"blobTypes\": [ 【下拉 2】 ], \"prefixMatch\": [ \"container1\" ] }\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "\"daysAfterCreationCreaterThan\"",
+      "\"daysAfterLastAccessTimeGreaterThan\"",
+      "\"daysAfterModificationGreaterThan\"",
+      "\"AppendBlob\"",
+      "\"Blockblob\"",
+      "\"Pageblob\""
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（天數條件）：",
+        "correct_answer": "\"daysAfterModificationGreaterThan\""
+      },
+      {
+        "use_case": "下拉 2（Blob 類型）：",
+        "correct_answer": "\"Blockblob\""
+      }
+    ],
+    "explanations": {
+      "1": "題目說的是「未更新 (NOT updated)」，對應的條件是以「最後修改時間」起算的 daysAfterModificationGreaterThan。daysAfterLastAccessTimeGreaterThan 是以「最後存取時間」起算（要先啟用存取時間追蹤，語意是「沒被讀取」而不是「沒被修改」）；以建立時間起算的條件則完全不看更新與否。",
+      "2": "存取層（熱／冷／封存）只適用於「區塊 Blob」，所以 blobTypes 要填 blockBlob。附加 Blob 只支援刪除類動作、不支援分層；分頁 Blob（例如 VHD）也不支援存取層。",
+      "_full": "生命週期規則的兩個常考欄位：\n・天數條件三選一：daysAfterModificationGreaterThan（最後修改）、daysAfterLastAccessTimeGreaterThan（最後存取，需啟用追蹤）、daysAfterCreationGreaterThan（建立至今）。題目說「未更新」就選最後修改。\n・blobTypes：分層動作只支援 blockBlob。"
     }
   },
   {
@@ -197,6 +425,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 223,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源群組：\n・RG1｜West US　・RG2｜West US　・RG3｜East US\n\n訂用帳戶中的虛擬網路如下：\n・VNet1｜資源群組 RG1｜區域 West US｜子網路 Subnet1｜子網路位址空間 10.1.0.0/16\n・VNet2｜資源群組 RG2｜區域 Central US｜子網路 Subnet2｜10.2.0.0/24\n・VNet3｜資源群組 RG3｜區域 East US｜子網路 Subnet3｜10.3.0.0/24\n\n你打算部署下列 Azure Kubernetes Service (AKS) 叢集：\n・AKS1｜RG1｜West US｜節點數 30｜網路設定 Azure Container Network Interface (CNI)\n・AKS2｜RG2｜West US｜節點數 100｜網路設定 Azure CNI\n・AKS3｜RG3｜East US｜節點數 50｜網路設定 Kubenet\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把 AKS1 部署到 VNet2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "你可以把 AKS2 部署到 VNet1。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "你可以把 AKS3 部署到 VNet3。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。AKS 叢集的節點必須放在「同一個區域」的虛擬網路子網路中。AKS1 在 West US，而 VNet2 在 Central US，區域不同就無法使用（資源群組可以不同，區域不行）。",
+      "2": "是。AKS2 與 VNet1 都在 West US（跨資源群組沒問題）。IP 也夠用：Azure CNI 會為「每個節點與每個 Pod」各配一個子網路 IP，以預設每節點 30 個 Pod 計算，100 個節點約需 100 × 31 ≈ 3,100 個位址，而 Subnet1 是 10.1.0.0/16（約 65,000 個位址），非常充裕。",
+      "3": "是。AKS3 與 VNet3 都在 East US。Kubenet 模式下「只有節點」會取得子網路 IP，Pod 使用叢集內部另一段位址並透過 NAT 對外，所以 50 個節點在 10.3.0.0/24（約 250 個可用位址）裡完全放得下。",
+      "_full": "兩個判斷點：\n① 區域必須相同——AKS 叢集與它使用的虛擬網路一定要同區域（第 1 項否）。\n② 子網路 IP 是否足夠，取決於網路模式：\n・Azure CNI：節點與 Pod 都吃子網路 IP，需求量大（約 節點數 × (每節點 Pod 數 + 1)）。\n・Kubenet：只有節點吃子網路 IP，需求量小。\n本題兩個 Yes 的子網路都算得過來，所以成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 224,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶加密範圍參與者 (Storage Account Encryption Scope Contributor)」角色指派給 User1。\n此解法是否達成目標？",
@@ -208,6 +466,68 @@
     "explanations": {
       "A": "錯誤。加密範圍參與者只能管理儲存體帳戶的加密範圍設定，不含列出或重新產生帳戶金鑰的權限。",
       "B": "正確。列出與重新產生帳戶金鑰需要 Microsoft.Storage/storageAccounts/listkeys 與 regeneratekey 權限，具備者為「儲存體帳戶參與者」或「參與者」等角色；加密範圍參與者無此權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 225,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，辦公室分別位於美國東部 (East US) 與美國西部 (West US) 兩個 Azure 區域。\n你打算建立一個儲存體帳戶，「檢閱 + 建立」頁面顯示如下（節錄）：\n【基本】訂用帳戶 Azure subscription 1、資源群組 RG1、位置 eastus、名稱 adatum22、部署模型 Resource manager、效能 Premium、進階帳戶類型 File shares、複寫 區域備援儲存體 (ZRS)\n【進階】安全傳輸 已啟用、允許儲存體帳戶金鑰存取 已啟用、允許跨租用戶複寫 已停用、Blob 公用存取 已啟用、最低 TLS 版本 1.2、階層命名空間／NFS v3／SFTP／大型檔案共用 皆停用\n【網路】網路連線 公用端點（所有網路）、預設路由層 Microsoft 網路路由、端點類型 標準\n【資料保護】檔案共用軟性刪除 已啟用（保留 7 天），其餘（時間點還原、Blob 軟性刪除、容器軟性刪除、版本設定、Blob 變更摘要、版本層級不可變性）皆停用\n【加密】加密類型 Microsoft 受控金鑰 (MMK)、啟用客戶管理金鑰的支援 僅 Blob 和檔案、啟用基礎結構加密 已停用\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "預設路由層 (Default routing tier)",
+      "端點類型 (Endpoint type)",
+      "位置 (Location)",
+      "網路連線 (Network connectivity)",
+      "效能 (Performance)",
+      "啟用基礎結構加密 (Enable infrastructure encryption)",
+      "啟用客戶管理金鑰的支援 (Enable support for customer-managed keys)",
+      "加密類型 (Encryption type)",
+      "進階帳戶類型 (Premium account type)"
+    ],
+    "matches": [
+      {
+        "use_case": "若要盡量降低存取 adatum22 的「網路成本」，請修改【答案】設定。",
+        "correct_answer": "預設路由層 (Default routing tier)"
+      },
+      {
+        "use_case": "adatum22 建立「之後」，你可以修改【答案】設定。",
+        "correct_answer": "加密類型 (Encryption type)"
+      }
+    ],
+    "explanations": {
+      "1": "預設路由層目前是「Microsoft 網路路由」——流量會在離使用者最近的 Microsoft 臨界點就進入Microsoft 全球骨幹網路，延遲低但頻寬計費較貴。改成「網際網路路由」會讓流量盡量走一般 ISP 網路、最後才進入骨幹，網路成本較低（代價是延遲與穩定性較差）。這是唯一與「網路成本」直接相關的設定。",
+      "2": "加密類型（Microsoft 受控金鑰 ↔ 客戶管理金鑰）在帳戶「建立之後」隨時可以切換。\n另外三個都是建立時就固定的：「啟用基礎結構加密」與「啟用客戶管理金鑰的支援（範圍）」必須在建立時決定、事後無法變更；「進階帳戶類型」（區塊 Blob／檔案共用／分頁 Blob）也是建立時就決定，不能改。",
+      "_full": "兩個獨立的知識點：\n① 路由喜好設定：Microsoft 網路路由 = 低延遲、成本較高；網際網路路由 = 成本較低、延遲較高。要省網路費就改這一項。\n② 哪些加密相關設定可以事後修改：只有「加密類型」可以；「基礎結構加密」與「客戶管理金鑰支援範圍」都是建立時一次定案，進階帳戶類型同樣不可事後變更。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 226,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算部署一個新的儲存體帳戶，並為該帳戶設定加密，解決方案必須滿足下列要求：\n• 使用存放在金鑰保存庫中的「客戶管理金鑰」。\n• 使用「支援的最大位元長度」。\n你應該使用哪一種金鑰、哪一種位元長度？（每個正確選擇得一分）",
+    "available_options": [
+      "AES",
+      "3DES",
+      "RSA",
+      "2048",
+      "3072",
+      "4096",
+      "8192"
+    ],
+    "matches": [
+      {
+        "use_case": "金鑰 (Key)：",
+        "correct_answer": "RSA"
+      },
+      {
+        "use_case": "位元長度 (Bit length)：",
+        "correct_answer": "4096"
+      }
+    ],
+    "explanations": {
+      "1": "儲存體帳戶的客戶管理金鑰必須是 Azure 金鑰保存庫中的「RSA 金鑰」（RSA 或 RSA-HSM），用來包裝／解開實際加密資料的金鑰。AES 與 3DES 是對稱式演算法，Azure 金鑰保存庫的金鑰類型不提供它們（金鑰保存庫支援的是 RSA 與 EC；而儲存體加密只接受 RSA）。",
+      "2": "金鑰保存庫的 RSA 金鑰支援 2048、3072 與 4096 位元，最大就是 4096。8192 不是支援的長度，所以「支援的最大位元長度」是 4096。",
+      "_full": "兩個要記的事實：① 儲存體帳戶的客戶管理金鑰只能用 RSA（含 RSA-HSM）；② 可選的 RSA 長度是 2048／3072／4096，上限 4096。\n另外提醒：使用客戶管理金鑰時，儲存體帳戶需要有存取該金鑰保存庫的身分（受控識別 + 保存庫存取原則或 RBAC），且保存庫必須啟用軟性刪除與清除保護。"
     }
   },
   {
@@ -254,6 +574,35 @@
   },
   {
     "exam": "AZ-104",
+    "id": 229,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，打算建立一個角色定義以滿足下列要求：\n• 使用者必須能夠檢視儲存體帳戶的「設定資料」。\n• 使用者必須能夠對虛擬網路執行「所有」動作。\n• 解決方案必須遵循最小權限原則。\n針對每一項要求，角色定義中應該包含什麼？（每個正確選擇得一分）",
+    "available_options": [
+      "\"Microsoft.Network/virtualNetworks/*\"",
+      "\"Microsoft.Network/virtualNetworks/delete\"",
+      "\"Microsoft.Network/virtualNetworks/write\"",
+      "\"Microsoft.Storage/StorageAccounts/*\"",
+      "\"Microsoft.Storage/StorageAccounts/read\"",
+      "\"Microsoft.Storage/StorageAccounts/blobServices/containers/blob/read\""
+    ],
+    "matches": [
+      {
+        "use_case": "對虛擬網路執行所有動作：",
+        "correct_answer": "\"Microsoft.Network/virtualNetworks/*\""
+      },
+      {
+        "use_case": "檢視儲存體帳戶的設定資料：",
+        "correct_answer": "\"Microsoft.Storage/StorageAccounts/read\""
+      }
+    ],
+    "explanations": {
+      "1": "「所有動作」就用萬用字元把該資源類型底下的作業全部包含進來：Microsoft.Network/virtualNetworks/*。單獨列 write 或 delete 都只涵蓋一種作業，不符合「所有動作」。",
+      "2": "檢視儲存體帳戶的「設定資料」屬於管理平面的讀取作業，對應 Microsoft.Storage/StorageAccounts/read，這正是最小權限的寫法。用 /* 會連建立、刪除、列出金鑰等權限都給出去，違反最小權限；而 blobServices/containers/blob/read 是資料平面的「讀取 Blob 內容」，與檢視帳戶設定是不同層面的權限。",
+      "_full": "自訂角色 actions 的兩個判斷技巧：\n① 需求說「所有動作」→ 用 <資源類型>/* 萬用字元。\n② 需求說「檢視設定」→ 只給 /read，別用 /*（最小權限）。\n另外要分清「管理平面」與「資料平面」：StorageAccounts/read 看的是帳戶組態；blobServices/.../blob/read 才是讀取 Blob 的內容（而且屬於 dataActions 的範疇）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 230,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，有 5 TB 的資料需要傳輸到 Subscription1，並打算使用 Azure 匯入／匯出作業。匯入資料的「目的地」可以是什麼？",
@@ -269,6 +618,36 @@
       "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "正確。Azure 檔案儲存體是匯入作業支援的兩種目的地之一（另一種是 Azure Blob 儲存體）。",
       "D": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 231,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器。\n你打算為 VM1 新增一個 1 TB 的資料磁碟，並滿足下列要求：\n• 在資料中心中斷時仍提供資料復原能力。\n• 提供最低的延遲與最高的效能。\n• 確保主機故障時不會發生資料遺失。\n你必須建議這個新資料磁碟要使用哪一種儲存體類型與主機快取設定。（每個正確選擇得一分）",
+    "available_options": [
+      "使用本地備援儲存體 (LRS) 的進階 SSD",
+      "使用區域備援儲存體 (ZRS) 的進階 SSD",
+      "使用本地備援儲存體 (LRS) 的標準 SSD",
+      "使用區域備援儲存體 (ZRS) 的標準 SSD",
+      "無 (None)",
+      "唯讀 (Read-only)",
+      "讀取／寫入 (Read/Write)"
+    ],
+    "matches": [
+      {
+        "use_case": "儲存體類型：",
+        "correct_answer": "使用區域備援儲存體 (ZRS) 的進階 SSD"
+      },
+      {
+        "use_case": "主機快取：",
+        "correct_answer": "唯讀 (Read-only)"
+      }
+    ],
+    "explanations": {
+      "1": "兩個要求各排除一半的選項：「資料中心中斷仍有復原能力」→ 備援必須跨可用性區域，所以要 ZRS（LRS 三份複本都在同一個資料中心）；「最低延遲、最高效能」→ 在這些選項中要選進階 SSD 而非標準 SSD。兩者相交即為「使用 ZRS 的進階 SSD」。",
+      "2": "主機快取有三種：無、唯讀、讀取／寫入。「讀取／寫入」快取會把寫入先放在主機的快取中，主機故障時尚未寫回磁碟的資料會遺失，違反「主機故障不得資料遺失」。「無」雖然安全，但讀取完全不使用快取、效能較差。「唯讀」只快取讀取、寫入一律直接落到磁碟——既提升讀取效能，又不會因主機故障而遺失資料，是同時滿足兩項要求的選擇。",
+      "_full": "三個要求對應三個判斷：\n・資料中心中斷仍可用 → ZRS（跨可用性區域），排除 LRS。\n・最低延遲最高效能 → 進階 SSD（比標準 SSD 好；若選項有 Ultra Disk 會更快，但 Ultra Disk 目前不支援 ZRS）。\n・主機故障不遺失資料 + 要效能 → 主機快取設為「唯讀」（讀取／寫入快取有遺失風險，無快取則沒有效能好處）。"
     }
   },
   {
@@ -312,6 +691,30 @@
       "B": "錯誤。機密磁碟加密僅適用於機密運算 (Confidential VM) 系列的特定機型，且主要保護 OS 磁碟，不是本題通用情境的答案。",
       "C": "正確。Azure 磁碟加密在「客體作業系統內部」使用 BitLocker（Windows）或 dm-crypt（Linux）進行加密，金鑰存放於金鑰保存庫，可同時涵蓋 OS 與資料磁碟；因為加密發生在磁碟內容本身，即使 VHD 被下載到別處也依然是加密狀態。",
       "D": "錯誤。主機加密是在主機端對資料進行加密後才寫入儲存體，磁碟檔案本身在下載後並不保持加密。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 234,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storage1 的儲存體帳戶。\n你必須設定一個共用存取簽章 (SAS)，確保使用者「只能依名稱安全地下載 Blob」。\n在產生 SAS 的畫面上，「允許的服務」已勾選 Blob。你還應該設定哪兩項？",
+    "options": {
+      "A": "允許的資源類型：服務 (Service)",
+      "B": "允許的資源類型：容器 (Container)",
+      "C": "允許的資源類型：物件 (Object)",
+      "D": "允許的權限：讀取 (Read)",
+      "E": "允許的權限：列出 (List)"
+    },
+    "answer": [
+      "C",
+      "D"
+    ],
+    "explanations": {
+      "A": "錯誤。「服務」這個資源類型允許的是帳戶／服務層級的作業（例如取得服務屬性、列出容器），與下載個別 Blob 無關，給了反而超出需求。",
+      "B": "錯誤。「容器」資源類型是用來做容器層級作業（最典型的就是列出容器內的 Blob）。題目說「依名稱」下載——使用者已經知道 Blob 名稱，不需要列舉，所以不必給容器層級權限。",
+      "C": "正確。下載單一個 Blob 屬於「物件」層級的作業（Get Blob），因此允許的資源類型必須勾選「物件」。",
+      "D": "正確。下載就是讀取，因此權限勾「讀取」即可。不需要寫入、刪除或列出——這正是最小權限。",
+      "E": "錯誤。「列出」是用來列舉容器內容的權限。題目明確說是「依名稱」下載，代表不需要列舉能力。"
     }
   },
   {
@@ -360,6 +763,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 237,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中有兩個容器 container1 與 container2，兩者都已啟用 Blob 版本設定。你會定期為關鍵 Blob 建立快照。\n你建立了下列生命週期管理原則：\n　\"rules\": [ { \"enabled\": true, \"name\": \"rule1\", \"type\": \"Lifecycle\",\n　　\"definition\": {\n　　　\"actions\": { \"version\": {\n　　　　\"tierToCool\": { \"daysAfterCreationGreaterThan\": 15 },\n　　　　\"tierToArchive\": { \"daysAfterLastTierChangeGreaterThan\": 7,\n　　　　　\"daysAfterCreationGreaterThan\": 30 } } },\n　　　\"filters\": { \"blobTypes\": [\"blockBlob\"],\n　　　　\"prefixMatch\": [\"container1/\"] } } } ]\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "Blob 快照會在 15 天後自動移到冷 (Cool) 存取層。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "container2 中的 Blob 版本會在 30 天後自動移到封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "已解除凍結 (rehydrated) 的版本會在 30 天後自動移到封存存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。規則的 actions.version.tierToCool 設定 daysAfterCreationGreaterThan = 15，所以建立滿 15 天的版本會自動移到冷層；在已啟用版本設定的帳戶上，快照與版本由同一組版本規則管理。（嚴格說規則的 prefixMatch 限定在 container1/，因此這只對 container1 內的快照成立；本敘述未指定容器，官方判定為「是」。）",
+      "2": "否。filters.prefixMatch 是 [\"container1/\"]，規則只作用在 container1 之下的 Blob。container2 完全不在範圍內，所以它的版本不會被自動移到封存層。",
+      "3": "否。tierToArchive 同時設了「兩個」條件，必須「都」滿足才會執行：距建立超過 30 天，「而且」距上一次層級變更超過 7 天。已解除凍結的版本剛剛才發生過層級變更（從封存回到熱／冷層），所以還得再等 7 天以上才可能被移回封存，不會「30 天後就」移過去。",
+      "_full": "三項各測一件事：\n① actions 的動作群組（baseBlob／snapshot／version）決定規則管的是哪一種物件——本規則管的是 version，門檻 15 天移冷層。\n② filters.prefixMatch 決定作用範圍，container2 不在其中。\n③ daysAfterLastTierChangeGreaterThan 是「額外」的且條件，剛解除凍結的 Blob 因為才變更過層級，會被這個條件卡住。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 240,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶金鑰操作員服務角色 (Storage Account Key Operator Service Role)」指派給 User1。\n此解法是否達成目標？",
@@ -371,6 +804,181 @@
     "explanations": {
       "A": "正確。這個內建角色的設計用途正是允許列出與重新產生儲存體帳戶的存取金鑰（listkeys 與 regeneratekey 權限），完全對應需求且權限範圍最小。",
       "B": "錯誤。此角色確實具備列出與重新產生金鑰的權限，因此解法成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 241,
+    "type": "matching",
+    "question": "你有一個名為 storage1 的 Azure 儲存體帳戶，其中的容器 container1 存放了數千個影像檔。\n你打算用 ARM 範本建立一條名為 rule1 的 Blob 清查規則。\n你必須確保「只有名稱以 finance 開頭」的 Blob 每天以 CSV 檔的形式存放在 container1。\n你應該如何完成 rule1？\n\n　\"definition\": { \"filters\": {\n　　\"blobTypes\": 【下拉 1】,\n　　\"includeBlobVersions\": true, \"includeSnapshots\": true,\n　　\"prefixMatch\": 【下拉 2】 },\n　　\"format\": \"string\", \"objectType\": \"blob\", \"schedule\": \"daily\",\n　　\"schemaFields\": [\"Name\"] },\n　\"destination\": \"CSV\", \"enabled\": true, \"name\": \"rule1\"\n\n（每個正確答案得一分）",
+    "available_options": [
+      "appendBlob",
+      "blockBlob",
+      "pageBlob",
+      "container1/*",
+      "container1/finance",
+      "finance"
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1（blobTypes）：",
+        "correct_answer": "blockBlob"
+      },
+      {
+        "use_case": "下拉 2（prefixMatch）：",
+        "correct_answer": "container1/finance"
+      }
+    ],
+    "explanations": {
+      "1": "影像檔是以「區塊 Blob」形式儲存，所以 blobTypes 填 blockBlob。另外要注意：規則同時設了 includeBlobVersions 與 includeSnapshots 為 true，而這兩個選項只有在 blobTypes 僅含 blockBlob 時才允許使用——填 appendBlob 或 pageBlob 會讓規則直接無效。",
+      "2": "prefixMatch 的值必須從「容器名稱」開始寫，格式是 <容器>/<Blob 名稱前置詞>。要抓 container1 中名稱以 finance 開頭的 Blob，就寫 container1/finance。只寫 finance 會被當成容器名稱（不存在）；container1/* 會涵蓋整個容器，且清查規則的前置詞不使用萬用字元。",
+      "_full": "兩個重點：\n① Blob 清查規則若要包含版本與快照 (includeBlobVersions／includeSnapshots)，blobTypes 必須只含 blockBlob。\n② prefixMatch 一律寫成「容器/前置詞」的形式，不用萬用字元；純粹寫名稱前置詞而不帶容器是無效的。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 242,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storage1 的儲存體帳戶，storage1 的容器 container1 裡有一些 Blob。\n你打算分享 storage1 的存取權，必須產生一個共用存取簽章 (SAS)，並滿足下列要求：\n• 確保這個 SAS 只能用來「列舉」與「下載」container1 中的 Blob。\n• 遵循最小權限原則。\n在產生 SAS 的畫面上，「允許的服務」已勾選 Blob。你還應該啟用哪些項目？",
+    "options": {
+      "A": "允許的資源類型：服務 (Service)",
+      "B": "允許的資源類型：容器 (Container)",
+      "C": "允許的資源類型：物件 (Object)",
+      "D": "允許的權限：讀取 (Read)",
+      "E": "允許的權限：列出 (List)"
+    },
+    "answer": [
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "explanations": {
+      "A": "錯誤。「服務」資源類型允許的是帳戶／服務層級作業（例如列出整個帳戶的容器、取得服務屬性），超出「只針對 container1」的需求。",
+      "B": "正確。「列舉」container1 中的 Blob（List Blobs）是容器層級的作業，因此必須勾選「容器」這個資源類型。",
+      "C": "正確。【答案校正】官方只選了容器＋讀取＋列出三項，未含「物件」。但依 SAS 資源類型的語意，下載個別 Blob（Get Blob）是「物件」層級作業——只勾「容器」只能做容器層級操作（列出 Blob、讀取容器屬性），實際上下載不了 Blob。本題庫的 id 234 正是為了「依名稱下載」而選「物件」，兩題的判準必須一致，因此本題判定要同時勾選容器與物件（合計四項）。",
+      "D": "正確。下載 Blob 需要「讀取」權限。",
+      "E": "正確。列舉容器內容需要「列出」權限；少了它就只能在已知名稱的情況下下載，無法列舉。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 243,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 有下列生命週期管理規則：\n・Rule1｜Blob 前置詞 container1/｜若基底 Blob 最後修改超過 3 天 → 移到封存儲存體\n・Rule2｜Blob 前置詞：不適用（全部）｜若超過 5 天 → 移到冷儲存體\n・Rule3｜Blob 前置詞 container2/｜若超過 10 天 → 刪除 Blob\n・Rule4｜Blob 前置詞 container2/｜若超過 15 天 → 移到封存儲存體\n\n6 月 1 日，你在 storage1 中存入兩個 Blob：\n・File1｜位置 container1｜存取層 熱層 (Hot)\n・File2｜位置 container2｜存取層 熱層 (Hot)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "6 月 6 日，File1 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "6 月 7 日，File2 會存放在冷 (Cool) 存取層。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "6 月 16 日，File2 會存放在封存 (Archive) 存取層。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。File1 在 container1，同時符合 Rule1 與 Rule2，而 Rule1 的門檻較短：超過 3 天（6 月 4 日）就直接移到「封存層」。所以 6 月 6 日時 File1 在封存層，不是冷層。",
+      "2": "是。File2 在 container2，適用 Rule2（全部）、Rule3 與 Rule4。門檻最短的 Rule2 在超過 5 天（6 月 6 日）把它移到冷層；Rule3 的刪除要到 6 月 11 日才發生。因此 6 月 7 日時 File2 正在冷層。",
+      "3": "否。Rule3 會在超過 10 天（6 月 11 日）刪除 File2，Blob 在那時就不存在了，所以 6 月 16 日不可能在封存層——Rule4 的 15 天永遠等不到。",
+      "_full": "同一組規則、三個不同的時間點：\n・6 月 4 日：File1 進封存層（Rule1，3 天）。\n・6 月 6 日：File2 進冷層（Rule2，5 天）。\n・6 月 11 日：File2 被刪除（Rule3，10 天）→ Rule4 的 15 天再也不會觸發。\n多條規則同時適用時，一律按「天數門檻由小到大」排出事件順序，而且一旦觸發刪除，後面的規則就沒有意義了。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 244,
+    "type": "matching",
+    "question": "你有一個名為 contoso2024 的 Azure 儲存體帳戶，其中包含下列資源：\n・container1｜Blob 容器｜內容 File1\n・share1｜Azure 檔案共用｜內容 File2\n\n使用者對 contoso2024 的權限如下：\n・User1｜讀取者 (Reader) 角色\n・User2｜儲存體帳戶參與者 (Storage Account Contributor) 角色\n・User3｜持有 contoso2024 的一組存取金鑰\n\ncontoso2024 的「設定」頁面顯示如下（節錄）：\n・帳戶種類 StorageV2（一般用途 v2）、效能 標準\n・需要安全傳輸：已啟用\n・允許 Blob 公用存取：已啟用\n・允許儲存體帳戶金鑰存取：「已停用」\n・允許 SAS 到期間隔的建議上限：已停用\n・在 Azure 入口網站中預設為 Azure AD 授權：已停用\n・最低 TLS 版本 1.2、Blob 存取層（預設）熱層\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以讀取 File1。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User2 可以讀取 File2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User3 可以讀取 File1 與 File2。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。「讀取者」是管理平面的角色，只能檢視儲存體帳戶的組態，不含任何讀取資料的權限。要讀 Blob 內容必須有資料平面角色（例如儲存體 Blob 資料讀取者）。",
+      "2": "否。「儲存體帳戶參與者」同樣是管理平面角色——可以管理帳戶、而且平常可以透過「列出金鑰」再用金鑰存取資料；但本帳戶已把「允許儲存體帳戶金鑰存取」停用，這條路被封住了。該角色本身不含檔案共用的資料存取權，所以讀不到 File2。",
+      "3": "否。關鍵就是「允許儲存體帳戶金鑰存取：已停用」——停用之後，任何以共用金鑰（或由金鑰簽署的 SAS）發出的請求都會被拒絕，即使手上握有正確的金鑰也一樣。此時只有 Azure AD 身分授權的請求會被接受。",
+      "_full": "本題的樞紐是一個設定：「允許儲存體帳戶金鑰存取 = 停用」。\n・停用後：共用金鑰與 SAS 全面失效（第 3 項否），連「先列出金鑰再用金鑰」的迂迴路徑也走不通（第 2 項否）。\n・剩下唯一可行的是 Azure AD 授權，但那需要「資料平面」角色；讀取者與儲存體帳戶參與者都只是管理平面角色（第 1、2 項否）。\n管理平面角色 ≠ 資料存取權，這是儲存體題目最常見的分界。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 245,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶連結到一個混合式 Microsoft Entra 租用戶，其中包含下列使用者：\n・User1｜已啟用內部部署同步：否（純雲端帳戶）\n・User2｜已啟用內部部署同步：是（混合式身分）\n\n你建立了下列 Azure 檔案共用：\n・share1｜儲存體帳戶 contoso2024\n・share2｜儲存體帳戶 contoso2024\n・share3｜儲存體帳戶 contoso2025\n\n你為 contoso2024 設定識別式存取如下：\n・步驟 1「啟用 Active Directory 來源」：Active Directory 已啟用（Azure AD DS 與 Azure AD Kerberos 顯示「已設定其他存取方法」）\n　畫面提示：Azure AD 不是網域控制站，只以 Azure AD 為基礎的使用者帳戶目前不支援。\n・步驟 2「設定共用層級權限」：預設共用層級權限 = 「為所有已驗證的使用者和群組啟用權限」；選取的角色 = 儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n（contoso2025 未設定識別式存取。）\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以存取 share1 中的內容。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "User2 可以存取 share2 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User2 可以存取 share3 中的內容。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "否。contoso2024 啟用的識別來源是「Active Directory（內部部署 AD DS）」，而 User1 是純雲端帳戶、沒有對應的 AD DS 身分。刀鋒視窗上的提示已經寫明：只存在於 Azure AD 的使用者帳戶不受支援，因此 User1 無法通過 Kerberos 驗證來存取 share1。",
+      "2": "是。User2 是混合式身分（有內部部署 AD DS 帳戶並同步到 Entra），符合 AD DS 識別來源的要求；而共用層級權限設為「為所有已驗證的使用者和群組啟用權限」並給了「SMB 共用參與者」角色，所以不需要個別指派也能讀寫。share2 與 share1 同屬 contoso2024，設定一體適用。",
+      "3": "否。識別式存取是設定在「儲存體帳戶」層級的，而這些設定只做在 contoso2024 上。share3 位於 contoso2025，該帳戶沒有啟用任何識別來源，因此無法用網域身分掛接（只能用帳戶金鑰）。",
+      "_full": "三個判斷點：\n① 識別來源決定「誰能驗證」——選 AD DS 時，純雲端帳戶不支援（要支援純雲端身分得用 Azure AD Kerberos，但那要求混合式身分；或改用 Azure AD DS）。\n② 預設共用層級權限「為所有已驗證的使用者和群組啟用」會給每個通過驗證的身分一個預設角色，不必逐一指派。\n③ 識別式存取是「儲存體帳戶」層級設定，不會跨帳戶生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 246,
+    "type": "matching",
+    "question": "你的網路中有一個內部部署 Active Directory Domain Services (AD DS) 網域，包含下列身分：\n・User1｜使用者｜位於組織單位 OU2\n・User2｜使用者｜位於組織單位 OU1\n・Group1｜全域群組，成員包含 User1｜位於組織單位 OU1\n\n你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。storage1 中的檔案共用識別來源是 AD DS，且「預設共用層級權限」設為「為所有已驗證的使用者和群組啟用權限」。\n你建立了一個名為 share1 的 Azure 檔案共用，其角色指派如下：\n・User2｜儲存體檔案資料 SMB 共用讀取者 (Storage File Data SMB Share Reader)\n・Group1｜儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)\n\n你有一個 Microsoft Entra 租用戶，其中有一個純雲端使用者 User3。\n你使用 Microsoft Entra Connect 只把 OU1 從 AD DS 網域同步到 Entra 租用戶。\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "User1 可以存取 share1 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User2 可以存取 share1 中的內容。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "User3 可以存取 share1 中的內容。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。雖然 User1 在 OU2、沒有被同步到 Entra，因此拿不到任何 RBAC 角色指派，但「預設共用層級權限：為所有已驗證的使用者和群組啟用權限」會給「每一個通過 AD DS 驗證的身分」一個預設角色。User1 是網域中的有效帳戶，能通過 Kerberos 驗證，所以靠預設權限就存取得到。",
+      "2": "是。User2 在 OU1、已同步到 Entra，而且被明確指派了「SMB 共用讀取者」角色，可以讀取 share1 的內容（即使沒有這個指派，預設共用層級權限也已足夠）。",
+      "3": "否。share1 的識別來源是 AD DS，存取時必須以網域身分通過 Kerberos 驗證。User3 是純雲端帳戶、在 AD DS 網域中不存在，因此無法驗證，「所有已驗證的使用者」這個預設權限也套不到他身上。",
+      "_full": "兩個容易混淆的機制要分清：\n① 共用「層級」權限：預設共用層級權限開啟後，所有通過識別來源驗證的身分都取得指定角色，不需要個別 RBAC 指派——這就是 User1 明明沒同步也能存取的原因。\n② 是否同步到 Entra：只影響「能不能被指派 RBAC 角色」，不影響能不能通過 AD DS 的 Kerberos 驗證。\n而純雲端帳戶（User3）在 AD DS 識別來源下根本無法驗證，兩個機制都幫不了他。"
     }
   },
   {
@@ -407,6 +1015,35 @@
       "C": "錯誤。自動化工作用於映像的自動建置與修補，與異地複寫無關。",
       "D": "錯誤。快取規則用於從上游登錄快取映像，不是異地複寫。",
       "E": "正確。異地複寫是 Azure 容器登錄「進階 (Premium)」SKU 的專屬功能，標準 SKU 不支援，因此必須先升級 SKU。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 250,
+    "type": "matching",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\nADatum 規劃的變更之一是：在儲存體帳戶 storage1 中建立一個新容器 cont2，並為它設定下列存取原則：\n・三個預存存取原則 (stored access policies)：Stored1、Stored2、Stored3\n・一個用於不可變 Blob 儲存體的合法保留 (legal hold)\n\n你實作了 cont2 的這項規劃變更。\n你「還」可以為 cont2 建立的額外存取原則最多是幾個？（每個正確選擇得一分）",
+    "available_options": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "matches": [
+      {
+        "use_case": "預存存取原則 (Stored access policies)：",
+        "correct_answer": "2"
+      },
+      {
+        "use_case": "不可變 Blob 儲存體原則 (Immutable blob storage policies)：",
+        "correct_answer": "1"
+      }
+    ],
+    "explanations": {
+      "1": "每個容器最多 5 個預存存取原則。規劃中已經要建立 Stored1、Stored2、Stored3 共 3 個，所以還剩 5 − 3 = 2 個可用。",
+      "2": "不可變 Blob 儲存體在同一個容器上可以有「一個合法保留」與「一個以時間為基準的保留原則」，兩者各一。規劃中已經要建立合法保留，因此只剩時間保留原則可以再加，也就是 1 個。",
+      "_full": "兩個上限要分開記：\n・預存存取原則：每個容器 5 個（本題用掉 3 個 → 還能加 2）。\n・不可變原則：合法保留 1 個 + 時間保留 1 個（本題用掉合法保留 → 還能加 1）。"
     }
   },
   {
@@ -471,6 +1108,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 257,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組　・RG2｜資源群組\n・VNet1｜虛擬網路（位於 RG1）　・VNet2｜虛擬網路（位於 RG2）\n\nVNet1 與 VNet2 之間「沒有」任何連線。\n一位名為 Admin1 的管理員在 RG1 中建立了一台 Azure 虛擬機器 VM1，VM1 使用一個名為 Disk1 的磁碟並連線到 VNet1。接著 Admin1 在 VM1 中安裝了一個自訂應用程式。\n你必須把這個自訂應用程式移到 VNet2，且解決方案必須盡量減少管理工作。\n你應該執行哪兩個動作？（每個正確選擇得一分）",
+    "available_options": [
+      "在 RG2 中建立一張網路介面。",
+      "卸離一張網路介面。",
+      "刪除 VM1。",
+      "把一張網路介面移到 RG2。",
+      "連接一張網路介面。",
+      "建立一台新的虛擬機器。",
+      "把 VM1 移到 RG2。"
+    ],
+    "matches": [
+      {
+        "use_case": "第一個動作：",
+        "correct_answer": "刪除 VM1。"
+      },
+      {
+        "use_case": "第二個動作：",
+        "correct_answer": "建立一台新的虛擬機器。"
+      }
+    ],
+    "explanations": {
+      "1": "虛擬機器「無法」換到另一個虛擬網路——VM 連到哪個 VNet 是由它的網路介面決定的，而網路介面建立後就不能改所屬的虛擬網路。因此第一步是「刪除 VM1」，但刪除時保留 Disk1（刪除 VM 預設不會刪磁碟）。",
+      "2": "第二步是在 VNet2 中「建立一台新的虛擬機器」，並在建立時掛接原本保留下來的 Disk1 作為 OS 磁碟——自訂應用程式就在那顆磁碟裡，因此不需要重新安裝，這是管理工作最少的做法。\n（把 VM1 或網路介面「移到 RG2」都沒用：搬移資源群組不會改變網路介面所屬的虛擬網路。）",
+      "_full": "核心觀念：虛擬機器不能跨虛擬網路搬移，也不能更換網路介面所屬的 VNet；而「移到另一個資源群組」與「移到另一個虛擬網路」是完全不同的兩件事。\n最省事的做法是：① 刪除 VM（保留資料磁碟／OS 磁碟）→ ② 在目標 VNet 中用同一顆磁碟重建 VM。應用程式與設定都隨磁碟一起過去。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 258,
     "type": "single",
     "question": "你依據一台既有虛擬機器下載了一份 Azure Resource Manager 範本，該範本將用來部署 100 台虛擬機器。你必須修改範本以參考系統管理員密碼，並且必須避免密碼以純文字形式儲存。你應該建立什麼來存放這個密碼？",
@@ -486,6 +1153,63 @@
       "B": "錯誤。儲存體帳戶不是祕密管理服務，ARM 範本也沒有從儲存體帳戶安全取用祕密的原生機制。",
       "C": "錯誤。復原服務保存庫用於備份與災難復原，不存放祕密。",
       "D": "錯誤。Identity Protection 偵測身分風險，Azure 原則負責資源合規，兩者都與存放密碼無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 259,
+    "type": "matching",
+    "question": "你有下列 App Service 方案：\n・ASP1｜作業系統 Windows｜位置 West US\n・ASP2｜作業系統 Windows｜位置 Central US\n・ASP3｜作業系統 Linux｜位置 West US\n\n你打算建立下列 Azure Web 應用程式：\n・WebApp1｜執行階段堆疊 .NET Core 3.0｜位置 West US\n・WebApp2｜執行階段堆疊 ASP.NET 4.7｜位置 West US\n\n你必須找出哪些 App Service 方案可以用於這些 Web 應用程式。（每個正確選擇得一分）",
+    "available_options": [
+      "只有 ASP1",
+      "只有 ASP3",
+      "只有 ASP1 和 ASP2",
+      "只有 ASP1 和 ASP3",
+      "ASP1、ASP2 和 ASP3"
+    ],
+    "matches": [
+      {
+        "use_case": "WebApp1（.NET Core 3.0）：",
+        "correct_answer": "只有 ASP1 和 ASP3"
+      },
+      {
+        "use_case": "WebApp2（ASP.NET 4.7）：",
+        "correct_answer": "只有 ASP1"
+      }
+    ],
+    "explanations": {
+      "1": ".NET Core 是跨平台的，Windows 與 Linux 的 App Service 方案都能執行。但 Web 應用程式的區域「就是」它所屬 App Service 方案的區域，而 WebApp1 要在 West US，所以 Central US 的 ASP2 出局。→ 只有 ASP1（Windows/West US）和 ASP3（Linux/West US）。",
+      "2": "ASP.NET 4.7 是傳統的 .NET Framework，只能在「Windows」上執行，Linux 方案不支援，所以 ASP3 出局；再加上區域必須是 West US，ASP2 也出局。→ 只有 ASP1。",
+      "_full": "兩條規則交叉判斷：\n① 作業系統：.NET Core／.NET 5+ 跨平台（Windows 與 Linux 皆可）；ASP.NET／.NET Framework 只能 Windows。\n② 區域：Web 應用程式沒有自己的區域，它跟隨 App Service 方案的區域，所以方案與應用程式必須同區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 260,
+    "type": "matching",
+    "question": "你建立了一個名為 Scale1 的虛擬機器擴展集，設定如下（「調整」索引標籤）：\n・初始執行個體計數：4\n・調整原則：自訂 (Custom)；VM 數量下限：2；VM 數量上限：20\n・向外延展 (Scale out)：CPU 閾值 80%、持續時間 5 分鐘、每次增加 2 台 VM\n・向內延展 (Scale in)：CPU 閾值 30%、每次減少 4 台 VM\n・診斷記錄：不從自動調整收集（已停用）\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "2 台虛擬機器",
+      "4 台虛擬機器",
+      "6 台虛擬機器",
+      "8 台虛擬機器",
+      "10 台虛擬機器",
+      "20 台虛擬機器"
+    ],
+    "matches": [
+      {
+        "use_case": "如果 Scale1 部署後以 85% 的使用率持續六分鐘，Scale1 會執行【答案】。",
+        "correct_answer": "6 台虛擬機器"
+      },
+      {
+        "use_case": "如果 Scale1 部署後先以 25% 的使用率持續六分鐘，接著以 50% 的使用率持續六分鐘，Scale1 會執行【答案】。",
+        "correct_answer": "2 台虛擬機器"
+      }
+    ],
+    "explanations": {
+      "1": "85% 超過向外延展的門檻 80%，而且持續 6 分鐘（> 設定的 5 分鐘），所以觸發一次向外延展，每次增加 2 台。初始 4 台 + 2 = 6 台。（上限 20 還很遠，不會被截斷。）",
+      "2": "先看第一段：25% 低於向內延展門檻 30%，觸發向內延展、每次減少 4 台。4 − 4 = 0，但 VM 數量下限是 2，所以只會縮到 2 台。\n再看第二段：50% 既不超過 80%（不會向外延展）、也不低於 30%（不會再向內延展），因此維持不動。最終是 2 台。",
+      "_full": "自動調整題的判讀順序：\n① 使用率是否越過門檻，且持續時間是否達標（本題向外延展要求 5 分鐘）。\n② 依「每次增加／減少的數量」加減。\n③ 用「下限／上限」夾住結果——本題向內延展算出 0，被下限 2 截住。\n④ 位於兩個門檻「之間」的使用率（例如 50%）不會觸發任何調整。"
     }
   },
   {
@@ -510,6 +1234,37 @@
       "C": "錯誤。Azure 原則負責治理與合規稽核，不會在 VM 佈建時安裝軟體。",
       "D": "正確。擴展集範本的 extensionProfile 區段用來宣告要套用在每個執行個體上的延伸模組（例如自訂指令碼延伸模組），新佈建的執行個體就會自動執行該指令碼。",
       "E": "錯誤。題目要求的是「自動化部署」，改用入口網站手動建立與此目標相違。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 262,
+    "type": "matching",
+    "question": "你有一個名為 AKS1 的 Azure Kubernetes Service (AKS) 叢集，以及一台執行 Windows 10 的電腦 Computer1，Computer1 已安裝 Azure CLI。\n你必須在 Computer1 上安裝 kubectl 用戶端。你應該執行哪個命令？\n\n　【下拉 1】 【下拉 2】 install-cli\n\n（每個正確選擇得一分）",
+    "available_options": [
+      "az",
+      "docker",
+      "msiexec.exe",
+      "Install-Module",
+      "aks",
+      "/package",
+      "-name",
+      "pull"
+    ],
+    "matches": [
+      {
+        "use_case": "下拉 1：",
+        "correct_answer": "az"
+      },
+      {
+        "use_case": "下拉 2：",
+        "correct_answer": "aks"
+      }
+    ],
+    "explanations": {
+      "1": "題目說 Computer1 已安裝 Azure CLI，而在本機安裝 kubectl 的官方做法就是 Azure CLI 的命令，所以第一個字是 az。docker 是容器引擎的 CLI；msiexec.exe 是 Windows Installer；Install-Module 是 PowerShell 安裝模組用的（都不會裝 kubectl）。",
+      "2": "完整命令是 az aks install-cli——它屬於 az aks 這個命令群組，會下載並安裝 kubectl（必要時也可加 --install-location 指定路徑）。/package、-name、pull 都不是這個命令的組成部分。",
+      "_full": "答案是 az aks install-cli。\n順帶記住 AKS 的兩個常用命令：\n・az aks install-cli → 在本機安裝 kubectl。\n・az aks get-credentials → 把叢集的認證合併到 kubeconfig，之後 kubectl 才連得上。"
     }
   },
   {
@@ -631,6 +1386,63 @@
   },
   {
     "exam": "AZ-104",
+    "id": 275,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其配額如下：\n・Standard BS Family vCPUs｜West US｜已使用 0 / 20\n・Standard D Family vCPUs｜West US｜已使用 0 / 20\n・Total Regional vCPUs（區域總 vCPU）｜West US｜已使用 0 / 20\n\n你已在 Subscription1 部署下列虛擬機器：\n・VM1｜Standard_B2ms｜2 vCPU｜West US｜狀態 執行中 (Running)\n・VM2｜Standard_B16ms｜16 vCPU｜West US｜狀態 已停止（已解除配置 Deallocated）\n\n你打算再部署下列虛擬機器：\n・VM3｜Standard_B2ms｜1 vCPU\n・VM4｜Standard_D4s_v3｜4 vCPU\n・VM5｜Standard_B16ms｜16 vCPU\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "你可以把 VM3 部署到 West US。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "你可以把 VM4 部署到 West US。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "你可以把 VM5 部署到 West US。",
+        "correct_answer": "否"
+      }
+    ],
+    "explanations": {
+      "1": "是。關鍵前提：「已解除配置」的虛擬機器仍然「佔用」vCPU 配額，因此 VM1（2）＋ VM2（16）＝ 18，區域總 vCPU 20 只剩 2 個可用。VM3 需要 1 個 vCPU，2 ≥ 1，配額夠（BS 系列配額同樣剩 2 個）。",
+      "2": "否。VM4 需要 4 個 vCPU，但區域總 vCPU 只剩 2 個。雖然 Standard D Family 的配額 20 完全沒用過，但「區域總 vCPU」是所有系列共用的上限，一樣會擋下這次部署——兩個配額必須「同時」滿足。",
+      "3": "否。VM5 需要 16 個 vCPU，遠超過剩餘的 2 個；BS 系列配額同樣只剩 2 個。要部署它必須先刪除 VM2（不是只停止／解除配置）或申請提高配額。",
+      "_full": "兩個常錯的地方：\n① 解除配置的 VM 仍佔配額——只有「刪除」才會釋出（停止／解除配置只是不收運算費用）。\n② 配額有兩層：系列配額（如 Standard BS Family）與「區域總 vCPU」，兩者都必須有餘額；某個系列還有很多額度，也可能被區域總量卡住。\n本題 18 / 20 已用，只剩 2 個 vCPU，所以只有需要 1 個的 VM3 過關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 276,
+    "type": "matching",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 WEBPROD-AS-USE2 的可用性設定組，以 az vm availability-set list -g RG1 查詢的結果如下（節錄）：\n・\"name\": \"WEBPROD-AS-USE2\"、\"location\": \"eastus2\"、\"resourceGroup\": \"RG1\"\n・\"platformFaultDomainCount\": 2\n・\"platformUpdateDomainCount\": 10\n・\"sku\": { \"name\": \"Aligned\" }、\"virtualMachines\": []\n\n你把 14 台虛擬機器加入 WEBPROD-AS-USE2。\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "2",
+      "7",
+      "10",
+      "14"
+    ],
+    "matches": [
+      {
+        "use_case": "當 Microsoft 在 East US 2 執行計劃性維護時，無法使用的虛擬機器數量上限是【答案】。",
+        "correct_answer": "2"
+      },
+      {
+        "use_case": "如果裝載 WEBPROD-AS-USE2 的 Azure 資料中心伺服器機架發生電源故障，無法使用的虛擬機器數量上限是【答案】。",
+        "correct_answer": "7"
+      }
+    ],
+    "explanations": {
+      "1": "計劃性維護（例如主機修補重啟）是「一次只重啟一個更新網域」。更新網域有 10 個，14 台 VM 會依序輪流分配：其中 4 個更新網域各 2 台、6 個各 1 台。最壞情況是重啟的那個更新網域裡有 2 台，所以上限是 2。",
+      "2": "機架電源故障對應的是「錯誤網域」——同一個錯誤網域共用電源與網路交換器。錯誤網域只有 2 個，14 台 VM 平均分成每個 7 台，一個機架（一個錯誤網域）失效就會有 7 台同時離線。",
+      "_full": "把兩個網域概念分清：\n・更新網域 (platformUpdateDomainCount)：對應「計劃性維護」，平台一次只動一個更新網域 → 影響 ⌈14 ÷ 10⌉ = 2 台。\n・錯誤網域 (platformFaultDomainCount)：對應「非計劃性硬體故障」（電源、機架、網路） → 影響 14 ÷ 2 = 7 台。\nVM 加入時會以輪替方式平均分配到各網域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 278,
     "type": "single",
     "question": "你有一個名為 Template1 的部署範本，用來部署 10 個 Azure Web 應用程式。你必須找出在部署 Template1「之前」需要先部署什麼，且解決方案必須盡量降低 Azure 成本。你應該指出什麼？",
@@ -648,6 +1460,35 @@
       "C": "錯誤。雖然可行，但 10 個方案代表 10 份運算資源費用，成本最高。",
       "D": "錯誤。流量管理員負責跨端點的 DNS 層級流量導向，不是 Web 應用程式的必要前置資源。",
       "E": "錯誤。同 A，應用程式閘道並非部署 Web 應用程式的前提。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 279,
+    "type": "matching",
+    "question": "你打算用下列 ARM 範本部署一個 Azure 容器實例（節錄）：\n・\"type\": \"Microsoft.ContainerInstance/containerGroups\"、\"name\": \"webprod\"、\"location\": \"westus\"\n・containers[0]：name \"webprod\"、image \"microsoft/iis:nanoserver\"、ports [{ protocol TCP, port 80 }]、environmentVariables []、resources.requests { memoryInGB 1.5, cpu 1 }\n・\"restartPolicy\": \"OnFailure\"\n・ipAddress：ports [{ protocol TCP, port 80 }]、ip \"[parameters('IPAddress')]\"、\"type\": \"Public\"\n・\"osType\": \"Windows\"\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "可以從任何裝置連線到該容器",
+      "無法連線到該容器",
+      "只能從執行 Windows 的裝置連線到該容器",
+      "容器會自動重新啟動",
+      "容器只會手動重新啟動",
+      "必須重新部署容器"
+    ],
+    "matches": [
+      {
+        "use_case": "網際網路使用者【答案】。",
+        "correct_answer": "可以從任何裝置連線到該容器"
+      },
+      {
+        "use_case": "如果容器中的 Internet Information Services (IIS) 失敗，【答案】。",
+        "correct_answer": "容器會自動重新啟動"
+      }
+    ],
+    "explanations": {
+      "1": "ipAddress 的 type 是 \"Public\"，並且開放 TCP 連接埠 80，所以這個容器群組有公用 IP、對網際網路開放 HTTP。容器內跑的是 Windows 映像（osType: Windows），但那只決定「容器裡」的作業系統，與「用戶端用什麼裝置連線」毫無關係——任何裝置都能用瀏覽器連上。",
+      "2": "restartPolicy 是 \"OnFailure\"，代表容器程序以非零結束代碼結束（也就是失敗）時，Azure 容器實例會自動重新啟動它。（三種原則：Always 一律重啟；OnFailure 只在失敗時重啟；Never 從不重啟。）",
+      "_full": "兩個欄位各回答一句：\n・ipAddress.type = Public + ports 80 → 對外公開，任何裝置都連得到；osType 只是容器內部的作業系統，不限制用戶端。\n・restartPolicy = OnFailure → 程序失敗時自動重啟；若設 Never 才需要人工介入或重新部署。"
     }
   },
   {
@@ -717,6 +1558,36 @@
   },
   {
     "exam": "AZ-104",
+    "id": 285,
+    "type": "matching",
+    "question": "你有一個隨用隨付 (pay-as-you-go) 的 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜資源群組 RG1｜每日成本 20 歐元\n・VM2｜資源群組 RG2｜每日成本 30 歐元\n\n你建立了一個預算，設定如下：\n・名稱 Budget1；範圍 RG1（資源群組）；篩選條件：無\n・金額 1,000.00 EUR；預算期間：每個計費月份重設\n・開始日期 2019/6/20；結束日期 2021/6/19\n・警示條件：50%（€500）→ 動作群組 AG1（1 封電子郵件）；70%（€700）→ AG2（1 封簡訊）；100%（€1,000）→ AG3（1 個 Azure 應用程式通知）\n・警示收件者（電子郵件）：User1@Contoso.com\n・AG1 動作群組只包含一位使用者。\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "VM1 與 VM2 都會被關閉",
+      "VM1 與 VM2 都會繼續執行",
+      "VM1 會被關閉，VM2 繼續執行",
+      "每個月不會寄出任何電子郵件通知",
+      "每個月會寄出一封電子郵件通知",
+      "每個月會寄出兩封電子郵件通知",
+      "每個月會寄出三封電子郵件通知"
+    ],
+    "matches": [
+      {
+        "use_case": "當 Budget1 達到金額上限時，【答案】。",
+        "correct_answer": "VM1 與 VM2 都會繼續執行"
+      },
+      {
+        "use_case": "依這些虛擬機器目前的使用成本，【答案】。",
+        "correct_answer": "每個月會寄出一封電子郵件通知"
+      }
+    ],
+    "explanations": {
+      "1": "Azure 成本管理的「預算」只是「監控與通知」機制——超過門檻時只會發出警示，「不會」停用、關閉或限制任何資源，消費也不會被中止。所以即使達到 1,000 歐元上限，VM1 與 VM2 都照常執行。（要真的自動關機得自己搭配動作群組觸發 Runbook 或 Logic App。）",
+      "2": "Budget1 的範圍是 RG1，所以只計算 RG1 裡的 VM1（每日 20 歐元），VM2 不算在內。一個月約 20 × 30 = 600 歐元：\n・50%（500 歐元）在第 25 天達到 → 觸發 AG1，寄出 1 封電子郵件。\n・70%（700 歐元）與 100%（1,000 歐元）在一個月內都達不到；而且這兩個門檻的動作是簡訊與 Azure 應用程式通知，本來就不是電子郵件。\n→ 每個月一封。",
+      "_full": "兩個常見誤解：\n① 預算不會限制或關閉資源，只會通知（第 1 格）。\n② 計算門檻時只算「範圍內」的資源——本題範圍是 RG1，所以 RG2 的 VM2 完全不計入。每月約 600 歐元只跨過 50% 這一個門檻，而只有該門檻掛的是電子郵件動作。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 286,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 Subscription1 的 Azure 訂用帳戶，其中有一個名為 RG1 的資源群組，RG1 中的資源是以範本部署的。你必須檢視 RG1 中這些資源「建立的日期與時間」。\n解法：你在「訂用帳戶」刀鋒中選取該訂用帳戶，然後點選「以程式設計方式部署」。\n此解法是否達成目標？",
@@ -728,6 +1599,94 @@
     "explanations": {
       "A": "錯誤。「以程式設計方式部署」是用來檢視與接受 Marketplace 項目的法律條款，與資源建立時間無關。",
       "B": "正確。資源的建立時間要看資源群組的「部署」歷程；此選項的位置完全不提供這項資訊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 289,
+    "type": "matching",
+    "question": "你有兩個 Azure 訂用帳戶。Subscription1 包含下列資源群組：\n・RG1｜區域 West Europe｜鎖定類型：無 (None)\n・RG2｜區域 West Europe｜鎖定類型：唯讀 (Read Only)\n\nRG1 中有一個位於 West Europe 的 Web 應用程式 App1。\nSubscription2 包含下列資源群組：\n・RG3｜區域 East Europe｜鎖定類型：刪除 (Delete)\n・RG4｜區域 Central US｜鎖定類型：無 (none)\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
+    "available_options": [
+      "是",
+      "否"
+    ],
+    "matches": [
+      {
+        "use_case": "App1 可以移動到 RG2。",
+        "correct_answer": "否"
+      },
+      {
+        "use_case": "App1 可以移動到 RG3。",
+        "correct_answer": "是"
+      },
+      {
+        "use_case": "App1 可以移動到 RG4。",
+        "correct_answer": "是"
+      }
+    ],
+    "explanations": {
+      "1": "否。【答案校正】官方標示為「是」，理由是資源群組的「區域」不限制其中資源的區域（這一點本身沒錯）。但 RG2 上有「唯讀 (ReadOnly)」鎖定——把資源搬進 RG2 等於在 RG2 的範圍內「建立」一個資源，屬於寫入作業，而唯讀鎖定會擋掉該範圍的所有建立與修改。因此這個搬移會被拒絕，判定為「否」。\n（對照本題第二項：RG3 只有「刪除」鎖定，不擋建立，所以搬得進去。兩項的差別正是兩種鎖定層級的差別。）",
+      "2": "是。RG3 只有「刪除」鎖定，僅阻止刪除，不阻止在其中建立資源；而搬移的「刪除」動作發生在來源端 RG1（無鎖定），所以不受影響。East Europe 與 App1 的 West Europe 不同也沒關係——資源群組的區域不限制資源的區域。",
+      "3": "是。RG4 沒有任何鎖定，位於 Central US 也不影響（同上，資源群組區域不是限制）。跨訂用帳戶搬移 App Service 需要把整個 App Service 方案與其上的所有應用程式一起搬，但這是操作上的要求，不改變「可以搬移」的判定。",
+      "_full": "兩個判斷點：\n① 資源群組的「區域」只是它自己的中繼資料位置，不會限制內部資源的區域——所以「跨區域」搬移本身一律可行（第二、三項成立）。\n② 鎖定層級：「刪除」鎖定只擋刪除，不影響搬入；「唯讀」鎖定擋掉該範圍的所有建立與修改，因此連搬入都不行。\n【答案校正】官方把三項都判為「是」，但第一項的目標 RG2 帶有唯讀鎖定，與鎖定語意衝突，已改判為「否」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 290,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含下列資源群組：\n✑ 名稱：RG1\n✑ 區域：West US\n✑ 標記：`tag1`: `value1`\n\n你用下列設定把一個名為 Policy1 的 Azure 原則指派給 Subscription1：\n✑ 排除項目：無\n✑ 原則定義：對資源附加標記及其值 (Append a tag and its value to resources)\n✑ 指派名稱：Policy1\n✑ 參數：標記名稱 tag2、標記值 value2\n\nPolicy1 指派之後，你建立了一個儲存體帳戶：\n✑ 名稱：storage1\n✑ 位置：West US\n✑ 資源群組：RG1\n✑ 標記：`tag3`: `value3`\n\n你必須找出每個資源各被指派了哪些標記。（每個正確選擇得一分）",
+    "available_options": [
+      "只有 \"tag1\": \"value1\"",
+      "只有 \"tag2\": \"value2\"",
+      "\"tag1\": \"value1\" 和 \"tag2\": \"value2\"",
+      "只有 \"tag3\": \"value3\"",
+      "只有 \"tag1\": \"value1\" 和 \"tag3\": \"value3\"",
+      "只有 \"tag2\": \"value2\" 和 \"tag3\": \"value3\"",
+      "\"tag1\": \"value1\"、\"tag2\": \"value2\" 和 \"tag3\": \"value3\""
+    ],
+    "matches": [
+      {
+        "use_case": "指派給 RG1 的標記：",
+        "correct_answer": "只有 \"tag1\": \"value1\""
+      },
+      {
+        "use_case": "指派給 storage1 的標記：",
+        "correct_answer": "只有 \"tag2\": \"value2\" 和 \"tag3\": \"value3\""
+      }
+    ],
+    "explanations": {
+      "1": "RG1 只保有自己原本的 tag1: value1。內建定義「對資源附加標記及其值」的 mode 是 indexed，而 indexed 模式刻意「不」評估資源群組與訂用帳戶——要對資源群組加標記必須改用另一個定義「對資源群組附加標記及其值」。所以 Policy1 不會在 RG1 上加 tag2。",
+      "2": "storage1 是原則指派「之後」才建立的新資源，因此建立時被附加 tag2: value2；再加上自己帶的 tag3: value3，共兩個。它「不會」繼承資源群組 RG1 的 tag1——Azure 的標記不會自動由資源群組傳給資源。",
+      "_full": "兩條規則：\n① 「對資源附加標記及其值」是 indexed 模式，只作用於「資源」，不動資源群組與訂用帳戶。\n② 標記不會從資源群組繼承到資源（要繼承得用 Inherit a tag from the resource group 這類原則）。\n→ RG1 只有 tag1；storage1 有 tag2（原則附加）＋ tag3（自己帶的）。\n【交叉參照】本題官方答案正好證實了 indexed 模式不評估資源群組。本題庫 id 88 的第一項用的是同一個原則定義，官方卻判定它「會」把標記加到資源群組——兩題的官方標示互相矛盾，該題解析中已標明爭議。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 291,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，並在其中建立了一個名為 Alert1 的警示規則。\nAlert1 的動作群組設定如下：\n・ResourceGroupName: default-activitylogalerts；GroupShortName: AG1；Enabled: True\n・EmailReceivers: { Action1_ \"EmailAction\" }\n・SmsReceivers: { Action1_ \"SMSAction\" }\n・WebhookReceivers: { }\n・Name: ActionGroup1；Type: Microsoft.Insights/ActionGroups；Location: Global\n\nAlert1 的警示條件「每分鐘」都會觸發一次。\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "0",
+      "4",
+      "6",
+      "12",
+      "60"
+    ],
+    "matches": [
+      {
+        "use_case": "Alert1 在一小時內會寄出的電子郵件數量是【答案】。",
+        "correct_answer": "60"
+      },
+      {
+        "use_case": "Alert1 在一小時內會寄出的簡訊數量是【答案】。",
+        "correct_answer": "12"
+      }
+    ],
+    "explanations": {
+      "1": "電子郵件的速率限制是「每個收件地址每小時最多 100 封」。警示每分鐘觸發一次 → 一小時 60 次，60 < 100，因此不會被限流，每次都會寄出一封 → 60 封。",
+      "2": "簡訊的速率限制嚴格得多：「同一個電話號碼每 5 分鐘最多 1 則」。即使警示每分鐘觸發，60 分鐘 ÷ 5 分鐘 = 12，所以一小時最多 12 則。",
+      "_full": "動作群組的通知有「速率限制」，各通道的門檻不同，這是本題的唯一考點：\n・電子郵件：每個地址每小時 100 封。\n・簡訊 (SMS)：每個號碼每 5 分鐘 1 則（等於每小時 12 則）。\n・語音：每個號碼每 5 分鐘 1 通。\n・Webhook／推播等：不受此限流。\n所以每分鐘觸發一次時：電子郵件 60 封（未達上限）、簡訊被限成 12 則。"
     }
   },
   {
@@ -835,6 +1794,33 @@
       "B": "正確。Linux 診斷延伸模組 (LAD) 3.0 專門用來從 Linux VM 收集效能計量與診斷記錄，並寫入儲存體帳戶或送往 Azure 監視器，正是本題所需。",
       "C": "錯誤。AzurePerformanceDiagnostics 延伸模組是 Windows 專用的效能問題疑難排解工具，不適用於 Linux VM。",
       "D": "錯誤。Analysis Services 是語意資料模型與 BI 分析引擎，與 VM 監視無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 300,
+    "type": "matching",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含一台名為 VM1 的虛擬機器。\n你在 VM1 上安裝並設定了一個 Web 伺服器與一個 DNS 伺服器。\nVM1 的有效網路安全性規則如下（網路介面 vm1441，NSG「VM1-nsg」，輸入連接埠規則）：\n・優先順序 100｜Rule2｜連接埠 50-60｜任何通訊協定｜來源 任何｜目的地 任何｜「拒絕」\n・優先順序 300｜RDP｜連接埠 3389｜TCP｜來源 任何｜目的地 任何｜允許\n・優先順序 400｜Rule1｜連接埠 50-500｜任何通訊協定｜來源 任何｜目的地 任何｜允許\n・優先順序 65000｜AllowVnetInBound｜任何｜VirtualNetwork → VirtualNetwork｜允許\n・優先順序 65001｜AllowAzureLoadBalancerInBound｜任何｜AzureLoadBalancer｜允許\n・優先順序 65500｜DenyAllInBound｜任何｜任何 → 任何｜拒絕\n\n請為下列每一句選出正確的答案。（每個正確選擇得一分）",
+    "available_options": [
+      "只能連線到 VM1 上的 DNS 伺服器",
+      "只能連線到 VM1 上的 Web 伺服器",
+      "可以連線到 VM1 上的 Web 伺服器與 DNS 伺服器",
+      "無法連線到 VM1 上的 Web 伺服器與 DNS 伺服器"
+    ],
+    "matches": [
+      {
+        "use_case": "網際網路使用者【答案】。",
+        "correct_answer": "只能連線到 VM1 上的 Web 伺服器"
+      },
+      {
+        "use_case": "如果你刪除 Rule2，網際網路使用者【答案】。",
+        "correct_answer": "可以連線到 VM1 上的 Web 伺服器與 DNS 伺服器"
+      }
+    ],
+    "explanations": {
+      "1": "NSG 規則按「優先順序數字由小到大」評估，一命中就停止，後面的規則不再處理。\n・DNS 用連接埠 53，落在 Rule2（優先順序 100，拒絕 50-60）的範圍內 → 先被拒絕，優先順序 400 的 Rule1（允許 50-500）根本輪不到。\n・Web 伺服器用連接埠 80，不在 50-60 內，會往下命中 Rule1（允許 50-500）→ 通行。\n→ 只能連到 Web 伺服器。",
+      "2": "刪掉 Rule2 之後，連接埠 53 的流量不再被拒絕，會往下命中 Rule1（允許 50-500）；連接埠 80 原本就命中 Rule1。兩者都通，所以 Web 伺服器與 DNS 伺服器都連得到。",
+      "_full": "作答只要抓住 NSG 的兩條規則：\n① 依優先順序「數字小的先評估」，一旦命中就停止，不會再看後面的規則——所以低優先順序（數字大）的允許規則救不回已經被拒絕的流量。\n② 逐一把服務的連接埠（DNS 53、HTTP 80）套進規則範圍去找「第一個命中」的規則。\n本題 Rule2（100，拒絕 50-60）擋掉 DNS，但擋不到 80；刪掉它之後兩者都由 Rule1 放行。"
     }
   }
 ]
