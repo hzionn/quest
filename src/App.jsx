@@ -23,7 +23,8 @@ import { buildDailyStudyPlan } from './studyPlan'
 import { CERTIFICATIONS, getExcludedExams, isCertificationEarned } from './certifications'
 import { buildExamProgressReport, createMemoryAnchor } from './learningInsights'
 import { shareScoreCard } from './sharecard'
-import { markExamActive } from './swUpdate'
+import { markExamActive, markPracticeActive } from './swUpdate'
+import { saveSession, loadSession, clearSession } from './session'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -421,6 +422,33 @@ function reducer(state, action) {
         practiceFiltered: filtered,
         practiceIndex: resumeIndex,
         activeTab: 'practice',
+      }
+    }
+
+    case 'RESTORE_SESSION': {
+      // Rebuild the practice session a previous page load was sitting in.
+      // The snapshot stores question KEYS, so the bank has to be loaded first;
+      // `action.loaded` carries the files fetched by the restoring effect,
+      // which are not visible in `state.questions` from its stale closure.
+      const snap = action.snap
+      const merged = new Map()
+      ;[...state.questions, ...(action.loaded || [])].forEach(q => merged.set(`${q.exam}-${q.id}`, q))
+      const questions = snap.keys.map(k => merged.get(k)).filter(Boolean)
+      // Some of the bank is missing (a file failed to fetch, or the question
+      // was removed by a later deploy) — better to send the user to the
+      // subject picker than into a session that is quietly missing questions.
+      if (questions.length !== snap.keys.length) return state
+      return {
+        ...state,
+        filterExam: snap.exam || '',
+        filterType: snap.filterType || '',
+        filterSearch: snap.filterSearch || '',
+        activeTab: snap.activeTab === 'upload' ? 'practice' : (snap.activeTab || 'practice'),
+        practiceFiltered: questions,
+        practiceIndex: Math.min(Math.max(snap.index || 0, 0), questions.length - 1),
+        practiceAnswers: { ...state.practiceAnswers, ...(snap.answers || {}) },
+        practiceSubmitted: { ...state.practiceSubmitted, ...(snap.submitted || {}) },
+        practiceResults: { ...state.practiceResults, ...(snap.results || {}) },
       }
     }
 
@@ -956,6 +984,28 @@ const PROVIDER_EXAMS = {
   azure: ['AZ-104'],
 }
 
+// Shown instead of the subject picker while a previous session is being put
+// back together, so a reload the user never asked for (discarded mobile tab,
+// auto-update) reads as "resuming" rather than "everything reset".
+function ResumeSplash({ loadProgress }) {
+  return (
+    <div className="min-h-screen auth-bg flex items-center justify-center p-4">
+      <div className="bg-gray-800/90 backdrop-blur rounded-2xl shadow-2xl px-8 py-10 max-w-sm w-full border border-gray-700/80 flex flex-col items-center gap-4">
+        <Loader2 size={32} className="animate-spin text-orange-400" />
+        <span className="text-sm text-gray-200">正在接回上次的練習…</span>
+        {loadProgress && (
+          <div className="w-56 h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-200"
+              style={{ width: `${loadProgress.total ? Math.round((loadProgress.done / loadProgress.total) * 100) : 0}%` }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function SubjectSelect({ examTypes, questions, bankIndex, loading, loadProgress, onSelect, dueCount = 0, onStartDue, studyPlan, onStartPlan, dailyMissions, onClaimMissions }) {
   const [provider, setProvider] = useState('aws')
   const counts = useMemo(() => {
@@ -1191,6 +1241,11 @@ function computeGamifyFacts(state, examTypes, combinedDaily) {
 export default function App() {
   const [authenticated, setAuthenticated] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
   const [subjectChosen, setSubjectChosen] = useState(false)
+  // A snapshot from a previous page load means this boot is a *resume*, not a
+  // fresh start: hold back the subject picker until the session is rebuilt, so
+  // a discarded mobile tab (or an auto-update reload) doesn't dump the user
+  // back at the main screen. Read once — later writes must not re-trigger it.
+  const [restoring, setRestoring] = useState(() => !isAdmin && !!loadSession())
   const [user, setUser] = useState(null)
   const [planToday] = useState(todayKey)
   const [planNow] = useState(Date.now)
@@ -1388,6 +1443,86 @@ export default function App() {
     } catch { /* ignore */ }
   }, [state.practiceIndex, state.practiceFiltered, state.filterExam])
 
+  // 把整個練習工作階段存起來，讓「重新載入」變成看不見的事
+  // （手機鎖屏後分頁被系統回收、或新版本自動更新，都會讓頁面整個重載）。
+  // 還原中先不要寫入，否則空的 practiceFiltered 會蓋掉待還原的快照。
+  useEffect(() => {
+    if (restoring || !subjectChosen) return
+    if (!state.practiceFiltered.length) return
+    saveSession({
+      exam: state.filterExam,
+      filterType: state.filterType,
+      filterSearch: state.filterSearch,
+      activeTab: state.activeTab,
+      index: state.practiceIndex,
+      questions: state.practiceFiltered,
+      answers: state.practiceAnswers,
+      submitted: state.practiceSubmitted,
+      results: state.practiceResults,
+    })
+  }, [restoring, subjectChosen, state.practiceFiltered, state.practiceIndex, state.practiceAnswers,
+      state.practiceSubmitted, state.practiceResults, state.filterExam, state.filterType,
+      state.filterSearch, state.activeTab])
+
+  // 開機還原：把上次的練習工作階段接回來，跳過選科畫面。
+  useEffect(() => {
+    if (!restoring) return
+    if (state.questionsLoading) return // 等 boot 決定要走 bankIndex 還是整包載入
+    let cancelled = false
+    ;(async () => {
+      const snap = loadSession()
+      if (!snap) { setRestoring(false); return }
+      let loadedNow = []
+      if (bankIndex?.exams) {
+        const infos = (snap.exams || []).map(code => bankIndex.exams[code]).filter(Boolean)
+        const zhFiles = takeUnloaded([...new Set(infos.flatMap(e => e.files))])
+        if (zhFiles.length) {
+          setLoadProgress({ done: 0, total: zhFiles.length })
+          loadedNow = await loadBankFiles(zhFiles, (done, total) => {
+            if (!cancelled) setLoadProgress({ done, total })
+          })
+          if (cancelled) return
+          setLoadProgress(null)
+          if (!loadedNow.length) {
+            // 離線或載入失敗：把檔案釋放回去，退回選科畫面讓使用者自己重試。
+            zhFiles.forEach(f => loadedFilesRef.current.delete(f))
+            setRestoring(false)
+            return
+          }
+          dispatch({ type: 'APPEND_QUESTIONS', questions: loadedNow })
+        }
+        ;(async () => {
+          const enFiles = takeUnloaded([...new Set(infos.flatMap(e => e.enFiles))])
+          if (enFiles.length) {
+            const qs = await loadBankFiles(enFiles)
+            if (qs.length) dispatch({ type: 'LOAD_EN_QUESTIONS', questions: qs })
+          }
+          startBackgroundLoad(bankIndex)
+        })()
+      }
+      if (cancelled) return
+      dispatch({ type: 'RESTORE_SESSION', snap, loaded: loadedNow })
+      setSubjectChosen(true)
+      setRestoring(false)
+    })()
+    return () => { cancelled = true }
+    // 這個 effect 只該由「還原旗標／題庫索引就緒」驅動；把每次 render 都會重建的
+    // helper 列進相依會讓還原重跑一次。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restoring, bankIndex, state.questionsLoading])
+
+  // RESTORE_SESSION 會在題目對不起來時原地不動（少了題目就不還原）。
+  // 這時 practiceFiltered 仍是空的，代表還原失敗，把快照丟掉回選科畫面。
+  useEffect(() => {
+    if (restoring || !subjectChosen) return
+    if (!state.practiceFiltered.length) { clearSession(); setSubjectChosen(false) }
+  }, [restoring, subjectChosen, state.practiceFiltered.length])
+
+  // 練習中就別讓新版本把頁面抽掉；等切到背景再套用（見 swUpdate.js）。
+  useEffect(() => {
+    markPracticeActive(subjectChosen && state.practiceFiltered.length > 0)
+  }, [subjectChosen, state.practiceFiltered.length])
+
   // ── 學習時數計時器 ──
   // 每 30 秒檢查一次：分頁可見、且最近 2 分鐘內有任何操作（點擊/按鍵/捲動/觸控）
   // 才累加 30 秒 —— 掛網發呆或切去別的分頁都不會計入。
@@ -1513,6 +1648,11 @@ export default function App() {
 
   if (!user) {
     return <GoogleAuthGate user={user} authReady={authReady} onSignedIn={setUser} />
+  }
+
+  // 上次的練習還在還原中：先別顯示選科畫面，免得閃一下又跳走
+  if (restoring && !isAdmin) {
+    return <ResumeSplash loadProgress={loadProgress} />
   }
 
   // 登入後（非管理員）先選擇練習科別，再進入對應題目

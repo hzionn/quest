@@ -3,19 +3,41 @@
 // takes control (see vite.config.js's `skipWaiting`/`clientsClaim` and
 // main.jsx's `controllerchange` listener).
 //
-// A bare reload would be safe most of the time (progress is persisted to
-// localStorage on every change), but a live mock exam's timer/answers live
-// only in memory — reloading mid-exam would silently drop the attempt. So
-// the reload is deferred while an exam is active and fires as soon as it
-// ends (submitted or exited).
+// The reload itself is cheap — progress is persisted on every change, and the
+// practice session is restored from session.js on boot — but it is jarring to
+// have the page blink out from under you, and a live mock exam's timer and
+// answers live only in memory, so reloading mid-exam silently drops the
+// attempt. So a reload that arrives while the user is busy is held and applied
+// at the next moment nobody is looking:
+//
+//   - exam in progress  → wait until the exam ends (submitted or exited)
+//   - practising        → wait until the page is hidden
+//
+// The "hidden" trigger matters most on mobile: the version check runs on
+// visibilitychange, i.e. the instant you unlock the phone, which is exactly
+// when a reload is most disruptive. Deferring it to the *next* hide means the
+// new build is already in place the next time the user looks at the screen.
 // ──────────────────────────────────────────────────────────────────────────
 
 let pending = false
 let examActive = false
+let practiceActive = false
+
+function flushIfIdle() {
+  if (pending && !examActive && !practiceActive) reloadNow()
+}
 
 export function markExamActive(active) {
   examActive = active
-  if (pending && !examActive) reloadNow()
+  flushIfIdle()
+}
+
+// Set while the user is sitting in a practice session. Unlike an exam this
+// never really "ends", so a pending reload waits for the page to be hidden
+// rather than for this to clear.
+export function markPracticeActive(active) {
+  practiceActive = active
+  flushIfIdle()
 }
 
 function reloadNow() {
@@ -24,9 +46,16 @@ function reloadNow() {
 }
 
 export function requestReload() {
-  if (examActive) { pending = true; return }
+  if (examActive || practiceActive) { pending = true; return }
   reloadNow()
 }
+
+// A held reload is applied the moment the page goes away, so the user never
+// sees it happen. An exam still wins: dropping a live attempt is worse than
+// running the old bundle for a while longer.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && pending && !examActive) reloadNow()
+})
 
 // ── Version polling (SW-independent) ──────────────────────────────────────
 // The service-worker update lifecycle (skipWaiting/clientsClaim/reload) is
