@@ -152,6 +152,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 308,
+    "type": "single",
+    "question": "You have an Azure subscription. You have an on-premises virtual machine named VM1 running on the Hyper-V host LON-HOST1. The settings for VM1 are:\n・BIOS: Boot from CD\n・Memory: 32768 MB\n・Processor: 8 Virtual processors\n・IDE Controller 0 → Hard Drive: VM1.vhdx\n・IDE Controller 1 → DVD Drive: None\n・SCSI Controller\n・Network Adapters: VNET1, VNET2\n・Integration Services: Some services offered\n・Checkpoints: Production\n\nYou need to ensure that you can use the disks attached to VM1 as a template for Azure virtual machines.\nWhat should you modify on VM1?",
+    "options": {
+      "A": "the memory",
+      "B": "the network adapters",
+      "C": "the hard drive",
+      "D": "the processor",
+      "E": "Integration Services"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。32 GB 記憶體在 Azure 有對應的 VM 大小可以配，不是障礙。",
+      "B": "Incorrect. 錯誤。網路介面卡的數量與名稱在移轉時會重新設定，不影響磁碟能不能當範本。",
+      "C": "Correct. 正確。線索在設定裡那一行：硬碟是「VM1.vhdx」。\nAzure「只」接受 VHD 格式，而且必須是「固定大小 (fixed-size)」的；VHDX 與動態擴充的 VHD 都不支援。\n所以要先把 VM1.vhdx 轉換成固定大小的 VHD（例如 Hyper-V 管理員的「編輯磁碟」或 Convert-VHD），才能上傳到 Azure 當範本。",
+      "D": "Incorrect. 錯誤。8 個虛擬處理器同樣有對應的 Azure VM 大小，不需要改。",
+      "E": "Incorrect. 錯誤。整合服務是 Hyper-V 與來賓 OS 之間的功能，跟磁碟檔案格式無關，也不會阻止磁碟上傳。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 309,
     "type": "matching",
     "question": "You have an Azure subscription that contains a virtual machine scale set.\nThe scale set contains four instances that have the following configurations: Operating system Windows Server 2016; Size Standard_D1_v2.\nYou run the Get-AzVmss cmdlet and see: (Get-AzVmss -Name WebProd -ResourceGroupName RG1).VirtualMachineProfile.OsProfile.WindowsConfiguration with ProvisionVMAgent True, EnableAutomaticUpdates False, and TimeZone / AdditionalUnattendContent / WinRM blank; and Get-AzVmss -Name WebProd -ResourceGroupName RG1 | Select -ExpandProperty UpgradePolicy with Mode Automatic, RollingUpgradePolicy blank, AutomaticOSUpgradePolicy Microsoft.Azure.Management.Compute.Models.AutomaticOSUpgradePolicy.\n\nUse the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
@@ -175,6 +196,44 @@
       "1": "UpgradePolicy 的 Mode 是 Automatic。自動模式下，只要擴展集的「模型」有變更（例如改 VM 大小），平台會「立刻對所有執行個體」套用，不分批、不保證可用性。擴展集有 4 個執行個體，所以最多 4 台同時變更。\n（相對地，Rolling 模式會分批更新並在批次之間等待；Manual 模式則要自己逐一升級。）",
       "2": "作業系統映像的新版本走的是「自動 OS 映像升級」流程，這條路徑「一定是分批」的：每批最多為執行個體總數的 20%，且至少 1 台。4 × 20% = 0.8，不足 1 台，因此取下限 1——一次只升級 1 台。\n（這也是為什麼兩格答案不同：模型變更走 UpgradePolicy.Mode，映像升級走 AutomaticOSUpgradePolicy，兩者的批次規則完全不一樣。）",
       "_full": "本題在測「模型變更」與「OS 映像升級」是兩條不同的路徑：\n・模型變更（大小、擴充功能、組態）→ 由 UpgradePolicy.Mode 決定；Automatic 表示一次全部套用（本題 4 台）。\n・OS 映像有新版本 → 由自動 OS 映像升級處理，固定分批，每批最多 20% 且至少 1 台（本題 1 台）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 310,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that is used by several departments at your company. Subscription1 contains the following resources:\n・storage1｜Storage account\n・RG1｜Resource group\n・container1｜Blob container\n・share1｜File share\n\nAnother administrator deploys a virtual machine named VM1 and an Azure Storage account named storage2 by using a single Azure Resource Manager template.\nYou need to view the template used for the deployment. From which blade can you view the template that was used for the deployment?",
+    "options": {
+      "A": "VM1",
+      "B": "RG1",
+      "C": "storage2",
+      "D": "container1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。個別資源的刀鋒視窗沒有「部署」項目——一次部署可能產生多個資源，歷程不會掛在其中某一個資源底下。",
+      "B": "Correct. 正確。ARM 的部署歷程是記錄在「資源群組」層級的：資源群組 →「部署 (Deployments)」，點進某一次部署就能看到「範本 (Template)」與當時傳入的參數。\n四個選項裡只有 RG1 是資源群組，所以只有它。\n（部署歷程預設保留最近 800 次；訂用帳戶層級的部署則在訂用帳戶刀鋒視窗看。）",
+      "C": "Incorrect. 錯誤。storage2 是這次部署產生的資源之一，但它自己的刀鋒視窗一樣沒有部署歷程。",
+      "D": "Incorrect. 錯誤。container1 是儲存體帳戶裡的容器，連 ARM 資源層級都不是。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 311,
+    "type": "single",
+    "question": "You have an Azure web app named App1.\nApp1 runs on an Azure web app named webapp1, which has the following deployment slots:\n・webapp1-prod｜Function: Production\n・webapp1-test｜Function: Staging\n\nIn webapp1-test, you test several changes to App1. You back up App1.\nYou swap webapp1-test for webapp1-prod and discover that App1 is experiencing performance issues.\nYou need to revert to the previous version of App1 as quickly as possible. What should you do?",
+    "options": {
+      "A": "Redeploy App1",
+      "B": "Swap the slots",
+      "C": "Clone App1",
+      "D": "Restore the backup of App1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。重新部署要重跑整個建置與部署流程，慢得多，而且舊版本不一定還在手邊。",
+      "B": "Correct. 正確。關鍵字是「盡快」。\n交換位置之後，原本的生產版本並沒有消失——它被換到了預備位置去。\n所以只要「再交換一次」，兩邊的路由對調回來，前一個版本就立刻回到生產位置。\n這正是部署位置最重要的價值：交換是可逆的，回復幾乎不需要時間，也不會停機。",
+      "C": "Incorrect. 錯誤。複製是把應用程式複製成一個新的 Web 應用程式，用於建立環境副本，不是回復版本的手段。",
+      "D": "Incorrect. 錯誤。還原備份確實能拿回舊版本，但它要重建應用程式與設定，耗時遠比交換久——題目要的是最快的做法。"
     }
   },
   {
@@ -318,6 +377,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 318,
+    "type": "single",
+    "question": "You have web apps in the West US, Central US and East US Azure regions.\nYou have the following App Service plans:\n・ASP1｜Operating system Windows｜West US｜SKU and size: Standard S1\n・ASP2｜Operating system Linux｜Central US｜Premium V2 P1v2\n・ASP3｜Operating system Linux｜East US｜Premium V2 P1v2\n・ASP4｜Operating system Linux｜East US｜Premium V2 P1v2\n\nYou plan to create an additional App Service plan named ASP5 that will use the Linux operating system.\nYou need to identify in which of the currently used locations you can deploy ASP5. What should you recommend?",
+    "options": {
+      "A": "West US, Central US, or East US",
+      "B": "Central US only",
+      "C": "East US only",
+      "D": "West US only"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。App Service 方案的「一個方案只能一種 OS」限制是「方案內部」的限制，不是區域限制。\nLinux 與 Windows 的 App Service 方案可以並存在同一個區域，甚至可以放在同一個資源群組裡。\nLinux App Service 在這三個區域都有提供，所以 ASP5 三個位置都能建。",
+      "B": "Incorrect. 錯誤。這假設要跟既有的 Linux 方案「同區」才行，但方案彼此獨立，沒有這種限制。",
+      "C": "Incorrect. 錯誤。同樣是誤以為必須跟既有 Linux 方案綁在一起。",
+      "D": "Incorrect. 錯誤。這個答案剛好挑了唯一只有 Windows 方案的區域，推測是誤以為「一個區域只能有一種 OS」——並沒有這回事。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 319,
     "type": "single",
     "question": "You plan to deploy several Azure virtual machines that will run Windows Server 2019 in a virtual machine scale set by using an Azure Resource Manager template. You need to ensure that NGINX is available on all the virtual machines after they are deployed. What should you use?",
@@ -413,6 +491,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 324,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・Vault1｜Recovery services vault｜RG1｜East US\n・VM1｜Virtual machine｜RG1｜East US\n・VM2｜Virtual machine｜RG1｜West US\n\nAll virtual machines run Windows Server 2016.\nOn VM1, you back up a folder named Folder1 by using the Schedule Backup Wizard (schedule a backup every Day, at 6:00 AM and 10:00 PM).\n\nYou plan to restore the backup to a different virtual machine. You need to restore the backup to VM2. What should you do first?",
+    "options": {
+      "A": "From VM1, install the Windows Server Backup feature.",
+      "B": "From VM2, install the Microsoft Azure Recovery Services Agent.",
+      "C": "From VM1, install the Microsoft Azure Recovery Services Agent.",
+      "D": "From VM2, install the Windows Server Backup feature."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。VM1 已經在備份了，代表它該裝的都裝好了；而且要動的是「還原的目的地」VM2，不是來源。",
+      "B": "Correct. 正確。畫面上的「排程備份精靈（檔案與資料夾）」是 MARS（Microsoft Azure 復原服務）代理程式的介面——檔案層級備份到保存庫靠的就是它。\n要把這份備份還原到「另一台機器」，必須在目的地機器 VM2 上也裝上 MARS 代理程式，並用同一組保存庫認證與加密複雜密碼把它註冊到 Vault1，才看得到 VM1 的復原點並執行「還原到替代位置」。\n（VM2 在 West US 而 Vault1 在 East US 不是問題——MARS 的檔案還原沒有同區域的限制，那條限制是針對 Azure VM 層級備份的。）",
+      "C": "Incorrect. 錯誤。VM1 顯然已經有 MARS 代理程式了，不然跑不出這個精靈畫面。",
+      "D": "Incorrect. 錯誤。Windows Server 備份是本機的備份功能，它讀不到 Azure 保存庫裡的復原點。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 325,
     "type": "matching",
     "question": "You need to complete an ARM template so that it creates a number of data disks determined by a parameter:  \"parameters\": { \"numberOfDataDisks\": { \"type\": \"int\", \"metadata\": { \"description\": \"The number of dataDisks to create.\" } }, ... }, \"resources\": [ { \"type\": \"Microsoft.Compute/virtualMachines\", \"apiVersion\": \"2017-03-30\", ... \"properties\": { \"storageProfile\": { ... [box 1] { \"name\": \"dataDisks\", \"count\": \"[parameters('numberOfDataDisks')]\", \"input\": { \"diskSizeGB\": 1023, \"lun\": [box 2]('dataDisks')]\", \"createOption\": \"Empty\" } } ... } } } ]",
@@ -438,6 +535,70 @@
       "1": "要在「資源的屬性內」重複產生一個陣列（這裡是多顆資料磁碟），用的是屬性層級的 copy 區段——它接受 name（目標屬性名稱）、count（重複次數）與 input（每次產生的內容）。dependsOn 是宣告部署相依性，與重複無關；copyIndex 是函式而不是區段名稱。",
       "2": "每顆資料磁碟的 lun（邏輯單元編號）必須各不相同，所以用 copyIndex() 函式取得目前這一輪的索引：\"[copyIndex('dataDisks')]\"。帶名稱的 copyIndex('dataDisks') 是指定要取「哪一個 copy 區塊」的索引，在屬性層級的 copy 中是必要寫法。",
       "_full": "ARM 範本的 copy 有兩種用法：\n・「資源層級」copy → 放在資源物件裡，重複產生多個「資源」。\n・「屬性層級」copy → 放在 properties 內，重複產生某個「屬性陣列」的元素（本題的資料磁碟就是這種）。\n兩者都用 copyIndex() 取當前索引；屬性層級要傳入 copy 區塊的名稱，例如 copyIndex('dataDisks')。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 326,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources:\n・RG1｜Resource group｜East US\n・RG2｜Resource group｜West Europe\n・RG3｜Resource group｜North Europe\n・VNET1｜Virtual network｜Central US｜in RG1\n・VM1｜Virtual machine｜West US｜in RG2\n\nSubscription1 also includes a virtual network named VNET2. VM1 connects to VNET2 by using a network interface named NIC1.\nYou need to create a new network interface named NIC2 for VM1.\nSolution: You create NIC2 in RG1 and West US.\nDoes this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。判斷只看一件事：網路介面必須和它要掛上去的虛擬機器「位於同一個區域」。\nVM1 在 West US，所以 NIC2 也必須建在 West US。\n至於放在哪一個「資源群組」則完全不重要——資源群組只是管理容器，它的位置跟裡面資源實際所在的區域無關，網路介面與 VM 也不必同組。\n本解法把 NIC2 建在 West US——與 VM1 同區域，條件成立。\n至於它被放在 RG1（位置標示為 East US）也完全沒問題，因為資源群組的位置只影響中繼資料存放處，不決定資源實際跑在哪裡。",
+      "B": "Incorrect. 錯誤。這個判定多半是被「RG1 的位置是 East US」誤導了，但真正要比對的是網路介面自己的區域（West US）與 VM1 的區域（West US）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 327,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources:\n・RG1｜Resource group｜East US\n・RG2｜Resource group｜West Europe\n・RG3｜Resource group｜North Europe\n・VNET1｜Virtual network｜Central US｜in RG1\n・VM1｜Virtual machine｜West US｜in RG2\n\nSubscription1 also includes a virtual network named VNET2. VM1 connects to VNET2 by using a network interface named NIC1.\nYou need to create a new network interface named NIC2 for VM1.\nSolution: You create NIC2 in RG2 and Central US.\nDoes this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。資源群組選對了不代表區域選對了，Central US 與 VM1 的 West US 並不相同。",
+      "B": "Correct. 正確。判斷只看一件事：網路介面必須和它要掛上去的虛擬機器「位於同一個區域」。\nVM1 在 West US，所以 NIC2 也必須建在 West US。\n至於放在哪一個「資源群組」則完全不重要——資源群組只是管理容器，它的位置跟裡面資源實際所在的區域無關，網路介面與 VM 也不必同組。\n本解法把 NIC2 建在 Central US，而 VM1 在 West US——區域不符，掛不上去。\n（Central US 是 VNET1 的位置，這是刻意設下的誘餌。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 328,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources:\n・RG1｜Resource group｜East US\n・RG2｜Resource group｜West Europe\n・RG3｜Resource group｜North Europe\n・VNET1｜Virtual network｜Central US｜in RG1\n・VM1｜Virtual machine｜West US｜in RG2\n\nSubscription1 also includes a virtual network named VNET2. VM1 connects to VNET2 by using a network interface named NIC1.\nYou need to create a new network interface named NIC2 for VM1.\nSolution: You create NIC2 in RG2 and West US.\nDoes this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。判斷只看一件事：網路介面必須和它要掛上去的虛擬機器「位於同一個區域」。\nVM1 在 West US，所以 NIC2 也必須建在 West US。\n至於放在哪一個「資源群組」則完全不重要——資源群組只是管理容器，它的位置跟裡面資源實際所在的區域無關，網路介面與 VM 也不必同組。\n本解法把 NIC2 建在 West US——與 VM1 同區域，成立。\n這一組三題只有一個變數：NIC2 建在哪個「區域」。West US 就對（不論 RG1 或 RG2），Central US 就錯。",
+      "B": "Incorrect. 錯誤。West US 正是 VM1 所在的區域，條件是符合的。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 329,
+    "type": "single",
+    "question": "You develop the following Azure Resource Manager (ARM) template to create a resource group and deploy an Azure Storage account to the resource group:\n\n　\"$schema\": \".../deploymentTemplate.json#\",\n　\"contentVersion\": \"1.0.0.0\",\n　\"resources\": [\n　　{ \"type\": \"Microsoft.Resources/resourceGroups\", \"apiVersion\": \"2018-05-01\",\n　　　\"location\": \"eastus\", \"name\": \"RG1\" },\n　　{ \"type\": \"Microsoft.Resources/deployments\", \"apiVersion\": \"2017-05-10\",\n　　　\"name\": \"storageDeployment\", \"resourceGroup\": \"RG1\",\n　　　\"dependsOn\": [ \"[resourceId('Microsoft.Resources/resourceGroups/', 'RG1')]\" ],\n　　　\"properties\": { \"mode\": \"Incremental\", \"template\": { ... a \"Microsoft.Storage/storageAccounts\" resource named storage1, kind StorageV2, sku Standard_LRS ... } } }\n　]\n\nWhich cmdlet should you run to deploy the template?",
+    "options": {
+      "A": "New-AzResource",
+      "B": "New-AzResourceGroupDeployment",
+      "C": "New-AzTenantDeployment",
+      "D": "New-AzDeployment"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。New-AzResource 是用來建立「單一個資源」的，不是部署範本。",
+      "B": "Incorrect. 錯誤。這是最容易選錯的答案。New-AzResourceGroupDeployment 是「資源群組層級」的部署——它要求你先指定一個「已經存在」的資源群組。\n但本範本要做的第一件事就是「建立」RG1，資源群組層級的部署做不到這件事（資源群組不是資源群組裡的資源）。",
+      "C": "Incorrect. 錯誤。New-AzTenantDeployment 是「租用戶層級」的部署，用於管理群組、跨訂用帳戶的治理設定，範圍比本題大一階。",
+      "D": "Correct. 正確。判斷依據是範本的第一個資源：Microsoft.Resources/resourceGroups。\n資源群組本身是「訂用帳戶層級」的資源，所以整份範本必須以「訂用帳戶層級部署」執行，對應的 Cmdlet 就是 New-AzDeployment（新版別名 New-AzSubscriptionDeployment）。\n範本裡第二個資源是巢狀的 Microsoft.Resources/deployments，它用 resourceGroup 屬性指定要部署進剛建立的 RG1——這正是「先建群組、再往群組裡部署」的標準寫法。"
     }
   },
   {
@@ -710,6 +871,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 340,
+    "type": "single",
+    "question": "You have an Azure subscription. You plan to deploy the following Azure container instances:\n・Instance1｜Operating system: Nano Server installation of Windows Server 2019\n・Instance2｜Operating system: Server Core installation of Windows Server 2019\n・Instance3｜Operating system: Linux\n・Instance4｜Operating system: Linux\n\nWhich instances can you deploy to a container group?",
+    "options": {
+      "A": "Instance1 only",
+      "B": "Instance2 only",
+      "C": "Instance1 and Instance2 only",
+      "D": "Instance3 and Instance4 only"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。單一個容器談不上「群組」，而且 Windows 容器不支援多容器群組。",
+      "B": "Incorrect. 錯誤。同上。",
+      "C": "Incorrect. 錯誤。這是本題的主要誘答。兩個都是 Windows 容器，而 Azure 容器執行個體的「多容器群組」只支援 Linux 容器；Windows 的容器群組只能包含「一個」容器。",
+      "D": "Correct. 正確。容器群組是一組共用主機、網路與儲存體的容器（類似 Kubernetes 的 Pod）。\n兩個限制：\n① 同一個群組裡的容器必須是同一種作業系統，不能 Windows 與 Linux 混放。\n② 「多容器」群組目前只有 Linux 支援；Windows 容器群組只能放一個容器。\n所以唯一能組成多容器群組的就是兩個 Linux 的 Instance3 與 Instance4。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 341,
     "type": "multiple",
     "question": "You have an Azure container registry named contoso2023 whose blade contains: Overview, Activity log, Access control (IAM), Tags, Quick start, Events; Settings - Access keys, Encryption, Identity, Networking, Microsoft Defender for Cloud, Properties, Locks; Services - Repositories, Webhooks, Geo-replications, Tasks, Connected registries (Preview), Cache. You need to enable contoso2023 to use a dedicated data endpoint. Which two settings should you configure for contoso2023?",
@@ -730,6 +910,25 @@
       "C": "Incorrect. 錯誤。加密設定的是登錄內容的待用加密金鑰（客戶管理金鑰），與端點網域無關。",
       "D": "Incorrect. 錯誤。身分識別設定的是登錄本身的受控識別（例如讓工作去存取金鑰保存庫），與資料端點無關。",
       "E": "Incorrect. 錯誤。異地複寫是把登錄內容複寫到多個區域以就近提取，雖然同樣是 Premium 功能，但它不是啟用專用資料端點的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 342,
+    "type": "single",
+    "question": "You have an Azure subscription that has the following public IP addresses:\n・IP1｜IPv4｜SKU: Standard｜Tier: Regional｜Static\n・IP2｜IPv4｜SKU: Standard｜Tier: Global｜Static\n・IP3｜IPv4｜SKU: Basic｜Tier: Regional｜Dynamic\n・IP4｜IPv4｜SKU: Basic｜Tier: Regional｜Static\n・IP5｜IPv6｜SKU: Standard｜Tier: Regional｜Static\n\nYou plan to deploy an Instance of Azure Firewall Premium named FW1. Which IP addresses can you use?",
+    "options": {
+      "A": "IP2 only",
+      "B": "IP1 and IP2 only",
+      "C": "IP1, IP2, and IP5 only",
+      "D": "IP1, IP2, IP4, and IP5 only"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。漏掉了 IP1，它同樣是 Standard SKU 的靜態 IPv4，完全符合條件。",
+      "B": "Correct. 正確。Azure 防火牆對公用 IP 有三個硬性要求，缺一不可：\n① SKU 必須是「Standard」——Basic SKU 的公用 IP 不能用。\n② 指派方式必須是「靜態」——防火牆的位址不能變動。\n③ 必須是「IPv4」——Azure 防火牆的前端不支援 IPv6。\n逐一比對：IP1 ✓、IP2 ✓、IP3（Basic 且動態）✗、IP4（Basic）✗、IP5（IPv6）✗。",
+      "C": "Incorrect. 錯誤。多算了 IP5。它雖然是 Standard 靜態，但屬於 IPv6，Azure 防火牆不支援。",
+      "D": "Incorrect. 錯誤。多算了 IP4（Basic SKU）與 IP5（IPv6），兩者都不符合。"
     }
   },
   {
@@ -825,6 +1024,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 346,
+    "type": "single",
+    "question": "You plan to create the following Azure web apps:\n・WebApp1｜Runtime stack: .NET 6 (LTS)\n・WebApp2｜Runtime stack: ASP.NET V4.8\n・WebApp3｜Runtime stack: PHP 8.1\n・WebApp4｜Runtime stack: Python 3.11\n\nWhat is the minimum number of App Service plans you should create for the web apps?",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "3",
+      "D": "4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。一個方案只能是一種作業系統，而清單裡同時有只能 Windows 與只能 Linux 的堆疊。",
+      "B": "Correct. 正確。跟前一題同樣的規則，只是換了一組執行階段：\n・.NET 6 → Windows 或 Linux 都行\n・ASP.NET V4.8 →「只能」Windows\n・PHP 8.1 →「只能」Linux（App Service 的 PHP 已不再提供 Windows 版）\n・Python 3.11 →「只能」Linux（App Service 的 Python 只有 Linux）\n所以至少一個 Windows 方案放 ASP.NET V4.8，一個 Linux 方案放 PHP 與 Python，.NET 6 兩邊都能塞 → 2 個。",
+      "C": "Incorrect. 錯誤。PHP 與 Python 都是 Linux，可以共用同一個 Linux 方案，不必分開。",
+      "D": "Incorrect. 錯誤。這是「一個應用程式一個方案」的想法；同 OS 的應用程式可以共用方案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 347,
     "type": "matching",
     "question": "You have an Azure subscription that contains the resource groups RG1 (East US) and RG2 (West US).\nYou create the following Azure Resource Manager (ARM) template named deploy.json: \"resources\": [ { \"type\": \"Microsoft.Resources/resourceGroups\", \"apiVersion\": \"2018-05-01\", \"location\": \"eastus\", \"name\": \"[concat('RG', copyIndex())]\", \"copy\": { \"name\": \"copy\", \"count\": 4 } } ].\nYou deploy the template by running the following cmdlet: New-AzSubscriptionDeployment -Location westus -TemplateFile deploy.json.\n\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.",
@@ -851,6 +1069,25 @@
       "2": "否。四個名稱中的 RG1 與 RG2「已經存在」，所以實際上「新建」的只有 RG0 與 RG3 兩個。（ARM 部署是宣告式的：名稱已存在時視為更新而不是新建。）",
       "3": "否。RG3 確實會被建立，但區域是資源自己的 location「eastus」——命令上的 -Location westus 只決定「訂用帳戶層級部署本身的中繼資料」存放在哪個區域，不會影響範本中資源指定的位置。",
       "_full": "三個判斷點：\n① copyIndex() 由 0 起算 → RG0~RG3。\n② 「新建幾個」要扣掉已存在的名稱（RG1、RG2 已存在）。\n③ 訂用帳戶層級部署的 -Location 是部署記錄的位置，資源實際建立在各自 location 指定的區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 348,
+    "type": "single",
+    "question": "You have an Azure App Service app named App1 that contains two running instances.\nYou have an autoscale rule configured as follows:\n[Criteria]\n・Metric namespace: Standard metrics; Metric name: Memory Percentage\n・Operator: Greater than; Metric threshold to trigger scale action: 70 (%)\n・Duration (minutes): 15; Time grain (minutes): 1\n・Time grain statistic: Average; Time aggregation: Average\n[Action]\n・Operation: Increase count by; Cool down (minutes): 5; Instance count: 1\n\nFor the Instance limits scale condition setting, you set Maximum to 5.\nDuring a 30-minute period, App1 uses 80 percent of the available memory.\nWhat is the maximum number of instances for App1 during the 30-minute period?",
+    "options": {
+      "A": "2",
+      "B": "3",
+      "C": "4",
+      "D": "5"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。記憶體使用率 80% 已經超過 70% 的閾值，規則一定會觸發，不會停在原本的 2 個。",
+      "B": "Incorrect. 錯誤。這是只算了「一次」擴充。冷卻只有 5 分鐘，30 分鐘內還有時間再擴充好幾次。",
+      "C": "Incorrect. 錯誤。同樣是低估了觸發次數。實際會一路加到上限。",
+      "D": "Correct. 正確。把時間軸走一遍：\n・第 0～15 分：規則要求記憶體「持續」超過 70% 達 15 分鐘，所以第 15 分鐘第一次觸發 → 2 → 3 個執行個體。\n・冷卻 5 分鐘，第 20 分鐘可以再評估。條件仍然成立（一直維持 80%）→ 3 → 4 個。\n・再冷卻 5 分鐘，第 25 分鐘 → 4 → 5 個。\n・此時已達「最大值 5」，之後不再擴充。\n所以 30 分鐘內最多是 5 個。\n重點是「持續時間 15 分鐘」只影響「第一次」觸發的時間，之後每一次只受 5 分鐘冷卻期限制。"
     }
   },
   {
@@ -898,6 +1135,25 @@
       "B": "Correct. 正確。要讓 App1 自行從 KV1 取得憑證，必須先讓 App1 具備身分識別。指派受控識別後，才有對象可以在 KV1 上被授權讀取憑證與祕密。",
       "C": "Incorrect. 錯誤。切換授權模式只是選擇用 RBAC 或存取原則來授權，本身並未賦予 App1 任何身分識別或權限。",
       "D": "Incorrect. 錯誤。授權給使用者只讓「人」能讀取憑證，執行中的 App1 仍然無法自行取用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 351,
+    "type": "single",
+    "question": "You have an Azure subscription. You plan to deploy the following resources:\n・IP1｜Microsoft.Network/publicIPAddresses\n・NSG1｜Microsoft.Network/networkSecurityGroups\n・VNET1｜Microsoft.Network/virtualNetworks\n・NIC1｜Microsoft.Network/networkInterfaces\n・VM1｜Microsoft.Compute/virtualMachines\n\nYou need to create a single Azure Resource Manager (ARM) template that will be used to deploy the resources.\nWhich resource should be added to the dependsOn section for VM1?",
+    "options": {
+      "A": "VNET1",
+      "B": "NIC1",
+      "C": "IP1",
+      "D": "NSG1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。VM1 的定義裡沒有直接引用虛擬網路——引用子網路的是網路介面，不是 VM。這是「間接」相依，不必寫進 VM1 的 dependsOn。",
+      "B": "Correct. 正確。dependsOn 要寫的是「這個資源自己直接引用了誰」。\nVM1 的 networkProfile 裡填的是網路介面的資源 ID，所以 VM1 直接相依的就是 NIC1。\n整條鏈其實是 VM1 → NIC1 → VNET1（子網路）與 NIC1 → IP1／NSG1，但 NIC1 自己的 dependsOn 會處理它那一段，VM1 只要等 NIC1 好了就行——相依性是會遞移的，不需要也不應該全部列上去。",
+      "C": "Incorrect. 錯誤。公用 IP 是掛在網路介面的 IP 組態上，VM1 不會直接引用它。",
+      "D": "Incorrect. 錯誤。網路安全性群組是關聯到網路介面或子網路，VM1 同樣不會直接引用它。"
     }
   },
   {
