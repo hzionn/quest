@@ -198,6 +198,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 209,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・storage1｜儲存體帳戶\n・container1｜Blob 容器\n・table1｜儲存體資料表\n\n你需要執行下列工作：\n・Task1｜建立一個新的儲存體帳戶。\n・Task2｜上傳一個附加 Blob 到 container1。\n・Task3｜在 storage1 中建立一個檔案共用。\n・Task4｜把資料加入 table1。\n\n你可以用 Azure 儲存體總管 (Storage Explorer) 執行哪些工作？",
+    "options": {
+      "A": "只有 Task1 和 Task3",
+      "B": "只有 Task1、Task2 和 Task3",
+      "C": "只有 Task1、Task3 和 Task4",
+      "D": "只有 Task2、Task3 和 Task4",
+      "E": "Task1、Task2、Task3 和 Task4"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。含了 Task1（建立帳戶）而漏掉了 Task2 與 Task4。",
+      "B": "錯誤。含了 Task1。儲存體總管無法建立儲存體帳戶。",
+      "C": "錯誤。同樣含了 Task1。",
+      "D": "正確。判斷標準是「管理平面 vs 資料平面」：\nAzure 儲存體總管是「資料平面」的工具——它管的是帳戶「裡面」的內容。\n・Task1 建立儲存體帳戶＝管理平面的動作，要到 Azure 入口網站／CLI／PowerShell 做，儲存體總管做不到。\n・Task2（上傳附加 Blob）、Task3（建立檔案共用）、Task4（新增資料表資料）全都是帳戶內部的資料操作，儲存體總管都支援。",
+      "E": "錯誤。多算了 Task1，儲存體總管只能連上「已存在」的帳戶，不能建立新帳戶。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 210,
     "type": "multiple",
     "question": "你有一個 Azure AD 使用者 User1，以及一個名為 contoso2023 的讀取權限異地備援儲存體 (RA-GRS) 帳戶。\n你必須滿足下列要求：\n• User1 必須能夠把 Blob 資料寫入 contoso2023。\n• contoso2023 帳戶必須容錯移轉到它的次要端點。\n你應該設定儲存體帳戶刀鋒視窗中的哪兩個項目？",
@@ -316,6 +337,25 @@
       "B": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "C": "錯誤。Azure 匯入／匯出作業的目的地僅支援 Azure Blob 儲存體與 Azure 檔案儲存體，此選項不在支援清單中。",
       "D": "錯誤。虛擬機器不是匯入／匯出作業的目的地類型。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 215,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中的儲存體帳戶 storage1 設有下列生命週期管理規則：\n・Rule1｜若基底 Blob 最後修改超過 5 天 → 移到冷儲存體\n・Rule2｜若基底 Blob 最後修改超過 5 天 → 刪除 Blob\n・Rule3｜若基底 Blob 最後修改超過 5 天 → 移到封存儲存體\n\n6 月 1 日，你在 storage1 的熱層 (Hot) 中存入一個名為 File1 的 Blob。\n6 月 7 日時 File1 的狀態是什麼？",
+    "options": {
+      "A": "存放在冷 (Cool) 存取層",
+      "B": "存放在封存 (Archive) 存取層",
+      "C": "存放在熱 (Hot) 存取層",
+      "D": "已刪除"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。Rule1 確實會把它移到冷層，但同一天 Rule2 的刪除也會生效，而刪除是終局。",
+      "B": "錯誤。同理，Rule3 的封存也會被 Rule2 的刪除蓋過去。",
+      "C": "錯誤。6 月 7 日已經超過 5 天，三條規則全部符合條件，File1 不可能還留在熱層。",
+      "D": "正確。三條規則的條件完全一樣（超過 5 天），6 月 1 日存入、6 月 7 日已經過了 6 天，所以三條同時命中。\n當多條規則同時作用在同一個 Blob 上時，生命週期管理採用的是「最終會套用最便宜／最終端的動作」——而刪除是不可逆的終點：一旦刪掉，移到冷層或封存層都沒有意義了。\n所以結果是 File1 已被刪除。"
     }
   },
   {
@@ -844,6 +884,46 @@
   },
   {
     "exam": "AZ-104",
+    "id": 238,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列儲存體帳戶：\n・storage1｜Storage（一般用途 v1）｜進階 (Premium)｜本機備援 (LRS)｜存取層：不適用\n・storage2｜StorageV2（一般用途 v2）｜標準 (Standard)｜本機備援 (LRS)｜存取層：冷\n・storage3｜StorageV2（一般用途 v2）｜標準 (Standard)｜讀取權限異地備援 (RA-GRS)｜存取層：熱\n・storage4｜BlobStorage｜進階 (Premium)｜本機備援 (LRS)｜存取層：熱\n\n哪一個儲存體帳戶可以轉換成區域備援儲存體 (ZRS) 複寫？",
+    "options": {
+      "A": "storage1",
+      "B": "storage2",
+      "C": "storage3",
+      "D": "storage4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。一般用途 v1 不支援轉換成 ZRS（要先升級成 v2），而且它是 Premium。",
+      "B": "正確。條件同樣是「一般用途 v2 + 標準 + LRS」三者皆備：\nstorage2 是一般用途 v2、標準效能、目前 LRS——完全符合。",
+      "C": "錯誤。storage3 卡在來源備援：目前是 RA-GRS，而轉換到 ZRS 的來源必須是 LRS（GRS／RA-GRS 要先轉回 LRS）。",
+      "D": "錯誤。storage4 是 BlobStorage 帳戶而且是 Premium，兩項都不符合。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 239,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列裝置：\n・Device1｜Windows\n・Device2｜Ubuntu Linux\n・Device3｜macOS\n・Device4｜Android\n\n你可以在哪些裝置上安裝 Azure 儲存體總管 (Azure Storage Explorer)？",
+    "options": {
+      "A": "只有 Device1",
+      "B": "只有 Device1 和 Device2",
+      "C": "只有 Device1 和 Device3",
+      "D": "只有 Device1、Device2 和 Device3",
+      "E": "只有 Device1、Device3 和 Device4"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。儲存體總管不是 Windows 專屬。",
+      "B": "錯誤。漏掉 macOS。",
+      "C": "錯誤。漏掉 Linux。",
+      "D": "正確。Azure 儲存體總管是桌面應用程式，官方提供三種平台的版本：Windows、Linux 與 macOS。\n行動平台（Android／iOS）沒有——Device4 因此出局。",
+      "E": "錯誤。含了 Android。儲存體總管沒有行動版。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 240,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「儲存體帳戶金鑰操作員服務角色 (Storage Account Key Operator Service Role)」指派給 User1。\n此解法是否達成目標？",
@@ -1034,6 +1114,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 247,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列儲存體帳戶：\n・storage1｜StorageV2（一般用途 v2）｜標準 (Standard)｜本機備援 (LRS)｜存取層：冷\n・storage2｜StorageV2（一般用途 v2）｜標準 (Standard)｜讀取權限異地備援 (RA-GRS)｜存取層：熱\n・storage3｜BlobStorage｜進階 (Premium)｜本機備援 (LRS)｜存取層：熱\n\n哪一個儲存體帳戶可以轉換成區域備援儲存體 (ZRS) 複寫？",
+    "options": {
+      "A": "只有 storage1",
+      "B": "只有 storage2",
+      "C": "只有 storage3",
+      "D": "storage2 和 storage3",
+      "E": "storage1、storage2 和 storage3"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。同一條規則的第三次變化：一般用途 v2 + 標準 + LRS。\n・storage1：v2、標準、LRS → 三項全中。\n・storage2：v2、標準都對，但來源是 RA-GRS，不是 LRS → 出局。\n・storage3：BlobStorage 帳戶且是 Premium → 出局。\n存取層（冷／熱）跟能不能轉 ZRS 無關，是誘答用的欄位。",
+      "B": "錯誤。storage2 的來源備援是 RA-GRS，必須先轉回 LRS 才能移轉到 ZRS。",
+      "C": "錯誤。storage3 是 BlobStorage 且為 Premium，兩項都不符合。",
+      "D": "錯誤。這兩個剛好都是不符合的那兩個。",
+      "E": "錯誤。只有 storage1 符合條件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 248,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個名為 storage1 的 Azure 儲存體帳戶。你必須讓一位名為 User1 的使用者能夠「列出並重新產生」storage1 的儲存體帳戶金鑰。\n解法：你把「讀者及資料存取 (Reader and Data Access)」角色指派給 User1。\n此解法是否達成目標？",
@@ -1095,6 +1196,46 @@
       "1": "每個容器最多 5 個預存存取原則。規劃中已經要建立 Stored1、Stored2、Stored3 共 3 個，所以還剩 5 − 3 = 2 個可用。",
       "2": "不可變 Blob 儲存體在同一個容器上可以有「一個合法保留」與「一個以時間為基準的保留原則」，兩者各一。規劃中已經要建立合法保留，因此只剩時間保留原則可以再加，也就是 1 個。",
       "_full": "兩個上限要分開記：\n・預存存取原則：每個容器 5 個（本題用掉 3 個 → 還能加 2）。\n・不可變原則：合法保留 1 個 + 時間保留 1 個（本題用掉合法保留 → 還能加 1）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 251,
+    "type": "single",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\n訂用帳戶包含下列儲存體帳戶：\n・storage1｜StorageV2｜West US｜階層命名空間：是｜容器 cont1｜檔案共用 share1\n・storage2｜StorageV2｜West US｜階層命名空間：否｜容器 cont2｜檔案共用 share2\n\n訂用帳戶包含下列虛擬機器：\n・VM1｜大小 A｜Red Hat Enterprise Linux (RHEL)｜使用暫時性 (ephemeral) OS 磁碟\n・VM2｜大小 D｜Windows Server 2022｜使用基本磁碟區 (basic volume)\n・VM3｜大小 B｜Red Hat Enterprise Linux (RHEL)｜使用標準 SSD\n・VM4｜大小 M｜Windows Server 2022｜使用「寫入加速器 (Write Accelerator)」磁碟\n・VM5｜大小 E｜Windows Server 2022｜使用動態磁碟區 (dynamic volume)\n\n技術需求之一：盡可能使用 Azure 磁碟加密 (ADE) 與金鑰加密金鑰 (KEK) 來加密虛擬機器。\n\n你需要為虛擬機器設定加密，且解決方案必須符合技術需求。\n你可以加密哪些虛擬機器？",
+    "options": {
+      "A": "VM1 和 VM3",
+      "B": "VM4 和 VM5",
+      "C": "VM2 和 VM3",
+      "D": "VM2 和 VM4"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。VM3 可以，但 VM1 使用「暫時性 OS 磁碟」——那是存在主機本機的暫存磁碟，Azure 磁碟加密不支援。",
+      "B": "錯誤。這兩台都是 ADE 明確不支援的：VM4 用寫入加速器磁碟、VM5 用動態磁碟區。",
+      "C": "正確。把 ADE 的「不支援清單」套到五台機器上，剩下的就是答案：\n・VM1：暫時性 (ephemeral) OS 磁碟 → ADE 不支援。\n・VM2：Windows Server 2022、基本磁碟區 → 支援 ✓\n・VM3：RHEL、標準 SSD → 支援 ✓\n・VM4：寫入加速器 (Write Accelerator) 磁碟 → ADE 不支援。\n・VM5：動態磁碟區 (dynamic volume) → ADE 只支援基本磁碟區，動態磁碟區不支援。\n所以能加密的是 VM2 與 VM3。",
+      "D": "錯誤。VM2 可以，但 VM4 的寫入加速器磁碟不能與 ADE 併用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 252,
+    "type": "single",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\n訂用帳戶包含下列儲存體帳戶：\n・storage1｜StorageV2｜West US｜階層命名空間：是｜容器 cont1｜檔案共用 share1\n・storage2｜StorageV2｜West US｜階層命名空間：否｜容器 cont2｜檔案共用 share2\n\n訂用帳戶包含下列虛擬機器：\n・VM1｜大小 A｜Red Hat Enterprise Linux (RHEL)｜使用暫時性 (ephemeral) OS 磁碟\n・VM2｜大小 D｜Windows Server 2022｜使用基本磁碟區 (basic volume)\n・VM3｜大小 B｜Red Hat Enterprise Linux (RHEL)｜使用標準 SSD\n・VM4｜大小 M｜Windows Server 2022｜使用「寫入加速器 (Write Accelerator)」磁碟\n・VM5｜大小 E｜Windows Server 2022｜使用動態磁碟區 (dynamic volume)\n\n規劃的變更之一：盡可能使用「目錄 (directories)」來組織儲存體帳戶的內容。\n\n你需要為儲存體帳戶的內容實作這項規劃變更。\n你可以使用哪些容器與檔案共用來組織內容？",
+    "options": {
+      "A": "只有 share1",
+      "B": "只有 cont1 和 share1",
+      "C": "只有 share1 和 share2",
+      "D": "只有 cont1、share1 和 share2",
+      "E": "cont1、cont2、share1 和 share2"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。太保守了：share2 也是檔案共用，同樣天生支援目錄；cont1 也可以。",
+      "B": "錯誤。漏掉了 share2——檔案共用不論在哪個帳戶都支援目錄。",
+      "C": "錯誤。漏掉了 cont1。storage1 啟用了階層命名空間，它的容器是支援真目錄的。",
+      "D": "正確。這題考的是「Blob 容器的目錄要靠階層命名空間，檔案共用天生就有」：\n・cont1 在 storage1，而 storage1 的階層命名空間是「是」→ 有真正的目錄 ✓\n・cont2 在 storage2，階層命名空間是「否」→ 只有「虛擬目錄」（名稱裡的斜線而已，不是真的目錄物件）→ 不算 ✗\n・share1、share2 都是 Azure 檔案共用，檔案共用本來就是階層式檔案系統，永遠支援目錄 ✓✓\n所以是 cont1、share1、share2 三個。",
+      "E": "錯誤。多算了 cont2。它所在的 storage2 沒有啟用階層命名空間，只能用「虛擬目錄」這種前置詞模擬，沒有真正的目錄。"
     }
   },
   {
@@ -1344,6 +1485,23 @@
   },
   {
     "exam": "AZ-104",
+    "id": 264,
+    "type": "single",
+    "question": "你有一個名為 Template1 的 Azure Resource Manager 範本，用來部署一台 Azure 虛擬機器。\nTemplate1 的「參數」區段包含下列內容：\n　\"location\": {\n　　\"type\": \"String\",\n　　\"defaultValue\": \"eastus\",\n　　\"allowedValues\": [ \"canadacentral\", \"eastus\", \"westeurope\", \"westus\" ]\n　}\n\nTemplate1 的「變數」區段包含下列內容：\n　\"location\": \"westeurope\"\n\nTemplate1 的「資源」區段包含下列內容：\n　\"type\": \"Microsoft.Compute/virtualMachines\",\n　\"apiVersion\": \"2018-10-01\",\n　\"name\": \"[variables('vmName')]\",\n　\"location\": \"westeurope\",\n\n你需要用 Template1 把虛擬機器部署到 West US。你應該怎麼做？",
+    "options": {
+      "A": "把「資源」區段裡的 location 改成 westus",
+      "B": "在部署時選擇 West US",
+      "C": "把「變數」區段裡的 location 改成 westus"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。要看的是「資源實際引用了什麼」。\n資源區段裡寫的是 \"location\": \"westeurope\" ——這是一個「寫死的字串」，既沒有引用參數 [parameters('location')]，也沒有引用變數 [variables('location')]。\n所以參數的預設值 eastus、變數的 westeurope 都是誘餌，真正決定部署位置的就是資源區段裡那行硬編碼的值。要改就得改它。",
+      "B": "錯誤。部署時能選的是「參數」的值，但資源區段沒有引用參數，所以你在部署畫面上選什麼都不會影響 VM 的位置。",
+      "C": "錯誤。同理，資源區段也沒有引用變數，改變數不會有任何效果。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 265,
     "type": "single",
     "question": "你建立了一個名為 Plan1 的 App Service 方案與一個名為 webapp1 的 Azure Web 應用程式。你發現建立預備 (staging) 位置的選項無法使用，必須為 Plan1 建立預備位置。你應該「最先」做什麼？",
@@ -1461,6 +1619,51 @@
   },
   {
     "exam": "AZ-104",
+    "id": 272,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組｜West US\n・RG2｜資源群組｜East Asia\n・storage1｜儲存體帳戶｜West US\n・storage2｜儲存體帳戶｜East Asia\n・VM1｜虛擬機器｜West US\n・VNET1｜虛擬網路｜West US\n・VNET2｜虛擬網路｜East Asia\n\nVM1 連線到 VNET1。你需要把 VM1 連線到 VNET2。\n解決方案：你把 VM1 移到 RG2，然後為 VM1 新增一張網路介面。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。搬資源群組不會改變資源所在的區域，VM1 仍然在 West US。",
+      "B": "正確。關鍵是「區域」：VM1 在 West US，VNET2 在 East Asia。\n網路介面必須和它要連的虛擬網路在「同一個區域」，而網路介面又必須和它要掛上去的 VM 在同一個區域——所以一台 West US 的 VM 永遠不可能連到 East Asia 的虛擬網路。\n把 VM1 移到 RG2 只是換了個「管理容器」——資源群組的位置跟資源本身的區域無關，VM1 還是待在 West US，新網路介面自然也只能連 West US 的虛擬網路。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 273,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組｜West US\n・RG2｜資源群組｜East Asia\n・storage1｜儲存體帳戶｜West US\n・storage2｜儲存體帳戶｜East Asia\n・VM1｜虛擬機器｜West US\n・VNET1｜虛擬網路｜West US\n・VNET2｜虛擬網路｜East Asia\n\nVM1 連線到 VNET1。你需要把 VM1 連線到 VNET2。\n解決方案：你刪除 VM1，重新建立 VM1，然後為 VM1 建立一張新的網路介面並連到 VNET2。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。關鍵是「區域」：VM1 在 West US，VNET2 在 East Asia。\n網路介面必須和它要連的虛擬網路在「同一個區域」，而網路介面又必須和它要掛上去的 VM 在同一個區域——所以一台 West US 的 VM 永遠不可能連到 East Asia 的虛擬網路。\n既有的 VM 無法換區域，所以唯一的辦法就是「砍掉重建」——在 East Asia 重新建立 VM1，它的網路介面才能連上同樣位於 East Asia 的 VNET2。\n這個解法代價很大（原本的 VM 及其設定都沒了），但題目只問「能不能達成目標」，而它確實能。",
+      "B": "錯誤。重建是唯一可行的路徑，判定為「否」反而錯過了正解。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 274,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組｜West US\n・RG2｜資源群組｜East Asia\n・storage1｜儲存體帳戶｜West US\n・storage2｜儲存體帳戶｜East Asia\n・VM1｜虛擬機器｜West US\n・VNET1｜虛擬網路｜West US\n・VNET2｜虛擬網路｜East Asia\n\nVM1 連線到 VNET1。你需要把 VM1 連線到 VNET2。\n解決方案：你關閉 VM1，然後為 VM1 新增一張網路介面。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。關機確實是「新增網路介面」的必要條件，但它解決不了跨區域的問題。",
+      "B": "正確。關鍵是「區域」：VM1 在 West US，VNET2 在 East Asia。\n網路介面必須和它要連的虛擬網路在「同一個區域」，而網路介面又必須和它要掛上去的 VM 在同一個區域——所以一台 West US 的 VM 永遠不可能連到 East Asia 的虛擬網路。\n關閉 VM1 只處理了「加網路介面要先解除配置」這個技術前提，但新網路介面仍然只能建立在 VM1 所在的 West US，而 VNET2 在 East Asia——連不上。\n這一組三題的差別就在這裡：只有「重建 VM」那一個解法能跨區域，另外兩個都不行。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 275,
     "type": "matching",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其配額如下：\n・Standard BS Family vCPUs｜West US｜已使用 0 / 20\n・Standard D Family vCPUs｜West US｜已使用 0 / 20\n・Total Regional vCPUs（區域總 vCPU）｜West US｜已使用 0 / 20\n\n你已在 Subscription1 部署下列虛擬機器：\n・VM1｜Standard_B2ms｜2 vCPU｜West US｜狀態 執行中 (Running)\n・VM2｜Standard_B16ms｜16 vCPU｜West US｜狀態 已停止（已解除配置 Deallocated）\n\n你打算再部署下列虛擬機器：\n・VM3｜Standard_B2ms｜1 vCPU\n・VM4｜Standard_D4s_v3｜4 vCPU\n・VM5｜Standard_B16ms｜16 vCPU\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -1514,6 +1717,25 @@
       "1": "計劃性維護（例如主機修補重啟）是「一次只重啟一個更新網域」。更新網域有 10 個，14 台 VM 會依序輪流分配：其中 4 個更新網域各 2 台、6 個各 1 台。最壞情況是重啟的那個更新網域裡有 2 台，所以上限是 2。",
       "2": "機架電源故障對應的是「錯誤網域」——同一個錯誤網域共用電源與網路交換器。錯誤網域只有 2 個，14 台 VM 平均分成每個 7 台，一個機架（一個錯誤網域）失效就會有 7 台同時離線。",
       "_full": "把兩個網域概念分清：\n・更新網域 (platformUpdateDomainCount)：對應「計劃性維護」，平台一次只動一個更新網域 → 影響 ⌈14 ÷ 10⌉ = 2 台。\n・錯誤網域 (platformFaultDomainCount)：對應「非計劃性硬體故障」（電源、機架、網路） → 影響 14 ÷ 2 = 7 台。\nVM 加入時會以輪替方式平均分配到各網域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 277,
+    "type": "single",
+    "question": "你部署了一個名為 Cluster1 的 Azure Kubernetes Service (AKS) 叢集，它使用下列 IP 位址：\n・131.107.2.1｜指派給：負載平衡器前端\n・192.168.10.2｜指派給：Kubernetes DNS 服務\n・172.17.7.1｜指派給：Docker 橋接器位址\n・10.0.10.11｜指派給：Kubernetes 叢集節點\n\n你需要讓網際網路上的使用者能夠存取在 Cluster1 中執行的應用程式。\n你應該把哪一個 IP 位址放進 Cluster1 的 DNS 記錄？",
+    "options": {
+      "A": "131.107.2.1",
+      "B": "10.0.10.11",
+      "C": "172.17.7.1",
+      "D": "192.168.10.2"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。要讓「網際網路上的使用者」連進來，DNS 必須指到一個「公用」IP，而且要是叢集對外的入口。\n四個位址中只有 131.107.2.1 是公用位址——另外三個 10.x、172.17.x、192.168.x 都落在 RFC 1918 的私人位址範圍內，從網際網路根本路由不到。\n而它指派給的正是「負載平衡器前端」，那就是 AKS 對外服務的進入點。",
+      "B": "錯誤。10.0.10.11 是叢集節點的私人 IP，既不能從網際網路連到，也不該把流量綁死在單一節點上。",
+      "C": "錯誤。172.17.7.1 是 Docker 橋接器位址，那是節點「內部」容器互通用的，連叢集外都出不去。",
+      "D": "錯誤。192.168.10.2 是叢集內部的 DNS 服務位址，供 Pod 解析服務名稱用，同樣是私人位址。"
     }
   },
   {
