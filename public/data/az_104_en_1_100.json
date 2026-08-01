@@ -832,6 +832,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 46,
+    "type": "single",
+    "question": "You have an Azure policy as shown in the following exhibit: What is the effect of the policy?",
+    "options": {
+      "A": "You are prevented from creating Azure SQL servers anywhere in Subscription 1.",
+      "B": "You can create Azure SQL servers in ContosoRG1 only.",
+      "C": "You are prevented from creating Azure SQL Servers in ContosoRG1 only.",
+      "D": "You can create Azure SQL servers in any resource group within Subscription 1."
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。這個說法忽略了「排除項目」。原則的範圍雖然是整個 Subscription 1，但 ContosoRG1 被明確排除在外，所以那裡不受限制。",
+      "B": "Correct. 正確。這個指派要分兩層讀：\n① 原則定義是「不允許的資源類型」，參數是 Microsoft.Sql/servers——所以它的效果是「禁止建立 SQL Server」。\n② 範圍是 Subscription 1，但排除了 Subscription 1/ContosoRG1。\n合起來就是：整個訂用帳戶都不能建 SQL Server，「除了」ContosoRG1 之外。\n換句話說，唯一還能建立 Azure SQL Server 的地方就是 ContosoRG1。",
+      "C": "Incorrect. 錯誤。這是把效果整個反過來了。被「排除」的資源群組是不受原則管的那一個，不是唯一被管的那一個。",
+      "D": "Incorrect. 錯誤。這等於當作原則沒有生效。原則確實有指派到 Subscription 1，排除清單以外的資源群組都會被擋下。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 47,
     "type": "matching",
     "question": "You have an Azure subscription that contains these resources: RG6 (a resource group, no tags) and VNET1 (a virtual network in RG6, tagged Department: D1). You assign a policy to RG6 as follows: Scope = Subscription1/RG6, Exclusions = None, policy definition and assignment name = 'Apply tag and its default value', parameters Tag name = Label and Tag value = Value1. To RG6, you apply the tag RGroup: RG6. You deploy a virtual network named VNET2 to RG6. Which tags apply to VNET1 and VNET2?",
@@ -859,6 +878,25 @@
       "1": "VNET1 在原則指派之前就已經存在。「套用標記及其預設值」屬於 Modify/Append 類型的原則，只會在資源「建立或更新」時作用，不會回頭改既有資源（要改必須另外執行補救工作）。而 RG6 上的 RGroup: RG6 是資源群組本身的標記，Azure 的標記不會自動繼承給群組內的資源。所以 VNET1 只保有原本的 Department: D1。",
       "2": "VNET2 是在原則指派之後才部署的新資源，因此建立時就被原則加上 Label: Value1。它沒有 Department 標記（那是 VNET1 自己的），也不會繼承 RG6 的 RGroup: RG6。所以 VNET2 只有 Label: Value1。",
       "_full": "兩個關鍵觀念：①「套用標記及其預設值」原則只對新建或更新的資源生效，既有資源不受影響，除非另外跑補救工作；② 資源群組的標記不會自動繼承到群組內的資源（要繼承得改用 Inherit a tag from the resource group 這類原則）。因此既有的 VNET1 維持「只有 Department: D1」，新建的 VNET2 得到「只有 Label: Value1」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 48,
+    "type": "single",
+    "question": "You have an Azure subscription named AZPT1 that contains the resources shown in the following table: You create a new Azure subscription named AZPT2. You need to identify which resources can be moved to AZPT2. Which resources should you identify?",
+    "options": {
+      "A": "VM1, storage1, VNET1, and VM1Managed only",
+      "B": "VM1 and VM1Managed only",
+      "C": "VM1, storage1, VNET1, VM1Managed, and RVAULT1",
+      "D": "RVAULT1 only"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。儲存體帳戶、虛擬網路、虛擬機器與受控磁碟都支援跨訂用帳戶搬移，四個都可以搬。\n卡住的只有 RVAULT1：它是「正在做網站復原」的復原服務保存庫，而啟用了 Site Recovery 複寫的保存庫「不能」跨訂用帳戶搬移——得先停用複寫（等於放棄現有的復原點）才搬得動。\n所以答案是「除了 RVAULT1 之外的四個」。",
+      "B": "Incorrect. 錯誤。這個答案漏掉了 storage1 與 VNET1，但這兩種資源都在支援跨訂用帳戶搬移的清單上，沒有理由排除。",
+      "C": "Incorrect. 錯誤。這是最主要的誘答，錯在把 RVAULT1 也算進去。題目特別註明 RVAULT1 是「用於 VM1 的網站復原」——這句話就是提示：有進行中的複寫，保存庫搬不了。",
+      "D": "Incorrect. 錯誤。RVAULT1 恰恰是唯一「不能」搬的那一個。"
     }
   },
   {
@@ -982,6 +1020,25 @@
       "2": "是。使用者管理員可以建立與管理群組成員資格，而 User2 本身還是 Group1 的擁有者；Group1 的成員資格類型是「已指派」，代表成員由人手動加入，所以這個動作可行（裝置是 Azure AD 已註冊或已加入都不影響）。",
       "3": "否。Group2 的成員資格類型是「動態裝置」——成員完全由成員資格規則自動計算，任何人（包含群組擁有者與全域管理員）都不能手動加入或移除成員。",
       "_full": "兩個判斷點：① 角色權限——只有使用者管理員（或群組擁有者）能管群組成員，雲端裝置管理員管的是「裝置」而不是「群組成員資格」；② 成員資格類型——「已指派」才能手動加成員，「動態裝置／動態使用者」的成員一律由規則決定，手動增刪一概不允許。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 55,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a resource group named RG26. RG26 is set to the West Europe location and is used to create temporary resources for a project. RG26 contains the resources shown in the following table. SQLDB01 is backed up to RGV1. When the project is complete, you attempt to delete RG26 from the Azure portal. The deletion fails. You need to delete RG26. What should you do first?",
+    "options": {
+      "A": "Delete VM1",
+      "B": "Stop VM1",
+      "C": "Stop the backup of SQLDB01",
+      "D": "Delete sa001"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。刪除資源群組本來就會一併刪掉裡面的 VM，不需要先手動刪 VM1；而且刪了 VM1 之後，RGV1 裡還是有受保護的備份項目，刪除照樣會失敗。",
+      "B": "Incorrect. 錯誤。虛擬機器是開著還是關著，跟能不能刪除資源群組無關。刪除資源群組會直接刪掉裡面的 VM，不必先關機。",
+      "C": "Correct. 正確。刪除失敗的原因是 RGV1 這個復原服務保存庫裡「還有受保護的項目」（SQLDB01 的備份）。\nAzure 不允許刪除仍在保護資料的保存庫，這是防呆設計——避免有人一鍵把資源群組連同所有備份一起清掉。\n所以要先對 SQLDB01「停止備份並刪除備份資料」，保存庫清空之後，整個 RG26 才刪得掉。",
+      "D": "Incorrect. 錯誤。儲存體帳戶不會擋住資源群組的刪除，刪除資源群組時它會被一起刪掉。擋路的是保存庫裡的備份項目。"
     }
   },
   {
@@ -1138,6 +1195,25 @@
       "2": "是。zones 分別設為 \"1\" 與 \"2\"，代表 VM1 在可用性區域 1、VM2 在可用性區域 2。一個可用性區域是區域內一或多個獨立資料中心，具備獨立的電力、散熱與網路，所以單一資料中心（單一區域）故障時，另一台 VM 仍然存活。",
       "3": "否。可用性區域只在「同一個 Azure 區域內」提供備援。VM1 與 VM2 的 location 都是 EastUS2，整個區域失效時兩台都會受影響。要防範區域級故障，必須把工作負載複寫到另一個區域（例如搭配 Azure Site Recovery 或跨區域的流量管理）。",
       "_full": "看範本裡的兩個欄位就能全部判斷完：location 都是 EastUS2（同一區域），zones 分別是 1 與 2（不同可用性區域）。因此 → 資料中心／區域層級故障有備援（第 2 項是），但整個 Azure 區域失效就沒有備援（第 3 項否）。第 1 項則是看網路介面：VM 透過網路介面連到虛擬網路，兩張介面都在 VNET1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 64,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1. Subscription1 contains the resource groups in the following table. RG1 has a web app named WebApp1. WebApp1 is located in West Europe. You move WebApp1 to RG2. What is the effect of the move?",
+    "options": {
+      "A": "The App Service plan for WebApp1 remains in West Europe. Policy2 applies to WebApp1.",
+      "B": "The App Service plan for WebApp1 moves to North Europe. Policy2 applies to WebApp1.",
+      "C": "The App Service plan for WebApp1 remains in West Europe. Policy1 applies to WebApp1.",
+      "D": "The App Service plan for WebApp1 moves to North Europe. Policy1 applies to WebApp1."
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。兩個判斷各自獨立：\n① 位置不變。資源群組的「位置」只是存放中繼資料的地方，跟裡面資源實際跑在哪個區域沒有關係。把資源搬到別的資源群組「不會」把它遷移到另一個區域——WebApp1 與它的 App Service 方案仍然在 West Europe 執行。\n② 原則跟著新的容器走。Azure 原則是依「範圍」繼承的，資源搬進 RG2 之後就落在 RG2 的範圍底下，因此改由 Policy2 管轄，不再受 Policy1 影響。",
+      "B": "Incorrect. 錯誤。前半段就錯了：搬移資源群組不會改變資源所在的 Azure 區域。要換區域必須重新部署，不是搬資源群組。",
+      "C": "Incorrect. 錯誤。後半段錯了：原則是依範圍繼承的，資源離開 RG1 之後就不再受 Policy1 管轄。",
+      "D": "Incorrect. 錯誤。兩半都錯：區域不會跟著換，套用的原則也會換成 Policy2。"
     }
   },
   {
@@ -1443,6 +1519,25 @@
       "B": "Incorrect. 錯誤。方向正確但順序錯了——受控識別尚未啟用時，RG1 的 IAM 中根本找不到可指派的身分識別對象。",
       "C": "Incorrect. 錯誤。修改 VM1 的 IAM 是設定「誰能管理 VM1」，與 VM1 能去管理什麼無關。",
       "D": "Incorrect. 錯誤。Azure 原則用於強制資源合規性，並不授與任何身分識別權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 79,
+    "type": "single",
+    "question": "You have an Azure subscription that contains a resource group named TestRG. You use TestRG to validate an Azure deployment. TestRG contains the following resources: You need to delete TestRG. What should you do first?",
+    "options": {
+      "A": "Modify the backup configurations of VM1 and modify the resource lock type of VNET1",
+      "B": "Remove the resource lock from VNET1 and delete all data in Vault1",
+      "C": "Turn off VM1 and remove the resource lock from VNET1",
+      "D": "Turn off VM1 and delete all data in Vault1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。前半太弱：只「修改」備份設定不會把保存庫裡既有的備份資料清掉，保存庫仍然擋著。後半也不夠：把鎖定類型從「刪除」改成「唯讀」，唯讀鎖同樣會阻止刪除，必須整個移除才行。",
+      "B": "Correct. 正確。這個資源群組有兩道關卡，兩道都要拆掉：\n① VNET1 上的「刪除」鎖定會擋下刪除動作——鎖定必須「移除」，不是改成別的類型。\n② Vault1 裡還有 VM1 的備份，有受保護項目的保存庫不能被刪除——必須先停止備份並刪除備份資料。\nVM1 本身不需要處理：刪除資源群組時它會被一起刪掉，也不必先關機。",
+      "C": "Incorrect. 錯誤。移除鎖定是對的，但關閉 VM1 沒有意義——VM 開著並不會阻止刪除。真正還擋著的是 Vault1 裡的備份資料。",
+      "D": "Incorrect. 錯誤。清空保存庫是對的，但漏掉了 VNET1 的刪除鎖定，只要鎖定還在，刪除就一定失敗。"
     }
   },
   {
@@ -1860,6 +1955,51 @@
       "1": "原則指派的範圍只能是管理群組、訂用帳戶或資源群組——也就是「容器」層級，不能直接指派到個別資源。因此 Tenant Root Group、ManagementGroup1、Subscription1、RG1 都可以，但 VM1 不行。",
       "2": "排除項目 (notScopes) 的粒度比指派範圍細，可以一路指定到「個別資源」，因此 VM1 可以被排除。但排除項目必須是指派範圍「底下」的子範圍——最上層的 Tenant Root Group 本身不可能被排除（它是整棵樹的根，沒有任何指派會把它當成子範圍）。→ ManagementGroup1、Subscription1、RG1 和 VM1。",
       "_full": "記住兩條粒度規則：\n・指派範圍：管理群組／訂用帳戶／資源群組（容器），不含個別資源。\n・排除範圍：可到個別資源，但必須位於指派範圍之下，因此根管理群組不會出現在排除清單。\n這也解釋了兩個答案的差異：指派清單止於 RG1，排除清單延伸到 VM1 卻少了 Tenant Root Group。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 98,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains the following users in an Azure Active Directory tenant named contoso.onmicrosoft.com: User1 creates a new Azure Active Directory tenant named external.contoso.onmicrosoft.com. You need to create new user accounts in external.contoso.onmicrosoft.com. Solution: You instruct User2 to create the user accounts. Does that meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。User2 的全域管理員角色是在 contoso.onmicrosoft.com 這個租用戶裡，在 external.contoso.onmicrosoft.com 中他什麼權限都沒有。",
+      "B": "Correct. 正確。關鍵在於「租用戶是彼此獨立的安全界限」：\n表格裡那些角色全都指派在 contoso.onmicrosoft.com（或它底下的訂用帳戶）上，而新建立的 external.contoso.onmicrosoft.com 是「另一個」租用戶，角色不會自動跟過去。\n唯一在新租用戶裡有權限的人是「建立者」User1——建立租用戶的帳戶會自動成為該租用戶的全域管理員。\nUser2 雖然也是全域管理員，但那是「另一個租用戶的」全域管理員，在新租用戶裡完全沒有立足點，因此無法建立使用者。\n要讓 User2 能做這件事，得由 User1 先把他邀請進新租用戶並指派角色。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 99,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains the following users in an Azure Active Directory tenant named contoso.onmicrosoft.com: User1 creates a new Azure Active Directory tenant named external.contoso.onmicrosoft.com. You need to create new user accounts in external.contoso.onmicrosoft.com. Solution: You instruct User4 to create the user accounts. Does that meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。User4 的擁有者角色是 Azure「訂用帳戶」層級的 RBAC 角色，跟 Azure AD 租用戶的使用者管理是兩套不同的權限系統。",
+      "B": "Correct. 正確。關鍵在於「租用戶是彼此獨立的安全界限」：\n表格裡那些角色全都指派在 contoso.onmicrosoft.com（或它底下的訂用帳戶）上，而新建立的 external.contoso.onmicrosoft.com 是「另一個」租用戶，角色不會自動跟過去。\n唯一在新租用戶裡有權限的人是「建立者」User1——建立租用戶的帳戶會自動成為該租用戶的全域管理員。\nUser4 的情況又多錯一層：他的「擁有者」是 Azure 資源的 RBAC 角色，管的是訂用帳戶裡的資源，本來就不包含「在目錄中建立使用者」這件事——就算在原本的租用戶裡他也建不了使用者，更何況是另一個租用戶。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 100,
+    "type": "single",
+    "question": "Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen. You have an Azure subscription that contains the following users in an Azure Active Directory tenant named contoso.onmicrosoft.com: User1 creates a new Azure Active Directory tenant named external.contoso.onmicrosoft.com. You need to create new user accounts in external.contoso.onmicrosoft.com. Solution: You instruct User3 to create the user accounts. Does that meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。User3 的使用者管理員角色只在 contoso.onmicrosoft.com 裡有效，新租用戶並不認得這個指派。",
+      "B": "Correct. 正確。關鍵在於「租用戶是彼此獨立的安全界限」：\n表格裡那些角色全都指派在 contoso.onmicrosoft.com（或它底下的訂用帳戶）上，而新建立的 external.contoso.onmicrosoft.com 是「另一個」租用戶，角色不會自動跟過去。\n唯一在新租用戶裡有權限的人是「建立者」User1——建立租用戶的帳戶會自動成為該租用戶的全域管理員。\nUser3 的「使用者管理員」確實是專門管使用者帳戶的角色——如果目標是在 contoso.onmicrosoft.com 建立使用者，他做得到。\n但目標是「另一個租用戶」，角色不會跨租用戶生效，所以一樣不行。\n這一組三題（User2／User3／User4）的答案都是「否」，唯一做得到的是建立該租用戶的 User1。"
     }
   }
 ]

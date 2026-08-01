@@ -20,6 +20,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 102,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 storageacct1234 的儲存體帳戶，以及兩個使用者 User1 與 User2。\n你指派給 User1 的角色如下（storageacct1234 的「指派」畫面）：\n・角色：讀取者 (Reader)｜範圍：資源群組（繼承而來）\n・角色：儲存體 Blob 資料參與者 (Storage Blob Data Contributor)｜範圍：此資源\n（拒絕指派 0 個；傳統系統管理員 0 個）\n\nUser1 可以執行哪「兩」個動作？每個正確答案都是一個完整的解決方案。（每個正確選擇得一分）",
+    "options": {
+      "A": "為 User2 指派 storageacct1234 的角色。",
+      "B": "上傳 Blob 資料到 storageacct1234。",
+      "C": "修改 storageacct1234 的防火牆。",
+      "D": "檢視 storageacct1234 中的 Blob 資料。",
+      "E": "檢視 storageacct1234 中的檔案共用。"
+    },
+    "answer": [
+      "B",
+      "D"
+    ],
+    "explanations": {
+      "A": "錯誤。指派角色需要 Microsoft.Authorization/roleAssignments/write，只有「擁有者」與「使用者存取系統管理員」帶這個權限。讀取者是唯讀的，Blob 資料參與者只管資料平面，兩者都不能授權他人。",
+      "B": "正確。「儲存體 Blob 資料參與者」是資料平面的角色，涵蓋 Blob 的讀取、寫入與刪除——上傳 Blob 正是它的核心用途。",
+      "C": "錯誤。防火牆（網路規則）是儲存體帳戶「管理平面」的設定，要改它需要參與者或儲存體帳戶參與者這類寫入權限。\nUser1 在管理平面只有「讀取者」，看得到設定但改不了；而 Blob 資料參與者完全不涉及管理平面。",
+      "D": "正確。同樣來自「儲存體 Blob 資料參與者」——它包含讀取權限，所以看得到容器裡的 Blob 內容。",
+      "E": "錯誤。這是最需要小心的誘答，關鍵在「Blob」兩個字。\n「儲存體 Blob 資料參與者」只涵蓋 Blob 服務，不包含檔案服務；要存取檔案共用的內容得靠 Storage File Data 那一組角色，或是帳戶金鑰。\n而管理平面的「讀取者」只讓 User1 看得到帳戶本身的組態，無法瀏覽檔案共用裡的東西。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 103,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含名為 Workspace1 的 Azure Log Analytics 工作區。你需要檢視名為 Event 的資料表中的錯誤事件。你應該在 Workspace1 中執行哪一個查詢？",
@@ -149,6 +173,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 109,
+    "type": "single",
+    "question": "你有一個名為 adatum.com 的 Azure AD 租用戶，其中包含下列群組：\n・Group1｜隸屬於：無\n・Group2｜隸屬於：Group1\n・Group3｜隸屬於：Group2\n\nadatum.com 包含下列使用者：\n・User1｜隸屬於：Group1\n・User2｜隸屬於：Group2\n・User3｜隸屬於：Group3\n・User4｜隸屬於：無\n\n你把 Azure Active Directory Premium Plan 2 授權指派給 Group1 和 User4。\n哪些使用者會取得 Azure Active Directory Premium Plan 2 授權？",
+    "options": {
+      "A": "只有 User4",
+      "B": "只有 User1 和 User4",
+      "C": "只有 User1、User2 和 User4",
+      "D": "User1、User2、User3 和 User4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這個答案漏掉了 User1——他是 Group1 的直接成員，而授權就是指派給 Group1 的。",
+      "B": "正確。本題的考點是「群組型授權不會沿著巢狀群組往下傳」。\n・User4 是直接被指派授權的，當然有。\n・User1 是 Group1 的「直接成員」，透過群組取得授權。\n・User2 只是 Group2 的成員，而 Group2 雖然隸屬於 Group1，但授權不會從 Group1 繼承給巢狀的子群組，所以 User2 沒有。\n・User3 隔了兩層，同理沒有。",
+      "C": "錯誤。這是最容易選錯的答案——它假設授權會傳一層給 Group2。實際上群組型授權只看「直接成員」，一層都不傳。",
+      "D": "錯誤。這是假設授權會沿著整條巢狀鏈傳下去，但群組型授權完全不支援巢狀繼承。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 110,
     "type": "matching",
     "question": "你有一個名為 contoso.com 的 Azure AD 租用戶，以及兩個外部合作組織 fabrikam.com 與 litwareinc.com，其中「只有 fabrikam.com 已設定為連線的組織 (connected organization)」。\n你建立了一個存取套件，設定摘要如下：\n・名稱 package1、描述 Guest users、目錄名稱 General\n・資源角色：Group1（群組與團隊／安全性群組）｜角色：成員 (Member)\n・要求：可要求存取權的使用者 = 所有已設定的連線組織；需要核准 = 否；已啟用 = 是\n・生命週期：存取套件指派於「365 天後」到期；需要存取權審查 = 否\n\n你也設定了外部使用者的生命週期（當外部使用者失去最後一個存取套件指派時）：\n・封鎖外部使用者登入此目錄 = 是\n・移除外部使用者 = 是\n・從此目錄移除外部使用者前的天數 = 30\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -247,6 +290,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 114,
+    "type": "single",
+    "question": "你的內部部署網路有一個 VPN 閘道。\n你有一個 Azure 訂用帳戶，其中包含下列資源：\n・vgw1｜虛擬網路閘道｜連到內部部署網路的站對站 VPN 閘道\n・storage1｜儲存體帳戶｜標準效能層\n・Vnet1｜虛擬網路｜已啟用「強制通道 (forced tunneling)」\n・VM1｜虛擬機器｜連接到 Vnet1\n\n你需要確保「所有」從 VM1 到 storage1 的流量都走 Microsoft 骨幹網路。\n你應該設定什麼？",
+    "options": {
+      "A": "Azure 應用程式閘道 (Application Gateway)",
+      "B": "私人端點 (private endpoints)",
+      "C": "網路安全性群組 (NSG)",
+      "D": "Azure 虛擬 WAN"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。應用程式閘道是第 7 層的 HTTP(S) 負載平衡器，用來把外部流量導向後端網站，跟 VM 對儲存體帳戶的出向路徑無關。",
+      "B": "正確。Vnet1 啟用了「強制通道」，意思是子網路的預設路由 0.0.0.0/0 被改指向 VPN 閘道——包含前往 storage1「公用端點」的流量在內，所有對外流量都會先被推回內部部署網路，再從那裡繞出去。這條路徑完全不在 Microsoft 骨幹上，正是題目要避免的。\n私人端點會在 Vnet1 裡替 storage1 配一張網路介面與一個「私人 IP」，並自動加上一條 /32 路由。從此 VM1 解析 storage1 會得到那個私人 IP，流量直接走 Azure 骨幹到儲存體帳戶，不再受強制通道的預設路由影響。",
+      "C": "錯誤。NSG 是封包過濾器，只能決定「放行或拒絕」，不會改變流量走哪一條路徑。",
+      "D": "錯誤。虛擬 WAN 是用來把多個分公司與虛擬網路匯集起來的廣域網路服務，解決的是站點之間的連線，不是 VM 到 PaaS 服務的路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 115,
     "type": "matching",
     "question": "你有一個 Azure 訂用帳戶，其中包含一位名為 User1 的使用者與下列資源：\n・RG1｜資源群組\n・networkinterface1｜虛擬網路介面\n・NSG1｜網路安全性群組 (NSG)\n\nNSG1 已關聯到 networkinterface1。\nUser1 在 NSG1 上的角色指派如下：\n・參與者 (Contributor)｜範圍：這個資源\n・讀取者 (Reader)｜範圍：訂用帳戶（繼承）\n・儲存體帳戶參與者 (Storage Account Contributor)｜範圍：資源群組（繼承）\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -322,6 +384,25 @@
       "2": "是。User1 在 MG1 上是「使用者存取管理員」，這個角色的職責就是管理存取權（建立與移除角色指派），而且同樣會繼承到 MG1 之下的 Sub1 與 RG1。因此他可以在 RG1 上把擁有者角色指派給任何人。",
       "3": "否。建立資源群組需要 Microsoft.Resources/subscriptions/resourceGroups/write 這項權限，「虛擬機器參與者」與「使用者存取管理員」都不包含它（前者只管 VM，後者只管角色指派）。因此第一步「建立新資源群組」就會失敗。",
       "_full": "三項都在測「角色 × 範圍 × 繼承」：\n・在 MG1 指派的角色會繼承到 Sub1／Sub2 及其下所有資源群組與資源（第 1、2 項成立）。\n・讀取者足以檢視設定；使用者存取管理員足以指派角色。\n・但沒有任何一個角色帶「建立資源群組」的權限——這需要參與者或擁有者等級，所以第 3 項不成立。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 118,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・share1｜storage1 中的檔案共用\n・storage1｜儲存體帳戶\n・User1｜Azure AD 使用者\n\n你需要把「儲存體檔案資料 SMB 共用參與者 (Storage File Data SMB Share Contributor)」角色指派給 User1，範圍是 share1。\n你應該先做什麼？",
+    "options": {
+      "A": "為 storage1 的檔案共用啟用「以身分識別為基礎的資料存取」。",
+      "B": "修改 storage1 中檔案共用的安全性設定檔。",
+      "C": "在 Azure 入口網站中為 storage1 選取「預設為 Azure Active Directory 授權」。",
+      "D": "為 share1 設定存取控制 (IAM)。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure 檔案共用預設只認「儲存體帳戶金鑰」，不認 Azure AD 身分；\n在儲存體帳戶上啟用「以身分識別為基礎的存取」（AD DS、Microsoft Entra Domain Services 或 Microsoft Entra Kerberos 三選一）之後，SMB 的身分驗證才會走 Azure AD，那組 Storage File Data SMB Share 角色也才會真的生效。\n這是整條路的前置條件，所以是「先」做的那一步。",
+      "B": "錯誤。「安全性設定檔」不是 Azure 檔案共用的設定項目，這個選項本身就不存在。",
+      "C": "錯誤。「預設為 Azure AD 授權」是入口網站的瀏覽偏好——它只影響你在入口網站瀏覽資料時預設用哪種方式驗證，而且它是 Blob 的設定，不會替檔案共用開啟身分驗證。",
+      "D": "錯誤。這一題有 51% 對 48% 的社群分歧，值得說清楚：\n選項 D 講的就是「指派角色」這個動作本身，而題目問的是「在這之前要先做什麼」——拿動作本身當前置步驟是循環論證。\n而且真正的重點是：在啟用身分識別存取之前就把角色指派下去，角色是不會生效的，User1 一樣掛載不了 share1。所以正解仍是 A。"
     }
   },
   {
@@ -520,6 +601,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 128,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組\n・RG2｜資源群組\n・storage1｜RG1 中的儲存體帳戶\n・Workspace1｜RG2 中的 Azure Synapse Analytics 工作區\n\n你需要指派一個角色給 Workspace1，讓它可以對 storage1 「容器中的資料」執行讀取、寫入與刪除操作。你應該指派哪一個角色？",
+    "options": {
+      "A": "儲存體帳戶參與者 (Storage Account Contributor)",
+      "B": "參與者 (Contributor)",
+      "C": "儲存體 Blob 資料參與者 (Storage Blob Data Contributor)",
+      "D": "讀取者和資料存取 (Reader and Data Access)"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。儲存體帳戶參與者管的是「帳戶本身」——建立、刪除帳戶、讀取存取金鑰、改組態，它並不含資料平面的權限，無法直接對容器裡的 Blob 讀寫。",
+      "B": "錯誤。參與者是管理平面的萬用角色，同樣不含資料平面權限；而且它的權限遠大於需要，違反最低權限原則。",
+      "C": "正確。題目說的是「容器中的資料」，這就是資料平面。\n「儲存體 Blob 資料參與者」正是涵蓋 Blob 資料讀取、寫入與刪除的角色，剛好對應需求，範圍也不多不少。",
+      "D": "錯誤。「讀取者和資料存取」雖然摸得到資料，但顧名思義是「讀取」導向；它給的是帳戶金鑰的讀取權限加上唯讀，不符合需要「寫入與刪除」的需求。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 129,
     "type": "single",
     "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含位於資源群組 RG1 的虛擬網路 VNet1。一位名為 User1 的使用者在 Subscription1 上具備下列角色：\n• 讀者 (Reader)\n• 安全性管理員 (Security Admin)\n• 安全性讀取者 (Security Reader)\n你必須讓 User1 能夠把 VNet1 的「讀者」角色指派給其他使用者。你應該怎麼做？",
@@ -535,6 +635,27 @@
       "B": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。",
       "C": "正確。本題選項中沒有「使用者存取管理員」，而具備 roleAssignments/write 權限的另一個內建角色就是擁有者；指派在 VNet1 範圍即可讓 User1 把讀者角色指派給其他人。",
       "D": "錯誤。參與者與網路參與者都被明確排除了指派角色的權限；移除既有角色也不會憑空取得該權限。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 130,
+    "type": "single",
+    "question": "你有一個 Azure AD 租用戶，其中包含下列群組：\n・Group1｜類型：安全性 (Security)｜安全性已啟用：是\n・Group2｜類型：已啟用郵件的安全性 (Mail-enabled security)｜安全性已啟用：是\n・Group3｜類型：Microsoft 365｜安全性已啟用：是\n・Group4｜類型：Microsoft 365｜安全性已啟用：否\n\n你購買了 Azure Active Directory Premium P2 授權。\n你可以把授權指派給哪些群組？",
+    "options": {
+      "A": "只有 Group1",
+      "B": "只有 Group1 和 Group3",
+      "C": "只有 Group3 和 Group4",
+      "D": "只有 Group1、Group2 和 Group3",
+      "E": "Group1、Group2、Group3 和 Group4"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。這個答案把判斷標準誤認為「必須是純安全性群組」，但 Microsoft 365 群組與已啟用郵件的安全性群組只要安全性已啟用，一樣可以。",
+      "B": "錯誤。這是 47% 社群票落腳的地方，它漏掉了 Group2。「已啟用郵件的安全性」群組本質上仍然是安全性群組（securityEnabled 為 true），完全符合條件。",
+      "C": "錯誤。這個答案把標準誤認為「必須是 Microsoft 365 群組」，而且還把 securityEnabled 為否的 Group4 算了進去。",
+      "D": "正確。群組型授權的判斷標準只有一條：群組的 securityEnabled 屬性必須是 true，群組「類型」本身不重要。\n・Group1（安全性、已啟用）→ 可以\n・Group2（已啟用郵件的安全性、已啟用）→ 可以\n・Group3（Microsoft 365、已啟用）→ 可以\n・Group4（Microsoft 365、未啟用）→ 不行\n所以是前三個。",
+      "E": "錯誤。Group4 的安全性未啟用，不能作為授權指派的對象。"
     }
   },
   {
@@ -677,6 +798,82 @@
   },
   {
     "exam": "AZ-104",
+    "id": 136,
+    "type": "single",
+    "question": "你的內部部署網路有一個 VPN 閘道。\n你有一個 Azure 訂用帳戶，其中包含下列資源：\n・vgw1｜虛擬網路閘道｜連到內部部署網路的站對站 VPN 閘道\n・storage1｜儲存體帳戶｜標準效能層\n・Vnet1｜虛擬網路｜已啟用「強制通道 (forced tunneling)」\n・VM1｜虛擬機器｜連接到 Vnet1\n\n你需要確保「所有」從 VM1 到 storage1 的流量都走 Microsoft 骨幹網路。\n你應該設定什麼？",
+    "options": {
+      "A": "Azure AD 應用程式 Proxy",
+      "B": "私人端點 (private endpoints)",
+      "C": "網路安全性群組 (NSG)",
+      "D": "Azure Peering Service"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure AD 應用程式 Proxy 是把「內部部署的網站」發佈給外部使用者的服務，方向與用途都跟本題相反。",
+      "B": "正確。Vnet1 啟用了「強制通道」，意思是子網路的預設路由 0.0.0.0/0 被改指向 VPN 閘道——包含前往 storage1「公用端點」的流量在內，所有對外流量都會先被推回內部部署網路，再從那裡繞出去。這條路徑完全不在 Microsoft 骨幹上，正是題目要避免的。\n私人端點會在 Vnet1 裡替 storage1 配一個「私人 IP」，並自動加上一條指向它的 /32 路由；這條主機路由比強制通道的 0.0.0.0/0 更明確，所以會優先勝出，流量直接走 Azure 骨幹到 storage1。",
+      "C": "錯誤。NSG 只負責放行或拒絕，不會改變路由。",
+      "D": "錯誤。Azure Peering Service 是給電信業者／企業改善「從網際網路連到 Microsoft 服務」的公用連線品質用的，跟虛擬網路內部的路由無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 137,
+    "type": "single",
+    "question": "你的內部部署網路有一個 VPN 閘道。\n你有一個 Azure 訂用帳戶，其中包含下列資源：\n・vgw1｜虛擬網路閘道｜連到內部部署網路的站對站 VPN 閘道\n・storage1｜儲存體帳戶｜標準效能層\n・Vnet1｜虛擬網路｜已啟用「強制通道 (forced tunneling)」\n・VM1｜虛擬機器｜連接到 Vnet1\n\n你需要確保「所有」從 VM1 到 storage1 的流量都走 Microsoft 骨幹網路。\n你應該設定什麼？",
+    "options": {
+      "A": "Azure AD 應用程式 Proxy",
+      "B": "服務端點 (service endpoints)",
+      "C": "網路安全性群組 (NSG)",
+      "D": "Azure 防火牆"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Azure AD 應用程式 Proxy 是把內部部署的網站發佈到外部用的，跟本題無關。",
+      "B": "正確。Vnet1 啟用了「強制通道」，意思是子網路的預設路由 0.0.0.0/0 被改指向 VPN 閘道——包含前往 storage1「公用端點」的流量在內，所有對外流量都會先被推回內部部署網路，再從那裡繞出去。這條路徑完全不在 Microsoft 骨幹上，正是題目要避免的。\n在子網路上為 Microsoft.Storage 啟用服務端點之後，Azure 會在該子網路植入一條前往儲存體服務的「更明確路由」，它會蓋過強制通道的 0.0.0.0/0 預設路由，把流量拉回 Azure 骨幹；同時來源位址也會從公用 IP 換成子網路的私人 IP。\n（這題和它的姊妹題差別只在選項：私人端點與服務端點都能達成目的，看清單上給的是哪一個。）",
+      "C": "錯誤。NSG 是封包過濾器，不影響路由選擇。",
+      "D": "錯誤。Azure 防火牆是集中式的網路過濾與檢查服務；把流量導去防火牆並不會讓它走上骨幹網路直達儲存體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 138,
+    "type": "single",
+    "question": "你的內部部署網路有一個 VPN 閘道。\n你有一個 Azure 訂用帳戶，其中包含下列資源：\n・vgw1｜虛擬網路閘道｜連到內部部署網路的站對站 VPN 閘道\n・storage1｜儲存體帳戶｜標準效能層\n・Vnet1｜虛擬網路｜已啟用「強制通道 (forced tunneling)」\n・VM1｜虛擬機器｜連接到 Vnet1\n\n你需要確保「所有」從 VM1 到 storage1 的流量都走 Microsoft 骨幹網路。\n你應該設定什麼？",
+    "options": {
+      "A": "Azure 應用程式閘道 (Application Gateway)",
+      "B": "服務端點 (service endpoints)",
+      "C": "網路安全性群組 (NSG)",
+      "D": "Azure Peering Service"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。應用程式閘道是第 7 層 HTTP(S) 負載平衡器，處理的是進入應用程式的流量。",
+      "B": "正確。Vnet1 啟用了「強制通道」，意思是子網路的預設路由 0.0.0.0/0 被改指向 VPN 閘道——包含前往 storage1「公用端點」的流量在內，所有對外流量都會先被推回內部部署網路，再從那裡繞出去。這條路徑完全不在 Microsoft 骨幹上，正是題目要避免的。\n服務端點是逐子網路、逐服務啟用的：為 Microsoft.Storage 啟用之後，該子網路會多出一條前往儲存體服務的更明確路由，壓過強制通道的預設路由，流量因此改走 Azure 骨幹。",
+      "C": "錯誤。NSG 決定的是放行或拒絕，不會改變封包走哪條路。",
+      "D": "錯誤。Azure Peering Service 改善的是「從網際網路連進 Microsoft 服務」的公用路徑品質，不會影響虛擬網路內的路由。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 139,
+    "type": "single",
+    "question": "你有一個名為 Sub1 的 Azure 訂用帳戶，其中包含下列資源：\n・MG1｜管理群組\n・RG1｜資源群組\n・VM1｜虛擬機器\n\n你建立了一個名為 Admin1 的使用者。\n你可以把 Admin1 加為「共同管理員 (co-administrator)」的對象是什麼？",
+    "options": {
+      "A": "RG1",
+      "B": "MG1",
+      "C": "Sub1",
+      "D": "VM1"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。共同管理員無法指派在資源群組層級。資源群組上能給的是 Azure RBAC 角色（擁有者、參與者…），不是傳統管理員。",
+      "B": "錯誤。管理群組是比訂用帳戶更上層的治理容器，它只支援 Azure RBAC，不支援傳統的共同管理員。",
+      "C": "正確。「共同管理員」是傳統 (classic) 訂用帳戶管理員角色的一種，而傳統管理員角色「只存在於訂用帳戶層級」——這是它的定義。\n四個選項裡只有 Sub1 是訂用帳戶，所以只有它。\n（實務上這是為了相容舊版 ASM 部署才保留的；新的做法一律用 Azure RBAC 的「擁有者」角色取代。）",
+      "D": "錯誤。共同管理員不能指派給單一資源。要給某個人 VM1 的權限，用的是 RBAC 角色（例如虛擬機器參與者）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 140,
     "type": "matching",
     "question": "你有一個 Microsoft Entra 租用戶，其中包含下列群組：\n・Group1｜安全性群組｜已指派授權：是\n・Group2｜安全性群組｜已指派授權：否\n・Group3｜Microsoft 365 群組｜已指派授權：是\n・Group4｜Microsoft 365 群組｜已指派授權：否\n\n該租用戶包含下列使用者：\n・User1｜隸屬於：無｜有直接指派的授權：是\n・User2｜隸屬 Group1｜有直接指派的授權：否\n・User3｜隸屬 Group4｜有直接指派的授權：是\n・User4｜隸屬於：無｜有直接指派的授權：否\n\n你可以刪除哪些使用者與群組？（每個正確選擇得一分）",
@@ -708,6 +905,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 141,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VM1｜虛擬機器｜East US\n・storage1｜儲存體帳戶｜West US\n\n你需要確保 storage1 與 VM1 之間的資料傳輸「不會」經過網際網路。\n你應該為 storage1 設定什麼？",
+    "options": {
+      "A": "資料保護 (data protection)",
+      "B": "私人端點 (a private endpoint)",
+      "C": "「防火牆及虛擬網路」設定中的公用網路存取",
+      "D": "共用存取簽章 (SAS)"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。「資料保護」管的是虛刪除、版本設定、變更摘要這類資料保存功能，跟流量走哪條路完全無關。",
+      "B": "正確。預設情況下 VM1 是透過 storage1 的「公用端點」存取它的，流量會走出虛擬網路。\n在 VM1 所在的虛擬網路裡替 storage1 建立私人端點之後，storage1 會取得一個該虛擬網路內的私人 IP，VM1 直接用私人 IP 連過去，全程走 Microsoft 骨幹，不碰網際網路。\n注意兩者跨區域（East US 對 West US）也沒問題——私人端點本來就支援跨區域，這正是它比服務端點強的地方之一。",
+      "C": "錯誤。這個設定只能決定「要不要接受來自公用網路的連線」。把它關掉會讓 VM1 也連不上（因為 VM1 目前正是走公用端點），並不會自動生出一條私人路徑。",
+      "D": "錯誤。SAS 是授權機制，決定「誰可以存取、能做什麼、到什麼時候」，跟封包走哪條網路路徑無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 142,
     "type": "matching",
     "question": "你有一個 Microsoft Entra 租用戶，連結到下列訂用帳戶：\n・Sub1｜所屬管理群組 Tenant Root Group｜（無父管理群組）\n・Sub2｜所屬管理群組 MG1｜父管理群組 Tenant Root Group\n・Sub3｜所屬管理群組 MG2｜父管理群組 Tenant Root Group\n\n資源群組如下：\n・RG1｜位於 Sub1｜內含儲存體帳戶 storage1\n・RG2｜位於 Sub2｜內含 Web 應用程式 App1\n・RG3｜位於 Sub3｜內含虛擬機器 VM1\n\n你指派給使用者的角色如下：\n・User1｜參與者 (Contributor)｜範圍 MG2\n・User2｜儲存體帳戶參與者 (Storage Account Contributor)｜範圍 storage1\n・User3｜使用者存取管理員 (User Access Administrator)｜範圍 Tenant Root Group\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -734,6 +950,25 @@
       "2": "否。User2 的範圍是「storage1 這個資源」，不是 RG1。在資源範圍上取得的權限不會往上擴及所屬資源群組，因此他只能管理 storage1 本身，不能在 RG1 裡建立新的儲存體帳戶。",
       "3": "是。User3 在 Tenant Root Group 上是「使用者存取管理員」，這是整個階層的最上層，會繼承到所有管理群組、訂用帳戶、資源群組與資源。該角色的職責正是建立與移除角色指派，所以他可以在 RG3 上把擁有者指派給 User1。",
       "_full": "三項都是同一個判斷框架：權限 =「角色能做什麼」×「指派在哪個範圍」，而範圍只會「向下」繼承，絕不向上擴張。\n・MG2 的參與者 → 涵蓋 Sub3/RG3/VM1（可管資源，不可指派權限）。\n・storage1 這個資源上的角色 → 只涵蓋 storage1，管不到 RG1。\n・Tenant Root Group 的使用者存取管理員 → 涵蓋整個租用戶的所有範圍。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 143,
+    "type": "single",
+    "question": "你的內部部署網路有一個 VPN 閘道。\n你有一個 Azure 訂用帳戶，其中包含下列資源：\n・vgw1｜虛擬網路閘道｜連到內部部署網路的站對站 VPN 閘道\n・storage1｜儲存體帳戶｜標準效能層\n・Vnet1｜虛擬網路｜已啟用「強制通道 (forced tunneling)」\n・VM1｜虛擬機器｜連接到 Vnet1\n\n你需要確保「所有」從 VM1 到 storage1 的流量都走 Microsoft 骨幹網路。\n你應該設定什麼？",
+    "options": {
+      "A": "網路安全性群組 (NSG)",
+      "B": "私人端點 (private endpoints)",
+      "C": "Microsoft Entra 應用程式 Proxy",
+      "D": "Azure 虛擬 WAN"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。NSG 只做放行／拒絕的封包過濾，不會改變路由。",
+      "B": "正確。Vnet1 啟用了「強制通道」，意思是子網路的預設路由 0.0.0.0/0 被改指向 VPN 閘道——包含前往 storage1「公用端點」的流量在內，所有對外流量都會先被推回內部部署網路，再從那裡繞出去。這條路徑完全不在 Microsoft 骨幹上，正是題目要避免的。\n私人端點把 storage1 拉進 Vnet1 內部：它會取得一個虛擬網路裡的私人 IP，並自動產生一條 /32 主機路由。這條路由比強制通道的 0.0.0.0/0 明確得多，因此優先生效，VM1 到 storage1 的流量直接走 Azure 骨幹。",
+      "C": "錯誤。Microsoft Entra 應用程式 Proxy 是把內部部署網站安全發佈給外部使用者的服務，與本題方向相反。",
+      "D": "錯誤。虛擬 WAN 解決的是多個站點與虛擬網路之間的廣域連線，不會改變 VM 前往 PaaS 服務的路徑。"
     }
   },
   {
