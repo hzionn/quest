@@ -1809,6 +1809,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 281,
+    "type": "multiple",
+    "question": "You have an app named App1.\nApp1 runs on an Azure web app named webapp1, which has the following deployment slots:\n・webapp1-prod｜Function: Production\n・webapp1-test｜Function: Staging\n\nThe developers at your company upload an update of App1 to a Git repository named Git1.\nYou need to ensure that the App1 update is tested before the update is made available to users.\nWhich two actions should you perform? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Swap the slots",
+      "B": "Deploy the App1 update to webapp1-prod, and then test the update",
+      "C": "Stop webapp1-prod",
+      "D": "Deploy the App1 update to webapp1-test, and then test the update",
+      "E": "Stop webapp1-test"
+    },
+    "answer": [
+      "A",
+      "D"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。測試通過之後執行「交換」，預備位置的內容就會換到生產位置。\n交換的關鍵優點是它不是重新部署：兩個位置的路由對調，而預備位置早已預熱完成，所以使用者不會遇到冷啟動或停機。\n萬一交換後才發現問題，再交換一次就能立刻換回去。",
+      "B": "Incorrect. 錯誤。直接部署到生產位置，等於讓使用者先碰到未測試的版本——這正是題目要避免的。",
+      "C": "Incorrect. 錯誤。停掉生產位置只會讓服務中斷，對測試沒有任何幫助。",
+      "D": "Correct. 正確。先把更新部署到「預備」位置 webapp1-test，在那裡測試。\n預備位置有自己的主機名稱，可以完整驗證，而使用者仍然被導向生產位置。",
+      "E": "Incorrect. 錯誤。停掉預備位置就沒地方測試了，與目標背道而馳。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 282,
     "type": "multiple",
     "question": "You have an Azure subscription named Subscription1 that has the following providers registered:\n✑ Authorization\n✑ Automation\n✑ Resources\n✑ Compute\n✑ KeyVault\n✑ Network\n✑ Storage\n✑ Billing\n✑ Web Subscription1 contains an Azure virtual machine named VM1 that has the following configurations:\n✑ Private IP address: 10.0.0.4 (dynamic)\n✑ Network security group (NSG): NSG1\n✑ Public IP address: None\n✑ Availability set: AVSet\n✑ Subnet: 10.0.0.0/24\n✑ Managed disks: No\n✑ Location: East US You need to record all the successful and failed connection attempts to VM1.\n\nWhich three actions should you perform? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
@@ -1855,6 +1879,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 284,
+    "type": "single",
+    "question": "You plan to create the following Azure web apps:\n・WebApp1｜Runtime stack: .NET Core 3.1 (LTS)\n・WebApp2｜Runtime stack: ASP.NET V4.8\n・WebApp3｜Runtime stack: PHP 7.3\n・WebApp4｜Runtime stack: Ruby 2.6\n\nWhat is the minimum number of App Service plans you should create for the web apps?",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "3",
+      "D": "4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。一個方案只能是一種作業系統，而這四個堆疊裡同時存在「只能 Windows」與「只能 Linux」的項目，一個方案裝不下。",
+      "B": "Correct. 正確。App Service 方案有一個關鍵限制：「一個方案只能對應一種作業系統」，同一個方案裡不能混放 Windows 與 Linux 的 Web 應用程式。\n把四個執行階段各自能跑在哪一種 OS 標出來：\n・.NET Core 3.1 → Windows 或 Linux 都行\n・ASP.NET V4.8 →「只能」Windows（傳統 .NET Framework）\n・PHP 7.3 → Windows 或 Linux 都行\n・Ruby 2.6 →「只能」Linux\n所以至少要一個 Windows 方案（放 ASP.NET V4.8）與一個 Linux 方案（放 Ruby 2.6），另外兩個彈性的可以塞進任一邊 → 2 個。",
+      "C": "Incorrect. 錯誤。多算了。.NET Core 與 PHP 兩者都能跟其他應用程式共用方案，不需要獨立。",
+      "D": "Incorrect. 錯誤。這是「一個應用程式一個方案」的想法，但同一 OS 的多個應用程式完全可以共用一個方案。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 285,
     "type": "matching",
     "question": "You have a pay-as-you-go Azure subscription that contains the virtual machines VM1 (resource group RG1, daily cost 20 euros) and VM2 (RG2, daily cost 30 euros).\nYou create a budget:\n・name Budget1;\n・scope RG1 (resource group);\n・filters none;\n・amount 1,000.00 EUR;\n・budget period resets billing month;\n・start date 6/20/2019;\n・end date 6/19/2021;\n・alert conditions 50% (EUR 500) with action group AG1 (1 Email), 70% (EUR 700) with AG2 (1 SMS), 100% (EUR 1,000) with AG3 (1 Azure app);\n・alert recipients (email) User1@Contoso.com.\nThe AG1 action group contains one user only.\n\nUse the drop-down menus to select the answer choice that completes each statement based on the information presented in the graphic.",
@@ -1896,6 +1939,42 @@
     "explanations": {
       "A": "Incorrect. 錯誤。「以程式設計方式部署」是用來檢視與接受 Marketplace 項目的法律條款，與資源建立時間無關。",
       "B": "Correct. 正確。資源的建立時間要看資源群組的「部署」歷程；此選項的位置完全不提供這項資訊。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 287,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・RG1｜Resource group｜West US\n・RG2｜Resource group｜East Asia\n・storage1｜Storage account｜West US\n・storage2｜Storage account｜East Asia\n・VM1｜Virtual machine｜West US\n・VNET1｜Virtual network｜West US\n・VNET2｜Virtual network｜East Asia\n\nVM1 connects to VNET1. You need to connect VM1 to VNET2.\nSolution: You create a new network interface, and then you add the network interface to VM1.\nDoes this meet the goal?",
+    "options": {
+      "A": "Yes",
+      "B": "No"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。新網路介面只能建在 VM1 所在的 West US，連不到 East Asia 的 VNET2。",
+      "B": "Correct. 正確。VM1 在 West US，VNET2 在 East Asia。\n網路介面必須與它要連的虛擬網路同區域，也必須與它要掛上去的 VM 同區域——兩個條件在這裡互相矛盾，所以無論怎麼加網路介面都做不到。\n唯一可行的解法是在 East Asia 重建這台 VM。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 288,
+    "type": "single",
+    "question": "You have an Azure Active Directory (Azure AD) tenant named adatum.com that contains the following users:\n・User1｜Role: None\n・User2｜Role: Global administrator\n・User3｜Role: Cloud device administrator\n・User4｜Role: Intune administrator\n\nAdatum.com has the following configurations:\n✑ Users may join devices to Azure AD is set to User1.\n✑ Additional local administrators on Azure AD joined devices is set to None.\n\nYou deploy Windows 10 to a computer named Computer1. User1 joins Computer1 to adatum.com.\nYou need to identify the local Administrator group membership on Computer1. Which users are members of the local Administrators group?",
+    "options": {
+      "A": "User1 only",
+      "B": "User2 only",
+      "C": "User1 and User2 only",
+      "D": "User1, User2, and User3 only",
+      "E": "User1, User2, User3, and User4"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。漏掉了 User2——全域管理員一律是所有已加入裝置的本機系統管理員。",
+      "B": "Incorrect. 錯誤。漏掉了 User1——把裝置加入的人會自動成為那台裝置的本機系統管理員。",
+      "C": "Correct. 正確。Azure AD 已加入的裝置，本機 Administrators 群組固定由三部分組成：\n① Azure AD 全域管理員 → User2 ✓\n② 「Azure AD 已加入裝置本機系統管理員」角色的成員 → 本題沒有人擔任\n③ 執行加入動作的那位使用者 → User1 ✓\n而「其他本機系統管理員」設為「無」，代表沒有額外加人。\n所以只有 User1 與 User2。",
+      "D": "Incorrect. 錯誤。「雲端裝置管理員」聽起來很像，但它管的是 Azure AD 裡的裝置物件（啟用／停用、刪除裝置），並「不會」讓人變成裝置上的本機系統管理員。\n會的是名字很接近的另一個角色「Azure AD 已加入裝置本機系統管理員」。",
+      "E": "Incorrect. 錯誤。Intune 管理員管的是 Intune 主控台裡的裝置管理設定，同樣與本機系統管理員身分無關。"
     }
   },
   {
@@ -1988,6 +2067,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 292,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains the following resources:\n・RG1｜Resource group｜West Europe\n・RG2｜Resource group｜North Europe\n・Vault1｜Recovery Services vault｜West Europe｜in RG1\n\nYou create the following virtual machines in Subscription1:\n・VM1｜RG1｜West Europe｜Windows Server 2016\n・VM2｜RG1｜North Europe｜Windows Server 2016\n・VM3｜RG2｜West Europe｜Windows Server 2016\n・VMA｜RG1｜West Europe｜Ubuntu Server 18.04\n・VMB｜RG1｜North Europe｜Ubuntu Server 18.04\n・VMC｜RG2｜West Europe｜Ubuntu Server 18.04\n\nYou plan to use Vault1 for the backup of as many virtual machines as possible.\nWhich virtual machines can be backed up to Vault1?",
+    "options": {
+      "A": "VM1 only",
+      "B": "VM3 and VMC only",
+      "C": "VM1, VM2, VM3, VMA, VMB, and VMC",
+      "D": "VM1, VM3, VMA, and VMC only",
+      "E": "VM1 and VM3 only"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。太保守了。同區域的 VM3、VMA、VMC 都可以備份到 Vault1。",
+      "B": "Incorrect. 錯誤。漏掉了同樣在 West Europe 的 VM1 與 VMA。",
+      "C": "Incorrect. 錯誤。VM2 與 VMB 在 North Europe，跨區域備份不成立。",
+      "D": "Correct. 正確。判斷只有一條規則：**保存庫只能備份與它「同區域」的虛擬機器**。\nVault1 在 West Europe，所以：\n・VM1（West Europe）✓　・VM3（West Europe）✓\n・VMA（West Europe）✓　・VMC（West Europe）✓\n・VM2、VMB（North Europe）✗\n另外兩件事刻意被放進表格當誘答，但都「不影響」判斷：\n① 資源群組不必相同——VM3、VMC 在 RG2 也沒關係。\n② 作業系統不影響——Windows 與 Linux 都能備份到同一個保存庫。",
+      "E": "Incorrect. 錯誤。這個答案把 Linux 的 VMA、VMC 排除了，但 Azure 備份對 Windows 與 Linux 一視同仁。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 293,
     "type": "multiple",
     "question": "You have an Azure Kubernetes Service (AKS) cluster named AKS1. You need to configure cluster autoscaler for AKS1. Which two tools should you use? Each correct answer presents a complete solution. NOTE: Each correct selection is worth one point.",
@@ -2027,6 +2127,25 @@
       "B": "Incorrect. 錯誤。App Service 方案屬於 Web 應用程式的裝載模型，與 AKS 部署無關。",
       "C": "Incorrect. 錯誤。az acr build 是在登錄「雲端側」從原始碼與 Dockerfile 建置映像；本題映像已在本機建好，只需推送即可。",
       "D": "Incorrect. 錯誤。Cluster1 已經存在，不需要再建立叢集。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 295,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・RG1｜Resource group｜Central US\n・RG2｜Resource group｜West US\n・VMSS1｜Virtual machine scale set｜in RG2｜West US\n・Proximity1｜Proximity placement group｜in RG1｜Central US\n・Proximity2｜Proximity placement group｜in RG2｜West US\n・Proximity3｜Proximity placement group｜in RG1｜Central US\n\nYou need to configure a proximity placement group for VMSS1.\nWhich proximity placement groups should you use?",
+    "options": {
+      "A": "Proximity2 only",
+      "B": "Proximity1, Proximity2, and Proximity3",
+      "C": "Proximity1 only",
+      "D": "Proximity1 and Proximity3 only"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。鄰近放置群組的用途是把資源「擠在同一個資料中心裡」以降低延遲——它天生就是區域性的概念，因此必須與它要收納的資源位於「同一個區域」。\nVMSS1 在 West US，三個鄰近放置群組中只有 Proximity2 也在 West US。\n（資源群組相同只是巧合，判斷依據始終是區域。）",
+      "B": "Incorrect. 錯誤。Proximity1 與 Proximity3 都在 Central US，跨區域的鄰近放置群組沒有意義，Azure 也不允許。",
+      "C": "Incorrect. 錯誤。Proximity1 在 Central US，與 West US 的 VMSS1 不同區域。",
+      "D": "Incorrect. 錯誤。這兩個都在 Central US，剛好都是不能用的那兩個。"
     }
   },
   {
