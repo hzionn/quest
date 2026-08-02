@@ -1158,6 +1158,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 352,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶。你建立了下列名為 Template.json 的 Azure Resource Manager (ARM) 範本：\n\n　{\n　　\"$schema\": \".../2019-04-01/deploymentTemplate.json#\",\n　　\"contentVersion\": \"1.0.0.0\",\n　　\"parameters\": {}, \"variables\": {},\n　　\"resources\": [\n　　　{ \"type\": \"Microsoft.Resources/resourceGroups\",\n　　　　\"apiVersion\": \"2022-12-01\",\n　　　　\"location\": \"eastus\",\n　　　　\"name\": \"Marketing\" }\n　　],\n　　\"outputs\": {}\n　}\n\n你需要部署 Template.json。你應該從 Azure Cloud Shell 執行哪一個 PowerShell Cmdlet？",
+    "options": {
+      "A": "New-AzSubscriptionDeployment",
+      "B": "New-AzManagementGroupDeployment",
+      "C": "New-AzResourceGroupDeployment",
+      "D": "New-AzTenantDeployment"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。判斷依據永遠是「範本裡的資源住在哪一層」。\n這份範本唯一的資源是 Microsoft.Resources/resourceGroups——資源群組本身是「訂用帳戶層級」的資源，所以必須用訂用帳戶層級的部署 Cmdlet：New-AzSubscriptionDeployment\n（舊名 New-AzDeployment，兩者等價）。\n另外注意 $schema 用的是 deploymentTemplate.json 的 2019-04-01 版——支援訂用帳戶層級部署的正是這個結構描述。",
+      "B": "錯誤。管理群組層級的部署用於跨訂用帳戶的治理設定（原則、RBAC 指派等），比本題高一階。",
+      "C": "錯誤。資源群組層級的部署必須指定一個「已經存在」的資源群組，而這份範本要做的正是「建立」資源群組——資源群組不是資源群組裡的資源。",
+      "D": "錯誤。租用戶層級部署的範圍更大，用於整個 Entra 租用戶的設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 353,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含名為 RG1 的資源群組。你打算建立一個名為 storage1 的儲存體帳戶，並有一個名為 File1 的 Bicep 檔案。你必須修改 File1，讓它可以用來自動化把 storage1 部署到 RG1。你應該修改哪一個屬性？",
@@ -1207,6 +1226,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 355,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組｜Central US\n・RG2｜資源群組｜West US\n・VMSS1｜虛擬機器擴展集｜位於 RG2｜West US\n・Proximity1｜鄰近放置群組｜位於 RG1｜West US\n・Proximity2｜鄰近放置群組｜位於 RG2｜Central US\n・Proximity3｜鄰近放置群組｜位於 RG1｜Central US\n\n你需要為 VMSS1 設定鄰近放置群組。你應該使用哪些鄰近放置群組？",
+    "options": {
+      "A": "只有 Proximity2",
+      "B": "Proximity1、Proximity2 和 Proximity3",
+      "C": "只有 Proximity1",
+      "D": "只有 Proximity1 和 Proximity3"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Proximity2 雖然和 VMSS1 同在 RG2，但它位於 Central US——資源群組相同不代表區域相同，這正是本題設下的陷阱。",
+      "B": "錯誤。Proximity2 與 Proximity3 都在 Central US，跨區域不成立。",
+      "C": "正確。鄰近放置群組的目的是把資源擠進同一個資料中心以壓低延遲，因此它必須與要收納的資源「位於同一個區域」。\nVMSS1 在 West US，三個群組中只有 Proximity1 也在 West US——即使它被放在另一個資源群組 RG1（而 RG1 的位置標示是 Central US）也沒關係，資源群組的位置只是中繼資料存放處。",
+      "D": "錯誤。Proximity3 在 Central US，與 VMSS1 不同區域。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 356,
     "type": "matching",
     "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNet1｜子網路 Subnet1｜關聯的網路安全性群組 NSG1｜與 VNet2 對等互連\n・VNet2｜子網路 Subnet2｜關聯的網路安全性群組 NSG2｜與 VNet1 對等互連\n\n訂用帳戶中的虛擬機器：\n・VM1｜連線到 Subnet1　・VM2｜連線到 Subnet2\n\n訂用帳戶中的 Azure App Service Web 應用程式：\n・WebApp1｜使用 Premium 定價層，並與 VNet1 進行虛擬網路整合\n・WebApp2｜使用 Isolated 定價層，並部署到 Subnet2\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -1233,6 +1271,27 @@
       "2": "否。虛擬網路整合只影響「輸出」方向——應用程式仍然是透過 App Service 的公用前端接收請求，並不存在於子網路中，因此子網路上的 NSG1 管不到進入 WebApp1 的輸入流量。要限制輸入必須用應用程式本身的「存取限制」規則，或改用私人端點／App Service 環境。",
       "3": "是。【答案校正】官方標示為「否」，但這與第一項的情境幾乎對稱，判準卻相反。\nWebApp2 是 Isolated 層、直接部署在 VNet2 的 Subnet2 中（App Service 環境），它本身就是虛擬網路裡的一員；而 VNet2 與 VNet1 是「直接」對等互連（不是需要傳遞的多層對等），因此它連得到 Subnet1 的 VM1。既然第一項（僅透過虛擬網路整合接入 VNet1）都判定能連到對等網路的 VM2，位置更「深」的 App Service 環境沒有理由連不到，故判定為「是」。",
       "_full": "本題的核心是「虛擬網路整合是單向的（只管輸出）」：應用程式可以主動連進虛擬網路（含對等互連的網路），但外界進入應用程式的流量不經過子網路，所以 NSG 管不到——要控制輸入得用存取限制、私人端點或 App Service 環境。\n【答案校正】第三項官方判「否」，但它與第一項情境對稱（都是透過直接對等互連的虛擬網路通訊），已改判為「是」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 357,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中包含下列資源：\n・RG1｜資源群組｜West Europe\n・RG2｜資源群組｜North Europe\n・Vault1｜Recovery Services 保存庫｜West Europe｜位於 RG1\n\n你在 Subscription1 中建立了下列虛擬機器：\n・VM1｜RG1｜West Europe｜Windows Server 2022\n・VM2｜RG1｜North Europe｜Windows Server 2022\n・VM3｜RG2｜West Europe｜Windows Server 2022\n・VMA｜RG1｜West Europe｜Ubuntu Server 20.04\n・VMB｜RG1｜North Europe｜Ubuntu Server 20.04\n・VMC｜RG2｜West Europe｜Ubuntu Server 20.04\n\n你打算用 Vault1 備份「盡可能多」的虛擬機器。哪些虛擬機器可以備份到 Vault1？",
+    "options": {
+      "A": "只有 VM1",
+      "B": "只有 VM3 和 VMC",
+      "C": "VM1、VM2、VM3、VMA、VMB 和 VMC",
+      "D": "只有 VM1、VM3、VMA 和 VMC",
+      "E": "只有 VM1 和 VM3"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。同在 West Europe 的 VM3、VMA、VMC 也都可以備份到 Vault1。",
+      "B": "錯誤。漏掉了同樣位於 West Europe 的 VM1 與 VMA。",
+      "C": "錯誤。VM2 與 VMB 在 North Europe，保存庫無法跨區域備份。",
+      "D": "正確。唯一的判斷規則是「保存庫只能備份與它同區域的虛擬機器」。\nVault1 在 West Europe，所以 VM1、VM3、VMA、VMC（都在 West Europe）可以，VM2、VMB（North Europe）不行。\n表格裡刻意放了兩個不影響判斷的欄位當誘答：\n① 資源群組——VM3 與 VMC 在 RG2 完全沒問題，不必與保存庫同組。\n② 作業系統——Windows 與 Linux 一視同仁。",
+      "E": "錯誤。這個答案把 Linux 的 VMA、VMC 排除了，但 Azure 備份不分作業系統。"
     }
   },
   {
@@ -1316,6 +1375,25 @@
       "B": "錯誤。部署中心是 App Service 的 CI/CD 功能，與虛擬機器擴展集無關。",
       "C": "錯誤。應用程式代理是把內部部署 Web 應用發佈到外部的反向代理，不安裝軟體。",
       "D": "錯誤。此 Cmdlet 只負責把 DSC 組態封裝上傳到儲存體，本身不會把組態套用到執行個體。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 362,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 Group1 的容器群組。\nGroup1 包含兩個 Azure 容器執行個體：\n・container1｜資源要求 (request)：2 CPU｜資源限制 (limit)：2 CPU\n・container2｜資源要求 (request)：3 CPU｜資源限制 (limit)：4 CPU\n\n你需要確保 container2 可以使用 CPU 資源，而「不會對 container1 造成負面影響」。\n你應該怎麼做？",
+    "options": {
+      "A": "把 container1 的資源限制提高到 3 個 CPU。",
+      "B": "把 container2 的資源限制提高到 6 個 CPU。",
+      "C": "移除兩個容器的資源限制。",
+      "D": "把 container2 的資源限制降低到 2 個 CPU。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。提高 container1 的限制不會讓 container2 拿到更多資源，方向錯了。",
+      "B": "錯誤。容器群組的資源上限受限於「所有容器要求的總和」，把單一容器的限制拉到 6 個 CPU 超過群組實際能配置的量，設定不會成立。",
+      "C": "正確。要先分清楚「要求 (request)」與「限制 (limit)」：\n・要求＝保證分配到的量，容器群組會依「所有要求的總和」去配置主機資源。\n・限制＝這個容器最多能用到多少，是上限。\ncontainer1 的要求與限制都是 2 CPU，代表它被鎖死在 2 個 CPU，但那 2 個 CPU 是「保證」給它的，任何時候都拿得到。\n把兩個容器的「限制」都移除之後，container2 就能在群組還有閒置 CPU 時盡量往上用；而 container1 的「要求」仍然保障它的 2 個 CPU 不會被搶走——這正是「不影響 container1」的意思。",
+      "D": "錯誤。把 container2 的限制降到 2 個 CPU 反而讓它「更少」資源可用，而且比它自己的要求（3 CPU）還低，設定本身就不合法。"
     }
   },
   {
@@ -1436,6 +1514,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 369,
+    "type": "single",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\n訂用帳戶包含一個名為 Vault1 的 Azure 金鑰保存庫。\nVault1 中的憑證：\n・Cert1｜內容類型 PKCS#12｜金鑰類型 RSA｜金鑰大小 2048\n・Cert2｜內容類型 PKCS#12｜金鑰類型 RSA｜金鑰大小 4096\n・Cert3｜內容類型 PEM｜金鑰類型 RSA｜金鑰大小 2048\n・Cert4｜內容類型 PEM｜金鑰類型 RSA｜金鑰大小 4096\n\nVault1 中的金鑰：\n・Key1｜類型 RSA｜說明：金鑰大小為 4096\n・Key2｜類型 EC（橢圓曲線）｜說明：橢圓曲線名稱設為 P-256\n\n訂用帳戶另有一個名為 WebApp1 的 Azure App Service Web 應用程式，以及虛擬機器 VM1～VM5。\n\n技術需求：\n・為 WebApp1 使用 TLS。\n・盡可能使用 Azure 磁碟加密 (ADE) 與金鑰加密金鑰 (KEK) 來加密虛擬機器。\n\n你需要設定 WebApp1 以符合技術需求。\n你可以使用 Vault1 中的哪一個憑證？",
+    "options": {
+      "A": "只有 Cert1",
+      "B": "只有 Cert1 或 Cert2",
+      "C": "只有 Cert1 或 Cert3",
+      "D": "只有 Cert3 或 Cert4",
+      "E": "Cert1、Cert2、Cert3 或 Cert4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。Cert2 同樣是 PKCS#12，一樣可以用；金鑰大小 4096 沒有問題。",
+      "B": "正確。App Service 要繫結 TLS/SSL 憑證時，憑證必須是「PKCS#12」格式（也就是 .pfx，含私密金鑰）。\n從金鑰保存庫匯入時，Azure 只讀得懂內容類型為 PKCS#12 的憑證秘密。\n・Cert1（PKCS#12、RSA 2048）✓\n・Cert2（PKCS#12、RSA 4096）✓\n・Cert3、Cert4 都是 PEM 格式 ✗\n金鑰大小 2048 與 4096 都在支援範圍內，不是判斷依據。",
+      "C": "錯誤。Cert3 是 PEM 格式，App Service 的 TLS 繫結不接受。",
+      "D": "錯誤。這兩個都是 PEM，剛好是不能用的那兩個。",
+      "E": "錯誤。PEM 格式的兩張憑證不能用於 App Service 的 TLS 繫結。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 370,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 VM1 的 Azure 虛擬機器，它是以名為 ARM1.json 的自訂 Azure Resource Manager 範本部署的。你收到通知說 VM1 將受到維護影響，必須「立即」把 VM1 移到另一台主機。\n解法：你在資源群組刀鋒中把 VM1 移到另一個訂用帳戶。\n此解法是否達成目標？",
@@ -1477,6 +1576,25 @@
     "explanations": {
       "A": "錯誤。一次性更新是對客體作業系統安裝修補程式的作業，與 VM 執行在哪台實體主機無關。",
       "B": "正確。安裝 OS 更新不會遷移 VM；要更換主機必須使用「重新部署」。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 373,
+    "type": "single",
+    "question": "【案例研究：ADatum Corporation（僅列出本題判斷所需的資訊）】\n訂用帳戶包含一個名為 Vault1 的 Azure 金鑰保存庫。\nVault1 中的憑證：\n・Cert1｜內容類型 PKCS#12｜金鑰類型 RSA｜金鑰大小 2048\n・Cert2｜內容類型 PKCS#12｜金鑰類型 RSA｜金鑰大小 4096\n・Cert3｜內容類型 PEM｜金鑰類型 RSA｜金鑰大小 2048\n・Cert4｜內容類型 PEM｜金鑰類型 RSA｜金鑰大小 4096\n\nVault1 中的金鑰：\n・Key1｜類型 RSA｜說明：金鑰大小為 4096\n・Key2｜類型 EC（橢圓曲線）｜說明：橢圓曲線名稱設為 P-256\n\n訂用帳戶另有一個名為 WebApp1 的 Azure App Service Web 應用程式，以及虛擬機器 VM1～VM5。\n\n技術需求：\n・為 WebApp1 使用 TLS。\n・盡可能使用 Azure 磁碟加密 (ADE) 與金鑰加密金鑰 (KEK) 來加密虛擬機器。\n\n你需要滿足關於「金鑰加密金鑰 (KEK)」的技術需求。\n你應該使用哪一個 PowerShell Cmdlet 與哪一把金鑰？",
+    "options": {
+      "A": "Set-AzVMDiskEncryptionExtension 與 Key2。",
+      "B": "Set-AzDiskEncryptionKey 與 Key2。",
+      "C": "Set-AzDiskDiskEncryptionKey 與 Key1。",
+      "D": "Set-AzVMDiskEncryptionExtension 與 Key1。"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。Cmdlet 對了，但 Key2 是 EC（橢圓曲線）金鑰——Azure 磁碟加密的 KEK「只支援 RSA」，不支援 EC。",
+      "B": "錯誤。沒有 Set-AzDiskEncryptionKey 這個 Cmdlet，而且金鑰也選錯。",
+      "C": "錯誤。Set-AzDiskDiskEncryptionKey 不是真實存在的 Cmdlet（名稱有重複的 Disk）。",
+      "D": "正確。兩個部分各自判斷：\n① Cmdlet：替 Azure VM 啟用磁碟加密的是 Set-AzVMDiskEncryptionExtension，它會安裝 ADE 延伸模組並指定要用哪個金鑰保存庫與 KEK。\n② 金鑰：KEK 用來包裝（加密）BitLocker／DM-Crypt 的加密金鑰，而 Azure 磁碟加密的 KEK 必須是「RSA」金鑰。\nKey1 是 RSA 4096 ✓；Key2 是 EC P-256 ✗。"
     }
   },
   {
@@ -1557,6 +1675,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 377,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・LB1｜負載平衡器\n・VM1｜虛擬機器\n・VM2｜虛擬機器\n\nLB1 的設定如下：\n・bepool1｜後端集區｜VM1、VM2\n・LoadBalancerFrontEnd｜前端 IP 組態｜公用 IP 位址\n・hprobe1｜健康情況探查｜通訊協定 TCP；連接埠 80；間隔 5 秒；狀況不良閾值 2\n・rule1｜負載平衡規則｜IP 版本 IPv4；前端 IP 位址 LoadBalancerFrontEnd；連接埠 80；後端連接埠 80；後端集區 bepool1；健康情況探查 hprobe1\n\n你打算建立新的輸入 NAT 規則，需求如下：\n✑ 讓網際網路可以用連接埠 3389 遠端桌面連線到 VM1。\n✑ 讓網際網路可以用連接埠 3389 遠端桌面連線到 VM2。\n\n在建立這些新的輸入 NAT 規則「之前」，你需要先在 LB1 上建立什麼？",
+    "options": {
+      "A": "一個前端 IP 位址",
+      "B": "一條負載平衡規則",
+      "C": "一個健康情況探查",
+      "D": "一個後端集區"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。關鍵在需求寫了「兩台 VM 都要用『同一個』連接埠 3389」。\n輸入 NAT 規則會佔用「前端 IP + 前端連接埠」這個組合，同一個前端 IP 上的 3389 只能對應到一台後端 VM——不能同時給 VM1 和 VM2。\n所以要先在 LB1 上再加一個前端 IP 位址，讓兩條 NAT 規則各自掛在不同的前端 IP 上，兩邊才都能用 3389。",
+      "B": "錯誤。負載平衡規則與輸入 NAT 規則是兩種不同的東西：前者把流量分散到整個後端集區，後者把流量導到「特定一台」機器。而且 LB1 已經有 rule1 了。",
+      "C": "錯誤。輸入 NAT 規則不需要健康情況探查（它不做負載分散）；而且 LB1 已經有 hprobe1。",
+      "D": "錯誤。LB1 已經有 bepool1，且裡面已包含 VM1 與 VM2。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 378,
     "type": "matching",
     "question": "你有執行 Windows Server 2019 的 Azure 虛擬機器，設定如下：\n・VM1｜私人 IP 10.1.0.4｜公用 IP 52.186.85.63｜虛擬網路 VNET1｜Windows Server 中設定的 DNS 後置字元 Adatum.com\n・VM2｜私人 IP 10.1.0.5｜公用 IP 13.92.181.13｜虛擬網路 VNET1｜Windows Server 中設定的 DNS 後置字元 Contoso.com\n\n你建立了一個名為 adatum.com 的私人 Azure DNS 區域，並把 adatum.com 區域設定為允許來自 VNET1 的自動註冊。\nadatum.com 區域中會為每台虛擬機器加入哪些 A 記錄？（每個正確選擇得一分）",
@@ -1609,6 +1746,25 @@
       "1": "要「從入口網站執行互動式查詢」，資料就必須送進 Log Analytics 工作區（用 KQL 查詢）。送到儲存體帳戶只能封存，無法互動查詢；事件方格是事件路由服務，不是分析資料存放區。",
       "2": "要看「哪些 IP 連進來」，資料來源是 NSG 的流量記錄——在 NSG1 上啟用診斷（NSG 流程記錄／流量記錄）就會記下來源與目的 IP、連接埠與允許或拒絕的規則。基本 SKU 的內部負載平衡器本身「不提供」診斷記錄（Standard SKU 才有豐富的計量），所以在 ILB1 上啟用診斷得不到需要的資料；在虛擬機器上啟用診斷收集的是客體 OS 的效能與事件，不是連線來源 IP。",
       "_full": "兩個判斷點：\n① 「互動式查詢」→ Log Analytics 工作區（KQL）；儲存體帳戶只適合長期封存。\n② 「誰連進來的 IP」→ NSG 流量記錄。基本 SKU 的負載平衡器沒有可用的診斷記錄，這是本題最容易選錯的地方。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 380,
+    "type": "single",
+    "question": "你有下列 Azure 虛擬網路：\n・VNet1｜位址空間 10.11.0.0/16｜子網路 10.11.0.0/17｜West US\n・VNet2｜位址空間 10.11.0.0/17｜子網路 10.11.0.0/25｜West US\n・VNet3｜位址空間 10.10.0.0/22｜子網路 10.10.1.0/24｜East US\n・VNet4｜位址空間 192.168.16.0/22｜子網路 192.168.16.0/24｜North Europe\n\n你可以從 VNet1 對哪些虛擬網路建立對等互連 (peering)？",
+    "options": {
+      "A": "只有 VNet2 和 VNet3",
+      "B": "只有 VNet2",
+      "C": "只有 VNet3 和 VNet4",
+      "D": "VNet2、VNet3 和 VNet4"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。含了 VNet2，但它的位址空間與 VNet1 重疊。",
+      "B": "錯誤。VNet2 正是唯一「不能」對等互連的那一個。",
+      "C": "正確。虛擬網路對等互連只有一條硬性限制：**兩邊的位址空間不能重疊**。\n・VNet2 的 10.11.0.0/17 完全落在 VNet1 的 10.11.0.0/16 之內 → 重疊 ✗\n・VNet3 的 10.10.0.0/22 與 10.11.0.0/16 不重疊 ✓\n・VNet4 的 192.168.16.0/22 更是完全不同的網段 ✓\n區域不同「不是」問題——全域對等互連 (global peering) 讓不同區域（甚至不同訂用帳戶）的虛擬網路也能互連，這是本題最容易被誤判的地方。",
+      "D": "錯誤。多算了 VNet2，位址空間重疊的虛擬網路無法對等互連。"
     }
   },
   {
@@ -1689,6 +1845,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 384,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNet1｜虛擬網路｜West US｜RG2\n・VNet2｜虛擬網路｜West US｜RG1\n・VNet3｜虛擬網路｜East US｜RG1\n・NSG1｜網路安全性群組｜East US｜RG2\n\n你可以把 NSG1 套用到哪些子網路？",
+    "options": {
+      "A": "只有 VNet1 上的子網路",
+      "B": "只有 VNet2 和 VNet3 上的子網路",
+      "C": "只有 VNet2 上的子網路",
+      "D": "只有 VNet3 上的子網路",
+      "E": "VNet1、VNet2 和 VNet3 上的子網路"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。VNet1 在 West US，NSG1 在 East US，區域不符。",
+      "B": "錯誤。VNet2 在 West US，同樣跨區域。",
+      "C": "錯誤。VNet2 在 West US，不是 East US。",
+      "D": "正確。網路安全性群組是「區域性」資源，只能關聯到「同一個區域」的子網路或網路介面。\nNSG1 在 East US，三個虛擬網路中只有 VNet3 也在 East US。\n資源群組完全不影響——NSG1 在 RG2 而 VNet3 在 RG1，跨資源群組關聯是允許的，這是本題刻意設的誘答欄位。",
+      "E": "錯誤。VNet1 與 VNet2 都在 West US，NSG 不能跨區域套用。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 385,
     "type": "ordering",
     "question": "你有一個 Azure 訂用帳戶，其中包含兩個虛擬網路 VNet1 與 VNet2，虛擬機器連接到這些虛擬網路。\n兩個虛擬網路的位址空間與子網路設定如下：\n・VNet1｜位址空間 10.1.0.0/16｜子網路 10.1.0.0/24、10.1.1.0/26｜對等互連：VNet2\n・VNet2｜位址空間 10.2.0.0/16｜子網路 10.2.0.0/24｜對等互連：VNet1\n\n你需要把 10.33.0.0/16 這個位址空間加到 VNet1，而且解決方案必須確保 VNet1 與 VNet2 上的主機仍然可以互相通訊。\n\n你應該依序執行哪三個動作？",
@@ -1764,6 +1941,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 388,
+    "type": "single",
+    "question": "你建立了一台名為 VM1 的 Azure 虛擬機器，執行 Windows Server 2019。VM1 的概觀畫面顯示：\n・資源群組：RG1\n・狀態：已停止 (已解除配置) Stopped (deallocated)\n・位置：West Europe\n・電腦名稱：（啟動 VM 才會顯示）\n・作業系統：Windows\n・大小：Standard DS2 v2（2 vcpus、7 GiB 記憶體）\n・公用 IP 位址：VM1-ip｜私人 IP 位址：10.0.0.4\n・虛擬網路／子網路：VNET1/default｜DNS 名稱：尚未設定\n\n你需要為 VM1 啟用「所需狀態設定 (Desired State Configuration，DSC)」。\n你應該先做什麼？",
+    "options": {
+      "A": "連線到 VM1。",
+      "B": "啟動 VM1。",
+      "C": "擷取 VM1 的快照。",
+      "D": "為 VM1 設定 DNS 名稱。"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。機器處於已解除配置狀態，根本連不上；而且啟用 DSC 也不需要先登入機器。",
+      "B": "正確。畫面上的關鍵是「狀態：已停止 (已解除配置)」。\nDSC 是透過「虛擬機器延伸模組」安裝與執行的，而任何 VM 延伸模組都必須由機器內的 Azure VM 代理程式接手處理——機器沒在跑，代理程式就沒在跑，延伸模組也就裝不上去。\n所以第一步是啟動 VM1。",
+      "C": "錯誤。快照是備份磁碟的手段，與啟用延伸模組無關。",
+      "D": "錯誤。DNS 名稱只影響外部如何解析這台機器，跟 DSC 延伸模組無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 389,
     "type": "single",
     "question": "你有五台執行 Windows Server 2016 的 Azure 虛擬機器，設定為 Web 伺服器，並由名為 LB1 的 Azure 負載平衡器提供負載平衡服務。你必須確保訪客的每一次請求都由「同一台」Web 伺服器服務。你應該設定什麼？",
@@ -1794,6 +1990,21 @@
     "explanations": {
       "A": "正確。遠端桌面使用 TCP 3389，而原本 NSG-VM1 上的自訂規則寫的是 UDP，因此會擋住連線。把 NSG-VM1 移除後只剩下 NSG-Subnet1，並在其中加入允許 TCP 3389 的規則，流量便能通行。",
       "B": "錯誤。這個組合同時解決了兩個問題：移除了以 UDP 誤設的 NSG，並在剩下的 NSG 上開放正確的 TCP 3389。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 391,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n✑ 一個虛擬網路，其中有一個名為 Subnet1 的子網路\n✑ 兩個網路安全性群組 (NSG)：NSG-VM1 與 NSG-Subnet1\n✑ 一台名為 VM1 的虛擬機器，Windows Server 已完成允許遠端桌面連線的必要設定\n\nNSG-Subnet1 只有預設的輸入安全性規則。\nNSG-VM1 除了預設規則外，還有下列自訂輸入安全性規則：\n・優先順序：100｜來源：任何｜來源連接埠範圍：*｜目的地：*\n　目的地連接埠範圍：3389｜通訊協定：UDP｜動作：允許\n\nVM1 有公用 IP 位址並連線到 Subnet1。\nNSG-VM1 關聯到 VM1 的網路介面，NSG-Subnet1 關聯到 Subnet1。\n\n你需要能夠從網際網路建立到 VM1 的遠端桌面連線。\n解決方案：你在 NSG-Subnet1 新增一條輸入安全性規則，允許來源「Internet」到目的地「VirtualNetwork」、連接埠範圍 3389、通訊協定 UDP。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。新規則用的是 UDP，但遠端桌面走的是 TCP 3389，規則放行不到正確的流量。",
+      "B": "正確。整題的關鍵只有一個字：通訊協定。\n遠端桌面 (RDP) 使用「TCP」連接埠 3389（UDP 3389 只是選用的加速通道，連線建立本身仍靠 TCP）。\n現有的 NSG-VM1 自訂規則放行的是 UDP，本解法在 NSG-Subnet1 加的也是 UDP——兩層都沒有放行 TCP 3389，而預設規則會用 DenyAllInBound 擋掉來自網際網路的流量。\n所以連線仍然建立不起來。要成立的話，兩個 NSG 都必須放行「TCP」3389。"
     }
   },
   {
@@ -1837,6 +2048,44 @@
       "1": "192.168.1.0/24 完全不在 VNet1 目前的位址空間 10.2.0.0/16 之內，所以第一步必須先「新增一個位址空間」把 192.168.1.0/24 加進 VNet1（之後才能在其中切出子網路）。",
       "2": "10.2.1.0/24 已經落在位址空間 10.2.0.0/16 之內，位址空間不用動；缺的是子網路——目前只有 default（10.2.0.0/24）。所以只要「新增一個子網路」用 10.2.1.0/24 這個前置詞即可。",
       "_full": "判斷順序固定兩層：\n① 目標網段在不在「位址空間」內？不在就要先加位址空間。\n② 在位址空間內但沒有對應「子網路」？那就加子網路。\n虛擬機器的 IP 是由「網路介面所在的子網路」配發的，所以這兩層缺哪一層就補哪一層。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 394,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含一個名為 VNET1 的虛擬網路。VNET1 包含下列子網路：\n・Subnet1｜連接的虛擬機器：VM1、VM2\n・Subnet2｜連接的虛擬機器：VM3、VM4\n・Subnet3｜連接的虛擬機器：VM5、VM6\n\n每台虛擬機器都使用靜態 IP 位址。\n你需要建立網路安全性群組 (NSG) 來滿足下列需求：\n✑ 允許來自網際網路的 Web 要求連到 VM3、VM4、VM5 與 VM6。\n✑ 允許 VM1 與 VM2 之間的所有連線。\n✑ 允許遠端桌面連線到 VM1。\n✑ 阻擋所有其他連到 VNET1 的網路流量。\n\n你「最少」需要建立幾個 NSG？",
+    "options": {
+      "A": "1",
+      "B": "3",
+      "C": "4",
+      "D": "12"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。題目問的是「最少」幾個，而一個 NSG 就夠了。\n兩個關鍵事實：\n① 同一個 NSG 可以「同時關聯到多個」子網路（也可以同時關聯到網路介面），不是一個子網路一個。\n② 安全性規則可以直接指定「IP 位址」當來源或目的地——題目特別註明「每台虛擬機器都使用靜態 IP 位址」，這句話就是提示。\n所以可以在一個 NSG 裡寫齊所有規則（Web 流量放行到 VM3～VM6 的 IP、VM1 與 VM2 之間全放行、RDP 放行到 VM1 的 IP，最後靠預設的 DenyAllInBound 擋掉其餘），再把它關聯到三個子網路。",
+      "B": "錯誤。這是假設「一個子網路要一個 NSG」，但同一個 NSG 可以重複關聯到多個子網路。",
+      "C": "錯誤。同樣是把 NSG 與子網路想成一對一，還多算了一個。",
+      "D": "錯誤。這是把每條需求、每台機器都各算一個 NSG，遠遠超過必要。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 395,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNET1｜虛擬網路｜資源群組 RG1\n・VM1｜虛擬機器｜資源群組 RG1\n\n一個已啟用原則強制的「不允許的資源類型 (Not allowed resource types)」Azure 原則被指派到 RG1，使用下列參數：\n・Microsoft.Network/virtualNetworks\n・Microsoft.Compute/virtualMachines\n\n你需要在 RG1 中建立一台名為 VM2 的新虛擬機器，然後把 VM2 連線到 VNET1。\n你應該先做什麼？",
+    "options": {
+      "A": "把 Microsoft.Compute/virtualMachines 從原則中移除。",
+      "B": "建立一個 Azure Resource Manager 範本",
+      "C": "為 VNET1 新增一個子網路。",
+      "D": "把 Microsoft.Network/virtualNetworks 從原則中移除。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。「不允許的資源類型」原則會「拒絕建立」清單中的資源類型，而且已啟用強制，所以在 RG1 裡任何建立 Microsoft.Compute/virtualMachines 的要求都會被擋下——VM2 建不出來。\n要建立 VM2，就必須先把 Microsoft.Compute/virtualMachines 從原則參數中拿掉。\n（注意原則只擋「建立」，既有的 VM1 與 VNET1 不受影響，只會在合規性報告中被標示為不符合。）",
+      "B": "錯誤。換一種部署方式並不能繞過原則——原則是在 Resource Manager 層攔截的，不論用入口網站、CLI 還是 ARM 範本都一樣會被拒絕。",
+      "C": "錯誤。VNET1 已經存在，題目也沒說它缺子網路；擋路的是原則不是子網路。",
+      "D": "錯誤。移除虛擬網路那一項並不能讓你建立 VM——而且 VNET1 已經存在，本來就不需要再建立虛擬網路。"
     }
   },
   {

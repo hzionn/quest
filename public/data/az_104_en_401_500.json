@@ -1,6 +1,25 @@
 [
   {
     "exam": "AZ-104",
+    "id": 401,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・VNet1｜Virtual network｜Not applicable\n・Subnet1｜Subnet｜Hosted on VNet1\n・VM1｜Virtual machine｜On Subnet1\n・VM2｜Virtual machine｜On Subnet1\n\nVM1 and VM2 are deployed from the same template and host line-of-business applications.\nYou configure a network security group (NSG) as follows:\n・Associated with: 0 subnets, 0 network interfaces\n[Inbound security rules]\n・100｜Port_80｜80｜TCP｜Source Internet｜Destination Any｜Deny\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜Allow\n・65001｜Allow AzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜Allow\n・65500｜DenyAllInBound｜Any｜Any｜Any｜Deny\n[Outbound security rules]\n・100｜DenyWebSites｜80｜TCP｜Source Any｜Destination Internet｜Deny\n・65000｜AllowVnetOutBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜Allow\n・65001｜AllowInternetOutBound｜Any｜Any｜Any → Internet｜Allow\n・65500｜DenyAllOutBound｜Any｜Any｜Any｜Deny\n\nYou need to prevent users of VM1 and VM2 from accessing websites on the Internet over TCP port 80. What should you do?",
+    "options": {
+      "A": "Disassociate the NSG from a network interface",
+      "B": "Change the Port_80 inbound security rule.",
+      "C": "Associate the NSG to Subnet1.",
+      "D": "Change the DenyWebSites outbound security rule."
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "Incorrect. 錯誤。畫面上明寫「關聯到 0 個子網路、0 個網路介面」——它根本還沒關聯到任何東西，沒有東西可以取消關聯。",
+      "B": "Incorrect. 錯誤。Port_80 是「輸入」規則，管的是從外面進來的流量；而題目要擋的是 VM「出去」瀏覽網站，方向相反。",
+      "C": "Correct. 正確。整題的線索就在那行「關聯到 0 個子網路、0 個網路介面」。\n規則本身已經寫對了——輸出規則 DenyWebSites（優先順序 100，拒絕 TCP 80 到 Internet）正是要的效果，而且優先順序 100 比預設的 AllowInternetOutBound（65001）高，會先生效。\n問題純粹是這個 NSG「還沒有掛上去」，所以完全沒有作用。\n把它關聯到 Subnet1，VM1 與 VM2 都在 Subnet1 上，規則立刻生效。",
+      "D": "Incorrect. 錯誤。DenyWebSites 的設定已經完全正確（TCP 80、目的地 Internet、拒絕、優先順序 100），不需要改；需要的是讓 NSG 生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 402,
     "type": "single",
     "question": "You have two subscriptions named Subscription1 and Subscription2. Each subscription is associated to a different Azure AD tenant. Subscription1 contains a virtual network named VNet1. VNet1 contains an Azure virtual machine named VM1 and has an IP address space of 10.0.0.0/16. Subscription2 contains a virtual network named VNet2. VNet2 contains an Azure virtual machine named VM2 and has an IP address space of 10.10.0.0/24. You need to connect VNet1 to VNet2. What should you do first?",
@@ -16,6 +35,30 @@
       "B": "Incorrect. 錯誤。搬移虛擬網路是重大且不必要的變更；跨租用戶本來就可以連接，不需要把資源集中到同一訂用帳戶。",
       "C": "Incorrect. 錯誤。10.0.0.0/16 與 10.10.0.0/24 並未重疊，位址空間沒有衝突，不需要修改。",
       "D": "Correct. 正確。兩個虛擬網路位於「不同 Azure AD 租用戶」的訂用帳戶中，此情境要以 VNet-to-VNet VPN 連接，因此第一步是在兩端各佈建虛擬網路閘道。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 403,
+    "type": "multiple",
+    "question": "You plan to create an Azure virtual machine named VM1 that will be configured as follows:\n[Basics]\n・Subscription: MyDev-Test Subscription｜Resource group: RG1\n・Virtual machine name: VM1｜Region: (US) West US 2\n・Availability options: No infrastructure redundancy required\n・Image: Windows Server 2016 Datacenter｜Azure Spot instance: No\n・Size: Standard DS1 v2 (1 vcpu, 3.5 GiB memory)\n[Disks]\n・OS disk type: Standard HDD\n・Advanced → Use managed disks: No (Storage account: (new) rg1 disks799)\n\nYou need to ensure that VM1 can be created in an Availability Zone.\nWhich two settings should you modify? Each correct answer presents part of the solution.\nNOTE: Each correct selection is worth one point.",
+    "options": {
+      "A": "Use managed disks",
+      "B": "OS disk type",
+      "C": "Availability options",
+      "D": "Size",
+      "E": "Image"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "Correct. 正確。目前「使用受控磁碟」是「否」，也就是要用非受控磁碟（存在儲存體帳戶裡）。\n但可用性區域「只支援受控磁碟」——非受控磁碟綁在單一儲存體帳戶上，沒有區域的概念。所以必須改成「是」。",
+      "B": "Incorrect. 錯誤。標準 HDD 可以用在可用性區域中的 VM，磁碟效能層不是限制條件。",
+      "C": "Correct. 正確。目前「可用性選項」是「不需要基礎結構備援」，代表這台 VM 不會被放進任何備援設定。\n要讓 VM 落在可用性區域，必須把它改成「可用性區域」並選定 1／2／3 其中之一。\n（這個選項在建立後就不能改了，所以一定要在建立前設好。）",
+      "D": "Incorrect. 錯誤。Standard DS1 v2 是支援可用性區域的一般用途大小，不需要更換。",
+      "E": "Incorrect. 錯誤。Windows Server 2016 Datacenter 映像與可用性區域無關。"
     }
   },
   {
@@ -124,6 +167,44 @@
   },
   {
     "exam": "AZ-104",
+    "id": 409,
+    "type": "single",
+    "question": "You have an Azure subscription named Subscription1 that contains a virtual machine named VM1. You have a computer named Computer1 that runs Windows 10 and is connected to the Internet.\nYou add a network interface named vm1173 to VM1, configured as follows:\n・Virtual network/subnet: RG1-vnet/default｜Public IP: VM1-ip｜Private IP: 10.0.0.5\n・Accelerated networking: Disabled\n・Network security group attached: VM1-nsg (Impacts 0 subnets, 1 network interfaces)\n[Inbound port rules]\n・300｜RDP｜3389｜TCP｜Source Any｜Destination Any｜Allow\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork｜Allow\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜Allow\n・65500｜DenyAllInBound｜Any｜Any｜Any｜Deny\n\nFrom Computer1, you attempt to connect to VM1 by using Remote Desktop, but the connection fails.\nYou need to establish a Remote Desktop connection to VM1. What should you do first?",
+    "options": {
+      "A": "Change the priority of the RDP rule",
+      "B": "Attach a network interface",
+      "C": "Delete the DenyAllInBound rule",
+      "D": "Start VM1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。RDP 規則的優先順序是 300，已經遠高於 65500 的 DenyAllInBound，本來就會先生效，不需要調整。",
+      "B": "Incorrect. 錯誤。網路介面 vm1173 已經加上去了，這正是題目描述的動作。",
+      "C": "Incorrect. 錯誤。DenyAllInBound 是預設規則，本來就刪不掉；而且它的優先順序最低，已被 RDP 規則蓋過，不是問題所在。",
+      "D": "Correct. 正確。把畫面上的東西逐一排除之後就會發現網路設定完全沒問題：有公用 IP、有 RDP 允許規則、優先順序也對。\n剩下唯一的解釋是「機器沒在跑」——在 VM1 新增網路介面必須先把 VM 停止並解除配置，題目描述的正是剛做完這個動作，所以 VM1 目前仍是停止狀態。\n要連線就得先啟動 VM1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 410,
+    "type": "single",
+    "question": "You have the following Azure virtual machines:\n・VM1｜IP address 10.1.0.4｜Connected to VNET1/Subnet1\n・VM2｜IP address 10.1.10.4｜Connected to VNET1/Subnet2\n・VM3｜IP address 172.16.0.4｜Connected to VNET2/SubnetA\n・VM4｜IP address 10.2.0.8｜Connected to VNET3/SubnetB\n\nA DNS service is installed on VM1.\nYou configure the DNS servers settings for each virtual network as follows:\n・DNS servers: Custom\n・Custom DNS server address: 10.1.0.4\n\nYou need to ensure that all the virtual machines can resolve DNS names by using the DNS service on VM1. What should you do?",
+    "options": {
+      "A": "Configure a conditional forwarder on VM1",
+      "B": "Add service endpoints on VNET1",
+      "C": "Add service endpoints on VNET2 and VNET3",
+      "D": "Configure peering between VNET1, VNET2, and VNET3"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。條件式轉寄站解決的是「VM1 自己要去哪裡查某個網域」，但本題的問題是其他虛擬網路的機器「連不到 VM1」，不是 VM1 查不到東西。",
+      "B": "Incorrect. 錯誤。服務端點是讓子網路以私人路徑存取 Azure PaaS 服務（儲存體、SQL 等）用的，跟虛擬網路之間互通無關。",
+      "C": "Incorrect. 錯誤。同上，服務端點不會讓 VNET2／VNET3 連得到 VNET1 裡的 VM1。",
+      "D": "Correct. 正確。三個虛擬網路的自訂 DNS 都指向 10.1.0.4，也就是 VNET1 裡的 VM1。\n但虛擬網路預設是「彼此隔離」的——VNET2 的 VM3 與 VNET3 的 VM4根本沒有路徑可以連到 VNET1 的 10.1.0.4，DNS 查詢自然得不到回應。\n解法是在三個虛擬網路之間建立對等互連，打通網路層之後，所有 VM 才真的送得到封包給 VM1。\n（三者的位址空間 10.1.x、172.16.x、10.2.x 互不重疊，可以對等互連。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 411,
     "type": "matching",
     "question": "You have an Azure subscription that contains the Azure virtual machines VM1 (connected to subnet 172.16.1.0/24, IP 172.16.1.4) and VM2 (connected to subnet 172.16.2.0/24, IP 172.16.2.4).\nYou add inbound security rules to a network security group (NSG) named NSG1: priority 100, source 172.16.1.0/24, destination 172.16.2.0/24, TCP, any port, Allow; priority 101, source Any, destination 172.16.2.0/24, TCP, any port, Deny.\nYou run Azure Network Watcher connection troubleshoot: first with source VM1, destination VM2, probe protocol TCP, destination port 8080 - status Unreachable; then with source VM1, destination VM2, probe protocol ICMP - status Reachable, hops VM1 (172.16.1.4) with next hop IP 172.16.2.4 then VM2 (172.16.2.4), both healthy.\n\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.",
@@ -169,6 +250,23 @@
       "B": "Correct. 正確。在 Subnet1 的 NSG 中新增一條拒絕規則，來源設為 Internet、目的地連接埠 3389 予以拒絕；同時保留允許內部部署位址範圍存取 3389 的較高優先順序規則，443 則不受影響，三項要求同時滿足。",
       "C": "Incorrect. 錯誤。移除公用 IP 會讓網際網路使用者也無法存取連接埠 443 上的應用程式，違反題目要求。",
       "D": "Incorrect. 錯誤。修改子網路位址空間是網路重新規劃，並不會篩選任何流量。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 413,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・ASG1｜Application security group\n・NSG1｜Network security group (NSG)\n・Subnet1｜Subnet\n・VNet1｜Virtual network\n・NIC1｜Network interface\n・VM1｜Virtual machine\n\nSubnet1 is associated to VNet1. NIC1 attaches VM1 to Subnet1.\nYou need to apply ASG1 to VM1. What should you do?",
+    "options": {
+      "A": "Associate NIC1 to ASG1",
+      "B": "Modify the properties of ASG1",
+      "C": "Modify the properties of NSG1"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。應用程式安全性群組是「網路介面的標籤」——你不會把它套到 VM 或子網路上，而是把「網路介面的 IP 組態」加入 ASG。\nVM1 是透過 NIC1 連上網路的，所以把 NIC1 關聯到 ASG1，VM1 就成為 ASG1 的成員；之後 NSG 規則就能直接用 ASG1 當來源或目的地，不必再維護 IP 位址清單。",
+      "B": "Incorrect. 錯誤。ASG 本身幾乎沒有可設定的屬性——它就是一個空的容器，成員關係是從「網路介面那一端」建立的，不是在 ASG 裡加成員。",
+      "C": "Incorrect. 錯誤。NSG 規則可以「引用」ASG1，但那是決定流量怎麼過濾；本題要做的是先讓 VM1 成為 ASG1 的成員，這一步在網路介面上做。"
     }
   },
   {
@@ -282,6 +380,44 @@
       "1": "從 VM1 移除公用 IP 位址。Standard SKU 的負載平衡器要求後端執行個體的公用 IP 「SKU 必須一致」——而 VM1 目前的公用 IP 是「動態」配置，動態公用 IP 一律是 Basic SKU。SKU 不相符的執行個體無法加入 Standard 負載平衡器的後端集區，所以要先把這個 Basic 公用 IP 移除（之後由負載平衡器的前端公用 IP 對外服務）。",
       "2": "建立並設定一個 NSG。Standard SKU 負載平衡器是「預設安全」的——後端執行個體如果沒有 NSG 明確允許流量，進來的流量會被拒絕（Basic SKU 則是預設開放）。因此要能從 slb1 連到 VM1，必須先建立 NSG 並加入允許規則（允許來自 AzureLoadBalancer 與所需來源的流量）。",
       "_full": "Standard SKU 負載平衡器與 Basic 的兩個關鍵差異，本題各考一個：\n① SKU 必須一致：後端 VM 若掛著 Basic 公用 IP（動態公用 IP 就是 Basic），不能加入 Standard 負載平衡器的後端集區。\n② 預設安全：Standard 要求 NSG 明確允許流量才通；Basic 預設開放。\n（另外提醒：私人 IP 是動態或靜態不影響加入後端集區，那是干擾項。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 418,
+    "type": "single",
+    "question": "You have an Azure subscription that contains the following resources:\n・VNET1｜Virtual network｜East US\n・IP1｜Public IP address｜West Europe\n・RT1｜Route table｜North Europe\n\nYou need to create a network interface named NIC1. In which location can you create NIC1?",
+    "options": {
+      "A": "East US and North Europe only",
+      "B": "East US only",
+      "C": "East US, West Europe, and North Europe",
+      "D": "East US and West Europe only"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。路由表關聯的是「子網路」，不是網路介面，RT1 在 North Europe 不會讓網路介面也能建在那裡。",
+      "B": "Correct. 正確。網路介面必須連接到某個虛擬網路的子網路，而網路介面與虛擬網路必須「位於同一個區域」。\n本題唯一的虛擬網路 VNET1 在 East US，所以 NIC1 只能建在 East US。\n另外兩個資源都是誘答：\n・IP1（West Europe）：公用 IP 確實可以掛到網路介面上，但它同樣必須與網路介面同區域——IP1 在 West Europe，所以它其實根本掛不上這張 NIC，更不會讓 NIC 能建在 West Europe。\n・RT1（North Europe）：路由表是關聯到子網路的，與網路介面無關。",
+      "C": "Incorrect. 錯誤。網路介面不能建在沒有虛擬網路的區域。",
+      "D": "Incorrect. 錯誤。West Europe 只有一個公用 IP，沒有虛擬網路，NIC 無處可接。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 419,
+    "type": "single",
+    "question": "You have Azure virtual machines that run Windows Server 2019 and are configured as follows:\n・VM1｜Virtual network VNET1｜DNS suffix configured in Windows Server: Contoso.com\n・VM2｜Virtual network VNET2｜DNS suffix configured in Windows Server: Contoso.com\n\nYou create a public Azure DNS zone named adatum.com and a private Azure DNS zone named contoso.com.\nFor contoso.com, you create a virtual network link named link1 configured as follows:\n・Link name: link1｜Link state: Completed｜Provisioning state: Succeeded\n・Virtual network: VNET1\n・Configuration: Enable auto registration is not selected\n\nYou discover that VM1 can resolve names in contoso.com but cannot resolve names in adatum.com. VM1 can resolve other hosts on the Internet.\nYou need to ensure that VM1 can resolve host names in adatum.com. What should you do?",
+    "options": {
+      "A": "Update the DNS suffix on VM1 to be adatum.com",
+      "B": "Configure the name servers for adatum.com at the domain registrar",
+      "C": "Create an SRV record in the contoso.com zone",
+      "D": "Modify the Access control (IAM) settings for link1"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "Incorrect. 錯誤。DNS 尾碼只影響「單一標籤名稱」要自動補上什麼網域，不會讓查詢找得到一個在網際網路上還沒生效的區域。",
+      "B": "Correct. 正確。關鍵是 adatum.com 是「公用」DNS 區域。\n在 Azure 建立公用 DNS 區域只是在 Azure 的名稱伺服器上準備好資料，但全世界的 DNS 查詢仍然是照「網域註冊商登記的名稱伺服器」去找的。\n只要註冊商那邊還指向舊的名稱伺服器（或根本沒指向 Azure），這個區域對外就等於不存在——VM1 走的是一般的網際網路 DNS 解析路徑，自然查不到。\n所以要到網域註冊商把 adatum.com 的 NS 記錄改成 Azure DNS 區域提供的那四台名稱伺服器。",
+      "C": "Incorrect. 錯誤。SRV 記錄是用來公告服務位置（如 LDAP、SIP）的，在私人區域裡加它不會影響另一個公用區域的解析。",
+      "D": "Incorrect. 錯誤。link1 是給「私人」區域 contoso.com 用的，而且它已經正常運作（VM1 解析得到 contoso.com）。IAM 是權限設定，跟名稱解析無關。"
     }
   },
   {
