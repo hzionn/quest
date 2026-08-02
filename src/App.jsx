@@ -981,7 +981,7 @@ const PROVIDER_ACCENTS = {
 const PROVIDER_EXAMS = {
   aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'DEA-C01', 'AIP-C01', 'MLA-C01'],
   gcp: ['PCA', 'GCP-CDL'],
-  azure: ['AZ-104'],
+  azure: ['AZ-900', 'AZ-104'],
 }
 
 // Shown instead of the subject picker while a previous session is being put
@@ -3229,6 +3229,7 @@ const EXAM_SPECS = {
   'PCA': { name: 'Google Professional Cloud Architect', count: 50, timeLimit: 120, passScore: 700, questions: '50 題（單選與多選）', time: '120 分鐘（2 小時）', types: '單選、多選' },
   'GCP-CDL': { name: 'Google Cloud Digital Leader', count: 50, timeLimit: 90, passScore: 700, questions: '50–60 題（單選與多選）', time: '90 分鐘', types: '單選、多選' },
   'AZ-104': { name: 'Microsoft Certified: Azure Administrator Associate', count: 50, timeLimit: 120, passScore: 700, questions: '40–60 題（微軟未公布確切題數）', time: '120 分鐘（2 小時）', types: '單選、多選' },
+  'AZ-900': { name: 'Microsoft Certified: Azure Fundamentals', count: 45, timeLimit: 45, passScore: 700, questions: '40–60 題（微軟未公布確切題數）', time: '45 分鐘', types: '單選、多選、配對' },
 }
 
 function ExamTab({ state, dispatch, examTypes, qMap }) {
