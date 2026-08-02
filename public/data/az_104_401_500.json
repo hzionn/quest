@@ -1,6 +1,25 @@
 [
   {
     "exam": "AZ-104",
+    "id": 401,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNet1｜虛擬網路｜不適用\n・Subnet1｜子網路｜裝載於 VNet1\n・VM1｜虛擬機器｜位於 Subnet1\n・VM2｜虛擬機器｜位於 Subnet1\n\nVM1 與 VM2 由同一份範本部署，執行業務應用程式。\n你設定了一個網路安全性群組 (NSG)，其內容如下：\n・關聯狀態：**0 個子網路、0 個網路介面**\n【輸入安全性規則】\n・100｜Port_80｜80｜TCP｜來源 Internet｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜Allow AzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n【輸出安全性規則】\n・100｜DenyWebSites｜80｜TCP｜來源 Any｜目的地 Internet｜拒絕\n・65000｜AllowVnetOutBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowInternetOutBound｜Any｜Any｜Any → Internet｜允許\n・65500｜DenyAllOutBound｜Any｜Any｜Any｜拒絕\n\n你需要阻止 VM1 與 VM2 的使用者透過 TCP 連接埠 80 存取網際網路上的網站。\n你應該怎麼做？",
+    "options": {
+      "A": "把 NSG 從網路介面取消關聯",
+      "B": "變更 Port_80 輸入安全性規則。",
+      "C": "把 NSG 關聯到 Subnet1。",
+      "D": "變更 DenyWebSites 輸出安全性規則。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。畫面上明寫「關聯到 0 個子網路、0 個網路介面」——它根本還沒關聯到任何東西，沒有東西可以取消關聯。",
+      "B": "錯誤。Port_80 是「輸入」規則，管的是從外面進來的流量；而題目要擋的是 VM「出去」瀏覽網站，方向相反。",
+      "C": "正確。整題的線索就在那行「關聯到 0 個子網路、0 個網路介面」。\n規則本身已經寫對了——輸出規則 DenyWebSites（優先順序 100，拒絕 TCP 80 到 Internet）正是要的效果，而且優先順序 100 比預設的 AllowInternetOutBound（65001）高，會先生效。\n問題純粹是這個 NSG「還沒有掛上去」，所以完全沒有作用。\n把它關聯到 Subnet1，VM1 與 VM2 都在 Subnet1 上，規則立刻生效。",
+      "D": "錯誤。DenyWebSites 的設定已經完全正確（TCP 80、目的地 Internet、拒絕、優先順序 100），不需要改；需要的是讓 NSG 生效。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 402,
     "type": "single",
     "question": "你有兩個訂用帳戶 Subscription1 與 Subscription2，各自關聯到不同的 Azure AD 租用戶。Subscription1 中有虛擬網路 VNet1（位址空間 10.0.0.0/16），內含虛擬機器 VM1；Subscription2 中有虛擬網路 VNet2（位址空間 10.10.0.0/24），內含虛擬機器 VM2。你必須把 VNet1 連接到 VNet2。你應該「最先」做什麼？",
@@ -16,6 +35,30 @@
       "B": "錯誤。搬移虛擬網路是重大且不必要的變更；跨租用戶本來就可以連接，不需要把資源集中到同一訂用帳戶。",
       "C": "錯誤。10.0.0.0/16 與 10.10.0.0/24 並未重疊，位址空間沒有衝突，不需要修改。",
       "D": "正確。兩個虛擬網路位於「不同 Azure AD 租用戶」的訂用帳戶中，此情境要以 VNet-to-VNet VPN 連接，因此第一步是在兩端各佈建虛擬網路閘道。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 403,
+    "type": "multiple",
+    "question": "你打算建立一台名為 VM1 的 Azure 虛擬機器，其設定如下：\n【基本】\n・訂用帳戶：MyDev-Test Subscription｜資源群組：RG1\n・虛擬機器名稱：VM1｜區域：(US) West US 2\n・可用性選項：**不需要基礎結構備援**\n・映像：Windows Server 2016 Datacenter｜Azure 現成執行個體：否\n・大小：Standard DS1 v2（1 vcpu、3.5 GiB 記憶體）\n【磁碟】\n・OS 磁碟類型：標準 HDD\n・進階 → **使用受控磁碟：否**（儲存體帳戶：(新) rg1 disks799）\n\n你需要確保 VM1 可以建立在「可用性區域 (Availability Zone)」中。\n你應該修改哪「兩」項設定？每個正確答案都是解決方案的一部分。（每個正確選擇得一分）",
+    "options": {
+      "A": "使用受控磁碟",
+      "B": "OS 磁碟類型",
+      "C": "可用性選項",
+      "D": "大小",
+      "E": "映像"
+    },
+    "answer": [
+      "A",
+      "C"
+    ],
+    "explanations": {
+      "A": "正確。目前「使用受控磁碟」是「否」，也就是要用非受控磁碟（存在儲存體帳戶裡）。\n但可用性區域「只支援受控磁碟」——非受控磁碟綁在單一儲存體帳戶上，沒有區域的概念。所以必須改成「是」。",
+      "B": "錯誤。標準 HDD 可以用在可用性區域中的 VM，磁碟效能層不是限制條件。",
+      "C": "正確。目前「可用性選項」是「不需要基礎結構備援」，代表這台 VM 不會被放進任何備援設定。\n要讓 VM 落在可用性區域，必須把它改成「可用性區域」並選定 1／2／3 其中之一。\n（這個選項在建立後就不能改了，所以一定要在建立前設好。）",
+      "D": "錯誤。Standard DS1 v2 是支援可用性區域的一般用途大小，不需要更換。",
+      "E": "錯誤。Windows Server 2016 Datacenter 映像與可用性區域無關。"
     }
   },
   {
@@ -124,6 +167,44 @@
   },
   {
     "exam": "AZ-104",
+    "id": 409,
+    "type": "single",
+    "question": "你有一個名為 Subscription1 的 Azure 訂用帳戶，其中有一台名為 VM1 的虛擬機器。\n你有一台執行 Windows 10 的電腦 Computer1，且已連上網際網路。\n你為 VM1 新增了一張名為 vm1173 的網路介面，其設定如下：\n・虛擬網路／子網路：RG1-vnet/default｜公用 IP：VM1-ip｜私人 IP：10.0.0.5\n・加速網路：已停用\n・附加的網路安全性群組：VM1-nsg（影響 0 個子網路、1 個網路介面）\n【輸入連接埠規則】\n・300｜RDP｜3389｜TCP｜來源 Any｜目的地 Any｜允許\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你從 Computer1 嘗試用遠端桌面連線到 VM1，但連線失敗。\n你需要建立到 VM1 的遠端桌面連線。你應該先做什麼？",
+    "options": {
+      "A": "變更 RDP 規則的優先順序",
+      "B": "附加一張網路介面",
+      "C": "刪除 DenyAllInBound 規則",
+      "D": "啟動 VM1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。RDP 規則的優先順序是 300，已經遠高於 65500 的 DenyAllInBound，本來就會先生效，不需要調整。",
+      "B": "錯誤。網路介面 vm1173 已經加上去了，這正是題目描述的動作。",
+      "C": "錯誤。DenyAllInBound 是預設規則，本來就刪不掉；而且它的優先順序最低，已被 RDP 規則蓋過，不是問題所在。",
+      "D": "正確。把畫面上的東西逐一排除之後就會發現網路設定完全沒問題：有公用 IP、有 RDP 允許規則、優先順序也對。\n剩下唯一的解釋是「機器沒在跑」——在 VM1 新增網路介面必須先把 VM 停止並解除配置，題目描述的正是剛做完這個動作，所以 VM1 目前仍是停止狀態。\n要連線就得先啟動 VM1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 410,
+    "type": "single",
+    "question": "你有下列 Azure 虛擬機器：\n・VM1｜IP 位址 10.1.0.4｜連接到 VNET1/Subnet1\n・VM2｜IP 位址 10.1.10.4｜連接到 VNET1/Subnet2\n・VM3｜IP 位址 172.16.0.4｜連接到 VNET2/SubnetA\n・VM4｜IP 位址 10.2.0.8｜連接到 VNET3/SubnetB\n\nVM1 上安裝了 DNS 服務。\n你為每個虛擬網路設定 DNS 伺服器，設定如下：\n・DNS 伺服器：自訂 (Custom)\n・自訂 DNS 伺服器位址：10.1.0.4\n\n你需要確保「所有」虛擬機器都能使用 VM1 上的 DNS 服務來解析 DNS 名稱。\n你應該怎麼做？",
+    "options": {
+      "A": "在 VM1 上設定條件式轉寄站",
+      "B": "在 VNET1 上新增服務端點",
+      "C": "在 VNET2 和 VNET3 上新增服務端點",
+      "D": "在 VNET1、VNET2 和 VNET3 之間設定對等互連"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。條件式轉寄站解決的是「VM1 自己要去哪裡查某個網域」，但本題的問題是其他虛擬網路的機器「連不到 VM1」，不是 VM1 查不到東西。",
+      "B": "錯誤。服務端點是讓子網路以私人路徑存取 Azure PaaS 服務（儲存體、SQL 等）用的，跟虛擬網路之間互通無關。",
+      "C": "錯誤。同上，服務端點不會讓 VNET2／VNET3 連得到 VNET1 裡的 VM1。",
+      "D": "正確。三個虛擬網路的自訂 DNS 都指向 10.1.0.4，也就是 VNET1 裡的 VM1。\n但虛擬網路預設是「彼此隔離」的——VNET2 的 VM3 與 VNET3 的 VM4根本沒有路徑可以連到 VNET1 的 10.1.0.4，DNS 查詢自然得不到回應。\n解法是在三個虛擬網路之間建立對等互連，打通網路層之後，所有 VM 才真的送得到封包給 VM1。\n（三者的位址空間 10.1.x、172.16.x、10.2.x 互不重疊，可以對等互連。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 411,
     "type": "matching",
     "question": "你有一個 Azure 訂用帳戶，其中包含下列 Azure 虛擬機器：\n・VM1｜連線到子網路 172.16.1.0/24（IP 172.16.1.4）\n・VM2｜連線到子網路 172.16.2.0/24（IP 172.16.2.4）\n\n你在名為 NSG1 的網路安全性群組中加入下列輸入安全性規則：\n・優先順序 100｜來源 172.16.1.0/24｜目的地 172.16.2.0/24｜TCP｜任何連接埠｜允許\n・優先順序 101｜來源 任何｜目的地 172.16.2.0/24｜TCP｜任何連接埠｜拒絕\n\n你執行 Azure 網路監看員的「連線疑難排解」，結果如下：\n・第一次：來源 VM1 → 目的地 VM2、探查通訊協定 TCP、目的連接埠 8080\n　→ 狀態「無法連線 (Unreachable)」\n・第二次：來源 VM1 → 目的地 VM2、探查通訊協定 ICMP\n　→ 狀態「可連線 (Reachable)」；躍點：VM1 (172.16.1.4) → 下一個躍點 172.16.2.4，接著 VM2 (172.16.2.4)，兩者狀態皆正常\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -169,6 +250,23 @@
       "B": "正確。在 Subnet1 的 NSG 中新增一條拒絕規則，來源設為 Internet、目的地連接埠 3389 予以拒絕；同時保留允許內部部署位址範圍存取 3389 的較高優先順序規則，443 則不受影響，三項要求同時滿足。",
       "C": "錯誤。移除公用 IP 會讓網際網路使用者也無法存取連接埠 443 上的應用程式，違反題目要求。",
       "D": "錯誤。修改子網路位址空間是網路重新規劃，並不會篩選任何流量。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 413,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・ASG1｜應用程式安全性群組 (Application security group)\n・NSG1｜網路安全性群組 (NSG)\n・Subnet1｜子網路\n・VNet1｜虛擬網路\n・NIC1｜網路介面\n・VM1｜虛擬機器\n\nSubnet1 關聯到 VNet1，NIC1 把 VM1 連接到 Subnet1。\n你需要把 ASG1 套用到 VM1。你應該怎麼做？",
+    "options": {
+      "A": "把 NIC1 關聯到 ASG1",
+      "B": "修改 ASG1 的屬性",
+      "C": "修改 NSG1 的屬性"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。應用程式安全性群組是「網路介面的標籤」——你不會把它套到 VM 或子網路上，而是把「網路介面的 IP 組態」加入 ASG。\nVM1 是透過 NIC1 連上網路的，所以把 NIC1 關聯到 ASG1，VM1 就成為 ASG1 的成員；之後 NSG 規則就能直接用 ASG1 當來源或目的地，不必再維護 IP 位址清單。",
+      "B": "錯誤。ASG 本身幾乎沒有可設定的屬性——它就是一個空的容器，成員關係是從「網路介面那一端」建立的，不是在 ASG 裡加成員。",
+      "C": "錯誤。NSG 規則可以「引用」ASG1，但那是決定流量怎麼過濾；本題要做的是先讓 VM1 成為 ASG1 的成員，這一步在網路介面上做。"
     }
   },
   {
@@ -286,6 +384,44 @@
   },
   {
     "exam": "AZ-104",
+    "id": 418,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNET1｜虛擬網路｜East US\n・IP1｜公用 IP 位址｜West Europe\n・RT1｜路由表｜North Europe\n\n你需要建立一張名為 NIC1 的網路介面。你可以在哪個位置建立 NIC1？",
+    "options": {
+      "A": "只有 East US 和 North Europe",
+      "B": "只有 East US",
+      "C": "East US、West Europe 和 North Europe",
+      "D": "只有 East US 和 West Europe"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。路由表關聯的是「子網路」，不是網路介面，RT1 在 North Europe 不會讓網路介面也能建在那裡。",
+      "B": "正確。網路介面必須連接到某個虛擬網路的子網路，而網路介面與虛擬網路必須「位於同一個區域」。\n本題唯一的虛擬網路 VNET1 在 East US，所以 NIC1 只能建在 East US。\n另外兩個資源都是誘答：\n・IP1（West Europe）：公用 IP 確實可以掛到網路介面上，但它同樣必須與網路介面同區域——IP1 在 West Europe，所以它其實根本掛不上這張 NIC，更不會讓 NIC 能建在 West Europe。\n・RT1（North Europe）：路由表是關聯到子網路的，與網路介面無關。",
+      "C": "錯誤。網路介面不能建在沒有虛擬網路的區域。",
+      "D": "錯誤。West Europe 只有一個公用 IP，沒有虛擬網路，NIC 無處可接。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 419,
+    "type": "single",
+    "question": "你有執行 Windows Server 2019 的 Azure 虛擬機器，設定如下：\n・VM1｜虛擬網路 VNET1｜Windows Server 中設定的 DNS 尾碼：Contoso.com\n・VM2｜虛擬網路 VNET2｜Windows Server 中設定的 DNS 尾碼：Contoso.com\n\n你建立了一個「公用」Azure DNS 區域 adatum.com，以及一個「私人」Azure DNS 區域 contoso.com。\n針對 contoso.com，你建立了一個名為 link1 的虛擬網路連結，其設定如下：\n・連結名稱：link1｜連結狀態：已完成｜佈建狀態：成功\n・虛擬網路：VNET1\n・組態：未勾選「啟用自動註冊」\n\n你發現 VM1 可以解析 contoso.com 中的名稱，但無法解析 adatum.com 中的名稱；VM1 可以解析網際網路上的其他主機。\n你需要確保 VM1 能解析 adatum.com 中的主機名稱。你應該怎麼做？",
+    "options": {
+      "A": "把 VM1 的 DNS 尾碼更新為 adatum.com",
+      "B": "在網域註冊商處設定 adatum.com 的名稱伺服器",
+      "C": "在 contoso.com 區域中建立一筆 SRV 記錄",
+      "D": "修改 link1 的存取控制 (IAM) 設定"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。DNS 尾碼只影響「單一標籤名稱」要自動補上什麼網域，不會讓查詢找得到一個在網際網路上還沒生效的區域。",
+      "B": "正確。關鍵是 adatum.com 是「公用」DNS 區域。\n在 Azure 建立公用 DNS 區域只是在 Azure 的名稱伺服器上準備好資料，但全世界的 DNS 查詢仍然是照「網域註冊商登記的名稱伺服器」去找的。\n只要註冊商那邊還指向舊的名稱伺服器（或根本沒指向 Azure），這個區域對外就等於不存在——VM1 走的是一般的網際網路 DNS 解析路徑，自然查不到。\n所以要到網域註冊商把 adatum.com 的 NS 記錄改成 Azure DNS 區域提供的那四台名稱伺服器。",
+      "C": "錯誤。SRV 記錄是用來公告服務位置（如 LDAP、SIP）的，在私人區域裡加它不會影響另一個公用區域的解析。",
+      "D": "錯誤。link1 是給「私人」區域 contoso.com 用的，而且它已經正常運作（VM1 解析得到 contoso.com）。IAM 是權限設定，跟名稱解析無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 420,
     "type": "matching",
     "question": "你打算使用 Azure 網路監看員執行下列工作：\n✑ Task1：找出「阻止網路封包到達某台 Azure 虛擬機器」的安全性規則。\n✑ Task2：驗證某台 Azure 虛擬機器「對外部主機」的輸出連線能力。\n針對每一項工作，你應該使用哪一個功能？（每個正確選擇得一分）",
@@ -346,6 +482,51 @@
   },
   {
     "exam": "AZ-104",
+    "id": 423,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜公用 IP SKU：無｜連接到 VNET1/Subnet1｜狀態：已停止 (已解除配置)\n・VM2｜公用 IP SKU：基本 (Basic)｜連接到 VNET1/Subnet2｜狀態：執行中\n\n你部署了一個負載平衡器，設定如下：\n✑ 名稱：LB1　✑ 類型：內部 (Internal)　✑ SKU：標準 (Standard)　✑ 虛擬網路：VNET1\n\n你需要確保可以把 VM1 與 VM2 加入 LB1 的後端集區。\n解決方案：你建立一個「基本 SKU」的公用 IP 位址，把它關聯到 VM1 的網路介面，然後啟動 VM1。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這個解法不但沒有處理 VM2 的基本公用 IP，還替 VM1 也加了一個基本公用 IP，等於把問題變成兩台都不合格。",
+      "B": "正確。關鍵規則只有一條：**標準 (Standard) SKU 的負載平衡器，後端集區裡的 VM 不能帶著「基本 (Basic) SKU」的公用 IP**——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n本題擋路的就是 VM2 那個基本公用 IP；VM1 沒有公用 IP，本身沒有問題。\n本解法完全沒動 VM2，VM2 的基本公用 IP 還在，加不進後端集區；而且替 VM1 加上「基本」SKU 的公用 IP，反而讓原本沒問題的 VM1 也被擋下。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 424,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜公用 IP SKU：無｜連接到 VNET1/Subnet1｜狀態：已停止 (已解除配置)\n・VM2｜公用 IP SKU：基本 (Basic)｜連接到 VNET1/Subnet2｜狀態：執行中\n\n你部署了一個負載平衡器，設定如下：\n✑ 名稱：LB1　✑ 類型：內部 (Internal)　✑ SKU：標準 (Standard)　✑ 虛擬網路：VNET1\n\n你需要確保可以把 VM1 與 VM2 加入 LB1 的後端集區。\n解決方案：你建立一個「標準 SKU」的公用 IP 位址，把它關聯到 VM1 的網路介面，然後停止 VM2。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。停止 VM2 並不會移除它網路介面上的基本公用 IP——公用 IP 的關聯是網路介面的設定，跟機器開關機無關。",
+      "B": "正確。關鍵規則只有一條：**標準 (Standard) SKU 的負載平衡器，後端集區裡的 VM 不能帶著「基本 (Basic) SKU」的公用 IP**——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n本題擋路的就是 VM2 那個基本公用 IP；VM1 沒有公用 IP，本身沒有問題。\n替 VM1 加標準公用 IP 這半段沒有問題，但另一半「停止 VM2」解決不了任何事：VM2 一停機，它的基本公用 IP 仍然掛在網路介面上，SKU 衝突照樣存在，而且停機的機器也無法正常服務。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 425,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜公用 IP SKU：無｜連接到 VNET1/Subnet1｜狀態：已停止 (已解除配置)\n・VM2｜公用 IP SKU：基本 (Basic)｜連接到 VNET1/Subnet2｜狀態：執行中\n\n你部署了一個負載平衡器，設定如下：\n✑ 名稱：LB1　✑ 類型：內部 (Internal)　✑ SKU：標準 (Standard)　✑ 虛擬網路：VNET1\n\n你需要確保可以把 VM1 與 VM2 加入 LB1 的後端集區。\n解決方案：你建立兩個「標準 SKU」的公用 IP 位址，並各關聯一個到每一台虛擬機器的網路介面。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。關鍵規則只有一條：**標準 (Standard) SKU 的負載平衡器，後端集區裡的 VM 不能帶著「基本 (Basic) SKU」的公用 IP**——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n本題擋路的就是 VM2 那個基本公用 IP；VM1 沒有公用 IP，本身沒有問題。\n一張網路介面的 IP 組態上只能掛「一個」公用 IP，所以把標準 SKU 的公用 IP 關聯到 VM2 的網路介面時，原本那個基本 SKU 的公用 IP 會被取代掉。\n結果兩台 VM 都只帶著標準 SKU 的公用 IP，與標準負載平衡器一致，兩台都能加進後端集區。",
+      "B": "錯誤。這個判定多半是覺得「VM2 已經有 IP 了不能再加」，但關聯新的公用 IP 就是把舊的換掉，SKU 衝突因此解除。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 426,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一台名為 Computer1 的電腦，它有一個到 Azure 虛擬網路 VNet1 的點對站 VPN 連線，該連線使用自我簽署憑證。你從 Azure 下載並在另一台名為 Computer2 的電腦上安裝了 VPN 用戶端組態套件。你必須確保可以從 Computer2 建立到 VNet1 的點對站 VPN 連線。\n解法：你從 Computer1 匯出用戶端憑證，並把該憑證安裝到 Computer2。\n此解法是否達成目標？",
@@ -357,6 +538,25 @@
     "explanations": {
       "A": "正確。憑證式點對站連線要求用戶端持有由根憑證簽發的用戶端憑證。從 Computer1 匯出該憑證（含私密金鑰）並安裝到 Computer2 後，Computer2 即可通過驗證建立連線。",
       "B": "錯誤。安裝用戶端憑證正是這個情境缺少的最後一步。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 427,
+    "type": "single",
+    "question": "你有一台名為 VM1 的 Azure 虛擬機器。VM1 的網路介面設定如下：\n・網路介面：vm1175｜虛擬網路／子網路：RG5-vnet/default\n・公用 IP：40.127.109.108｜私人 IP：172.16.1.4｜加速網路：已停用\n・網路安全性群組 VM1-nsg（影響 0 個子網路、1 個網路介面）\n【輸入連接埠規則】（優先順序｜名稱｜連接埠｜通訊協定｜來源｜目的地｜動作）\n・300｜RDP｜3389｜TCP｜Any｜Any｜允許\n・400｜Rule1｜80｜TCP｜Any｜Any｜拒絕\n・500｜Rule2｜80,443｜TCP｜Any｜Any｜拒絕\n・1000｜Rule4｜50-100,400-500｜UDP｜Any｜Any｜允許\n・2000｜Rule5｜50-5000｜Any｜Any｜VirtualNetwork｜拒絕\n・3000｜Rule6｜150-300｜Any｜Any｜Any｜允許\n・4000｜Rule3｜60-500｜Any｜Any｜VirtualNetwork｜允許\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork｜VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜Any｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜Any｜拒絕\n\n你在 VM1 上部署了網頁伺服器，並建立了一個以 HTTPS 存取的安全網站。VM1 只當作網頁伺服器使用。\n你需要確保使用者可以從網際網路連線到這個網站。你應該怎麼做？",
+    "options": {
+      "A": "修改 Rule4 的通訊協定",
+      "B": "刪除 Rule1",
+      "C": "把 Rule5 的動作改為「允許」，並把優先順序改為 401",
+      "D": "建立一條新的輸入規則，允許 TCP 通訊協定 443，並把優先順序設為 501。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。Rule4 是 UDP 規則，就算改成 TCP，它的連接埠範圍 50-100 與 400-500 也不包含 443；而且它的優先順序 1000 落在 Rule2（500，拒絕 443）之後，來不及生效。",
+      "B": "錯誤。Rule1 只拒絕連接埠 80，跟 HTTPS 的 443 無關。真正擋住 443 的是優先順序 500 的 Rule2。",
+      "C": "正確。NSG 規則是「由小到大依優先順序比對，第一個命中的就生效」，所以要放行 443，就必須在 Rule2（優先順序 500，拒絕 TCP 80 與 443）「之前」放行。\n把 Rule5 改成「允許」並把優先順序調到 401 之後：\n・它的連接埠範圍 50-5000 涵蓋 443 ✓\n・401 小於 500，會比 Rule2 先命中 ✓\n・也大於 400（Rule1 拒絕 80），所以連接埠 80 仍然被擋著——題目說 VM1 只當網頁伺服器用 HTTPS，這正好符合需求。",
+      "D": "錯誤。新規則的優先順序 501 排在 Rule2（500）「之後」，封包會先命中 Rule2 被拒絕，新規則永遠輪不到。"
     }
   },
   {
@@ -406,6 +606,51 @@
   },
   {
     "exam": "AZ-104",
+    "id": 430,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式，安裝在兩台 Azure 虛擬機器 VM1 與 VM2 上，對 App1 的連線透過負載平衡器進行。\nVM2 的「有效網路安全性設定」如下：\n・網路介面：VM2-NIC1｜虛擬網路／子網路：Vnet1/Subnet11｜NIC 公用 IP：無｜NIC 私人 IP：10.240.11.5｜加速網路：已停用\n・網路安全性群組 NSG2（影響 1 個子網路、0 個網路介面）\n【輸入連接埠規則】\n・100｜Allow_131.107.100.50｜443｜TCP｜來源 131.107.100.50｜目的地 VirtualNetwork｜允許\n・200｜BlockAllOther443｜443｜Any｜來源 Any｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你發現從 131.107.100.50 透過 TCP 連接埠 443 連線到 App1 會失敗。\n你確認負載平衡器的規則設定正確。\n你需要確保從 131.107.100.50 透過 TCP 連接埠 443 可以成功連線到 App1。\n解決方案：你建立一條輸入安全性規則，拒絕來自 131.107.100.50 的所有流量，優先順序（成本）為 64999。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這條規則是「拒絕」，與目標完全相反，也完全沒有碰到真正的病灶。",
+      "B": "正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n本解法新增的是「拒絕」規則，既沒有放行健康情況探查，方向也和目標相反（目標是要讓 131.107.100.50 連得進來）。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 431,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式，安裝在兩台 Azure 虛擬機器 VM1 與 VM2 上，對 App1 的連線透過負載平衡器進行。\nVM2 的「有效網路安全性設定」如下：\n・網路介面：VM2-NIC1｜虛擬網路／子網路：Vnet1/Subnet11｜NIC 公用 IP：無｜NIC 私人 IP：10.240.11.5｜加速網路：已停用\n・網路安全性群組 NSG2（影響 1 個子網路、0 個網路介面）\n【輸入連接埠規則】\n・100｜Allow_131.107.100.50｜443｜TCP｜來源 131.107.100.50｜目的地 VirtualNetwork｜允許\n・200｜BlockAllOther443｜443｜Any｜來源 Any｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你發現從 131.107.100.50 透過 TCP 連接埠 443 連線到 App1 會失敗。\n你確認負載平衡器的規則設定正確。\n你需要確保從 131.107.100.50 透過 TCP 連接埠 443 可以成功連線到 App1。\n解決方案：你刪除 BlockAllOther443 這條輸入安全性規則。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "【答案校正】ExamTopics 官方標示為 B（否），社群票也是 50 對 50。但官方對同組的另一題（本題庫 id 505：新增一條允許 AzureLoadBalancer、優先順序 150 的規則）標示為「是」——而那個解法唯一的作用就是「讓健康情況探查在 BlockAllOther443 之前被放行」。換句話說官方自己也承認病灶是探查被 BlockAllOther443 擋住。既然如此，直接把 BlockAllOther443 刪掉同樣能讓探查通過，因此本題判定為 A（是）。 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n把 BlockAllOther443 整條刪掉之後，來自 AzureLoadBalancer 的探查就會落到預設的 AllowAzureLoadBalancerInBound（65001）而被放行，VM2 恢復為狀況良好，負載平衡器重新把流量轉給它，連線就通了。\n副作用是其他來源的 443 也一併開放（安全性變差），但題目只問「有沒有達成目標」，這個解法確實達成了。",
+      "B": "錯誤。這個判定假設 BlockAllOther443 沒有擋到任何東西——但它的優先順序 200 遠小於 65001，正是它把健康情況探查擋掉的。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 432,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式，安裝在兩台 Azure 虛擬機器 VM1 與 VM2 上，對 App1 的連線透過負載平衡器進行。\nVM2 的「有效網路安全性設定」如下：\n・網路介面：VM2-NIC1｜虛擬網路／子網路：Vnet1/Subnet11｜NIC 公用 IP：無｜NIC 私人 IP：10.240.11.5｜加速網路：已停用\n・網路安全性群組 NSG2（影響 1 個子網路、0 個網路介面）\n【輸入連接埠規則】\n・100｜Allow_131.107.100.50｜443｜TCP｜來源 131.107.100.50｜目的地 VirtualNetwork｜允許\n・200｜BlockAllOther443｜443｜Any｜來源 Any｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你發現從 131.107.100.50 透過 TCP 連接埠 443 連線到 App1 會失敗。\n你確認負載平衡器的規則設定正確。\n你需要確保從 131.107.100.50 透過 TCP 連接埠 443 可以成功連線到 App1。\n解決方案：你修改 Allow_131.107.100.50 這條輸入安全性規則的優先順序。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。這條規則的來源限定為單一位址 131.107.100.50，無論優先順序調到多少，都不會放行來自 AzureLoadBalancer 的探查。",
+      "B": "正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\nAllow_131.107.100.50 的優先順序 100 已經是最優先，本來就先命中；而且它的來源是使用者的單一 IP，跟健康情況探查（來源是 AzureLoadBalancer 服務標籤）毫無關係。調整它的優先順序不會改變任何結果。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 433,
     "type": "single",
     "question": "注意：本題屬於一組情境相同但解法各異的題目，其中可能有多個正確解，也可能沒有正確解。作答後將無法返回修改。\n你有一個 Azure 訂用帳戶，其中有 10 個虛擬網路，分別裝載於不同的資源群組中。另一位管理員打算在該訂用帳戶中建立數個網路安全性群組 (NSG)。你必須確保當 NSG 被建立時，會自動封鎖虛擬網路之間的 TCP 8080 連接埠。\n解法：你把一個內建的原則定義指派給該訂用帳戶。\n此解法是否達成目標？",
@@ -436,6 +681,21 @@
       "B": "正確。Azure CNI 會直接從虛擬網路的子網路為每個 Pod 配發真實 IP 位址，因此該 IP 在虛擬網路中可路由，內部部署用戶端能透過 VPN 或 ExpressRoute 直接連到 Pod IP。",
       "C": "錯誤。混合式連線是 App Service 用來存取內部部署資源的功能，不是 AKS 的網路模型。",
       "D": "錯誤。私人連結提供的是以私人端點存取 PaaS 服務，並不會讓 Pod 取得可路由的 IP。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 435,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬機器：\n・VM1｜公用 IP SKU：無｜連接到 VNET1/Subnet1｜狀態：已停止 (已解除配置)\n・VM2｜公用 IP SKU：基本 (Basic)｜連接到 VNET1/Subnet2｜狀態：執行中\n\n你部署了一個負載平衡器，設定如下：\n✑ 名稱：LB1　✑ 類型：內部 (Internal)　✑ SKU：標準 (Standard)　✑ 虛擬網路：VNET1\n\n你需要確保可以把 VM1 與 VM2 加入 LB1 的後端集區。\n解決方案：你把公用 IP 位址從 VM2 的網路介面取消關聯。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。關鍵規則只有一條：**標準 (Standard) SKU 的負載平衡器，後端集區裡的 VM 不能帶著「基本 (Basic) SKU」的公用 IP**——同一條資料路徑上的公用 IP 與負載平衡器 SKU 必須一致。\n本題擋路的就是 VM2 那個基本公用 IP；VM1 沒有公用 IP，本身沒有問題。\n把 VM2 那個基本 SKU 的公用 IP 直接取消關聯，衝突就消失了：此時 VM1 與 VM2 都沒有公用 IP，兩台都能加進標準內部負載平衡器的後端集區。\n而且 LB1 是「內部」負載平衡器，後端 VM 本來就不需要公用 IP，拿掉它沒有任何副作用——這是最乾淨的解法。",
+      "B": "錯誤。取消關聯正是解除 SKU 衝突最直接的做法，而且對內部負載平衡器毫無損失。"
     }
   },
   {
@@ -529,6 +789,40 @@
       "2": "1 個。主動-主動是「同一個」虛擬網路閘道的部署模式，不是兩個閘道——而且一個虛擬網路的閘道子網路中也只能有一個 VPN 類型的虛擬網路閘道。所以最少（也是最多）1 個。",
       "3": "2 個。【答案校正】官方標示為 1，但「本機網路閘道」代表的是「一台內部部署 VPN 裝置」（它的公用 IP 與所通告的位址空間），一個本機網路閘道只能填一個閘道 IP 位址。題目有「兩台」內部部署 VPN 裝置，而且要求任一台故障都不中斷，因此必須各建一個本機網路閘道（共 2 個），再各自建立連線——這正是 Microsoft 文件中「雙重備援 (dual-redundancy)」的拓撲，Azure 端 2 個執行個體 × 內部 2 台裝置 = 4 條 IPsec 通道。",
       "_full": "「雙重備援」的標準組態：\n・Azure 端：1 個虛擬網路閘道，設為主動-主動 → 2 個公用 IP、2 個閘道執行個體。\n・內部部署端：2 台 VPN 裝置 → 2 個本機網路閘道、2 條連線。\n・合計 4 條 IPsec 通道，任一側單點故障都還有通道存活。\n【答案校正】官方把本機網路閘道標為 1，但那樣只涵蓋一台內部部署裝置，無法滿足「單一台內部部署 VPN 裝置故障也不中斷」的要求，故改判為 2。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 440,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含兩台虛擬機器：\n・VM1｜Windows Server 2019｜West Europe｜IP 位址 10.0.0.4｜DNS 伺服器：預設（Azure 提供）\n・VM2｜Windows Server 2019｜West Europe｜IP 位址 10.0.0.5｜DNS 伺服器：預設（Azure 提供）\n\n你從 VM2 對 10.0.0.4 執行反向 DNS 查閱。會傳回哪一個 FQDN？",
+    "options": {
+      "A": "vm1.core.windows.net",
+      "B": "vm1.azure.com",
+      "C": "vm1.westeurope.cloudapp.azure.com",
+      "D": "vm1.internal.cloudapp.net"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。core.windows.net 是 Azure「儲存體服務」的端點網域（如 blob.core.windows.net），與虛擬機器的名稱解析無關。",
+      "B": "錯誤。azure.com 是 Microsoft 的入口網站網域，不是 VM 的內部 DNS 尾碼。",
+      "C": "錯誤。<region>.cloudapp.azure.com 是「公用 IP」的 DNS 名稱標籤所用的網域，解析出來的是公用 IP，而且必須自己設定 DNS 名稱標籤才會存在。\n本題查的是私人位址 10.0.0.4，走的是內部 DNS。",
+      "D": "正確。兩台 VM 都使用「Azure 提供的」預設 DNS。\nAzure 內建 DNS 會自動替同一個虛擬網路裡的每台 VM 註冊「<VM 名稱>.internal.cloudapp.net」這個內部 FQDN，正向與反向解析都由它負責。\n所以對私人 IP 10.0.0.4 做反向查閱，得到的是 vm1.internal.cloudapp.net。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 441,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式，安裝在兩台 Azure 虛擬機器 VM1 與 VM2 上，對 App1 的連線透過負載平衡器進行。\nVM2 的「有效網路安全性設定」如下：\n・網路介面：VM2-NIC1｜虛擬網路／子網路：Vnet1/Subnet11｜NIC 公用 IP：無｜NIC 私人 IP：10.240.11.5｜加速網路：已停用\n・網路安全性群組 NSG2（影響 1 個子網路、0 個網路介面）\n【輸入連接埠規則】\n・100｜Allow_131.107.100.50｜443｜TCP｜來源 131.107.100.50｜目的地 VirtualNetwork｜允許\n・200｜BlockAllOther443｜443｜Any｜來源 Any｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你發現從 131.107.100.50 透過 TCP 連接埠 443 連線到 App1 會失敗。\n你確認負載平衡器的規則設定正確。\n你需要確保從 131.107.100.50 透過 TCP 連接埠 443 可以成功連線到 App1。\n解決方案：你建立一條輸入安全性規則，允許來自 AzureLoadBalancer 的所有流量，優先順序（成本）為 150。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "【答案校正】ExamTopics 官方標示為 B（否），但同一份題庫對「一字不差的同一個解法」（本題庫 id 505，只是把 cost 寫成 priority）卻標示為 A（是）——官方自相矛盾。依技術判斷，優先順序 150 排在 BlockAllOther443（200）之前，正好讓被擋住的健康情況探查得以通過，這是唯一能解釋故障也能修好故障的解法，因此本題與 id 505 一致判定為 A（是）。 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n這條新規則的優先順序 150 剛好卡在 Allow_131.107.100.50（100）與 BlockAllOther443（200）之間，所以來自 AzureLoadBalancer 的探查會先命中它而被放行，不會再走到 200 被拒絕。\n探查恢復正常 → VM2 變回狀況良好 → 負載平衡器重新轉送流量 → 連線成功。",
+      "B": "錯誤。這個判定通常是認為「65001 已經放行 AzureLoadBalancer 了，不必再加」，但 65001 排在 BlockAllOther443（200）之後，探查根本走不到那裡——必須加一條優先順序小於 200 的規則才有用。"
     }
   },
   {
@@ -733,6 +1027,21 @@
   },
   {
     "exam": "AZ-104",
+    "id": 451,
+    "type": "single",
+    "question": "你有一個名為 App1 的應用程式，安裝在兩台 Azure 虛擬機器 VM1 與 VM2 上，對 App1 的連線透過負載平衡器進行。\nVM2 的「有效網路安全性設定」如下：\n・網路介面：VM2-NIC1｜虛擬網路／子網路：Vnet1/Subnet11｜NIC 公用 IP：無｜NIC 私人 IP：10.240.11.5｜加速網路：已停用\n・網路安全性群組 NSG2（影響 1 個子網路、0 個網路介面）\n【輸入連接埠規則】\n・100｜Allow_131.107.100.50｜443｜TCP｜來源 131.107.100.50｜目的地 VirtualNetwork｜允許\n・200｜BlockAllOther443｜443｜Any｜來源 Any｜目的地 Any｜拒絕\n・65000｜AllowVnetInBound｜Any｜Any｜VirtualNetwork → VirtualNetwork｜允許\n・65001｜AllowAzureLoadBalancerInBound｜Any｜Any｜AzureLoadBalancer｜允許\n・65500｜DenyAllInBound｜Any｜Any｜Any｜拒絕\n\n你發現從 131.107.100.50 透過 TCP 連接埠 443 連線到 App1 會失敗。\n你確認負載平衡器的規則設定正確。\n你需要確保從 131.107.100.50 透過 TCP 連接埠 443 可以成功連線到 App1。\n解決方案：你建立一條輸入安全性規則，拒絕來自 131.107.100.50 的所有流量，優先順序為 64999。\n這樣是否達成目標？",
+    "options": {
+      "A": "是",
+      "B": "否"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。新增一條拒絕來源 131.107.100.50 的規則，與目標相反，也沒有處理探查的問題。",
+      "B": "正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n本解法既沒有放行健康情況探查，方向又和目標相反。\n（順帶一提，它的優先順序 64999 排在 Allow_131.107.100.50（100）之後，所以實際上連「拒絕使用者」都做不到——這條規則等於什麼也沒做。）"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 452,
     "type": "ordering",
     "question": "你有一個 Azure 訂用帳戶，以及兩個內部部署據點 site1 與 site2。\n你需要使用 Azure 虛擬 WAN (Virtual WAN) 把 site1 與 site2 連起來。\n\n你應該依序執行哪四個動作？",
@@ -785,6 +1094,46 @@
       "2": "是。同樣走 Server1，而 Server1 的 contoso.com 區域中有 Host1 → 131.107.10.15，因此解析結果是 131.107.10.15（不是 Azure 私人區域裡的 131.107.200.20）。",
       "3": "否。NIC3 設為「從虛擬網路繼承」，而 VNET2 的 DNS 伺服器是自訂的 10.10.0.4——也就是 Server1。所以 Server3 的查詢同樣被送到 Server1，而不是 Azure 提供的解析程式；私人 DNS 區域必須經由 Azure 的 DNS（168.63.129.16）才查得到。因此 Server3 也解析不到 host2。",
       "_full": "這題的關鍵是「私人 DNS 區域只有在虛擬機器使用『Azure 提供的 DNS』時才會被查到」。一旦虛擬網路或網路介面指定了自訂 DNS 伺服器，查詢就全部送去那台伺服器，Azure 私人區域就繞過了（除非那台自訂 DNS 再把查詢轉送到 168.63.129.16）。\n本題三台的 DNS 都指向 Server1（NIC2 直接指定；NIC3 繼承 VNET2 的自訂設定），而 Server1 是 contoso.com 的權威伺服器，所以答案完全由 Server1 的區域內容決定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 454,
+    "type": "single",
+    "question": "你有一個名為 VNet1 的虛擬網路，其設定如下：\n・資源群組：Production｜位置：West US\n・訂用帳戶：Production subscription\n・位址空間：10.2.0.0/16\n・DNS 伺服器：Azure 提供的 DNS 服務\n・已連線的裝置：無\n\n沒有任何裝置連線到 VNet1。\n你打算把 VNet1 與另一個名為 VNet2 的虛擬網路建立對等互連，VNet2 的位址空間是 10.2.0.0/16。\n你需要建立這個對等互連。你應該先做什麼？",
+    "options": {
+      "A": "修改 VNet1 的位址空間。",
+      "B": "為 VNet1 新增一個閘道子網路。",
+      "C": "在 VNet1 與 VNet2 上各建立一個子網路。",
+      "D": "在 VNet2 上設定服務端點。"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。VNet1 與 VNet2 的位址空間都是 10.2.0.0/16——完全相同，也就是完全重疊。\n虛擬網路對等互連唯一的硬性限制就是「位址空間不能重疊」，所以在建立對等互連之前，必須先把其中一邊的位址空間改掉。\n題目特別強調「沒有任何裝置連線到 VNet1」，就是在暗示改 VNet1 的位址空間不會影響任何東西——這是最省事的一邊。",
+      "B": "錯誤。閘道子網路是給 VPN／ExpressRoute 閘道用的，對等互連不需要它。",
+      "C": "錯誤。對等互連是虛擬網路層級的關係，不要求先有子網路；而且就算建了子網路，位址空間重疊的問題還在。",
+      "D": "錯誤。服務端點是讓子網路以私人路徑存取 Azure PaaS 服務用的，與對等互連無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 455,
+    "type": "single",
+    "question": "你有下列 Azure 虛擬機器：\n・VM1｜IP 位址 10.0.0.4｜虛擬網路 VNET1\n・VM2｜IP 位址 10.0.0.5｜虛擬網路 VNET1\n\nVNET1 連結到一個名為 contoso.com 的私人 DNS 區域，該區域包含下列記錄：\n・comp1｜類型 TXT｜TTL 3600｜值 10.0.0.5｜自動註冊：False\n・comp2｜類型 A｜TTL 3600｜值 10.0.0.5｜自動註冊：False\n・comp3｜類型 CNAME｜TTL 3600｜值 comp1.contoso.com｜自動註冊：False\n・comp4｜類型 PTR｜TTL 3600｜值 10.0.0.5｜自動註冊：False\n\n你需要從 VM1 ping VM2。你可以使用哪些 DNS 名稱來 ping VM2？",
+    "options": {
+      "A": "只有 comp2.contoso.com 和 comp4.contoso.com",
+      "B": "comp1.contoso.com、comp2.contoso.com、comp3.contoso.com 和 comp4.contoso.com",
+      "C": "只有 comp2.contoso.com",
+      "D": "只有 comp1.contoso.com 和 comp2.contoso.com",
+      "E": "只有 comp1.contoso.com、comp2.contoso.com 和 comp4.contoso.com"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。comp4 是 PTR 記錄，用於「IP → 名稱」的反向查詢，正向解析（名稱 → IP）查不到它。",
+      "B": "錯誤。四種記錄類型裡只有 A 記錄能把名稱解析成 IPv4 位址。",
+      "C": "正確。ping 需要把名稱解析成 IP 位址，也就是要有「A 記錄」（IPv4）或 AAAA（IPv6）。\n逐一檢視：\n・comp1 是 TXT 記錄——它的值雖然長得像 IP，但 TXT 只是任意文字，解析不出位址 ✗\n・comp2 是 A 記錄，值 10.0.0.5 ✓\n・comp3 是 CNAME，指向 comp1.contoso.com；而 comp1 只有 TXT 沒有 A，追下去仍然拿不到位址 ✗\n・comp4 是 PTR 記錄，只服務反向查詢 ✗\n所以只有 comp2.contoso.com。",
+      "D": "錯誤。comp1 是 TXT 記錄，不是位址記錄。",
+      "E": "錯誤。comp1（TXT）與 comp4（PTR）都無法用於正向的名稱解析。"
     }
   },
   {
@@ -867,6 +1216,25 @@
       "B": "錯誤。Web 流量走 TCP，改成 UDP 會直接讓服務無法運作。",
       "C": "錯誤。設為「無」會以五元組雜湊分散每個新連線，同一用戶端可能落到不同伺服器，與需求相反。",
       "D": "錯誤。浮動 IP 影響的是封包目的 IP 是否保留，與工作階段黏著性無關。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 459,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中使用下列公用 IP 位址：\n・IP1｜IP 版本 IPv6｜SKU 基本 (Basic)｜指派方式 靜態｜可用性區域：不適用\n・IP2｜IP 版本 IPv6｜SKU 基本 (Basic)｜指派方式 動態｜可用性區域：不適用\n・IP3｜IP 版本 IPv6｜SKU 標準 (Standard)｜指派方式 靜態｜可用性區域：區域備援\n\n你需要建立一個「公用的 Azure 標準負載平衡器」。你可以使用哪些公用 IP 位址？",
+    "options": {
+      "A": "IP1、IP2 和 IP3",
+      "B": "只有 IP2",
+      "C": "只有 IP3",
+      "D": "只有 IP1 和 IP3"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。IP1 與 IP2 都是基本 SKU，不能用在標準負載平衡器上。",
+      "B": "錯誤。IP2 除了是基本 SKU，還是動態指派——標準負載平衡器兩項都不接受。",
+      "C": "正確。判斷只有一條規則：**SKU 必須一致**。\n標準負載平衡器的前端只能使用「標準 SKU」的公用 IP，而標準 SKU 的公用 IP 一律是靜態指派。\n三個位址中只有 IP3 是標準 SKU ✓；IP1、IP2 都是基本 SKU ✗。\n（三個都是 IPv6 並不影響——標準負載平衡器支援 IPv6。）",
+      "D": "錯誤。IP1 雖然是靜態，但 SKU 是基本，仍然不能用。"
     }
   },
   {
@@ -1173,6 +1541,30 @@
   },
   {
     "exam": "AZ-104",
+    "id": 472,
+    "type": "multiple",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VM1｜虛擬機器\n・VNet1｜虛擬網路\n・NIC1｜網路介面\n・LB1｜負載平衡器\n・VPN1｜虛擬網路閘道\n\n你建立了一個名為 IP1 的公用 IP 位址。\n你可以把 IP1 關聯到哪「兩」個資源？每個正確答案都是一個完整的解決方案。（每個正確選擇得一分）",
+    "options": {
+      "A": "VM1",
+      "B": "LB1",
+      "C": "NIC1",
+      "D": "VPN1",
+      "E": "VNet1"
+    },
+    "answer": [
+      "B",
+      "C"
+    ],
+    "explanations": {
+      "A": "錯誤。公用 IP 不會直接掛在「虛擬機器」這個物件上，而是掛在它的「網路介面」的 IP 組態上——所以正確的對象是 NIC1，不是 VM1。",
+      "B": "正確。公用負載平衡器的「前端 IP 組態」就是用公用 IP 位址設定的，可以把 IP1 指派給 LB1 當前端。",
+      "C": "正確。網路介面的 IP 組態可以關聯一個公用 IP，這也是讓虛擬機器擁有公用 IP 的標準做法。",
+      "D": "錯誤。虛擬網路閘道確實需要公用 IP，但那個公用 IP 是在「建立閘道時」一併指定的，之後不能把另一個現成的公用 IP 掛到既有的閘道上。\n題目裡的 VPN1 已經存在，所以 IP1 關聯不上去。",
+      "E": "錯誤。虛擬網路本身沒有公用 IP 的概念——公用 IP 是掛在網路介面、負載平衡器前端、閘道、Bastion 這類「端點」上。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 473,
     "type": "single",
     "question": "你有一個 Azure 訂用帳戶，其中包含名為 storage1 的儲存體帳戶。你必須允許從「選取的網路」以及你的家庭辦公室存取 storage1，且解決方案必須盡量減少管理工作。你應該「最先」為 storage1 做什麼？",
@@ -1207,6 +1599,25 @@
       "B": "錯誤。Azure VPN 閘道完全不支援 PPTP，該協定也已因安全性問題被淘汰。",
       "C": "正確。基於路由的 Azure VPN 閘道使用 IKEv2 建立 IPsec 通道，且支援多個站台同時連線，符合題目情境。",
       "D": "錯誤。L2TP 並非 Azure 站對站 VPN 支援的通道通訊協定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 475,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VNET1｜虛擬網路｜Azure 區域：US East\n　包含子網路：Subnet1 172.16.1.0/24、Subnet2 172.16.2.0/24、Subnet3 172.16.3.0/24\n・VNET2｜虛擬網路｜Azure 區域：West US\n　包含子網路：DemoSubnet1 172.16.1.0/24、RecoverySubnetA 172.16.5.0/24、RecoverySubnetB 172.16.3.0/24、TestSubnet1 172.16.2.0/24\n・VM1｜虛擬機器｜連接到 Subnet2\n\n你設定 Azure Site Recovery 在 US East 與 West US 兩個區域之間複寫 VM1。\n你對 VM1 執行「測試容錯移轉」，並指定 VNET2 為目標虛擬網路。\n當測試版本的 VM1 被建立時，這台虛擬機器會連接到哪一個子網路？",
+    "options": {
+      "A": "TestSubnet1",
+      "B": "DemoSubnet1",
+      "C": "RecoverySubnetA",
+      "D": "RecoverySubnetB"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。TestSubnet1 的位址範圍（172.16.2.0/24）雖然與來源的 Subnet2 相同，而且名字裡有 Test，看起來最像答案——但 Site Recovery 比對的是「子網路名稱」，不是位址範圍，更不是名稱裡有沒有 Test。",
+      "B": "正確。Site Recovery 決定目標子網路的規則是：\n① 先找目標虛擬網路裡「名稱與來源子網路相同」的子網路。\n② 找不到的話，就退回使用目標虛擬網路中的「第一個」子網路。\n來源子網路叫 Subnet2，而 VNET2 裡沒有任何叫 Subnet2 的子網路，所以套用第二條規則，落在清單第一個的 DemoSubnet1。",
+      "C": "錯誤。RecoverySubnetA 既不同名，也不是清單中的第一個。",
+      "D": "錯誤。RecoverySubnetB 的位址範圍與來源的 Subnet3 相同，但那不是 VM1 所在的子網路，而且名稱也不相符。"
     }
   },
   {
@@ -1348,6 +1759,46 @@
   },
   {
     "exam": "AZ-104",
+    "id": 482,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列虛擬網路：\n・VNET1｜Azure 區域 West US｜資源群組 RG1\n・VNET2｜Azure 區域 Central US｜資源群組 RG1\n・VNET3｜Azure 區域 Central US｜資源群組 RG2\n・VNET4｜Azure 區域 West US｜資源群組 RG2\n\n你需要把一個名為 AF1 的 Azure 防火牆部署到「RG1」與「West US」區域。\n你可以把 AF1 部署到哪些虛擬網路？",
+    "options": {
+      "A": "VNET1、VNET2、VNET3 和 VNET4",
+      "B": "只有 VNET1 和 VNET2",
+      "C": "只有 VNET1",
+      "D": "只有 VNET1、VNET2 和 VNET4",
+      "E": "只有 VNET1 和 VNET4"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。VNET2 與 VNET3 都在 Central US，跨區域不成立。",
+      "B": "錯誤。VNET2 在 Central US，與指定的 West US 不同區域。",
+      "C": "正確。題目把兩個條件都寫死了：AF1 要部署到「RG1」而且在「West US」。\nAzure 防火牆是部署進虛擬網路裡的專用子網路 (AzureFirewallSubnet)，所以它必須與該虛擬網路「同區域」，而入口網站的建立流程也要求兩者「同資源群組」。\n・VNET1：West US + RG1 → 兩個條件都符合 ✓\n・VNET2：RG1 對，但在 Central US ✗\n・VNET3：兩個都不符 ✗\n・VNET4：West US 對，但在 RG2 ✗\n（社群票有 29% 選 E，就是只看區域、忽略了題目指定的資源群組。）",
+      "D": "錯誤。含了 Central US 的 VNET2 與 RG2 的 VNET4。",
+      "E": "錯誤。VNET4 雖然同區域，但在 RG2，不符合題目指定的 RG1。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 483,
+    "type": "single",
+    "question": "你有一個內部部署網路。你有一個 Azure 訂用帳戶，其中有三個虛擬網路 VNET1、VNET2 與 VNET3，這些虛擬網路彼此對等互連，並且都連線到內部部署網路。\n訂用帳戶包含下列虛擬機器：\n・VM1｜West US｜連接到 VNET1\n・VM2｜West US｜連接到 VNET1\n・VM3｜West US｜連接到 VNET2\n・VM4｜Central US｜連接到 VNET3\n\n你需要使用「連線監視器 (Connection Monitor)」監視這些虛擬機器與內部部署網路之間的連線能力。\n你「最少」應該部署幾個連線監視器？",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "3",
+      "D": "4"
+    },
+    "answer": "B",
+    "explanations": {
+      "A": "錯誤。四台機器分布在兩個區域，一個連線監視器涵蓋不了兩個區域。",
+      "B": "正確。連線監視器是「區域性」的資源——它屬於某個區域的網路監看員 (Network Watcher)，而且只能監視「該區域內」的來源端點。\n所以要看的是機器分布在幾個「區域」，不是幾個虛擬網路：\n・West US：VM1、VM2、VM3（跨 VNET1 與 VNET2，但同區域）→ 1 個\n・Central US：VM4 → 1 個\n合計 2 個。\n同一個連線監視器裡可以放多個來源端點與多個目的地，所以 West US 的三台機器共用一個就夠了。",
+      "C": "錯誤。這是把「一個虛擬網路一個監視器」，但同區域的多個虛擬網路可以共用。",
+      "D": "錯誤。這是每台 VM 各一個，遠超過必要。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 484,
     "type": "matching",
     "question": "你打算部署下列 ARM 範本（節錄）：\n　\"variables\": {\n　　\"vnetId\": \"[resourceId('Microsoft.Network/virtualNetworks/', 'VNET1')]\",\n　　\"lbId\": \"[resourceId('Microsoft.Network/loadBalancers/', 'LB1')]\",\n　　\"sku\": \"Standard\",\n　　\"netname\": \"APP1\" },\n　\"parameters\": {},\n　\"resources\": [ {\n　　\"type\": \"Microsoft.Network/loadBalancers/\", \"name\": \"LB1\",\n　　\"location\": \"EastUS\", \"sku\": { \"name\": \"[variables('sku')]\" },\n　　\"properties\": {\n　　　\"frontendIPConfiguration\": [ { \"name\": \"[variables('netname')]\",\n　　　　\"properties\": { \"subnet\": { \"id\":\n　　　　　\"[concat(variables('vnetId'),'/subnets/', variables('netname'))]\" },\n　　　　　\"privateIPAllocationMethod\": \"Dynamic\" } } ],\n　　　\"backendAddressPools\": [ { \"name\": \"concat(variables('netname'), '-Servers')\" } ],\n　　　\"loadBalancingRules\": [ … backendPort 8080、protocol Tcp、frontendPort 80、enableFloatingIP false、idleTimeoutInMinutes 4、loadDistribution SourceIPProtocol … ],\n　　　\"probes\": [ { \"name\": \"probe\", \"properties\": { \"protocol\": \"Tcp\", \"port\": 8080, \"intervalInSeconds\": 15, \"numberOfProbes\": 2 } } ] } } ]\n\n下列每一項陳述，若正確請選「是」，否則選「否」。（每個正確選擇得一分）",
@@ -1416,6 +1867,46 @@
   },
   {
     "exam": "AZ-104",
+    "id": 487,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・App1｜App Service｜已為 VNET1 啟用虛擬網路整合\n・ASP1｜App Service 方案｜標準 (Standard) SKU\n・VNET1｜虛擬網路｜無\n・Firewall1｜Azure 防火牆｜連線到 VNET1\n\n你需要使用 Firewall1 管理 VNET1 的「輸出」流量。你應該先做什麼？",
+    "options": {
+      "A": "設定混合式連線管理員 (Hybrid Connection Manager)。",
+      "B": "把 ASP1 升級為進階 (Premium) SKU。",
+      "C": "建立一個路由表。",
+      "D": "建立一個 Azure 網路監看員 (Network Watcher)。"
+    },
+    "answer": "C",
+    "explanations": {
+      "A": "錯誤。混合式連線管理員是讓 App Service 存取「內部部署」資源用的，與虛擬網路的輸出流量導向無關。",
+      "B": "錯誤。標準 SKU 的 App Service 方案已經支援虛擬網路整合（題目也寫明 App1 已經啟用了），不需要升級。",
+      "C": "正確。防火牆已經部署在 VNET1 裡了，但「部署了」不等於「流量會經過它」。\nAzure 的子網路預設路由會把對外流量直接送上網際網路，要讓它改走防火牆，必須建立一個路由表（使用者定義路由 UDR），在裡面加一條 0.0.0.0/0 → 下一個躍點為「虛擬設備」、位址為 Firewall1 的私人 IP，再把這個路由表關聯到要保護的子網路。\n沒有這一步，Firewall1 就只是放在那裡沒有流量經過。",
+      "D": "錯誤。網路監看員是診斷與監視工具（連線疑難排解、流量記錄），它不會改變流量的路徑。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 488,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含下列資源：\n・VM1｜虛擬機器\n・App1｜Web 應用程式\n・contoso.com｜Azure Active Directory Domain Services (Azure AD DS) 網域\n\n所有資源都連線到一個名為 VNet1 的虛擬網路。\n你打算把一個名為 Bastion1 的 Azure Bastion 主機部署到 VNet1。\n哪些資源可以受 Bastion1 保護？",
+    "options": {
+      "A": "只有 VM1",
+      "B": "只有 contoso.com",
+      "C": "只有 App1 和 contoso.com",
+      "D": "只有 VM1 和 contoso.com",
+      "E": "VM1、App1 和 contoso.com"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure Bastion 做的事很單純：提供一條安全的 RDP／SSH 通道，讓你不必替虛擬機器開公用 IP 或開放 3389／22 就能連進去管理它。\n所以它的保護對象只有「虛擬機器」（含擴展集），本題就只有 VM1。\n・App1 是 Web 應用程式，走的是 HTTPS，它的保護手段是 App Service 的存取限制、私人端點或應用程式閘道，不是 Bastion。\n・contoso.com 是受管理的 Azure AD DS 網域服務，它的網域控制站由 Microsoft 代管，你根本沒有 RDP 進去的權限。",
+      "B": "錯誤。Azure AD DS 是 PaaS 服務，網域控制站由 Microsoft 管理，不能用 Bastion 連線。",
+      "C": "錯誤。Web 應用程式與受管理網域都不是 Bastion 的保護對象。",
+      "D": "錯誤。多算了 contoso.com。",
+      "E": "錯誤。Bastion 只保護虛擬機器。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 489,
     "type": "single",
     "question": "你有五台執行 Windows Server 2016 的 Azure 虛擬機器，設定為 Web 伺服器，並由名為 LB1 的 Azure 負載平衡器提供負載平衡服務。你必須確保訪客的每一次請求都由「同一台」Web 伺服器服務。你應該設定什麼？",
@@ -1450,6 +1941,25 @@
       "B": "錯誤。浮動 IP 改變的是封包目的 IP 是否保留給後端（用於 SQL Always On、NVA 等情境），與同一用戶端是否固定連到同一台伺服器無關。",
       "C": "正確。此設定採三元組雜湊（用戶端 IP + 通訊協定），同一用戶端以同一通訊協定發出的連線會固定落在同一台後端伺服器，同樣達成黏著工作階段。",
       "D": "錯誤。Web 流量走 TCP，改成 UDP 會讓服務直接無法運作，而且通訊協定與黏著性是不同的設定。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 491,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中包含 10 台虛擬機器與下列資源：\n・VNET1｜虛擬網路｜無\n・Bastion1｜基本 (Basic) SKU 的 Azure Bastion 主機｜子網路大小 /26\n\n你需要確保 Bastion1 可以支援 100 個並行的 SSH 使用者，而且解決方案必須盡量減少管理工作。\n你應該先做什麼？",
+    "options": {
+      "A": "調整 Bastion1 的子網路大小",
+      "B": "設定主機調整 (host scaling)。",
+      "C": "建立一個網路安全性群組 (NSG)",
+      "D": "把 Bastion1 升級為標準 (Standard) SKU"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。子網路已經是 /26（Bastion 的建議大小），空間不是瓶頸；而且調整子網路大小也不會提高並行連線數。",
+      "B": "錯誤。方向對，但順序錯了——「主機調整（調整執行個體數）」是「標準 SKU 以上」才有的功能，基本 SKU 的 Bastion 根本看不到這個設定。題目問的是「先」做什麼，所以要先升級 SKU 才輪到它。",
+      "C": "錯誤。NSG 是流量過濾，跟能承載多少並行工作階段無關。",
+      "D": "正確。基本 SKU 的 Azure Bastion 固定只有 2 個執行個體，大約支援 20 個並行的 RDP 或 40 個並行的 SSH 工作階段，撐不到 100 個。\n要提高容量必須靠「主機調整」增加執行個體數，而這個功能只有標準 SKU 以上才提供——所以第一步是把 Bastion1 升級為標準 SKU，之後才能把執行個體數往上調。"
     }
   },
   {
@@ -1517,6 +2027,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 495,
+    "type": "single",
+    "question": "你有一個 Azure 訂用帳戶，其中有下列公用 IP 位址：\n・IP1｜IPv4｜SKU 標準 (Standard)｜層 Regional｜指派方式 靜態\n・IP2｜IPv4｜SKU 標準 (Standard)｜層 Global｜指派方式 靜態\n・IP3｜IPv4｜SKU 基本 (Basic)｜層 Regional｜指派方式 動態\n・IP4｜IPv4｜SKU 基本 (Basic)｜層 Regional｜指派方式 靜態\n・IP5｜IPv6｜SKU 基本 (Basic)｜層 Regional｜指派方式 動態\n\n你打算部署一個名為 Bastion1 的 Azure Bastion「基本 SKU」主機。你可以使用哪些 IP 位址？",
+    "options": {
+      "A": "只有 IP1",
+      "B": "只有 IP1 和 IP2",
+      "C": "只有 IP3、IP4 和 IP5",
+      "D": "只有 IP1、IP2、IP4 和 IP5",
+      "E": "IP1、IP2、IP3、IP4 和 IP5"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "正確。Azure Bastion 的公用 IP 有四個條件，缺一不可：\n① SKU 必須是「標準」→ IP3、IP4、IP5 都是基本，出局。\n② 指派方式必須是「靜態」→ IP3、IP5 是動態，出局。\n③ 必須是「IPv4」→ IP5 出局。\n④ 層必須是「Regional」→ IP2 是 Global，出局（Global 層的公用 IP 是給跨區域負載平衡器用的）。\n五個位址中只有 IP1 四項全中。",
+      "B": "錯誤。IP2 雖然是標準且靜態，但它的層是 Global，Bastion 只接受 Regional。",
+      "C": "錯誤。這三個全是基本 SKU，Bastion 一個都不能用。",
+      "D": "錯誤。多算了 IP2（Global 層）、IP4 與 IP5（基本 SKU）。",
+      "E": "錯誤。只有 IP1 符合全部條件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 496,
     "type": "single",
     "question": "你有五台執行 Windows Server 2016 的 Azure 虛擬機器，設定為 Web 伺服器，並由名為 LB1 的 Azure 負載平衡器提供負載平衡服務。你必須確保訪客的每一次請求都由「同一台」Web 伺服器服務。你應該設定什麼？",
@@ -1551,6 +2082,25 @@
       "B": "錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
       "C": "錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
       "D": "正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 498,
+    "type": "single",
+    "question": "你有兩個 Azure 訂用帳戶 Sub1 與 Sub2。\nSub1 包含一台名為 VM1 的虛擬機器與一個名為 storage1 的儲存體帳戶。\nVM1 關聯到下列資源：\n・Disk1｜作業系統磁碟\n・NetInt1｜網路介面\n・VNet1｜虛擬網路\n\n你需要把 VM1 移到 Sub2。你應該把哪些資源移到 Sub2？",
+    "options": {
+      "A": "只有 VM1、Disk1 和 NetInt1",
+      "B": "只有 VM1、Disk1 和 VNet1",
+      "C": "只有 VM1、Disk1 和 storage1",
+      "D": "VM1、Disk1、NetInt1 和 VNet1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "錯誤。漏掉 VNet1。NetInt1 連接在 VNet1 的子網路上，如果 VNet1 留在 Sub1，搬移驗證會因為相依資源不完整而失敗。",
+      "B": "錯誤。漏掉 NetInt1。虛擬機器一定要有網路介面，它是必須一起搬的相依資源。",
+      "C": "錯誤。storage1 與 VM1 沒有關聯（題目只說它在 Sub1，沒說 VM1 用它），不必搬；反而漏掉了必須一起搬的 NetInt1 與 VNet1。",
+      "D": "正確。跨訂用帳戶搬移的規則是「相依的資源必須一起搬」——Azure 會做驗證，只要有任何一個相依資源被留下就會失敗。\nVM1 的相依鏈是：VM1 → Disk1（作業系統磁碟）、VM1 → NetInt1（網路介面）→ VNet1（網路介面所在的虛擬網路）。四個都要一起搬。\nstorage1 不在這條鏈上（VM1 用的是受控磁碟，沒有用到它），所以不必搬。"
     }
   },
   {
