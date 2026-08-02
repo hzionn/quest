@@ -615,8 +615,8 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "Incorrect. 錯誤。這條規則是「拒絕」，方向與目標完全相反。",
-      "B": "Correct. 正確。先看清楚這份規則到底放不放行：優先順序 100 的 Allow_131.107.100.50 已經明確允許「來源 131.107.100.50、TCP 443」，而且 100 遠小於 200 的 BlockAllOther443，會先命中並允許。\n換句話說 **VM2 這一側的 NSG 本來就沒有擋住這條連線**——故障原因在別的地方（例如 VM1 那一側的規則）。\n既然問題不在這份 NSG，任何「繼續修改這份 NSG」的解法都不會讓連線通。\n而且這個解法本身就自相矛盾：目標是要「讓」131.107.100.50 連得進來，解法卻是新增一條拒絕它的規則。"
+      "A": "Incorrect. 錯誤。這條規則是「拒絕」，與目標完全相反，也完全沒有碰到真正的病灶。",
+      "B": "Correct. 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n本解法新增的是「拒絕」規則，既沒有放行健康情況探查，方向也和目標相反（目標是要讓 131.107.100.50 連得進來）。"
     }
   },
   {
@@ -628,10 +628,10 @@
       "A": "Yes",
       "B": "No"
     },
-    "answer": "B",
+    "answer": "A",
     "explanations": {
-      "A": "Incorrect. 錯誤。BlockAllOther443 的優先順序是 200，而 Allow_131.107.100.50 是 100——來自 131.107.100.50 的封包早在 100 就被允許了，根本不會走到 200。刪掉它對這條連線沒有任何影響。",
-      "B": "Correct. 正確。先看清楚這份規則到底放不放行：優先順序 100 的 Allow_131.107.100.50 已經明確允許「來源 131.107.100.50、TCP 443」，而且 100 遠小於 200 的 BlockAllOther443，會先命中並允許。\n換句話說 **VM2 這一側的 NSG 本來就沒有擋住這條連線**——故障原因在別的地方（例如 VM1 那一側的規則）。\n既然問題不在這份 NSG，任何「繼續修改這份 NSG」的解法都不會讓連線通。\n刪除 BlockAllOther443 只會讓「其他」來源的 443 也能進來（反而放寬了安全性），對 131.107.100.50 這條原本就被允許的連線一點幫助也沒有。\n（這題社群票 50 對 50，容易錯在沒注意到優先順序 100 已經先命中。）"
+      "A": "Correct. 【答案校正】ExamTopics 官方標示為 B（否），社群票也是 50 對 50。但官方對同組的另一題（本題庫 id 505：新增一條允許 AzureLoadBalancer、優先順序 150 的規則）標示為「是」——而那個解法唯一的作用就是「讓健康情況探查在 BlockAllOther443 之前被放行」。換句話說官方自己也承認病灶是探查被 BlockAllOther443 擋住。既然如此，直接把 BlockAllOther443 刪掉同樣能讓探查通過，因此本題判定為 A（是）。 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n把 BlockAllOther443 整條刪掉之後，來自 AzureLoadBalancer 的探查就會落到預設的 AllowAzureLoadBalancerInBound（65001）而被放行，VM2 恢復為狀況良好，負載平衡器重新把流量轉給它，連線就通了。\n副作用是其他來源的 443 也一併開放（安全性變差），但題目只問「有沒有達成目標」，這個解法確實達成了。",
+      "B": "Incorrect. 錯誤。這個判定假設 BlockAllOther443 沒有擋到任何東西——但它的優先順序 200 遠小於 65001，正是它把健康情況探查擋掉的。"
     }
   },
   {
@@ -645,8 +645,8 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "Incorrect. 錯誤。這條規則的優先順序 100 已經是所有自訂規則中最小的，本來就第一個命中，調整它不會改變任何結果。",
-      "B": "Correct. 正確。先看清楚這份規則到底放不放行：優先順序 100 的 Allow_131.107.100.50 已經明確允許「來源 131.107.100.50、TCP 443」，而且 100 遠小於 200 的 BlockAllOther443，會先命中並允許。\n換句話說 **VM2 這一側的 NSG 本來就沒有擋住這條連線**——故障原因在別的地方（例如 VM1 那一側的規則）。\n既然問題不在這份 NSG，任何「繼續修改這份 NSG」的解法都不會讓連線通。\nAllow_131.107.100.50 的優先順序 100 已經最優先，把它調得更小或更大（只要仍小於 200）結果都一樣——連線本來就被允許。"
+      "A": "Incorrect. 錯誤。這條規則的來源限定為單一位址 131.107.100.50，無論優先順序調到多少，都不會放行來自 AzureLoadBalancer 的探查。",
+      "B": "Correct. 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\nAllow_131.107.100.50 的優先順序 100 已經是最優先，本來就先命中；而且它的來源是使用者的單一 IP，跟健康情況探查（來源是 AzureLoadBalancer 服務標籤）毫無關係。調整它的優先順序不會改變任何結果。"
     }
   },
   {
@@ -819,10 +819,10 @@
       "A": "Yes",
       "B": "No"
     },
-    "answer": "B",
+    "answer": "A",
     "explanations": {
-      "A": "Incorrect. 錯誤。預設規則 AllowAzureLoadBalancerInBound（65001）已經放行了來自 AzureLoadBalancer 的流量，再加一條同樣意思的規則是多餘的。",
-      "B": "Correct. 正確。先看清楚這份規則到底放不放行：優先順序 100 的 Allow_131.107.100.50 已經明確允許「來源 131.107.100.50、TCP 443」，而且 100 遠小於 200 的 BlockAllOther443，會先命中並允許。\n換句話說 **VM2 這一側的 NSG 本來就沒有擋住這條連線**——故障原因在別的地方（例如 VM1 那一側的規則）。\n既然問題不在這份 NSG，任何「繼續修改這份 NSG」的解法都不會讓連線通。\n而且要特別分清楚：AzureLoadBalancer 這個服務標籤代表的是「負載平衡器的健康情況探查」來源，不是使用者的實際流量——使用者的封包到達後端 VM 時，來源仍然是用戶端的 IP（131.107.100.50），不會變成 AzureLoadBalancer。所以放行這個標籤跟本題的連線無關。"
+      "A": "Correct. 【答案校正】ExamTopics 官方標示為 B（否），但同一份題庫對「一字不差的同一個解法」（本題庫 id 505，只是把 cost 寫成 priority）卻標示為 A（是）——官方自相矛盾。依技術判斷，優先順序 150 排在 BlockAllOther443（200）之前，正好讓被擋住的健康情況探查得以通過，這是唯一能解釋故障也能修好故障的解法，因此本題與 id 505 一致判定為 A（是）。 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n這條新規則的優先順序 150 剛好卡在 Allow_131.107.100.50（100）與 BlockAllOther443（200）之間，所以來自 AzureLoadBalancer 的探查會先命中它而被放行，不會再走到 200 被拒絕。\n探查恢復正常 → VM2 變回狀況良好 → 負載平衡器重新轉送流量 → 連線成功。",
+      "B": "Incorrect. 錯誤。這個判定通常是認為「65001 已經放行 AzureLoadBalancer 了，不必再加」，但 65001 排在 BlockAllOther443（200）之後，探查根本走不到那裡——必須加一條優先順序小於 200 的規則才有用。"
     }
   },
   {
@@ -1036,8 +1036,8 @@
     },
     "answer": "B",
     "explanations": {
-      "A": "Incorrect. 錯誤。新增一條「拒絕」來源 131.107.100.50 的規則，與「讓它連得進來」的目標相反。",
-      "B": "Correct. 正確。先看清楚這份規則到底放不放行：優先順序 100 的 Allow_131.107.100.50 已經明確允許「來源 131.107.100.50、TCP 443」，而且 100 遠小於 200 的 BlockAllOther443，會先命中並允許。\n換句話說 **VM2 這一側的 NSG 本來就沒有擋住這條連線**——故障原因在別的地方（例如 VM1 那一側的規則）。\n既然問題不在這份 NSG，任何「繼續修改這份 NSG」的解法都不會讓連線通。\n這個解法新增的是拒絕規則，方向就錯了；雖然它的優先順序 64999 排在 Allow_131.107.100.50（100）之後、實際不會生效，但無論如何都無助於解決問題。"
+      "A": "Incorrect. 錯誤。新增一條拒絕來源 131.107.100.50 的規則，與目標相反，也沒有處理探查的問題。",
+      "B": "Correct. 正確。先看清楚故障的成因。\n優先順序 100 的 Allow_131.107.100.50 已經放行了「來源 131.107.100.50、TCP 443」，所以「使用者的封包」本身沒有被擋。\n真正的問題在下一條：BlockAllOther443（優先順序 200、連接埠 443、通訊協定 Any、來源 Any、拒絕）——它的優先順序遠小於預設的 AllowAzureLoadBalancerInBound（65001），所以會「先」被比對到，把負載平衡器在 443 上的**健康情況探查**一併擋掉。\n探查失敗 → VM2 被判定為狀況不良 → 負載平衡器停止把流量轉給它 → 連線失敗。\n這也是題目特別註明「負載平衡器規則設定正確」的用意：問題不在規則，而在探查進不來。\n所以有效的解法只有一種——讓探查在 200 之前被放行。\n本解法既沒有放行健康情況探查，方向又和目標相反。\n（順帶一提，它的優先順序 64999 排在 Allow_131.107.100.50（100）之後，所以實際上連「拒絕使用者」都做不到——這條規則等於什麼也沒做。）"
     }
   },
   {
@@ -1945,6 +1945,25 @@
   },
   {
     "exam": "AZ-104",
+    "id": 491,
+    "type": "single",
+    "question": "You have an Azure subscription that contains 10 virtual machines and the following resources:\n・VNET1｜Virtual network｜none\n・Bastion1｜Basic SKU Azure Bastion host｜Subnet size /26\n\nYou need to ensure that Bastion1 can support 100 concurrent SSH users. The solution must minimize administrative effort.\nWhat should you do first?",
+    "options": {
+      "A": "Resize the subnet of Bastion1",
+      "B": "Configure host scaling.",
+      "C": "Create a network security group (NSG)",
+      "D": "Upgrade Bastion1 to the Standard SKU"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。子網路已經是 /26（Bastion 的建議大小），空間不是瓶頸；而且調整子網路大小也不會提高並行連線數。",
+      "B": "Incorrect. 錯誤。方向對，但順序錯了——「主機調整（調整執行個體數）」是「標準 SKU 以上」才有的功能，基本 SKU 的 Bastion 根本看不到這個設定。題目問的是「先」做什麼，所以要先升級 SKU 才輪到它。",
+      "C": "Incorrect. 錯誤。NSG 是流量過濾，跟能承載多少並行工作階段無關。",
+      "D": "Correct. 正確。基本 SKU 的 Azure Bastion 固定只有 2 個執行個體，大約支援 20 個並行的 RDP 或 40 個並行的 SSH 工作階段，撐不到 100 個。\n要提高容量必須靠「主機調整」增加執行個體數，而這個功能只有標準 SKU 以上才提供——所以第一步是把 Bastion1 升級為標準 SKU，之後才能把執行個體數往上調。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 492,
     "type": "single",
     "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
@@ -2008,6 +2027,27 @@
   },
   {
     "exam": "AZ-104",
+    "id": 495,
+    "type": "single",
+    "question": "You have an Azure subscription that has the following public IP addresses:\n・IP1｜IPv4｜SKU Standard｜Tier Regional｜Static\n・IP2｜IPv4｜SKU Standard｜Tier Global｜Static\n・IP3｜IPv4｜SKU Basic｜Tier Regional｜Dynamic\n・IP4｜IPv4｜SKU Basic｜Tier Regional｜Static\n・IP5｜IPv6｜SKU Basic｜Tier Regional｜Dynamic\n\nYou plan to deploy an Azure Bastion Basic SKU host named Bastion1. Which IP addresses can you use?",
+    "options": {
+      "A": "IP1 only",
+      "B": "IP1 and IP2 only",
+      "C": "IP3, IP4, and IP5 only",
+      "D": "IP1, IP2, IP4, and IP5 only",
+      "E": "IP1, IP2, IP3, IP4, and IP5"
+    },
+    "answer": "A",
+    "explanations": {
+      "A": "Correct. 正確。Azure Bastion 的公用 IP 有四個條件，缺一不可：\n① SKU 必須是「標準」→ IP3、IP4、IP5 都是基本，出局。\n② 指派方式必須是「靜態」→ IP3、IP5 是動態，出局。\n③ 必須是「IPv4」→ IP5 出局。\n④ 層必須是「Regional」→ IP2 是 Global，出局（Global 層的公用 IP 是給跨區域負載平衡器用的）。\n五個位址中只有 IP1 四項全中。",
+      "B": "Incorrect. 錯誤。IP2 雖然是標準且靜態，但它的層是 Global，Bastion 只接受 Regional。",
+      "C": "Incorrect. 錯誤。這三個全是基本 SKU，Bastion 一個都不能用。",
+      "D": "Incorrect. 錯誤。多算了 IP2（Global 層）、IP4 與 IP5（基本 SKU）。",
+      "E": "Incorrect. 錯誤。只有 IP1 符合全部條件。"
+    }
+  },
+  {
+    "exam": "AZ-104",
     "id": 496,
     "type": "single",
     "question": "You have five Azure virtual machines that run Windows Server 2016. The virtual machines are configured as web servers. You have an Azure load balancer named LB1 that provides load balancing services for the virtual machines. You need to ensure that visitors are serviced by the same web server for each request. What should you configure?",
@@ -2042,6 +2082,25 @@
       "B": "Incorrect. 錯誤。閒置逾時決定連線在沒有流量時保持開啟多久，與後續新連線會被導向哪一台伺服器無關。",
       "C": "Incorrect. 錯誤。健康情況探查只負責判斷後端執行個體是否健康、決定要不要繼續派送流量，不影響流量落在哪一台。",
       "D": "Correct. 正確。工作階段持續性設為「用戶端 IP」時採二元組雜湊，來自同一用戶端 IP 的所有連線都會被導向同一台後端伺服器，正是題目要的黏著工作階段。"
+    }
+  },
+  {
+    "exam": "AZ-104",
+    "id": 498,
+    "type": "single",
+    "question": "You have two Azure subscriptions named Sub1 and Sub2. Sub1 contains a virtual machine named VM1 and a storage account named storage1. VM1 is associated to the following resources:\n・Disk1｜Operating system disk\n・NetInt1｜Network interface\n・VNet1｜Virtual network\n\nYou need to move VM1 to Sub2. Which resources should you move to Sub2?",
+    "options": {
+      "A": "VM1, Disk1, and NetInt1 only",
+      "B": "VM1, Disk1, and VNet1 only",
+      "C": "VM1, Disk1, and storage1 only",
+      "D": "VM1, Disk1, NetInt1, and VNet1"
+    },
+    "answer": "D",
+    "explanations": {
+      "A": "Incorrect. 錯誤。漏掉 VNet1。NetInt1 連接在 VNet1 的子網路上，如果 VNet1 留在 Sub1，搬移驗證會因為相依資源不完整而失敗。",
+      "B": "Incorrect. 錯誤。漏掉 NetInt1。虛擬機器一定要有網路介面，它是必須一起搬的相依資源。",
+      "C": "Incorrect. 錯誤。storage1 與 VM1 沒有關聯（題目只說它在 Sub1，沒說 VM1 用它），不必搬；反而漏掉了必須一起搬的 NetInt1 與 VNet1。",
+      "D": "Correct. 正確。跨訂用帳戶搬移的規則是「相依的資源必須一起搬」——Azure 會做驗證，只要有任何一個相依資源被留下就會失敗。\nVM1 的相依鏈是：VM1 → Disk1（作業系統磁碟）、VM1 → NetInt1（網路介面）→ VNet1（網路介面所在的虛擬網路）。四個都要一起搬。\nstorage1 不在這條鏈上（VM1 用的是受控磁碟，沒有用到它），所以不必搬。"
     }
   },
   {
