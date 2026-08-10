@@ -154,18 +154,34 @@
     "matches": [
       {
         "use_case": "Virtual network:",
-        "correct_answer": "VNet3 only"
+        "correct_answer": "VNet3 only",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Subnet mask:",
-        "correct_answer": "/23"
+        "correct_answer": "/23",
+        "correct_option_id": "opt-9"
       }
     ],
     "explanations": {
       "1": "只有 VNet3。容器應用程式環境需要一個「專用的空子網路」，而且該子網路至少要 /23。逐一檢查每個虛擬網路還剩多少連續空間：\n・VNet1 位址空間本身就是 /23（10.1.128.0/23），而其中 10.1.128.0/24 已被 Subnet1 佔用，剩下的 10.1.129.0/24 切不出 /23。\n・VNet2 的 192.168.0.0/16 已被 Subnet21 與 Subnet22 兩個 /17 完全用光，沒有剩餘空間。\n・VNet3 的 172.16.0.0/16 只用掉 Subnet3（172.16.1.0/24），還有大量連續空間可以切出 /23（例如 172.16.2.0/23）。→ 只有 VNet3。",
       "2": "/23。容器應用程式環境的子網路「最小」就是 /23（工作負載設定檔環境需要 /27，但傳統的耗用型環境要求 /23）。題目要「可能的最小」，所以直接取下限 /23——/24、/26、/28 都太小，/16 雖然可行但遠大於需求。",
       "_full": "兩個判斷步驟：\n① 先算「哪個虛擬網路還切得出一個 /23 的空子網路」——要把已存在的子網路佔掉的範圍扣掉再看剩餘連續空間。\n② 再取「符合最小需求的最小遮罩」——容器應用程式環境的子網路下限是 /23。\n這類題目的關鍵是別忘了子網路必須「專用且為空」，所以不能把既有子網路算進可用空間。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9",
+      "opt-10",
+      "opt-11",
+      "opt-12"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -198,15 +214,18 @@
     "matches": [
       {
         "use_case": "The Remote Desktop Connection client (mstsc.exe) can be used to connect to VM1 through Bastion1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "The Azure portal can use SSH to connect to VM2 through Bastion1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "The Azure portal can be used to connect to VM3 through Bastion1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -214,7 +233,11 @@
       "2": "是。Bastion 可以連線到「與它所在虛擬網路對等互連」的虛擬網路中的 VM。VNet1（Bastion 所在）與 VNet2（VM2 所在）直接對等互連，因此連得到；而從入口網站對 Linux VM 開 SSH 工作階段是基本層級就支援的功能。",
       "3": "否。VM3 在 VNet3，而 VNet3 只與 VNet2 對等互連、「沒有」與 VNet1 對等互連。對等互連不具傳遞性，所以位於 VNet1 的 Bastion1 到不了 VNet3。（要連 VM3 就得再建立 VNet1↔VNet3 的對等互連，或在 VNet3 另建一個 Bastion。）",
       "_full": "三個要點：\n① 層級差異：基本層級只有「入口網站瀏覽器」工作階段；原生用戶端、主機調整、共用連結、IP 型連線等都要 Standard 以上。\n② Bastion 可跨「直接對等互連」的虛擬網路連線。\n③ 但對等互連不具傳遞性——隔了一層的虛擬網路連不到。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -228,15 +251,18 @@
     "matches": [
       {
         "use_case": "Policy1 can be applied to Subnet3.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Only storage1 and storage2 can be accessed from VNet2.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Only storage2 can be accessed from VNet3.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -244,7 +270,11 @@
       "2": "否。Subnet2 雖然啟用了 Microsoft.Storage 服務端點，但「沒有套用任何服務端點原則」。沒有原則就沒有白名單限制，從 VNet2 可以連到訂用帳戶中任何一個儲存體帳戶（實際能否存取還取決於各帳戶自己的防火牆設定），因此「只能存取 storage1 與 storage2」不成立。",
       "3": "否。就算把 Policy1 套用到 Subnet3，Policy1 允許的是「訂用帳戶中所有的儲存體帳戶」——白名單涵蓋 storage1、storage2、storage3 三個，不是只有 storage2。（服務端點原則是用來「縮小」可存取的儲存體帳戶範圍；本題的原則刻意設為全部允許，所以沒有縮小任何範圍。）",
       "_full": "服務端點原則的三個要點：\n① 原則必須與虛擬網路同區域，且子網路要先啟用 Microsoft.Storage 服務端點。\n② 沒有套用原則的子網路 = 沒有白名單限制（可連任何儲存體帳戶）。\n③ 原則的內容決定白名單範圍——本題設為「訂用帳戶中所有帳戶」，等於沒有做任何限縮。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -298,15 +328,18 @@
     "matches": [
       {
         "use_case": "From VM1, server1.contoso.com resolves to 131.107.3.3.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "From VM2, server1.contoso.com resolves to 131.107.3.3.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "From VM3, server2.contoso.com resolves to 131.107.2.4.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -314,7 +347,11 @@
       "2": "是。VNET2 的 DNS 伺服器設為自訂的 192.168.0.5，正是 VM4；而 VNET1／VNET2／VNET3 已對等互連，所以 VM2 連得到 VM4。VM4 是 contoso.com 的權威伺服器，區域中 Server1 的 A 記錄是 131.107.3.3，因此解析結果正確。",
       "3": "否——注意這題考的是「數值」。VM3 確實會去問 VM4（VNET3 的自訂 DNS 是 192.168.0.5），而 VM4 上 Server2 的 A 記錄是 131.107.3.4，但敘述寫的是 131.107.2.4（第三個位元組不同）。查詢會成功，但結果與敘述不符。",
       "_full": "兩個層次都要檢查：\n① 「這台 VM 會去問誰」——由虛擬網路（或網路介面）的 DNS 設定決定。用 Azure 提供的 DNS 就查不到自建區域（第 1 項）。\n② 「查到的值對不對」——要逐位元組核對記錄內容，本題第 3 項就是把 131.107.3.4 寫成 131.107.2.4 的陷阱。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -339,7 +376,19 @@
       "步驟 3": "虛擬機器。\nVM 建立時要引用上一步的網路介面，所以它排在 NIC 之後。",
       "步驟 4": "Azure 監視器延伸模組。\n「支援擷取效能資料」靠的就是這個延伸模組（Azure 監視器代理程式）。\n延伸模組是「安裝在既有 VM 上」的東西，它的資源類型本身就是 VM 的子資源，所以必須等 VM 建好之後才能部署——排在最後。",
       "_full": "ARM 範本的相依性照「誰引用誰」推就好：被引用的先建。\n\n本題的引用鏈是：\n延伸模組 → 引用 VM → 引用 NIC → 引用子網路（虛擬網路）\n反過來就是部署順序：虛擬網路 → 網路介面 → 虛擬機器 → 延伸模組。\n\n實作上這是用 dependsOn 屬性（或 reference() 函式產生的隱含相依）表達的；沒有宣告相依時 Resource Manager 會盡量平行部署，所以漏寫 dependsOn 常常會出現「找不到子網路」這類間歇性失敗。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4"
+    ],
+    "ordered_step_ids": [
+      "step-4",
+      "step-3",
+      "step-1",
+      "step-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -436,18 +485,29 @@
     "matches": [
       {
         "use_case": "Subnet size:",
-        "correct_answer": "/26"
+        "correct_answer": "/26",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Public IP:",
-        "correct_answer": "Standard SKU with a static allocation"
+        "correct_answer": "Standard SKU with a static allocation",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
       "1": "/26。「主機調整」與「檔案上傳／下載」都是 Standard 層級的功能，而 Standard（尤其是要調整執行個體數量時）要求 AzureBastionSubnet 至少 /26。題目又要求「盡量減少位址數量」，所以取下限 /26——/28 與 /29 太小；/24 雖然可行但遠超需求。",
       "2": "Standard SKU、靜態配置。Azure Bastion 的公用 IP 必須是「Standard SKU 且靜態配置」——這是硬性要求，Basic SKU 或動態配置都不被接受。（順帶一提，Bastion 只需要「一個」公用 IP，不會因為 VM 數量而增加。）",
       "_full": "本題四個要求各自對應：\n・主機調整、檔案上傳下載 → 必須用 Standard 層級的 Bastion（基本層級沒有）。\n・支援兩個虛擬網路 → 兩者已直接對等互連，一個 Bastion 就涵蓋得到。\n・盡量少位址 → 取 Standard 允許的最小子網路 /26。\n另外記住 Bastion 公用 IP 的固定要求：Standard SKU + 靜態配置。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -577,18 +637,26 @@
     "matches": [
       {
         "use_case": "Alert rules:",
-        "correct_answer": "4"
+        "correct_answer": "4",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "Action groups:",
-        "correct_answer": "3"
+        "correct_answer": "3",
+        "correct_option_id": "opt-3"
       }
     ],
     "explanations": {
       "1": "4 條。一條警示規則只對應「一個訊號（條件）」——計量警示與活動記錄警示更是完全不同類型的規則，不能合併。四個訊號 Ingress、Egress、Delete storage account、Restore blob ranges 各需一條規則，所以最少 4 條。",
       "2": "3 個。動作群組是「通知對象的集合」，可以被多條警示規則「重複使用」，因此只要看有幾組「不同的收件人組合」：\n・{User1, User3} → Ingress 與 Restore blob ranges「共用同一個」動作群組。\n・{User1} → Egress。\n・{User1, User2, User3} → Delete storage account。\n三種不同組合 → 最少 3 個動作群組。",
       "_full": "這類「最少要幾個」的題目有固定算法：\n・警示規則數 = 訊號（條件）數，不能合併不同訊號。\n・動作群組數 = 「不同通知對象組合」的數量，相同組合可以共用。\n本題四個訊號中有兩個的通知對象完全相同（都是 User1 與 User3），所以 4 條規則只需要 3 個動作群組。\n（題目提到的 Group1／Group2 是干擾項——通知對象是逐一列出的使用者，不是以群組為單位。）"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -625,18 +693,28 @@
     "matches": [
       {
         "use_case": "January 8 at 2:00 PM (14:00):",
-        "correct_answer": "6"
+        "correct_answer": "6",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "January 15 at 2:00 PM (14:00):",
-        "correct_answer": "8"
+        "correct_answer": "8",
+        "correct_option_id": "opt-3"
       }
     ],
     "explanations": {
       "1": "6 個。從 1 月 1 日上午 2:00 起每天備份一次，到 1 月 8 日下午 2:00 為止已經跑過 1/1～1/8 共 8 次備份，但「每日」保留只留最近 5 天，所以剩下 1/4～1/8 這 5 個每日復原點。\n另外 1 月 4 日是星期日，那天的備份同時被標記為「每週」復原點（保留 20 週），不會被每日保留期滿的規則清掉——不過它本來就已經算在上面那 5 個裡。真正額外多出來的是 1 月 2 日的「每月」復原點（原則設定為每月 2 日，保留 24 個月）。5 + 1 = 6。",
       "2": "8 個。到 1 月 15 日下午 2:00 為止：\n・每日：保留最近 5 天 → 1/11～1/15，共 5 個。\n・每週（星期日）：1 月 4 日與 1 月 11 日各一個；1/11 已被算在每日的 5 個裡，所以只額外多出 1/4，共 +1。\n・每月（每月 2 日）：1 月 2 日，+1。\n・每年（一月 9 日）：1 月 9 日，+1。\n5 + 1 + 1 + 1 = 8。",
       "_full": "算復原點數量的固定步驟：\n① 先算「每日」保留期內還留著幾個（保留 N 天就是最近 N 個）。\n② 再把落在保留期外、但被「每週／每月／每年」規則額外保留的日期加進來。\n③ 注意「已經算過的日期不要重複計算」——例如某個星期日剛好還在每日保留期內，就不能再加一次。\n本題第二格正是 5（每日）+ 1（1/4 週）+ 1（1/2 月）+ 1（1/9 年）= 8。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -652,18 +730,26 @@
     "matches": [
       {
         "use_case": "App1:",
-        "correct_answer": "Install the Application Insights Agent"
+        "correct_answer": "Install the Application Insights Agent",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "App2:",
-        "correct_answer": "Install the Application Insights Agent"
+        "correct_answer": "Install the Application Insights Agent",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "安裝 Application Insights Agent。這個代理程式（舊稱 Status Monitor）是專門為「不改程式碼」而設計的：它在 IIS 主機上以執行階段檢測的方式attach 到已部署的應用程式，自動收集要求、相依性與例外狀況。而且它支援「內部部署」伺服器，所以 App1 雖然不在 Azure 上也能用。",
       "2": "同樣是安裝 Application Insights Agent。App2 在 Azure VM 上、一樣跑 IIS，代理程式的做法完全相同（Azure VM 還可以直接用擴充功能部署）。雖然 ASP.NET Core 也能用 SDK，但 SDK 必須改程式碼並重新編譯，違反「盡量減少程式碼變動」的要求。",
       "_full": "四個選項的分工要記清楚：\n・Application Insights Agent → 「應用程式效能監視」且「免改程式碼」，支援 IIS 上的 .NET／.NET Core，Azure 與內部部署皆可。\n・Application Insights SDK → 功能最完整、可自訂遙測，但必須改程式碼。\n・Log Analytics 代理程式／Azure 監視器代理程式 → 收集的是「作業系統層級」的效能計數器與事件記錄，不是應用程式層級的要求與相依性追蹤。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -696,15 +782,18 @@
     "matches": [
       {
         "use_case": "After User2 answers three security questions correctly, he can reset his password immediately.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "If User1 forgets her password, she can reset the password by using the mobile phone app.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User3 can add security questions to the password reset process.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -712,7 +801,11 @@
       "2": "否，有兩個理由。① 自助式密碼重設的範圍設為「已選取：Group2」，而 User1 只隸屬 Group1，根本不在啟用範圍內。② 就算她在範圍內，「行動應用程式通知」與「行動應用程式代碼」都沒有被勾選為可用方法，所以也不能用行動電話「應用程式」來重設（可用的是「行動電話」簡訊／語音）。",
       "3": "否。「安全性問題」屬於租用戶層級的驗證方法設定，而且本題的重點是：這些設定「只套用於一般使用者」——管理員一律必須使用兩種驗證方法，而且「安全性問題不適用於管理員帳戶」。User3 具備使用者管理員角色，因此他自己的重設流程中不會有安全性問題可用。",
       "_full": "自助式密碼重設的三個常考點：\n① 「重設所需的方法數目」決定要通過幾種方法——設 2 就不能只靠安全性問題。\n② 啟用範圍（無／已選取的群組／全部）決定「誰」可以自助重設。\n③ 管理員例外：管理員一律啟用、一律需要兩種方法，而且不能使用安全性問題這種較弱的方法。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -745,15 +838,18 @@
     "matches": [
       {
         "use_case": "On January 15, 2021, App1 will have only one backup in storage.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "On February 6, 2021, you can access the backup of the App2 test slot from January 15, 2021.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "On January 15, 2021, you can restore the App2 production slot backup from January 6 to the App2 test slot.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -761,7 +857,11 @@
       "2": "否。題目給的備份設定是「生產位置」的——測試位置有它自己的備份設定，而題目並未說明有為測試位置設定備份。沒有設定就沒有備份可存取。（App Service 的備份是「逐位置 (per-slot)」設定的，生產位置的排程不會涵蓋測試位置。）",
       "3": "是。App Service 的備份可以還原到「同一個應用程式的其他部署位置」（也可以覆寫原位置，或還原到新的應用程式）。App2 的保留天數是 30 天，1 月 6 日的備份到 1 月 15 日還在保留期內，因此可以還原。",
       "_full": "App Service 備份的三個要點：\n① 保留天數 0 = 「無限期保留」，不是不保留。\n② 備份設定是「逐位置」的——生產位置與測試位置各自設定，互不涵蓋。\n③ 還原目的地可以是原位置、同一應用程式的另一個位置，或一個新的應用程式。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -775,15 +875,18 @@
     "matches": [
       {
         "use_case": "SecAdmin1 must answer the following question during the self-service password reset: In what city was your first job?",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "BillAdmin1 must answer the following question during the self-service password reset: What is your favorite food?",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User1 must answer the following question during the self-service password reset: What was the name of your first pet?",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -791,7 +894,11 @@
       "2": "否。「計費系統管理員」同樣是管理員角色，適用同一條規則——管理員的重設流程只能用電子郵件、行動電話、驗證器應用程式等較強的方法，不能用安全性問題。",
       "3": "是。「報表讀取者」是一個「非特殊權限」的角色，就 SSPR 而言 User1 算是一般使用者，適用租用戶設定的方法。設定中安全性問題是可用方法之一，而且重設所需的問題數目是 3、選取的問題也正好是這三題，所以她必須回答包含「你的第一隻寵物叫什麼名字？」在內的三題（另外還要再通過一種方法，因為重設所需的方法數目是 2）。",
       "_full": "本題只考一條規則：SSPR 的驗證方法設定「只套用於一般使用者」。\n・管理員角色（安全性系統管理員、計費系統管理員等）一律強制啟用 SSPR、一律需要兩種方法，而且「不能使用安全性問題」。\n・報表讀取者這類非特殊權限角色則視同一般使用者，適用租用戶的設定。\n判斷時先看使用者有沒有管理員角色，再決定套用哪一套規則。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -844,18 +951,29 @@
     "matches": [
       {
         "use_case": "The average CPU percentage is calculated [answer choice] per day.",
-        "correct_answer": "four times"
+        "correct_answer": "four times",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "ASP1 must be [answer choice] to optimize CPU usage.",
-        "correct_answer": "scaled up"
+        "correct_answer": "scaled up",
+        "correct_option_id": "opt-5"
       }
     ],
     "explanations": {
       "1": "四次。圖表標題已經寫明時間粒紋是「Automatic - 6 hours」，也就是每 6 小時彙總出一個資料點。一天 24 小時 ÷ 6 小時 = 4，所以平均值每天被計算四次。",
       "2": "相應增加規模 (scale up)。CPU 的最大值長期貼在 100%，代表現有執行個體的「規格」已經打到上限——這時要換更大的方案層級／執行個體大小，也就是垂直的 scale up。\n「相應放大 (scale out)」是增加執行個體「數量」，適合處理併發請求量大的情況；但本題的方案是 Shared 層級（uses2Shared），而共用層級「不支援」向外延展，只能先升級層級。「相應減少規模」則與現況完全相反。",
       "_full": "兩個要點：\n① 計量圖表的「時間粒紋」決定一天有幾個資料點——6 小時粒紋 = 每天 4 個。\n② scale up（垂直，換更大規格）vs scale out（水平，增加執行個體數）：單一執行個體的 CPU 打滿 → 先 scale up；請求量大但單機資源還有餘裕 → scale out。而 Free/Shared 層級不支援 scale out，只能先升級層級。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -883,7 +1001,22 @@
       "步驟 3": "下載並執行指令碼，在本機電腦上掛載磁碟機。\nAzure 會產生一個一次性的可執行指令碼（下載時要輸入密碼）。在目標電腦上執行它，它會透過 iSCSI 把該復原點的磁碟掛成本機磁碟機。\n指令碼有效期是 12 小時。",
       "步驟 4": "使用檔案總管複製檔案。\n磁碟機掛好之後，它就是一個普通的本機磁碟機，直接用檔案總管把那兩個檔案複製到需要的位置即可。\n複製完記得回入口網站按「卸載磁碟」。\n「使用 AzCopy 複製」是誘答——AzCopy 是用來搬 Azure 儲存體裡的物件的，這裡的來源是已經掛載好的本機磁碟機，用檔案總管最直接。",
       "_full": "口訣：「少數幾個檔案 + 要快」＝ 檔案復原 (ILR)，不是還原整台 VM。\n\nILR 的四步流程：\n① 保存庫 →「檔案復原」\n② 選一個「早於刪除時間」的復原點\n③ 下載並執行掛載指令碼（iSCSI 掛成磁碟機，指令碼 12 小時內有效）\n④ 用一般的檔案複製工具把檔案抓走，完成後卸載磁碟\n\n「掛載一個 VHD」也是誘答——你不用自己去找 VHD 掛，掛載這件事是指令碼幫你做的。\n\n補充一個原題本身的瑕疵：來源是 Linux VM，而 Azure 為 Linux VM 產生的 ILR 指令碼是 Python 指令碼，實務上需要在 Linux 機器（且已安裝 Python 與 iSCSI 啟動器）上執行，並不能直接在 Windows Server 2016 上跑。本題考的是「還原方式的選擇與先後順序」，這個細節不影響作答。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5",
+      "step-6",
+      "step-7"
+    ],
+    "ordered_step_ids": [
+      "step-4",
+      "step-2",
+      "step-1",
+      "step-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -903,18 +1036,30 @@
     "matches": [
       {
         "use_case": "Location in which to store the backups:",
-        "correct_answer": "A Recovery Services vault"
+        "correct_answer": "A Recovery Services vault",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Object to use to configure the protection for VM1:",
-        "correct_answer": "A backup policy"
+        "correct_answer": "A backup policy",
+        "correct_option_id": "opt-5"
       }
     ],
     "explanations": {
       "1": "Recovery Services 保存庫。Azure VM 的備份一律存放在 Recovery Services 保存庫中——保存庫替你管理底層的儲存體（含備援設定），你不需要、也不能指定自己的 Blob 容器或儲存體帳戶當備份目的地。（自訂儲存體帳戶是 App Service 備份的做法，不是 VM 備份。）",
       "2": "備份原則。備份原則定義「多久備份一次」與「復原點保留多久」，設定 VM 保護時就是挑一個現有原則或新建一個（也可以沿用預設原則：每天備份一次、保留 30 天）。\n「復原計畫」是 Azure Site Recovery 用來編排容錯移轉順序的物件，屬於災難復原而不是備份；批次工作與批次排程則與備份無關。",
       "_full": "把 Azure 備份的兩個核心物件記起來：\n・Recovery Services 保存庫 = 「備份資料存放與管理的容器」（VM、檔案共用、SQL in VM 等）。\n・備份原則 = 「排程 + 保留」的設定，可被多個受保護項目共用。\n另外別和 Site Recovery 的「復原計畫」混淆——那是災難復原的容錯移轉編排。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1010,18 +1155,30 @@
     "matches": [
       {
         "use_case": "Box 1 (the table):",
-        "correct_answer": "AzureActivity"
+        "correct_answer": "AzureActivity",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Box 2 (the operator):",
-        "correct_answer": "| project"
+        "correct_answer": "| project",
+        "correct_option_id": "opt-8"
       }
     ],
     "explanations": {
       "1": "AzureActivity。這張資料表存放的正是「Azure 活動記錄」——訂用帳戶或管理群組層級的控制平面事件（誰在什麼時候對哪個資源做了什麼）。Heartbeat 是代理程式的存活訊號；NetworkMonitoring 是網路效能監視器的資料；Perf 是作業系統的效能計數器，三者都不是活動記錄。",
       "2": "| project。在 KQL 中 project 用來「選出並排列要輸出的欄位」，正好對應「只輸出這三欄」的需求。\nextend 是「新增」計算欄位（原有欄位仍會保留）；print 是輸出一列常數運算式、不接資料表；join 是把兩張資料表合併，都不符合本題。",
       "_full": "兩個 KQL 基本功：\n① 常用資料表的用途：AzureActivity（活動記錄）、AzureDiagnostics（診斷記錄）、Heartbeat（代理程式存活）、Perf（效能計數器）、AzureMetrics（計量）、SecurityEvent（安全性事件）。\n② 欄位運算子：project（選欄位）、project-away（排除欄位）、extend（新增計算欄位）、summarize（彙總）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1060,18 +1217,30 @@
     "matches": [
       {
         "use_case": "Data sources:",
-        "correct_answer": "VM1 only"
+        "correct_answer": "VM1 only",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Destinations:",
-        "correct_answer": "Workspace1 only"
+        "correct_answer": "Workspace1 only",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "只有 VM1。資料收集規則是給「Azure 監視器代理程式」用的，所以能被關聯的資源只有「裝得了代理程式的計算資源」——虛擬機器、虛擬機器擴展集，以及透過 Azure Arc 納管的伺服器。儲存體帳戶、Log Analytics 工作區與 Azure SQL 資料庫都不能當資料來源（它們要送記錄的話走的是「診斷設定」，不是資料收集規則）。",
       "2": "只有 Workspace1。DCR 的目的地是「Log Analytics 工作區」（也可以同時送到多個工作區，以及 Azure 監視器計量）。儲存體帳戶不是 DCR 的目的地選項——把記錄封存到儲存體是「診斷設定」的功能；Azure SQL 資料庫更不可能是遙測目的地。",
       "_full": "把兩個機制分清楚：\n・資料收集規則 (DCR)：搭配 Azure 監視器代理程式，從「有代理程式的機器」收集 OS 層級的事件與效能資料，送往 Log Analytics 工作區。\n・診斷設定：從「Azure 資源本身」（儲存體帳戶、SQL 資料庫等）匯出平台記錄與計量，目的地可以是 Log Analytics 工作區、儲存體帳戶或事件中樞。\n本題問的是 DCR，所以來源只有 VM、目的地只有工作區。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1093,18 +1262,32 @@
     "matches": [
       {
         "use_case": "[answer choice] assigned the Owner role for VM1.",
-        "correct_answer": "[Owner] User1 and User3 are"
+        "correct_answer": "[Owner] User1 and User3 are",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "[answer choice] can create a virtual machine in RG1.",
-        "correct_answer": "[Create VM] User1 and User4"
+        "correct_answer": "[Create VM] User1 and User4",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "User1 和 User3。角色指派會由上往下繼承：\n・User3 的範圍直接就是 VM1 這個資源 → 是 VM1 的擁有者。\n・User1 的範圍是整個「訂用帳戶」，會繼承到底下所有資源群組與資源，當然也包含 RG1 中的 VM1 → 也是 VM1 的擁有者。\n・User2 的範圍是 RG2，與 VM1（在 RG1）無關；User4 在 RG1 是「參與者」而不是擁有者。",
       "2": "User1 和 User4。要在 RG1 中建立虛擬機器，需要在 RG1（或其上層）具備寫入權限：\n・User1 在訂用帳戶層級是擁有者 → 涵蓋 RG1。\n・User4 在 RG1 是參與者 → 可以建立與管理資源（只是不能指派權限）。\n・User2 的範圍是 RG2，管不到 RG1；User3 的範圍只有 VM1「這一個資源」——資源層級的權限不會往上擴及所屬資源群組，所以他不能在 RG1 中建立新資源。",
       "_full": "讀角色指派時，先把 Scope 的路徑「拆層」看：\n・/subscriptions/<id> → 訂用帳戶層級，涵蓋底下全部。\n・/subscriptions/<id>/resourceGroups/<rg> → 該資源群組及其中所有資源。\n・/…/providers/…/virtualMachines/VM1 → 只有那一個資源。\n權限只會「向下」繼承，絕不向上擴張——這是本題兩格的判斷關鍵。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9",
+      "opt-10"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1118,15 +1301,18 @@
     "matches": [
       {
         "use_case": "Users that are assigned Role1 can assign Role1 to users.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Users that are assigned Role1 can deploy new virtual machines.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Users that are assigned Role1 can set a static IP address on a virtual machine.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1134,7 +1320,11 @@
       "2": "是。部署一台新 VM 需要的權限都在 actions 裡：Microsoft.Compute/virtualMachines/*（建立與管理 VM）、Microsoft.Compute/disks/*（磁碟）、Microsoft.Network/networkinterfaces/*（網路介面）、以及把網路介面接進子網路所需的 Microsoft.Network/virtualNetworks/subnets/join/action。還有 Microsoft.Resources/deployments/* 讓範本部署也能執行。",
       "3": "是。虛擬機器的 IP 位址其實是設定在「網路介面」的 IP 組態上，而 actions 有 Microsoft.Network/networkinterfaces/*——萬用字元涵蓋了網路介面的所有作業，包含把私人 IP 配置方式改成靜態。",
       "_full": "看自訂角色時的判斷步驟：\n① 先找 actions 裡有沒有涵蓋該作業的項目（注意萬用字元 * 的涵蓋範圍）。\n② 再檢查 notActions 有沒有把它扣掉——notActions 一律勝過 actions。\n本題的關鍵是：Microsoft.Authorization/*/Write 被扣掉 → 不能指派角色；而 Compute 與 Network 的萬用字元權限齊全 → 建 VM、改網路介面 IP 都沒問題（別忘了 VM 的 IP 是設定在網路介面上，不是 VM 資源本身）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1148,15 +1338,18 @@
     "matches": [
       {
         "use_case": "VM1 can access storage1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM2 can access VM1 by using the HTTPS protocol.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "The security rules for NSG1 apply to any virtual machine on VNET1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1164,7 +1357,11 @@
       "2": "是。VM2 → VM1 屬於虛擬網路「內部」流量：\n・輸出端命中 65000 AllowVnetOutBound（允許）。\n・輸入端最先看 110 的 HTTPS_VM1_Deny，但那條規則的「來源」是 Internet，而 VM2 的來源是 VirtualNetwork，條件不符、不會命中；接著命中 65000 AllowVnetInBound（允許）。\n所以 VM2 可以用 HTTPS 連到 VM1。",
       "3": "否。摘要已經寫明 NSG1「關聯到 1 個子網路、0 個網路介面」——只有那「一個」子網路裡的虛擬機器會被套用這些規則。VNET1 有 subnet1 與 subnet2 兩個子網路，另一個子網路上的 VM 完全不受 NSG1 約束。（NSG 是關聯到「子網路或網路介面」，不是關聯到整個虛擬網路。）",
       "_full": "三個判斷點：\n① 服務標籤：Storage 標籤的流量與 Internet 標籤是分開比對的，而且優先順序小的 Storage_Access 先命中，Block_Internet 擋不到它。\n② 規則的「來源」欄位要對得上：來源寫 Internet 的規則不會攔截虛擬網路內部流量。\n③ NSG 的作用範圍由「關聯對象」決定（子網路或網路介面），不是整個虛擬網路。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1197,15 +1394,18 @@
     "matches": [
       {
         "use_case": "User1 can sign in to VM1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User2 can manage disks and disk snapshots of VM1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User2 can manage disks and disk snapshots of VM3.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1213,7 +1413,11 @@
       "2": "否。「虛擬機器參與者」確實能管理虛擬機器與其磁碟，但 User2 的該角色範圍是 MG2（涵蓋 Sub2／RG2／VM2、VM3），而 VM1 在 Sub1 之下，不在 MG2 的範圍內。他在 Sub1 上只有「虛擬機器使用者登入」——那只能登入，不能管理磁碟。",
       "3": "否。這一項容易誤判。User2 在 MG2 上是「虛擬機器參與者」，範圍確實涵蓋 VM3，而該角色可以管理虛擬機器與「附加的磁碟」。但「磁碟快照」是 Microsoft.Compute/snapshots 這個獨立的資源類型——虛擬機器參與者「不」包含快照的管理權限（要管快照得用磁碟快照參與者 Disk Snapshot Contributor 或參與者等更廣的角色）。敘述同時要求磁碟「與」磁碟快照，因此不成立。",
       "_full": "兩個判斷維度：\n① 範圍：管理群組 → 訂用帳戶 → 資源群組 → 資源，權限只向下繼承。User1 的登入權在 Sub2、User2 的參與者權在 MG2，都涵蓋不到 Sub1 的 VM1。\n② 角色能力：「虛擬機器參與者」= 管理平面（含磁碟），但「不含登入 VM」也「不含磁碟快照」；「虛擬機器使用者登入」= 只能登入，不能管理。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1256,7 +1460,19 @@
       "步驟 2": "建立備份原則並設定備份。\n在保存庫中建立磁碟備份原則（設定快照頻率與保留期），然後執行「設定備份」，選擇要保護的 Disk2、以及要用來存放增量快照的資源群組。",
       "步驟 3": "設定受控識別。\n磁碟備份是靠保存庫的「受控識別」去來源磁碟建立快照的，所以要授予這個識別兩組權限：\n・在 Disk2 所在的資源群組上給「磁碟備份讀取者 (Disk Backup Reader)」。\n・在存放快照的資源群組上給「磁碟快照參與者 (Disk Snapshot Contributor)」。\n在入口網站的流程裡，這一步正好落在「設定備份」的驗證階段——系統會先檢查權限，缺什麼就提示你在那裡補上，所以它排在最後。\n（若你習慣先把角色指派好再來設定備份，驗證階段就會直接通過；兩種做法都可行，本題採用入口網站實際引導的順序。）",
       "_full": "這題只有兩個考點：\n\n① 保存庫選哪一種？\n・Recovery Services 保存庫 → VM、Azure 檔案共用、VM 內的 SQL／SAP HANA、MARS。\n・Azure 備份保存庫 (Backup vault) → 受控磁碟、Blob、Azure Database for PostgreSQL、AKS。\n本題備份的是「一顆受控磁碟」，所以是 Backup vault。\n「建立復原服務保存庫」是這題最主要的誘答。\n\n② 磁碟備份需要授權：保存庫的受控識別要能讀取來源磁碟（磁碟備份讀取者）並在快照資源群組建立快照（磁碟快照參與者）。\n沒有這兩個角色，備份會在驗證階段失敗。\n\n「委派保存庫的權限」是誘答——本題要授權的對象是「保存庫的識別」，不是把保存庫的管理權委派給某個人。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5"
+    ],
+    "ordered_step_ids": [
+      "step-2",
+      "step-5",
+      "step-1"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1348,18 +1564,26 @@
     "matches": [
       {
         "use_case": "User1:",
-        "correct_answer": "Alert1 and Alert2 are triggered"
+        "correct_answer": "Alert1 and Alert2 are triggered",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "User2:",
-        "correct_answer": "Alert1 and Alert2 are triggered"
+        "correct_answer": "Alert1 and Alert2 are triggered",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "Alert1 與 Alert2 都會觸發。User1 的動作包含兩件事：① 在 RG1 中「建立」一顆磁碟——這是 RG1 範圍內的系統管理作業，觸發 Alert1；② 把磁碟「連結」到 VM1——這是對 VM1 的寫入作業（更新 VM），觸發 Alert2。而且 VM1 本身在 RG1 之內，所以第二個動作同時也落在 Alert1 的範圍中。",
       "2": "同樣兩個都會觸發。指派標記是 Microsoft.Resources/tags/write 這類系統管理作業，會寫進活動記錄。User2 把標記指派給「RG1」（命中 Alert1 的範圍）與「VM1」（命中 Alert2 的範圍，同時也在 RG1 內）。",
       "_full": "活動記錄警示的判斷方式：\n① 動作要屬於「系統管理 (Administrative)」類別——建立／更新／刪除資源、指派標記、指派角色都算；讀取則不算。\n② 再看動作發生的資源是否落在警示規則的「範圍」內——範圍是資源群組時，其中「所有資源」的作業都算。\n本題兩位使用者的動作都同時觸及 RG1 與 VM1，所以兩條規則都會觸發。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1435,15 +1659,18 @@
     "matches": [
       {
         "use_case": "If you create a resource group in Sub1 on August 11, 2022, Alert1 is listed in the Azure portal.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If you create a resource group in Sub1 on August 12, 2022, an email message is sent to admin1@contoso.com.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "If you add a tag to RG1 on August 15, 2022, an email message is sent to admin1@contoso.com.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1451,7 +1678,11 @@
       "2": "否。8 月 12 日落在 Rule1 的生效期間（8/10～8/13）之內，所以 Alert1 雖然觸發，但 Action1 的電子郵件通知被隱藏，不會寄出。",
       "3": "是。8 月 15 日已超過 Rule1 的結束日期 8 月 13 日，隱藏規則不再生效。而對 RG1 加標記屬於系統管理作業、RG1 也在 Alert1 的範圍內，因此警示觸發並執行 Action1，電子郵件會寄出。",
       "_full": "本題只考一個觀念：警示處理規則的「隱藏通知」只停掉「動作／通知」，不會阻止警示產生——警示照樣出現在入口網站與 API 中。\n另外要注意生效期間：只有落在起訖時間內的警示才會被隱藏，期間外一切照常。（警示處理規則的另一種類型是「套用動作群組」，用來替一批警示統一加上通知動作。）"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1588,18 +1819,30 @@
     "matches": [
       {
         "use_case": "For Alert1, User response [answer choice].",
-        "correct_answer": "[Alert1] can be changed to New or Acknowledged"
+        "correct_answer": "[Alert1] can be changed to New or Acknowledged",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "For Alert2, User response [answer choice].",
-        "correct_answer": "[Alert2] can be changed to Acknowledged or Closed"
+        "correct_answer": "[Alert2] can be changed to Acknowledged or Closed",
+        "correct_option_id": "opt-8"
       }
     ],
     "explanations": {
       "1": "可以改成「新增」或「已確認」。警示的「使用者回應」有三種狀態：新增 (New)、已確認 (Acknowledged)、已關閉 (Closed)，而且「可以在三者之間任意切換」——沒有單向限制。Alert1 目前是「已關閉」，所以還能改成的就是另外兩個：新增與已確認。",
       "2": "可以改成「已確認」或「已關閉」。Alert2 目前是「新增」，同理還能改成另外兩個狀態：已確認與已關閉。",
       "_full": "警示狀態的兩個層次要分開：\n・「警示條件 (Alert condition)」= 已引發 / 已解決，由監視系統自己判定，使用者「不能」修改。\n・「使用者回應 (User response)」= 新增 / 已確認 / 已關閉，由人維護處理進度，三種狀態可以任意互轉。\n所以答案永遠是「目前狀態以外的另外兩個」。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1615,18 +1858,26 @@
     "matches": [
       {
         "use_case": "The backup that occurs on Sunday, March 1, will be retained for [answer choice].",
-        "correct_answer": "10 years"
+        "correct_answer": "10 years",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "The backup that occurs on Sunday, November 1, will be retained for [answer choice].",
-        "correct_answer": "36 months"
+        "correct_answer": "36 months",
+        "correct_option_id": "opt-3"
       }
     ],
     "explanations": {
       "1": "10 年。3 月 1 日同時符合四條保留規則：每日（30 天）、每週（星期日，10 週）、每月（每月 1 日，36 個月）、每年（三月 1 日，10 年）。當同一個復原點被多條規則標記時，「保留期最長的那一條勝出」，因此是 10 年。",
       "2": "36 個月。11 月 1 日符合每日、每週（星期日）與每月（每月 1 日）三條規則，但不符合每年規則（年度保留只針對「三月」1 日）。三者中最長的是每月的 36 個月。",
       "_full": "備份保留的判斷口訣：先看這個日期「符合哪幾條保留規則」，再取其中「保留期最長」的那一條。\n本題兩個日期都是星期日、也都是當月 1 日，差別只在是不是「三月」——是三月就多命中年度規則（10 年），不是就止於每月規則（36 個月）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1640,15 +1891,18 @@
     "matches": [
       {
         "use_case": "VM1 can be backed up by using Policy1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM2 can be backed up by using Policy3.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM2 can be backed up by using Policy2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1656,7 +1910,11 @@
       "2": "否。Policy3 位於「Azure 備份保存庫 (Backup vault)」中，而備份保存庫保護的是 Blob、Azure 受控磁碟、Azure Database for PostgreSQL 等較新的工作負載，「不」支援 Azure 虛擬機器。VM 一律要用 Recovery Services 保存庫。",
       "3": "是。VM2 使用「信任的啟動」，而信任的啟動 VM 必須使用「增強 (Enhanced)」備份原則——標準原則不支援。Policy2 正好是增強原則，因此適用。",
       "_full": "三個要點：\n① 保存庫類型決定能保護什麼：Recovery Services 保存庫 → VM、檔案共用、VM 內的 SQL/SAP HANA；備份保存庫 → Blob、受控磁碟、PostgreSQL、Kubernetes。\n② 「信任的啟動」VM 必須搭配「增強」備份原則。\n③ Azure 磁碟加密的 VM 可以正常備份，不是限制條件。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1691,18 +1949,26 @@
     "matches": [
       {
         "use_case": "cont1:",
-        "correct_answer": "Backup1 only"
+        "correct_answer": "Backup1 only",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "share1:",
-        "correct_answer": "Recovery1 only"
+        "correct_answer": "Recovery1 only",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
       "1": "只有 Backup1。Blob 的備份（操作備份與保存庫備份）是由「備份保存庫」負責的——這是較新的保存庫類型，用來保護 Blob、Azure 受控磁碟、Azure Database for PostgreSQL 與 Kubernetes 等工作負載。Recovery Services 保存庫不支援 Blob。",
       "2": "只有 Recovery1。Azure 檔案共用的備份走的是「Recovery Services 保存庫」，與 Azure VM 備份同一套機制（保存庫需與儲存體帳戶同區域）。備份保存庫不支援檔案共用。",
       "_full": "把兩種保存庫的保護對象分開記：\n・Recovery Services 保存庫 → Azure VM、Azure「檔案共用」、VM 內的 SQL Server/SAP HANA、內部部署工作負載（MARS/DPM）。\n・備份保存庫 (Backup vault) → 「Blob」、Azure 受控磁碟、Azure Database for PostgreSQL、AKS。\n同一個儲存體帳戶裡的 Blob 與檔案共用，備份目的地剛好分屬兩種保存庫。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1828,15 +2094,18 @@
     "matches": [
       {
         "use_case": "VM1 can access contoso102.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM2 can access contoso101.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM2 uses a private IP address to access Azure AD.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1844,7 +2113,11 @@
       "2": "否。VM2 在 Subnet2，而 Subnet2「沒有」啟用 Microsoft.Storage 服務端點（它只啟用了 Microsoft.AzureActiveDirectory）。\n這一格的關鍵其實在別處：VM2 的公用 IP 是 Standard SKU，而 Standard 公用 IP 的輸出流量預設是「安全的」——沒有服務端點也沒有其他輸出路徑設定時，它連不到儲存體帳戶的公用端點。官方判定為否。",
       "3": "是。Subnet2 已啟用 Microsoft.AzureActiveDirectory 服務端點。服務端點一旦啟用，該子網路前往該服務的流量就會改走 Azure 骨幹網路，來源位址也從公用 IP 切換成「私人」IP——這正是服務端點的核心行為。",
       "_full": "服務端點的三個要點：\n① 啟用服務端點後，來源位址由公用 IP 切換成私人 IP，流量走 Azure 骨幹（第 3 項）。\n② 服務端點「原則」是白名單，只放行清單內的儲存體帳戶，其餘一律拒絕（第 1 項）。\n③ 服務端點是「逐子網路、逐服務」啟用的——Subnet1 有 Storage、Subnet2 有 Azure AD，兩者不會互相涵蓋（第 2 項）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1860,18 +2133,26 @@
     "matches": [
       {
         "use_case": "Backup1:",
-        "correct_answer": "Disk1"
+        "correct_answer": "Disk1",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Recovery1:",
-        "correct_answer": "VM1"
+        "correct_answer": "VM1",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "Disk1。「Azure 備份保存庫 (Backup vault)」是較新的保存庫類型，負責的是 Azure 受控磁碟、Azure Blob、Azure Database for PostgreSQL、AKS 等工作負載。四個資源中只有 Disk1 屬於它的守備範圍。",
       "2": "VM1。「Recovery Services 保存庫」是傳統的保存庫類型，負責 Azure 虛擬機器、Azure 檔案共用、Azure VM 中的 SQL Server／SAP HANA，以及 MARS 代理程式與 DPM／MABS。四個資源中只有 VM1 屬於它。",
       "_full": "兩種保存庫的分工是 AZ-104 的高頻考點：\n・Recovery Services 保存庫 → 虛擬機器、Azure 檔案共用、VM 內的 SQL／SAP HANA、MARS／DPM／MABS。\n・Azure 備份保存庫 (Backup vault) → 受控磁碟、Blob、Azure Database for PostgreSQL、AKS。\n\n剩下兩個選項都是誘答：App1 是 App Service Web 應用程式，Azure 備份完全不支援它（它有自己的「備份」功能，跟 Azure Backup 無關）；DB1 是 Azure SQL Database 這種 PaaS 資料庫，備份是平台內建的自動備份，同樣不透過 Azure Backup 設定。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1888,18 +2169,27 @@
     "matches": [
       {
         "use_case": "cont1 (a blob container in storage1):",
-        "correct_answer": "Daily"
+        "correct_answer": "Daily",
+        "correct_option_id": "opt-5"
       },
       {
         "use_case": "share1 (an Azure file share in storage1):",
-        "correct_answer": "Every 4 hours"
+        "correct_answer": "Every 4 hours",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
       "1": "每日。cont1 是 Blob 容器，Azure 備份對 Blob 的「保存庫備份 (vaulted backup)」排程只提供「每日」一種頻率，沒有小時級的選項。所以就算需求寫「盡可能頻繁」，能選的上限就是每日。",
       "2": "每 4 小時。Azure 檔案共用的備份原則除了「每日」之外還支援「每小時」排程，但小時排程的間隔只能挑 4、6、8、12 小時，最短就是 4 小時。清單上的「每小時」是誘答——檔案共用備份無法每 1 小時跑一次。",
       "_full": "這題考的是兩種資料類型在備份頻率上的天花板不一樣：\n・Blob（cont1）→ 保存庫備份只有「每日」。\n・Azure 檔案共用（share1）→ 每日，或每 4／6／8／12 小時。\n\n看到「as frequently as possible（盡可能高的頻率）」時，不要直接挑清單上最小的數字，要先問「這個資源類型真的支援這個頻率嗎」。本題兩格的正解剛好都不是清單最上面那一項。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1916,18 +2206,27 @@
     "matches": [
       {
         "use_case": "Change \"Users may join devices to Azure AD\" to:",
-        "correct_answer": "[Users may join devices to Azure AD] Selected"
+        "correct_answer": "[Users may join devices to Azure AD] Selected",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Change \"Require Multi-Factor Auth to join devices\" to:",
-        "correct_answer": "[Require Multi-Factor Auth to join devices] Yes"
+        "correct_answer": "[Require Multi-Factor Auth to join devices] Yes",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "已選取 (Selected)。需求是「只有 Pilot 群組的成員」能加入裝置。\n這個設定的三個值分別是：全部＝租用戶內所有使用者都能加入；已選取＝只有你指定的使用者／群組能加入；無＝誰都不能加入。\n要限定成一個群組，就得切到「已選取」，再把 Pilot 群組加進去。選「無」會連 Pilot 都擋掉，不符合需求。",
       "2": "是 (Yes)。需求是加入裝置時要用「行動電話」驗證身分——這句話描述的就是多重要素驗證 (MFA)。\n把「加入裝置需要多重要素驗證」打開為「是」之後，使用者在執行加入裝置的動作時就會被要求做第二道驗證。",
       "_full": "這題的技巧是把需求的白話文翻成入口網站上的設定名稱：\n・「只有某個群組能加入裝置」→『使用者可以將裝置加入 Azure AD』設為「已選取」。\n・「用行動電話驗證身分」→『加入裝置需要多重要素驗證』設為「是」。\n\n另外三個設定都是誘答，跟需求無關：\n・『其他本機系統管理員』控制的是誰在已加入的裝置上有本機管理員權限。\n・『使用者可以向 Azure AD 註冊其裝置』管的是「註冊 (register)」，跟「加入 (join)」是兩回事。\n・『每個使用者的裝置數目上限』只是數量限制。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1969,18 +2268,33 @@
     "matches": [
       {
         "use_case": "Recovery Services vaults:",
-        "correct_answer": "[Recovery Services vaults] 3"
+        "correct_answer": "[Recovery Services vaults] 3",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Backup policies:",
-        "correct_answer": "[Backup policies] 6"
+        "correct_answer": "[Backup policies] 6",
+        "correct_option_id": "opt-11"
       }
     ],
     "explanations": {
       "1": "3。復原服務保存庫必須和它保護的資源「位於同一個區域」，所以有幾個區域、就至少要幾個保存庫。\n本題要備份的東西落在三個區域：\n・West US：VM1、VM2、VM4，以及 storage1 的 sharea\n・East US：VM5，以及 storage2 的 shareb、sharec\n・Central US：VM3，以及 storage4 的 shared\nstorage3 雖然在第四個區域 East US 2，但它是 BlobStorage 帳戶、沒有檔案共用，不在這題的備份範圍內，所以不用為它開保存庫。",
       "2": "6。備份原則的範圍限定在「單一保存庫」之內——原則不能跨保存庫共用，而且虛擬機器與 Azure 檔案共用是兩種不同類型的原則，也不能合併成一份。\n三個區域每一區都同時有 VM 和檔案共用，所以每個保存庫都需要 2 份原則：1 份給 VM、1 份給檔案共用。3 × 2 = 6。",
       "_full": "這類「最少要幾個」的題目照兩條規則算就好：\n① 保存庫跟資源必須同區域 → 保存庫數 = 需要備份的資源所在的「不同區域」數。\n② 備份原則屬於某一個保存庫，且依工作負載類型區分 →\n　 原則數 = Σ（每個保存庫內出現的工作負載類型數）。\n\n算區域時記得先把「不需要備份的資源」剔掉——本題的 storage3 在 East US 2，但它沒有檔案共用，把它算進去就會誤選 4 個保存庫。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9",
+      "opt-10",
+      "opt-11"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2004,7 +2318,19 @@
       "步驟 2": "從 Log Analytics 代理程式收集 Windows 效能計數器。\n在工作區裡設定要收集哪些效能計數器——本題要的是\n「LogicalDisk(*)\\Free Megabytes」這一個。\n設定完成後，VM1 與 VM2 上的代理程式就會定期把 C 磁碟區的剩餘空間寫進工作區。\n沒有這一步，工作區裡根本沒有資料可以拿來判斷門檻。",
       "步驟 3": "建立一個警示規則。\n最後建立警示規則：範圍設為這個工作區，條件寫成「LogicalDisk 的 Free Megabytes 小於 20480」（20 GB），再接上動作群組去發通知。\n規則必須最後建立，因為它要選擇前面已經在收集的那個訊號。",
       "_full": "判斷「這個指標是平台看得到，還是要進到來賓 OS 裡看」是這類題的分水嶺：\n・CPU 百分比、磁碟 IOPS、網路流量 → 平台計量，直接建警示規則就好。\n・磁碟區剩餘空間、記憶體可用量、行程、事件記錄 → 來賓 OS 內部，必須先裝代理程式、設定要收集什麼，才有資料可以警示。\n本題屬於後者，所以是「工作區 → 收集計數器 → 警示規則」三步。\n\n兩個誘答：\n・「設定診斷設定」處理的是平台層級的資源記錄與計量的匯出目的地，它不會讓你拿到 C 磁碟區的可用空間。\n・「建立 Azure SQL 資料庫」跟監視完全無關。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5"
+    ],
+    "ordered_step_ids": [
+      "step-1",
+      "step-4",
+      "step-3"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2023,18 +2349,29 @@
     "matches": [
       {
         "use_case": "User1 (must be able to create initiative definitions):",
-        "correct_answer": "Resource Policy Contributor for Sub1"
+        "correct_answer": "Resource Policy Contributor for Sub1",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "User4 (must be able to assign initiatives to RG2):",
-        "correct_answer": "Resource Policy Contributor for RG2"
+        "correct_answer": "Resource Policy Contributor for RG2",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
       "1": "Sub1 的資源原則參與者。這一格有兩個重點：\n① 角色要選「資源原則參與者 (Resource Policy Contributor)」——它才帶有 Microsoft.Authorization/policyDefinitions 與 policySetDefinitions 的寫入權限；「參與者」雖然權限更大，但違反最低權限原則。\n② 範圍必須是「訂用帳戶」而不是資源群組——原則定義與計劃（原則集）定義只能建立在管理群組或訂用帳戶層級，資源群組層級「不能」存放定義。所以 User1 即使只管 RG1，也得在 Sub1 上取得這個角色。",
       "2": "RG2 的資源原則參與者。指派 (assign) 一個計劃時，權限的範圍只要涵蓋「指派的目標」就好——這裡的目標是 RG2。\n資源原則參與者包含 Microsoft.Authorization/policyAssignments 的寫入權限，在 RG2 這個範圍給它，就剛好夠 User4 把計劃指派到 RG2，同時滿足最低權限原則（不必給到 Sub1，也不必給參與者）。",
       "_full": "Azure Policy 的權限題，抓兩個維度就解得開：\n\n【角色】幾乎都是「資源原則參與者」。它專門負責原則定義與原則指派，比「參與者」窄，符合最低權限；「安全性系統管理員」則是 Microsoft Defender for Cloud 的角色，跟 Azure Policy 無關。\n\n【範圍】看動作是「定義」還是「指派」：\n・建立定義（policy／initiative definition）→ 只能放在管理群組或訂用帳戶 → 範圍給訂用帳戶。\n・指派 (assignment) → 範圍給指派的目標即可（管理群組／訂用帳戶／資源群組都行）。\n\n本題 User1 是建立定義 → Sub1；User4 是指派到 RG2 → RG2。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2105,15 +2442,18 @@
     "matches": [
       {
         "use_case": "Contoso requires a storage account that supports Blob storage.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Contoso requires a storage account that supports Azure Table storage.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Contoso requires a storage account that supports Azure File Storage.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -2121,7 +2461,11 @@
       "2": "否。表格儲存體是 NoSQL 的索引鍵／屬性存放區，而 Contoso 的結構化資料是放在 App1 的 SQL 資料庫層。整份需求沒有任何一條提到需要表格儲存體。",
       "3": "否。Azure 檔案儲存體提供的是 SMB／NFS 檔案共用。藍圖檔案的需求寫得很明確：放進 Blob 儲存體、用封存層、以及用（暫時性的）安全方式分享給合作夥伴——這是 Blob + SAS 的組合，不是檔案共用。整份需求同樣沒有任何一條提到檔案共用。",
       "_full": "這種「找出需求」的是非題，做法是把每個選項回頭去比對需求清單，有明確對應才算「是」，靠想像補出來的一律算「否」。\n\n本題只有 Blob 有對應（藍圖檔案 + 封存層、非受控磁碟的分頁 Blob），表格與檔案共用在整份案例裡連提都沒提到。\n\n順帶記住兩個常考的對應：\n・「非受控磁碟」→ 儲存體帳戶中的分頁 Blob。\n・「安全且暫時的外部存取」→ 共用存取簽章 (SAS)。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2141,18 +2485,30 @@
     "matches": [
       {
         "use_case": "container1 (a blob container that will use the Cool tier):",
-        "correct_answer": "storage2 and storage3 only"
+        "correct_answer": "storage2 and storage3 only",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "share1 (a file share that will use the Cool tier):",
-        "correct_answer": "storage2 only"
+        "correct_answer": "storage2 only",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
       "1": "只有 storage2 和 storage3。先看「誰能放 Blob」，再看「誰支援存取層」：\n・storage4 是 FileStorage 帳戶，只能放進階檔案共用，連 Blob 服務都沒有 → 出局。\n・storage1 是一般用途 v1，它雖然有 Blob 服務，但 v1 完全「不支援」熱／冷／封存存取層 → 出局。\n・storage2（StorageV2）與 storage3（BlobStorage）都支援 Blob 存取層 → 兩個都可以。",
       "2": "只有 storage2。檔案共用的部分反而更窄：\n・storage3 是 BlobStorage 帳戶，根本沒有檔案服務 → 出局。\n・storage1 是一般用途 v1，雖然能建檔案共用，但 v1 不支援檔案共用的層級設定 → 出局。\n・storage4 是 FileStorage 帳戶，它提供的是「進階」檔案共用；進階檔案共用只有一種效能層，沒有交易最佳化／熱／冷這組「標準」層 → 出局。\n・只剩 storage2（StorageV2）能建立設為「冷」層的標準檔案共用。",
       "_full": "這題的骨架是「帳戶種類 × 服務 × 層級」三層過濾：\n\n【帳戶種類支援哪些服務】\n・一般用途 v1／v2：Blob、檔案、佇列、資料表全都有。\n・BlobStorage、BlockBlobStorage：只有 Blob。\n・FileStorage：只有檔案（而且是進階）。\n\n【誰支援存取層／層級】\n・Blob 的熱／冷／冷卻／封存層：一般用途 v2、BlobStorage、BlockBlobStorage 支援，「一般用途 v1 不支援」。\n・檔案共用的交易最佳化／熱／冷層：只有一般用途 v2 的「標準」檔案共用有；FileStorage 的進階檔案共用沒有這組層級。\n\n把 v1 不支援分層、FileStorage 沒有 Blob、BlobStorage 沒有檔案這三件事記牢，這類題目就是純粹的刪去法。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2172,18 +2528,30 @@
     "matches": [
       {
         "use_case": "Account kind:",
-        "correct_answer": "[Account kind] StorageV2 (general purpose v2)"
+        "correct_answer": "[Account kind] StorageV2 (general purpose v2)",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "Destination:",
-        "correct_answer": "[Destination] Storage2"
+        "correct_answer": "[Destination] Storage2",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "StorageV2（一般用途 v2）。Blob 的「物件複寫 (object replication)」要求來源與目的地都是一般用途 v2 或進階區塊 Blob 帳戶。\n・一般用途 v1 與 BlobStorage 都是舊世代帳戶，不支援物件複寫 → 出局。\n・BlockBlobStorage 雖然支援，但它是「進階」帳戶，成本高很多，而案例沒有任何效能上的理由要用進階；標準做法就是一般用途 v2。",
       "2": "storage2。目的地也必須是支援物件複寫的帳戶種類：\n・storage1 是一般用途 v1 → 不支援。\n・storage3 是 BlobStorage → 不支援。\n・storage4 是 FileStorage → 連 Blob 服務都沒有。\n・只剩 storage2（StorageV2）符合條件。",
       "_full": "物件複寫（把某個容器的區塊 Blob 非同步複製到另一個帳戶的容器）的前提條件：\n① 來源與目的地帳戶都必須是「一般用途 v2」或「進階區塊 Blob」。\n② 來源要啟用「Blob 變更摘要 (change feed)」與 Blob 版本設定。\n③ 目的地要啟用 Blob 版本設定。\n④ 只複製區塊 Blob；快照、附加／分頁 Blob 都不會複製。\n\n本題把條件①套到四個既有帳戶上就只剩 storage2；新建的 storage5 同理選一般用途 v2。\n順帶注意：物件複寫跟 LRS／GRS 這類「儲存體備援」是兩回事——備援是帳戶層級、自動的；物件複寫是容器層級、要自己設定規則的。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2263,18 +2631,31 @@
     "matches": [
       {
         "use_case": "From the Azure portal:",
-        "correct_answer": "Create a virtual network gateway and a local network gateway."
+        "correct_answer": "Create a virtual network gateway and a local network gateway.",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "In the New York office:",
-        "correct_answer": "Configure a site-to-site VPN connection."
+        "correct_answer": "Configure a site-to-site VPN connection.",
+        "correct_option_id": "opt-9"
       }
     ],
     "explanations": {
       "1": "建立一個虛擬網路閘道和一個本機網路閘道。\n「透過網際網路的加密連線」＝站對站 (S2S) VPN。Azure 這一端要備齊兩個物件：\n・虛擬網路閘道 (VPN Gateway)：VNet1 裡的虛擬 VPN 設備，負責 Azure 側的 IPsec 通道。\n・本機網路閘道 (Local network gateway)：代表「對方」那台內部部署 VPN 設備的抽象物件，裡面登記對方的公用 IP 與內部網路位址範圍。\n少了本機網路閘道，Azure 就不知道要撥給誰、也不知道哪些網段要導回去。\nExpressRoute 是私人專線、不走網際網路（而且案例只把它規劃給蒙特婁），成本也高得多，違反「盡可能降低成本」；「內部部署資料閘道」則是 Power BI／Logic Apps 用來存取內部資料來源的元件，跟網路連線無關。",
       "2": "設定一個站對站 VPN 連線。\n紐約辦公室已經有一台「可以設定為 VPN 裝置」的防火牆，所以在辦公室這一端只要把它設成 S2S VPN 的對接端，指向 Azure 虛擬網路閘道的公用 IP 即可。\nDirectAccess 是給用戶端電腦遠端連回公司的技術，不是站對站；Web 應用程式 Proxy 是把內部網站發佈到外部，兩者都不會建立網路層的加密通道。",
       "_full": "看到「over the Internet + encrypted」就直接對應到「站對站 VPN」，看到「private / dedicated connection」才對應到 ExpressRoute。\n\n站對站 VPN 的四個必備零件：\n① 閘道子網路 (GatewaySubnet)　② 虛擬網路閘道 (VPN 類型)\n③ 本機網路閘道（描述對方設備的公用 IP 與網段）　④ 連線 (Connection，帶共用金鑰)\nAzure 入口網站負責 ①～③，對方辦公室的 VPN 設備負責自己那一端的 IPsec 設定。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2292,18 +2673,28 @@
     "matches": [
       {
         "use_case": "Number of virtual networks:",
-        "correct_answer": "[Number of virtual networks] 1"
+        "correct_answer": "[Number of virtual networks] 1",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Number of subnets per virtual network:",
-        "correct_answer": "[Number of subnets per virtual network] 3"
+        "correct_answer": "[Number of subnets per virtual network] 3",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "1。三層屬於同一個應用程式，彼此要頻繁互相呼叫。放在「同一個」虛擬網路裡，它們就能直接用私人 IP 互通，不需要 VNet 對等互連、也不需要任何閘道。\n拆成 2 或 3 個 VNet 只會多出對等互連的設定與費用，而且對「減少開放的連接埠」這個需求毫無幫助——隔離是靠 NSG 做的，不是靠切 VNet。",
       "2": "3。每一層各配一個子網路：Web 層子網路、中介層子網路、資料層子網路。\n這樣才能對每個子網路各掛一個 NSG，逐層只放行「上一層 → 下一層」所需的那一個連接埠：網際網路 → Web 層只開 443、Web 層 → 中介層只開應用程式的埠、中介層 → 資料層只開 1433，其他一律拒絕。\n如果三層擠在同一個子網路裡，NSG 是套在子網路上的，同一個子網路內的機器會落在同一組規則下，就沒辦法在層與層之間做區隔。",
       "_full": "「多層式應用程式 + 盡量減少開放連接埠」是 Azure 的經典 N 層參考架構：\n1 個虛擬網路，每一層一個子網路，每個子網路一個 NSG。\n\n背後的兩個原則：\n・同一個應用程式的元件放同一個 VNet → 私人 IP 直接互通，最省事也最省錢。\n・安全界線用「子網路 + NSG」畫，不是用 VNet 畫 →有幾個需要彼此隔離的層，就切幾個子網路。\n\n順帶一提，實務上的參考架構還會再加管理子網路（跳板機）與 AD DS 子網路，但本題只問 App1 這三層。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2380,18 +2771,30 @@
     "matches": [
       {
         "use_case": "Box 1 (the cmdlet):",
-        "correct_answer": "[Box 1] Get-AzRoleDefinition"
+        "correct_answer": "[Box 1] Get-AzRoleDefinition",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Box 2 (after the pipe):",
-        "correct_answer": "[Box 2] ConvertTo-Json"
+        "correct_answer": "[Box 2] ConvertTo-Json",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
       "1": "Get-AzRoleDefinition。建立自訂 RBAC 角色的標準流程是「先把一個現有的內建角色匯出成範本，改完再匯入」，而負責讀取 Azure RBAC 角色定義的就是 Get-AzRoleDefinition。\n・Get-AzureADDirectoryRole 取的是 Microsoft Entra 的「目錄角色」（全域管理員那一套），跟 Azure 資源的 RBAC 角色是兩個完全不同的角色系統。\n・Find-RoleCapability 是 PowerShellGet 的 cmdlet，用來找哪個模組提供某個 DSC 角色功能。\n・Get-AzResourceProvider 查的是資源提供者與資源類型，跟角色無關。",
       "2": "ConvertTo-Json。Azure 的角色定義格式就是 JSON，所以要把取回來的角色物件「轉成」JSON 存成檔案，再去編輯 Name、Id、Actions、AssignableScopes 等欄位，最後用 New-AzRoleDefinition 匯入。\n・ConvertTo-Xml 方向對但格式錯——自訂角色不吃 XML。\n・ConvertFrom-Json／ConvertFrom-String 是「反方向」，把 JSON 字串或純文字轉回 PowerShell 物件；這裡手上已經是物件了，不需要再轉回來。",
       "_full": "自訂角色的完整流程（PowerShell）：\n① Get-AzRoleDefinition -Name \"Reader\" | ConvertTo-Json | Out-File Role1.json\n② 編輯 Role1.json：改 Name／Description、把 Id 清空、在 Actions／NotActions 增減權限、在 AssignableScopes 填上訂用帳戶或資源群組的 ID。\n③ New-AzRoleDefinition -InputFile Role1.json\n\n兩個容易混淆的地方：\n・角色定義是 JSON，不是 XML。\n・Azure RBAC 角色（Get-AzRoleDefinition）≠ Entra 目錄角色（Get-AzureADDirectoryRole／Get-MgDirectoryRole）——前者管 Azure 資源，後者管租用戶身分。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",

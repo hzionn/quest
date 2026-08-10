@@ -333,7 +333,19 @@
       "步驟 1": "一個 Azure Key Vault。\n「範本裡不能出現明文密碼」的標準解法，就是把密碼存成金鑰保存庫的祕密 (secret)，再讓參數檔用 `reference` 指向「保存庫的資源 ID + 祕密名稱」。\n部署當下才由 Resource Manager 去保存庫取值，密碼從頭到尾不會落在範本或參數檔裡，也不會進版控。\n所以第一步一定是先有保存庫——後面的東西都掛在它上面。",
       "步驟 2": "一個存取原則。\n保存庫建好之後，還得讓「部署」這個動作真的讀得到那個祕密。金鑰保存庫預設是誰都不能存取的，你要在保存庫上設定存取原則（或改用 Azure RBAC 指派角色），並把「啟用範本部署的存取權 (enabledForTemplateDeployment)」打開，ARM 部署才拿得到值。\n順序不能顛倒：存取原則是掛在保存庫上的屬性，沒有保存庫就沒有地方可以設。",
       "_full": "考點是「ARM 範本 + 機密資料 = Azure Key Vault」，流程固定三步：\n① 建立金鑰保存庫，把系統管理員密碼存成祕密。\n② 在保存庫上設定存取原則，授權部署讀取該祕密（並開啟 enabledForTemplateDeployment）。\n③ 把參數檔的密碼參數改成 reference 指向該祕密。\n\n其他四個選項都是誘答，跟「藏密碼」無關：\n・儲存體帳戶是放檔案／資料的，不是放機密的。\n・Identity Protection 偵測的是身分風險（外洩憑證、不尋常登入）。\n・Azure 原則管的是治理與合規（限制能建什麼資源）。\n・備份原則只是備份的排程與保留設定。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5",
+      "step-6"
+    ],
+    "ordered_step_ids": [
+      "step-1",
+      "step-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -396,7 +408,20 @@
       "步驟 2": "Hyper-V 站台。\n在保存庫的「準備基礎結構」流程中，你要先建立一個 Hyper-V 站台，它代表「一組內部部署的 Hyper-V 主機」這個邏輯容器；接著才把實際的 Hyper-V 主機註冊進這個站台（在主機上安裝 Azure Site Recovery Provider 與復原服務代理程式）。\n沒有站台，主機就沒有地方可以登記。",
       "步驟 3": "複寫原則。\n最後建立複寫原則，設定複寫頻率、應用程式一致快照的頻率、以及復原點的保留時數，再把這份原則「關聯」到剛才那個 Hyper-V 站台。\n原則必須關聯到站台才會生效，所以它一定排在站台之後。\n做完這三步，才輪到針對 VM1 按「啟用複寫」。",
       "_full": "【答案校正】ExamTopics 官方答案區的三個方框是「Hyper-V 站台 → 復原服務保存庫 → 複寫原則」，但那只是照左側選項清單原本的先後順序排出來的（站台是第 1 項、保存庫是第 3 項、原則是第 5 項），並不是真正的建立順序——原題問的是「必須建立哪些物件」，答案區本身沒有順序。\n本題改以實際可執行的建立順序作答：Hyper-V 站台是在保存庫「裡面」建立的，保存庫不可能排在它後面。\n\nHyper-V（無 VMM）複寫到 Azure 的完整流程：\n① 建立復原服務保存庫。\n② 準備基礎結構：建立 Hyper-V 站台 → 註冊 Hyper-V 主機（安裝 Provider 與代理程式）。\n③ 建立複寫原則並關聯到站台。\n④ 對 VM1 啟用複寫。\n\n誘答說明：儲存體帳戶在「複寫到受控磁碟」的現行做法中不需要自己建；流量管理員是做全域流量導向的；端點屬於負載平衡器／流量管理員的概念，三者都跟 Site Recovery 的設定流程無關。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5",
+      "step-6"
+    ],
+    "ordered_step_ids": [
+      "step-3",
+      "step-1",
+      "step-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -714,18 +739,29 @@
     "matches": [
       {
         "use_case": "To add a backend pool to LB1:",
-        "correct_answer": "Network Contributor on LB1"
+        "correct_answer": "Network Contributor on LB1",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "To add a health probe to LB2:",
-        "correct_answer": "Network Contributor on LB2"
+        "correct_answer": "Network Contributor on LB2",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "新增後端集區是負載平衡器（網路資源）的設定作業，「網路參與者」正好涵蓋管理網路資源所需的權限，但不能存取這些資源承載的資料。範圍要縮到 LB1 這個資源本身；改用參與者或擁有者都超出需求（擁有者還額外具備指派他人權限的能力）。",
       "2": "健康情況探查同樣屬於負載平衡器的網路設定，因此角色仍是「網路參與者」，只是範圍要落在 LB2。若把範圍放到 RG1，會連帶授權該資源群組內其他所有網路資源，違反最小權限原則。",
       "_full": "兩項工作都只是修改負載平衡器的網路設定，所以角色都選「網路參與者」；差別只在範圍——要動 LB1 就把範圍指到 LB1，要動 LB2 就指到 LB2。把範圍放大到 RG1，或改用參與者／擁有者，都給了多餘的權限。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -782,15 +818,18 @@
     "matches": [
       {
         "use_case": "User3 can perform an access review of User1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User3 can perform an access review of UserA.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User3 can perform an access review of UserB.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -798,7 +837,11 @@
       "2": "否。UserA 雖然透過 Group2（Group2 是 Group1 的成員）落在 Group1 的成員範圍內，但他同樣是成員 (Member) 而非來賓，一樣被「僅來賓使用者」的範圍排除。",
       "3": "是。UserB 是來賓 (Guest)，符合範圍設定；他透過 Group2 屬於 Group1 的成員；而審查者設為「群組擁有者」，User3 正是 Group1 的擁有者，所以 User3 就是審查 UserB 的人。",
       "_full": "這題只需要兩個判斷條件：①「範圍：僅來賓使用者」決定誰會被審查——只有來賓會進清單，成員一律排除；②「審查者：群組擁有者」決定誰來審查——User3 是 Group1 的擁有者，所以由他審查。Group2 是 Group1 的成員，因此 Group2 裡的使用者也算在 Group1 的成員範圍內。結果：User1（成員）否、UserA（成員）否、UserB（來賓）是。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -812,15 +855,18 @@
     "matches": [
       {
         "use_case": "You can create a virtual network in Subscription1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "You can create a virtual machine in Subscription2.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "You can add Subscription1 to ManagementGroup11.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -828,7 +874,11 @@
       "2": "否。ManagementGroup12 上的「允許的資源類型 = virtualNetworks」是白名單原則——除了虛擬網路以外的資源類型全部被拒絕。Subscription2 在 ManagementGroup12 之下，因此無法建立虛擬機器（順帶一提，Tenant Root Group 的黑名單又把虛擬網路擋掉，等於這個範圍幾乎什麼都建不了）。",
       "3": "是。【答案校正】官方標示為「否」，理由是一個訂用帳戶同時只能隸屬於一個管理群組。但那描述的是「結果狀態」，不是「能不能做這個動作」——在入口網站的管理群組頁面選「新增現有的訂用帳戶」時，可以直接挑選已經隸屬其他管理群組的訂用帳戶，Azure 會把它從舊的管理群組移到新的（同一個動作、一次完成）。只要對來源與目標管理群組都具備權限，把 Subscription1 加入 ManagementGroup11 就是做得到的，因此判定為「是」。",
       "_full": "管理群組的原則會由上往下繼承，判斷時要沿著「訂用帳戶 → 父管理群組 → …→ Tenant Root Group」整條鏈看。Tenant Root Group 的黑名單擋掉全租用戶的虛擬網路；ManagementGroup12 的白名單只留虛擬網路、擋掉其他所有資源類型。\n第三項考的是管理群組的成員操作：訂用帳戶一次只屬於一個管理群組，但「把它加入另一個管理群組」這個動作本身是允許的（等於搬移），所以答案是「是」。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -867,18 +917,30 @@
     "matches": [
       {
         "use_case": "VNET1:",
-        "correct_answer": "Department: D1 only"
+        "correct_answer": "Department: D1 only",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VNET2:",
-        "correct_answer": "Label: Value1 only"
+        "correct_answer": "Label: Value1 only",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
       "1": "VNET1 在原則指派之前就已經存在。「套用標記及其預設值」屬於 Modify/Append 類型的原則，只會在資源「建立或更新」時作用，不會回頭改既有資源（要改必須另外執行補救工作）。而 RG6 上的 RGroup: RG6 是資源群組本身的標記，Azure 的標記不會自動繼承給群組內的資源。所以 VNET1 只保有原本的 Department: D1。",
       "2": "VNET2 是在原則指派之後才部署的新資源，因此建立時就被原則加上 Label: Value1。它沒有 Department 標記（那是 VNET1 自己的），也不會繼承 RG6 的 RGroup: RG6。所以 VNET2 只有 Label: Value1。",
       "_full": "兩個關鍵觀念：①「套用標記及其預設值」原則只對新建或更新的資源生效，既有資源不受影響，除非另外跑補救工作；② 資源群組的標記不會自動繼承到群組內的資源（要繼承得改用 Inherit a tag from the resource group 這類原則）。因此既有的 VNET1 維持「只有 Department: D1」，新建的 VNET2 得到「只有 Label: Value1」。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1004,15 +1066,18 @@
     "matches": [
       {
         "use_case": "User1 can add Device2 to Group1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "User2 can add Device1 to Group1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "User2 can add Device2 to Group2.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1020,7 +1085,11 @@
       "2": "是。使用者管理員可以建立與管理群組成員資格，而 User2 本身還是 Group1 的擁有者；Group1 的成員資格類型是「已指派」，代表成員由人手動加入，所以這個動作可行（裝置是 Azure AD 已註冊或已加入都不影響）。",
       "3": "否。Group2 的成員資格類型是「動態裝置」——成員完全由成員資格規則自動計算，任何人（包含群組擁有者與全域管理員）都不能手動加入或移除成員。",
       "_full": "兩個判斷點：① 角色權限——只有使用者管理員（或群組擁有者）能管群組成員，雲端裝置管理員管的是「裝置」而不是「群組成員資格」；② 成員資格類型——「已指派」才能手動加成員，「動態裝置／動態使用者」的成員一律由規則決定，手動增刪一概不允許。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1146,7 +1215,19 @@
       "步驟 2": "在「成本分析」刀鋒視窗中，依標籤篩選檢視。\n標籤打好之後，到訂用帳戶的「成本管理 + 計費」→「成本分析」，用剛才那個標籤來分組或篩選，就能得到「依部門」拆開的成本檢視。\n（提醒：新加的資源要等約 24 小時，用量資料才會帶著標籤出現。）",
       "步驟 3": "下載使用量報表。\n最後把這個篩選好的檢視匯出成 CSV／報表寄給財務部門，需求就完成了。",
       "_full": "「依部門拆成本」的三步驟：標籤 → 成本分析篩選 → 匯出。\n\n兩個必記的陷阱：\n① 標籤「不會」從資源群組往下繼承到資源（要繼承得另外用 Azure Policy 的 inherit 效果去補）。所以只要題目是要拆成本，答案幾乎都是「為每一個資源指派標籤」。\n② 「開啟每個資源群組的資源成本刀鋒視窗」是誘答——那是一次只看一個資源群組，10 個資源群組要看 10 次，而且部門橫跨多個資源群組，這樣看永遠湊不出部門的總額。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5"
+    ],
+    "ordered_step_ids": [
+      "step-2",
+      "step-4",
+      "step-3"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1179,15 +1260,18 @@
     "matches": [
       {
         "use_case": "VM1 and VM2 can connect to VNET1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If an Azure datacenter becomes unavailable, VM1 or VM2 will be available.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If the East US 2 region becomes unavailable, VM1 or VM2 will be available.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1195,7 +1279,11 @@
       "2": "是。zones 分別設為 \"1\" 與 \"2\"，代表 VM1 在可用性區域 1、VM2 在可用性區域 2。一個可用性區域是區域內一或多個獨立資料中心，具備獨立的電力、散熱與網路，所以單一資料中心（單一區域）故障時，另一台 VM 仍然存活。",
       "3": "否。可用性區域只在「同一個 Azure 區域內」提供備援。VM1 與 VM2 的 location 都是 EastUS2，整個區域失效時兩台都會受影響。要防範區域級故障，必須把工作負載複寫到另一個區域（例如搭配 Azure Site Recovery 或跨區域的流量管理）。",
       "_full": "看範本裡的兩個欄位就能全部判斷完：location 都是 EastUS2（同一區域），zones 分別是 1 與 2（不同可用性區域）。因此 → 資料中心／區域層級故障有備援（第 2 項是），但整個 Azure 區域失效就沒有備援（第 3 項否）。第 1 項則是看網路介面：VM 透過網路介面連到虛擬網路，兩張介面都在 VNET1。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1232,18 +1320,28 @@
     "matches": [
       {
         "use_case": "\"assignableScopes\": [ ... ]",
-        "correct_answer": "\"/subscriptions/c276fc76-9cd4-44c9-99a7-4fd71546436e\""
+        "correct_answer": "\"/subscriptions/c276fc76-9cd4-44c9-99a7-4fd71546436e\"",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "\"notActions\": [ ... ]",
-        "correct_answer": "\"Microsoft.Authorization/*\""
+        "correct_answer": "\"Microsoft.Authorization/*\"",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "assignableScopes 定義「這個角色可以被指派到哪些範圍」，合法值是管理群組、訂用帳戶、資源群組或資源的完整資源 ID。要讓 CR1 能指派給 Subscription1 裡的任何資源群組，就把範圍設成該訂用帳戶本身——指派時即可挑選其下任一資源群組。\"/\"（根範圍）只有 Azure 內建角色能用，會超出「只限 Subscription1」的限制；而 \".../resourceGroups\" 不是有效的資源 ID（沒有指定哪一個資源群組），會被拒絕。",
       "2": "actions 已經是 \"*\"（可做任何管理作業），因此要靠 notActions 把不該有的權限扣掉。管理存取權限（角色指派、拒絕指派、原則定義）全部屬於 Microsoft.Authorization 資源提供者，所以扣掉 \"Microsoft.Authorization/*\" 正好達成「不能管理存取權限」。扣掉 Microsoft.Resources/* 會連資源群組與部署的管理都一併扣掉，違反第三項要求；扣掉 Microsoft.Security/* 只影響 Microsoft Defender for Cloud，與存取權限無關。",
       "_full": "自訂角色的兩個關鍵欄位：assignableScopes 控制「角色能被指派到哪」，notActions 則從 actions 中扣除例外。本題 actions = \"*\" 已滿足「檢視／建立／修改／刪除資源」，剩下要做的是①把可指派範圍限制在 Subscription1，②用 notActions 扣掉 Microsoft.Authorization/*（角色指派等存取權管理都在這個提供者底下）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1368,18 +1466,29 @@
     "matches": [
       {
         "use_case": "User1:",
-        "correct_answer": "Group1 only"
+        "correct_answer": "Group1 only",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "User2:",
-        "correct_answer": "Group1 and Group2 only"
+        "correct_answer": "Group1 and Group2 only",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "User1 的城市是 Montreal，開頭是 M，符合 Group1 的規則 (user.city -startsWith \"m\")（Azure AD 的成員資格規則不分大小寫），所以是 Group1 的成員。但他的部門正好是 Human resources，Group2 的規則要求部門「不在」[\"human resources\"] 清單中，條件不成立，因此不是 Group2 的成員。Group3 是「已指派」群組，成員必須手動加入，題目沒有加。→ 只有 Group1。",
       "2": "User2 的城市是 Melbourne，同樣以 M 開頭 → 符合 Group1。部門是 Marketing，不在 [\"human resources\"] 清單中 → 符合 Group2。（有沒有 Office 365 授權不影響動態群組的成員資格計算，授權只影響能不能使用 Microsoft 365 服務。）Group3 仍需手動指派。→ 只有 Group1 和 Group2。",
       "_full": "把每個使用者的屬性逐條套進成員資格規則即可：\n・Group1：city 開頭為 m（不分大小寫）→ Montreal 與 Melbourne 都符合。\n・Group2：department 不在 [\"human resources\"] → User1（Human resources）不符合、User2（Marketing）符合。\n・Group3：成員資格類型是「已指派」，只能手動加入，兩人都不是成員。\n另外要注意兩個常見陷阱：規則比對不分大小寫；有無 Office 365 授權與動態群組成員資格無關。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1395,18 +1504,26 @@
     "matches": [
       {
         "use_case": "JobTitle:",
-        "correct_answer": "User1 and User3 only"
+        "correct_answer": "User1 and User3 only",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "UsageLocation:",
-        "correct_answer": "User1, User2, and User3"
+        "correct_answer": "User1, User2, and User3",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "JobTitle 屬於「職務資訊」。凡是權威來源為 Windows Server Active Directory 的使用者（也就是由 Azure AD Connect 同步上來的 User2），身分識別、連絡資訊與職務資訊都必須回到本機 AD 修改，Azure AD 中的欄位是唯讀的。User1（雲端帳戶）與 User3（來賓）的權威來源不在本機 AD，可以直接在 Azure AD 改。→ 只有 User1 和 User3。",
       "2": "UsageLocation（使用位置）不是從本機 AD 同步的屬性，它是 Azure AD／Microsoft 365 端用來判斷服務可用性與授權合規的設定，因此三位使用者都可以直接在 Azure AD 中修改。→ User1、User2 和 User3。",
       "_full": "判斷關鍵是「權威來源 (source of authority)」：同步自 Windows Server AD 的使用者，其身分識別／連絡／職務類屬性（如 JobTitle）只能在本機 AD 修改；但 UsageLocation 這種純雲端屬性不受同步限制，任何使用者都能在 Azure AD 直接改。所以 JobTitle 排除 User2，UsageLocation 三人皆可。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1484,15 +1601,18 @@
     "matches": [
       {
         "use_case": "Admin1 can add Admin2 as an owner of the subscription.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Admin3 can add Admin2 as an owner of the subscription.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Admin2 can create a resource group in the subscription.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1500,7 +1620,11 @@
       "2": "是。Admin3 在該訂用帳戶上已經是「擁有者」，而擁有者具備完整管理權限「並且」可以指派角色給其他人，所以他能把 Admin2 加為擁有者。",
       "3": "否。「全域管理員」是 Azure AD（目錄）的角色，本身不帶任何 Azure 資源層面的權限。Admin2 在訂用帳戶的存取控制中沒有任何角色指派，也沒有提高權限，因此無法在訂用帳戶內建立資源群組。",
       "_full": "這題在測「Azure AD 角色」與「Azure RBAC 角色」是兩套不同的權限系統。全域管理員預設管不到 Azure 資源；唯一的例外是把租用戶屬性中的「Azure 資源的存取權管理」切成「是」，此時該管理員會在根範圍取得「使用者存取管理員」，才能管理所有訂用帳戶的角色指派（第 1 項）。訂用帳戶上的擁有者本來就能指派角色（第 2 項）。而沒有任何 RBAC 指派、也沒提高權限的 Admin2，即使是全域管理員也建不了資源群組（第 3 項）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1582,7 +1706,20 @@
       "步驟 2": "在公用的 contoso.com DNS 區域中新增一筆記錄。\n把上一步拿到的 TXT／MX 記錄，加到「第三方註冊商」那邊管理的 contoso.com 公用 DNS 區域裡。\n這一步等於是向 Azure 證明「這個網域真的是我的」——只有網域的擁有者才改得動它的公用 DNS。",
       "步驟 3": "驗證網域。\n回到 Azure AD 按下驗證，Azure AD 會去公用 DNS 查詢那筆記錄。查到而且值相符，網域狀態就變成「已驗證」，從這一刻起才可以建立 user@contoso.com 這樣的使用者。",
       "_full": "自訂網域的流程永遠是「先加、再放記錄、最後驗證」：\n① 在 Azure AD 新增自訂網域名稱 → 取得驗證記錄。\n② 把驗證記錄放進該網域的「公用」DNS 區域（在誰那裡代管就在誰那裡加）。\n③ 回 Azure AD 驗證，狀態轉為已驗證後才能當 UPN 後綴使用。\n\n三個誘答：\n・「建立一個 Azure DNS 區域」不必要——contoso.com 已經在第三方註冊商代管，驗證記錄加在「目前實際生效」的那份公用 DNS 就好；另外開一個 Azure DNS 區域但沒把名稱伺服器轉過去，Azure AD 查不到。\n・「新增一個 Azure AD 租用戶」不必要——租用戶已經存在，本題是替既有租用戶加網域，不是開新租用戶。\n・「設定公司商標」只是登入頁的外觀，跟網域驗證無關。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5",
+      "step-6"
+    ],
+    "ordered_step_ids": [
+      "step-5",
+      "step-1",
+      "step-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1634,15 +1771,18 @@
     "matches": [
       {
         "use_case": "You can assign the Storage File Data SMB Share Contributor role to User1 for share1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "You can assign the Storage File Data SMB Share Reader role to Computer1 for share1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "You can assign the Storage File Data SMB Share Elevated Contributor role to User2 for share1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1650,7 +1790,11 @@
       "2": "否。Azure RBAC 的角色指派對象必須是 Azure AD 的安全性主體（使用者、群組、服務主體、受控識別）。Azure AD Connect 預設不會把「電腦」帳戶同步成可指派角色的主體，因此無法把角色指派給 Computer1。",
       "3": "是。User2 是雲端建立的 Azure AD 使用者，同樣是有效的 Azure AD 安全性主體，角色指派這個動作本身完全合法。（要提醒的是：實際掛載 share1 時仍需使用 AD DS 認得的認證，純雲端帳戶登入 SMB 會失敗——但本題問的是「能不能指派角色」，而不是「能不能成功存取」。）",
       "_full": "判斷準則只有一條：Azure RBAC 只能指派給「Azure AD 的安全性主體」。User1（由 AD 同步到 Azure AD）與 User2（雲端原生使用者）都是；Computer1 是網域中的電腦帳戶，不會成為可指派角色的 Azure AD 主體，所以不行。另外別把「共用層級」的 RBAC 角色和「目錄／檔案層級」的 NTFS 權限搞混，兩者在 AD DS 驗證的 Azure 檔案共用中是分開設定的。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1669,18 +1813,29 @@
     "matches": [
       {
         "use_case": "Add a subnet to VNet1:",
-        "correct_answer": "User1 and User3 only"
+        "correct_answer": "User1 and User3 only",
+        "correct_option_id": "opt-5"
       },
       {
         "use_case": "Assign a user the Reader role to VNet1:",
-        "correct_answer": "User1 only"
+        "correct_answer": "User1 only",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
       "1": "新增子網路是修改虛擬網路的網路設定。「擁有者」可以做任何事（User1）；「網路參與者」正是負責管理網路資源的角色，涵蓋建立子網路（User3）。「安全性管理員」只在 Microsoft Defender for Cloud 範圍內有權限（檢視／編輯安全性原則、檢視安全性狀態、處理警示與建議），不能改虛擬網路。→ 只有 User1 和 User3。",
       "2": "指派角色屬於存取權管理 (Microsoft.Authorization/roleAssignments/write)，只有「擁有者」與「使用者存取管理員」具備這項權限。「網路參與者」雖然能管理網路資源，卻不能指派權限給別人；「安全性管理員」同樣沒有。→ 只有 User1。",
       "_full": "兩個工作對應兩種權限：①「改網路」→ 擁有者或網路參與者都可以；②「指派角色」→ 只有擁有者（或使用者存取管理員）可以。這也是內建角色最常考的分界：一般的「參與者」類角色能管理資源但「不能」指派權限，只有擁有者兩者兼具。安全性管理員在此是干擾項，其權限僅限 Defender for Cloud。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1697,18 +1852,27 @@
     "matches": [
       {
         "use_case": "Locks:",
-        "correct_answer": "Sub1, RG1, and VM1 only"
+        "correct_answer": "Sub1, RG1, and VM1 only",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Tags:",
-        "correct_answer": "Sub1, RG1, and VM1 only"
+        "correct_answer": "Sub1, RG1, and VM1 only",
+        "correct_option_id": "opt-3"
       }
     ],
     "explanations": {
       "1": "資源鎖定（CanNotDelete／ReadOnly）可以套用在訂用帳戶、資源群組或個別資源上，用來防止組織中其他人誤刪或誤改重要資源。但「管理群組」不支援鎖定，所以 Tenant Root Group 與 MG1 都不行。→ 只有 Sub1、RG1 和 VM1。",
       "2": "標記可以套用在 Azure 資源、資源群組與訂用帳戶上，管理群組則不支援標記。→ 同樣是只有 Sub1、RG1 和 VM1。",
       "_full": "鎖定與標記的可套用範圍其實一致：訂用帳戶、資源群組、個別資源都可以，但「管理群組」兩者都不支援。管理群組能套用的是原則 (Azure Policy) 與 RBAC 角色指派，這是很容易混淆的地方。另外提醒：資源群組或訂用帳戶上的標記不會自動繼承給底下的資源。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1743,15 +1907,18 @@
     "matches": [
       {
         "use_case": "RG1 has the Tag2:IT tag assigned only.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Storage1 has the Tag1:subscription, Tag2:IT, Tag3:value1, and Tag4:value4 tags assigned.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VNET1 has the Tag2:IT and Tag3:value2 tags assigned only.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1759,7 +1926,11 @@
       "2": "否。標記不會從訂用帳戶或資源群組繼承給資源，所以 storage1 不會有 Tag1:subscription 或 Tag2:IT。它實際上只有自己的 Tag3:value1，加上原則附加的 Tag4:value4——敘述多列了兩個標記，因此為否。",
       "3": "否。同樣地，VNET1 不會繼承 RG1 的 Tag2:IT；而且 VNET1 正是原則的排除項目（Sub1/RG1/VNET1），所以連 Tag4 也不會加上。VNET1 實際上只有 Tag3:value2，敘述多了一個 Tag2:IT，因此為否。",
       "_full": "本題的核心是三件事：① 內建定義「對資源附加標記及其值」是 indexed 模式，只作用於「資源」，不會評估資源群組與訂用帳戶；② Azure 標記「不會」自動由訂用帳戶或資源群組繼承給資源（要繼承得用 Inherit a tag 這類原則）；③ 原則的排除項目 (notScopes) 會讓該資源完全不受原則影響。逐一比對後：RG1 = Tag2:IT（是）；storage1 = Tag3:value1 + Tag4:value4（敘述多列兩個，否）；VNET1 = Tag3:value2（被排除，沒有 Tag4；敘述多了 Tag2:IT，否）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1826,18 +1997,28 @@
     "matches": [
       {
         "use_case": "User1 can [answer choice] LB1.",
-        "correct_answer": "assign access to other users for"
+        "correct_answer": "assign access to other users for",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "User1 can [answer choice] the resource group.",
-        "correct_answer": "delete a virtual machine from"
+        "correct_answer": "delete a virtual machine from",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "在 LB1 這個資源上，User1 只有「使用者存取管理員」。這個角色的能力很單一——管理其他人的存取權（建立／移除角色指派），但「不能」管理資源本身。因此他不能刪除 LB1，也不能建立 NAT 規則或改負載平衡規則，只能為其他使用者指派存取權。",
       "2": "在資源群組層級，User1 繼承的是「虛擬機器參與者」，可以管理虛擬機器（包含建立、修改、刪除 VM，以及掛接既有的網路介面與磁碟），因此可以從該資源群組刪除虛擬機器。但這個角色不能改網路資源的組態（所以改不了負載平衡規則），也不足以部署 AKS 叢集。",
       "_full": "兩個下拉題都在測「角色能做什麼」與「範圍在哪裡」的交集：\n・LB1 這個資源上只有使用者存取管理員 → 只能管存取權，不能碰資源設定。\n・資源群組上繼承了虛擬機器參與者 → 能管 VM，但管不到網路資源，也不能指派權限。\n順帶提醒：虛擬機器參與者可以「掛接」既有的網路介面與磁碟，但不能建立或修改虛擬網路、負載平衡器等網路資源。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1874,18 +2055,28 @@
     "matches": [
       {
         "use_case": "To ensure that users can sign in to virtual machines that are assigned role1, modify the [answer choice] section",
-        "correct_answer": "dataActions"
+        "correct_answer": "dataActions",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "To ensure that role1 can be assigned only to a resource group named RG1, modify the [answer choice] section",
-        "correct_answer": "assignableScopes"
+        "correct_answer": "assignableScopes",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "登入虛擬機器所需的權限是 Microsoft.Compute/virtualMachines/login/action（或 loginAsAdmin），而這類「對資料平面的操作」在角色定義中屬於 dataActions，不是 actions。目前 dataActions 是空的，所以必須在這裡加入登入權限（內建的「虛擬機器使用者登入」角色也是用 dataActions 實作的）。",
       "2": "assignableScopes 決定「這個角色可以被指派到哪些範圍」。目前設為整個訂用帳戶，代表可以指派到該訂用帳戶及其下任何資源群組。要限制成只有 RG1，就把值改成 RG1 的完整資源 ID（/subscriptions/<id>/resourceGroups/RG1）。",
       "_full": "自訂角色的欄位分工要記牢：\n・actions／notActions → 管理平面 (control plane) 的作業，例如建立 VM、改網路設定。\n・dataActions／notDataActions → 資料平面的作業，例如登入 VM、讀取 Blob 內容。\n・assignableScopes → 角色能被指派到哪些範圍，與角色有什麼權限無關。\n所以「能不能登入 VM」改 dataActions；「能指派到哪裡」改 assignableScopes。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1944,18 +2135,31 @@
     "matches": [
       {
         "use_case": "You can assign Policy1 to:",
-        "correct_answer": "Tenant Root Group, ManagementGroup1, Subscription1, and RG1 only"
+        "correct_answer": "Tenant Root Group, ManagementGroup1, Subscription1, and RG1 only",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "You can exclude Policy1 from:",
-        "correct_answer": "ManagementGroup1, Subscription1, RG1, and VM1 only"
+        "correct_answer": "ManagementGroup1, Subscription1, RG1, and VM1 only",
+        "correct_option_id": "opt-9"
       }
     ],
     "explanations": {
       "1": "原則指派的範圍只能是管理群組、訂用帳戶或資源群組——也就是「容器」層級，不能直接指派到個別資源。因此 Tenant Root Group、ManagementGroup1、Subscription1、RG1 都可以，但 VM1 不行。",
       "2": "排除項目 (notScopes) 的粒度比指派範圍細，可以一路指定到「個別資源」，因此 VM1 可以被排除。但排除項目必須是指派範圍「底下」的子範圍——最上層的 Tenant Root Group 本身不可能被排除（它是整棵樹的根，沒有任何指派會把它當成子範圍）。→ ManagementGroup1、Subscription1、RG1 和 VM1。",
       "_full": "記住兩條粒度規則：\n・指派範圍：管理群組／訂用帳戶／資源群組（容器），不含個別資源。\n・排除範圍：可到個別資源，但必須位於指派範圍之下，因此根管理群組不會出現在排除清單。\n這也解釋了兩個答案的差異：指派清單止於 RG1，排除清單延伸到 VM1 卻少了 Tenant Root Group。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9"
+    ]
   },
   {
     "exam": "AZ-104",

@@ -25,6 +25,7 @@ import { buildExamProgressReport, createMemoryAnchor } from './learningInsights'
 import { shareScoreCard } from './sharecard'
 import { markExamActive, markPracticeActive } from './swUpdate'
 import { saveSession, loadSession, clearSession } from './session'
+import { computeCorrect, getStructuredChoices } from './grading'
 
 // ── GitHub Config (admin only) ──
 const GITHUB_OWNER = 'awsjin510'
@@ -270,34 +271,6 @@ function formatDuration(sec) {
   if (h >= 10) return `${Math.round(h)} 小時`
   if (h >= 1) return `${h.toFixed(1)} 小時`
   return `${Math.round(sec / 60)} 分鐘`
-}
-
-// ── Helper: 判斷一題作答是否正確（練習與自動跳題共用） ──
-function computeCorrect(q, userAns) {
-  if (!q) return false
-  const matchSet = (a, b) => Array.isArray(a) && a.length === b.length &&
-    [...a].sort().join(',') === [...b].sort().join(',')
-  if (q.type === 'single') {
-    return userAns === q.answer
-  } else if (q.type === 'multiple') {
-    return Array.isArray(userAns) && Array.isArray(q.answer) && matchSet(userAns, q.answer)
-  } else if (q.type === 'matching') {
-    if (q.matches?.length > 0) {
-      return q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
-    } else if (q.options && q.answer) {
-      return matchSet(userAns, Array.isArray(q.answer) ? q.answer : [q.answer])
-    }
-    return userAns === 'self-assessed-correct'
-  } else if (q.type === 'ordering') {
-    if (q.ordered_steps?.length > 0) {
-      return Array.isArray(userAns) && userAns.length === q.ordered_steps.length &&
-        userAns.every((s, i) => s === q.ordered_steps[i])
-    } else if (q.options && q.answer) {
-      return matchSet(userAns, Array.isArray(q.answer) ? q.answer : [q.answer])
-    }
-    return userAns === 'self-assessed-correct'
-  }
-  return false
 }
 
 // ── Reducer ──
@@ -574,37 +547,7 @@ function reducer(state, action) {
       const details = state.examQuestionIds.map(qKey => {
         const q = qMap.get(qKey)
         const userAns = state.examAnswers[qKey]
-        let correct = false
-        if (q.type === 'single') correct = userAns === q.answer
-        else if (q.type === 'multiple') {
-          correct = Array.isArray(userAns) && Array.isArray(q.answer) &&
-            userAns.length === q.answer.length &&
-            [...userAns].sort().join(',') === [...q.answer].sort().join(',')
-        } else if (q.type === 'matching') {
-          if (q.matches?.length > 0) {
-            correct = q.matches.every((m, i) => userAns && userAns[i] === m.correct_answer)
-          } else if (q.options && q.answer) {
-            const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
-            correct = Array.isArray(userAns) &&
-              userAns.length === correctAnswers.length &&
-              [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
-          } else {
-            correct = userAns === 'self-assessed-correct'
-          }
-        } else if (q.type === 'ordering') {
-          if (q.ordered_steps?.length > 0) {
-            correct = Array.isArray(userAns) &&
-              userAns.length === q.ordered_steps.length &&
-              userAns.every((s, i) => s === q.ordered_steps[i])
-          } else if (q.options && q.answer) {
-            const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer]
-            correct = Array.isArray(userAns) &&
-              userAns.length === correctAnswers.length &&
-              [...userAns].sort().join(',') === [...correctAnswers].sort().join(',')
-          } else {
-            correct = userAns === 'self-assessed-correct'
-          }
-        }
+        const correct = computeCorrect(q, userAns)
         if (correct) totalCorrect++
         if (!typeStats[q.type]) typeStats[q.type] = { total: 0, correct: 0 }
         typeStats[q.type].total++
@@ -2770,13 +2713,15 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
     // If matches/available_options exist, use dropdown matching UI
     if (q.matches?.length > 0 && q.available_options?.length > 0) {
       const selections = Array.isArray(answer) ? answer : q.matches.map(() => '')
+      const choices = getStructuredChoices(q.available_options, q.available_option_ids)
       return (
         <div className="space-y-3">
           {q.matches.map((m, i) => {
+            const correctAnswer = m.correct_option_id ?? m.correct_answer
             let borderClass = 'border-gray-200 dark:border-gray-700'
             let accentClass = ''
             if (submitted && !examMode) {
-              if (selections[i] === m.correct_answer) { borderClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'; accentClass = 'correct' }
+              if (selections[i] === correctAnswer) { borderClass = 'border-green-500 bg-green-50 dark:bg-green-900/20'; accentClass = 'correct' }
               else { borderClass = 'border-red-500 bg-red-50 dark:bg-red-900/20'; accentClass = 'incorrect' }
             }
             return (
@@ -2794,11 +2739,11 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
                 >
                   <option value="">-- 請選擇 --</option>
-                  {q.available_options.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                  {choices.map(choice => (
+                    <option key={choice.id} value={choice.id}>{choice.text}</option>
                   ))}
                 </select>
-                {submitted && !examMode && selections[i] !== m.correct_answer && (
+                {submitted && !examMode && selections[i] !== correctAnswer && (
                   <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1"><CheckCircle size={12} />正確答案：{m.correct_answer}</p>
                 )}
               </div>
@@ -2883,8 +2828,11 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
     // If available_steps/ordered_steps exist, use the ordering UI
     if (q.available_steps?.length > 0 && q.ordered_steps?.length > 0) {
       const selectedSteps = Array.isArray(answer) ? answer : []
-      const availableSteps = q.available_steps.filter(s => !selectedSteps.includes(s))
-      const neededCount = q.ordered_steps.length
+      const choices = getStructuredChoices(q.available_steps, q.available_step_ids)
+      const choiceTextById = new Map(choices.map(choice => [choice.id, choice.text]))
+      const availableSteps = choices.filter(choice => !selectedSteps.includes(choice.id))
+      const correctSteps = q.ordered_step_ids ?? q.ordered_steps
+      const neededCount = correctSteps.length
 
       return (
         <div className="space-y-4">
@@ -2897,19 +2845,19 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
           <div>
             <h5 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">可選步驟：</h5>
             <div className="flex flex-wrap gap-2">
-              {availableSteps.map(step => (
+              {availableSteps.map(choice => (
                 <button
-                  key={step}
+                  key={choice.id}
                   onClick={() => {
                     if (submitted && !examMode) return
                     if (selectedSteps.length < neededCount) {
-                      onAnswer([...selectedSteps, step])
+                      onAnswer([...selectedSteps, choice.id])
                     }
                   }}
                   disabled={(submitted && !examMode) || selectedSteps.length >= neededCount}
                   className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  <Plus size={12} className="inline mr-1" />{step}
+                  <Plus size={12} className="inline mr-1" />{choice.text}
                 </button>
               ))}
             </div>
@@ -2923,7 +2871,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                 {selectedSteps.map((step, i) => {
                   let itemClass = 'border-gray-200 dark:border-gray-700'
                   if (submitted && !examMode) {
-                    itemClass = (i < q.ordered_steps.length && step === q.ordered_steps[i])
+                    itemClass = (i < correctSteps.length && step === correctSteps[i])
                       ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                       : 'border-red-500 bg-red-50 dark:bg-red-900/20'
                   }
@@ -2932,7 +2880,7 @@ function QuestionInput({ question, answer, submitted, onAnswer, examMode = false
                       <span className="w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-xs font-bold flex items-center justify-center shrink-0">
                         {i + 1}
                       </span>
-                      <span className="text-sm flex-1">{step}</span>
+                      <span className="text-sm flex-1">{choiceTextById.get(step) ?? step}</span>
                       {!(submitted && !examMode) && (
                         <div className="flex items-center gap-0.5">
                           <button

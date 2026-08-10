@@ -79,18 +79,30 @@
     "matches": [
       {
         "use_case": "Resource group:",
-        "correct_answer": "RG1, RG2, or RG3"
+        "correct_answer": "RG1, RG2, or RG3",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "Location:",
-        "correct_answer": "West US only"
+        "correct_answer": "West US only",
+        "correct_option_id": "opt-5"
       }
     ],
     "explanations": {
       "1": "資源群組的位置只是「存放該群組中繼資料」的區域，不限制其中資源可以位於哪裡；而且 VM 與擴展集也不需要在同一個資源群組。因此三個資源群組都可以用。",
       "2": "位置就不能隨意了：要把一台既有的虛擬機器加入擴展集，VM 必須與擴展集在「同一個區域」（也必須在同一個訂用帳戶）。VMSS1 位於 West US，所以 VM1 也必須部署在 West US。（注意不要被 RG1 的 Central US 誤導——那只是資源群組中繼資料的位置。）",
       "_full": "兩個常混淆的觀念：\n① 資源群組的「位置」與其中資源的「位置」互不相干，也不要求資源同群組。\n② 「VM 協調模式」的擴展集才能把「在擴展集外自行建立的 VM」明確加進來（ScaleSetVM 模式的執行個體則由擴展集自己依組態模型建立與管理）；而加入的前提是 VM 與擴展集同區域、同訂用帳戶。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -107,18 +119,27 @@
     "matches": [
       {
         "use_case": "Packets from VNET1 can be routed to:",
-        "correct_answer": "VNET2 and VNET3"
+        "correct_answer": "VNET2 and VNET3",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "Packets from VNET2 can be routed to:",
-        "correct_answer": "VNET1 only"
+        "correct_answer": "VNET1 only",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "VNET1 分別與 VNET2、VNET3 都建立了對等互連且狀態為「已連線」，所以 VNET1 的封包可以直接送到這兩個網路。→ VNET2 和 VNET3。",
       "2": "VNET2 只與 VNET1 對等互連。虛擬網路對等互連「沒有傳遞性」——VNET2 不會因為 VNET1 也連著 VNET3 就能到達 VNET3。而且兩邊的「閘道傳輸」都是停用，沒有可以中轉的路徑。→ 只有 VNET1。\n（要讓 VNET2 到 VNET3，得直接建立 VNET2↔VNET3 的對等互連，或在 VNET1 中放 NVA／Azure 防火牆並搭配使用者定義路由來中轉。）",
       "_full": "本題只考一條規則：對等互連「不具傳遞性」。\n・直接對等的網路互通（VNET1 ↔ VNET2、VNET1 ↔ VNET3）。\n・沒有直接對等的網路不互通（VNET2 ✗ VNET3），即使它們共同連著同一個中央網路也一樣。\n「閘道傳輸 (gateway transit)」只影響 VPN／ExpressRoute 閘道的共用，不會讓對等互連變成可傳遞。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -215,15 +236,18 @@
     "matches": [
       {
         "use_case": "NSG1 limits VM1 traffic.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "NSG1 applies to VM2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM1 and VM2 connect to the same virtual network.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -231,7 +255,11 @@
       "2": "是。NSG1 兩條規則的「目的地」都是 172.16.2.0/24，正是 VM2 所在的子網路；而輸入規則是在「流量進入的那一端」評估的，代表 NSG1 關聯在 VM2 的子網路（或網路介面）上，因此套用於 VM2。",
       "3": "是。第二次檢查的躍點清單顯示 VM1 (172.16.1.4) 的「下一個躍點」直接就是 172.16.2.4（VM2），中間沒有任何閘道或設備。同一個虛擬網路內的不同子網路之間本來就由系統路由直接互通，這正是這個結果的成因（不同虛擬網路之間會需要對等互連或閘道，躍點也會不同）。",
       "_full": "三個判斷各有依據：\n① 讀 NSG 規則要按優先順序：數字小的先命中，所以允許規則勝過後面的拒絕規則——TCP 8080 不通是應用層沒監聽，不是 NSG 擋的。\n② 從規則的「目的地」就能反推 NSG 關聯在哪一端（輸入規則在接收端評估）。\n③ 網路監看員的躍點清單能證明兩台 VM 是否同網路：中間沒有其他躍點就是同一個虛擬網路。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -312,18 +340,30 @@
     "matches": [
       {
         "use_case": "Hosts on vNET6 can communicate with hosts on [answer choice].",
-        "correct_answer": "vNET6 only"
+        "correct_answer": "vNET6 only",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "To change the status of the peering connection to vNET1 to Connected, you must first [answer choice].",
-        "correct_answer": "delete peering1"
+        "correct_answer": "delete peering1",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
       "1": "兩個對等互連的狀態都是「已中斷連線」，代表對方虛擬網路上「對應的那一半」對等互連已經被刪除（對等互連必須兩邊各建一條，兩邊都存在才會是 Connected）。狀態不是 Connected 時流量不會通，因此 vNET6 上的主機只能和 vNET6 自己的主機通訊。",
       "2": "「已中斷連線」的對等互連無法用「更新」修回來——必須把這一半刪掉再重新建立（兩邊各建一條），狀態才會回到 Initiated／Connected。所以第一步是刪除 peering1。新增服務端點或子網路、修改位址空間都不會改變對等互連的狀態（位址空間重疊會導致「建立失敗」，但這裡的問題是對方那一半不存在）。",
       "_full": "對等互連的狀態機要記清楚：\n・Initiated：只建了單邊，等對方建立。\n・Connected：兩邊都建好，流量才通。\n・Disconnected：對方那一半被刪除了——「不能靠更新修復」，必須刪除本地這一半再重建。\n另外，狀態不是 Connected 時，不管閘道傳輸有沒有啟用都不會通。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -337,15 +377,18 @@
     "matches": [
       {
         "use_case": "VM1 is in the same availability set as VM2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If Probe1.htm is present on VM1 and VM2, LB1 will balance TCP port 80 between VM1 and VM2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If you delete Rule1, LB1 will balance all the requests between VM1 and VM2 for all the ports.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -353,7 +396,11 @@
       "2": "是。負載平衡規則 Rule1 已經把前端 TCP 80 對應到後端 80，而健康情況探查 Probe1 會去抓 HTTP:80/Probe1.htm。探查成功（也就是兩台都有 Probe1.htm）時，兩台都被判定為健康，新連線就會被分配到兩台上——探查失敗的執行個體會停止收到新流量。",
       "3": "否。負載平衡「規則」正是定義「哪個連接埠要被平衡」的東西。把 Rule1 刪掉之後就沒有任何規則了，LB1 不會轉發任何流量，更不會變成「全部連接埠都平衡」。（若真的想涵蓋所有連接埠，要建立啟用「高可用性埠 (HA Ports)」的規則，而那是 Standard SKU 內部負載平衡器才有的功能。）",
       "_full": "三個要點：\n① Basic SKU 的後端集區限制（同一可用性設定組或擴展集）可以「反推」出 VM 的關係。\n② 健康情況探查決定哪些後端會收到新流量；探查成功才會被納入分配。\n③ 沒有負載平衡規則就沒有任何流量轉發——刪除規則不等於「全部開放」；要一次涵蓋所有連接埠得用 Standard SKU 的高可用性埠。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -369,18 +416,26 @@
     "matches": [
       {
         "use_case": "Before you create a backend pool on slb1, you must:",
-        "correct_answer": "Remove the public IP address from VM1"
+        "correct_answer": "Remove the public IP address from VM1",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Before you can connect to VM1 from slb1, you must:",
-        "correct_answer": "Create and configure an NSG"
+        "correct_answer": "Create and configure an NSG",
+        "correct_option_id": "opt-4"
       }
     ],
     "explanations": {
       "1": "從 VM1 移除公用 IP 位址。Standard SKU 的負載平衡器要求後端執行個體的公用 IP 「SKU 必須一致」——而 VM1 目前的公用 IP 是「動態」配置，動態公用 IP 一律是 Basic SKU。SKU 不相符的執行個體無法加入 Standard 負載平衡器的後端集區，所以要先把這個 Basic 公用 IP 移除（之後由負載平衡器的前端公用 IP 對外服務）。",
       "2": "建立並設定一個 NSG。Standard SKU 負載平衡器是「預設安全」的——後端執行個體如果沒有 NSG 明確允許流量，進來的流量會被拒絕（Basic SKU 則是預設開放）。因此要能從 slb1 連到 VM1，必須先建立 NSG 並加入允許規則（允許來自 AzureLoadBalancer 與所需來源的流量）。",
       "_full": "Standard SKU 負載平衡器與 Basic 的兩個關鍵差異，本題各考一個：\n① SKU 必須一致：後端 VM 若掛著 Basic 公用 IP（動態公用 IP 就是 Basic），不能加入 Standard 負載平衡器的後端集區。\n② 預設安全：Standard 要求 NSG 明確允許流量才通；Basic 預設開放。\n（另外提醒：私人 IP 是動態或靜態不影響加入後端集區，那是干擾項。）"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -437,18 +492,29 @@
     "matches": [
       {
         "use_case": "Task1:",
-        "correct_answer": "IP flow verify"
+        "correct_answer": "IP flow verify",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Task2:",
-        "correct_answer": "Connection troubleshoot"
+        "correct_answer": "Connection troubleshoot",
+        "correct_option_id": "opt-6"
       }
     ],
     "explanations": {
       "1": "IP 流量驗證。你指定來源與目的 IPv4 位址、連接埠、通訊協定 (TCP/UDP) 與方向（輸入或輸出），它會判斷該封包會被允許還是拒絕，「而且會直接告訴你是哪一條安全性規則造成的」——正好對應 Task1。\n安全性群組檢視只是把有效規則列出來給你自己看，不會針對某個封包給出判定；封包擷取是抓實際流量、不做規則分析。",
       "2": "連線疑難排解。它可以測試從某台 VM 到另一台 VM、FQDN、URI 或 IPv4 位址的連線，回報是否可達、延遲與經過的躍點——這正是「驗證對外部主機的輸出連線」。\n（相近的「連線監視員 Connection Monitor」是「持續」監控；連線疑難排解則是「當下」測一次。）下一個躍點只回答封包會被路由到哪裡；NSG 流程記錄與流量分析是事後的記錄與分析，不是即時測試。",
       "_full": "把網路監看員的工具按「用途」分開記：\n・IP 流量驗證 → 判斷某個封包會不會被允許，並指出是哪條規則。\n・連線疑難排解 → 當下測試一條連線是否可達（含到外部主機）。\n・下一個躍點 → 診斷路由。\n・安全性群組檢視 → 檢視有效安全性規則。\n・封包擷取 → 抓實際封包。\n・NSG 流程記錄／流量分析 → 事後的流量記錄與趨勢分析。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -462,15 +528,18 @@
     "matches": [
       {
         "use_case": "VM1 connects to 193.77.134.10 for DNS queries.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM2 connects to 193.77.134.10 for DNS queries.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM3 connects to 192.168.10.15 for DNS queries.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -478,7 +547,11 @@
       "2": "否。DNS 設定的優先順序是「網路介面層級 > 虛擬網路層級」——網路介面上一旦指定了 DNS 伺服器，就會「覆寫」虛擬網路的設定。VM2 的介面指定了 192.168.10.15，因此它查詢時只會用 192.168.10.15，不會用 193.77.134.10。",
       "3": "是。同樣的覆寫規則：VM3 的網路介面指定了 192.168.10.15，覆寫掉虛擬網路的 193.77.134.10，所以 VM3 會用 192.168.10.15（作業系統是 Linux 不影響這個判斷）。",
       "_full": "一條規則就能全部判完：DNS 設定「網路介面層級優先於虛擬網路層級」。\n・介面設為「無」→ 繼承虛擬網路的設定。\n・介面指定了 IP → 覆寫虛擬網路的設定，虛擬網路那組完全不會被使用。\n另外提醒：改完 DNS 設定後，VM 要重新啟動（或更新租用）才會生效。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -586,15 +659,18 @@
     "matches": [
       {
         "use_case": "A Site-to-Site connection can be established between VNET1 and VNET2.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VNET1 and VNET2 can be peered.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VNET1 and VNETA can be peered.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -602,7 +678,11 @@
       "2": "是。對等互連唯一的硬性限制是「位址空間不可重疊」：10.10.10.0/24 與 172.16.0.0/16 完全不相交。區域不同也沒問題——跨區域用「全域虛擬網路對等互連」即可。",
       "3": "是。VNET1 是 10.10.10.0/24（10.10.10.0～10.10.10.255）；VNETA 是 10.10.128.0/17（10.10.128.0～10.10.255.255），兩者沒有重疊。而且跨訂用帳戶、跨區域的對等互連都受支援（只要對兩邊的虛擬網路都有足夠權限）。",
       "_full": "兩個觀念：\n① 名詞要分清：站對站 = 內部部署 ↔ Azure；VNet 對 VNet = Azure ↔ Azure（走 VPN 閘道）；對等互連 = Azure ↔ Azure（走骨幹網路，不需閘道）。\n② 對等互連的唯一硬限制是位址空間不可重疊；跨區域、跨訂用帳戶、跨租用戶都做得到。\n所以本題只要動手算 CIDR 有沒有交集就能判斷後兩項——10.10.10.0/24 與 10.10.128.0/17 是不同段，沒有衝突。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -746,18 +826,26 @@
     "matches": [
       {
         "use_case": "The virtual machines that will be load balanced by using LB1 must:",
-        "correct_answer": "be created in the same availability set or virtual machine scale set"
+        "correct_answer": "be created in the same availability set or virtual machine scale set",
+        "correct_option_id": "opt-3"
       },
       {
         "use_case": "The virtual machines that will be load balanced by using LB2 must:",
-        "correct_answer": "be connected to the same virtual network"
+        "correct_answer": "be connected to the same virtual network",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
       "1": "LB1 是 Basic SKU，限制較嚴：後端集區只能包含「同一個可用性設定組」或「同一個虛擬機器擴展集」中的執行個體（或單一台 VM）。因此要給 LB1 用的三台虛擬機器必須建立在同一個可用性設定組或擴展集裡。",
       "2": "LB2 是 Standard SKU，放寬成「同一個虛擬網路內的任何虛擬機器」——可以混搭獨立 VM、可用性設定組與擴展集，不必同屬一組。所以要求只有「連線到同一個虛擬網路」。",
       "_full": "這是 Basic 與 Standard 負載平衡器最常考的差異：\n・Basic：後端集區 = 單一可用性設定組或單一擴展集（或一台 VM）。\n・Standard：後端集區 = 同一個虛擬網路中的任何 VM（可混搭）。\n資源群組與作業系統從來不是後端集區的限制條件，兩格都是干擾項。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -773,15 +861,18 @@
     "matches": [
       {
         "use_case": "Public IP addresses:",
-        "correct_answer": "2"
+        "correct_answer": "2",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Virtual network gateways:",
-        "correct_answer": "1"
+        "correct_answer": "1",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Local network gateways:",
-        "correct_answer": "2"
+        "correct_answer": "2",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -789,7 +880,13 @@
       "2": "1 個。主動-主動是「同一個」虛擬網路閘道的部署模式，不是兩個閘道——而且一個虛擬網路的閘道子網路中也只能有一個 VPN 類型的虛擬網路閘道。所以最少（也是最多）1 個。",
       "3": "2 個。【答案校正】官方標示為 1，但「本機網路閘道」代表的是「一台內部部署 VPN 裝置」（它的公用 IP 與所通告的位址空間），一個本機網路閘道只能填一個閘道 IP 位址。題目有「兩台」內部部署 VPN 裝置，而且要求任一台故障都不中斷，因此必須各建一個本機網路閘道（共 2 個），再各自建立連線——這正是 Microsoft 文件中「雙重備援 (dual-redundancy)」的拓撲，Azure 端 2 個執行個體 × 內部 2 台裝置 = 4 條 IPsec 通道。",
       "_full": "「雙重備援」的標準組態：\n・Azure 端：1 個虛擬網路閘道，設為主動-主動 → 2 個公用 IP、2 個閘道執行個體。\n・內部部署端：2 台 VPN 裝置 → 2 個本機網路閘道、2 條連線。\n・合計 4 條 IPsec 通道，任一側單點故障都還有通道存活。\n【答案校正】官方把本機網路閘道標為 1，但那樣只涵蓋一台內部部署裝置，無法滿足「單一台內部部署 VPN 裝置故障也不中斷」的要求，故改判為 2。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -863,15 +960,18 @@
     "matches": [
       {
         "use_case": "The A record for VM5 will be registered automatically in the adatum.com zone.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM5 can resolve VM9.adatum.com.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM6 can resolve VM9.adatum.com.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -879,7 +979,11 @@
       "2": "否。要能對私人區域做名稱「解析」，該虛擬網路必須以「解析虛擬網路」的身分連結到區域。本題只設定了 VNet2 為註冊虛擬網路，VNet1 完全沒有連結到 adatum.com，所以 VM5 查不到這個區域裡的任何記錄。",
       "3": "是。VM6 在 VNet2——也就是註冊虛擬網路裡；而「註冊虛擬網路預設同時也是解析虛擬網路」，所以 VM6 可以解析區域內的記錄。區域中確實存在 vm9 的 A 記錄 (10.1.0.12)，因此 VM6 解析 VM9.adatum.com 會成功。",
       "_full": "私人 DNS 區域的兩種虛擬網路連結要分清：\n・「註冊」虛擬網路：其中的 VM 會自動註冊 A 記錄，而且「預設同時具備解析能力」。每個區域只能有一個。\n・「解析」虛擬網路：只能查詢、不會自動註冊。可以有多個。\n沒有任何連結的虛擬網路（本題的 VNet1）既不會註冊、也查不到記錄。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -893,15 +997,18 @@
     "matches": [
       {
         "use_case": "You can enable auto registration for Link2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "You can add a virtual network link for VNET1 to Zone3.com.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "You can add a virtual network link for VNET2 to Zone1.com and enable auto registration.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -909,7 +1016,11 @@
       "2": "是。私人 DNS 區域是「全域」資源，區域屬性只是中繼資料的存放位置——虛擬網路連結完全不要求兩者同區域。所以 West US 的 VNET1 可以連到 East US 的 Zone3.com（而且一個虛擬網路可以連到很多個私人區域，只是自動註冊只能挑一個）。",
       "3": "是。兩個方向的限制都沒有被違反：VNET2 還沒有對任何區域啟用自動註冊；而「一個私人 DNS 區域可以有多個啟用自動註冊的虛擬網路連結」（Zone1.com 已有 VNET1，再加 VNET2 沒問題）。",
       "_full": "私人 DNS 區域連結的三條規則：\n① 一個「虛擬網路」最多只能對一個區域啟用自動註冊（限制在虛擬網路這一側）。\n② 一個「區域」可以有多個啟用自動註冊的連結（區域這一側沒有 1 對 1 限制）。\n③ 私人區域是全域資源，連結不受區域（location）限制。\n本題三項都沒有違反這些規則，所以全部可行。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -928,18 +1039,29 @@
     "matches": [
       {
         "use_case": "Box 1 (the subnet name):",
-        "correct_answer": "AzureBastionSubnet"
+        "correct_answer": "AzureBastionSubnet",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Box 2 (the address prefix):",
-        "correct_answer": "10.10.10.0/27"
+        "correct_answer": "10.10.10.0/27",
+        "correct_option_id": "opt-5"
       }
     ],
     "explanations": {
       "1": "Azure Bastion 必須部署在一個「名稱固定為 AzureBastionSubnet」的專用子網路中——這個名稱是硬性規定，寫成 LAN01 或 RemoteAccessSubnet 都不會被 Bastion 認可。（同理，Azure 防火牆的專用子網路必須叫 AzureFirewallSubnet，但本題部署的是 Bastion。）",
       "2": "在這些選項中只有 /27 夠大。Azure Bastion 的子網路有最小大小要求，/29 與 /30 都太小（Azure 每個子網路本身還會保留 5 個位址）。選 10.10.10.0/27（32 個位址）也剛好不會與第二個子網路 10.10.10.128/25 重疊。\n（實務提醒：現行的 Azure Bastion 已把最小需求提高到 /26；本題的選項只到 /27，是舊版需求下的題目。）",
       "_full": "兩個硬性規定：\n① 專用子網路的「名稱」不能自訂——Bastion 必須是 AzureBastionSubnet，Azure 防火牆必須是 AzureFirewallSubnet，閘道必須是 GatewaySubnet。\n② 子網路要夠大：本題選項中只有 /27 符合（現行需求已提高到 /26），而且不能與同一個虛擬網路中其他子網路重疊。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1008,7 +1130,19 @@
       "步驟 2": "在 lb1 上建立健康情況探查與後端集區。\n後端集區負責「流量要送去哪些機器」，把 vm1 與 vm2 加進去；\n健康情況探查負責「這台機器還活著嗎」，探查失敗的執行個體會被自動移出輪替。\n兩者都是下一步負載平衡規則的必要輸入。",
       "步驟 3": "在 lb1 上建立負載平衡規則。\n規則把「前端 IP + 連接埠 443」對應到「後端集區 + 連接埠 443」，並指定要用哪一個健康情況探查。\n它必須最後建立，因為建立時就要選前面做好的後端集區與探查。",
       "_full": "解這題只要抓住一條 SKU 規則：\n「標準」負載平衡器只能搭配「標準」公用 IP；後端 VM 若帶著基本 SKU 的公用 IP，就加不進標準 LB 的後端集區。\n所以第一步永遠是把那些基本公用 IP 移除。\n\n接著是負載平衡器本身的組裝順序：後端集區與探查 → 規則。規則會引用前兩者，所以規則一定在最後。\n\n兩個誘答：\n・「移除 nsg1」反而會弄壞需求——nsg1 放行的正是 443，而標準負載平衡器預設是「安全的」，本來就需要 NSG 明確放行才進得來。\n・「建立可用性設定組」跟負載平衡無關，而且可用性設定組只能在建立 VM 的當下指定，事後加不了。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5"
+    ],
+    "ordered_step_ids": [
+      "step-2",
+      "step-3",
+      "step-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1064,7 +1198,20 @@
       "步驟 3": "建立 VPN 站台 (VPN sites)。\n每個 VPN 站台代表一個內部部署據點的 VPN 設備，裡面登記它的公用 IP、BGP 設定與私人位址空間。\n本題有 site1 與 site2 兩個據點，所以要建立兩個 VPN 站台。\n（它相當於傳統做法裡的「本機網路閘道」。）",
       "步驟 4": "把 VPN 站台連線到中樞。\n最後把兩個站台各自連上中樞，並填入共用金鑰。\n連上之後，site1 與 site2 的流量就會經由中樞互通——這就是虛擬 WAN 的「任意對任意」連線：兩個分公司不必彼此拉專線，各自連到中樞就好。",
       "_full": "虛擬 WAN 的建立順序是標準的「由外而內、最後接線」：\n① 虛擬 WAN 資源（最外層容器）\n② 虛擬中樞（區域核心，閘道由 Azure 託管）\n③ VPN 站台（每個地端據點一個）\n④ 把站台連上中樞\n\n「把虛擬網路連線到中樞」是誘答——那是要讓 Azure 裡的虛擬網路也加入這張網路時才做的事，本題只要求把兩個「內部部署據點」連起來，沒有提到任何虛擬網路。\n\n跟傳統站對站 VPN 的對照：\n・虛擬網路閘道 → 由虛擬中樞自動託管，不用自己建。\n・本機網路閘道 → 換成「VPN 站台」。\n・連線 → 換成「站台連線到中樞」。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5"
+    ],
+    "ordered_step_ids": [
+      "step-4",
+      "step-1",
+      "step-2",
+      "step-5"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1078,15 +1225,18 @@
     "matches": [
       {
         "use_case": "Server2 resolves host2.contoso.com to 131.107.50.50.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Server2 resolves host1.contoso.com to 131.107.10.15.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Server3 resolves host2.contoso.com to 131.107.50.50.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1094,7 +1244,11 @@
       "2": "是。同樣走 Server1，而 Server1 的 contoso.com 區域中有 Host1 → 131.107.10.15，因此解析結果是 131.107.10.15（不是 Azure 私人區域裡的 131.107.200.20）。",
       "3": "否。NIC3 設為「從虛擬網路繼承」，而 VNET2 的 DNS 伺服器是自訂的 10.10.0.4——也就是 Server1。所以 Server3 的查詢同樣被送到 Server1，而不是 Azure 提供的解析程式；私人 DNS 區域必須經由 Azure 的 DNS（168.63.129.16）才查得到。因此 Server3 也解析不到 host2。",
       "_full": "這題的關鍵是「私人 DNS 區域只有在虛擬機器使用『Azure 提供的 DNS』時才會被查到」。一旦虛擬網路或網路介面指定了自訂 DNS 伺服器，查詢就全部送去那台伺服器，Azure 私人區域就繞過了（除非那台自訂 DNS 再把查詢轉送到 168.63.129.16）。\n本題三台的 DNS 都指向 Server1（NIC2 直接指定；NIC3 繼承 VNET2 的自訂設定），而 Server1 是 contoso.com 的權威伺服器，所以答案完全由 Server1 的區域內容決定。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1161,19 +1315,23 @@
     "matches": [
       {
         "use_case": "Direction:",
-        "correct_answer": "Outbound"
+        "correct_answer": "Outbound",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Source:",
-        "correct_answer": "10.1.0.10 (source)"
+        "correct_answer": "10.1.0.10 (source)",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "Destination:",
-        "correct_answer": "10.1.0.11 (destination)"
+        "correct_answer": "10.1.0.11 (destination)",
+        "correct_option_id": "opt-10"
       },
       {
         "use_case": "Priority:",
-        "correct_answer": "110"
+        "correct_answer": "110",
+        "correct_option_id": "opt-13"
       }
     ],
     "explanations": {
@@ -1182,7 +1340,24 @@
       "3": "10.1.0.11。同理，目的地只放 VM2 的位址。",
       "4": "110。NSG 規則按優先順序「數字小的先評估、命中即停」，而 DENY_PING 的優先順序是 111，所以新規則必須用「小於 111」的數字才會先命中。選項中只有 110 符合；112 會排在拒絕規則之後、永遠輪不到；111 已被佔用（同一個 NSG 內優先順序不可重複）。",
       "_full": "四個欄位各對應一個判斷：\n① 方向要與被擋的規則相同（DENY_PING 是輸出 → 新規則也放輸出）。\n② ③ 來源與目的地只填必要的單一位址，落實最小權限。\n④ 優先順序必須比拒絕規則「小」才能先命中，而且不能與既有規則重複。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9",
+      "opt-10",
+      "opt-11",
+      "opt-12",
+      "opt-13",
+      "opt-14",
+      "opt-15"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1275,15 +1450,18 @@
     "matches": [
       {
         "use_case": "Address prefix:",
-        "correct_answer": "10.0.0.0/16"
+        "correct_answer": "10.0.0.0/16",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Next hop type:",
-        "correct_answer": "Virtual appliance"
+        "correct_answer": "Virtual appliance",
+        "correct_option_id": "opt-4"
       },
       {
         "use_case": "Assigned to:",
-        "correct_answer": "GatewaySubnet"
+        "correct_answer": "GatewaySubnet",
+        "correct_option_id": "opt-7"
       }
     ],
     "explanations": {
@@ -1291,7 +1469,18 @@
       "2": "虛擬設備。下一個躍點要指向擔任路由器的 VM1，類型就是「虛擬設備」（並填入 VM1 的私人 IP 作為下一個躍點位址）。選「虛擬網路」等於維持系統預設的直連；選「虛擬網路閘道」則是把流量送回閘道，會造成迴圈。",
       "3": "GatewaySubnet。路由表要套用在「流量進入的那個子網路」——從 VPN 閘道進來的流量是先落在 GatewaySubnet，在這裡覆寫路由才能把後續流量導向 VM1。把路由表掛在 Subnet1／Subnet2 只會影響「從那些子網路發出」的流量，來不及攔截入向流量。",
       "_full": "使用者定義路由的三個要素，本題各考一個：\n① 位址前置詞 = 「要導向哪些目的地」→ 全網路就用整個位址空間 10.0.0.0/16。\n② 下一個躍點 = 「導去哪裡」→ 虛擬設備（NVA），並填其私人 IP。\n③ 關聯的子網路 = 「在哪裡攔截」→ 流量的「入口」子網路，本題入口是 GatewaySubnet（這正是強制通道／NVA 檢查的標準做法）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8",
+      "opt-9"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1324,15 +1513,18 @@
     "matches": [
       {
         "use_case": "From the Internet, you can connect to VM1 by using Remote Desktop.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "From the Internet, you can connect to VM2 by using Remote Desktop.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "From VM1, you can connect to VM2 by using Remote Desktop.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1340,7 +1532,11 @@
       "2": "是。NSG2 除了預設規則外還有 Rule1（優先順序 100，允許來源「任何」的 TCP 3389），數字比 DenyAllInBound（65500）小很多，會先命中並放行。而且 VM2 有公用 IP，所以從網際網路連得進來。",
       "3": "是。方向拆開看：VM1 送出的流量受 NSG1 的「輸出」規則管——預設有 AllowVnetOutBound，同一虛擬網路內的流量允許放行；VM2 收到的流量受 NSG2 的「輸入」規則管——預設的 AllowVnetInBound 就已足夠，再加上 Rule1 更是明確允許 3389。兩端都通，因此連得上。",
       "_full": "三個要點：\n① NSG 的預設規則「拒絕所有來自網際網路的輸入」，但「允許虛擬網路內部互通」。\n② 作業系統防火牆與 Azure NSG 是兩層，兩層都要放行才通。\n③ 判斷跨 VM 的連線要同時看「來源端的輸出規則」與「目的端的輸入規則」；NSG 可以掛在子網路或網路介面上，兩者都會被評估。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1395,15 +1591,18 @@
     "matches": [
       {
         "use_case": "VM1 can connect to contoso2024 by using 131.107.10.10.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM2 can connect to contoso2024 by using 150.120.10.10.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM3 must use its private IP address to connect to contoso2024.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1411,7 +1610,11 @@
       "2": "是。VM2 在 Subnet2，而服務端點只設在 Subnet1——Subnet2 沒有服務端點，流量仍以 VM2 的公用 IP 150.120.10.10 送出，而該位址正好在防火牆允許清單中，因此可以連線。",
       "3": "是。【答案校正】官方標示為「否」（理由是 170.20.10.10 也在允許清單中）。但 VM3 與 VM1 同在啟用了服務端點的 Subnet1，它前往儲存體的流量一律改用私人位址、走 Azure 骨幹的服務端點路徑，沒有選擇「改用公用 IP」的餘地。因此「必須使用私人 IP」成立。",
       "_full": "本題的樞紐是「服務端點會改變來源位址」：\n・啟用服務端點的子網路（Subnet1）→ 流量以「私人位址」送出，由虛擬網路規則授權；針對公用 IP 的防火牆規則對它失效。\n・沒有服務端點的子網路（Subnet2）→ 流量仍以「公用 IP」送出，靠 IP 防火牆規則授權。\n【答案校正】官方三格都只看「公用 IP 有沒有在允許清單裡」，完全忽略了設定中已明確標示「端點狀態：已啟用」，因此第一、三項已依服務端點的實際行為改判。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1425,15 +1628,18 @@
     "matches": [
       {
         "use_case": "The DNS A record for vm1 is added to contoso.com and has the IP address of 131.107.50.20.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "The DNS A record for vm1 is added to fabrikam.com and has the IP address of 10.0.1.4.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "The DNS A record for vm2 is added to fabrikam.com and has the IP address of 10.0.1.5.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1441,7 +1647,11 @@
       "2": "是。fabrikam.com 是私人 DNS 區域，且已連結 vnet1 並啟用自動註冊，所以 vnet1 中的虛擬機器啟動時會自動註冊。私人區域的自動註冊登記的是「私人 IP」，因此 vm1 的記錄是 10.0.1.4。",
       "3": "是。vm2 同樣在 vnet1 中，一樣會自動註冊私人 IP 10.0.1.5。作業系統是 Linux、DNS 後置字元為「無」都不影響——自動註冊用的是 Azure 的虛擬機器名稱，與客體作業系統的設定無關。",
       "_full": "三條規則就能全部判完：\n① 自動註冊只有「私人」DNS 區域支援，公用區域一律手動維護記錄。\n② 自動註冊登記的是「私人 IP」，不是公用 IP。\n③ 註冊範圍是「已連結且啟用自動註冊的虛擬網路中的所有 VM」，與作業系統類型、DNS 後置字元、RBAC 角色都無關（本題三者都是干擾項）。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1474,15 +1684,18 @@
     "matches": [
       {
         "use_case": "VM2 can connect to the TCP port 1433 services on VM1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM1 can connect to the TCP port 1433 services on VM2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "VM2 can connect to the TCP port 1433 services on VM3.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1490,7 +1703,11 @@
       "2": "是。這次方向相反：VM1 送出的流量看 NSG2／NSG1 的「輸出」規則——兩個 NSG 都只建了輸入規則，輸出方向沿用預設的 AllowVnetOutBound，放行。而 VM2 那一端（Subnet2 無 NSG、網路介面也無 NSG）完全沒有限制，預設的 AllowVnetInBound 允許同一虛擬網路的流量進入。",
       "3": "是。VM2 與 VM3 都在 Subnet2，而 Subnet2 沒有關聯任何 NSG，兩台的網路介面也沒有 NSG。在沒有自訂規則的情況下，預設規則允許同一虛擬網路內部互通，因此連線成立。",
       "_full": "本題的核心是「NSG 的兩層評估」：\n・輸入方向：先評估「子網路」的 NSG，再評估「網路介面」的 NSG，兩層都允許才通。\n・輸出方向：順序相反（先網路介面、再子網路），同樣兩層都要允許。\n所以只要任一層有拒絕規則命中，流量就不通——第一項就是被網路介面層的 NSG2 擋下。另外記得預設規則允許虛擬網路內部互通，因此沒掛 NSG 的路徑一律通。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1504,15 +1721,18 @@
     "matches": [
       {
         "use_case": "VM3 can establish a network connection to VM1.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "If VM3 is turned off, VM2 can establish a network connection to VM1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "VM1 can establish a network connection to VM2.",
-        "correct_answer": "Yes"
+        "correct_answer": "Yes",
+        "correct_option_id": "opt-1"
       }
     ],
     "explanations": {
@@ -1520,7 +1740,11 @@
       "2": "否。VM2 在 Subnet2，而 Subnet2 套用了 RT1：前往 10.0.1.0/24 的流量必須先送到下一個躍點 10.0.3.4（也就是 VM3）。VM3 一關機，這個下一個躍點就無法回應，流量沒有替代路徑（使用者定義路由的優先權高於系統路由），因此連線失敗。這正是把 NVA 當單點時的典型風險。",
       "3": "是。VM1 在 Subnet1，同樣套用 RT1：前往 10.0.2.0/24 的流量先送到 VM3。而 VM3 的 NIC3 已啟用「IP 轉送」（允許接收目的位址不屬於自己的封包），作業系統內也啟用了路由功能，所以它會把封包轉送到 VM2。兩個條件都滿足，連線成立。",
       "_full": "三個要點：\n① 使用者定義路由只影響「套用了該路由表的子網路」——沒套用的子網路仍走系統路由。\n② 使用者定義路由的優先權高於系統路由，所以下一個躍點掛掉就沒有備援（第 2 項）。\n③ 要讓 VM 真的能當路由器，必須同時做兩件事：在 Azure 的網路介面上啟用「IP 轉送」，並在客體作業系統內啟用路由／轉送功能。少任一項封包都會被丟棄。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1651,15 +1875,18 @@
     "matches": [
       {
         "use_case": "Peering 1-2 is a possible configuration.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Peering 1-3 is a possible configuration.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "Peering 3-2 is a possible configuration.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1667,7 +1894,11 @@
       "2": "否。Azure Government 與 Azure 中國同樣是兩個獨立的雲端，理由同上。",
       "3": "否。Azure 中國與全球公用 Azure 也是獨立的雲端（Azure 中國由當地合作夥伴 21Vianet 營運，與全球 Azure 實體隔離）。",
       "_full": "一條規則就能全部判完：虛擬網路對等互連「不能跨雲端環境」——公用 Azure、Azure Government、Azure 中國（以及德國的舊主權雲）彼此完全隔離。\n對等互連可以跨區域、跨訂用帳戶、跨 Microsoft Entra 租用戶，但「不能跨雲端」。要在不同雲端之間互通，只能走公用網際網路上的 VPN／ExpressRoute 等站對站方案。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1725,18 +1956,30 @@
     "matches": [
       {
         "use_case": "IP address:",
-        "correct_answer": "Obtain an IP address automatically"
+        "correct_answer": "Obtain an IP address automatically",
+        "correct_option_id": "opt-1"
       },
       {
         "use_case": "Name resolution:",
-        "correct_answer": "Configure VNET1 to use a custom DNS server"
+        "correct_answer": "Configure VNET1 to use a custom DNS server",
+        "correct_option_id": "opt-5"
       }
     ],
     "explanations": {
       "1": "自動取得 IP 位址。【答案校正】官方標示為「使用 10.0.1.3」，但 10.0.1.3 在 Azure 是「保留位址」，根本無法指派給虛擬機器——每個子網路的前四個位址都被保留（10.0.1.0 網路位址、10.0.1.1 預設閘道、10.0.1.2 與 10.0.1.3 供 Azure DNS 對應），Subnet1 的第一個可用位址是 10.0.1.4。\n而且 Azure 的正確做法本來就是：客體作業系統一律設為「自動取得 IP 位址」，要固定位址就在「Azure 網路介面」上把配置改為靜態；在客體 OS 內手動寫死 IP 是不受支援的做法，會導致連線異常。另外 10.0.2.1 不在 Subnet1 範圍內、192.168.2.1 更不在 VNET1 的位址空間內。",
       "2": "將 VNET1 設定為使用自訂 DNS 伺服器（指向 DC1）。【答案校正】官方標示為「建立一個名為 contoso.com 的 Azure 私人 DNS 區域」，但 Azure 私人 DNS 區域「不支援 AD DS 所需的動態註冊與 SRV 記錄」——網域成員要靠 _ldap._tcp、_kerberos._tcp 這類 SRV 記錄才能找到網域控制站，這些記錄由 DC 自己動態維護，私人 DNS 區域無法承擔這個角色（Microsoft 文件也明確指出不支援用 Azure DNS 私人區域取代 AD DS 的 DNS）。正確做法是把 VNET1 的 DNS 伺服器設為自訂，填入 DC1 的私人 IP，讓虛擬網路中的機器都去問 DC1。改用 Azure 提供的 DNS 或建立公用區域同樣無法解析 AD DS 名稱。",
       "_full": "【答案校正】本題兩格的官方答案都站不住腳：\n① Azure 每個子網路保留前四個位址，10.0.1.3 不可指派；而且客體 OS 應設為 DHCP，靜態指派要做在 Azure 網路介面上。\n② AD DS 的名稱解析依賴動態註冊的 SRV 記錄，Azure 私人 DNS 區域不支援，必須把虛擬網路的 DNS 指向網域控制站本身。\n把網域控制站搬上 Azure 的標準做法就是：NIC 設靜態私人 IP（OS 內維持 DHCP）＋ 虛擬網路 DNS 指向該 DC。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2",
+      "opt-3",
+      "opt-4",
+      "opt-5",
+      "opt-6",
+      "opt-7",
+      "opt-8"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -1809,15 +2052,18 @@
     "matches": [
       {
         "use_case": "LB1 will be connected to a subnet named VNET1/netname.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "LB1 can be deployed only to the resource group that contains VNET1.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       },
       {
         "use_case": "The value of the sku variable can be provided as a parameter when the template is deployed from a command prompt.",
-        "correct_answer": "No"
+        "correct_answer": "No",
+        "correct_option_id": "opt-2"
       }
     ],
     "explanations": {
@@ -1825,7 +2071,11 @@
       "2": "否。負載平衡器與它引用的虛擬網路「不需要」在同一個資源群組——資源群組是管理與生命週期的容器，不是網路邊界，跨資源群組引用是允許的。\n（實務補充：範本裡的 resourceId() 若沒有明確傳入資源群組參數，會以「本次部署的資源群組」來組出 ID；因此若 VNET1 真的在別的資源群組，要改寫成 resourceId('<那個資源群組>', 'Microsoft.Network/virtualNetworks', 'VNET1')。但這是寫法問題，不代表 Azure 限制兩者必須同群組。）",
       "3": "否。sku 定義在 \"variables\" 區段裡，而變數是「範本內部」計算出來的值，部署時無法從外部覆寫。只有 \"parameters\" 區段的項目才能在部署時傳入（本範本的 parameters 是空的 {}）。要讓 sku 可從命令列指定，必須把它從 variables 移到 parameters。",
       "_full": "三個 ARM 範本的基本觀念：\n① 變數與函式會先求值再代入——看到 variables('netname') 要換成它的值 APP1。\n② 資源群組不是網路或引用的邊界，資源可以跨資源群組互相引用（但 resourceId() 預設以本次部署的資源群組解析）。\n③ parameters 才是「部署時可傳入」的輸入；variables 是範本內部固定計算的值，不能從外部覆寫。"
-    }
+    },
+    "available_option_ids": [
+      "opt-1",
+      "opt-2"
+    ]
   },
   {
     "exam": "AZ-104",
@@ -2004,7 +2254,20 @@
       "步驟 2": "在 Bastion1 上選取「原生用戶端支援」。\n升級之後到 Bastion1 的組態頁把這個選項打開，Bastion 才會開始接受來自 Azure CLI 的通道要求。\n（順帶一提，這個開關是 Bastion 主機層級的設定，不是每台 VM 各自設定。）",
       "步驟 3": "在 Device1 上，從 Azure CLI 執行 az network bastion rdp。\n這道命令會經由 Bastion1 建立一條到 VM1 的通道，並自動叫起本機的 RDP 用戶端連上去——全程 VM1 都不需要公用 IP。\n注意這個命令只有 Azure CLI 有，Azure PowerShell 沒有對應的 Cmdlet。",
       "_full": "Azure Bastion「原生用戶端」連線的三步驟：\n升級到標準 SKU → 開啟原生用戶端支援 → 用 az network bastion rdp 連線。\n\nSKU 差異是本題的關鍵，值得整組記起來：\n・開發人員 (Developer) SKU：免費、共用、只能瀏覽器連線。\n・基本 (Basic) SKU：只能瀏覽器連線，沒有原生用戶端、沒有 IP 型連線。\n・標準 (Standard) SKU 以上：才有原生用戶端支援、可調整執行個體數、共用連結、IP 型連線等進階功能。\n\n三個誘答：\n・直接跑 mstsc.exe 沒有用——VM1 沒有公用 IP，而且 Device1 與 VNET1 之間沒有任何私人連線。\n・JIT VM 存取是 Microsoft Defender for Cloud 的功能，它做的是「暫時開放 NSG 連接埠」，並不會幫你建立通道。\n・Bastion 沒有「Kerberos 驗證」這個一般性的開關可以解決本題（Kerberos 是給網域環境的驗證選項，跟能不能用原生用戶端無關）。"
-    }
+    },
+    "available_step_ids": [
+      "step-1",
+      "step-2",
+      "step-3",
+      "step-4",
+      "step-5",
+      "step-6"
+    ],
+    "ordered_step_ids": [
+      "step-6",
+      "step-4",
+      "step-1"
+    ]
   },
   {
     "exam": "AZ-104",
