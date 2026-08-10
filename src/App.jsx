@@ -475,12 +475,12 @@ function reducer(state, action) {
       const correct = computeCorrect(q, userAns)
       const prevEntry = state.statsHistory[qKey]
       const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
-      // SRS 階段採連續答對：答對前進一階，答錯回到第一階段。
-      const correctCount = correct ? prevCount + 1 : 0
+      // 累計答對次數：答對 +1，答錯不歸零（不需連續答對，中間夾雜答錯也算數）。
+      const correctCount = correct ? prevCount + 1 : prevCount
       // 終身總答對次數：只增不減，供 XP／等級計算使用，不受 SRS 階段重置影響
       // （避免答錯導致 correctCount 歸零時，等級跟著現場倒退）。
       const totalCorrect = (prevEntry?.totalCorrect ?? prevCount) + (correct ? 1 : 0)
-      // 一旦答錯過就視為錯題；連續答對 MASTERY_THRESHOLD 次後才算學會並移出清單
+      // 一旦答錯過就視為錯題；累計答對 MASTERY_THRESHOLD 次後才算學會並移出清單
       const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !correct
       const wasMastered = prevEntry && (prevEntry.everWrong ?? !prevEntry.correct) && (prevEntry.correctCount ?? 0) >= MASTERY_THRESHOLD
       const nowMastered = everWrong && correctCount >= MASTERY_THRESHOLD
@@ -616,7 +616,7 @@ function reducer(state, action) {
       details.forEach(d => {
         const prevEntry = state.statsHistory[d.qKey]
         const prevCount = prevEntry?.correctCount ?? prevEntry?.correctStreak ?? 0
-        const correctCount = d.correct ? prevCount + 1 : 0
+        const correctCount = d.correct ? prevCount + 1 : prevCount
         // 終身總答對次數：只增不減，供 XP／等級計算使用（見 SUBMIT_ANSWER 註解）。
         const totalCorrect = (prevEntry?.totalCorrect ?? prevCount) + (d.correct ? 1 : 0)
         const everWrong = (prevEntry ? (prevEntry.everWrong ?? !prevEntry.correct) : false) || !d.correct
@@ -792,7 +792,7 @@ const typeLabels = { single: '單選題', multiple: '多選題', matching: '配�
 // ── Helper: Exam code display name (data keys stay as the short code) ──
 const EXAM_DISPLAY_NAMES = { 'PCA': 'GCP-PCA' }
 const displayExam = code => EXAM_DISPLAY_NAMES[code] || code
-// 錯題清單：需連續答對這麼多次才算「學會」並移出清單（答錯重置）
+// 錯題清單：累計答對這麼多次才算「學會」並移出清單（不需連續，答錯不歸零）
 const MASTERY_THRESHOLD = 3
 
 // ── Helper: Get display question based on language ──
@@ -3859,7 +3859,7 @@ function ReviewDueCard({ items, wrongItems = [], dispatch }) {
           ) : (
             <>
               <div className="text-lg font-bold text-gray-900 dark:text-gray-50">錯題待消滅 <span className="text-orange-500 tnum">{filteredWrong.length}</span> 題</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">連續答對 {MASTERY_THRESHOLD} 次即學會並移出清單</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">累計答對 {MASTERY_THRESHOLD} 次即學會並移出清單，不需連續</div>
             </>
           )}
         </div>
@@ -4851,7 +4851,7 @@ function StatsTab({ state, dispatch, qMap, user, setUser, bankIndex, facts, achi
               )}
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-              連續答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單；答錯會回到第一階段。
+              累計答對 {MASTERY_THRESHOLD} 次即視為學會並移出清單，不需連續。
               {masteredCount > 0 && <span className="text-green-600 dark:text-green-400 font-medium"> 已學會 {masteredCount} 題。</span>}
             </p>
             {wrongQuestions.length === 0 ? (
