@@ -25,6 +25,18 @@ const hasUniqueNonEmptyStrings = (values) => Array.isArray(values) &&
   values.every(value => typeof value === 'string' && value.length > 0) &&
   new Set(values).size === values.length
 
+// How many answers a stem explicitly asks for ("(Choose two.)" / "（選擇兩個）"),
+// or null when it does not say.
+const WORD_COUNTS = { two: 2, three: 3, four: 4, five: 5, 两: 2, 兩: 2, 二: 2, 三: 3, 四: 4, 五: 5 }
+function answersWanted(text) {
+  if (typeof text !== 'string') return null
+  const en = text.match(/\(?\s*(?:choose|select|pick)\s+(two|three|four|five|2|3|4|5)\s*\.?\s*\)?/i)
+  if (en) return WORD_COUNTS[en[1].toLowerCase()] ?? Number(en[1])
+  const zh = text.match(/[选選]\s*[择擇]?\s*(两|兩|二|三|四|五|2|3|4|5)\s*[个個]/)
+  if (zh) return WORD_COUNTS[zh[1]] ?? Number(zh[1])
+  return null
+}
+
 for (const { file, lang } of files) {
   let questions
   try {
@@ -57,6 +69,21 @@ for (const { file, lang } of files) {
       const answers = Array.isArray(q.answer) ? q.answer : [q.answer]
       for (const answer of answers) {
         if (!optionKeys.has(String(answer))) add(errors, file, index, `answer ${answer} is not present in options`)
+      }
+    }
+
+    // A stem that says "(Choose two.)" while the record is typed `single` renders
+    // as radio buttons, so the correct answer cannot even be selected and the
+    // question is unscoreable. Warn rather than error: the remaining offenders
+    // are ones whose source explanation cannot settle the answer key, and they
+    // need a human, not a build failure.
+    if (q.options && (q.type === 'single' || q.type === 'multiple')) {
+      const wanted = answersWanted(q.question)
+      if (wanted !== null) {
+        const given = Array.isArray(q.answer) ? q.answer.length : (q.answer ? 1 : 0)
+        if (q.type !== 'multiple' || given !== wanted) {
+          add(warnings, file, index, `stem asks for ${wanted} answers but type=${q.type} with ${given} answer(s)`)
+        }
       }
     }
 

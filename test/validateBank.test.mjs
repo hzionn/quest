@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { execFileSync } from 'node:child_process'
+import { spawnSync } from 'node:child_process'
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve, dirname } from 'node:path'
@@ -34,22 +34,18 @@ function matchingPair() {
 }
 
 // Runs the validator against a throwaway data dir; returns { ok, output }.
+// Warnings go to stderr and do not fail the run, so both streams are captured.
 function runValidator(zh, en) {
   const dir = mkdtempSync(join(tmpdir(), 'bank-fixture-'))
   try {
     writeFileSync(join(dir, 'manifest.json'), JSON.stringify({ files: ['zh.json'], enFiles: ['en.json'] }))
     writeFileSync(join(dir, 'zh.json'), JSON.stringify([zh]))
     writeFileSync(join(dir, 'en.json'), JSON.stringify([en]))
-    try {
-      const output = execFileSync('node', [validator], {
-        env: { ...process.env, BANK_DATA_DIR: dir },
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'pipe'],
-      })
-      return { ok: true, output }
-    } catch (error) {
-      return { ok: false, output: `${error.stdout || ''}${error.stderr || ''}` }
-    }
+    const result = spawnSync('node', [validator], {
+      env: { ...process.env, BANK_DATA_DIR: dir },
+      encoding: 'utf8',
+    })
+    return { ok: result.status === 0, output: `${result.stdout || ''}${result.stderr || ''}` }
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
@@ -92,6 +88,38 @@ test('validation rejects ordering IDs migrated on only one side', () => {
   const result = runValidator(zh, en)
   assert.equal(result.ok, false, 'half-migrated ordering pair must fail validation')
   assert.match(result.output, /ordering IDs on ZH only/)
+})
+
+test('a "(Choose two.)" stem typed as single choice is warned about', () => {
+  // The SAA-C03 shape: the stem asks for two, the record allows one, so the UI
+  // renders radio buttons and the answer cannot be selected at all.
+  const single = {
+    exam: 'TST-C01',
+    id: 3,
+    type: 'single',
+    question: 'Which actions should the architect take? (Choose two.)',
+    options: { A: 'a', B: 'b', C: 'c' },
+    answer: 'A',
+    explanation: 'x',
+  }
+  const result = runValidator(single, { ...single, id: 4 })
+  assert.equal(result.ok, true, 'this is a warning, not a build-breaking error')
+  assert.match(result.output, /stem asks for 2 answers but type=single with 1 answer\(s\)/)
+})
+
+test('a correctly typed multiple-answer question raises no warning', () => {
+  const multiple = {
+    exam: 'TST-C01',
+    id: 5,
+    type: 'multiple',
+    question: 'Which actions should the architect take? (Choose two.)',
+    options: { A: 'a', B: 'b', C: 'c' },
+    answer: ['A', 'C'],
+    explanation: 'x',
+  }
+  const result = runValidator(multiple, { ...multiple, id: 6 })
+  assert.equal(result.ok, true, result.output)
+  assert.doesNotMatch(result.output, /stem asks for/)
 })
 
 test('validation rejects canonical answers that disagree across languages', () => {

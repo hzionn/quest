@@ -97,7 +97,7 @@
  {
   "exam": "SAA-C03",
   "id": 256,
-  "type": "single",
+  "type": "multiple",
   "question": "解决方案架构师正在使用 Amazon S3 存储桶来实施一个文档审阅应用程序。该解决方案必须防止文档被意外删除，并确保所有版 本的文档都可用。用户必须能够下载、修改和上传文档。 应该采取哪些操作组合来满足这些要求” (选择两个。)",
   "options": {
    "A": "启用只读存储桶 ACL.",
@@ -106,7 +106,10 @@
    "D": "在存储桶上启用 MFA Delete,",
    "E": "加密存储桶。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "Enable a read-only bucket ACL. 启用只读存储橘 ACL。 错误：启用只读 ACL 会限制用户对存储橘的写入权限，而题目要求用户能够下载、修改和上传文档。",
    "B": "Enable versioning on the bucket. 在存储橘上启用版本控制。 正确：启用版本控制可以确保所有文档的版本都被保存，从而防止意外删除或覆盖。",
@@ -194,7 +197,7 @@
  {
   "exam": "SAA-C03",
   "id": 261,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司最近宣布将其零售网站部署到全球用户。该网站运行在多个 Amazon EC2 实例上，并通过 Elastic Load Balancer 进行负载 均衡。这些实例运行在跨多个可用区的 Auto Scaling 组中。 该公司希望根据客户访问网站时使用的设备，为其提供不同版本的内容。 解决方案架构师应采取哪些组合操作来满足这些需求? (选择两个。)",
   "options": {
    "A": "配置 Amazon CloudFront 以缓存内容的多个版本。",
@@ -203,7 +206,10 @@
    "D": "配置 AWS Global Accelerator。将请求转发到 Network Load Balancer (NLB), ACE NLB 设置基于主机的路由到不同的 EC2 实 例。",
    "E": "配置 AWS Global Accelerator。将请求转发到 Network Load Balancer (NLB)。配置 NLB 设置基于路径的路由到不同的 EC2 实 例。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "C"
+  ],
   "explanations": {
    "A": "Configure Amazon CloudFront to cache multiple versions of the content. 正确：Amazon CloudFront支持基于请求头（如User-Agent）缓存不同标本的内容，适合为不同设备提供不同的内容。",
    "B": "Configure a host header in a Network Load Balancer to forward traffic to different instances. 错误：Network Load Balancer主要用于基于IP地址和端口的流量转发，不支持基于User-Agent或其他复杂HTTP头的路由。",
@@ -234,7 +240,7 @@
  {
   "exam": "SAA-C03",
   "id": 263,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司正在构建一个由多个微服务组成的应用程序。该公司决定使用容器技术在 AWS 上部署其软件。公司需要一个解决方案， 以尽量减少维护和扩展所需的持续努力。公司无法管理额外的基础设施。 解决方案架构师应该采取哪些行动组合以满足这些要求” (选择两个)",
   "options": {
    "A": "部署一个Amazon Elastic Container Service (Amazon ECS) 集群。",
@@ -243,7 +249,10 @@
    "D": "使用 Fargate 启动类型部署一个Amazon Elastic Container Service (Amazon ECS) 服务。指定一个任务数量级别，要求大于或等 于2。",
    "E": "在跨多个可用区的 Amazon EC2 实例上部署 Kubernetes 工作节点。创建一个部署，指定每个微服务的两个或更乡副本。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "D"
+  ],
   "explanations": {
    "A": "Deploy an Amazon Elastic Container Service (Amazon ECS) cluster. 分析：正确。Amazon ECS是AWS的托管容器服务，支持自动化管理和扩展。部署ECS集群是实现容器化应用的基础步骤。",
    "B": "Deploy the Kubernetes control plane on Amazon EC2 instances that span multiple Availability Zones. 分析：错误。部署Kubernetes控制平面需要额外管理基础设施（EC2实例），这与题目要求的“不能管理额外基础设施”相违背。",
@@ -483,7 +492,7 @@
  {
   "exam": "SAA-C03",
   "id": 276,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司在一个 Auto Scaling 组中的多个 Amazon EC2 实例上部署了一个多层应用程序。 一个 Amazon RDS for Oracle 实例是该应 用程序的数据层，并使用了 Oracle 特定的 PL/SQL 函数。 应用程序的流量一直在稳步增加。这导致 EC2 实例过载，RDS 实例存储 空间不足。 Auto Scaling 组没有任何扩展指标，仪定义了最小健康实例数量。 公司预测流量将继续以稳定但不可预测的速度增长， 直到趋于平稳。 解决方案架构师应该怎么做以确保系统能够自动扩展以应对增加的流量?” (选择两个)",
   "options": {
    "A": "在 RDS for Oracle 实例上配置存储 Auto Scaling.",
@@ -492,7 +501,10 @@
    "D": "将 Auto Scaling 组配置为使用平均 CPU 作为扩展指标。",
    "E": "将 Auto Scaling 组配置为使用平均可用内存作为扩展指标。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "D"
+  ],
   "explanations": {
    "A": "Configure storage Auto Scaling on the RDS for Oracle instance. 正确。 RDS支持存储自动扩展功能，可以确保数据库在存储 空间不足时自动扩展。这是解决RDS存储不足问题的最佳实践。",
    "B": "Migrate the database to Amazon Aurora to use Auto Scaling storage. 错误。 虽然Amazon Aurora支持存储自动扩展，但题 目明确指出使用的是RDS for Oracle，并且依赖Oracle-specific PL/SQL功能。迁移到Aurora可能会导致功能不兼容。",
@@ -523,7 +535,7 @@
  {
   "exam": "SAA-C03",
   "id": 278,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司希望创建一个应用程序，用于以分层结构关系存储员工数据。 该公司需要对高流量查询的员工数据提供最低延迟的响应， 并且必须保护任何敏感数据。 此外，该公司还需要在员工数据中存在任何财务信息时，每月接收电子邮件消息。 解决方案架构师应采取哪些步骤来满足这些要求》 (选择两个。)",
   "options": {
    "A": "使用Amazon Redshift 以分层方式存储员工数据。每月将数据卸载到 Amazon $3,",
@@ -532,7 +544,10 @@
    "D": "分析存储在 Amazon S3 中的员工数据。将 Athena S Amazon QuickSight 集成，以发布分析仪表板并与 用户共享这些仪表板。",
    "E": "为 AWS 账户配置 Amazon Macie, 4% Macie 与 Amazon EventBridge 集成，以通过 Amazon Simple Notification Service (Amazon SNS) 订阅发送每月通知。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "E"
+  ],
   "explanations": {
    "A": "使用 Amazon Redshift 以分层方式存储员工数据。每月将数据卸载到 Amazon S3。 错误：Amazon Redshift主要用于数据仓寑场景，适合分析性查询，但不适合存储宔次化结构数据。 错误：题目要求最低延迟响应，而Redshift的查询延迟较高，不符合要求。",
    "B": "使用 Amazon DynamoDB 以分层方式存储员工数据。每月将数据导出到 Amazon S3。 正确：Amazon DynamoDB是一个NoSQL数据寑，支持存储宔次化结构数据，目具有低延迟查询能力。 正确：可以通过DynamoDB导出功能将数据定期导出到Amazon S3，满足数据存储和导出需求。",
@@ -772,7 +787,7 @@
  {
   "exam": "SAA-C03",
   "id": 291,
-  "type": "single",
+  "type": "multiple",
   "question": "一家媒体公司使用Amazon CloudFront 来提供其公开可用的流媒体视频内容。 该公司希望通过控制访问权限来保护托管在 Amazon S3 中的视频内容。 该公司的部分用户使用不支持 cookies 的自定义 HTTP 客户端。 该公司的部分用户无法更改他们用于 访问的硬编码 URL。 哪些服务或方法能够以对用户影响最小的方式满足这些需求? (选择两个)",
   "options": {
    "A": "Signed cookies",
@@ -781,7 +796,10 @@
    "D": "JSON Web Token (JWT)",
    "E": "AWS Secrets Manager"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "B"
+  ],
   "explanations": {
    "A": "Signed cookies 正确。Signed cookies允许控制对CloudFront分发内容的访问，适用于支持Cookie的客户端。 但是题目提到部分用户的HTTP客户端不支持Cookie，因此Signed cookies可能无法满足所有用户的需求。",
    "B": "Signed URLs 正确。Signed URLs允许通过URL参数控制对CloudFront分发内容的访问，适用于不支持Cookie的客户端。 对于无法更改畦编畡URL的用户，可以生成新的Signed URLs并分发给用户，满足题目要求。",
@@ -793,7 +811,7 @@
  {
   "exam": "SAA-C03",
   "id": 292,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司正在准备一个新的数据平台，该平台将从多个来源摄取实时流数据。公司需要在将数据写入 Amazon $3 之前对数据进行 转换。公司需要能够使用 SQL 查询转换后的数据。 哪些解决方案可以满足这些需求?” (选择两个。)",
   "options": {
    "A": "来流式传输数据。使用 Amazon Kinesis Data Analytics 来转换数据。使用Amazon Kinesis Data Firehose 将数据写入 Amazon S3。使用Amazon Athena 从 Amazon S3 查询转换后的数据。",
@@ -802,7 +820,10 @@
    "D": "来流式传输数据。使用Amazon Kinesis Data Analytics 来转 换数据并将数据写入 Amazon S3。使用 Amazon RDS query editor 从 Amazon S3 查询转换后的数据。",
    "E": "来流式传输数据。使用 AWS Glue 来转换数据。使用Amazon Kinesis Data Firehose 将数据 写入 Amazon S3。使用Amazon RDS query editor 从 Amazon S3 查询转换后的数据。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "B"
+  ],
   "explanations": {
    "A": "Use Amazon Kinesis Data Streams to stream the data. Use Amazon Kinesis Data Analytics to transform the data. Use Amazon Kinesis Data Firehose to write the data to Amazon S3. Use Amazon Athena to query the transformed data from Amazon S3. 正确：Amazon Kinesis Data Streams 是一种高效的实时数据流工具。 正确：Amazon Kinesis Data Analytics 可以实时处理和转换数据。 正确：Amazon Kinesis Data Firehose 可以将数据写入 Amazon S3。 正确：Amazon Athena 是一种查询存储在 Amazon S3 中数据的工具，支持 SQL 查询。",
    "B": "Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) to stream the data. Use AWS Glue to transform the data and to write the data to Amazon S3. Use Amazon Athena to query the transformed data from Amazon S3. 正确：Amazon MSK 是一种托管的 Kafka 服务，适合流式数据处理。 正确：AWS Glue 是一种 ETL 工具，可以转换数据并将其写入 Amazon S3。 正确：Amazon Athena 可以查询存储在 Amazon S3 中的数据。",
@@ -985,7 +1006,7 @@
  {
   "exam": "SAA-C03",
   "id": 302,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司希望创建一个移动应用程序，允许用户在其移动设备上流式播放慢动作视频片段。目前，该应用程序捕获视频片段并以原 始格式将视频片段上传到一个 Amazon S3 存储桶中。该应用程序直接从 S3 存储桶中检索这些视频片段。然而，这些视频在原始格 式下非常大。 用户在移动设备上遇到了缓冲和播放问题。公司希望实施解决方案，以最大限度地提高应用程序的性能和可扩展性，同时将运营开 销降到最低。 哪些解决方案的组合可以满足这些要求? (选择两个。)",
   "options": {
    "A": "进行内容交付和缓存。",
@@ -994,7 +1015,10 @@
    "D": "在 Local Zones 中部署一个Amazon EC2 实例的 Auto Scaling 组，用于内容交付和缓存。",
    "E": "部署一个Amazon EC2 实例的 Auto Scaling 组，将视频文件转换为更合适的格式。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "C"
+  ],
   "explanations": {
    "A": "Deploy Amazon CloudFront for content delivery and caching. 正确：Amazon CloudFront是一个全球分布式的内容交付网络（CDN），可以显著提高视频流的性能和减少延迟。 它支持缓存内容并优化内容交付，适合解决用户缓冲和播放问题。",
    "B": "Use AWS DataSync to replicate the video files across AWS Regions in other S3 buckets. 错误：AWS DataSync主要用于数据迁移和同桯，而不是优化视频流性能或格式转换。 此选项与题目要求的性能优化和视频播放问题无关。",
@@ -1101,7 +1125,7 @@
  {
   "exam": "SAA-C03",
   "id": 308,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司拥有多个使用合并计费的AWS账户。该公司运行了几个活动的高性能Amazon RDS for Oracle按需数据库实例，持续90天。 公司的财务团队可以访问合并计费账户以及所有其他AWS账户中的AWS Trusted Advisor, 财务团队需要使用适当的AWS账户来访问Trusted Advisor检查建议，以获取RDS相关信息。财务团队必须审查适当的Trusted Advisor 检查以降低RDS成本。 财务团队应采取哪些步骤组合以满足这些要求? (选择两个。)",
   "options": {
    "A": "使用运行RDS实例的账户中的Trusted Advisor建议。",
@@ -1110,7 +1134,10 @@
    "D": "审查Amazon RDS Idle DB Instances的Trusted Advisor检查。",
    "E": "审查Amazon Redshift Reserved Node Optimization的Trusted Advisor检查。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "使用运行RDS实例的账户中的Trusted Advisor建议。 错误：虽然可以在运行RDS实例的账户中查看Trusted Advisor建议，但合并计费账户可以集中查看所有子账户的资源建议，更加高 效。因此此选项不是最佳选择。",
    "B": "使用合并计费账户中的Trusted Advisor建议，以同时查看所有RDS实例检查。 正确：合并计费账户可以集中查看所有子账户的资源使用嬦况和优化建议，适合跨账户成本优化场景。",
@@ -1293,7 +1320,7 @@
  {
   "exam": "SAA-C03",
   "id": 318,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司最近将其整个IT环境迁移到AWSs云。该公司发现用户正在配置过大的Amazon EC2实例，并在未使用适当的变更控制流程的 情况下修改安全组规则。解决方案架构师必须制定一个策略来跟踪和审计这些库存和配置更改。 解决方案架构师应该采取哪些行动来满足这些要求” (选择两个)",
   "options": {
    "A": "启用AWS CloudTrail并用于审计。",
@@ -1302,7 +1329,10 @@
    "D": "启用AWS Config并创建用于审计和合规目的的规则。",
    "E": "使用AWS CloudFormation模板恢复之前的资源配置。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "D"
+  ],
   "explanations": {
    "A": "Enable AWS CloudTrail and use it for auditing. 正确。AWS CloudTrail是一个日志记录服务，可以跟踪用户活动和API调用，适用于审计和变更跟踪。 它能够记录用户对AWS资源的操作，帮助公司了解谁在做什么。",
    "B": "Use data lifecycle policies for the Amazon EC2 instances. 错误。数据生命周期策略主要用于管理存储（如S3对象生命周期），与审计和配置跟踪无关。 它不能解决用户社度配置EC2实例或修改安全组规则的问题。",
@@ -1447,7 +1477,7 @@
  {
   "exam": "SAA-C03",
   "id": 326,
-  "type": "single",
+  "type": "multiple",
   "question": "一家图片托管公司将其大型资源上传到 Amazon S3 Standard 存储桶。 该公司通过使用 S3 APIs 并行进行分段上传，并在相同对象 再次上传时进行覆盖。 在上传后的前 30 天内，这些对象将被频繁访问。 30 天后，这些对象的使用频率会降低，但每个对象的访 问模式将不一致。 公司必须优化其 S3 存储成本，同时保持存储资源的高可用性和弹性。 解决方案架构师应推荐哪些操作组合以满足这些要求” (选择两个)",
   "options": {
    "A": "在 30 天后将资源迁移到 S3 Intelligent-Tiering.",
@@ -1456,7 +1486,10 @@
    "D": "天后将资源迁移到 S3 Standard-Infrequent Access (S3 Standard-lA),",
    "E": "在 30 天后将资源迁移到 S3 One Zone-Infrequent Access (S3 One Zone-lA)."
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "B"
+  ],
   "explanations": {
    "A": "Move assets to S3 Intelligent-Tiering after 30 days. 正确：S3 Intelligent-Tiering是一种自动优化存储成本的存储类别，适合访问模式不一致的场景。它会根据访问频率自动将对象移动 到适当的存储层，无需手动干预。 推荐使用S3 Intelligent-Tiering，因为题目提到对象的访问模式在30天后变得不一致。",
    "B": "Configure an S3 Lifecycle policy to clean up incomplete multipart uploads. 正确：不完整的分橘上传会占用存储疑间，配置椹命周期策略清理这些上传可以优化存储成本。 这是一个最佳实践，尤其是对于使用并行分橘上传的场景。",
@@ -1905,7 +1938,7 @@
  {
   "exam": "SAA-C03",
   "id": 350,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司在 us-east-1 区域使用一个 100 GB AY Amazon RDS for Microsoft SQL Server 单可用区 DB 实例来存储客户交易数据。该 公司需要为 DB 实例提供高可用性和自动恢复功能。 该公司还需要每年多次在 RDS 数据库上运行报告。报告处理会导致交易比平时更长时间才能记录到客户账户中。公司需要一种解决 方案来改善报告处理的性能。 哪些步骤组合可以满足这些要求? (选择两个。)",
   "options": {
    "A": "将 DB 实例从单可用区 DB 实例修改为多可用区部署。",
@@ -1914,7 +1947,10 @@
    "D": "将数据库迁移到 RDS Custom。",
    "E": "使用 RDS Proxy 将报告请求限制到维护窗口。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "C"
+  ],
   "explanations": {
    "A": "Modify the DB instance from a Single-AZ DB instance to a Multi-AZ deployment. 正确：Multi-AZ部署提供高可用性和自动故障恢复功能，满足题目中对高可用性和自动恢复的需求。 这是解决高可用性问题的推荐方法。",
    "B": "Take a snapshot of the current DB instance. Restore the snapshot to a new RDS deployment in another Availability Zone. 错误：虽然可以通过快照恢复到另一个可用区，但这并不能提供自动故障恢复功能，也无法解决报告性能问题。 此方法不符合题目要求的高可用性和性能优化需求。",
@@ -2040,7 +2076,7 @@
  {
   "exam": "SAA-C03",
   "id": 357,
-  "type": "single",
+  "type": "multiple",
   "question": "一家游戏公司正在将其公共记分板从数据中心迁移到AWS云。该公司使用Amazon EC2 Windows Server实例，并通过Application Load Balancer托管其动态应用程序。公司需要为该应用程序提供一个高可用的存储解决方案。该应用程序由静态文件和动态服务器 端代码组成。 解决方案架构师应采取哪些步骤来满足这些要求” (选择两个。)",
   "options": {
    "A": "将静态文件存储在Amazon S3上。使用Amazon CloudFront在边缘缓存对象。",
@@ -2049,7 +2085,10 @@
    "D": "将服务器端代码存储在Amazon FSx for Windows File Server上。在每个EC2实例上挂载FSx for Windows File Server卷以共享文 件。",
    "E": "将服务器端代码存储在通用型SSD (gp2) Amazon Elastic Block Store (Amazon EBS)卷上。在每个EC2实例上挂载EBS卷以共享文 件。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "D"
+  ],
   "explanations": {
    "A": "Store the static files on Amazon S3. Use Amazon CloudFront to cache objects at the edge. 正确：Amazon S3 是一种高可用性和高持久性的存储解决方案，非常适合存储静态文件。结合 Amazon CloudFront，可以在边痻位 置缓存文件，提高访问速度和降低延迟。",
    "B": "Store the static files on Amazon S3. Use Amazon ElastiCache to cache objects at the edge. 错误：Amazon ElastiCache 是一种内存缓存服务，适用于动态数据的缓存，而不是静态文件的边痻缓存。对于静态文件，Amazon CloudFront 是更合适的选择。",
@@ -2137,7 +2176,7 @@
  {
   "exam": "SAA-C03",
   "id": 362,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司使用一个支付处理系统，该系统要求针对特定支付 ID 的消息必须按照发送的顺序接收。 否则，支付可能会被错误处理。 解决方案架构师应该采取哪些操作来满足此要求” (选择两个。)",
   "options": {
    "A": "将消息写入一个 Amazon DynamoDB 表，并使用支付 ID 作为分区键。",
@@ -2146,7 +2185,10 @@
    "D": "将消息写入一个 Amazon Simple Queue Service (Amazon SQS) 队列。设置消息属性以使用支付1D。",
    "E": "将消息写入一个 Amazon Simple Queue Service (Amazon SQS) FIFO 队列。设置消息组以使用支付 ID."
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "E"
+  ],
   "explanations": {
    "A": "Write the messages to an Amazon DynamoDB table with the payment ID as the partition key. 错误：DynamoDB是一个NoSQL数据库，虽然可以使用分区键来组织数据，但它并不保证消息的顺序性。",
    "B": "Write the messages to an Amazon Kinesis data stream with the payment ID as the partition key. 正确：Kinesis数据流支持分区键，能够保证同一分区内的消息顺序性。",
@@ -2177,7 +2219,7 @@
  {
   "exam": "SAA-C03",
   "id": 364,
-  "type": "single",
+  "type": "multiple",
   "question": "一家医院正在设计一个新的应用程序，用于收集患者的症状。 医院决定在架构中使用Amazon Simple Queue Service (Amazon SQS) 和Amazon Simple Notification Service (Amazon SNS), 一位解决方案架构师正在审查基础设施设计。数据必须在静止状态和传输过程中加密。只有医院的授权人员才能访问数据。 解决方案架构师应该采取哪些步骤组合来满足这些要求? (选择两个。)",
   "options": {
    "A": "在 SQs 48/4 FIR FRARSS aa. SARTEATA ACRBRL ADR Bl EA ESB BIE,",
@@ -2186,7 +2228,10 @@
    "D": "通过使用 AWS Key Management Service (AWS KMS) 客户托管密铀，在 SQs 组件上启用服务器端加密。应用密钥策略以限制密 钥使用仅限于一组授权主体。在队列策略中设置条件以仅允许通过 TLS 的加密连接。",
    "E": "通过使用 AWS Key Management Service (AWS KMS) 客户托管密铀，在 SQS 组件上启用服务器端加密。应用 IAM 策略以限制密 钥使用仅限于一组授权主体。在队列策略中设置条件以仅允许通过 TLS 的加密连接。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "Turn on server-side encryption on the SQS components. Update the default key policy to restrict key usage to a set of authorized principals. 正确性分析：启用服务器端加密是正确的，但使用默正密迫策略可能不够安全。题目要求使用客户托管密迫 (Customer Managed Key)，而不是默正密迫。 结论：错误。",
    "B": "Turn on server-side encryption on the SNS components by using an AWS Key Management Service (AWS KMS) customer managed key. Apply a key policy to restrict key usage to a set of authorized principals. 正确性分析：启用服务器端加密并使用客户托管密迫符合题目要求。通过密迫策略限制访问权限也是正确的做法。 结论：正确。",
@@ -2312,7 +2357,7 @@
  {
   "exam": "SAA-C03",
   "id": 371,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司需要创建一个Amazon Elastic Kubernetes Service (Amazon EKS) 集群来托管数字媒体流应用程序。该 EKS 集群将使用由 Amazon Elastic Block Store (Amazon EBS) 卷支持的托管节点组进行存储。公司必须使用存储在 AWS Key Management Service (AWS KMS) 中的客户管理密铀对所有静态数据进行加密。 以下哪种操作组合能够以最少的运营开销满足此要求? (选择两个)",
   "options": {
    "A": "使用一个 Kubernetes 插件，该插件使用客户管理密钥执行数据加密。",
@@ -2321,7 +2366,10 @@
    "D": "创建 EKS 集群。创建一个具有授予客户管理密钥权限策略的 IAM 角色。将该角色与 EKS 集群关联。",
    "E": "将客户管理密钥存储为 Kubernetes secret 在 EKS 集群中。使用客户管理密钥加密 EBS 卷。"
   },
-  "answer": "C",
+  "answer": [
+   "C",
+   "D"
+  ],
   "explanations": {
    "A": "使用一个 Kubernetes 插件，该插件使用客户管理密钥执行数据加密。 错误：虽然可以使用Kubernetes插件来实现加密，但这会增加额外的操作开销，并且不符合“最小化操作开销”的要求。",
    "B": "在创建 EKS 集群后，定位 EBS 卷。使用客户管理密钥启用加密。 错误：手动定位EBS卷并启用加密需要额外的操作步骤，增加了操作开销，不符合题目要求。",
@@ -2617,7 +2665,7 @@
  {
   "exam": "SAA-C03",
   "id": 387,
-  "type": "single",
+  "type": "multiple",
   "question": "一名新员工加入公司担任部署工程师。该部署工程师将使用 AWS CloudFormation 模板来创建多个 AWS 资源。解决方案架构师希 望部署工程师在遵循最小权限原则的同时执行工作活动。 解决方案架构师应采取哪些操作组合以实现此目标? (选择两个)",
   "options": {
    "A": "让部署工程师使用 AWS 账户根用户凭证执行 AWS CloudFormation 堆栈操作。",
@@ -2626,7 +2674,10 @@
    "D": "为部署工程师创建一个新的 IAM 用户，并将该 IAM 用户添加到附加了仅允许 AWS CloudFormation 操作的 IAM 策略的组中。",
    "E": "为部署工程师创建一个 IAM 角色，以明确定义特定于 AWS CloudFormation 堆栈的权限，并使用该 IAM 角色启动堆栈。"
   },
-  "answer": "D",
+  "answer": [
+   "D",
+   "E"
+  ],
   "explanations": {
    "A": "Have the deployment engineer use AWS account root user credentials for performing AWS CloudFormation stack operations. 错误：根用户权限社高，违反了“最小权限原则”。根用户应仅用于账户管理或紧急情况，不应用于日常操作。",
    "B": "Create a new IAM user for the deployment engineer and add the IAM user to a group that has the PowerUsers IAM policy attached. 错误：PowerUsers策略允许用户管理资源，但不允许管理IAM权限。这可能会授予社多权限，仍然不符合“最小权 限原则”。",
@@ -2676,7 +2727,7 @@
  {
   "exam": "SAA-C03",
   "id": 390,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司在一组 Amazon EC2 实例上托管了一个三层电子商务应用程序。这些实例运行在一个 Auto Scaling 组中，并位于一个 Application Load Balancer (ALB) 后面。所有电子商务数据存储在一个 Amazon RDS for MariaDB Multi-AZ DB 实例中。 该公司希望优化交易期间的客户会话管理。应用程序必须持久存储会话数据。 哪些解决方案可以满足这些要求? (选择两个。)",
   "options": {
    "A": "在 ALB 上启用粘性会话功能 (会话亲和性) 。",
@@ -2685,7 +2736,10 @@
    "D": "部署一个 Amazon ElastiCache for Redis 集群来存储客户会话信息。",
    "E": "在应用程序中使用 AWS Systems Manager Application Manager 来管理用户会话信息。"
   },
-  "answer": "A",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "Turn on the sticky sessions feature (session affinity) on the ALB. 正确性分析：启用ALB的痁性会话功能可以将用户的请求痧定到特定的EC2实例，从而实现会话管理。但这种方法并不持久，无法满 足“持久存储会话数据”的要求。 结论：错误。",
    "B": "Use an Amazon DynamoDB table to store customer session information. 正确性分析：DynamoDB是一种持久性存储解决方案，可以存储会话数据并提供高可用性和低延迟。但它并不是专门为会话管理设 计的，可能需要额外的开发工作来实现会话管理功能。 结论：错误。",
@@ -2987,7 +3041,7 @@
  {
   "exam": "SAA-C03",
   "id": 406,
-  "type": "single",
+  "type": "multiple",
   "question": "解决方案架构师正在设计一个包含公共子网和数据库子网的两层架构。公共子网中的 Web 服务器必须在端口 443 上向互联网开 放。数据库子网中的 Amazon RDS for MySQL 数据库实例必须仅能通过端口 3306 被 Web 服务器访问。 解决方案架构师应该采取哪些步骤来满足这些要求” (选择两个)",
   "options": {
    "A": "为公共子网创建一个网络 ACL。添加一条规则以拒绝端口 3306 上到 0.0.0.0/0 的出站流量。",
@@ -2996,7 +3050,10 @@
    "D": "为数据库实例创建一个安全组。添加一条规则以允许来自 Web 服务器安全组的端口 3306 上的流量。",
    "E": "为数据库实例创建一个安全组。添加一条规则以拒绝所有流量，除了来自 Web 服务器安全组的端口 3306 上的流量。"
   },
-  "answer": "C",
+  "answer": [
+   "C",
+   "D"
+  ],
   "explanations": {
    "A": "Create a network ACL for the public subnet. Add a rule to deny outbound traffic to 0.0.0.0/0 on port 3306. 错误：网络ACL是无状嬒的，无法针对特定来源的流量进行精确控制。题目要求数据寑实例仅允许来自Web服务器的流量，而网络 ACL无法实现这一点。",
    "B": "Create a security group for the DB instance. Add a rule to allow traffic from the public subnet CIDR block on port 3306. 错误：直接允许来自公共子网CIDR块的流量过于宽泛，无法证保只有Web服务器能够访问数据寑实例。",
@@ -3179,7 +3236,7 @@
  {
   "exam": "SAA-C03",
   "id": 416,
-  "type": "single",
+  "type": "multiple",
   "question": "一家快速增长的全球电子商务公司正在使用 AWS 托管其 Web 应用程序。该 Web 应用程序包括静态内容和动态内容。该网站将在 线事务处理 (OLTP) 数据存储在 Amazon RDS 数据库中。该网站的用户正在经历页面加载缓慢的问题。 解决此问题，解决方案架构师应采取哪些组合操作? (选择两个)",
   "options": {
    "A": "配置一个 Amazon Redshift 集群。",
@@ -3188,7 +3245,10 @@
    "D": "数据库实例创建一个只读副本。",
    "E": "数据库实例配置 Multi-AZ 部署。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "Configure an Amazon Redshift cluster. 错误：Amazon Redshift是用于数据仓寑的解决方案，适合分析性查询，而不是OLTP场景。此题目涉及的是OLTP数据存储，因此 Redshift不适合解决问题。",
    "B": "Set up an Amazon CloudFront distribution. 正确：Amazon CloudFront可以加速静嬒和动嬒内容的交付，减少用户的页面加载时间，是解决嬴加载问题的有效方法。",
@@ -3238,7 +3298,7 @@
  {
   "exam": "SAA-C03",
   "id": 419,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司使用启用了所有功能的 AWS Organizations, ##¢£ ap-southeast-2 区域运行多个 Amazon EC2 工作负载。该公司有一项服 务控制策略 (SCP)，防止在任何其他区域创建资源。一项安全策略要求公司对所有静态数据进行加密。 审计发现员工为 EC2 实例创建了未加密的 Amazon Elastic Block Store (Amazon EBS) 卷。公司希望任何 IAM 用户或根用户在 ap- southeast-2 启动的新 EC2 实例都使用加密的 EBS 卷。公司希望采用一种对创建 EBs 卷的员工影响最小的解决方案。 哪些步骤组合可以满足这些要求? (选择两个。)",
   "options": {
    "A": "控制台中，选择 EBS 加密账户属性并定义默认加密密钥。",
@@ -3247,7 +3307,10 @@
    "D": "更新每个账户的 IAM 策略，以在 ec2:Encrypted 条件等于 false 时拒绝 ec2:CreateVolume 操作。",
    "E": "在 Organizations 管理账户中指定默认 EBS 卷加密设置。"
   },
-  "answer": "C",
+  "answer": [
+   "C",
+   "E"
+  ],
   "explanations": {
    "A": "在 Amazon EC2 控制台中，选择 EBS 加密账户属性并定义默正加密密钥。 正确性分析：此选项可以设置默正加密，但它仅适用于单个账户，无法在组痣级别强制执行。 错误原因：题目要求对整个组痣的所有账户椹效，而此选项无法满足这一要求。",
    "B": "创建一个 IAM 权限边相。将权限边相附加到根组织单元 (OU)。定义边相以在 ec2:Encrypted 条件等于 false 时拒绝 ec2:CreateVolume 操作。 正确性分析：IAM 权限边甩是用于限制特定用户或角色的权限，但它无法直接应用到整个组痣。 错误原因：权限边甩无法满足题目要求的组痣级别控制。",
@@ -3316,7 +3379,7 @@
  {
   "exam": "SAA-C03",
   "id": 423,
-  "type": "single",
+  "type": "multiple",
   "question": "考察的知识点 本题考察的是AWS IAM身份策略 (Identity-based Policy) 的应用场景，以及可以附加身份策略的IAM主体 (Principals) 。 需要理解哪些IAM主体可以使用身份策略，以及如何正确配置权限。 2. 选项分析",
   "options": {
    "A": "Role: 正确。IAM角色是一个可以附加身份策略的主体。身份策略可以直接赋予角色权限。",
@@ -3325,7 +3388,10 @@
    "D": "资源是服务资源，不能直接附加身份策略。资 源权限通常通过资源策略或角色来管理。",
    "E": "我选的答案 A. Role B. Group 4. 官方答案 A. Role B. Group 5. 与官方答案比较 我的答案与官方答案一致，没有差异。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "B"
+  ],
   "explanations": {
    "A": "Role: 正确。IAM角色是一个可以附加身份策略的主体。身份策略可以直接赋予角色权限。",
    "B": "Group: 正确。IAM用户组是一个可以附加身份策略的主体。用户组中的所有用户都会继承附加到组的权限。",
@@ -3450,7 +3516,7 @@
  {
   "exam": "SAA-C03",
   "id": 430,
-  "type": "single",
+  "type": "multiple",
   "question": "一家制造公司拥有机器传感器，这些传感器将 .csv 文件上传到一个 Amazon S3 存储桶。这些 .csv 文件必须转换为图像，并且必须 尽快提供，以便自动生成图形报告。 这些图像在 1 个月后变得无关紧要，但 csv 文件必须保留，用于每年两次的机器学习 (ML) 模型训练。这些 ML 训练和审计会提前 几周计划。 哪些步骤组合可以最具成本效益地满足这些需求? (选择两个)",
   "options": {
    "A": "启动一个Amazon EC2 Spot Instance，每小时下载 .csv 文件，生成图像文件，并将图像上传到 S3 存储桶。",
@@ -3459,7 +3525,10 @@
    "D": "为 S3 存储桶中的 .csv 文件和图像文件创建 S3 生命周期规则。将 .csv 文件从 S3 Standard 转移到 $3 One Zone-Infrequent Access (S3 One Zone-IA)，在上传后 1 天进行转换。将图像文件在 30 天后过期。",
    "E": "认证轻松过 [A\\&4: ” 为 S3 存储桶中的 .csv 文件和图像文件创建 S3 生命周期规则。将 .csv 文件从 S3 Standard 转移到 S3 Standard-Infrequent Access (S3 standard-IA)，在上传后 1 天进行转换。将图像文件保留在 Reduced Redundancy Storage (RRS)."
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "C"
+  ],
   "explanations": {
    "A": "启动一个 Amazon EC2 Spot Instance，每小时下载 .csv 文件，生成图像文件，并将图像上传到 S3 存储橘。 错误：EC2 Spot Instance虽然成本较低，但需要手动管理实例的生命周期，目无法保证实例的持痲可用性。相比之下，AWS Lambda更适合事件驱动的任务处理。",
    "B": "设计一个 AWS Lambda 函数，将 .csv 文件转换为图像，并将图像存储在 S3 存储橘中。当 .csv 文件上传时调用 Lambda 范 数。 正确：AWS Lambda是无服务器计算服务，支持事件驱动架构，可以在文件上传到S3时自动触发处理任务。Lambda的成本按使用量 计费，非常适合这种场景。",
@@ -3642,7 +3711,7 @@
  {
   "exam": "SAA-C03",
   "id": 440,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司在应用测试期间使用了一个 Amazon RDS for MySQL 数据库实例。在测试周期结束时终止数据库实例之前，解决方案架构 师创建了两个备份。解决方案架构师使用 mysqldump 工具创建了第一个备份以生成数据库转储。解决方案架构师通过在 RDS 终止 时启用最终数据库快照选项创建了第二个备份。 该公司现在计划进行新的测试周期，并希望从最新的备份创建一个新的数据库实例。该公司选择了 MySQL 兼容版本的 Amazon Aurora 来托管数据库实例。 哪些解决方案可以创建新的数据库实例? (选择两个)",
   "options": {
    "A": "直接将 RDS 快照导入 Aurora。",
@@ -3651,7 +3720,10 @@
    "D": "使用 AWS Database Migration Service (AWS DMS) 将 RDS 快照导入 Aurora,",
    "E": "将数据库转储上传到Amazon S3。然后使用 AWS Database Migration Service (AWS DMS) 将数据库转储导入 Aurora."
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "C"
+  ],
   "explanations": {
    "A": "Import the RDS snapshot directly into Aurora. 错误：Amazon Aurora不支持直接导入RDS快照。Aurora和RDS虽然兼容，但快照格式不同，无法直接导入。",
    "B": "Upload the RDS snapshot to Amazon S3. Then import the RDS snapshot into Aurora. 错误：将RDS快照上传到Amazon S3后无法直接导入到Aurora。Aurora不支持这种迁移路径。",
@@ -3834,7 +3906,7 @@
  {
   "exam": "SAA-C03",
   "id": 450,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司有一个三层的 Web 应用程序，当前运行在单台服务器上。该公司希望将应用程序迁移到 AWS 云。公司还希望应用程序符 & AWS Well-Architected Framework，并与 AWS 推荐的安全性、可扩展性和弹性最佳实践保持一致。 哪些解决方案的组合可以满足这些要求? (选择三个)",
   "options": {
    "A": "创建一个跨两个可用区的 VPC，使用应用程序的现有架构。在每个可用区的私有子网中使用 EC2 Auto Scaling 组托管现有架构 的应用程序。使用安全组和网络访问控制列表 (network ACLs) 保护 EC2 实例。",
@@ -3844,7 +3916,11 @@
    "E": "在 Web 层前使用 Elastic Load Balancers。通过包含对每一层安全组引用的安全组来控制访问。",
    "F": "在私有子网中使用 Amazon RDS 数据库 Multi-AZ 集群部署。仅允许应用程序层安全组访问数据库。"
   },
-  "answer": "C",
+  "answer": [
+   "C",
+   "E",
+   "F"
+  ],
   "explanations": {
    "A": "创建一个跨两个可用区的 VPC，使用应用程序的现有架构。在每个可用区的私有子网中使用 EC2 Auto Scaling 组托管现有架构 的应用程序。使用安全组和网络访问控制列表（network ACLs）保护 EC2 实例。 错误：虽然跨两个可用区的VPC是符合高可用性要求的，但“使用应用程序的现有架构”并未提到分宔设计，目未明确提到重构为三 宔架构，不符合AWS Well-Architected Framework的最佳实践。",
    "B": "设置安全组和网络访问控制列表（network ACLs）以控制对数据库层的访问。在私有子网中设置一个单一的 Amazon RDS 数据 库。 错误：虽然使用安全组和网络ACL控制访问是正确的，但单一的Amazon RDS数据寑未提到Multi-AZ部署，不符合高可用性要求。",
@@ -3857,7 +3933,7 @@
  {
   "exam": "SAA-C03",
   "id": 451,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司正在将其应用程序和数据库迁移到 AWS 云。该公司将使用Amazon Elastic Container Service (Amazon ECS), AWS Direct Connect 和Amazon RDS, 哪些活动将由公司的运营团队管理” (选择三个)",
   "options": {
    "A": "的基础设施层、操作系统和平台",
@@ -3867,7 +3943,11 @@
    "E": "确保数据中心中 Amazon RDS 基础设施的物理安全",
    "F": "加密传输中的数据"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "C",
+   "F"
+  ],
   "explanations": {
    "A": "Management of the Amazon RDS infrastructure layer, operating system, and platforms 错误。根据AWS的Shared Responsibility Model，Amazon RDS的基础设施层、操作系统和平台由AWS负责管理，用户无需管理这些部分。",
    "B": "Creation of an Amazon RDS DB instance and configuring the scheduled maintenance window 正确。用户负责创建 Amazon RDS数据库实例并配置计划维护窗口，这是用户的操作责任。",
@@ -4002,7 +4082,7 @@
  {
   "exam": "SAA-C03",
   "id": 458,
-  "type": "single",
+  "type": "multiple",
   "question": "一位解决方案架构师正在 Amazon API Gateway 中设计一个用于现金返还服务的 RESTAPI。该应用程序需要 1 GB 的内存和 2 GB 的 存储空间来满足其计算资源需求。应用程序要求数据以关系格式存储。 哪种额外的 AWS 服务组合可以以最少的管理工作量满足这些需求?” (选择两个)",
   "options": {
    "A": "Amazon EC2",
@@ -4011,7 +4091,10 @@
    "D": "Amazon DynamoDB",
    "E": "Amazon Elastic Kubernetes Services (Amazon EKS)"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "C"
+  ],
   "explanations": {
    "A": "Amazon EC2: Amazon EC2可以提供计算资源和存储，但需要手动管理操作系统、数据库安装和维护，增加了管理复杂性，不符合“最少管理工 作”的要求。因此错误。",
    "B": "AWS Lambda: AWS Lambda是无服务器计算服务，支持API Gateway集成，但Lambda函数的内存限制为10 GB，目不直接提供持久化存储。虽然满 足计算需求，但无法满足存储需求。因此错误。",
@@ -4498,7 +4581,7 @@
  {
   "exam": "SAA-C03",
   "id": 484,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司希望从多个独立的 AWS 账户迁移到一个整合的多账户架构。该公司计划为不同的业务部门创建许多新的 AWS 账户。公司 需要通过一个集中式企业目录服务对这些 AWS 账户进行访问认证。 解决方案架构师应该推荐哪些操作组合来满足这些需求” (选择两个)",
   "options": {
    "A": "在 AWS Organizations 中创建一个新组织，并启用所有功能。在组织中创建新的 AWS 账户。",
@@ -4507,7 +4590,10 @@
    "D": "在 AWS Organizations 中创建一个新组织。直接配置组织的身份认证机制以使用 AWS Directory Service,",
    "E": "在组织中设置 AWS IAM Identity Center (AWS Single Sign-On), BUH IAM Identity Center，并将其与公司的企业目录服务集 成。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "E"
+  ],
   "explanations": {
    "A": "Create a new organization in AWS Organizations with all features turned on. Create the new AWS accounts in the organization. 分析：正确。AWS Organizations允许集中管理多个AWS账户，并启用所有功能后可以使用服务控制策略（SCP）等 高级功能。创建新账户在组织中是实现多账户架构的关键步骤。",
    "B": "Set up an Amazon Cognito identity pool. Configure AWS IAM Identity Center (AWS Single Sign-On) to accept Amazon Cognito authentication. 分析：错误。Amazon Cognito主要用于管理应用程序用户身份，而不是用于集中管理AWS账户的访问权 限。AWS IAM Identity Center不直接依赖Amazon Cognito进行正确。",
@@ -4736,7 +4822,7 @@
  {
   "exam": "SAA-C03",
   "id": 496,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司使用本地服务器托管其应用程序。该公司存储容量即将耗尽。这些应用程序同时使用块存储和 NFS 存储。该公司需要一个 支持本地缓存的高性能解决方案，而无需重新设计其现有应用程序。 解决方案架构师应该采取哪些操作来满足这些需求? (选择两个。)",
   "options": {
    "A": "将 Amazon S3 挂载为文件系统到本地服务器。",
@@ -4745,7 +4831,10 @@
    "D": "部署一个 AWS Storage Gateway 卷网关以替换块存储。",
    "E": "部署 Amazon Elastic File System (Amazon EFS) 卷并将其挂载到本地服务器。"
   },
-  "answer": "B",
+  "answer": [
+   "B",
+   "D"
+  ],
   "explanations": {
    "A": "Mount Amazon S3 as a file system to the on-premises servers. Amazon S3是对象存储服务，不支持直接挂载为文件系统。 虽然可以通过第三方工具（如s3fs）实现挂载，但性能和可靠性无法满足高性能和本地缓存的需求。 此选项错误。",
    "B": "Deploy an AWS Storage Gateway file gateway to replace NFS storage. AWS Storage Gateway文件网关支持NFS协议，可以无缝集成到现有的应用中。 它提供本地缓存功能，适合解决存储容量不足的问题。 此选项正确。",
@@ -4814,7 +4903,7 @@
  {
   "exam": "SAA-C03",
   "id": 500,
-  "type": "single",
+  "type": "multiple",
   "question": "一家公司在本地拥有多个 Windows 文件服务器。该公司希望将文件迁移并整合到 Amazon FSx for Windows File Server 文件系统 中。文件权限必须被保留，以确保访问权限不会发生变化。 哪些解决方案可以满足这些要求? (选择两个。)",
   "options": {
    "A": "在本地部署 AWS DataSync 代理。安排 DataSync 任务将数据传输到 FSx for Windows File Server 文件系统。",
@@ -4823,7 +4912,10 @@
    "D": "订购一个 AWS Snowcone 设备。将设备连接到本地网络。在设备上启动 AWS DataSync 代理。安排 DataSync 任务将数据传输 到 FSx for Windows File Server 文件系统。",
    "E": "订购一个 AWS Snowball Edge Storage Optimized 设备。将设备连接到本地网络。使用 AWS CLI 将数据复制到设备。将设备运 送回 AWS 以导入到Amazon S3。安排 AWS DataSync 任务将数据传输到 FSx for Windows File Server 文件系统。"
   },
-  "answer": "A",
+  "answer": [
+   "A",
+   "D"
+  ],
   "explanations": {
    "A": "Deploy AWS DataSync agents on premises. Schedule DataSync tasks to transfer the data to the FSx for Windows File Server file system. 正确：AWS DataSync支持从本地文件服务器迁移数据到Amazon FSx for Windows File Server，同时保留文件权限。 DataSync代理可以部署在本地环境中，直接迁移数据到FSx文件系统。",
    "B": "Copy the shares on each file server into Amazon S3 buckets by using the AWS CLI. Schedule AWS DataSync tasks to transfer the data to the FSx for Windows File Server file system. 错误：将数据先复制到Amazon S3会导致文件权限丢失，因为S3不支持Windows文件权限。 此方法不符合题目要求的“保留文件权限”。",
