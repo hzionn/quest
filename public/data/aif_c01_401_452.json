@@ -1,0 +1,1118 @@
+[
+ {
+  "exam": "AIF-C01",
+  "id": 401,
+  "type": "multiple",
+  "question": "一家公司正在创建一个模型来标记信用卡交易。该公司有大量的示例交易数据用于训练模型。大多数交易数据都没有标签。数据不 包含机密信息。 该公司需要获取带标签的样本数据来微调模型。 哪些解决方案将满足这些要求？（选择两个。）",
+  "options": {
+   "A": "对未标记数据运行批量推理作业。",
+   "B": "运行一个 Amazon SageMaker AI 训练作业，使用 PyTorch Distributed 库来标记数据。",
+   "C": "使用 Amazon SageMaker Ground Truth 标注作业，并使用 Amazon Mechanical Turk 工作者。",
+   "D": "使用一个在带标签样本上训练的光学字符识别模型来标记未标记样本。",
+   "E": "运行一个 Amazon SageMaker AI 标注作业。"
+  },
+  "answer": [
+   "C",
+   "E"
+  ],
+  "explanations": {
+   "A": "错误：Run batch inference jobs on the unlabeled data. 错误。 批量推理需要一个已经训练好的模型来输出预测结果；题干是“公司正在创建 模型”，并且需要“获取标注样本数据来微调模型”。 即便用一个初始模型做伪标签（pseudo-labeling），题目也没有说明已有足够可靠 的模型或允许用伪标签替代人工标签，因此不满足“获取标注样本”的稳妥要求。",
+   "B": "错误：Run an Amazon SageMaker AI training job that uses the PyTorch Distributed library to label data. 错误。 分布式训练库（PyTorch Distributed）用于加速训练，不是数据标注工具。 训练作业无法“凭空”为未标注数据生成可信的人工标签；仍然缺少标签来源。",
+   "C": "正确：Use an Amazon Sage",
+   "D": "错误",
+   "E": "正确"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 402,
+  "type": "single",
+  "question": "一家公司使用 Amazon Bedrock Agents 为客戶开发了一个 AI 助手应用程序。该公司注意到，代理需要额外的上下文才能始终如一地做 出明智的决策。代理未访问外部服务来完成客戶的旅行预订请求。 公司需要确保代理在必要时访问额外的上下文。 哪种解决方案将满足此要求？",
+  "options": {
+   "A": "负向提示",
+   "B": "模型上下文协议（MCP）",
+   "C": "零样本提示",
+   "D": "用于提供更多上下文的自定义 API"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Negative prompting（负向提示） 错误。 负向提示用于约束模型不要做什么（例如不要编造、不要输出某些内容），属于提示工程 范畴。 它不能让 Agent 获得外部实时数据，也不能让 Agent 自动去调用旅行预订系统等外部服务，因此无法解决“需要额外上下文且 不访问外部服务”的问题。",
+   "B": "错误：Model Context Protocol (MCP) 不选（在本题语境下不满足）。 MCP 是一种让模型/智能体与工具或上下文源进行标准化连接的协议 概念，但题目问的是在 Amazon Bedrock Agents 场景下“确保访问额外上下文（外部服务）”。 对考试与 Bedrock Agents 的典型落地方式 而言，需要的是可被 Agent 调用的具体外部接口（例如用 Action group 绑定 API/Lambda）。 仅提“协议”并不能直接保证你的 Agent 已 经具备能调用的旅行预订能力与上下文数据获取路径；而“自定义 API”是最直接、可执行、与题干问题一一对应的方案。",
+   "C": "错误：Zero-shot prompting（零样本提示） 错误。 零样本提示是在不提供示例的情况下让模型完成任务，仍然属于提示工程。 它不会让 Agent 获得外部系统数据，也不能让 Agent 自动完成机票/酒店预订等需要调用外部服务的动作。",
+   "D": "正确：Custom API to provide more context（用于提供更多上下文的自定义 API） 正确。 通过为 Bedrock Agents 配置可调用的自定义 API （常⻅做法是定义工具/Action group，后端由 Lambda 或 HTTP endpoint 对接旅行预订系统、客戶资料系统、价格与库存系统等）， Agent 就能在需要时： 调用外部服务获取实时信息作为额外上下文 执行实际的预订/查询/修改等动作 从外部系统返回的结果中做出更一致、更可靠的决策"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 403,
+  "type": "matching",
+  "question": "某公司拥有多个包含历史数据的数据集。该公司希望使用机器学习（ML）技术来处理每个数据集。 请从以下列表中为每个数据集选择正确的 ML 技术。每种 ML 技术最多选择一次，也可以不选择。",
+  "available_options": [
+   "Computer vision",
+   "Natural language processing (NLP)",
+   "Reinforcement learning",
+   "Time series forecasting"
+  ],
+  "matches": [
+   {
+    "use_case": "A dataset that contains text-based customer reviews",
+    "correct_answer": "Natural language processing (NLP)",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "A dataset that contains images of animals labeled with their species names",
+    "correct_answer": "Computer vision",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "A dataset that contains daily sales volumes for products",
+    "correct_answer": "Time series forecasting",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "A dataset that contains text-based customer reviews → Natural language processing (NLP)",
+   "2": "A dataset that contains images of animals labeled with their species names → Computer vision",
+   "3": "A dataset that contains daily sales volumes for products → Time series forecasting",
+   "_full": "题目解析（HOTSPOT：为不同数据集选择合适的ML技术） 1. 考察的知识点 根据数据类型与任务目标匹配合适的机器学习/AI技术方向：文本→NLP；图像→计算机视觉；按时间顺序的数值序列→时间序列预 测。 区分强化学习适用场景：强化学习通常用于“交互式决策/策略优化”（需要环境、动作、奖励），而不是单纯对静态历史数据做分类/预 测。 2. 独立思考（不参考官方答案） 文本评论属于自然语言文本，需要理解/情感分析/主题分类等 → NLP。 带物种标签的动物图片属于图像分类/识别 → 计算机视觉。 每日销量是随时间变化的数值序列，常⻅目标是预测未来销量 → 时间序列预测。 3. 逐个分析每个选项为什么正确或错误 数据集1：A dataset that contains text-based customer reviews（文本客戶评论） Computer vision：错误。计算机视觉处理的是图像/视频等视觉数据，不适用于纯文本评论。 Natural language processing (NLP)：正确。文本评论可用于情感分析、关键词提取、主题建模、文本分类等典型NLP任务。 Reinforcement learning：错误。缺少“动作-奖励-环境交互”的决策闭环；文本评论本身是静态语料，不是强化学习典型输入形式。 Time series forecasting：错误。评论文本不是按时间索引的数值序列预测任务（除非题目明确是按时间预测评论量/评分趋势，但这 里不是）。 数据集2：A dataset that contains images of animals labeled with their species names（带物种标签的动物图 片） Computer vision：正确。典型的监督学习图像分类任务：输入图片，输出物种类别。 Natural language processing (NLP)：错误。数据主要是图像，不是自然语言文本；标签是文本但任务核心是视觉识别。 Reinforcement learning：错误。图像分类是静态监督学习，不需要通过与环境交互学习策略。 Time series forecasting：错误。图像数据集不是时间序列预测问题。 数据集3：A dataset that contains daily sales volumes for products（产品每日销量） Computer vision：错误。销量是数值时间序列，不是图像数据。 Natural language processing (NLP)：错误。销量是结构化数值数据，不是文本语义处理任务。 Reinforcement learning：通常错误。若题目是“制定动态定价/补货策略以最大化⻓期收益”，可能考虑强化学习；但这里只说“处理历 史数据集”，且给出的备选里最贴切的是预测未来销量，因此优先时间序列预测。 Time series forecasting：正确。“daily sales volumes”按天索引，典型目标是预测未来销量/需求，属于时间序列预测。 4. 我选择的答案 文本客戶评论 → Natural language processing (NLP) 带标签的动物图片 → Computer vision 产品每日销量 → Time series forecasting 5. 官方答案 Natural language processing (NLP) Computer vision Time series forecasting 6. 与官方答案比较与复盘 对比结果：一致。 原因：三类数据分别对应三大常⻅AI方向（文本→NLP，图像→CV，时间索引数值→时间序列预测），强化学习不适用于仅基于历史 静态数据的常规定类/预测题干。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 404,
+  "type": "single",
+  "question": "一家公司希望检测在 Amazon Bedrock 中对基础模型（FMs）的未授权 API 操作。 哪种解决方案满足这些要求？",
+  "options": {
+   "A": "配置 AWS CloudTrail 以监控 API 活动。",
+   "B": "使用 AWS Trusted Advisor 监控模型输入和输出数据。",
+   "C": "创建 Amazon QuickSight 仪表板以监控行级安全性。",
+   "D": "使用 Amazon Personalize 监控用戶访问。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Configure AWS CloudTrail to monitor API activity. 正确。 CloudTrail 用于记录 AWS 账戶内对服务发起的 API 调用事件（谁在什么时 间、从哪里、对什么资源、做了什么操作、结果如何）。 检测“未授权 API actions”典型做法是分析 CloudTrail 事件中失败原因（如 AccessDenied、UnauthorizedOperation）、调用者身份异常、来源 IP/区域异常等。 对 Amazon Bedrock 的 API 调用同样属于 AWS API 活 动范畴，可用 CloudTrail 做审计与监控。",
+   "B": "错误：Use AWS Trusted Advisor to monitor model input and output data. 错误。 Trusted Advisor 主要提供成本优化、性能、安全、容错、服务 限额等检查建议，不用于监控“模型输入/输出数据”，更不用于识别未授权 API 调用。 它不提供 API 级审计日志能力。",
+   "C": "错误：Create Amazon QuickSight dashboards to monitor row-level safety. 错误。 QuickSight 是 BI 可视化服务，“row-level security（行级安 全）”是数据访问控制/可视化层面的权限机制，与“检测 Bedrock 未授权 API actions”无直接关系。 QuickSight 也不是 API 审计日志来 源。",
+   "D": "错误：Monitor user access by using Amazon Personalize. 错误。 Amazon Personalize 是推荐系统服务，用于个性化推荐，不用于监控用戶访 问、更不用于审计 AWS API 调用。 与 Bedrock API 未授权操作检测不匹配。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 405,
+  "type": "single",
+  "question": "一家公司使用 Amazon Bedrock 开发了一个生成式 AI 应用程序。该应用程序生成每周更新的目录。该公司需要为每周目录更新选择一 种定价模型。 哪种 Amazon Bedrock 定价模型最具成本效益地满足这些要求？",
+  "options": {
+   "A": "按需（On-Demand）",
+   "B": "预置吞吐量（Provisioned Throughput）",
+   "C": "批处理（Batch）",
+   "D": "模型评估（Model evaluation）"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：On-Demand（按需） 可能适用的场景：实时/交互式请求、流量不确定、希望即开即用。 为什么不最优：每周固定做一次“目录生成/更新”，更像可计划的离线批任务；若用按需同步推理来跑大批量生成，通常单位成本不 如批处理优惠，且不一定需要在线低延迟。 结论：一般可用，但对“每周批量更新”不够成本最优。",
+   "B": "错误：Provisioned Throughput（预置吞吐量） 可能适用的场景：稳定持续的高吞吐需求、需要容量保障、可预测的⻓期在线推理。 为什么不最优：每周才更新一次，其他时间可能闲置；预置吞吐量通常意味着为容量付费，若不是持续使用，容易资源空转导致浪 费。 结论：对周期性、低频批任务通常不划算。",
+   "C": "正确：Batch（批处理） 适用的场景：离线/异步的大批量推理或生成任务，对实时性要求不高，允许任务排队与延后完成。 为什么最优：目录每周更新一次，天然符合批量作业；批处理通常以更适合离线吞吐的方式调度资源，常⻅设计目标是比在线按需 推理更具成本效率（尤其适合大规模生成）。 结论：最符合“每周更新一次目录”的形态与成本优化目标。",
+   "D": "错误：Model evaluation（模型评估） 适用的场景：对不同基础模型/提示词/配置进行评测、对比指标，属于选型和质量评估流程。 为什么不相关：题目是“每周目录更新”的生产推理定价选择，不是做模型对比评测。 结论：不满足需求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 406,
+  "type": "single",
+  "question": "一位 AI 从业者正在为 Amazon Nova Canvas 模型创建提示词。该 AI 从业者希望从模型生成的输出中排除某些特征。 哪种提示技术将满足此要求？",
+  "options": {
+   "A": "遮罩提示词",
+   "B": "否定提示词",
+   "C": "修复（Inpainting）提示词",
+   "D": "扩绘（Outpainting）提示词"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Mask prompts 遮罩提示词错误。 “Mask（遮罩）”通常用于指定图像中哪些区域允许被编辑/生成（例如配合 inpainting 使用：遮罩 区域会被重绘，非遮罩区域保持不变）。 它解决的是“在什么地方改/生成”，不是直接表达“不要出现某些特征”。",
+   "B": "正确：Negative prompts 否定提示词正确。 否定提示词的核心作用就是显式排除不希望出现的内容或特征（人物特征、物体、⻛格、质 量问题等）。 与题干“exclude certain characteristics”完全匹配。",
+   "C": "错误：Inpainting prompts 修复（Inpainting）提示词错误（不满足题干主诉求）。 Inpainting 是对图像指定区域进行重绘/修复/替换，通常 需要遮罩来指定区域。 它是“编辑局部区域”的方法，不是用于“全局排除某些特征”的首选提示词技术。",
+   "D": "错误：Outpainting prompts 扩绘（Outpainting）提示词错误。 Outpainting 是向图像边缘外扩生成新内容（扩展画布）。 它解决的是“生成更 多画面/扩大场景”的问题，而不是表达“不要生成某些特征”。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 407,
+  "type": "single",
+  "question": "一家公司正在构建一个对话式 AI 助手。该公司计划使用 Amazon Bedrock Guardrails 来防止用戶尝试绕过该 AI 助手内置的安全能力。 哪种类型的 Bedrock Guardrail 策略将满足此要求？",
+  "options": {
+   "A": "上下文事实依据检查",
+   "B": "禁止主题",
+   "C": "提示攻击",
+   "D": "敏感信息过滤器"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Contextual grounding check（上下文事实依据检查） 错误。 该能力主要用于检查模型输出是否“有依据/可追溯到给定上下文”，减 少幻觉（hallucination）或确保回答基于提供的资料。 它不是用来识别用戶是否在进行越狱/绕过安全规则的。",
+   "B": "错误：Denied topics（禁止主题） 不完全满足题意，通常不作为最佳答案。 禁止主题用于限制对某些主题的讨论（例如暴力、仇恨、违 法行为等）。 但题目要求是“防止用戶尝试绕过安全能力”，重点在“越狱/注入行为”的识别与拦截，而不仅是对输出主题做封禁。 用 戶可能用各种方式试图绕过规则，即使目标内容不属于某个特定主题；Denied topics 不能覆盖“绕过手法”本身。",
+   "C": "正确：Prompt attacks（提示攻击） 正确。 该策略类型专⻔用于检测和缓解提示注入、越狱（jailbreak）、试图让模型忽略系统/开发者指 令、或诱导模型泄露策略/安全边界等攻击性提示。 与“prevent users from attempting to bypass built-in safety capabilities”高度一致。",
+   "D": "错误：Sensitive information filters（敏感信息过滤器） 错误。 该策略用于检测/过滤敏感信息（例如 PII、机密信息、凭证、财务信息等） 的输入或输出。 它关注的是“信息类型与泄露⻛险”，而不是“用戶是否在进行越狱/绕过安全机制”的提示攻击行为。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 408,
+  "type": "single",
+  "question": "一家企业已通过使用预训练模型实施了一个大型语言模型（LLM）解决方案。该企业需要确保模型的响应是透明且准确的。该企业 希望将模型的响应建立在来自该企业权威数据源的事实信息之上。 该企业应使用哪种技术来满足这些要求？",
+  "options": {
+   "A": "提示工程",
+   "B": "强化学习",
+   "C": "检索增强生成（RAG）",
+   "D": "静态知识库"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Prompt engineering（提示工程） 结论：不充分/不最佳。 原因：提示工程可以通过指令要求“仅基于提供资料回答”“给出引用”等， 但如果没有系统性检索把公司权威数据实时注入上下文，模型仍可能凭训练语料臆测或遗漏最新信息；透明性与准确性无法稳定保 障。",
+   "B": "错误：Reinforcement learning（强化学习） 结论：不适用。 原因：强化学习（如RLHF/RLAIF）更多用于对⻬偏好、改善⻛格与安全性、 提升遵循指令能力，并不能直接保证回答一定基于公司权威数据源；且训练成本高，不是“用权威数据源事实落地”的首选机制。",
+   "C": "正确：Retrieval Augmented Generation (RAG)（检索增强生成） 结论：正确。 原因：RAG通过对公司权威数据源（文档库、数据库、知识 库等）进行检索，把相关事实片段作为上下文提供给LLM生成回答；可以输出引用/证据，提升可解释性与透明度；并显著降低幻 觉，提高准确性与时效性（无需重新训练模型即可利用最新数据）。",
+   "D": "错误：Static knowledge base（静态知识库） 结论：不最佳/通常不满足题干目标。 原因：仅有“静态知识库”并不等于模型会基于它作答； 还需要检索与注入（或工具调用）机制把知识库内容提供给模型。静态知识库也可能过时，且不天然提供“生成时基于证据”的流程 控制。若把D理解为“把知识写死在某处”，仍缺少将其与LLM回答绑定的技术路径，RAG才是完整方案。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 409,
+  "type": "single",
+  "question": "一家公司正在部署一个由 AI 驱动的贷款审批系统。公司必须遵守针对 AI 的数据治理法规。 哪种解决方案将满足这些要求？",
+  "options": {
+   "A": "在没有审计追踪的情况下，根据用戶偏好修改 AI 输出。",
+   "B": "实施数据生命周期管理，以跟踪和管理 AI 训练数据。",
+   "C": "将 AI 推理时间优化置于数据驻留要求之上。",
+   "D": "仅使用合成数据进行模型训练，以避免合规⻛险。 AWS Certified AI Practitioner (AIF-C01) 做题教练解析"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Modify AI outputs based on user preferences without audit trails. 结论：错误原因： 没有审计追踪（audit trails）会直接违反多数数据治理/合规要求中的可追溯、可审计原则。 对输出进行基于偏好的修改，属于后处理（post-processing）/人机协同决策的一部分，更需要记录“谁在何时因何理由改了什么”，否 则⻛险更高。",
+   "B": "正确：Implement data lifecycle management to track and manage AI training data. 结论：正确原因： 数据生命周期管理覆盖训练数据从收集到销毁的全过程，能支持数据血缘、版本控制、访问控制、保留与删除策略、合规审计等关 键治理能力。 “track and manage AI training data”与“data governance regulations for AI”高度匹配，因为监管通常重点关注：训练数据是否合规、是否最 小化使用、是否可删除、是否可解释来源与用途。",
+   "C": "错误：Prioritize AI inference time optimization over data residency requirements. 结论：错误原因： 数据驻留（data residency）常是合规红线（例如某些地区要求数据不出境或限定处理区域）。 将性能优化置于驻留要求之上，等于明确牺牲合规来换性能，不满足“必须合规”的前提。",
+   "D": "错误：Use only synthetic data for model training to avoid compliance risks. 结论：错误（不充分） 原因： 合成数据确实可以降低隐私与敏感信息⻛险，但并不等于满足“数据治理法规”的全部要求。 即便使用合成数据，也仍需要数据治理：生成过程、来源数据（若由真实数据生成）、质量、偏差、版本、使用范围、保留与删除等 都可能被要求可审计。 “only synthetic data”是过度简化的策略，且可能影响模型有效性与公平性，并不能作为通用合规答案。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 410,
+  "type": "single",
+  "question": "一家公司构建了一个 AI 聊天机器人。该聊天机器人使用大型语言模型（LLM）来回答用戶问题。该公司希望将聊天机器人的 LLM 指 令保持私密。 该公司应考虑哪种安全⻛险？",
+  "options": {
+   "A": "数据投毒",
+   "B": "提示泄露",
+   "C": "LLM 幻觉",
+   "D": "输出无依据"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Data poisoning（数据投毒） 错误。 数据投毒通常指攻击者污染训练数据或微调数据，使模型学习到错误/恶意行为或后⻔。 题干 关注的是“运行时如何防止内部指令被用戶获取”，不是训练数据被污染的问题，因此不匹配。",
+   "B": "正确：Prompt leakage（提示泄露） 正确。 指攻击者通过精心构造的输入诱导模型泄露系统提示词/隐藏指令/开发者消息/内部策略等机 密内容。 这与“公司想保持聊天机器人的LLM指令私密”完全一致，是最典型、最直接的⻛险。",
+   "C": "错误：LLM hallucinations（LLM 幻觉） 错误。 幻觉是模型生成看似合理但不真实的内容，主要是正确性与可靠性⻛险。 它不等同于泄露 内部指令；即使发生幻觉，也不一定导致指令外泄。",
+   "D": "错误：Output ungroundedness（输出无依据） 错误。 指输出未基于可验证的来源/上下文（缺乏grounding），与检索增强（RAG）不足、 引用缺失等有关。 这同样是可信度/可追溯性问题，而非“隐藏指令保密”问题。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 411,
+  "type": "single",
+  "question": "一家公司希望使用大型语言模型（LLM）基于公司数据生成响应。 哪种策略将满足此要求？",
+  "options": {
+   "A": "使用 Amazon Bedrock 的第一方预训练模型。",
+   "B": "使用预训练的开源模型。",
+   "C": "在公司数据上微调自定义模型。",
+   "D": "使用 Amazon Bedrock 的第三方预训练模型。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Use first-party pre-trained models from Amazon Bedrock. 为什么可能看起来对：Bedrock第一方模型（如Amazon Titan等）可直接用于生成任务。 为什么不满足题意：仅“使用预训练模型”并不等于“基于公司数据”。预训练模型不包含公司的私有数据与最新内部知识；除非再配合 RAG或微调，但选项未提及。 结论：错误（不充分满足“基于公司数据”）。",
+   "B": "错误：Use pre-trained open source models. 为什么可能看起来对：开源大模型可以自托管，便于控制与定制。 为什么不满足题意：同样只是“预训练”，未把公司数据纳入推理依据或模型参数；除非再做微调或RAG，但选项未写。 结论：错误。",
+   "C": "正确：Fine-tune a custom model on company data. 为什么正确：微调会用公司数据更新模型权重，使模型在生成时能更好地体现公司知识、术语、流程、写作⻛格与特定领域语境， 从而“基于公司数据生成响应”。 适用边界：微调更适用于“稳定的领域知识/⻛格对⻬/固定格式输出”；如果公司数据频繁变化，RAG通常更合适，但题目未提供RAG 选项。 结论：正确。",
+   "D": "错误：Use pre-trained third-party models from Amazon Bedrock. 为什么可能看起来对：Bedrock第三方模型（如Anthropic、Meta、Mistral等）能力强，易于调用。 为什么不满足题意：依然是“预训练模型直接用”，并不自动具备公司私有数据知识；需要RAG或微调才能真正“基于公司数据”。 结论：错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 412,
+  "type": "single",
+  "question": "什么是结构化数据的示例？",
+  "options": {
+   "A": "来自在线论坛的文本评论文件",
+   "B": "包含新闻广播的视频文件汇编",
+   "C": "由测量数据组成的 CSV 文件",
+   "D": "呼叫中心坐席与客戶之间的转录对话 AIF-C01 做题教练解析：What is an example of structured data?"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：来自在线论坛的文本评论文件结论：错误。 原因：自由文本内容通常没有固定的列/字段结构；即使可能附带时间戳、作者等元 数据，题干表述为“文本评论文件”，主要仍是非结构化文本数据。",
+   "B": "错误：包含新闻广播的视频文件汇编结论：错误。 原因：视频属于典型非结构化数据（二进制媒体），无法直接按固定 schema 的行列 组织进行查询。",
+   "C": "正确：由测量数据组成的 CSV 文件结论：正确。 原因：CSV 是行/列结构，字段明确，常被视为结构化数据的代表形式（尤其是测量数 据通常天然适配表结构，如时间、传感器ID、数值等）。",
+   "D": "错误：呼叫中心坐席与客戶之间的转录对话结论：错误。 原因：对话转录是自由文本为主，通常属于非结构化数据；除非明确说明已按 字段抽取（如 speaker、timestamp、intent 等列化），但题干未体现。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 413,
+  "type": "single",
+  "question": "一家公司使用基础模型（FMs）来自动化日常任务。该公司的 AI 从业者正在创建系统指令，其中包含与任务相关的上下文。AI 从业 者希望在 Amazon Bedrock 中与 FMs 的日常交互里保存并复用这些指令。 哪种 Amazon Bedrock 解决方案将满足这些需求？",
+  "options": {
+   "A": "知识库",
+   "B": "防护栏",
+   "C": "游乐场",
+   "D": "提示词管理"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Knowledge Bases 知识库错误。 Knowledge Bases 的主要作用是为模型提供检索增强生成（RAG）能力：把文档/数据源索引后，在 推理时检索相关片段注入到提示词中。 题目要的是“保存并复用 system instructions（系统指令/提示词）”，不是“保存企业文档并检 索”。Knowledge Bases 更像是“保存知识内容”，而不是“保存指令模板”。",
+   "B": "错误：Guardrails 防护栏错误。 Guardrails 用于定义与执行安全策略（例如内容过滤、敏感信息保护、话题限制、输出格式约束等）。 它 不负责将 system instructions 作为可复用资产进行保存与调用，也不是“日常交互复用指令”的工具。",
+   "C": "错误：Playgrounds 游乐场错误。 Playgrounds 主要用于在控制台中快速测试不同模型与提示词效果（实验、对比、调参、演示）。 虽然 可以临时编辑/试用指令，但并非面向“在日常生产交互中保存、复用、治理提示词资产”的正式能力。",
+   "D": "正确：Prompt management 提示词管理正确。 Prompt management 的定位就是将提示词（包括 system 指令、模板化提示词等）作为可管 理资产进行保存、复用（并通常支持版本化/集中管理），满足题干“保存并在日常交互中复用 system instructions”的需求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 414,
+  "type": "single",
+  "question": "一家公司维护着一个包含详细描述的大型产品目录。该公司希望构建一个 AI 助手来回答客戶关于产品的问题。然而，该公司的已标 注训练数据有限。 哪种解决方案能以最少的实现工作量满足这些要求？",
+  "options": {
+   "A": "使用检索增强生成（RAG）架构，在运行时查询产品数据库。为基础模型（FM）提供相关且未经修改的产品描述作为上下文。",
+   "B": "在受限的已标注数据上微调基础模型（FM）。每周自动用新的产品详情刷新模型以保证准确性。",
+   "C": "为每个产品类别部署一个基础模型（FM）。实现一个路由层，将客戶查询定向到相应的专用模型。",
+   "D": "创建一个新的自定义基础模型（FM），并在产品数据库上进行训练。优化该 FM 以在推理期间最小化 token 使用量。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：使用RAG在运行时查询产品数据库，并把相关未修改产品描述作为上下文正确理由： 适配“标注数据有限”：RAG主要依赖检索到的权威内容，不强依赖监督微调数据。 最小实现工作量：通常只需建立索引/检索层（如向量库/搜索）+ 提示词编排，把检索结果塞进上下文即可。 信息更新简单：产品目录变更时更新数据库/索引即可，无需反复训练或刷新模型权重。 降低幻觉：以原始产品描述作为上下文，回答更贴近事实。 可能注意点（不影响正确性）：需要做检索质量、上下文⻓度控制、引用/溯源策略等，但仍比训练类方案工作量小。",
+   "B": "错误：用有限标注数据微调FM，并每周自动刷新模型错误理由： 标注数据有限时微调效果不稳定，且可能过拟合或覆盖不足。 “每周自动刷新”实现与运维成本高：需要持续的数据准备、训练流水线、评估、回滚与版本治理。 产品目录的事实性知识更适合通过检索注入，而不是不断改权重。",
+   "C": "错误：每个品类部署一个FM，并做路由层错误理由： 实现与运维复杂度显著更高：多模型部署、容量规划、成本、监控、A/B、路由准确率等。 并不能解决标注数据有限的问题：多个模型仍然需要知识注入或训练数据支持。 产品问答通常是跨品类、跨属性组合查询，分模型反而可能带来边界问题。",
+   "D": "错误：训练一个新的自定义FM并在产品数据库上训练，优化token 错误理由： 工作量最大：自研/自训基础模型需要海量算力、数据工程、训练与安全评估，远超题目要求。 “优化token使用量”属于推理优化细节，并不能抵消训练一个新FM的巨大成本。 针对企业内部知识问答，通常优先RAG或轻量微调，而不是从零训练FM。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 415,
+  "type": "single",
+  "question": "一家企业正在使用 Amazon Bedrock 为其在线商店构建一个助手。该企业希望确保该助手不会基于仇恨言论、侮辱性内容、性内容或 暴力内容生成有害响应。 哪种策略可以在 Amazon Bedrock 中防止有害响应？",
+  "options": {
+   "A": "使用 Amazon SageMaker 内置算法来过滤有害内容。",
+   "B": "使用 Amazon Comprehend 的毒性检测来识别有害内容。",
+   "C": "配置适用于 Amazon Bedrock 的 Guardrails 来过滤有害内容。",
+   "D": "根据该企业的负责任 AI 政策训练一个自定义模型。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Use Amazon SageMaker built-in algorithms to filter harmful content. 结论：错误/不最佳。 理由： SageMaker 内置算法主要用于训练/推理机器学习模型（如XGBoost、线性回归等），并不是 Bedrock 的原生内容安全治理方案。 即使可以在架构上额外接入 SageMaker 自建过滤器，也属于“额外搭建与维护”的方案，不是针对 Bedrock 最直接的“防止生成有害响 应”的策略。 题目问的是“Which strategy will prevent harmful responses in Amazon Bedrock?”——更指向 Bedrock 内部可配置能力。",
+   "B": "错误：Use Amazon Comprehend toxicity detection to identify harmful content. 结论：不最佳（通常判为错误）。 理由： Comprehend 的确能做文本分析（如情感、实体等），但“toxicity detection”并不是该题在 Bedrock 语境下的标准答案路径。 即便可以用 Comprehend 在输出后进行检测，它更偏“识别/标注”，要实现“prevent（防止）”还需要你自己再做拦截、重试、改写等编 排逻辑。 题干列出的类别（hate、insults、sexual、violence）正好对应 Bedrock Guardrails 的常⻅内容策略控制点，使用 Guardrails 更直接。",
+   "C": "正确：Configure Guardrails for Amazon Bedrock to filter harmful content. 结论：正确。 理由： Guardrails for Amazon Bedrock 是 Bedrock 原生的安全护栏能力，可用于对输入与输出实施内容安全策略。 可针对仇恨、辱骂、色情、暴力等类别进行过滤/阻断/安全响应，从而实现“防止生成有害响应”的目标。 与题意完全吻合：在 Bedrock 中构建助手，并确保不生成有害内容。",
+   "D": "错误：Train a custom model according to the company’s responsible AI policies. 结论：不最佳（通常判为错误）。 理由： 训练自定义模型成本高、周期⻓，而且无法保证在所有提示注入/越狱场景下都不产生有害输出。 题目问的是在 Bedrock 中的“策略”来防止有害响应；标准做法是使用推理时的安全护栏（Guardrails），而不是寄希望于训练完全消除 ⻛险。 即使训练能降低概率，仍需要运行时的安全控制作为最后一道防线。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 416,
+  "type": "single",
+  "question": "一家公司正在部署一个新的 AI 应用程序，用于为内部用戶生成内容。 哪种策略会使应用程序的输出更加确定性？",
+  "options": {
+   "A": "降低温度",
+   "B": "提高学习率",
+   "C": "设置停止序列",
+   "D": "设置令牌数量"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Decreasing the temperature（降低温度） 正确。 温度越低，采样分布越“尖锐”，模型更倾向选择概率最高的token；在temperature接 近0时，输出通常更一致（更确定）。这是最典型、最直接的“提高确定性”的策略。",
+   "B": "错误：Increasing the learning rate（提高学习率） 错误。 learning rate是训练/微调时的优化器超参数，影响模型参数更新幅度；题目场景 是“部署新AI应用生成内容”，问的是推理输出如何更确定。提高学习率既不属于推理控制手段，也可能导致训练不稳定，与“输出更 确定”无关。",
+   "C": "错误：Setting stop sequences（设置停止序列） 错误（不作为让输出更确定性的主要策略）。 stop sequences用于在生成过程中遇到特定 字符串就停止，主要控制输出边界与格式（例如避免继续输出多余段落）。它可以让“结束位置”更可控，但并不减少每一步token采样 的随机性；因此不能作为“让输出更确定”的核心答案。",
+   "D": "错误：Setting the token count（设置令牌数量） 错误（不作为让输出更确定性的主要策略）。 token count（通常指max tokens/最大生成⻓ 度）主要控制输出⻓度上限。即使⻓度固定，内容仍可能因采样而变化；它影响“生成多少”，不直接决定“生成得多一致”。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 417,
+  "type": "matching",
+  "question": "一名 AI 从业者正在使用 Amazon Nova 文本模型。该 AI 从业者希望应用提示工程技术，以确保提示支持迭代式优化过程。 为以下每个定义从下列列表中选择正确的提示设计组件。每个提示设计组件只能选择一次。",
+  "available_options": [
+   "Response style",
+   "Role",
+   "Success criteria",
+   "Task"
+  ],
+  "matches": [
+   {
+    "use_case": "Specify the use case for the model.",
+    "correct_answer": "Task",
+    "correct_option_id": "opt-4"
+   },
+   {
+    "use_case": "Define the persona the model should assume to meet the requirements effectively.",
+    "correct_answer": "Role",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Describe the tone, format, or structure that the model should follow.",
+    "correct_answer": "Response style",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Set clear metrics to evaluate whether the model output meets expectations.",
+    "correct_answer": "Success criteria",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "Specify the use case for the model. → Task",
+   "2": "Define the persona the model should assume to meet the requirements effectively. → Role",
+   "3": "Describe the tone, format, or structure that the model should follow. → Response style",
+   "4": "Set clear metrics to evaluate whether the model output meets expectations. → Success criteria",
+   "_full": "题目解析（AIF-C01 做题教练） 1. 本题考察的知识点 Prompt Engineering 的核心组成要素：Task（任务/用例）、Role（⻆色/人设）、Response style（响应⻛格）、Success criteria（成功标 准/评估指标）。 迭代式优化（iterative refinement）所需的提示词结构：先明确做什么（Task），再限定以什么身份做（Role），再规定怎么输出 （Response style），最后用什么标准判断好不好（Success criteria）。 2. 独立思考（不参考官方答案的结论） 题干要求把每条定义匹配到一个提示词设计组件，并且每个组件只能用一次。 从提示词工程通用框架来看：用例/要做的事对应 Task；人设对应 Role；输出语气与格式对应 Response style；衡量输出是否达标对 应 Success criteria。 3. 逐条定义逐个选项分析（为什么对/为什么错） 定义一：Specify the use case for the model. Response style：错误。Response style 描述“怎么说/怎么写/输出⻓什么样”，不是“要做什么用例”。 Role：错误。Role 描述模型扮演的身份/人格，不等同于用例本身。 Success criteria：错误。Success criteria 是衡量输出是否达标的指标，不是指定用例。 Task：正确。“Specify the use case”本质是在说明要模型完成的任务/工作内容，即 Task。 定义二：Define the persona the model should assume to meet the requirements effectively. Response style：错误。Response style 仅规定语气/格式/结构，不定义“扮演谁”。 Role：正确。Persona/身份设定就是 Role，例如“你是资深云架构师/审计员/教师”。 Success criteria：错误。成功标准是评估规则，不是人设。 Task：错误。Task 是要做的事，不是要扮演的⻆色。 定义三：Describe the tone, format, or structure that the model should follow. Response style：正确。tone/format/structure 明确属于输出⻛格与呈现形式，即 Response style。 Role：错误。Role 可能影响语气，但题干明确是 tone/format/structure 的约束，属于⻛格层面而非身份层面。 Success criteria：错误。Success criteria 是验收标准，不是输出呈现方式。 Task：错误。Task 是要完成的内容，不是输出的格式和语气。 定义四：Set clear metrics to evaluate whether the model output meets expectations. Response style：错误。⻛格约束不等于评估指标。 Role：错误。⻆色设定不是评估输出好坏的度量。 Success criteria：正确。clear metrics/评估是否达标就是 Success criteria，用于迭代优化非常关键。 Task：错误。Task 是做什么，不是怎么评估做得好不好。 4. 我选择的答案（按题目四个定义顺序） Specify the use case for the model. → Task Define the persona the model should assume... → Role Describe the tone, format, or structure... → Response style Set clear metrics to evaluate... → Success criteria 5. 官方答案 Task Role Response style Success criteria 6. 与官方答案对比与复盘 我的答案与官方答案一致。 原因：四个定义分别精准对应提示词工程常用四要素：做什么（Task）、扮演谁（Role）、怎么输出（Response style）、如何验收 （Success criteria）。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 418,
+  "type": "single",
+  "question": "一家公司在 Amazon VPC 中的服务器上运行一个应用程序。该公司的应用程序使用 Amazon Bedrock API 来实现 AI 功能。该公司不希 望 API 调用通过公共互联网传输。 哪种解决方案将满足此要求？",
+  "options": {
+   "A": "使用 AWS PrivateLink 在 Amazon VPC 与 Amazon Bedrock 之间建立私有连接。",
+   "B": "通过使用与某个 IAM 主体关联的访问密钥 ID 和私有访问密钥来对 API 请求进行签名。",
+   "C": "将应用程序迁移到本地服务器。对 Amazon Bedrock 的公共端点发起 API 调用。",
+   "D": "对从客戶端到在 Amazon VPC 中实现的 API 的传输数据进行加密。对从 Amazon VPC 到 Amazon Bedrock 的 API 调用的传输数据进 行加密。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Use AWS PrivateLink ... 正确。PrivateLink（接口型 VPC 端点）可以在 VPC 内创建到 AWS 服务的私有连接路径，使对 Bedrock 的 API 调用通过 AWS 私网/⻣干网络路由，而不是经由公网出口（如 IGW/NAT 访问公网域名）。满足“不走公共互联网”的要求。",
+   "B": "错误：Sign API requests ... 错误。请求签名（SigV4）解决的是身份认证与请求完整性，并不改变网络路径。即使签名了，如果仍访问公 共端点，流量仍可能经公网路由（取决于网络架构），不满足题目“不要穿越公共互联网”这一核心要求。",
+   "C": "错误：Move the application to an on-premises server. Make API calls to the public endpoint ... 错误。明确使用公共端点，更不可能避免公共互 联网（除非有专线+私有端点等额外条件，但选项未提供）。而且把应用迁到本地并不能天然解决“访问 Bedrock 不走公网”的问题，反 而通常更依赖公网或需要额外专线方案。",
+   "D": "错误：Encrypt the data in transit ... 错误。传输加密（TLS）能保护数据在传输途中不被窃听/篡改，但并不保证流量不经过公共互联网。 题目关注的是网络路径（private connectivity），不是仅仅“在公网但加密”。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 419,
+  "type": "single",
+  "question": "一家金融公司使用一个机器学习模型来检测潜在的欺诈交易。公司需要确保某些类型的预测在公司根据这些预测采取行动之前，先 由人工分析师进行审核。 哪种 AWS 解决方案将满足此要求？",
+  "options": {
+   "A": "Amazon SageMaker Clarify Amazon SageMaker Clarify",
+   "B": "Amazon SageMaker Ground Truth Amazon SageMaker Ground Truth",
+   "C": "Amazon Augmented AI (Amazon A2I) Amazon Augmented AI（Amazon A2I）",
+   "D": "AWS Certified AI Practitioner (AIF-C01) 做题教练解析"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Amazon SageMaker Clarify 错误。 Clarify主要用于检测/量化偏差（bias）与生成可解释性（feature attribution, SHAP类），可用于审 计与透明度，但它不提供“对特定预测结果强制走人工复核”的工作流能力。",
+   "B": "错误：Amazon SageMaker Ground Truth 错误。 Ground Truth用于数据标注（图像/文本/视频等）与构建训练数据集；也支持某些主动学习 式的标注流程，但其核心是训练数据标注，不是对线上推理预测结果在业务执行前做人工审批。",
+   "C": "正确：Amazon Augmented AI (Amazon A2I) 正确。 A2I专⻔用于将机器学习预测结果接入人工审核工作流，可以基于置信度阈值、业务规 则、抽样策略等决定哪些推理结果需要人工复核，并在复核完成后再将结果返回下游系统采取行动，完全符合“某些类型预测必须人 工审核”的要求。",
+   "D": "错误：Amazon SageMaker Model Monitor 错误。 Model Monitor用于监控模型质量/数据漂移/概念漂移、检测推理输入与训练数据分布差 异、以及告警与报表；它不提供“对单次预测结果进行人工复核后再执行”的审核编排能力。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 420,
+  "type": "single",
+  "question": "哪种策略将评估基础模型（FM）在真实世界应用中的性能？",
+  "options": {
+   "A": "在受控环境中与用戶进行 A/B 测试",
+   "B": "由主题领域专家进行人工评估",
+   "C": "在训练数据集上衡量模型的准确率",
+   "D": "分析模型的内部表征和注意力模式"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Conducting A/B testing with users in a controlled environment（在受控环境中与用戶进行 A/B 测试） 结论：正确原因： A/B测试属于在线评估/近真实评估方法：让真实用戶（或代表性用戶）在真实任务场景中使用不同版本，比较关键指标。 “受控环境”强调变量可控（例如灰度发布、分流策略、相同流量分配），但评估对象仍是用戶侧真实交互，可反映真实世界使用表 现。 相比纯离线指标，A/B测试能捕捉到：提示鲁棒性、用戶意图分布变化、系统延迟、上下游集成、错误恢复等真实因素。",
+   "B": "错误：Human evaluation by subject matter experts（由主题领域专家进行人工评估） 结论：不如A贴切（偏离线/实验室评估） 原因： 专家评审能衡量质量（准确性、相关性、合规性、事实性等），但通常是抽样、离线、非真实用戶分布。 无法全面反映真实世界中的用戶行为指标、真实流量⻓尾、产品交互与上下文、业务目标等。 在“真实世界应用性能”这个问法下，专家评估更适合作为离线质量⻔槛或基准测试补充，而非最佳答案。",
+   "C": "错误：Measuring the model’s accuracy on a training dataset（在训练数据集上衡量模型的准确率） 结论：错误原因： 在训练集上评估会产生数据泄漏/过拟合问题，指标虚高，不代表泛化能力，更不代表真实世界表现。 即使在测试集上看准确率，对生成式FM也常不适用或不足；在训练集上更是明显不合理。",
+   "D": "错误：Analysis of the model’s internal representations and attention patterns（分析模型的内部表征和注意力模式） 结论：错误（不直接评估 真实世界性能） 原因： 内部表征/注意力分析属于可解释性与研究分析，可能帮助理解模型行为，但不等同于真实世界性能评估。 无法直接映射到用戶体验、业务指标或端到端任务成功率，也难以作为上线效果的可靠度量。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 421,
+  "type": "single",
+  "question": "一家公司正在构建一个聊天机器人。该聊天机器人使用大型语言模型（LLM），并回答客戶关于产品的问题。公司希望该聊天机器人 只回答产品问题。公司不希望该聊天机器人回答关于其他主题的问题。 哪种解决方案能够以最少的运维开销满足这些要求？",
+  "options": {
+   "A": "在 LLM 提示词模板上设置护栏（guardrails）。",
+   "B": "编写自定义应用程序逻辑来识别关于其他主题的问题。",
+   "C": "减少 LLM 可以访问的信息。",
+   "D": "将 temperature 参数值设置为较低的数值。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Set guardrails on the LLM prompt template. 为什么正确： 可以在系统提示词/提示词模板中明确规定：仅回答产品相关问题；若问题不相关则礼貌拒答或引导用戶问产品问题。 对现有架构侵入小：主要是提示词配置与少量测试迭代。 符合“最小运维开销”：无需额外构建分类器、规则引擎或复杂的旁路服务。 潜在局限（但不影响本题最优选择）： 仅靠提示词护栏并非绝对安全，可能被提示注入绕过；但题干只要求“不要回答其他话题”，且强调最小运维开销，因此该方案仍最 匹配。",
+   "B": "错误：Write custom application logic to identify questions about other topics. 为什么错误（不满足最小运维开销）： 需要实现主题识别（规则/关键词/分类模型/意图识别），还要处理边界案例与持续迭代。 后续产品线变化、用戶表达多样化都会增加维护成本。 运维与开发开销明显高于直接做提示词护栏。",
+   "C": "错误：Reduce the information the LLM can access. 为什么错误： 限制可访问信息（例如缩小检索范围或知识库）并不等于“不会回答其他话题”。 即使模型拿不到外部资料，仍可能利用通用知识生成非产品话题的回答，从而违背要求。 该方法更偏向降低泄露/幻觉面，但无法形成明确的“话题拒答”策略。",
+   "D": "错误：Set the temperature parameter value to a lower number. 为什么错误： temperature 主要影响输出的随机性/创造性；降低 temperature 只能让回答更稳定一致。 无法从机制上限制话题范围，模型仍可能稳定地回答非产品问题。 不满足“只回答产品问题”的核心要求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 422,
+  "type": "single",
+  "question": "一家公司正在构建一个基于大型语言模型（LLM）的 AI 助手，通过自动管理客戶咨询来支持服务坐席。该公司希望减少客戶服务坐 席在支持电话过程中所需的工作量。 公司需要选择一个指标，以根据公司的某个业务目标来评估该 AI 助手。 哪个指标将满足这些要求？",
+  "options": {
+   "A": "网站参与率",
+   "B": "平均通话时⻓",
+   "C": "坐席离职率",
+   "D": "首次联系解决率"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Website engagement rate（网站参与率） 错误。 理由：该指标衡量用戶在网站上的交互/停留/转化等，主要用于数字渠道或营销/ 产品体验评估。 与“支持坐席通话中减少努力”的目标关联弱，不能直接反映通话效率或坐席工作量变化。",
+   "B": "正确：Average call duration（平均通话时⻓） 正确。 理由：题目明确场景是“support calls（支持通话）”，并希望减少坐席在通话中的努 力。 在可用选项里，“平均通话时⻓”是最直接的业务代理指标：LLM助手若能自动总结、检索知识库、生成回复建议、自动处理信 息收集与记录，通常会让通话更快结束，从而降低坐席在通话中的时间投入。 备注：真实业务中还会结合AHT（含通话后处理ACW） 与质量指标一起看，但本题选项中B最贴近目标。",
+   "C": "错误：Agent attrition rate（坐席离职率） 错误。 理由：离职率受薪酬、排班、管理、压力、文化等多因素影响，变化周期较⻓。 虽然AI 助手可能⻓期降低压力从而间接影响离职率，但它不是衡量“通话中努力减少”的直接指标，且归因困难。",
+   "D": "错误：First contact resolution rate（首次联系解决率） 不作为最佳答案（本题语境下更偏错误）。 理由：FCR衡量客戶问题是否在首次联 系中解决，体现解决效果与流程效率，但不等同于“减少坐席在通话中的努力”。 可能出现：为了确保一次解决，坐席在同一次通话 中花更多时间解释与排障，导致通话更⻓；因此FCR与“减少通话投入”并不总是同向。 若题目目标是“提高一次解决、降低重复来 电”，D会更合适，但题干强调的是“减少通话中的坐席努力”。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 423,
+  "type": "single",
+  "question": "一家公司已经微调了一个 Amazon Bedrock 基础模型 (FM)，用于生成简短的文档摘要。该公司希望使用一种自动化指标，将每个模型 生成的摘要与其人工撰写的参考摘要进行比较。 哪种指标可以满足这些要求？",
+  "options": {
+   "A": "F1 分数",
+   "B": "面向召回的摘要评估替代方法 (ROUGE)",
+   "C": "困惑度 (Perplexity)",
+   "D": "Fréchet 生成距离 (FID)"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：F1 score (F1 分数) F1分数是分类任务中常用的评估指标，结合了精确率（Precision）和召回率（Recall）。它适用于分类问题，而不是文本生成任务。 因此，这个选项不适合用于比较模型生成的摘要与参考摘要。",
+   "B": "正确：Recall-Oriented Understudy for Gisting Evaluation (ROUGE) 面向召回的摘要评估替代方法 (ROUGE) ROUGE是一种专⻔用于评估文本摘要生成质量的指标。它通过比较生成文本与参考文本的重叠程度（如n-gram、词序列等）来评估 模型性能。ROUGE非常适合用于评估短文档摘要生成任务，因此这是正确的选择。",
+   "C": "错误：Perplexity (困惑度) 困惑度是语言模型的评估指标，用于衡量模型预测下一个词的能力。它通常用于评估语言模型的质量，而不是直接用于比较生成文 本与参考文本。因此，这个选项不适合本题场景。",
+   "D": "错误：Fréchet inception distance (FID) Fréchet 生成距离 (FID) FID是用于评估生成图像质量的指标，通常用于生成对抗网络（GAN）领域。它与文本生成任务无关，因此这个选项不适合本题场 景。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 424,
+  "type": "single",
+  "question": "一家公司创建了一个AI助手，为员工提供有关内部流程的相关信息。该AI助手使用了一个经过微调的基础模型（FM）。公司希望利用 员工的反馈进一步优化模型的响应。 哪种解决方案可以满足这些需求？",
+  "options": {
+   "A": "实施模型蒸馏。",
+   "B": "执行持续预训练并结合员工评分反馈。",
+   "C": "使用来自人类反馈的强化学习（RLHF）。",
+   "D": "启用智能提示路由。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：实施模型蒸馏 模型蒸馏是一种技术，用于将一个复杂模型的知识转移到一个较小的模型中，以提高效率或减少计算资源需求。 虽然模型蒸馏可以优化模型，但它并不直接涉及通过用戶反馈来改进模型的能力，因此不符合题目要求。 错误原因：与题目要求的“使用员工反馈进一步优化模型”无关。",
+   "B": "错误：执行持续预训练并结合员工评分反馈 持续预训练是指在原始模型的基础上继续训练以适应特定任务或领域。 虽然可以结合员工评分反馈来调整模型，但这种方法通常效率较低，且无法直接优化模型的响应质量。 错误原因：持续预训练的过程较为复杂，且不如RLHF直接有效地利用人类反馈。",
+   "C": "正确：使用来自人类反馈的强化学习（RLHF） RLHF是一种常用技术，通过人类反馈来优化模型的行为，使其更符合用戶需求。 这种方法直接利用员工的评分反馈来调整模型的输出，是目前业界优化基础模型的主流方法。 正确原因：RLHF能够高效地利用员工反馈来改进模型的响应质量，完全符合题目要求。",
+   "D": "错误：启用智能提示路由 智能提示路由是一种技术，用于根据输入内容选择最适合的模型或方法来生成响应。 虽然可以提高模型的响应效率，但它并不直接涉及通过员工反馈来优化模型，因此不符合题目要求。 错误原因：与题目要求的“使用员工反馈进一步优化模型”无关。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 425,
+  "type": "single",
+  "question": "哪个 AWS 服务提供广泛的高性能生成式 AI 基础模型 (FMs)?",
+  "options": {
+   "A": "Amazon Bedrock Amazon Bedrock",
+   "B": "Amazon Rekognition Amazon Rekognition",
+   "C": "Amazon Lex Amazon Lex",
+   "D": "Amazon Kendra Amazon Kendra"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Amazon Bedrock Amazon Bedrock 是 AWS 提供的一项服务，专⻔用于访问和集成高性能的生成式 AI 基础模型（FMs）。它允许用戶通过 API 使用多个 预训练的生成式 AI 模型，支持文本生成、图像生成等任务。因此，这个选项是正确的。",
+   "B": "错误：Amazon Rekognition Amazon Rekognition 是一种图像和视频分析服务，主要用于面部识别、对象检测等任务，而不是生成式 AI 基础模型。因此，这个选 项是错误的。",
+   "C": "错误：Amazon Lex Amazon Lex 是一种用于构建对话式界面的服务，主要用于创建聊天机器人和语音交互应用。虽然它涉及 AI，但它不提供生成式 AI 基 础模型。因此，这个选项是错误的。",
+   "D": "错误：Amazon Kendra Amazon Kendra 是一种智能搜索服务，主要用于搜索和查询企业数据，而不是生成式 AI 基础模型。因此，这个选项是错误的。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 426,
+  "type": "multiple",
+  "question": "一家公司正在准备数据以微调一个大型语言模型（LLM）。该公司必须遵循负责任的人工智能原则。 哪些行动将满足此要求？（选择两个。）",
+  "options": {
+   "A": "包括具有不同人口统计特征的数据来源以提高模型的公平性。",
+   "B": "在训练数据集上应用一致的标注标准。",
+   "C": "仅关注高容量数据而忽略质量。",
+   "D": "仅使用合成数据来训练模型。",
+   "E": "使用更少的标签以减少模型训练期间数据的模糊性。"
+  },
+  "answer": [
+   "A",
+   "B"
+  ],
+  "explanations": {
+   "A": "正确：Include demographically diverse data sources to improve model fairness. 分析：负责任的AI要求模型能够公平地对待不同群体，使用具有不同人口统计特征的数据可以减少模型偏差，提高公平性。 结论：正确。",
+   "B": "正确：Apply consistent labeling standards across the training dataset. 分析：一致的标注标准可以减少数据中的噪声和偏差，确保模型训练的准确性和可靠性。 结论：正确。",
+   "C": "错误：Focus exclusively on high-volume data regardless of quality. 分析：数据质量是模型训练的关键，忽略数据质量会导致模型性能下降，违背负责任AI的原则。 结论：错误。",
+   "D": "错误：Use only synthetic data to train the model. 分析：虽然合成数据可以补充训练数据，但完全依赖合成数据可能导致模型缺乏真实世界的表现能力，违背负责任AI的原则。 结论：错误。",
+   "E": "错误：Use fewer labels to reduce ambiguity in data during model training. 分析：减少标签可能会导致数据不足以表达复杂性，反而增加模型训练的模糊性，违背负责任AI的原则。 结论：错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 427,
+  "type": "single",
+  "question": "公司通过使用持续的预训练来微调基础模型（FM）可以获得哪些好处？",
+  "options": {
+   "A": "降低模型复杂性",
+   "B": "随着时间推移提高模型性能",
+   "C": "减少训练模型所需的时间",
+   "D": "降低模型训练成本"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Decreased model complexity（降低模型复杂性） 持续预训练不会直接降低模型的复杂性。基础模型通常已经是高度复杂的模型，持续预训练的目标是优化模型性能，而不是简化模 型结构。因此此选项错误。",
+   "B": "正确：Improved model performance over time（随着时间推移提高模型性能） 持续预训练的主要目标是通过引入新的数据或任务来优化模型，使其性能随着时间推移不断提高。这是持续预训练的核心优势，因 此此选项正确。",
+   "C": "错误：Decreased time required to train the model（减少训练模型所需的时间） 持续预训练通常需要额外的时间来处理新的数据和任务，因此不会减少训练时间。相反，它可能会增加训练时间。因此此选项错 误。",
+   "D": "错误：Reduced model training cost（降低模型训练成本） 持续预训练通常需要更多的计算资源和时间，因此可能会增加成本，而不是降低成本。因此此选项错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 428,
+  "type": "single",
+  "question": "一家软件开发公司希望提高其产品交付速度。该公司需要一个解决方案，帮助开发人员生成实时代码和单元测试。 哪项 AWS 服务满足这些需求？",
+  "options": {
+   "A": "Amazon Personalize Amazon Personalize",
+   "B": "Amazon Q Developer Amazon Q Developer",
+   "C": "Amazon Comprehend Amazon Comprehend",
+   "D": "Amazon Kendra Amazon Kendra"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Amazon Personalize: Amazon Personalize是一个机器学习服务，用于构建个性化推荐系统。它与代码生成和单元测试无关，因此此选项错误。",
+   "B": "正确：Amazon Q Developer: Amazon Q Developer并不是一个真实存在的AWS服务。此选项可能是虚构的，因此错误。",
+   "C": "错误：Amazon Comprehend: Amazon Comprehend是一个自然语言处理服务，用于分析文本数据，例如情感分析、实体识别等。它与代码生成和单元测试无关，因 此此选项错误。",
+   "D": "错误：Amazon Kendra: Amazon Kendra是一个智能搜索服务，用于帮助用戶快速找到相关信息。它与代码生成和单元测试无关，因此此选项错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 429,
+  "type": "single",
+  "question": "一家公司计划使用一个数据集来训练一个新的AI模型。公司需要在训练模型之前确定数据集中是否存在针对特定用戶群体的偏⻅。 哪种解决方案可以满足这些需求？",
+  "options": {
+   "A": "使用Amazon SageMaker Clarify计算训练前的偏⻅指标。",
+   "B": "使用Amazon SageMaker Model Cards计算训练前的偏⻅指标。",
+   "C": "使用Amazon SageMaker Clarify计算训练后的偏⻅指标。",
+   "D": "使用Amazon SageMaker Model Cards计算训练后的偏⻅指标。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Use Amazon SageMaker Clarify to compute pre-training bias metrics. Amazon SageMaker Clarify 是专⻔设计用于检测数据集和模型中的偏⻅的工具。 它可以在训练前分析数据集，计算偏⻅指标（pre-training bias metrics），以帮助用戶识别数据集是否存在对某些群体的偏⻅。 此选项正确，因为它直接满足题目要求：在训练模型之前检测数据集中的偏⻅。",
+   "B": "错误：Use Amazon SageMaker Model Cards to compute pre-training bias metrics. Amazon SageMaker Model Cards 是用于记录和共享模型信息的工具，主要用于模型的文档化和合规性管理。 它不具备计算偏⻅指标的功能，因此无法满足题目要求。 此选项错误。",
+   "C": "错误：Use Amazon SageMaker Clarify to compute post-training bias metrics. Amazon SageMaker Clarify 确实可以计算训练后的偏⻅指标（post-training bias metrics），用于分析模型的预测结果是否存在偏⻅。 然而，题目明确要求检测数据集中的偏⻅，而不是模型训练后的偏⻅，因此此选项不符合题目要求。 此选项错误。",
+   "D": "错误：Use Amazon SageMaker Model Cards to compute post-training bias metrics. 如前所述，Amazon SageMaker Model Cards 主要用于记录模型信息，不具备计算偏⻅指标的功能。 此选项错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 430,
+  "type": "single",
+  "question": "一位人工智能从业者希望使用检索增强生成（RAG）架构。然而，公司领导层认为RAG会使架构过于复杂。 哪种回应会支持人工智能从业者推荐使用RAG？",
+  "options": {
+   "A": "RAG提高了大型语言模型（LLM）的推理时间。",
+   "B": "RAG提高了模型训练速度。",
+   "C": "RAG减少了幻觉现象。",
+   "D": "RAG减少了开发控制。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：RAG improves large language model (LLM) inference time. RAG提高了大型语言模型（LLM）的推理时间。 错误。RAG的主要优势并不是提高推理时间，实际上由于需要检索外部数据，RAG可能会增加推理时间。",
+   "B": "错误：RAG improves model training speed. RAG提高了模型训练速度。 错误。RAG的设计主要用于推理阶段，而不是训练阶段，因此它对训练速度没有直接影响。",
+   "C": "正确：RAG decreases hallucinations. RAG减少了幻觉现象。 正确。RAG通过检索相关的外部知识来增强生成模型的准确性，从而减少了模型生成不真实或不相关内容（即幻觉现象）的可能 性。",
+   "D": "错误：RAG decreases development controls. RAG减少了开发控制。 错误。RAG并不会减少开发控制，实际上它可能会增加架构的复杂性和开发的管理需求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 431,
+  "type": "single",
+  "question": "一家公司使用 Amazon Bedrock Agents 构建了一个基于检索增强生成（RAG）的 AI 助手。有时该 AI 助手会给出不完整或不准确的答 案。该公司希望改进并评估 AI 助手的性能。 哪种解决方案可以满足这些要求？",
+  "options": {
+   "A": "使用自动化指标，例如双语评估替代（BLEU）分数来衡量回答与参考答案的相似性。",
+   "B": "监控响应延迟和令牌生成速度以优化性能。",
+   "C": "仅根据最终答案质量与真实答案进行评估。",
+   "D": "确认检索到的文档是相关的，并且最终答案是准确的。"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：使用自动化指标，例如双语评估替代（BLEU）分数来衡量回答与参考答案的相似性。 BLEU分数是一种常⻅的自动化评估指标，用于衡量生成文本与参考答案的相似性，通常用于机器翻译任务。 虽然BLEU分数可以评估生成答案的质量，但它无法直接评估检索到的文档是否相关，也无法解决RAG模型中“检索”和“生成”两个阶段 的问题。 因此，单独使用BLEU分数不足以全面评估RAG模型的性能。 错误原因：无法解决检索文档相关性和生成答案准确性的问题。",
+   "B": "错误：监控响应延迟和令牌生成速度以优化性能。 监控响应延迟和令牌生成速度是优化系统性能的有效方法，但它主要关注的是系统的运行效率，而不是回答的质量或文档的相关 性。 本题的重点是提高和评估AI助手的回答质量，而不是优化性能指标。 错误原因：与题目要求的“提高回答质量”无关。",
+   "C": "错误：仅根据最终答案质量与真实答案进行评估。 仅评估最终答案质量忽略了RAG模型的检索阶段，无法发现检索到的文档是否相关的问题。 RAG模型的性能不仅取决于生成的答案质量，还取决于检索到的文档是否准确和相关。 错误原因：忽略了检索阶段的评估，无法全面优化RAG模型。",
+   "D": "正确：确认检索到的文档是相关的，并且最终答案是准确的。 此选项全面考虑了RAG模型的两个关键阶段：检索和生成。 通过验证检索到的文档的相关性，可以确保生成答案的基础是可靠的；同时评估最终答案的准确性可以优化生成阶段的质量。 这种方法能够全面提高和评估AI助手的性能。 正确原因：全面覆盖了RAG模型的检索和生成两个阶段，符合题目要求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 432,
+  "type": "single",
+  "question": "一家公司希望开发一个AI解决方案，以便从扫描的PDF文档和表单中自动提取结构化和非结构化数据。 哪个AWS服务可以满足这些需求？",
+  "options": {
+   "A": "Amazon Polly Amazon Polly",
+   "B": "Amazon Lex Amazon Lex",
+   "C": "Amazon Personalize Amazon Personalize",
+   "D": "Amazon Textract Amazon Textract"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Amazon Polly Amazon Polly是一项文本转语音服务，用于将文本转换为自然的语音。它不具备从PDF文档或表单中提取数据的功能，因此此选项错 误。",
+   "B": "错误：Amazon Lex Amazon Lex是一项用于构建对话式接口（如聊天机器人）的服务。它主要用于自然语言理解和语音识别，而不是处理文档数据提 取，因此此选项错误。",
+   "C": "错误：Amazon Personalize Amazon Personalize是一项用于构建个性化推荐系统的服务。它与文档数据提取无关，因此此选项错误。",
+   "D": "正确：Amazon Textract Amazon Textract是一项专⻔用于从文档中提取结构化和非结构化数据的服务。它能够自动识别和提取文本、表格以及表单中的数 据，非常适合处理扫描的PDF文档和表单。因此此选项正确。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 433,
+  "type": "single",
+  "question": "一家公司正在开发一个AI解决方案，以帮助做出招聘决策。 哪种策略符合AWS关于负责任AI的指导？",
+  "options": {
+   "A": "使用AI解决方案在没有人工审核的情况下做出最终招聘决策。",
+   "B": "仅使用以前成功招聘的数据来训练AI解决方案。",
+   "C": "测试AI解决方案以确保其不会歧视任何受保护群体。",
+   "D": "将AI决策过程保密以保持竞争优势。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：使用AI解决方案在没有人工审核的情况下做出最终招聘决策。 错误：AWS负责任AI的指导原则强调AI系统的决策应受到人类监督，尤其是在涉及重大影响（如招聘决策）时。完全依赖AI做出最终 决策可能导致偏⻅或错误，违反了负责任AI的原则。",
+   "B": "错误：仅使用以前成功招聘的数据来训练AI解决方案。 错误：仅使用过去成功招聘的数据可能导致数据偏倚（bias），因为这些数据可能包含历史上的偏⻅或不公平性。AWS建议在训练AI 模型时应确保数据的多样性和公平性。",
+   "C": "正确：测试AI解决方案以确保其不会歧视任何受保护群体。 正确：AWS负责任AI的指导原则要求对AI系统进行测试，以确保其公平性和不会对受保护群体（如种族、性别等）产生歧视。这是负 责任AI的核心要求之一。",
+   "D": "错误：将AI决策过程保密以保持竞争优势。 错误：虽然商业竞争优势很重要，但AWS负责任AI的原则强调透明性。AI决策过程的透明性对于确保公平性和伦理性至关重要，完全 保密可能导致不信任和潜在的伦理问题。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 434,
+  "type": "single",
+  "question": "一位人工智能从业者正在开发一个推荐系统。该人工智能从业者希望记录业务问题、数据假设、训练注意事项以及使用⻛险。公司 必须遵循透明性和治理的指导原则。 哪项 Amazon SageMaker AI 功能可以满足这些要求？",
+  "options": {
+   "A": "模型注册表",
+   "B": "模型卡片",
+   "C": "模型监控",
+   "D": "模型仪表板"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Model Registry 模型注册表 Model Registry主要用于管理和版本控制机器学习模型。它帮助团队跟踪模型的不同版本，但不直接涉及记录业务问题、数据假设、 训练考虑或使用⻛险。因此此选项不符合题目要求。",
+   "B": "正确：Model Cards 模型卡片 Model Cards是Amazon SageMaker提供的功能，用于记录模型的详细信息，包括业务问题、数据假设、训练考虑和使用⻛险。它还支 持透明性和治理要求。因此此选项完全符合题目要求。",
+   "C": "错误：Model Monitor 模型监控 Model Monitor用于监控模型的性能和数据漂移，确保模型在生产环境中的表现稳定。虽然它与模型的使用相关，但并不直接用于记 录业务问题或数据假设。因此此选项不符合题目要求。",
+   "D": "错误：Model Dashboard 模型仪表板 Model Dashboard是一个集中式界面，用于查看模型的状态和性能指标。它主要用于监控和管理模型，而不是记录业务问题或数据假 设。因此此选项不符合题目要求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 435,
+  "type": "single",
+  "question": "一家公司在 Amazon Bedrock 上运行 AI 工作负载，需要评估并记录符合监管标准的情况。 哪项 AWS 服务或功能满足这些要求？",
+  "options": {
+   "A": "AWS 审计管理器 (AWS Audit Manager)",
+   "B": "Amazon SageMaker 模型卡 (Amazon SageMaker Model Cards)",
+   "C": "Amazon SageMaker 模型监控 (Amazon SageMaker Model Monitor)",
+   "D": "AWS Artifact AWS Artifact"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：AWS Audit Manager (AWS 审计管理器) 正确：AWS Audit Manager 是专⻔设计用于帮助用戶自动化收集证据和评估合规性。它可以生成审计报告，满足监管要求。",
+   "B": "错误：Amazon SageMaker Model Cards (Amazon SageMaker 模型卡) 错误：SageMaker Model Cards 的主要功能是记录机器学习模型的元数据和性能信息，帮助团队共享模型信息，但它并不直接用于合 规性评估或文档记录。",
+   "C": "错误：Amazon SageMaker Model Monitor (Amazon SageMaker 模型监控) 错误：SageMaker Model Monitor 的主要功能是监控模型的性能和数据漂移，确保模型在生产环境中的表现，但它不涉及合规性文档 或评估。",
+   "D": "错误：AWS Artifact 错误：AWS Artifact 是一个提供合规性报告和文档的服务，但它主要是用于访问和下载合规性相关的文档，而不是用于评估或记录合 规性。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 436,
+  "type": "single",
+  "question": "一家公司希望将基础模型（FMs）用于多个用例，包括内容摘要、代码生成和客戶服务AI助手。 哪种解决方案能够以最具成本效益的方式实现FMs？",
+  "options": {
+   "A": "选择满足每个具体用例性能要求的最小模型。",
+   "B": "为所有任务使用最大且功能最强的模型以确保质量。",
+   "C": "为每个单独的用例构建和训练一个定制的FM。",
+   "D": "对所有推理请求使用批处理以减少每个请求的成本和延迟。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Select the smallest model that meets the performance requirements for each specific use case. 正确性分析：选择满足性能要求的最小模型是一个成本优化的策略，因为较小的模型通常需要更少的计算资源，从而降低成本。 优点：这种方法可以根据具体用例的需求灵活调整，避免资源浪费。 缺点：如果性能需求评估不准确，可能会导致模型无法满足实际需求。 结论：此选项是正确的，符合成本效益的原则。",
+   "B": "错误：Use the largest and most capable model available for all tasks to ensure quality. 正确性分析：使用最大且功能最强的模型虽然可以确保质量，但成本非常高，且对于简单任务可能是资源浪费。 优点：质量和性能可能会非常高，适合对质量要求极高的场景。 缺点：不符合成本效益的原则，尤其是对于简单任务来说，使用大型模型会导致过度开销。 结论：此选项是错误的，因为它忽略了成本优化。",
+   "C": "错误：Build and train a custom FM for each individual use case. 正确性分析：为每个用例构建和训练定制模型成本非常高，且需要大量的时间和资源。 优点：可以完全针对特定用例优化模型性能。 缺点：训练定制模型的成本和复杂性通常远高于使用现有模型，尤其是对于中小型企业来说，这种方法不具备成本效益。 结论：此选项是错误的，因为它不符合“最具成本效益”的要求。",
+   "D": "错误：Use batch processing for all inference requests to reduce the costs and latency for each request. 正确性分析：批处理可以优化推理效率，但它并不能直接解决模型选择的问题，也无法确保满足不同用例的性能需求。 优点：批处理确实可以降低推理成本，但它是一个技术优化手段，而不是模型选择策略。 缺点：此选项偏离了题目重点，未直接解决如何选择最具成本效益的模型的问题。 结论：此选项是错误的，因为它与题目要求不完全相关。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 437,
+  "type": "single",
+  "question": "一位AI从业者希望快速部署和微调基础模型（FMs），用于生成式AI（GenAI）任务。该AI从业者需要访问预训练模型、解决方案模板 和示例笔记本，以加速开发过程。 哪个AWS功能或资源满足这些需求？",
+  "options": {
+   "A": "Amazon SageMaker Studio Amazon SageMaker Studio",
+   "B": "Amazon SageMaker JumpStart Amazon SageMaker JumpStart",
+   "C": "Amazon Bedrock模型目录",
+   "D": "Amazon SageMaker Canvas Amazon SageMaker Canvas"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Amazon SageMaker Studio Amazon SageMaker Studio是一个集成开发环境（IDE），用于机器学习工作流的开发和管理。虽然它支持模型开发，但它并不专注于提 供预训练模型、解决方案模板或示例笔记本。因此，这个选项不符合题目要求。",
+   "B": "正确：Amazon SageMaker JumpStart Amazon SageMaker JumpStart提供了预训练模型、解决方案模板和示例笔记本，专⻔用于加速机器学习和生成式AI任务的开发。它完 全符合题目中提到的需求，是正确答案。",
+   "C": "错误：Amazon Bedrock model catalog Amazon Bedrock是一个服务，允许用戶访问和集成多个第三方基础模型（FMs），但它主要用于无服务器的API调用，而不是提供解决 方案模板或示例笔记本。因此，它不完全符合题目要求。",
+   "D": "错误：Amazon SageMaker Canvas Amazon SageMaker Canvas是一个无代码机器学习工具，适合业务用戶进行预测分析，但它不提供预训练模型、解决方案模板或示例 笔记本。因此，这个选项不符合题目要求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 438,
+  "type": "multiple",
+  "question": "一家人力资源公司正在构建一个AI/ML解决方案，用于筛选简历并为各种职位选择相关申请人。 哪些AI方法论将有助于确保对所有人口群体的公平对待？（选择两个）",
+  "options": {
+   "A": "模块化",
+   "B": "公平性",
+   "C": "可解释性",
+   "D": "保密性",
+   "E": "欠拟合"
+  },
+  "answer": [
+   "B",
+   "C"
+  ],
+  "explanations": {
+   "A": "错误：Modularity 模块化 模块化是指将系统分解为多个独立的模块以提高灵活性和可维护性。虽然模块化在系统设计中很重要，但它与确保AI模型对所有群 体公平无关，因此此选项错误。",
+   "B": "正确：Fairness 公平性 公平性是确保AI模型不会对某些群体产生偏⻅的关键方法。通过公平性评估，可以检测和减少模型对特定人口统计群体的歧视。因 此此选项正确。",
+   "C": "正确：Explainability 可解释性 可解释性是指能够理解和解释AI模型的决策过程。它对于确保透明性和信任至关重要，特别是在涉及人群差异的任务中。因此此选 项正确。",
+   "D": "错误：Secrecy 保密性 保密性是指保护数据隐私和安全。虽然保密性在AI系统中很重要，但它与确保模型对所有群体公平无关，因此此选项错误。",
+   "E": "错误：Underfitting 欠拟合 欠拟合是指模型无法捕捉数据的复杂性，导致性能较差。虽然欠拟合会影响模型的准确性，但它与公平性或透明性无关，因此此选 项错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 439,
+  "type": "multiple",
+  "question": "一家公司需要评估 AI 生成的摘要与参考文本的对比。公司必须衡量语义相似性和关键信息的覆盖率。 哪些指标满足这些要求？（选择两个。）",
+  "options": {
+   "A": "F1 分数",
+   "B": "BERTScore BERTScore",
+   "C": "双语评估替代（BLEU）分数",
+   "D": "准确率",
+   "E": "面向召回的摘要评估替代（ROUGE）"
+  },
+  "answer": [
+   "B",
+   "E"
+  ],
+  "explanations": {
+   "A": "错误：F1 score: F1分数是分类任务中常用的指标，用于衡量模型的精确率（Precision）和召回率（Recall）的平衡。它不适用于评估生成文本的语义 相似性或信息覆盖率，因此此选项错误。",
+   "B": "正确：BERTScore: BERTScore是一种基于深度学习模型（如BERT）的文本评估指标，可以计算生成文本与参考文本之间的语义相似性。它非常适合用于 评估语义相似性，因此此选项正确。",
+   "C": "错误：Bilingual Evaluation Understudy (BLEU) score: BLEU分数主要用于机器翻译任务，评估生成文本与参考文本之间的词汇匹配程度。虽然它可以衡量某种程度的信息覆盖率，但它无 法很好地捕捉语义相似性，因此此选项错误。",
+   "D": "错误：Accuracy: 准确率是分类任务中的指标，用于衡量预测正确的比例。它不适用于生成文本的评估，因此此选项错误。",
+   "E": "正确：Recall-Oriented Understudy for Gisting Evaluation (ROUGE): ROUGE分数是文本摘要任务中常用的指标，特别是用于评估生成文本与参考文本之间的信息覆盖率。它适合用于本题要求的“覆盖关 键信息”评估，因此此选项正确。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 440,
+  "type": "single",
+  "question": "一家公司需要记录一个机器学习模型的用途、所有者和局限性。 哪项 AWS 服务或功能提供此功能？",
+  "options": {
+   "A": "Amazon Bedrock Amazon Bedrock",
+   "B": "AWS AI 服务卡",
+   "C": "AWS 规范指导",
+   "D": "Amazon SageMaker 模型卡"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Amazon Bedrock: Amazon Bedrock 是一种用于构建和扩展生成式 AI 应用的服务，主要用于访问基础模型（Foundation Models）。它不提供记录模型目 的、所有者和限制的功能，因此此选项错误。",
+   "B": "错误：AWS AI Service Cards: AWS AI Service Cards 是一种文档工具，用于描述 AWS AI 服务的功能、限制和责任，但它针对的是 AWS AI 服务本身，而不是用戶的机 器学习模型。因此此选项错误。",
+   "C": "错误：AWS Prescriptive Guidance: AWS Prescriptive Guidance 提供最佳实践和建议，用于帮助用戶设计和实施解决方案，但它不是专⻔用于记录机器学习模型信息的工 具。因此此选项错误。",
+   "D": "正确：Amazon SageMaker Model Cards: Amazon SageMaker Model Cards 是专⻔设计用于记录机器学习模型的目的、所有者、性能指标和限制的工具。它完全符合题目要求， 因此此选项正确。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 441,
+  "type": "single",
+  "question": "一家公司正在训练一个基础模型（FM）。该公司希望FM训练数据在整个数据生命周期中得到良好的管理、安全保护和合规性。数据 必须遵循治理实践。 以下哪项是用于管理数据生命周期的AWS数据治理策略？",
+  "options": {
+   "A": "允许所有员工对所有数据进行不受限制的访问。",
+   "B": "无限期存储数据而不进行分类或设置保留策略。",
+   "C": "仅依赖人工审查来确保数据质量和合规性。",
+   "D": "建立数据生命周期策略、访问控制、日志记录和监控。"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：允许所有员工对所有数据进行不受限制的访问。 错误。此选项完全违背了数据治理的基本原则。数据治理要求对数据访问进行严格控制，以确保数据安全性和合规性。允许不受限 制的访问会导致数据泄露和合规性问题。",
+   "B": "错误：无限期存储数据而不进行分类或设置保留策略。 错误。数据治理要求对数据进行分类并设置保留策略，以确保数据的合规性和有效性。无限期存储数据不仅会增加存储成本，还可 能违反数据隐私法规（如GDPR）。",
+   "C": "错误：仅依赖人工审查来确保数据质量和合规性。 错误。人工审查效率低下且容易出错，无法满足现代数据治理的需求。AWS提供了自动化工具（如AWS Config、AWS CloudTrail）来帮 助实现数据质量和合规性管理。",
+   "D": "正确：建立数据生命周期策略、访问控制、日志记录和监控。 正确。此选项符合AWS数据治理的最佳实践。通过数据生命周期策略，可以管理数据的存储和删除；通过访问控制，可以限制数据 访问权限；通过日志记录和监控，可以跟踪数据活动并确保合规性。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 442,
+  "type": "matching",
+  "question": "一家公司正在使用 Amazon Bedrock AgentCore 来构建、部署和大规模实施代理。该公司需要确定使用哪些资源。 从以下列表中为每个描述选择正确的 AgentCore 资源。每个资源可以选择一次或不选择。",
+  "available_options": [
+   "Observability",
+   "Code Interpreter",
+   "Browser tool",
+   "Runtime",
+   "Gateway",
+   "Memory"
+  ],
+  "matches": [
+   {
+    "use_case": "Monitor agent behavior through intuitive dashboards",
+    "correct_answer": "Observability",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Execute code securely across multiple languages",
+    "correct_answer": "Code Interpreter",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Fast, secure, and serverless browser runtime for agents",
+    "correct_answer": "Browser tool",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "Monitor agent behavior through intuitive dashboards → Observability",
+   "2": "Execute code securely across multiple languages → Code Interpreter",
+   "3": "Fast, secure, and serverless browser runtime for agents → Browser tool",
+   "_full": "题目分析与解答 1. 考察的知识点 本题考察的是Amazon Bedrock AgentCore的资源功能，包括如何选择正确的资源来满足特定需求。 需要理解每个资源的用途，例如Observability、Code Interpreter、Browser tool、Runtime、Gateway和Memory。 2. 独立分析每个选项 描述1：Monitor agent behavior through intuitive dashboards Observability：正确。Observability用于监控代理行为并提供可视化的仪表板，符合描述。 Code Interpreter：错误。Code Interpreter主要用于执行代码，与监控行为无关。 Browser tool：错误。Browser tool是用于代理的浏览器运行时，与监控无关。 Runtime：错误。Runtime是运行代理的环境，与监控无关。 Gateway：错误。Gateway用于连接和路由，与监控无关。 Memory：错误。Memory用于存储代理的状态，与监控无关。 描述2：Execute code securely across multiple languages Observability：错误。Observability用于监控代理行为，与代码执行无关。 Code Interpreter：正确。Code Interpreter专⻔用于安全地执行代码，支持多种语言，符合描述。 Browser tool：错误。Browser tool是用于代理的浏览器运行时，与代码执行无关。 Runtime：错误。Runtime是运行代理的环境，与代码执行无关。 Gateway：错误。Gateway用于连接和路由，与代码执行无关。 Memory：错误。Memory用于存储代理的状态，与代码执行无关。 描述3：Fast, secure, and serverless browser runtime for agents Observability：错误。Observability用于监控代理行为，与浏览器运行时无关。 Code Interpreter：错误。Code Interpreter用于执行代码，与浏览器运行时无关。 Browser tool：正确。Browser tool是专⻔为代理提供快速、安全、无服务器的浏览器运行时，符合描述。 Runtime：错误。Runtime是运行代理的环境，但不特指浏览器运行时。 Gateway：错误。Gateway用于连接和路由，与浏览器运行时无关。 Memory：错误。Memory用于存储代理的状态，与浏览器运行时无关。 3. 我的答案 Monitor agent behavior through intuitive dashboards: Observability Execute code securely across multiple languages: Code Interpreter Fast, secure, and serverless browser runtime for agents: Browser tool 4. 官方答案 Monitor agent behavior through intuitive dashboards: Observability Execute code securely across multiple languages: Code Interpreter Fast, secure, and serverless browser runtime for agents: Browser tool 5. 比较与重新思考 我的答案与官方答案一致。 原因：通过对每个选项的功能进行独立分析，官方答案是正确的，没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 443,
+  "type": "ordering",
+  "question": "一家公司希望使用 Amazon Bedrock 从现有文档中创建一个知识库。这些文档包括文本、表格和图像。 从以下列表中选择并排序步骤，以正确描述如何通过 Amazon Bedrock 的数据摄取过程将文档中的数据转换为知识库。每个步骤选择 一次或不选择。",
+  "available_steps": [
+   "Convert the chunks into vector embeddings.",
+   "Divide the data into chunks.",
+   "Parse the documents.",
+   "Use data events to create a data lineage.",
+   "Use Retrieval Augmented Generation (RAG) to retrieve relevant content.",
+   "Write the vector embeddings to the vector store."
+  ],
+  "ordered_steps": [
+   "Parse the documents.",
+   "Divide the data into chunks.",
+   "Convert the chunks into vector embeddings.",
+   "Write the vector embeddings to the vector store."
+  ],
+  "explanations": {
+   "步驟 1": "Parse the documents.",
+   "步驟 2": "Divide the data into chunks.",
+   "步驟 3": "Convert the chunks into vector embeddings.",
+   "步驟 4": "Write the vector embeddings to the vector store.",
+   "_full": "题目分析与解答 1. 考察的知识点 本题考察的是Amazon Bedrock的知识库构建流程，特别是如何从文档中提取数据并将其转化为可搜索的向量嵌入。 涉及的技术包括文档解析、数据分块、向量嵌入生成以及向量存储。 2. 独立思考与分析 以下是对每个步骤的分析： 3. 逐个分析选项 Step 1: Parse the documents 正确。解析文档是第一步，目的是从文档中提取结构化或非结构化数据（如文本、表格、图像等）。 这是知识库构建的基础步骤，必须先完成。 Step 2: Divide the data into chunks 正确。在解析文档后，需要将数据分块，以便后续处理。分块的目的是提高检索效率并适应向量嵌入的处理要求。 例如，⻓文本可以分成段落或句子，表格可以分成单元格。 Step 3: Convert the chunks into vector embeddings 正确。将分块后的数据转化为向量嵌入是关键步骤，向量嵌入是机器学习模型理解和检索数据的基础。 Amazon Bedrock可以使用预训练模型来生成这些嵌入。 Step 4: Write the vector embeddings to the vector store 正确。将生成的向量嵌入存储到向量数据库中（如Amazon OpenSearch或其他兼容的存储服务），以便后续检索。 这是知识库构建的最后一步，确保数据可以被高效查询。 Use data events to create a data lineage 错误。数据事件和数据血缘通常用于数据管控和追踪，不是知识库构建的核心步骤。 Use Retrieval Augmented Generation (RAG) to retrieve relevant content 错误。RAG是检索和生成内容的技术，属于知识库使用阶段，而非构建阶段。 4. 我选的答案 Step 1: Parse the documents Step 2: Divide the data into chunks Step 3: Convert the chunks into vector embeddings Step 4: Write the vector embeddings to the vector store 5. 官方答案 Step 1: Parse the documents Step 2: Divide the data into chunks Step 3: Convert the chunks into vector embeddings Step 4: Write the vector embeddings to the vector store 6. 与官方答案比较 我的答案与官方答案一致。 原因：官方答案正确地描述了Amazon Bedrock知识库构建的流程，符合技术逻辑。"
+  },
+  "available_step_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ],
+  "ordered_step_ids": [
+   "opt-3",
+   "opt-2",
+   "opt-1",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 444,
+  "type": "single",
+  "question": "一家公司希望为其AI系统建立一个数据治理框架。该框架必须使公司能够监控数据生成、更新以及计划删除的时间。 哪个数据治理组件满足这些要求？",
+  "options": {
+   "A": "数据驻留",
+   "B": "数据生命周期管理",
+   "C": "数据可观测性",
+   "D": "数据日志记录"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Data residency (数据驻留) 数据驻留主要关注数据存储的位置和合规性问题，例如数据是否存储在特定的地理区域以满足法律或政策要求。它与数据生成、更 新和删除的时间监控无直接关系，因此此选项错误。",
+   "B": "正确：Data lifecycle management (数据生命周期管理) 数据生命周期管理专注于数据从创建到删除的整个生命周期，包括数据生成、更新、存储、归档和删除的管理。这正是题目要求的 功能，因此此选项正确。",
+   "C": "错误：Data observability (数据可观测性) 数据可观测性主要用于监控数据的质量、流动性和性能问题，帮助识别数据异常或问题。虽然它可以提供一些监控功能，但它并不 直接涉及数据生成、更新和删除的时间管理，因此此选项错误。",
+   "D": "错误：Data logging (数据日志记录) 数据日志记录是记录数据操作的行为，例如访问记录或修改记录。虽然它可以提供数据操作的历史记录，但它并不涵盖数据生命周 期的全面管理，因此此选项错误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 445,
+  "type": "multiple",
+  "question": "一家公司正在使用 Model Context Protocol (MCP) 服务器和 Amazon Q Developer CLI 构建一个自主 AI 应用程序。该公司希望遵循 MCP 安 全实践。 哪些解决方案可以满足这些要求？（选择两个。）",
+  "options": {
+   "A": "保持 MCP 服务器和 Amazon Q Developer CLI 更新。",
+   "B": "监控 MCP 日志以确保正常的成功活动。",
+   "C": "使用纯文本文件存储敏感配置。",
+   "D": "自动批准所有由 MCP 服务器提供的工具。",
+   "E": "仅从可信来源安装服务器。"
+  },
+  "answer": [
+   "A",
+   "E"
+  ],
+  "explanations": {
+   "A": "正确：Keep MCP servers and the Amazon Q Developer CLI updated. 保持 MCP 服务器和 Amazon Q Developer CLI 更新。 分析：保持软件和服务器更新是安全实践的基本要求，可以防止已知漏洞被利用。因此，这个选项是正确的。",
+   "B": "错误：Monitor MCP logs for normal successful activity. 监控 MCP 日志以确保正常的成功活动。 分析：监控日志是安全管理的一部分，但仅监控“正常成功活动”并不能有效发现异常或潜在威胁。更好的做法是监控异常活动或失 败尝试。因此，这个选项是错误的。",
+   "C": "错误：Use plain text files to store sensitive configurations. 使用纯文本文件存储敏感配置。 分析：使用纯文本文件存储敏感信息是非常不安全的做法，容易导致数据泄露。敏感信息应该加密存储。因此，这个选项是错误 的。",
+   "D": "错误：Automatically approve all tools that are provided by MCP servers. 自动批准所有由 MCP 服务器提供的工具。 分析：自动批准工具可能会导致恶意工具被安装，违反安全实践。应该对工具进行验证和审核。因此，这个选项是错误的。",
+   "E": "正确：Install servers only from trusted sources. 仅从可信来源安装服务器。 分析：从可信来源安装服务器是安全实践的重要部分，可以防止恶意软件或不受信任的代码被引入。因此，这个选项是正确的。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 446,
+  "type": "single",
+  "question": "一家公司正在使用基础模型（FM）来创建产品描述。该模型有时会提供不正确的信息。 这描述了生成式人工智能的哪种潜在⻛险？",
+  "options": {
+   "A": "有害内容",
+   "B": "幻觉",
+   "C": "可解释性",
+   "D": "确定性输出"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Toxicity 有害内容 解释：Toxicity指的是生成式AI可能会生成有害或冒犯性的内容，例如种族歧视、仇恨言论等。这与题目中描述的“提供错误信息”无 关，因此此选项错误。",
+   "B": "正确：Hallucinations 幻觉 解释：Hallucinations是生成式AI的一个常⻅问题，指模型生成的信息看似合理但实际上是错误或虚假的。这正是题目中描述的情况， 因此此选项正确。",
+   "C": "错误：Interpretability 可解释性 解释：Interpretability指的是理解模型决策的透明度或可解释性。虽然这是生成式AI的一个重要问题，但与题目中描述的“提供错误信 息”无关，因此此选项错误。",
+   "D": "错误：Deterministic outputs 确定性输出 解释：Deterministic outputs指的是模型在相同输入下总是生成相同的输出。这与题目中描述的“提供错误信息”无关，因此此选项错 误。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 447,
+  "type": "single",
+  "question": "一家公司正在使用生成式人工智能（GenAI）系统从患者记录中生成医疗摘要。该系统有时会生成看似可信但不准确的信息。 哪种策略可以缓解这一问题？",
+  "options": {
+   "A": "实施严格的输入验证和输出格式规则。",
+   "B": "实施检索增强生成（RAG）以使响应有依据。",
+   "C": "在医疗应用中使用更小、更透明的模型。",
+   "D": "增加计算资源和模型规模。"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：实施严格的输入验证和输出格式规则。 正确性分析：输入验证和输出格式规则可以帮助确保输入数据的质量以及输出的结构化，但它无法解决生成式AI的幻觉问题，因为 幻觉问题通常是模型生成内容时的内在问题，而不是输入或输出的格式问题。 结论：此选项不适合解决幻觉问题。",
+   "B": "正确：实施检索增强生成（RAG）以使响应有依据。 正确性分析：RAG是一种结合检索和生成的技术，通过在生成内容时引入外部知识库或文档检索，确保生成的内容有依据。这种方 法可以有效减少幻觉问题，特别是在需要准确性和可信度的场景（如医疗领域）。 结论：此选项是解决幻觉问题的最佳策略。",
+   "C": "错误：在医疗应用中使用更小、更透明的模型。 正确性分析：使用更小、更透明的模型可能会提高模型的可解释性，但这并不能直接解决幻觉问题。更小的模型可能会牺牲性能， 而透明性并不保证生成内容的准确性。 结论：此选项不是最佳解决方案。",
+   "D": "错误：增加计算资源和模型规模。 正确性分析：增加计算资源和模型规模可能会提高模型的性能，但幻觉问题是生成式AI的固有问题，与模型规模无直接关系。更大 的模型甚至可能生成更复杂但仍然不准确的内容。 结论：此选项无法有效解决幻觉问题。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 448,
+  "type": "single",
+  "question": "一家公司希望调用单个 Amazon Bedrock 端点，并需要 Amazon Bedrock 为每个请求选择最合适的基础模型 (FM)。该公司不希望硬编码 模型。 哪项 Amazon Bedrock 功能或资源可以满足这些需求？",
+  "options": {
+   "A": "Amazon Bedrock Guardrails Amazon Bedrock Guardrails",
+   "B": "Amazon Bedrock Knowledge Bases Amazon Bedrock Knowledge Bases",
+   "C": "Amazon Bedrock 提示路由器",
+   "D": "Amazon Bedrock 代理内存"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Amazon Bedrock Guardrails 错误。Amazon Bedrock Guardrails主要用于确保生成的内容符合预定义的安全和合规标准，而不是动态选择最适合的基础模型。它与 模型选择无关。",
+   "B": "错误：Amazon Bedrock Knowledge Bases 错误。Amazon Bedrock Knowledge Bases是用于存储和管理知识库的功能，通常与知识检索相关，而不是动态选择基础模型。",
+   "C": "正确：Amazon Bedrock prompt router 正确。Amazon Bedrock的提示路由器（Prompt Router）功能可以根据请求的内容动态选择最适合的基础模型。这正是题目要求的功 能。",
+   "D": "错误：Amazon Bedrock agent memory 错误。Amazon Bedrock agent memory用于存储会话上下文或代理的记忆，与动态选择基础模型无关。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 449,
+  "type": "multiple",
+  "question": "一家全球物流公司正在使用 Amazon Bedrock 上的生成式 AI (GenAI) 模型来自动化文书工作和运输文件。该公司希望建立一个明确的 AI 治理流程，以确保模型的使用符合公司政策并负责任。 哪些解决方案可以满足这些要求？（选择两个）",
+  "options": {
+   "A": "建立定期审查流程，以检查模型的结果是否准确、公平，并遵循公司政策。",
+   "B": "为所有使用 AI 工具的员工提供培训，使员工了解公司规则、数据处理和负责任的 AI 使用。",
+   "C": "让云服务提供商管理所有 AI 安全检查和审查，以节省内部精力。",
+   "D": "仅让开发人员参与治理审查，因为开发人员构建和部署 AI 系统。",
+   "E": "仅在用戶报告系统问题或错误时审查模型。"
+  },
+  "answer": [
+   "A",
+   "B"
+  ],
+  "explanations": {
+   "A": "正确：建立定期审查流程，以检查模型的结果是否准确、公平，并遵循公司政策。 正确：定期审查模型结果是AI治理的重要组成部分，可以确保模型的输出符合公司政策，并且避免偏⻅或错误。 这是负责任的AI使用的核心实践之一。",
+   "B": "正确：为所有使用 AI 工具的员工提供培训，使员工了解公司规则、数据处理和负责任的 AI 使用。 正确：员工培训是AI治理的重要环节，确保所有相关人员了解如何正确使用AI工具以及遵守公司政策。 这有助于减少误用AI工具的⻛险，并提高整体合规性。",
+   "C": "错误：让云服务提供商管理所有 AI 安全检查和审查，以节省内部精力。 错误：虽然云服务提供商可以提供技术支持，但AI治理是公司内部的责任，不能完全依赖外部供应商。 这可能导致公司失去对AI使用的控制权，无法确保符合内部政策。",
+   "D": "错误：仅让开发人员参与治理审查，因为开发人员构建和部署 AI 系统。 错误：AI治理需要多方参与，包括业务部⻔、法律团队、数据科学家等，而不仅仅是开发人员。 开发人员虽然重要，但他们的视⻆可能过于技术化，无法全面覆盖治理需求。",
+   "E": "错误：仅在用戶报告系统问题或错误时审查模型。 错误：被动审查无法确保AI系统的持续合规性和可靠性，可能导致问题积累。 定期主动审查是更好的治理实践。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 450,
+  "type": "single",
+  "question": "一家公司在其生成式人工智能 (GenAI) 应用中使用了检索增强生成 (RAG)。 该公司希望使用 Amazon Bedrock 知识库评估来衡量响应是 否基于检索到的文本避免幻觉。 哪项指标符合这些要求？",
+  "options": {
+   "A": "拒绝",
+   "B": "有害性",
+   "C": "刻板印象",
+   "D": "忠实性"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Refusal 拒绝 “Refusal”指的是模型拒绝回答某些问题的能力，通常用于评估模型是否能够识别自己无法回答的问题。 虽然拒绝回答可以减少幻觉，但它并不是直接衡量生成内容是否基于检索文本的指标。 因此，这个选项与题目要求不完全匹配。",
+   "B": "错误：Harmfulness 有害性 “Harmfulness”指的是评估模型生成内容是否包含有害信息，例如冒犯性或危险性内容。 虽然有害性是一个重要的评估指标，但它与避免幻觉无关。 因此，这个选项不符合题目要求。",
+   "C": "错误：Stereotyping 刻板印象 “Stereotyping”指的是评估模型是否生成带有刻板印象或偏⻅的内容。 虽然刻板印象是一个重要的伦理问题，但它与避免幻觉无关。 因此，这个选项不符合题目要求。",
+   "D": "正确：Faithfulness 忠实性 “Faithfulness”指的是评估生成内容是否忠实于检索到的文本或事实信息。 忠实性是直接衡量生成内容是否基于检索文本的关键指标，能够有效评估避免幻觉的能力。 因此，这个选项完全符合题目要求。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 451,
+  "type": "single",
+  "question": "一家社交媒体公司使用基于人工智能的“添加为好友”推荐系统。该公司希望确保其人工智能模型具有透明性和可解释性。 哪种解决方案将以最高的运营效率满足这些要求？",
+  "options": {
+   "A": "使用 Amazon Rekognition 分析用戶个人资料照片以改进模型推荐。",
+   "B": "使用 Amazon SageMaker Clarify 增强模型推荐的可解释性。",
+   "C": "将人工智能模型迁移到 Amazon Personalize 以改进模型推荐。",
+   "D": "使用 Amazon SageMaker Ground Truth 手动检测模型偏差。"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：使用 Amazon Rekognition 分析用戶个人资料照片以改进模型推荐。 Amazon Rekognition 是一种图像和视频分析服务，主要用于面部识别、对象检测等任务。 虽然可以通过分析用戶照片来改进推荐系统，但这与增强模型的透明性和可解释性无关。 因此，此选项与题目要求不符。",
+   "B": "正确：使用 Amazon SageMaker Clarify 增强模型推荐的可解释性。 Amazon SageMaker Clarify 是专⻔设计用于检测模型偏差并增强模型可解释性的工具。 它可以帮助开发者理解模型的行为，并提供透明的解释，完全符合题目要求。 此选项是正确的解决方案。",
+   "C": "错误：将人工智能模型迁移到 Amazon Personalize 以改进模型推荐。 Amazon Personalize 是一种推荐系统服务，旨在为用戶提供个性化推荐。 虽然迁移到 Amazon Personalize 可以改进推荐质量，但它并不直接解决模型的透明性和可解释性问题。 因此，此选项与题目要求不符。",
+   "D": "错误：使用 Amazon SageMaker Ground Truth 手动检测模型偏差。 Amazon SageMaker Ground Truth 是一种数据标注服务，主要用于创建高质量的训练数据集。 虽然可以通过手动标注数据来检测模型偏差，但这种方法效率较低，且不直接增强模型的透明性和可解释性。 因此，此选项与题目要求不符。"
+  }
+ },
+ {
+  "exam": "AIF-C01",
+  "id": 452,
+  "type": "single",
+  "question": "一家公司已经部署了一个机器学习模型。该公司希望通过客戶自己的应用程序，为外部客戶提供安全访问该模型的权限。 哪种解决方案可以满足这些需求？",
+  "options": {
+   "A": "在客戶的应用程序中使用自定义脚本进行身份验证。",
+   "B": "存储模型凭证并直接与客戶共享以进行身份验证。",
+   "C": "创建一个安全的 API 端点供客戶使用。",
+   "D": "将模型直接嵌入到客戶的应用程序中。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：使用自定义脚本进行身份验证 分析：使用自定义脚本进行身份验证可能会导致安全性问题，因为脚本的安全性和正确性难以保证。此外，这种方法缺乏标准化， 可能会导致客戶应用程序的复杂性增加。 结论：错误。",
+   "B": "错误：存储模型凭证并直接与客戶共享 分析：直接共享模型凭证是一种非常不安全的做法，可能导致凭证泄露或滥用。AWS的最佳实践是避免直接共享敏感信息。 结论：错误。",
+   "C": "正确：创建一个安全的 API 端点供客戶使用 分析：创建一个安全的API端点是AWS推荐的最佳实践。通过API网关和身份验证机制（如AWS IAM、Amazon Cognito或OAuth），可以 确保客戶安全地访问模型，同时保护数据和模型的完整性。 结论：正确。",
+   "D": "错误：将模型直接嵌入到客戶的应用程序中 分析：将模型直接嵌入到客戶的应用程序中可能会导致模型的知识产权泄露。此外，这种方法不适合动态更新模型或集中管理模 型。 结论：错误。"
+  }
+ }
+]

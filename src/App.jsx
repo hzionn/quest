@@ -922,7 +922,7 @@ const PROVIDER_ACCENTS = {
 // 各雲服務商的考試代碼（用來在入口畫面分組）。列在這裡但題庫還沒匯入的
 // 科別，會以「題庫準備中」的停用磚顯示，題目一進來就自動變成可點選。
 const PROVIDER_EXAMS = {
-  aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'DEA-C01', 'AIP-C01', 'MLA-C01'],
+  aws: ['CLF-C02', 'SAA-C03', 'SCS-C02', 'SCS-C03', 'SCS-C03 補充', 'SOA-C02', 'SOA-C03', 'DEA-C01', 'AIF-C01', 'AIP-C01', 'MLA-C01'],
   gcp: ['PCA', 'GCP-CDL'],
   azure: ['AZ-900', 'AZ-104'],
 }
@@ -3169,6 +3169,7 @@ const EXAM_SPECS = {
   'CLF-C02': { name: 'AWS Cloud Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
   'SCS-C02': { name: 'AWS Certified Security - Specialty (C02)', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選' },
   'SCS-C03': { name: 'AWS Certified Security - Specialty (C03)', count: 65, timeLimit: 170, passScore: 750, questions: '65 題（50 題計分 + 15 題不計分）', time: '170 分鐘（2 小時 50 分）', types: '單選、多選、排序' },
+  'AIF-C01': { name: 'AWS Certified AI Practitioner', count: 65, timeLimit: 90, passScore: 700, questions: '65 題（50 題計分 + 15 題不計分）', time: '90 分鐘（1 小時 30 分）', types: '單選、多選' },
   'AIP-C01': { name: 'AWS Certified Generative AI Developer - Professional', count: 85, timeLimit: 205, passScore: 750, questions: '85 題，複選題及多個答案', time: '205 分鐘（3 小時 25 分）', types: '單選、多選' },
   'SAA-C03': { name: 'AWS Certified Solutions Architect - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選' },
   'SOA-C02': { name: 'AWS Certified SysOps Administrator - Associate', count: 65, timeLimit: 130, passScore: 720, questions: '65 題（50 題計分 + 15 題不計分）', time: '130 分鐘（2 小時 10 分）', types: '單選、多選、排序' },
