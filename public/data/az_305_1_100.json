@@ -1,0 +1,2695 @@
+[
+ {
+  "exam": "AZ-305",
+  "id": 1,
+  "type": "single",
+  "question": "你有一个包含名为 Application1 的自定义应用程序的 Azure 订阅。Application1 是由一家名为 Fabrikam 的外部公司开发的， Ltd。Fabrikam 的开发人员被分配了基于⻆色的访问控制 (RBAC) 权限来管理 Application1 的组件。所有用戶都拥有 Microsoft 365 E5 计 划的许可。 你需要推荐一个解决方案来验证 Fabrikam 的开发人员是否仍然需要对 Application1 的权限。该解决方案必须满足以下要求： ✑ 每月向开发人员的经理发送一封电子邮件，其中列出对 Application1 的访问权限。 ✑ 如果经理未验证某个访问权限，则自动撤销该权限。 ✑ 最小化开发工作量。 你应该推荐什么？",
+  "options": {
+   "A": "在 Azure Active Directory (Azure AD) 中创建 Application1 的访问审查。",
+   "B": "创建一个 Azure Automation runbook，运行 Get-AzRoleAssignment cmdlet。",
+   "C": "在 Azure Active Directory (Azure AD) Privileged Identity Management 中，为 Application1 资源创建一个自定义⻆色分配。",
+   "D": "创建一个 Azure Automation runbook，运行 Get-AzureADUserAppRoleAssignment cmdlet。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：In Azure Active Directory (Azure AD), create an access review of Application1. 正确：Azure AD 的访问审查功能允许管理员定期检查用戶的权限，并可以设置自动撤销未验证的权限。 ( 符合题目要求：发送月度邮件给开发者的经理，并自动撤销未验证的权限。 最小化开发工作量：无需额外开发，只需配置 Azure AD 的内置功能。",
+   "B": "错误：Create an Azure Automation runbook that runs the Get-AzRoleAssignment cmdlet. 错误：虽然可以通过运行 Get-AzRoleAssignment cmdlet 获取⻆色分配信息，但这需要额外开发工作来实现邮件发送和权限撤销功能。 不符合“最小化开发工作量”的要求。",
+   "C": "错误：In Azure Active Directory (Azure AD) Privileged Identity Management, create a custom role assignment for the Application1 resources. 错误：PIM 主要用于管理临时权限提升，而不是定期审查和撤销权限。 不符合题目要求中的“发送月度邮件”和“自动撤销未验证权限”。",
+   "D": "错误：Create an Azure Automation runbook that runs the Get-AzureADUserAppRoleAssignment cmdlet. 错误：与选项 B 类似，虽然可以通过运行 Get-AzureADUserAppRoleAssignment cmdlet 获取用戶的应用⻆色分配信息，但需要额外开发 工作来实现邮件发送和权限撤销功能。 不符合“最小化开发工作量”的要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 2,
+  "type": "single",
+  "question": "你有一个 Azure 订阅。该订阅有一个 blob 容器，其中包含多个 blob。 贵公司财务部⻔的十位用戶计划在四月份访问这些 blob。 你需要推荐一个解决方案，以便仅在四月份启用对这些 blob 的访问。 在推荐中应包含哪种安全解决方案？",
+  "options": {
+   "A": "shared access signatures (SAS)",
+   "B": "Conditional Access policies",
+   "C": "certificates",
+   "D": "access keys"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Shared Access Signatures (SAS) Shared Access Signatures (SAS) 是一种安全机制，允许用戶在指定的时间段内访问 Azure 存储资源（如 Blob）。 可以通过设置到期时间和权限来限制访问，非常适合本题要求的“仅在4月期间访问”。 此选项正确。",
+   "B": "错误：Conditional Access Policies Conditional Access Policies 是 Azure AD 的功能，用于控制用戶对应用和服务的访问。 它主要用于身份验证和授权，而不是直接控制 Azure Blob 存储的访问权限。 此选项错误。",
+   "C": "错误：Certificates Certificates 通常用于身份验证或加密通信，而不是直接用于控制 Azure Blob 存储的访问权限。 此选项错误。",
+   "D": "错误：Access Keys Access Keys 是 Azure 存储账戶的主密钥，可以提供完全访问权限。 使用 Access Keys 不适合短期访问控制，因为它无法设置到期时间或限制权限。 此选项错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 3,
+  "type": "multiple",
+  "question": "您有一个与本地 Active Directory 域同步的 Azure Active Directory (Azure AD) 租戶。 您有一个名为 WebApp1 的内部 Web 应用，该应用托管在本地。WebApp1 使用集成 Windows 身份验证。 一些用戶在远程工作，并且没有 VPN 访问本地网络。 您需要为远程用戶提供对 WebApp1 的单一登录 (SSO) 访问。 以下两个功能应包含在解决方案中？每个正确答案构成解决方案的一部分。 注意：每个正确选择值一分。",
+  "options": {
+   "A": "Azure AD Application Proxy",
+   "B": "Azure AD Privileged Identity Management (PIM)",
+   "C": "Conditional Access policies",
+   "D": "Azure Arc",
+   "E": "Azure AD enterprise applications",
+   "F": "Azure Application Gateway"
+  },
+  "answer": [
+   "A",
+   "E"
+  ],
+  "explanations": {
+   "A": "正确：Azure AD Application Proxy：正确。Azure AD Application Proxy允许用戶通过Azure AD安全地访问内部托管的应用程序（如 WebApp1），并支持单点登录（SSO）。这是解决远程用戶访问问题的关键组件。",
+   "B": "错误：Azure AD Privileged Identity Management (PIM)：错误。PIM用于管理和控制Azure AD中的特权⻆色，而不是用于提供应用程序访问或 SSO功能。",
+   "C": "错误：Conditional Access policies：错误。条件访问策略用于控制用戶访问资源的条件（如基于位置或设备的访问限制），但它并不直接 解决远程用戶访问内部应用程序的问题。 (",
+   "D": "错误：Azure Arc：错误。Azure Arc用于管理混合和多云环境中的资源，与提供SSO或远程访问无关。",
+   "E": "正确：Azure AD enterprise applications：正确。Azure AD企业应用允许将内部应用程序注册到Azure AD，并支持SSO功能。这是解决方案的 一部分。",
+   "F": "错误：Azure Application Gateway：错误。Azure Application Gateway是一个负载均衡器和Web应用防火墙，与提供SSO或远程访问无关。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 4,
+  "type": "single",
+  "question": "你有一个名为 contoso.com 的 Azure Active Directory (Azure AD) 租戶，其中有一个名为 Group1 的安全组。Group1 配置为分配成员资 格。Group1 有 50 名成员，包括 20 名来宾用戶。 你需要推荐一个解决方案来评估 Group1 的成员资格。该解决方案必须满足以下要求： ✑ 评估必须每三个月自动重复一次。 ✑ 每个成员必须能够报告他们是否需要在 Group1 中。 ✑ 报告自己不需要在 Group1 中的用戶必须自动从 Group1 中移除。 ✑ 未报告自己是否需要在 Group1 中的用戶必须自动从 Group1 中移除。 你应该在推荐中包含什么？",
+  "options": {
+   "A": "实施 Azure AD Identity Protection。",
+   "B": "将 Group1 的成员资格类型更改为 Dynamic User。",
+   "C": "创建一个访问审查。",
+   "D": "实施 Azure AD Privileged Identity Management (PIM)。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Implement Azure AD Identity Protection Azure AD Identity Protection 主要用于检测和响应潜在的安全⻛险，例如可疑登录活动或用戶⻛险。 它不提供定期评估组成员资格的功能，因此不符合题目要求。 错误",
+   "B": "错误：Change the Membership type of Group1 to Dynamic User 动态用戶组 (Dynamic User Groups) 根据用戶属性自动管理组成员资格。 ( 虽然动态组可以自动更新成员，但它无法满足题目中“每个成员报告是否需要在组中”的要求。 错误",
+   "C": "正确：Create an access review 访问审查 (Access Reviews) 是 Azure AD 的功能，允许管理员定期评估组成员资格或应用访问权限。 它支持自动化审查周期（例如每三个月一次），并允许成员报告是否需要继续保留在组中。 符合题目中所有要求，包括自动移除未响应或不需要的成员。 正确",
+   "D": "错误：Implement Azure AD Privileged Identity Management (PIM) Azure AD PIM 主要用于管理和保护特权⻆色的访问权限，例如 Azure AD 管理员或订阅⻆色。 它不适用于普通组成员资格的定期评估，因此不符合题目要求。 错误"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 5,
+  "type": "matching",
+  "question": "热点问题 - 您计划部署 Azure Databricks 以支持机器学习应用程序。数据工程师将把 Azure Data Lake Storage 帐戶挂载到 Databricks 文件系统。文 件夹的权限直接授予数据工程师。 您需要为计划的 Databricks 部署推荐一个设计。解决方案必须满足以下要求： ✑ 确保数据工程师只能访问他们有权限的文件夹。 ✑ 最小化开发工作量。 ✑ 最小化成本。 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域：",
+  "available_options": [
+   "Premium",
+   "Standard",
+   "Credential passthrough",
+   "Managed identities",
+   "MLflow",
+   "A runtime that contains Photon",
+   "Secret scope"
+  ],
+  "matches": [
+   {
+    "use_case": "Databricks SKU",
+    "correct_answer": "Premium",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Cluster configuration",
+    "correct_answer": "Credential passthrough",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "Databricks SKU → Premium",
+   "2": "Cluster configuration → Credential passthrough",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Databricks SKU选择：了解不同SKU的功能和成本差异。 Cluster配置：熟悉Databricks集群的身份验证和权限管理机制。 2. 选项分析 Databricks SKU: Premium: Premium SKU支持高级功能，例如“Credential passthrough”，可以直接将Azure AD的权限传递到Databricks环境中，确保数据工 程师只能访问他们有权限的文件夹。这符合题目要求。 Standard: Standard SKU不支持“Credential passthrough”，因此无法满足题目中关于权限管理的要求。 Box 1: Premium - Premium Databricks SKU is required for credential passhtrough. Box 2: Credential passthrough - Athenticate automatically to Azure Data Lake Storage Gen1 (ADLS Gen1) and Azure Data Lake Storage Gen2 (ADLS Gen2) from Azure Databricks clusters using the same Azure Active Directory (Azure AD) identity that you use to log into Azure Databricks. When you enable Azure Data Lake Storage credential passthrough for your cluster, commands that you run on that cluster can read and write data in Azure Data Lake Storage without requiring you to configure service principal credentials for access to storage. Reference: https://docs.microsoft.com/en-us/azure/databricks/security/credential-passthrough/adls-passthrough 框 1：Premium - Premium Databricks SKU 是凭据传递所需的。 框 2：Credential passthrough - 使用与登录 Azure Databricks 相同的 Azure Active Directory (Azure AD) 身份，自动从 Azure Databricks 集群对 Azure Data Lake Storage Gen1 (ADLS Gen1) 和 Azure Data Lake Storage Gen2 (ADLS Gen2) 进行身份验证。当您为集群启用 Azure Data Lake Storage 凭据传递时， 您在该集群上运行的命令可以读取和写入 Azure Data Lake Storage 中的数据，而无需为访问存储配置服务主体凭据。 参考： https://docs.microsoft.com/en-us/azure/databricks/security/credential-passthrough/adls-passthrough Cluster configuration: Credential passthrough: 此选项允许Databricks集群直接使用Azure AD的权限，确保数据工程师只能访问他们有权限的文件夹。这符合 题目要求。 Managed identities: 虽然Managed Identities可以用于身份验证，但它不直接解决数据工程师的文件夹权限问题，因此不符合题目要 求。 MLflow: MLflow是一个机器学习生命周期管理工具，与权限管理无关，因此不符合题目要求。 A runtime that contains Photon: Photon是一个优化的计算引擎，与权限管理无关，因此不符合题目要求。 Secret scope: Secret scope用于管理敏感信息（如密码或密钥），与文件夹权限管理无关，因此不符合题目要求。 3. 我的答案 Databricks SKU: Premium Cluster configuration: Credential passthrough 4. 官方答案 Databricks SKU: Premium Cluster configuration: Credential passthrough 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 6,
+  "type": "matching",
+  "question": "热点问题 - 您计划部署一个名为 App1 的 Azure Web 应用，该应用将使用 Azure Active Directory (Azure AD) 进行身份验证。 公司用戶将通过互联网访问 App1。所有用戶的计算机运行 Windows 10，并已加入 Azure AD。 您需要推荐一个解决方案，以确保用戶可以在不提示身份验证的情况下连接到 App1，并且只能从公司拥有的计算机访问 App1。 您应该为每个要求推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域：",
+  "available_options": [
+   "Reference",
+   "An Azure AD app registration",
+   "An Azure AD managed identity",
+   "Azure AD Application Proxy",
+   "A Conditional Access policy",
+   "An Azure AD administrative unit",
+   "Azure Application Gateway",
+   "Azure Blueprints",
+   "Azure Policy"
+  ],
+  "matches": [
+   {
+    "use_case": "The users can connect to App1 without being prompted for authentication",
+    "correct_answer": "An Azure AD app registration",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "The users can access App1 only from company-owned computers",
+    "correct_answer": "A Conditional Access policy",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "The users can connect to App1 without being prompted for authentication → An Azure AD app registration",
+   "2": "The users can access App1 only from company-owned computers → A Conditional Access policy",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD应用注册的功能和用途。 Azure AD条件访问策略的配置和限制功能。 如何实现无提示认证和设备限制访问的解决方案。 2. 选项分析 第一部分：The users can connect to App1 without being prompted for authentication Box 1: An Azure AD app registration Azure active directory (AD) provides cloud based directory and identity management services.You can use azure AD to manage users of your application and authenticate access to your applications using azure active directory. You register your application with Azure active directory tenant. Box 2: A conditional access policy Conditional Access policies at their simplest are if-then statements, if a user wants to access a resource, then they must complete an action. By using Conditional Access policies, you can apply the right access controls when needed to keep your organization secure and stay out of your user's way when not needed. Reference: https://codingcanvas.com/using-azure-active-directory-authentication-in-your-web-application/ https://docs.microsoft.com/en-us/azure/active- directory/conditional-access/overview 框 1：一个 Azure AD 应用注册 Azure Active Directory (AD) 提供基于云的目录和身份管理服务。您可以使用 Azure AD 来管理应用程序的用戶，并使用 Azure Active Directory 对应用程序的访问进行身份验证。 您需要将应用程序注册到 Azure Active Directory 租戶中。 框 2：一个条件访问策略 条件访问策略最简单的形式是“如果-那么”语句：如果用戶想要访问资源，那么他们必须完成某个操作。 通过使用条件访问策略，您可以在需要时应用适当的访问控制，以确保组织的安全，并在不需要时避免干扰用戶。 参考： https://codingcanvas.com/using-azure-active-directory-authentication-in-your-web-application/ https://docs.microsoft.com/en-us/azure/active- directory/conditional-access/overview An Azure AD app registration: 正确。Azure AD应用注册是用于配置应用程序与Azure AD集成的必要步骤。通过应用注册，可以启用单一 登录（SSO），从而实现用戶无需重复输入凭据即可访问应用。 An Azure AD managed identity: 错误。托管身份主要用于为Azure资源提供身份验证，而不是直接用于用戶认证或SSO。 Azure AD Application Proxy: 错误。应用代理用于将本地应用程序发布到Azure AD，但题目中没有提到需要代理功能。 第二部分：The users can access App1 only from company-owned computers A Conditional Access policy: 正确。条件访问策略可以基于设备状态（如是否为公司拥有设备）限制用戶访问资源，是实现此需求的 最佳选择。 An Azure AD administrative unit: 错误。管理单元用于组织和管理Azure AD中的用戶和组，与设备访问控制无关。 Azure Application Gateway: 错误。应用网关主要用于流量管理和负载均衡，与设备访问限制无关。 Azure Blueprints: 错误。Blueprints用于定义和部署Azure资源的标准化配置，与设备访问限制无关。 Azure Policy: 错误。Azure Policy用于管理资源合规性，与用戶设备访问控制无关。 3. 我的答案 The users can connect to App1 without being prompted for authentication: An Azure AD app registration The users can access App1 only from company-owned computers: A Conditional Access policy 4. 官方答案 The users can connect to App1 without being prompted for authentication: An Azure AD app registration The users can access App1 only from company-owned computers: A Conditional Access policy 5. 比较与分析 我的答案与官方答案一致。 没有需要重新思考的部分。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8",
+   "opt-9"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 7,
+  "type": "single",
+  "question": "注意：此问题是一个系列问题的一部分，呈现相同的场景。系列中的每个问题都包含一个可能满足既定目标的独特解决方案。一些 问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。 在您回答本节中的问题后，您将无法返回该问题。因此，这些问题不会出现在审查屏幕中。 您的公司在本地和 Azure 上部署了多个虚拟机。ExpressRoute 已部署并配置用于本地到 Azure 的连接。 多个虚拟机出现网络连接问题。 您需要分析网络流量以确定数据包是否被允许或拒绝到达虚拟机。 解决方案：使用 Azure Network Watcher 中的 Azure Traffic Analytics 分析网络流量。 此解决方案是否满足目标？",
+  "options": {
+   "A": "是",
+   "B": "否"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Yes 是 Azure Traffic Analytics是Azure Network Watcher的一部分，用于分析网络流量模式和趋势。 然而，Traffic Analytics主要用于高层次的流量分析（如流量趋势、热点区域），而不是具体的包级别分析（如允许或拒绝的包）。 因此，Traffic Analytics无法直接满足题目中“分析网络流量以确定包是否被允许或拒绝”的需求。 此选项错误。",
+   "B": "正确：No 否 题目要求分析网络流量以确定包是否被允许或拒绝，这需要使用Azure Network Watcher中的“IP Flow Verify”或“Network Security Group Flow Logs”功能，而不是Traffic Analytics。 “IP Flow Verify”可以直接验证特定流量是否被允许或拒绝。 此选项正确。 ( )"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 8,
+  "type": "single",
+  "question": "注意：此问题是一个系列问题的一部分，呈现相同的场景。系列中的每个问题都包含一个可能满足既定目标的独特解决方案。一些 问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。 在您回答本节中的问题后，您将无法返回该问题。因此，这些问题将不会出现在审查屏幕中。 您的公司在本地和 Azure 上部署了多个虚拟机。ExpressRoute 已部署并配置用于本地到 Azure 的连接。 多个虚拟机出现网络连接问题。 您需要分析网络流量以确定数据包是否被允许或拒绝到达虚拟机。 解决方案：使用 Azure Advisor 分析网络流量。 这是否满足目标？",
+  "options": {
+   "A": "是",
+   "B": "否"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Yes 是: Azure Advisor是一个推荐工具，主要用于提供优化建议，例如成本管理、安全性、性能和高可用性。 它不具备直接分析网络流量或数据包允许/拒绝的功能。 因此，选择此选项是错误的。",
+   "B": "正确：No 否: Azure Advisor无法用于分析网络流量或数据包的允许/拒绝状态。 正确的工具应该是Network Watcher，它提供了流量分析功能，例如IP流验证和网络安全组(NSG)流日志。 因此，选择此选项是正确的。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 9,
+  "type": "single",
+  "question": "注意：此问题是一个系列问题的一部分，呈现相同的场景。系列中的每个问题都包含一个可能满足既定目标的独特解决方案。某些 问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。 在您回答本节中的问题后，您将无法返回该问题。因此，这些问题不会出现在审查屏幕中。 您的公司在本地和 Azure 上部署了多个虚拟机。ExpressRoute 已部署并配置用于本地到 Azure 的连接。 多个虚拟机出现网络连接问题。 您需要分析网络流量以确定数据包是否被允许或拒绝到达虚拟机。 解决方案：使用 Azure Network Watcher 运行 IP flow verify 来分析网络流量。 此解决方案是否满足目标？",
+  "options": {
+   "A": "是",
+   "B": "否"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Yes: 正确。Azure Network Watcher的IP Flow Verify工具可以验证网络流量是否被允许或拒绝。它是解决虚拟机网络连接问题的合适 工具。",
+   "B": "错误：No: 错误。否定选项不正确，因为IP Flow Verify确实可以满足题目中分析网络流量的需求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 10,
+  "type": "matching",
+  "question": "拖放 - 您有一个 Azure 订阅。该订阅包含运行 Windows Server 2016 和 Linux 的 Azure 虚拟机。 您需要使用 Azure Monitor 来设计一个针对安全相关事件的警报策略。 您应该查询哪些 Azure Monitor Logs 表？要回答，请将适当的表拖到正确的日志类型。每个表可以使用一次、多次或完全不使用。您 可能需要拖动分隔条或滚动以查看内容。 注意：每个正确选择都值一分。 选择并放置：",
+  "available_options": [
+   "AzureActivity",
+   "AzureDiagnostics",
+   "Event",
+   "Syslog"
+  ],
+  "matches": [
+   {
+    "use_case": "Events from Windows event logs",
+    "correct_answer": "Event",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Events from Linux system logging",
+    "correct_answer": "Syslog",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "Events from Windows event logs → Event",
+   "2": "Events from Linux system logging → Syslog",
+   "_full": "题目分析与解答 1. 考察的知识点 本题考察的是Azure Monitor的日志查询功能，特别是如何使用不同的日志表（如Event和Syslog）来监控Windows和Linux系统的安全相 关事件。 2. 选项分析 AzureActivity: 此表记录Azure资源的活动日志，主要用于监控Azure资源的操作和活动，而不是操作系统的事件日志。因此不适合用于 监控Windows或Linux的安全事件。 AzureDiagnostics: 此表记录诊断日志，通常用于收集应用程序或服务的性能数据，而不是操作系统的事件日志。因此不适合用于监 控Windows或Linux的安全事件。 Event: 此表记录Windows事件日志，适合用于监控Windows系统的安全相关事件。 Syslog: 此表记录Linux系统的日志，适合用于监控Linux系统的安全相关事件。 3. 我的答案 Events from Windows event logs: Event Events from Linux system logging: Syslog 4. 官方答案 Events from Windows event logs: Event Events from Linux system logging: Syslog 5. 与官方答案的比较 我的答案与官方答案一致。 没有需要重新思考的部分。 Reference: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-sources-windows-events https://docs.microsoft.com/en-us/azure/azure- monitor/agents/data-sources-syslog 参考： https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-sources-windows-events https://docs.microsoft.com/en-us/azure/azure- monitor/agents/data-sources-syslog"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 11,
+  "type": "multiple",
+  "question": "您正在设计一个包含多个订阅的大型 Azure 环境。 您计划使用 Azure Policy 作为治理解决方案的一部分。 Azure Policy 定义可以分配到哪三个范围？每个正确答案都提供了一个完整的解决方案。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "Azure Active Directory (Azure AD) administrative units",
+   "B": "Azure Active Directory (Azure AD) tenants",
+   "C": "subscriptions",
+   "D": "compute resources",
+   "E": "resource groups",
+   "F": "management groups"
+  },
+  "answer": [
+   "C",
+   "E",
+   "F"
+  ],
+  "explanations": {
+   "A": "错误：Azure Active Directory (Azure AD) administrative units 错误。Azure Policy无法直接分配到Azure AD的管理单元（Administrative Units）。Azure Policy主要用于管理Azure资源，而不是Azure AD 的用戶或组管理。",
+   "B": "错误：Azure Active Directory (Azure AD) tenants 错误。Azure Policy无法直接分配到Azure AD租戶层级。虽然Azure AD租戶是Azure环境的基础，但Policy的作用范围不包括租戶本身。",
+   "C": "正确：Subscriptions 正确。Azure Policy可以分配到订阅层级，用于管理订阅内的资源合规性。",
+   "D": "错误：Compute resources 错误。Azure Policy无法直接分配到具体的计算资源（如虚拟机）。Policy的作用范围是更高层级的资源组织结构（如订阅、资源组 等）。",
+   "E": "正确：Resource groups 正确。Azure Policy可以分配到资源组层级，用于管理资源组内的资源合规性。",
+   "F": "正确：Management groups 正确。Azure Policy可以分配到管理组层级，用于管理多个订阅的资源合规性。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 12,
+  "type": "multiple",
+  "question": "拖放 - 您的本地网络包含一台名为 Server1 的服务器，该服务器运行一个名为 App1 的 ASP.NET 应用程序。 您拥有一个 Azure Active Directory (Azure AD) 的混合部署。 您需要推荐一个解决方案，以确保用戶在从互联网连接到 App1 时使用其 Azure AD 帐戶和 Azure Multi-Factor Authentication (MFA) 登 录。 您应该推荐部署和配置哪三个功能，并按顺序排列？要回答，请将适当的功能从功能列表移动到答案区域，并按正确顺序排列。 选择并放置：",
+  "options": {
+   "A": "a public Azure Load Balancer",
+   "B": "a managed identity",
+   "C": "an internal Azure Load Balancer",
+   "D": "an Azure App Service plan",
+   "E": "Azure AD Application Proxy",
+   "F": "an Azure AD enterprise application",
+   "G": "a Conditional Access policy"
+  },
+  "answer": [
+   "E",
+   "F",
+   "G"
+  ],
+  "explanations": {
+   "A": "错误",
+   "B": "错误",
+   "C": "错误",
+   "D": "错误",
+   "E": "正确",
+   "F": "正确",
+   "G": "正确",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD Application Proxy的功能与配置。 Azure AD企业应用的使用。 Conditional Access策略的应用。 Step 1: Azure AD Application Proxy Start by enabling communication to Azure data centers to prepare your environment for Azure AD Application Proxy. Step 2: an Azure AD enterprise application Add an on-premises app to Azure AD. Now that you've prepared your environment and installed a connector, you're ready to add on-premises applications to Azure AD. 1. Sign in as an administrator in the Azure portal. 2. In the left navigation panel, select Azure Active Directory. 3. Select Enterprise applications, and then select New application. 4. Etc. Reference: https://docs.microsoft.com/en-us/azure/active-directory/app-proxy/application-proxy-add-on-premises-application 步骤 1：Azure AD Application Proxy 首先启用与 Azure 数据中心的通信，为 Azure AD Application Proxy 准备您的环境。 步骤 2：一个 Azure AD enterprise application 将一个本地应用程序添加到 Azure AD。 现在您已经准备好环境并安装了连接器，您可以将本地应用程序添加到 Azure AD。 1. 以管理员身份登录 Azure portal。 2. 在左侧导航面板中选择 Azure Active Directory。 3. 选择 Enterprise applications，然后选择 New application。 4. 等等。 参考： https://docs.microsoft.com/en-us/azure/active-directory/app-proxy/application-proxy-add-on-premises-application 如何实现混合身份验证和多因素认证（MFA）。 2. 选项分析 a public Azure Load Balancer: 错误。此选项与题目要求无关，题目没有提到需要负载均衡器来处理流量。 a managed identity: 错误。托管身份主要用于Azure资源之间的身份验证，与题目要求的用戶身份验证无关。 an internal Azure Load Balancer: 错误。内部负载均衡器用于内部网络流量，与题目要求的互联网访问无关。 a Conditional Access policy: 正确。条件访问策略可以强制用戶使用Azure MFA进行身份验证。 an Azure App Service plan: 错误。App Service Plan用于托管Web应用，与题目中现有的ASP.NET应用无关。 Azure AD Application Proxy: 正确。Azure AD Application Proxy允许将内部应用发布到外部，并支持Azure AD身份验证和MFA。 an Azure AD enterprise application: 正确。企业应用是Azure AD中配置的应用程序对象，用于支持身份验证和授权。 3. 我的答案 Azure AD Application Proxy an Azure AD enterprise application a Conditional Access policy 4. 官方答案 Azure AD Application Proxy an Azure AD enterprise application a Conditional Access policy 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 13,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Activity Log",
+   "B": "Azure Advisor",
+   "C": "Azure Analysis Services",
+   "D": "Azure Monitor action groups"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Activity Log: 正确。Azure Activity Log 是一个记录订阅级别的所有管理操作的日志，包括资源创建、更新和删除。它是生成资 源部署报告的最佳工具。",
+   "B": "错误：Azure Advisor: 错误。Azure Advisor 提供优化建议以提高资源的性能、可用性和安全性，但它不用于生成资源部署报告。",
+   "C": "错误：Azure Analysis Services: 错误。Azure Analysis Services 是一个数据分析服务，用于构建复杂的数据模型，但与资源部署报告无关。",
+   "D": "错误：Azure Monitor action groups: 错误。Azure Monitor action groups 是用于通知和自动化响应的工具，不能直接生成资源部署报告。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 14,
+  "type": "single",
+  "question": "注意：此问题是一个系列问题的一部分，呈现相同的场景。系列中的每个问题都包含一个可能满足既定目标的独特解决方案。一些 问题集可能有多个正确解决方案，而其他问题集可能没有正确解决方案。 在您回答本节中的问题后，您将无法返回该问题。因此，这些问题不会出现在审查屏幕中。 您的公司在本地和 Azure 上部署了多个虚拟机。ExpressRoute 已部署并配置用于本地到 Azure 的连接。 多个虚拟机出现网络连接问题。 您需要分析网络流量以确定数据包是否被允许或拒绝到达虚拟机。 解决方案：在所有虚拟机上安装并配置 Azure Monitoring agent 和 Dependency Agent。使用 Azure Monitor 中的 VM insights 分析网络流 量。 此解决方案是否满足目标？",
+  "options": {
+   "A": "是",
+   "B": "否"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Yes 是 Azure Monitoring Agent和Dependency Agent确实可以提供虚拟机的性能和依赖关系的监控信息。 VM Insights可以帮助分析虚拟机的性能和依赖关系，但它并不直接提供网络流量的详细分析（如允许或拒绝的网络包）。 因此，虽然VM Insights可以提供部分信息，但它并不能完全满足题目中“分析网络流量以确定是否允许或拒绝网络包”的需求。 此选项错误。",
+   "B": "正确：No 否 题目要求分析网络流量以确定是否允许或拒绝网络包，这需要使用更专⻔的网络诊断工具，例如Azure Network Watcher。 Azure Network Watcher提供了流日志和网络安全组(NSG)诊断功能，可以直接分析网络流量并确定是否允许或拒绝网络包。 此选项正确。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 15,
+  "type": "ordering",
+  "question": "拖放 - 您需要设计一个架构来捕获用戶的创建和⻆色的分配。捕获的数据必须存储在 Azure Cosmos DB 中。 在设计中应包含哪些服务？要回答，请将适当的服务拖到正确的目标位置。每个服务可以使用一次、多次或完全不使用。您可能需 要拖动分隔条或滚动以查看内容。 注意：每个正确选择都值一分。 选择并放置：",
+  "available_steps": [
+   "Azure Event Grid",
+   "Azure Event Hubs",
+   "Azure Functions",
+   "Azure Monitor Logs",
+   "Azure Notification Hubs"
+  ],
+  "ordered_steps": [
+   "Azure Event Hubs",
+   "Azure Functions"
+  ],
+  "explanations": {
+   "步驟 1": "Azure Event Hubs",
+   "步驟 2": "Azure Functions",
+   "_full": "题目分析与解答 1. 考察的知识点 Box 1: Azure Event Hubs - You can route Azure Active Directory (Azure AD) activity logs to several endpoints for long term retention and data insights. The Event Hub is used for streaming. Box 2: Azure Function - Use an Azure Function along with a cosmos DB change feed, and store the data in Cosmos DB. Reference: https://docs.microsoft.com/en-us/azure/active-directory/reports-monitoring/concept-activity-logs-azure-monitor 框 1: Azure Event Hubs - 您可以将 Azure Active Directory (Azure AD) 活动日志路由到多个端点以进行⻓期保留和数据洞察。 Event Hub 用于流式处理。 框 2: Azure Function - 使用 Azure Function 配合 Cosmos DB 更改提要，并将数据存储在 Cosmos DB 中。 参考： https://docs.microsoft.com/en-us/azure/active-directory/reports-monitoring/concept-activity-logs-azure-monitor 本题考察的是 Azure 服务的集成设计，特别是事件驱动架构的实现，包括如何捕获用戶创建和⻆色分配事件，并将数据存储到 Azure Cosmos DB。 涉及的服务包括 Azure Event Grid、Azure Event Hubs、Azure Functions 等，重点是理解这些服务的用途和如何协同工作。 2. 选项分析 Azure Event Grid: Azure Event Grid 是一个事件路由服务，适合用于分发事件到多个订阅者。 虽然它可以处理事件，但它通常用于事件的分发，而不是事件的捕获。因此在本题中不适合直接使用。 Azure Event Hubs: Azure Event Hubs 是一个事件流服务，专⻔用于捕获和处理大量事件数据。 在本题中，它可以用来捕获用戶创建和⻆色分配事件，是正确的选择。 Azure Functions: Azure Functions 是一个无服务器计算服务，可以用来处理事件并执行逻辑。 在本题中，它可以用来处理从 Event Hubs 捕获的事件，并将数据存储到 Azure Cosmos DB，是正确的选择。 Azure Monitor Logs: Azure Monitor Logs 用于收集和分析日志数据，适合监控和诊断，但不适合直接处理事件流。 因此在本题中不适合使用。 Azure Notification Hubs: Azure Notification Hubs 是一个推送通知服务，适合发送通知到移动设备。 本题中不涉及通知功能，因此不适合使用。 3. 我的答案 Azure Event Hubs Azure Functions 4. 官方答案 Azure Event Hubs Azure Functions 5. 与官方答案比较 我的答案与官方答案一致。 没有差异，无需重新思考。"
+  },
+  "available_step_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5"
+  ],
+  "ordered_step_ids": [
+   "opt-2",
+   "opt-3"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 16,
+  "type": "single",
+  "question": "您的公司 Contoso, Ltd. 实现了多个具有 HTTP 触发器的 Azure logic apps。这些 logic apps 提供对本地 Web 服务的访问。 Contoso 与另一家公司 Fabrikam, Inc. 建立了合作关系。 Fabrikam 没有现有的 Azure Active Directory (Azure AD) 租戶，并使用第三方 OAuth 2.0 身份管理来验证其用戶。 Fabrikam 的开发人员计划使用部分 logic apps 来构建与 Contoso 的本地 Web 服务集成的应用程序。 您需要设计一个解决方案，为 Fabrikam 的开发人员提供对 logic apps 的访问。该解决方案必须满足以下要求： ✑ 来自开发人员的 logic apps 请求必须限制在比 Contoso 用戶请求更低的速率。 ✑ 开发人员必须能够依赖其现有的 OAuth 2.0 提供程序来访问 logic apps。 ✑ 该解决方案不得要求对 logic apps 进行更改。 ✑ 该解决方案不得使用 Azure AD 来宾账戶。 您应该在解决方案中包含什么？",
+  "options": {
+   "A": "Azure Front Door",
+   "B": "Azure AD Application Proxy",
+   "C": "Azure AD business-to-business (B2B)",
+   "D": "Azure API Management"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Azure Front Door Azure Front Door主要用于全球分布的应用程序的负载均衡和加速。它不直接支持第三方OAuth 2.0身份验证，也无法实现请求速率限 制。因此，此选项不符合题目要求。",
+   "B": "错误：Azure AD Application Proxy Azure AD Application Proxy用于将内部应用程序发布到外部用戶，但它依赖Azure AD进行身份验证，不支持第三方OAuth 2.0身份验证。 此外，它无法直接实现请求速率限制。因此，此选项不符合题目要求。",
+   "C": "错误：Azure AD business-to-business (B2B) Azure AD B2B允许外部用戶访问资源，但它需要Azure AD guest账戶，这与题目要求的“不使用Azure AD guest账戶”相冲突。因此，此选 项不符合题目要求。",
+   "D": "正确：Azure API Management Azure API Management支持集成第三方OAuth 2.0身份验证机制，并且可以通过配置策略实现请求速率限制。此外，它可以作为逻辑应 用的网关，而无需修改现有逻辑应用。因此，此选项完全符合题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 17,
+  "type": "matching",
+  "question": "热点问题 - 您有一个包含 300 台运行 Windows Server 2019 的虚拟机的 Azure 订阅。 您需要集中监控虚拟机系统日志中的所有警告事件。 您应该在解决方案中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域： Box 1: A Log Analytics workspace Send resource logs to a Log Analytics workspace to enable the features of Azure Monitor Logs. You must create a diagnostic setting for each Azure resource to send its resource logs to a Log Analytics workspace to use with Azure Monitor Logs. Box 2: Install the Azure Monitor agent Use the Azure Monitor agent if you need to: Collect guest logs and metrics from any machine in Azure, in other clouds, or on-premises. Manage data collection configuration centrally Reference: https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/resource-logs https://docs.microsoft.com/en-us/azure/azure- monitor/agents/agents-overview#azure-monitor-agent",
+  "available_options": [
+   "An event hub",
+   "A Log Analytics workspace",
+   "A search service",
+   "A storage account",
+   "Create event subscriptions",
+   "Configure Continuous delivery",
+   "Install the Azure Monitor agent",
+   "Modify the membership of the Event Log Readers group"
+  ],
+  "matches": [
+   {
+    "use_case": "Resource to create in Azure",
+    "correct_answer": "A Log Analytics workspace",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Configuration to perform on the virtual machines",
+    "correct_answer": "Install the Azure Monitor agent",
+    "correct_option_id": "opt-7"
+   }
+  ],
+  "explanations": {
+   "1": "Resource to create in Azure → A Log Analytics workspace",
+   "2": "Configuration to perform on the virtual machines → Install the Azure Monitor agent",
+   "_full": "题目分析与解答 1. 考察的知识点 本题考察的是Azure Monitor的使用，特别是如何通过Log Analytics workspace和Azure Monitor agent来集中监控虚拟机的日志事件。 涉及到Azure Monitor的架构、Log Analytics workspace的功能，以及Azure Monitor agent的配置和作用。 2. 选项分析 Resource to create in Azure: An event hub: 错误。Event Hub主要用于实时数据流的接收和处理，适合大规模数据流的场景，但不适合直接用于集中监控虚拟机日 志。 A Log Analytics workspace: 正确。Log Analytics workspace是Azure Monitor的一部分，用于收集和分析日志数据，是集中监控虚拟机日 志的正确选择。 A search service: 错误。Search Service主要用于搜索和索引数据，不适合用于日志监控。 A storage account: 错误。Storage Account用于存储数据，但不具备日志分析和监控功能。 Configuration to perform on the virtual machines: Create event subscriptions: 错误。Event Subscriptions用于订阅事件网格的事件，与虚拟机日志监控无关。 Configure Continuous delivery: 错误。Continuous delivery用于自动化部署，与日志监控无关。 Install the Azure Monitor agent: 正确。Azure Monitor agent负责将虚拟机的日志数据发送到Log Analytics workspace，是实现集中监控的 必要步骤。 Modify the membership of the Event Log Readers group: 错误。修改Event Log Readers组的成员权限不会直接实现日志的集中监控。 3. 我的答案 Resource to create in Azure: A Log Analytics workspace Configuration to perform on the virtual machines: Install the Azure Monitor agent 4. 官方答案 Resource to create in Azure: A Log Analytics workspace Configuration to perform on the virtual machines: Install the Azure Monitor agent 5. 与官方答案的比较 我的答案与官方答案一致。 没有差异，无需重新思考。 框 1：一个 Log Analytics 工作区 将资源日志发送到 Log Analytics 工作区以启用 Azure Monitor Logs 的功能。 您必须为每个 Azure 资源创建诊断设置，将其资源日志发送到 Log Analytics 工作区以与 Azure Monitor Logs 一起使用。 框 2：安装 Azure Monitor agent 如果您需要以下功能，请使用 Azure Monitor agent： 从 Azure、其他云或本地的任何机器收集来宾日志和指标。 集中管理数据收集配置 参考： https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/resource-logs https://docs.microsoft.com/en-us/azure/azure-monitor/agents/agents-overview#azure-monitor-agent"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 18,
+  "type": "matching",
+  "question": "热点问题 - 您有多个 Azure App Service Web 应用，这些应用使用 Azure Key Vault 存储数据加密密钥。 多个部⻔提出以下请求以支持 Web 应用： 您应该为每个部⻔的请求推荐哪项服务？要回答，请在答案区域中配置适当的选项。 注意：每个正确选择都值一分。 热点区域： Box 1: Azure AD Privileged Identity Management Privileged Identity Management provides time-based and approval-based role activation to mitigate the risks of excessive, unnecessary, or misused access permissions on resources that you care about. Here are some of the key features of Privileged Identity Management: Provide just-in-time privileged access to Azure AD and Azure resources Assign time-bound access to resources using start and end dates Require approval to activate privileged roles Enforce multi-factor authentication to activate any role Use justification to understand why users activate Get notifications when privileged roles are activated Conduct access reviews to ensure users still need roles Download audit history for internal or external audit Prevents removal of the last active Global Administrator role assignment Box 2: Azure Managed Identity - Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. With Azure Key Vault, developers can use managed identities to access resources. Key Vault stores credentials in a secure manner and gives access to storage accounts. Box 3: Azure AD Privileged Identity Management Privileged Identity Management provides time-based and approval-based role activation to mitigate the risks of excessive, unnecessary, or misused access permissions on resources that you care about. Here are some of the key features of Privileged Identity Management: Provide just-in-time privileged access to Azure AD and Azure resources Assign time-bound access to resources using start and end dates Reference: https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure https://docs.microsoft.com/en- us/azure/active-directory/managed-identities-azure-resources/overview 框 1：Azure AD Privileged Identity Management Privileged Identity Management 提供基于时间和基于审批的⻆色激活，以减轻您关心的资源上过度、不必要或被滥用的访问权限的 ⻛险。以下是 Privileged Identity Management 的一些关键功能： 提供对 Azure AD 和 Azure 资源的即时特权访问 使用开始和结束日期分配资源的时间限制访问 需要审批以激活特权⻆色 强制多因素身份验证以激活任何⻆色 使用理由来了解用戶为何激活",
+  "available_options": [
+   "Azure AD Privileged Identity Management",
+   "Azure Managed Identity",
+   "Azure AD Connect",
+   "Azure AD Identity Protection"
+  ],
+  "matches": [
+   {
+    "use_case": "Security",
+    "correct_answer": "Azure AD Privileged Identity Management",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Development",
+    "correct_answer": "Azure Managed Identity",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Quality Assurance",
+    "correct_answer": "Azure AD Privileged Identity Management",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "Security → Azure AD Privileged Identity Management",
+   "2": "Development → Azure Managed Identity",
+   "3": "Quality Assurance → Azure AD Privileged Identity Management",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD Privileged Identity Management (PIM)：用于管理和监控 Azure AD 中的特权⻆色分配。 Azure Managed Identity：用于为 Azure 服务提供自动化的身份验证，支持安全访问其他 Azure 资源（如 Key Vault）。 Azure AD Connect：用于将本地目录与 Azure AD 同步。 Azure AD Identity Protection：用于检测和响应 Azure AD 中的潜在安全⻛险。 2. 选项分析 Security Azure AD Privileged Identity Management: 正确。PIM 提供了对特权⻆色的管理功能，包括审查⻆色成员资格、要求用戶提供理由、生 成管理员分配更改的警报，以及查看管理员激活历史记录。 Azure Managed Identity: 错误。Managed Identity 主要用于应用程序访问资源，与管理特权⻆色无关。 Azure AD Connect: 错误。AD Connect 用于同步本地目录，与特权⻆色管理无关。 Azure AD Identity Protection: 错误。Identity Protection 主要用于检测和响应安全⻛险，与特权⻆色管理无关。 Development Azure AD Privileged Identity Management: 错误。PIM 用于管理特权⻆色，与应用程序访问 Key Vault 无关。 Azure Managed Identity: 正确。Managed Identity 是为应用程序提供安全访问 Azure Key Vault 的推荐方法。 Azure AD Connect: 错误。AD Connect 用于同步本地目录，与应用程序访问 Key Vault 无关。 Azure AD Identity Protection: 错误。Identity Protection 用于检测和响应安全⻛险，与应用程序访问 Key Vault 无关。 Quality Assurance Azure AD Privileged Identity Management: 正确。PIM 可以为用戶提供临时的管理员访问权限，以便创建和配置测试环境中的 Web 应 用。 Azure Managed Identity: 错误。Managed Identity 用于应用程序访问资源，与临时管理员访问无关。 Azure AD Connect: 错误。AD Connect 用于同步本地目录，与临时管理员访问无关。 Azure AD Identity Protection: 错误。Identity Protection 用于检测和响应安全⻛险，与临时管理员访问无关。 3. 我的答案 Security: Azure AD Privileged Identity Management Development: Azure Managed Identity Quality Assurance: Azure AD Privileged Identity Management 在特权⻆色被激活时收到通知 进行访问审查以确保用戶仍然需要⻆色 下载审计历史记录以进行内部或外部审计 防止删除最后一个活动的全局管理员⻆色分配 框 2：Azure Managed Identity - Managed identities 为应用程序提供身份，以便在连接支持 Azure Active Directory (Azure AD) 身份验证的资源时使用。 应用程序可以使用托管身份来获取 Azure AD 令牌。使用 Azure Key Vault，开发人员可以使用托管身份访问资源。Key Vault 以安全的 方式存储凭据，并提供对存储账戶的访问。 框 3：Azure AD Privileged Identity Management Privileged Identity Management 提供基于时间和基于审批的⻆色激活，以减轻您关心的资源上过度、不必要或被滥用的访问权限的 ⻛险。以下是 Privileged Identity Management 的一些关键功能： 提供对 Azure AD 和 Azure 资源的即时特权访问 使用开始和结束日期分配资源的时间限制访问 参考： https://docs.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview 4. 官方答案 Security: Azure AD Privileged Identity Management Development: Azure Managed Identity Quality Assurance: Azure AD Privileged Identity Management 5. 与官方答案比较 我的答案与官方答案一致。没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 19,
+  "type": "matching",
+  "question": "热点问题 - 您的公司有以下表中显示的部⻔。 您计划将一个自定义应用程序部署到每个订阅中。该应用程序将包含以下内容： ✑ 一个资源组 ✑ 一个 Azure web app ✑ 自定义⻆色分配 ✑ 一个 Azure Cosmos DB 账戶 您需要使用 Azure Blueprints 将应用程序部署到每个订阅中。 部署该应用程序所需的最少对象数量是多少？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域：\n\n【題目附表】\n・Division｜Azure subscription｜Azure Active Directory (Azure AD) tenant\n・East｜Sub1, Sub2｜East.contoso.com\n・West｜Sub3, Sub4｜West.contoso.com",
+  "available_options": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "matches": [
+   {
+    "use_case": "Management groups",
+    "correct_answer": "2",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Blueprint definitions",
+    "correct_answer": "2",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Blueprint assignments",
+    "correct_answer": "2",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "Management groups → 2",
+   "2": "Blueprint definitions → 2",
+   "3": "Blueprint assignments → 2",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Blueprints的使用，包括定义和分配。 管理组的层级结构和订阅的组织方式。 如何在多个订阅中部署资源和应用。 2. 选项分析 Management groups: 1: 错误。公司有两个独立的Azure AD租戶（East.contoso.com和West.contoso.com），因此至少需要两个管理组来分别管理这些订阅。 2: 正确。两个管理组分别对应East和West的订阅，满足需求。 3: 错误。没有必要创建三个管理组，因为只有两个租戶。 4: 错误。同样，四个管理组超出了实际需求。 Blueprint definitions: 1: 错误。每个租戶需要一个Blueprint定义，因为应用的部署内容是相同的（资源组、Web应用、⻆色分配和Cosmos DB账戶）。 2: 正确。两个Blueprint定义分别对应两个租戶的需求。 3: 错误。没有必要创建三个Blueprint定义，因为应用的内容是统一的。 4: 错误。同样，四个Blueprint定义超出了实际需求。 Blueprint assignments: 1: 错误。每个订阅需要一个Blueprint分配，因此至少需要两个分配。 2: 正确。两个Blueprint分配分别对应两个订阅组（East和West）。 3: 错误。没有必要创建三个Blueprint分配，因为只有两个订阅组。 4: 错误。同样，四个Blueprint分配超出了实际需求。 3. 我的答案 Management groups: 2 Blueprint definitions: 2 Blueprint assignments: 2 4. 官方答案 Management groups: 2 Blueprint definitions: 2 Blueprint assignments: 2 5. 与官方答案的比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 20,
+  "type": "matching",
+  "question": "热点问题 - 您需要设计一个 Azure 策略以实现以下功能： ✑ 对于新资源，分配与资源组的标签和值相匹配的标签和值，资源将部署到该资源组中。 ✑ 对于现有资源，识别标签和值是否与包含这些资源的资源组的标签和值相匹配。 ✑ 对于任何不符合要求的资源，触发自动生成的修复任务以创建缺失的标签和值。 解决方案必须遵循最低权限原则。 您应该在设计中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域： Box 1: Modify - Modify is used to add, update, or remove properties or tags on a subscription or resource during creation or update. A common example is updating tags on resources such as costCenter. Existing non-compliant resources can be remediated with a remediation task. A single Modify rule can have any number of operations. Policy assignments with effect set as Modify require a managed identity to do remediation. Incorrect: * The following effects are deprecated: EnforceOPAConstraint EnforceRegoPolicy * Append is used to add additional fields to the requested resource during creation or update. A common example is specifying allowed IPs for",
+  "available_options": [
+   "Append",
+   "EnforceOPAConstraint",
+   "EnforceRegoPolicy",
+   "Modify",
+   "A managed identity with the Contributor role",
+   "A managed identity with the User Access Administrator role",
+   "A service principal with the Contributor role",
+   "A service principal with the User Access Administrator role"
+  ],
+  "matches": [
+   {
+    "use_case": "Azure Policy effect to use",
+    "correct_answer": "Modify",
+    "correct_option_id": "opt-4"
+   },
+   {
+    "use_case": "Azure Active Directory (Azure AD) object and role-based access control (RBAC) role to use for the remediation tasks",
+    "correct_answer": "A managed identity with the Contributor role",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "Azure Policy effect to use → Modify",
+   "2": "Azure Active Directory (Azure AD) object and role-based access control (RBAC) role to use for the remediation tasks → A managed identity with the Contributor role",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Policy的效果类型（Effect），包括Append、Modify等。 Azure Active Directory (Azure AD)对象和基于⻆色的访问控制（RBAC）的权限分配。 如何设计符合最小权限原则的解决方案。 2. 选项分析 Azure Policy effect to use: Append: 此效果用于在资源创建时添加缺失的字段或标签，但不会修改现有资源的标签，因此不符合题目要求。 EnforceOPAConstraint: 此效果用于强制执行Open Policy Agent (OPA)约束，但Azure Policy目前不支持此效果，因此不适用。 EnforceRegoPolicy: 此效果用于强制执行Rego策略，但Azure Policy目前不支持此效果，因此不适用。 Modify: 此效果可以在资源创建时或现有资源上修改字段或标签，符合题目要求，因此是正确选项。 Azure Active Directory (Azure AD) object and role-based access control (RBAC) role to use for the remediation tasks: A managed identity with the Contributor role: Contributor⻆色允许对资源进行创建和修改操作，符合题目要求的最小权限原则，因此是 正确选项。 A managed identity with the User Access Administrator role: User Access Administrator⻆色用于管理用戶访问权限，权限过高且与题目要 求无关，因此不适用。 A service principal with the Contributor role: 虽然Contributor⻆色符合最小权限原则，但题目要求使用托管身份（managed identity），而 非服务主体（service principal），因此不适用。 a storage resource. Append is intended for use with non-tag properties. While Append can add tags to a resource during a create or update request, it's recommended to use the Modify effect for tags instead. Box 2: A managed identity with the Contributor role The managed identity needs to be granted the appropriate roles required for remediating resources to grant the managed identity. Contributor - Can create and manage all types of Azure resources but can't grant access to others. Incorrect: User Access Administrator: lets you manage user access to Azure resources. Reference: https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects https://docs.microsoft.com/en- us/azure/governance/policy/how-to/remediate-resources https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles 框 1：Modify - Modify 用于在订阅或资源创建或更新期间添加、更新或删除属性或标签。一个常⻅的例子是更新资源上的标签，例如 costCenter。 现有的不符合要求的资源可以通过修复任务进行修复。一个单独的 Modify 规则可以包含任意数量的操作。效果设置为 Modify 的策 略分配需要托管身份来执行修复。 不正确： * 以下效果已被弃用：EnforceOPAConstraint EnforceRegoPolicy * Append 用于在创建或更新期间向请求的资源添加额外字段。一个常⻅的例子是为存储资源指定允许的 IP。 Append 旨在用于非标签属性。虽然 Append 可以在创建或更新请求期间向资源添加标签，但建议使用 Modify 效果来处理标签。 框 2：具有 Contributor ⻆色的托管身份 托管身份需要被授予修复资源所需的适当⻆色，以授予托管身份权限。 Contributor - 可以创建和管理所有类型的 Azure 资源，但不能授予其他人访问权限。 不正确： User Access Administrator：允许您管理对 Azure 资源的用戶访问权限。 参考： https://docs.microsoft.com/en-us/azure/governance/policy/concepts/effects https://docs.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles A service principal with the User Access Administrator role: 此选项权限过高且与题目要求无关，同时题目要求使用托管身份，因此不适 用。 3. 我选的答案 Azure Policy effect to use: Modify Azure Active Directory (Azure AD) object and role-based access control (RBAC) role to use for the remediation tasks: A managed identity with the Contributor role 4. 官方答案 Azure Policy effect to use: Modify Azure Active Directory (Azure AD) object and role-based access control (RBAC) role to use for the remediation tasks: A managed identity with the Contributor role 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 21,
+  "type": "matching",
+  "question": "热点 - 您有一个 Azure 订阅，其中包含以下表中显示的资源。 您创建了一个名为 DB1 的 Azure SQL 数据库，该数据库托管在美国东部 Azure 区域。 对于 DB1，您添加了一个名为 Settings1 的诊断设置。Settings1 将 SQLInsights 存档到 storage1，并将 SQLInsights 发送到 Workspace1。 对于以下每个陈述，如果陈述为真，请选择是。否则，请选择否。 热点区域： Box 1: Yes - A single diagnostic setting can define no more than one of each of the destinations. If you want to send data to more than one of a particular\n\n【題目附表】\n・Name｜Type｜Account Kind｜Location\n・storage1｜Azure Storage account｜Storage (general purpose v1)｜East US\n・storage2｜Azure Storage account｜StorageV2 (general purpose v2)｜East US\n・Workspace1｜Azure Log Analytics workspace｜Not applicable｜East US\n・Workspace2｜Azure Log Analytics workspace｜Not applicable｜East US\n・Hub1｜Azure event hub｜Not applicable｜East US",
+  "available_options": [
+   "Yes",
+   "No"
+  ],
+  "matches": [
+   {
+    "use_case": "You can add a new diagnostic setting that archives SQLInsights logs to storage2.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "You can add a new diagnostic setting that sends SQLInsights logs to Workspace2.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "You can add a new diagnostic setting that sends SQLInsights logs to Hub1.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "You can add a new diagnostic setting that archives SQLInsights logs to storage2. → Yes",
+   "2": "You can add a new diagnostic setting that sends SQLInsights logs to Workspace2. → Yes",
+   "3": "You can add a new diagnostic setting that sends SQLInsights logs to Hub1. → Yes",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure SQL Database诊断设置的功能和限制。 如何配置诊断设置以将日志发送到不同的目标（存储账戶、Log Analytics工作区、Event Hub）。 资源类型和版本的兼容性要求。 2. 选项分析 选项1: You can add a new diagnostic setting that archives SQLInsights logs to storage2. 分析: Storage2是一个StorageV2（通用用途v2）存储账戶，支持诊断日志的归档。 Azure SQL Database的诊断设置可以将日志归档到支持的存储账戶类型（如StorageV2）。 因此，该选项是正确的。 选项2: You can add a new diagnostic setting that sends SQLInsights logs to Workspace2. 分析: Workspace2是一个Azure Log Analytics工作区，支持接收诊断日志。 Azure SQL Database的诊断设置可以将日志发送到Log Analytics工作区。 因此，该选项是正确的。 选项3: You can add a new diagnostic setting that sends SQLInsights logs to Hub1. 分析: Hub1是一个Azure Event Hub，支持接收诊断日志。 Azure SQL Database的诊断设置可以将日志发送到Event Hub。 因此，该选项是正确的。 3. 我的答案 destination type (for example, two different Log Analytics workspaces), then create multiple settings. Each resource can have up to 5 diagnostic settings. Note: This diagnostic telemetry can be streamed to one of the following Azure resources for analysis. * Log Analytics workspace * Azure Event Hubs * Azure Storage Box 2: Yes - Box 3: Yes - Reference: https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings https://docs.microsoft.com/en-us/azure/azure- sql/database/metrics-diagnostic-telemetry-logging-streaming-export-configure?tabs=azure-portal 框 1：是 - 单个诊断设置最多只能定义每种目标类型中的一个。如果您希望将数据发送到多个同类型的目标（例如，两个不同的 Log Analytics 工作区），则需要创建多个设置。 每个资源最多可以有 5 个诊断设置。 注意：此诊断遥测数据可以流式传输到以下 Azure 资源之一进行分析。 * Log Analytics workspace * Azure Event Hubs * Azure Storage 框 2：是 - 框 3：是 - 参考： https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings https://docs.microsoft.com/en-us/azure/azure- sql/database/metrics-diagnostic-telemetry-logging-streaming-export-configure?tabs=azure-portal 选项1: Yes 选项2: Yes 选项3: Yes 4. 官方答案 选项1: Yes 选项2: Yes 选项3: Yes 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考或修改答案。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 22,
+  "type": "single",
+  "question": "您计划部署一个 Azure SQL 数据库来存储个人身份信息 (PII)。 您需要确保只有特权用戶可以查看 PII。 您应该在解决方案中包含什么？",
+  "options": {
+   "A": "dynamic data masking",
+   "B": "role-based access control (RBAC)",
+   "C": "Data Discovery & Classification",
+   "D": "Transparent Data Encryption (TDE)"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Dynamic Data Masking 动态数据屏蔽是一种保护敏感数据的功能，可以在查询结果中屏蔽敏感数据，使非特权用戶无法看到完整数据。 它是专⻔设计用于限制对敏感数据的访问的，因此符合题目要求。 正确选项。",
+   "B": "错误：Role-Based Access Control (RBAC) RBAC用于管理Azure资源的访问权限，但它并不直接用于屏蔽数据库中的敏感数据。 虽然可以通过RBAC限制用戶访问数据库，但它无法实现屏蔽PII的功能。 错误选项。",
+   "C": "错误：Data Discovery & Classification 数据发现与分类用于标记和分类敏感数据，帮助识别PII，但它不会限制用戶访问或屏蔽数据。 它是数据管理的辅助工具，而不是直接保护数据的机制。 错误选项。",
+   "D": "错误：Transparent Data Encryption (TDE) TDE用于加密数据库文件以保护数据在静态状态下的安全，但它不会限制用戶访问或屏蔽数据。 它保护的是数据存储，而不是数据访问层面的安全。 错误选项。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 23,
+  "type": "single",
+  "question": "您计划部署一个将使用 Azure Storage 账戶的应用程序。 您需要部署存储账戶。存储账戶必须满足以下要求： ✑ 为多个用戶存储数据。 ✑ 使用单独的密钥加密每个用戶的数据。 ✑ 使用客戶管理的密钥加密存储账戶中的所有数据。 您应该部署什么？",
+  "options": {
+   "A": "文件存储在 premium file share storage account 中",
+   "B": "Blob 存储在 general purpose v2 storage account 中",
+   "C": "Blob 存储在 Azure Data Lake Storage Gen2 account 中",
+   "D": "文件存储在 general purpose v2 storage account 中"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：files in a premium file share storage account 错误原因：Premium file share storage account主要用于高性能文件共享，不支持按用戶分离加密密钥的功能，也不支持客戶管理的密 钥（CMK）用于加密所有数据。",
+   "B": "正确：blobs in a general purpose v2 storage account 正确原因：General purpose v2 storage account支持Blob存储，并且可以使用客戶管理的密钥（CMK）对数据进行加密。它也支持多用 戶数据存储，符合题目要求。",
+   "C": "错误：blobs in an Azure Data Lake Storage Gen2 account 错误原因：虽然Azure Data Lake Storage Gen2支持Blob存储和客戶管理的密钥（CMK），但它主要用于大规模数据分析场景，而题目没 有提到需要数据分析功能，因此不是最佳选择。",
+   "D": "错误：files in a general purpose v2 storage account 错误原因：General purpose v2 storage account支持文件存储，但文件存储不支持按用戶分离加密密钥的功能，也不完全符合题目要 求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 24,
+  "type": "matching",
+  "question": "热点问题 - 您有一个使用系统分配的托管身份的 Azure App Service Web 应用。 您需要推荐一个解决方案，将 Web 应用的设置作为机密存储在 Azure Key Vault 中。该解决方案必须满足以下要求： ✑ 最小化对应用代码的更改。 ✑ 使用最小权限原则。 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域： Box 1: Key Vault references in Application settings Source Application Settings from Key Vault. Key Vault references can be used as values for Application Settings, allowing you to keep secrets in Key Vault instead of the site config. Application Settings are securely encrypted at rest, but if you need secret management capabilities, they should go into Key Vault.",
+  "available_options": [
+   "Key Vault references in Application settings",
+   "Key Vault references in Appsettings.json",
+   "Key Vault references in Web.config",
+   "Key Vault SDK",
+   "Keys: Gey",
+   "Keys: List and Get",
+   "Secrets: Get",
+   "Secrets: List and Get"
+  ],
+  "matches": [
+   {
+    "use_case": "Key Vault integration method",
+    "correct_answer": "Key Vault references in Application settings",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Key Vault permissions for the managed identity",
+    "correct_answer": "Secrets: Get",
+    "correct_option_id": "opt-7"
+   }
+  ],
+  "explanations": {
+   "1": "Key Vault integration method → Key Vault references in Application settings",
+   "2": "Key Vault permissions for the managed identity → Secrets: Get",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Key Vault的集成方法。 如何使用系统分配的托管身份访问Key Vault。 遵循最小权限原则。 2. 选项分析 Key Vault integration method: Key Vault references in Application settings: 正确。此方法允许通过Azure App Service的应用设置直接引用Key Vault中的机密，且无需修 改应用代码，符合“最小化代码更改”的要求。 Key Vault references in Appsettings.json: 错误。此方法需要修改应用代码以解析Appsettings.json文件，不符合“最小化代码更改”的要 求。 Key Vault references in Web.config: 错误。此方法需要修改Web.config文件，不符合“最小化代码更改”的要求。 Key Vault SDK: 错误。使用SDK需要在代码中显式调用Key Vault API，不符合“最小化代码更改”的要求。 Key Vault permissions for the managed identity: Keys: Get: 错误。此权限仅适用于Key Vault中的密钥，而题目要求访问的是“Secrets”。 Keys: List and Get: 错误。同样仅适用于密钥，不适用于机密。 Secrets: Get: 错误。虽然此权限允许读取单个机密，但不包括列出机密的权限，可能会导致无法访问多个机密。 Secrets: List and Get: 正确。此权限允许托管身份列出和读取Key Vault中的机密，满足访问需求并符合最小权限原则。 3. 我的答案 To use a Key Vault reference for an app setting, set the reference as the value of the setting. Your app can reference the secret through its key as normal. No code changes are required. Box 2: Secrets: Get - In order to read secrets from Key Vault, you need to have a vault created and give your app permission to access it. 1. Create a key vault by following the Key Vault quickstart. 2. Create a managed identity for your application. 3. Key Vault references will use the app's system assigned identity by default, but you can specify a user-assigned identity. 4. Create an access policy in Key Vault for the application identity you created earlier. Enable the \"Get\" secret permission on this policy. Reference: https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references https://docs.microsoft.com/en-us/azure/app- service/app-service-key-vault-references 框 1：Key Vault references in Application settings 从 Key Vault 源应用程序设置。 Key Vault references 可以用作应用程序设置的值，允许您将机密存储在 Key Vault 中，而不是站点配置中。应用程序设置在静态存储 时会被安全加密，但如果您需要机密管理功能，它们应该存储在 Key Vault 中。 要为应用设置使用 Key Vault reference，请将引用设置为设置的值。您的应用可以通过其密钥正常引用机密。无需更改代码。 框 2：Secrets: Get - 为了从 Key Vault 读取机密，您需要创建一个 Key Vault，并授予您的应用访问权限。 1. 按照 Key Vault 快速入⻔创建一个 Key Vault。 2. 为您的应用创建一个托管身份。 3. Key Vault references 默认使用应用的系统分配身份，但您可以指定一个用戶分配身份。 4. 在 Key Vault 中为您之前创建的应用身份创建一个访问策略。在此策略中启用“Get”机密权限。 参考： https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references Key Vault references in Application settings Secrets: List and Get 4. 官方答案 Key Vault references in Application settings Secrets: List and Get 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 25,
+  "type": "single",
+  "question": "您计划部署一个名为 App1 的应用程序，该应用程序将在五个 Azure 虚拟机上运行。稍后将部署额外的虚拟机以运行 App1。 您需要推荐一个解决方案，以满足运行 App1 的虚拟机的以下要求： ✑ 确保虚拟机可以通过 Azure Active Directory (Azure AD) 进行身份验证，以访问 Azure key vault、Azure Logic Apps 实例和 Azure SQL 数 据库。 ✑ 在部署额外的虚拟机时，避免为 Azure 服务分配新的⻆色和权限。 ✑ 避免在虚拟机上存储秘密和证书。 ✑ 最小化管理身份的行政工作量。 您应该在推荐中包含哪种类型的身份？",
+  "options": {
+   "A": "a system-assigned managed identity",
+   "B": "a service principal that is configured to use a certificate",
+   "C": "a service principal that is configured to use a client secret",
+   "D": "a user-assigned managed identity"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：a system-assigned managed identity 系统分配的托管身份是为单个资源（如虚拟机）自动创建和管理的身份。虽然它可以满足访问Azure资源的需求，但当新增虚拟机 时，每个虚拟机都会创建一个新的系统分配托管身份，这会导致需要额外的管理工作来分配权限。因此不符合“避免分配新⻆色和权 限”的要求。 ( )",
+   "B": "错误：a service principal that is configured to use a certificate 服务主体可以通过证书进行身份验证，但这需要手动管理证书和权限分配，增加了管理复杂性。此外，题目明确要求避免存储秘密 和证书，因此此选项不符合要求。",
+   "C": "错误：a service principal that is configured to use a client secret 服务主体可以通过客戶端密钥进行身份验证，但这需要手动管理密钥和权限分配，增加了管理复杂性。此外，题目明确要求避免存 储秘密和证书，因此此选项不符合要求。",
+   "D": "正确：a user-assigned managed identity 用戶分配的托管身份是一个独立的资源，可以被多个虚拟机共享使用。这种身份可以简化管理，因为新增虚拟机时无需重新分配⻆ 色和权限。此外，它不需要存储秘密或证书，完全符合题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 26,
+  "type": "single",
+  "question": "您拥有以下表格中显示的资源： CDB1 托管一个容器，用于存储持续更新的运营数据。 您正在设计一个解决方案，该解决方案将使用 AS1 每日分析运营数据。 您需要推荐一个解决方案来分析数据，而不会影响运营数据存储的性能。 您应该在推荐中包含什么？\n\n【題目附表】\n・Name｜Type\n・AS1｜Azure Synapse Analytics instance\n・CDB1｜Azure Cosmos DB SQL API account",
+  "options": {
+   "A": "Azure Cosmos DB change feed",
+   "B": "Azure Data Factory with Azure Cosmos DB and Azure Synapse Analytics connectors",
+   "C": "Azure Synapse Link for Azure Cosmos DB",
+   "D": "Azure Synapse Analytics with PolyBase data loading"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Azure Cosmos DB change feed Azure Cosmos DB的change feed功能可以捕获数据的变化，但它主要用于实时数据处理或事件驱动的架构。 虽然可以用来获取更新的数据，但它需要额外的处理步骤才能将数据集成到Azure Synapse Analytics中进行分析。 因此，这个选项不适合直接用于每日分析数据的场景。",
+   "B": "错误：Azure Data Factory with Azure Cosmos DB and Azure Synapse Analytics connectors Azure Data Factory可以用来提取、转换和加载（ETL）数据，并支持Azure Cosmos DB和Azure Synapse Analytics的连接器。 然而，这种方法需要定期运行ETL管道，可能会对操作性数据存储（Azure Cosmos DB）的性能产生影响。 因此，这个选项不符合题目要求，即“避免影响操作性数据存储的性能”。",
+   "C": "正确：Azure Synapse Link for Azure Cosmos DB Azure Synapse Link是专⻔设计用于无缝集成Azure Cosmos DB和Azure Synapse Analytics的解决方案。 它允许在不影响操作性数据存储性能的情况下，直接分析Azure Cosmos DB中的数据。 这是一个理想的解决方案，完全符合题目要求。",
+   "D": "错误：Azure Synapse Analytics with PolyBase data loading PolyBase是一种用于加载大规模数据的技术，通常用于从外部数据源（如Blob存储或SQL数据库）加载数据到Azure Synapse Analytics。 然而，它需要将数据从Azure Cosmos DB导出到外部存储，这可能会对操作性数据存储的性能产生影响。 因此，这个选项不符合题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 27,
+  "type": "matching",
+  "question": "热点问题 - 您部署了多个 Azure SQL Database 实例。 您计划按照以下图表所示配置数据库的诊断设置。 使用下拉菜单选择答案选项，以完成基于图表信息的每个陈述。 注意：每个正确选择值一分。 热点区域：\n\n【題目附表】\n・Diagnostic setting name｜Diagnostic1\n・log SQLInsights｜selected｜Retention 90 days\n・log AutomaticTuning｜selected｜Retention 30 days\n・log QueryStoreRuntimeStatistics, QueryStoreWaitStatistics, Errors, DatabaseWaitStatistics, Timeouts, Blocks, Deadlocks｜not selected｜Retention 0\n・metric Basic｜not selected｜Retention 0\n・Destination — Send to Log Analytics｜selected｜Workspace sk200814 (eastus)\n・Destination — Archive to a storage account｜selected｜Location East US, Storage account contoso20\n・Destination — Stream to an event hub｜not selected",
+  "available_options": [
+   "30 days",
+   "90 days",
+   "730 days",
+   "indefinite",
+   "Reference"
+  ],
+  "matches": [
+   {
+    "use_case": "第一问",
+    "correct_answer": "90 days",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "第二问",
+    "correct_answer": "730 days",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "第一问 → 90 days",
+   "2": "第二问 → 730 days",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure SQL Database的诊断设置（Diagnostics Settings）。 日志和指标的存储时间配置及其限制。 Azure Log Analytics和Blob Storage的保留策略。 2. 选项分析 第一问：The amount of time that SQLInsights data will be stored in blob storage 30 days: 错误。图中显示SQLInsights的Retention设置为90天，而不是30天。 90 days: 正确。图中明确指出SQLInsights的Retention设置为90天。 730 days: 错误。图中没有任何信息表明SQLInsights数据可以存储730天。 indefinite: 错误。图中没有设置无限期存储。 第二问：The maximum amount of time that SQLInsights data can be stored in Azure Log Analytics 30 days: 错误。Azure Log Analytics的最大存储时间不是30天。 90 days: 错误。虽然图中SQLInsights的Retention设置为90天，但Azure Log Analytics的最大存储时间可以更⻓。 730 days: 正确。Azure Log Analytics支持最⻓730天的存储时间。 Box 1: 90 days - As per exhibit. Box 2: 730 days - How long is the data kept? Raw data points (that is, items that you can query in Analytics and inspect in Search) are kept for up to 730 days. Reference: https://docs.microsoft.com/en-us/azure/azure-monitor/app/data-retention-privacy 框 1：90 天 - 根据图表。 框 2：730 天 - 数据保留多⻓时间？ 原始数据点（即，您可以在 Analytics 中查询并在 Search 中检查的项目）最多保留 730 天。 参考： https://docs.microsoft.com/en-us/azure/azure-monitor/app/data-retention-privacy indefinite: 错误。Azure Log Analytics不支持无限期存储。 3. 我的答案 第一问：90 days 第二问：730 days 4. 官方答案 第一问：90 days 第二问：730 days 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 28,
+  "type": "single",
+  "question": "您有一个应用程序，供 6,000 名用戶用于验证他们的休假请求。该应用程序管理自己的凭据存储。 用戶必须输入用戶名和密码才能访问该应用程序。该应用程序不支持身份提供者。 您计划升级该应用程序以使用 Azure Active Directory (Azure AD) 应用注册进行单一登录 (SSO) 身份验证。 您应该使用哪种 SSO 方法？",
+  "options": {
+   "A": "header-based",
+   "B": "SAML",
+   "C": "password-based",
+   "D": "OpenID Connect"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Header-based: Header-based SSO 是一种依赖 HTTP 请求头的认证方式，通常需要应用程序支持特定的头部处理逻辑。 题目明确指出应用程序不支持身份提供者，因此无法使用此方法。 错误原因： 应用程序不支持此认证方式。",
+   "B": "错误：SAML: SAML 是一种基于 XML 的身份验证协议，通常用于支持身份提供者的应用程序。 题目明确指出应用程序不支持身份提供者，因此无法使用 SAML。 错误原因： 应用程序不支持身份提供者。",
+   "C": "正确：Password-based: Password-based SSO 是一种适用于不支持身份提供者的应用程序的解决方案。 此方法允许 Azure AD 通过存储用戶凭据并模拟登录来实现 SSO，而无需修改应用程序代码。 正确原因： 题目中的应用程序不支持身份提供者，因此 Password-based SSO 是唯一适合的选项。",
+   "D": "错误：OpenID Connect: OpenID Connect 是一种现代化的身份验证协议，通常需要应用程序支持身份提供者。 ( 题目明确指出应用程序不支持身份提供者，因此无法使用 OpenID Connect。 错误原因： 应用程序不支持身份提供者。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 29,
+  "type": "matching",
+  "question": "热点问题 - 您有一个包含名为 VNET1 的虚拟网络和 10 台虚拟机的 Azure 订阅。这些虚拟机已连接到 VNET1。 您需要设计一个解决方案以从互联网管理这些虚拟机。该解决方案必须满足以下要求： ✑ 对虚拟机的传入连接必须在允许网络连接之前使用 Azure Multi-Factor Authentication (MFA) 进行身份验证。 ✑ 传入连接必须使用 TLS 并连接到 TCP 端口 443。 ✑ 该解决方案必须支持 RDP 和 SSH。 您应该在解决方案中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域：",
+  "available_options": [
+   "Azure Bastion",
+   "Just-in-time (JIT) VM access",
+   "Azure Web Application Firewall (WAF) in Azure Front Door",
+   "An Azure Identity Governance access package",
+   "A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In",
+   "A Conditional Access policy that has the Cloud apps assignment set to Microsoft Azure Management"
+  ],
+  "matches": [
+   {
+    "use_case": "To provide access to virtual machines on VNET1, use",
+    "correct_answer": "Azure Bastion",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "To enforce Azure MFA, use",
+    "correct_answer": "A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "To provide access to virtual machines on VNET1, use → Azure Bastion",
+   "2": "To enforce Azure MFA, use → A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Bastion的功能与用途：提供安全的RDP和SSH访问，无需暴露虚拟机的公共IP。 Azure Conditional Access策略的配置：如何使用条件访问策略强制执行Azure MFA。 网络安全与身份验证的结合：TLS加密、端口限制以及多因素认证的实现。 2. 选项分析 To provide access to virtual machines on VNET1, use: Azure Bastion: 正确。Azure Bastion允许通过浏览器安全地访问虚拟机，支持RDP和SSH，并且无需暴露虚拟机的公共IP地址。它符合 题目要求的TLS加密和TCP端口443。 Just-in-time (JIT) VM access: 错误。虽然JIT可以限制虚拟机的访问时间窗口，但它并不直接提供TLS加密或通过TCP端口443的访问， 也不支持Azure MFA。 Azure Web Application Firewall (WAF) in Azure Front Door: 错误。WAF主要用于保护Web应用程序免受常⻅的网络攻击，与虚拟机的RDP 和SSH访问无关。 To enforce Azure MFA, use: An Azure Identity Governance access package: 错误。访问包用于管理资源的访问权限，但它不直接用于强制执行Azure MFA。 A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In: 正确。此策略可以强制要求用戶在访问 Azure虚拟机时使用MFA进行身份验证，符合题目要求。 A Conditional Access policy that has the Cloud apps assignment set to Microsoft Azure Management: 错误。此策略主要用于管理Azure资源 的访问权限，而不是直接针对虚拟机的登录操作。 3. 我选的答案 Azure Bastion A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In 4. 官方答案 Azure Bastion A Conditional Access policy that has the Cloud apps assignment set to Azure Windows VM Sign-In 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 30,
+  "type": "single",
+  "question": "您正在设计一个 Azure 管理解决方案。 所有 Azure 资源必须根据以下运营信息轻松识别：环境、所有者、部⻔和成本中心。 您需要确保在为 Azure 资源生成报告时可以使用这些运营信息。 您应该在解决方案中包含什么？",
+  "options": {
+   "A": "一个使用 Azure REST API 作为数据源的 Azure data catalog",
+   "B": "一个使用父组创建层次结构的 Azure management group",
+   "C": "一个强制执行标签规则的 Azure policy",
+   "D": "Azure Active Directory (Azure AD) administrative units"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：一个使用 Azure REST API 作为数据源的 Azure data catalog 错误：Azure Data Catalog 是一个用于存储和管理数据源元数据的服务，与资源治理和标签无关。 它无法直接帮助标识资源的环境、所有者、部⻔和成本中心。",
+   "B": "错误：一个使用父组创建层次结构的 Azure management group 错误：Azure Management Groups 用于组织订阅并应用治理策略，但它们不能直接用于标识资源的环境、所有者、部⻔和成本中心。 虽然管理组可以帮助组织资源，但它无法满足题目中提到的“基于标签生成报告”的需求。",
+   "C": "正确：一个强制执行标签规则的 Azure policy 正确：Azure Policy 可以强制执行标签规则，确保所有资源都带有指定的标签（如环境、所有者、部⻔和成本中心）。 通过标签，您可以轻松生成报告并对资源进行分类。",
+   "D": "错误：Azure Active Directory (Azure AD) administrative units 错误：Azure AD Administrative Units 是用于管理用戶和组的功能，与资源治理无关。 它无法帮助标识资源的环境、所有者、部⻔和成本中心。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 31,
+  "type": "single",
+  "question": "一家名为 Contoso, Ltd. 的公司拥有一个与 Microsoft 365 和 Azure 订阅集成的 Azure Active Directory (Azure AD) 租戶。 Contoso 拥有一个本地身份基础架构。该基础架构包括运行 Active Directory Domain Services (AD DS) 和 Azure AD Connect 的服务器。 Contoso 与一家名为 Fabrikam, Inc. 的公司建立了合作关系。Fabrikam 拥有一个 Active Directory 林和一个 Microsoft 365 租戶。Fabrikam 拥有与 Contoso 相同的本地身份基础架构组件。 来自 Fabrikam 的一个由 10 名开发人员组成的团队将参与一个 Azure 解决方案的开发，该解决方案将在 Contoso 的 Azure 订阅中托 管。这些开发人员必须被添加到 Contoso 订阅中某个资源组的 Contributor ⻆色。 您需要推荐一个解决方案，以确保 Contoso 可以将⻆色分配给这 10 名 Fabrikam 开发人员。该解决方案必须确保 Fabrikam 开发人员使 用其现有凭据访问资源。 您应该推荐什么？",
+  "options": {
+   "A": "在 Contoso 的 Azure AD 租戶中，为 Fabrikam 开发人员创建仅限云的用戶帐戶。",
+   "B": "在 Contoso 和 Fabrikam 的本地 Active Directory 林之间配置林信任。",
+   "C": "在 Fabrikam 和 Contoso 的 Microsoft 365 租戶之间配置组织关系。",
+   "D": "在 Contoso 的 Azure AD 租戶中，为 Fabrikam 开发人员创建来宾帐戶。"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：在 Contoso 的 Azure AD 租戶中，为 Fabrikam 开发人员创建仅限云的用戶帐戶。 错误：创建云用戶账戶意味着需要为 Fabrikam 开发人员创建新的凭据，这不符合题目要求“使用现有凭据”。",
+   "B": "错误：在 Contoso 和 Fabrikam 的本地 Active Directory 林之间配置林信任。 ( ) 错误：林信任仅适用于本地环境，无法直接解决 Azure AD 中的跨租戶访问问题。",
+   "C": "错误：在 Fabrikam 和 Contoso 的 Microsoft 365 租戶之间配置组织关系。 错误：组织关系主要用于跨租戶的电子邮件和日历共享，不适用于 Azure 资源访问权限的分配。",
+   "D": "正确：在 Contoso 的 Azure AD 租戶中，为 Fabrikam 开发人员创建来宾帐戶。 正确：Azure AD B2B协作允许通过来宾账戶为外部用戶分配访问权限，同时保留他们的现有凭据。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 32,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个 Azure App Service 网⻚应用 App1。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD provisioning service。",
+   "B": "启用 Azure AD pass-through authentication 并更新登录端点。",
+   "C": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "D": "配置 Azure AD join。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Configure the Azure AD provisioning service. 配置 Azure AD provisioning service。 错误：Azure AD Provisioning Service主要用于同步用戶和组数据，而不是用于跨租戶身份验证。",
+   "B": "错误：Enable Azure AD pass-through authentication and update the sign-in endpoint. 启用 Azure AD pass-through authentication 并更新登录端 点。 错误：Pass-through authentication用于本地身份验证，不适用于跨租戶场景。",
+   "C": "正确：Use Azure AD entitlement management to govern external users. 使用 Azure AD entitlement management 来管理外部用戶。 正确：Azure AD Entitlement Management允许管理员为外部用戶（如其他租戶的用戶）提供访问权限，并管理其生命周期。",
+   "D": "错误：Configure Azure AD join. 配置 Azure AD join。 错误：Azure AD Join用于设备加入Azure AD，不适用于用戶身份验证场景。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 33,
+  "type": "matching",
+  "question": "热点问题 - 贵公司有 20 个内部开发的 Web API。 公司正在开发 10 个将使用这些 Web API 的 Web 应用程序。这些 Web 应用程序和 API 已在公司 Azure Active Directory (Azure AD) 租戶中注册。这些 Web API 是通过 Azure API Management 发布的。 您需要推荐一个解决方案，以阻止来自 Web 应用程序的未经授权请求到达 Web API。该解决方案必须满足以下要求： ✑ 使用 Azure AD 生成的声明。 最大限度地减少配置和管理工作量。 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域：",
+  "available_options": [
+   "Azure AD",
+   "Azure API Management",
+   "The web APIs",
+   "Reference"
+  ],
+  "matches": [
+   {
+    "use_case": "Grant permissions to allow the web apps to access the web APIs by using",
+    "correct_answer": "Azure AD",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Configure a JSON Web Token (JWT) validation policy by using",
+    "correct_answer": "Azure API Management",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "Grant permissions to allow the web apps to access the web APIs by using → Azure AD",
+   "2": "Configure a JSON Web Token (JWT) validation policy by using → Azure API Management",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Active Directory (Azure AD) 的身份验证与授权机制。 Azure API Management 的安全策略配置，包括 JSON Web Token (JWT) 验证。 如何使用 Azure AD 生成的声明来保护 API。 2. 选项分析 Grant permissions to allow the web apps to access the web APIs by using: Azure AD: 正确。Azure AD 是身份验证和授权的核心组件，可以通过配置应用权限来确保只有授权的 Web 应用可以访问 Web API。 Azure API Management: 错误。虽然 Azure API Management 可以管理 API 的访问，但它本身并不负责直接授予权限给 Web 应用。 The web APIs: 错误。Web API 本身不负责权限管理，权限管理应该通过 Azure AD 来实现。 Configure a JSON Web Token (JWT) validation policy by using: Azure AD: 错误。Azure AD 负责生成 JWT，但验证 JWT 的过程需要在 API 或 API 管理层完成。 Azure API Management: 正确。Azure API Management 可以配置 JWT 验证策略，确保请求携带有效的令牌。 Box 1: Azure AD - Grant permissions in Azure AD. Box 2: Azure API Management - Configure a JWT validation policy to pre-authorize requests. Pre-authorize requests in API Management with the Validate JWT policy, by validating the access tokens of each incoming request. If a request does not have a valid token, API Management blocks it. Reference: https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad 框 1: Azure AD - 在 Azure AD 中授予权限。 框 2: Azure API Management - 配置 JWT 验证策略以预授权请求。 在 API Management 中使用 Validate JWT 策略预授权请求，通过验证每个传入请求的访问令牌。如果请求没有有效的令牌，API Management 将阻止它。 参考： https://docs.microsoft.com/en-us/azure/api-management/api-management-howto-protect-backend-with-aad The web APIs: 错误。虽然 Web API 可以验证 JWT，但题目要求最小化配置和管理工作，因此推荐使用 Azure API Management 来集中管 理验证策略。 3. 我的答案 Grant permissions to allow the web apps to access the web APIs by using: Azure AD Configure a JSON Web Token (JWT) validation policy by using: Azure API Management 4. 官方答案 Grant permissions to allow the web apps to access the web APIs by using: Azure AD Configure a JSON Web Token (JWT) validation policy by using: Azure API Management 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考，答案正确。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 34,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Log Analytics",
+   "B": "Azure Arc",
+   "C": "Azure Analysis Services",
+   "D": "Application Insights"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Log Analytics: 正确。Azure Log Analytics 是一个强大的工具，可以收集和分析 Azure 资源的日志数据。它能够生成报告，包括 资源部署的详细信息。",
+   "B": "错误：Azure Arc: 错误。Azure Arc 主要用于管理和治理跨云和本地环境的资源，而不是生成 Azure 资源部署的报告。",
+   "C": "错误：Azure Analysis Services: 错误。Azure Analysis Services 主要用于数据建模和分析，不适合直接用于监控 Azure 资源部署。",
+   "D": "错误：Application Insights: 错误。Application Insights 主要用于监控应用程序性能和诊断问题，而不是用于生成 Azure 资源部署的报告。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 35,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个名为 App1 的 Azure App Service web 应用。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD provisioning 服务。",
+   "B": "使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。",
+   "C": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "D": "配置 Azure AD Identity Protection。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Configure the Azure AD provisioning service. 错误：Azure AD Provisioning Service主要用于同步用戶和组数据到其他系统或应用，而不是用于跨租戶身份认证。",
+   "B": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). 错误：Azure AD PIM用于管理Azure资源的权限分配和⻆色激活，与跨租戶用戶认证无关。",
+   "C": "正确：Use Azure AD entitlement management to govern external users. 正确：Azure AD Entitlement Management允许管理员创建访问包，方便外部用戶（如其他租戶的用戶）访问资源。此功能适用于跨租 戶身份认证场景。",
+   "D": "错误：Configure Azure AD Identity Protection. 错误：Azure AD Identity Protection主要用于检测和响应身份⻛险，与跨租戶用戶认证无直接关系。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 36,
+  "type": "single",
+  "question": "您正在开发一个应用程序，该应用程序将使用 Azure Functions 读取 Azure 订阅的活动日志。 您需要为 Azure Functions 推荐一个身份验证解决方案。该解决方案必须尽量减少管理工作量。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure AD 中的企业应用程序",
+   "B": "系统分配的托管身份",
+   "C": "共享访问签名 (SAS)",
+   "D": "Azure AD 中的应用程序注册"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：an enterprise application in Azure AD 企业应用程序通常用于集成第三方应用或自定义应用，与 Azure Functions 的身份认证需求不完全匹配。 需要额外的配置和管理工作，无法满足“最小化管理工作”的要求。 因此此选项错误。",
+   "B": "正确：system-assigned managed identities 系统分配的托管身份是 Azure 提供的一种无密码认证方式，专为 Azure 服务之间的安全通信设计。 它可以自动管理身份的创建和生命周期，减少了管理工作量。 此选项正确，符合题目要求。",
+   "C": "错误：shared access signatures (SAS) SAS 是一种基于密钥的访问控制机制，通常用于存储服务的访问授权。 虽然可以用于认证，但需要手动管理密钥，增加了管理工作量。 因此此选项错误。",
+   "D": "错误：application registration in Azure AD 应用程序注册用于创建 Azure AD 应用程序对象，通常用于用戶或服务的身份认证。 需要手动配置和管理，无法满足“最小化管理工作”的要求。 因此此选项错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 37,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个名为 App1 的 Azure App Service web 应用。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD join。",
+   "B": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "C": "启用 Azure AD pass-through authentication 并更新登录端点。",
+   "D": "使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Configure Azure AD join. 配置 Azure AD join。 Azure AD Join主要用于设备加入Azure AD以便进行设备管理，与用戶身份验证无关。 此选项与题目要求的跨租戶用戶身份验证无关，因此错误。",
+   "B": "正确：Use Azure AD entitlement management to govern external users. 使用 Azure AD entitlement management 来管理外部用戶。 Azure AD Entitlement Management允许管理员管理外部用戶的访问权限，包括跨租戶的用戶身份验证。 此选项可以解决题目中要求的fabrikam.com用戶访问App1的问题，因此正确。",
+   "C": "错误：Enable Azure AD pass-through authentication and update the sign-in endpoint. 启用 Azure AD pass-through authentication 并更新登录端 点。 Azure AD Pass-through Authentication用于本地用戶身份验证，与跨租戶身份验证无关。 此选项无法解决题目中要求的跨租戶用戶身份验证问题，因此错误。",
+   "D": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). 使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。 Azure AD PIM主要用于管理用戶的权限提升，而不是用于跨租戶身份验证。 此选项与题目要求的跨租戶用戶身份验证无关，因此错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 38,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个 Azure App Service 网⻚应用程序，名为 App1。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶 可以对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD 加入。",
+   "B": "配置 Azure AD Identity Protection。",
+   "C": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "D": "通过使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Configure Azure AD join. 配置 Azure AD 加入。 Azure AD Join主要用于设备的注册和管理，与用戶身份认证无直接关系。 此选项与题目要求的跨租戶用戶认证无关，因此错误。",
+   "B": "错误：Configure Azure AD Identity Protection. 配置 Azure AD Identity Protection。 Azure AD Identity Protection用于检测和响应潜在的身份⻛险，例如可疑登录行为。 此功能与跨租戶用戶认证无直接关系，因此错误。",
+   "C": "正确：Use Azure AD entitlement management to govern external users. 使用 Azure AD entitlement management 来管理外部用戶。 Azure AD Entitlement Management允许管理员创建访问包，方便外部用戶（如其他租戶的用戶）访问资源。 此功能可以解决题目中要求的跨租戶用戶认证问题，因此正确。",
+   "D": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). 通过使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。 Azure AD PIM主要用于管理和分配特权⻆色，与跨租戶用戶认证无直接关系。 此选项无法满足题目要求，因此错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 39,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Activity Log",
+   "B": "Azure Arc",
+   "C": "Azure Analysis Services",
+   "D": "Azure Monitor metrics"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Activity Log: 正确。Azure Activity Log 是一个记录订阅级别活动的日志，可以跟踪资源的创建、修改和删除等操作，非常适合 生成资源部署报告。",
+   "B": "错误：Azure Arc: 错误。Azure Arc 是用于管理跨云和本地环境的资源的工具，与生成资源部署报告无关。",
+   "C": "错误：Azure Analysis Services: 错误。Azure Analysis Services 是用于数据建模和分析的服务，不能直接用于跟踪资源部署活动。",
+   "D": "错误：Azure Monitor metrics: 错误。Azure Monitor metrics 用于监控资源性能指标，而不是记录资源部署活动。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 40,
+  "type": "matching",
+  "question": "热点 - 您有一个包含名为 KV1 的 Azure 密钥保管库和名为 VM1 的虚拟机的 Azure 订阅。VM1 运行 Windows Server 2022: Azure Edition。 您计划将一个基于 ASP.Net Core 的应用程序 App1 部署到 VM1。 您需要配置 App1 使用系统分配的托管身份从 KV1 检索机密。解决方案必须尽量减少开发工作量。 您应该怎么做？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "Authorization code grant flows",
+   "Client credentials grant flows",
+   "Implicit grant flows",
+   "Azure Instance Metadata Service (IMDS) endpoint",
+   "OAuth 2.0 access token endpoint of Azure AD",
+   "OAuth 2.0 access token endpoint of Microsoft Identity Platform"
+  ],
+  "matches": [
+   {
+    "use_case": "Configure App1 to use OAuth 2.0",
+    "correct_answer": "Client credentials grant flows",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Configure App1 to use a REST API call to retrieve an authentication token from the",
+    "correct_answer": "Azure Instance Metadata Service (IMDS) endpoint",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "Configure App1 to use OAuth 2.0 → Client credentials grant flows",
+   "2": "Configure App1 to use a REST API call to retrieve an authentication token from the → Azure Instance Metadata Service (IMDS) endpoint",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Key Vault的使用和集成。 系统分配的托管身份（System-assigned Managed Identity）的工作原理。 OAuth 2.0授权流程的选择。 如何通过Azure Instance Metadata Service (IMDS)获取身份验证令牌。 2. 选项分析 Configure App1 to use OAuth 2.0: Authorization code grant flows: 错误。此授权流程通常用于交互式用戶登录场景，例如Web应用程序或移动应用程序，而不是系统分配 的托管身份。 Client credentials grant flows: 正确。此流程适用于服务到服务的身份验证场景，系统分配的托管身份正是这种场景的典型例子。 Implicit grant flows: 错误。此流程主要用于单⻚应用程序（SPA），不适合服务到服务的身份验证。 Configure App1 to use a REST API call to retrieve an authentication token from the: Azure Instance Metadata Service (IMDS) endpoint: 正确。IMDS是Azure提供的服务，用于托管身份的令牌检索，适合系统分配的托管身 份。 OAuth 2.0 access token endpoint of Azure AD: 错误。虽然Azure AD的令牌端点可以用于身份验证，但系统分配的托管身份通常通过IMDS 来获取令牌，而不是直接调用Azure AD的令牌端点。 OAuth 2.0 access token endpoint of Microsoft Identity Platform: 错误。此选项与Azure AD的令牌端点类似，不适合系统分配的托管身 份。 3. 我选的答案 Client credentials grant flows Azure Instance Metadata Service (IMDS) endpoint 4. 官方答案 Client credentials grant flows Azure Instance Metadata Service (IMDS) endpoint 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 41,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个 Azure App Service 网⻚应用名为 App1。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以对 App1 进行身份验证。 你需要推荐一个解决方案以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD join。",
+   "B": "配置 Azure AD Identity Protection。",
+   "C": "配置一个 Conditional Access policy。",
+   "D": "在应用注册中配置 Supported account types 并更新登录端点。"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Configure Azure AD join. 配置 Azure AD join。 错误：Azure AD Join 是用于设备加入 Azure AD 的功能，与应用程序的身份验证无关。",
+   "B": "错误：Configure Azure AD Identity Protection. 配置 Azure AD Identity Protection。 错误：Azure AD Identity Protection 是用于检测和响应身份验证⻛险的工具，与跨租戶身份验证无关。",
+   "C": "错误：Configure a Conditional Access policy. 配置一个 Conditional Access policy。 错误：条件访问策略用于控制访问权限，但无法解决跨租戶身份验证的问题。",
+   "D": "正确：Configure Supported account types in the application registration and update the sign-in endpoint. 在应用注册中配置 Supported account types 并更新登录端点。 正确：将应用程序的支持账戶类型从单租戶更改为多租戶，并更新登录端点，可以允许其他 Azure AD 租戶的用戶进行身份验证。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 42,
+  "type": "single",
+  "question": "你有一个名为 contoso.com 的 Azure AD 租戶，其中有一个名为 Group1 的安全组。Group1 配置为分配成员资格。Group1 有 50 名成 员，包括 20 名来宾用戶。 你需要推荐一个解决方案来评估 Group1 的成员资格。该解决方案必须满足以下要求： • 评估必须每三个月自动重复一次。 • 每个成员必须能够报告他们是否需要在 Group1 中。 • 报告不需要在 Group1 中的用戶必须自动从 Group1 中移除。 • 未报告是否需要在 Group1 中的用戶必须自动从 Group1 中移除。 你应该在推荐中包含什么？",
+  "options": {
+   "A": "实施 Azure AD Identity Protection。",
+   "B": "将 Group1 的成员资格类型更改为 Dynamic User。",
+   "C": "创建一个访问审查。",
+   "D": "实施 Azure AD Privileged Identity Management (PIM)。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Implement Azure AD Identity Protection Azure AD Identity Protection主要用于检测和响应身份⻛险，例如可疑登录活动。 它不提供定期评估组成员资格的功能，也无法自动移除用戶。 错误原因：不符合题目要求。",
+   "B": "错误：Change the Membership type of Group1 to Dynamic User 动态用戶组基于用戶属性自动管理成员资格，但无法让用戶主动报告是否需要保留在组中。 动态组不支持定期评估或自动移除用戶的功能。 错误原因：不符合题目要求。",
+   "C": "正确：Create an access review Azure AD Access Reviews允许管理员定期评估组成员资格，并让用戶报告是否需要保留在组中。 Access Reviews支持自动移除未响应的用戶或报告不需要的用戶。 正确原因：完全符合题目要求。",
+   "D": "错误：Implement Azure AD Privileged Identity Management (PIM) Azure AD PIM主要用于管理和保护特权⻆色的访问权限，而不是普通组的成员资格。 PIM不支持定期评估普通组成员资格的功能。 错误原因：不符合题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 43,
+  "type": "matching",
+  "question": "您有一个名为 Sub1 的 Azure 订阅，该订阅链接到一个名为 contoso.com 的 Azure AD 租戶。 您计划实施两个名为 App1 和 App2 的 ASP.NET Core 应用程序，这些应用程序将部署到 Sub1 中的 100 台虚拟机上。用戶将使用他们的 contoso.com 凭据登录 App1 和 App2。 App1 需要读取权限以访问登录用戶的日历。App2 需要写入权限以访问登录用戶的日历。 您需要为这些应用程序推荐一个身份验证和授权解决方案。该解决方案必须满足以下要求： • 遵循最小权限原则。 • 尽量减少管理工作量。 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "Application registration in Azure AD",
+   "A system-assigned managed identity",
+   "A user-assigned managed identity",
+   "Application permissions",
+   "Azure role-based access control (Azure RBAC)",
+   "Delegated permissions"
+  ],
+  "matches": [
+   {
+    "use_case": "Authentication",
+    "correct_answer": "Application registration in Azure AD",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Authorization",
+    "correct_answer": "Delegated permissions",
+    "correct_option_id": "opt-6"
+   }
+  ],
+  "explanations": {
+   "1": "Authentication → Application registration in Azure AD",
+   "2": "Authorization → Delegated permissions",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD应用注册的功能和用途。 身份验证和授权的最佳实践，包括委托权限和应用权限的区别。 如何实现最小权限原则。 2. 选项分析 Authentication: Application registration in Azure AD: 正确。应用注册是Azure AD中用于管理应用身份验证的核心功能。通过注册应用，可以为App1和 App2配置身份验证，并允许用戶使用Azure AD凭据登录。 A system-assigned managed identity: 错误。系统分配的托管身份主要用于Azure资源之间的身份验证，而不是用戶身份验证。题目要 求用戶使用contoso.com凭据登录，因此不适合使用托管身份。 A user-assigned managed identity: 错误。用戶分配的托管身份与系统分配的托管身份类似，主要用于资源间的身份验证，而不是用戶 身份验证。 Authorization: Application permissions: 错误。应用权限是为应用本身分配的权限，通常用于后台服务或守护程序，而不是用戶上下文。题目要求基 于用戶上下文访问日历，因此不符合要求。 Azure role-based access control (Azure RBAC): 错误。Azure RBAC用于管理Azure资源的访问权限，而不是应用程序的用戶权限。题目要 求访问用戶日历，与Azure RBAC无关。 Delegated permissions: 正确。委托权限允许应用在用戶上下文中访问资源，并遵循最小权限原则。App1和App2需要基于用戶上下文 访问日历，因此委托权限是正确的选择。 3. 我选的答案 Authentication: Application registration in Azure AD Authorization: Delegated permissions 4. 官方答案 Authentication: Application registration in Azure AD Authorization: Delegated permissions 5. 与官方答案的比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 44,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个名为 App1 的 Azure App Service web 应用。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "启用 Azure AD pass-through authentication 并更新登录端点。",
+   "B": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "C": "使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。",
+   "D": "配置 Azure AD Identity Protection。"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Enable Azure AD pass-through authentication and update the sign-in endpoint. 错误：Azure AD pass-through authentication 是一种用于本地身份验证的解决方案，与跨租戶用戶访问无关。 此选项无法解决 fabrikam.com 用戶访问 App1 的问题。",
+   "B": "正确：Use Azure AD entitlement management to govern external users. 正确：Azure AD Entitlement Management 是一种管理外部用戶访问资源的解决方案，可以为外部用戶（如 fabrikam.com 的用戶）提供 访问权限。 此选项符合题目要求，能够解决跨租戶用戶访问的问题。",
+   "C": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). 错误：Azure AD PIM 主要用于管理和分配特权⻆色，而不是用于跨租戶用戶访问资源的场景。 此选项与题目要求不符。",
+   "D": "错误：Configure Azure AD Identity Protection. 错误：Azure AD Identity Protection 是用于检测和响应身份⻛险的解决方案，与跨租戶用戶访问无关。 此选项无法解决 fabrikam.com 用戶访问 App1 的问题。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 45,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个 Azure App Service 网⻚应用，名为 App1。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD provisioning service。",
+   "B": "启用 Azure AD pass-through authentication 并更新登录端点。",
+   "C": "在应用注册中配置 Supported account types 并更新登录端点。",
+   "D": "配置 Azure AD join。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Configure the Azure AD provisioning service. 错误。Azure AD Provisioning Service主要用于用戶和组的自动同步，与跨租戶身份验证无关。此选项无法解决问题。",
+   "B": "错误：Enable Azure AD pass-through authentication and update the sign-in endpoint. 错误。Azure AD Pass-through Authentication用于本地身份验证的代理机制，与跨租戶身份验证无关。此选项无法解决问题。",
+   "C": "正确：Configure Supported account types in the application registration and update the sign-in endpoint. 正确。通过在应用注册中将“Supported account types”设置为“Accounts in any organizational directory (Any Azure AD directory - Multitenant)”并更新登录端点，可以允许其他租戶的用戶（如fabrikam.com）访问App1。",
+   "D": "错误：Configure Azure AD join. 错误。Azure AD Join用于设备的注册，与用戶身份验证无关。此选项无法解决问题。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 46,
+  "type": "matching",
+  "question": "您有一个包含名为 MG1 的管理组的 Azure AD 租戶。 您拥有以下表格中显示的 Azure 订阅。 订阅包含以下表格中显示的资源组。 订阅包含以下表格中显示的 Azure AD 安全组。 订阅包含以下表格中显示的用戶帐戶。 您执行以下操作： 为 Sub1 分配 User3 的 Contributor ⻆色。 为 MG1 分配 Group1 的 Virtual Machine Contributor ⻆色。 为 Tenant Root Group 分配 Group3 的 Contributor ⻆色。 对于以下每个陈述，如果陈述为真，请选择 Yes。否则，请选择 No。 注意：每个正确选择都值一分。\n\n【題目附表】\n・Name｜Management group\n・Sub1｜MG1\n・Sub2｜MG2\n・Sub3｜Tenant Root Group\n・\n・Name｜Subscription\n・RG1｜Sub1\n・RG2｜Sub2\n・RG3｜Sub3\n・\n・Name｜Member of\n・Group1｜Group3\n・Group2｜Group3\n・Group3｜None\n・\n・Name｜Member of\n・User1｜Group1\n・User2｜Group2\n・User3｜Group1, Group2",
+  "available_options": [
+   "Yes",
+   "No"
+  ],
+  "matches": [
+   {
+    "use_case": "User1 can create a new virtual machine in RG1.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "User2 can grant permissions to Group2.",
+    "correct_answer": "No",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "User3 can create a storage account in RG2.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "User1 can create a new virtual machine in RG1. → Yes",
+   "2": "User2 can grant permissions to Group2. → No",
+   "3": "User3 can create a storage account in RG2. → Yes",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure⻆色分配与继承：了解如何在管理组、订阅和资源组级别分配⻆色，以及⻆色权限的继承关系。 Azure AD安全组的权限：理解安全组成员如何继承分配给组的权限。 Azure RBAC权限范围：分析用戶或组在不同范围内的权限。 2. 选项分析 选项1: User1 can create a new virtual machine in RG1. 分析：Group1被分配了“Virtual Machine Contributor”⻆色，且范围是管理组MG1。Sub1属于MG1，因此Group1的权限会继承到Sub1及其 资源组RG1。 User1是Group1的成员，因此User1继承了“Virtual Machine Contributor”⻆色，可以在RG1中创建虚拟机。 结论：此选项正确。 选项2: User2 can grant permissions to Group2. 分析：“Contributor”⻆色允许用戶管理资源，但不允许用戶分配权限。User2是Group2的成员，而Group3被分配了“Contributor”⻆色，范 围是Tenant Root Group。虽然User2继承了“Contributor”⻆色，但该⻆色不具备分配权限的能力。 结论：此选项错误。 选项3: User3 can create a storage account in RG2. 分析：User3被直接分配了“Contributor”⻆色，范围是Sub1，因此User3可以在Sub1及其资源组中创建资源。但RG2属于Sub2，而User3 并未被分配任何权限到Sub2或RG2。 结论：此选项错误。 3. 我的答案 User1 can create a new virtual machine in RG1: Yes User2 can grant permissions to Group2: No User3 can create a storage account in RG2: No 4. 官方答案 User1 can create a new virtual machine in RG1: Yes User2 can grant permissions to Group2: No User3 can create a storage account in RG2: Yes 5. 比较与重新思考 我的答案与官方答案在选项3上不同。 重新思考：官方答案认为User3可以在RG2中创建存储账戶。经过重新分析，发现User3被分配了“Contributor”⻆色，范围是Sub1，而 Sub2属于MG2。User3并未被分配权限到Sub2或RG2，因此官方答案可能有误。 最终结论：我的答案保持不变。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 47,
+  "type": "single",
+  "question": "您的公司有以下表格中显示的部⻔。 Sub1 包含一个名为 App1 的 Azure App Service web 应用。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 您需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 您应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "配置 Azure AD Identity Protection。",
+   "B": "使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。",
+   "C": "在应用注册中配置支持的账戶类型并更新登录端点。",
+   "D": "配置一个 Conditional Access 策略。"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Configure Azure AD Identity Protection. 错误：Azure AD Identity Protection 是用于检测和响应潜在的身份⻛险的工具，与允许其他租戶用戶访问应用无关。",
+   "B": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). 错误：Azure AD Privileged Identity Management (PIM) 用于管理和控制 Azure AD 中的特权⻆色分配，与跨租戶身份验证无关。",
+   "C": "正确：Configure Supported account types in the application registration and update the sign-in endpoint. 正确：此选项涉及更改应用注册中的支持账戶类型，将其从“单租戶”更改为“多租戶”，从而允许其他 Azure AD 租戶的用戶（如 fabrikam.com）访问该应用。 此外，还需要更新登录端点以支持多租戶身份验证。",
+   "D": "错误：Configure a Conditional Access policy. 错误：Conditional Access 策略用于控制用戶访问资源的条件（如基于位置或设备），但它不能解决跨租戶身份验证的问题。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 48,
+  "type": "single",
+  "question": "你的公司有以下表格中显示的部⻔。 Sub1 包含一个名为 App1 的 Azure App Service web 应用。App1 使用 Azure AD 进行单租戶用戶身份验证。来自 contoso.com 的用戶可以 对 App1 进行身份验证。 你需要推荐一个解决方案，以使 fabrikam.com 租戶中的用戶能够对 App1 进行身份验证。 你应该推荐什么？\n\n【題目附表】\n・Division｜Azure subscription｜Azure AD tenant\n・East｜Sub1｜Contoso.com\n・West｜Sub2｜Fabrikam.com",
+  "options": {
+   "A": "使用 Azure AD entitlement management 来管理外部用戶。",
+   "B": "启用 Azure AD pass-through authentication 并更新登录端点。",
+   "C": "配置一个 Conditional Access 策略。",
+   "D": "使用 Azure AD Privileged Identity Management (PIM) 为 fabrikam.com 用戶配置分配。"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Use Azure AD entitlement management to govern external users. Azure AD Entitlement Management允许管理员为外部用戶（如其他租戶的用戶）提供访问权限。 它支持跨租戶的身份验证，并可以为外部用戶设置访问权限和生命周期管理。 此选项正确，因为它直接解决了问题：允许fabrikam.com的用戶访问App1。",
+   "B": "错误：Enable Azure AD pass-through authentication and update the sign-in endpoint. Azure AD Pass-through Authentication用于将用戶身份验证请求直接传递到本地Active Directory，但它不适用于跨租戶的场景。 此选项错误，因为它与题目要求的跨租戶身份验证无关。",
+   "C": "错误：Configure a Conditional Access policy. Conditional Access策略用于控制用戶访问资源的条件，例如基于设备状态或位置的访问控制。 此选项错误，因为它无法解决跨租戶身份验证的问题。",
+   "D": "错误：Configure assignments for the fabrikam.com users by using Azure AD Privileged Identity Management (PIM). Azure AD Privileged Identity Management (PIM)用于管理Azure资源的权限分配和提升，但它主要针对内部用戶的权限管理。 此选项错误，因为它无法解决跨租戶身份验证的问题。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 49,
+  "type": "single",
+  "question": "你有一个包含 1,000 个资源的 Azure 订阅。 你需要为该订阅生成合规报告。解决方案必须确保资源可以按部⻔分组。 你应该使用什么来组织资源？",
+  "options": {
+   "A": "application groups 和 quotas",
+   "B": "Azure Policy 和 tags",
+   "C": "administrative units 和 Azure Lighthouse",
+   "D": "resource groups 和 role assignments"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：application groups 和 quotas 错误。Application groups和quotas主要用于管理应用程序的资源分配，而不是用于组织资源或生成合规报告。",
+   "B": "正确：Azure Policy 和 tags 正确。Azure Policy可以帮助定义和评估资源的合规性，而Tags可以用于对资源进行分类和分组，例如按部⻔分组。",
+   "C": "错误：administrative units 和 Azure Lighthouse 错误。Administrative units主要用于管理Azure AD中的用戶和组，而Azure Lighthouse用于跨租戶管理资源，与生成合规报告无关。",
+   "D": "错误：resource groups 和 role assignments 错误。Resource groups用于逻辑分组资源，但它们不能直接用于生成合规报告或按部⻔分组。Role assignments主要用于权限管理， 与本题需求不符。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 50,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Arc",
+   "B": "Azure Monitor metrics",
+   "C": "Azure Advisor",
+   "D": "Azure Log Analytics"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Azure Arc: Azure Arc 是用于管理跨云和本地环境的资源的工具，与生成 Azure 资源部署报告无关，因此此选项错误。",
+   "B": "错误：Azure Monitor metrics: Azure Monitor metrics 主要用于监控资源的性能指标（如 CPU 使用率、内存使用率等），而不是生成资源部署 报告，因此此选项错误。",
+   "C": "错误：Azure Advisor: Azure Advisor 提供优化建议以提高资源的性能、可用性和安全性，但它不用于生成资源部署报告，因此此选项错 误。",
+   "D": "正确：Azure Log Analytics: Azure Log Analytics 是一个日志管理和查询工具，可以通过查询日志数据生成资源部署报告，因此此选项正 确。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 51,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Monitor action groups",
+   "B": "Azure Arc",
+   "C": "Azure Monitor metrics",
+   "D": "Azure Activity Log"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Azure Monitor action groups Azure Monitor action groups 是用于定义通知和自动化操作的集合，通常用于警报触发后执行操作。 它不适合直接生成资源部署的报告，因此此选项错误。",
+   "B": "错误：Azure Arc Azure Arc 是用于管理跨云和本地环境的资源的工具，主要用于混合云场景。 它与生成 Azure 资源部署报告无关，因此此选项错误。",
+   "C": "错误：Azure Monitor metrics Azure Monitor metrics 是用于收集和分析性能指标的工具，适用于监控资源的性能和健康状况。 它不记录资源部署活动，因此此选项错误。",
+   "D": "正确：Azure Activity Log Azure Activity Log 是用于记录订阅级别的所有管理操作，包括资源部署活动。 它可以生成关于资源部署的报告，因此此选项正确。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 52,
+  "type": "matching",
+  "question": "您有一个 Azure AD 租戶，其中包含一个名为 MarketingAU 的管理单元。MarketingAU 包含 100 个用戶。 您创建了两个用戶，分别命名为 User1 和 User2。 您需要确保用戶可以在 MarketingAU 中执行以下操作： • User1 必须能够创建用戶帐戶。 • User2 必须能够重置用戶密码。 您应该为每个用戶分配哪个⻆色？要回答，请将适当的⻆色拖到正确的用戶。每个⻆色可以使用一次、多次或完全不使用。您可能 需要拖动分隔条或滚动以查看内容。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "Helpdesk Administrator for MarketingAU",
+   "Helpdesk Administrator for the tenant",
+   "User Administrator for MarketingAU",
+   "User Administrator for the tenant"
+  ],
+  "matches": [
+   {
+    "use_case": "User1",
+    "correct_answer": "User Administrator for MarketingAU",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "User2",
+    "correct_answer": "Helpdesk Administrator for MarketingAU",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "User1 → User Administrator for MarketingAU",
+   "2": "User2 → Helpdesk Administrator for MarketingAU",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD⻆色的权限范围和功能。 如何在Azure AD中分配⻆色以满足特定的管理需求。 理解Administrative Unit（AU）的作用及其权限隔离功能。 2. 选项分析 Helpdesk Administrator for MarketingAU: 此⻆色允许用戶在指定的Administrative Unit中执行密码重置操作，但无法创建用戶账戶。因此 适合分配给User2。 Helpdesk Administrator for the tenant: 此⻆色允许用戶在整个租戶范围内执行密码重置操作，但题目要求仅限于MarketingAU，因此不 适合分配给任何用戶。 User Administrator for MarketingAU: 此⻆色允许用戶在指定的Administrative Unit中创建用戶账戶，因此适合分配给User1。 User Administrator for the tenant: 此⻆色允许用戶在整个租戶范围内创建用戶账戶，但题目要求仅限于MarketingAU，因此不适合分配 给任何用戶。 3. 我的答案 User1: User Administrator for MarketingAU User2: Helpdesk Administrator for MarketingAU 4. 官方答案 User1: User Administrator for MarketingAU User2: Helpdesk Administrator for MarketingAU 5. 答案比较与分析 我的答案与官方答案一致。 没有需要重新思考的部分。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 53,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Arc",
+   "B": "Azure Log Analytics",
+   "C": "Application insights",
+   "D": "Azure Monitor action groups"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Azure Arc: Azure Arc 是用于管理跨云和本地环境的资源的工具，与生成 Azure 资源部署报告无关，因此此选项错误。",
+   "B": "正确：Azure Log Analytics: Azure Log Analytics 是一个日志管理和分析服务，可以收集和查询 Azure 活动日志，适合生成资源部署报告，因 此此选项正确。",
+   "C": "错误：Application Insights: Application Insights 是用于监控应用程序性能的工具，与 Azure 资源部署报告无关，因此此选项错误。",
+   "D": "错误：Azure Monitor action groups: Azure Monitor action groups 是用于通知和响应监控警报的工具，与生成资源部署报告无关，因此此选项 错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 54,
+  "type": "matching",
+  "question": "您正在设计一个将在运行 Ubuntu 的 Azure 虚拟机上托管的应用程序。该应用程序将使用第三方电子邮件服务向用戶发送电子邮件消 息。第三方电子邮件服务要求应用程序使用 API 密钥进行身份验证。 您需要推荐一个 Azure Key Vault 解决方案来存储和访问 API 密钥。该解决方案必须最大限度地减少管理工作。 您应该推荐使用什么来存储和访问密钥？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值得一分。",
+  "available_options": [
+   "Certificate",
+   "Key",
+   "Secret",
+   "An API token",
+   "A managed service identity (MSI)",
+   "A service principal"
+  ],
+  "matches": [
+   {
+    "use_case": "Storage",
+    "correct_answer": "Secret",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Access",
+    "correct_answer": "A managed service identity (MSI)",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "Storage → Secret",
+   "2": "Access → A managed service identity (MSI)",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Key Vault的功能与用途，包括存储和管理敏感信息（如证书、密钥和机密）。 如何使用Azure身份服务（如MSI或服务主体）安全地访问Key Vault。 最小化管理工作量的解决方案设计。 2. 选项分析 Storage选项分析： Certificate: 错误。证书通常用于存储公钥和私钥对，适合加密或身份验证场景，但不适合存储API密钥。 Key: 错误。Key Vault中的“Key”主要用于加密和解密操作，而不是存储简单的字符串（如API密钥）。 Secret: 正确。Secret是专⻔用于存储敏感信息（如API密钥、密码等）的最佳选择。 Access选项分析： An API token: 错误。API token通常用于与外部服务交互，而不是用于访问Azure Key Vault。此选项不符合题目要求。 A managed service identity (MSI): 正确。MSI允许Azure资源（如虚拟机）自动管理其身份并安全地访问Key Vault，无需额外的凭据管 理，符合“最小化管理工作量”的要求。 A service principal: 错误。虽然服务主体可以用于访问Key Vault，但它需要手动管理凭据，增加了管理工作量，不符合题目要求。 3. 我的答案 Storage: Secret Access: A managed service identity (MSI) 4. 官方答案 Storage: Secret Access: A managed service identity (MSI) 5. 与官方答案比较 我的答案与官方答案一致。 没有差异，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 55,
+  "type": "matching",
+  "question": "拖放 - 您在 Azure AD 中有两个应用注册，分别名为 App1 和 App2。App1 支持基于⻆色的访问控制 (RBAC)，并包含一个名为 Writer 的⻆色。 您需要确保当 App2 进行身份验证以访问 App1 时，Azure AD 发出的令牌包含 Writer ⻆色声明。 您应该使用哪个 blade 来修改每个应用注册？要回答，请将适当的 blade 拖到正确的应用注册。每个 blade 可以使用一次、多次或不 使用。您可能需要拖动分割条或滚动以查看内容。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "API permissions",
+   "App roles",
+   "Token configuration"
+  ],
+  "matches": [
+   {
+    "use_case": "App1",
+    "correct_answer": "App roles",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "App2",
+    "correct_answer": "API permissions",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "App1 → App roles",
+   "2": "App2 → API permissions",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD应用注册的配置，包括⻆色定义和权限分配。 如何在Azure AD中设置应用⻆色（App roles）和API权限（API permissions）。 如何确保令牌中包含特定⻆色声明（Role Claim）。 2. 选项分析 API permissions: 此选项用于配置应用程序的权限，以便它可以访问其他资源或API。对于App2来说，需要配置API权限以便它能够访 问App1。 App roles: 此选项用于定义应用程序的⻆色。对于App1来说，需要定义Writer⻆色，以便在令牌中包含该⻆色声明。 Token configuration: 此选项用于配置令牌的内容，例如声明和范围。虽然它可以影响令牌的内容，但在此场景中，⻆色声明是通过 App roles定义的，而不是直接通过Token configuration配置的。 3. 我的答案 App1: App roles App2: API permissions 4. 官方答案 App1: App roles App2: API permissions 5. 与官方答案比较 我的答案与官方答案一致。 原因分析：App1需要定义⻆色（Writer），因此选择App roles；App2需要访问App1并获取令牌中的⻆色声明，因此需要配置API permissions。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 56,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Application Insights",
+   "B": "Azure Arc",
+   "C": "Azure Log Analytics",
+   "D": "Azure Monitor metrics"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Application Insights Application Insights主要用于监控应用程序的性能和诊断问题，而不是用于生成资源部署报告。 错误原因：不适合用于监控 Azure 资源的部署情况。",
+   "B": "错误：Azure Arc Azure Arc主要用于管理和治理跨云和本地环境的资源，而不是用于生成 Azure 资源部署报告。 错误原因：功能不匹配。",
+   "C": "正确：Azure Log Analytics Azure Log Analytics是Azure Monitor的一部分，可以收集和分析日志数据，包括资源部署的活动日志。 正确原因：可以通过查询活动日志生成资源部署报告。",
+   "D": "错误：Azure Monitor metrics Azure Monitor metrics主要用于监控资源的性能指标，而不是用于生成资源部署报告。 错误原因：功能不匹配。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 57,
+  "type": "single",
+  "question": "你有一个 Azure 订阅。 你计划部署一个监控解决方案，其中包括以下内容： • Azure Monitor Network Insights • Application Insights • Microsoft Sentinel • VM insights 该监控解决方案将由一个团队管理。 所需的 Azure Monitor 工作区的最小数量是多少？",
+  "options": {
+   "A": "1",
+   "B": "2",
+   "C": "3",
+   "D": "4"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：1 - 正确。Azure Monitor支持将多个监控解决方案（如Network Insights、Application Insights、Microsoft Sentinel和VM Insights）整合到 一个工作空间中进行管理。单一团队可以通过一个工作空间集中管理所有监控数据。",
+   "B": "错误：2 - 错误。没有必要创建两个工作空间，因为所有监控解决方案可以共享一个工作空间。",
+   "C": "错误：3 - 错误。创建三个工作空间会导致不必要的复杂性和管理开销，且不符合题目要求的“单一团队管理”。",
+   "D": "错误：4 - 错误。创建四个工作空间完全没有必要，所有监控解决方案可以集中在一个工作空间中。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 58,
+  "type": "single",
+  "question": "您需要推荐一个解决方案，以生成您 Azure 订阅中所有新的 Azure Resource Manager (ARM) 资源部署的每月报告。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Application Insights",
+   "B": "Azure Analysis Services",
+   "C": "Azure Advisor",
+   "D": "Azure Activity Log"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Application Insights: Application Insights 是一个用于监控应用程序性能和诊断问题的工具，主要用于应用程序级别的监控，而不是 资源部署活动的报告。因此此选项错误。",
+   "B": "错误：Azure Analysis Services: Azure Analysis Services 是一个用于数据建模和分析的服务，适合处理复杂的商业智能需求，但它不直接用 于监控或报告 Azure 资源的部署活动。因此此选项错误。",
+   "C": "错误：Azure Advisor: Azure Advisor 提供优化建议以提高资源的性能、可用性和安全性，但它不生成资源部署活动的报告。因此此选项错 误。",
+   "D": "正确：Azure Activity Log: Azure Activity Log 是一个记录订阅级别活动的日志，包括资源创建、修改和删除等操作。它可以用来生成资源部 署活动的报告。因此此选项正确。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 59,
+  "type": "matching",
+  "question": "案例研究 这是一个案例研究。案例研究没有单独计时。您可以使用考试时间完成每个案例研究。然而，此考试可能包含其他案例研究和部 分。您必须管理您的时间，以确保能够在规定的时间内完成考试中的所有问题。 要回答案例研究中的问题，您需要参考案例研究中提供的信息。案例研究可能包含展示和其他资源，这些资源提供了案例研究中描 述的场景的更多信息。每个问题都是独立的，与案例研究中的其他问题无关。 在案例研究结束时，将出现一个审阅屏幕。此屏幕允许您审查您的答案并在进入考试的下一部分之前进行更改。一旦开始新的部 分，您将无法返回到此部分。 开始案例研究 要显示此案例研究中的第一个问题，请单击“下一步”按钮。在回答问题之前，使用左侧窗格中的按钮浏览案例研究的内容。单击这 些按钮将显示信息，例如业务需求、现有环境和问题陈述。如果案例研究有“所有信息”选项卡，请注意显示的信息与后续选项卡中 显示的信息相同。当您准备回答问题时，单击“问题”按钮返回到问题。 概述 Fabrikam, Inc. 是一家在欧洲各地设有办公室的工程公司。公司在伦敦设有总部，并在阿姆斯特丹、柏林和罗⻢设有三个分支办公 室。 现有环境：Active Directory 环境 网络包含两个 Active Directory 森林，分别命名为 corp.fabrikam.com 和 rd.fabrikam.com。这两个森林之间没有信任关系。 Corp.fabrikam.com 是一个生产森林，包含用于内部用戶和计算机身份验证的身份。 Rd.fabrikam.com 仅供研发 (R&D) 部⻔使用。研发部⻔仅限于使用本地资源。 现有环境：网络基础设施 每个办公室至少包含一个来自 corp.fabrikam.com 域的域控制器。总部包含 rd.fabrikam.com 森林的所有域控制器。 所有办公室都拥有高速互联网连接。 一个名为 WebApp1 的现有应用程序托管在伦敦办公室的数据中心。WebApp1 供客戶用于下单和跟踪订单。WebApp1 包含一个使用 Microsoft Internet Information Services (IIS) 的 Web 层和一个运行 Microsoft SQL Server 2016 的数据库层。Web 层和数据库层部署在运行 Hyper-V 的虚拟机上。 IT 部⻔目前使用一个单独的 Hyper-V 环境来测试 WebApp1 的更新。 Fabrikam 通过包含 Software Assurance 的 Microsoft Enterprise Agreement 购买所有 Microsoft 许可证。 现有环境：问题陈述 WebApp1 的使用情况不可预测。在高峰时段，用戶经常报告延迟。而在其他时间，WebApp1 的许多资源未被充分利用。 需求：计划变更 Fabrikam 计划在未来几年内将大部分生产工作负载迁移到 Azure，包括依赖 Active Directory 进行身份验证的虚拟机。 作为其首批项目之一，公司计划建立一个混合身份模型，以便即将进行的 Microsoft 365 部署。 所有研发操作将保持在本地。 Fabrikam 计划将 WebApp1 的生产和测试实例迁移到 Azure。 需求：技术需求 Fabrikam 确定了以下技术需求： • 网站内容必须能够从单一位置轻松更新。 • 在配置新的 Web 应用实例时，用戶输入必须最小化。 • 尽可能使用现有的本地许可证以降低成本。 • 用戶必须始终使用其 corp.fabrikam.com UPN 身份进行身份验证。 • 任何新的 Azure 部署必须具有冗余，以防 Azure 区域发生故障。 • 尽可能使用 Azure App Service 的标准定价层部署解决方案。 • 名为 IT Support 的电子邮件分发组必须收到与目录同步服务相关的任何问题的通知。 • 如果 Azure 和本地网络之间的链接发生故障，确保托管在 Azure 的虚拟机能够进行 Active Directory 身份验证。 • Azure Active Directory (Azure AD) 和 corp.fabrikam.com 之间的目录同步不得因 Azure 和本地网络之间的链接故障而受到影响。 需求：数据库需求 Fabrikam 确定了以下数据库需求： • WebApp1 生产实例的数据库指标必须可用于分析，以便数据库管理员优化性能设置。 • 为了避免中断客戶访问，在迁移数据库时必须将数据库停机时间最小化。 • 数据库备份必须保留至少七年以满足合规要求。 需求：安全需求 Fabrikam 确定了以下安全需求： • 公司信息，包括政策、模板和数据，必须对公司外部人员不可访问。 • 如果互联网链接发生故障，本地网络上的用戶必须能够进行 corp.fabrikam.com 身份验证。 • 管理员必须能够使用其 corp.fabrikam.com 凭据进行 Azure ⻔戶身份验证。 • 所有对 Azure ⻔戶的管理访问必须通过多因素身份验证 (MFA) 进行保护。 • WebApp1 更新的测试必须对公司外部人员不可⻅。 为了满足 Fabrikam 的身份验证需求，您应该在解决方案中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "0",
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "matches": [
+   {
+    "use_case": "Minimum number of Azure AD tenants",
+    "correct_answer": "1",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Minimum number of conditional access policies to create",
+    "correct_answer": "2",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "Minimum number of Azure AD tenants → 1",
+   "2": "Minimum number of conditional access policies to create → 2",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure AD租戶的数量规划。 条件访问策略的配置与数量规划。 混合身份模型的设计与实现。 2. 选项分析 Minimum number of Azure AD tenants: 0: 错误。Fabrikam计划迁移到Azure并实现混合身份模型，因此至少需要一个Azure AD租戶来支持身份同步和管理。 1: 正确。一个Azure AD租戶足以支持Fabrikam的混合身份模型，同时满足其技术和安全要求。 2: 错误。没有需求表明需要多个Azure AD租戶。一个租戶即可满足所有需求。 3: 错误。同上，多个租戶会增加复杂性且不必要。 4: 错误。同上，多个租戶不符合需求。 Minimum number of conditional access policies to create: 0: 错误。Fabrikam的安全要求包括多因素认证（MFA）和确保管理员访问安全，这需要至少一个条件访问策略。 1: 错误。仅一个条件访问策略不足以同时满足MFA和管理员访问的安全要求。 2: 正确。一个策略用于启用MFA，另一个策略用于确保管理员访问安全。 3: 错误。没有额外需求需要创建三个条件访问策略。 4: 错误。同上，超过两个策略是不必要的。 3. 我选的答案 Minimum number of Azure AD tenants: 1 Minimum number of conditional access policies to create: 2 4. 官方答案 Minimum number of Azure AD tenants: 1 Minimum number of conditional access policies to create: 2 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 60,
+  "type": "single",
+  "question": "你有一个包含 10 个 web 应用的 Azure 订阅。这些应用与 Azure AD 集成，并由不同项目团队的用戶访问。 用戶经常在项目之间移动。 你需要为这些 web 应用推荐一个访问管理解决方案。该解决方案必须满足以下要求： • 用戶只能访问当前分配给他们的项目的应用。 • 项目经理必须验证哪些用戶可以访问他们项目的应用，并移除不再分配给他们项目的用戶。 • 每隔 30 天，项目经理必须自动收到提示以验证哪些用戶被分配到他们的项目。 你应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure AD Identity Protection",
+   "B": "Microsoft Defender for Identity",
+   "C": "Microsoft Entra Permissions Management",
+   "D": "Azure AD Identity Governance"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Azure AD Identity Protection Azure AD Identity Protection主要用于检测和响应身份相关的安全⻛险，例如可疑登录活动或账戶被盗⻛险。 它不提供用戶访问权限的管理功能，也无法满足定期审核用戶权限的需求。 错误原因：不符合题目要求的功能。",
+   "B": "错误：Microsoft Defender for Identity Microsoft Defender for Identity主要用于保护企业的身份基础设施，检测潜在的安全威胁，例如内部攻击或凭据盗窃。 它不涉及用戶访问权限的管理或定期审核功能。 错误原因：不符合题目要求的功能。",
+   "C": "错误：Microsoft Entra Permissions Management Microsoft Entra Permissions Management是一个权限管理解决方案，主要用于跨云环境的权限分析和管理。 虽然它可以帮助识别和管理权限，但它不支持定期访问审核或项目经理对用戶权限的验证功能。 错误原因：不完全符合题目要求的功能。",
+   "D": "正确：Azure AD Identity Governance Azure AD Identity Governance提供了访问包（Access Packages）和定期访问审核（Access Reviews）功能。 通过访问包，项目经理可以管理用戶对特定资源的访问权限，并验证哪些用戶可以访问其项目的应用。 定期访问审核功能可以自动提示项目经理每30天审核用戶权限，确保用戶只访问与其当前项目相关的应用。 正确原因：完全符合题目要求的功能。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 61,
+  "type": "matching",
+  "question": "热点 - 您有一个包含 50 个 Azure SQL 数据库的 Azure 订阅。 您创建了一个名为 Template1 的 Azure Resource Manager (ARM) 模板，该模板启用了 Transparent Data Encryption (TDE)。 您需要创建一个名为 Policy1 的 Azure Policy 定义，该定义将使用 Template1 为任何不符合要求的 Azure SQL 数据库启用 TDE。 您应该如何配置 Policy1？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "DeployIfNotExists",
+   "EnforceRegoPolicy",
+   "Modify",
+   "The identity required to perform the remediation task",
+   "The scopes of the policy assignments",
+   "The role-based access control (RBAC) roles required to perform the remediation task"
+  ],
+  "matches": [
+   {
+    "use_case": "Set available effects to",
+    "correct_answer": "DeployIfNotExists",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Include in the definition",
+    "correct_answer": "The role-based access control (RBAC) roles required to perform the remediation task",
+    "correct_option_id": "opt-6"
+   }
+  ],
+  "explanations": {
+   "1": "Set available effects to → DeployIfNotExists",
+   "2": "Include in the definition → The role-based access control (RBAC) roles required to perform the remediation task",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Policy的使用与配置，包括定义策略以确保资源符合组织要求。 Azure Policy中的效果类型，例如DeployIfNotExists。 Azure Policy定义中涉及的RBAC⻆色和其他配置项。 2. 选项分析 Set available effects to: DeployIfNotExists: 正确。此效果用于在资源不符合策略时自动部署所需的资源或配置（例如启用TDE）。这是实现题目要求的正确选 择。 EnforceRegoPolicy: 错误。此选项与Azure Policy无关，Rego是用于定义Open Policy Agent (OPA)策略的语言，与Azure Policy不相关。 Modify: 错误。Modify效果用于修改现有资源的配置，但题目要求是部署TDE，而不是修改现有配置。 Include in the definition: The identity required to perform the remediation task: 错误。虽然身份在某些情况下是必要的，但题目没有提到需要配置身份，且官方 答案选择了RBAC⻆色。 The scopes of the policy assignments: 错误。Scope定义了策略的应用范围，但题目没有提到需要在定义中包含Scope。 The role-based access control (RBAC) roles required to perform the remediation task: 正确。RBAC⻆色定义了执行策略所需的权限，这是 题目要求的正确选择。 3. 我的答案 Set available effects to: DeployIfNotExists Include in the definition: The role-based access control (RBAC) roles required to perform the remediation task 4. 官方答案 Set available effects to: DeployIfNotExists Include in the definition: The role-based access control (RBAC) roles required to perform the remediation task 5. 与官方答案比较 我的答案与官方答案一致。 没有差异，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 62,
+  "type": "single",
+  "question": "你有一个 Azure 订阅。该订阅包含一个名为 App1 的分层应用程序，该应用程序分布在托管于 Azure Container Instances 的多个容器 中。 你需要为 App1 部署一个 Azure Monitor 监控解决方案。该解决方案必须满足以下要求： • 支持使用合成事务监控来监控 App1 组件之间的流量。 • 最小化开发工作量。 应该在解决方案中包含什么？",
+  "options": {
+   "A": "Network insights",
+   "B": "Application Insights",
+   "C": "Container insights",
+   "D": "Log Analytics Workspace insights"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Network insights 错误。Network insights主要用于监控网络性能和诊断网络问题，但不支持合成事务监控，也无法直接监控应用组件之间的流量。",
+   "B": "正确：Application Insights 正确。Application Insights是Azure Monitor的一部分，专⻔用于监控应用程序性能。它支持合成事务监控，可以模拟用戶行为来测试应 用组件之间的流量。此外，它易于集成，开发工作量较小。",
+   "C": "错误：Container insights 错误。Container insights主要用于监控容器的性能和运行状况，但不支持合成事务监控，也无法直接满足题目要求。",
+   "D": "错误：Log Analytics Workspace insights 错误。Log Analytics Workspace是Azure Monitor的日志存储和查询工具，虽然可以存储和分析日志数据，但不支持合成事务监控，也无 法直接满足题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 63,
+  "type": "matching",
+  "question": "您有一个包含以下资源的 Azure 订阅： App1 的日志文件已注册到 App1Logs。每天平均摄取 120 GB 的日志数据。 您配置了一个 Azure Monitor 警报，如果 App1 的日志包含错误消息，该警报将被触发。 您需要尽量减少与 App1 相关的 Log Analytics 成本。解决方案必须满足以下要求： • 确保 App1 的所有日志文件都被摄取到 App1Logs。 • 尽量减少对 Azure Monitor 警报的影响。 您应该修改哪个资源，以及应该执行什么修改？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。\n\n【題目附表】\n・Name｜Type｜Description\n・App1｜Azure App Service app｜None\n・Workspace1｜Log Analytics workspace｜Configured to use a pay-as-you-go pricing tier\n・App1Logs｜Log Analytics table｜Hosted in Workspace1; Configured to use the Analytics Logs data plan",
+  "available_options": [
+   "App1",
+   "App1Logs",
+   "Workspace1",
+   "Change to a commitment pricing tier",
+   "Change to the Basic Logs data plan.",
+   "Set a daily cap."
+  ],
+  "matches": [
+   {
+    "use_case": "Resource",
+    "correct_answer": "Workspace1",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Modification",
+    "correct_answer": "Change to a commitment pricing tier",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "Resource → Workspace1",
+   "2": "Modification → Change to a commitment pricing tier",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Log Analytics定价模型，包括按需付费和承诺定价。 如何优化Azure Monitor和Log Analytics的成本。 数据计划的选择对日志分析和警报功能的影响。 2. 选项分析 资源选项分析 App1: App1是一个Azure App Service应用，修改此资源无法直接影响Log Analytics的成本，因此不正确。 App1Logs: App1Logs是一个Log Analytics表，修改数据计划可能会影响成本，但会对Azure Monitor警报的功能产生负面影响，因此不正 确。 Workspace1: Workspace1是Log Analytics工作区，修改其定价模型可以直接优化成本，同时不会影响日志的摄取和警报功能，因此正 确。 修改选项分析 Change to a commitment pricing tier: 承诺定价模型允许用戶预付一定的费用以获得更低的单位成本，适合高数据摄取量的场景，因此 正确。 Change to the Basic Logs data plan: Basic Logs数据计划成本较低，但会限制日志的分析功能，可能影响Azure Monitor警报，因此不正 确。 Set a daily cap: 设置每日摄取上限会限制日志的摄取量，不符合题目要求“确保所有日志文件都被摄取”，因此不正确。 3. 我的答案 Resource: Workspace1 Modification: Change to a commitment pricing tier 4. 官方答案 Resource: Workspace1 Modification: Change to a commitment pricing tier 5. 与官方答案比较 我的答案与官方答案一致。 原因分析：承诺定价模型是优化高数据摄取量场景成本的最佳选择，同时不会影响日志摄取和警报功能。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 64,
+  "type": "multiple",
+  "question": "你有 12 个 Azure 订阅和三个项目。每个项目使用跨多个订阅的资源。 你需要使用 Microsoft Cost Management 按项目监控成本。解决方案必须尽量减少管理工作量。 在解决方案中应包括哪两个组件？每个正确答案都构成解决方案的一部分。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "budgets",
+   "B": "resource tags",
+   "C": "custom role-based access control (RBAC) roles",
+   "D": "management groups",
+   "E": "Azure boards"
+  },
+  "answer": [
+   "A",
+   "B"
+  ],
+  "explanations": {
+   "A": "正确：budgets: 预算（budgets）是 Microsoft Cost Management 的核心功能之一，可以帮助用戶设置成本限制并监控支出。 通过预算，可以为每个项目定义成本目标，从而实现按项目监控成本。 此选项正确。",
+   "B": "正确：resource tags: 资源标签（resource tags）是 Azure 中用于分类和组织资源的工具，可以为资源添加自定义标签，例如项目名称。 ( 通过标签，可以在 Microsoft Cost Management 中按标签筛选和查看成本数据，从而实现按项目监控成本。 此选项正确。",
+   "C": "错误：custom role-based access control (RBAC) roles: 自定义RBAC⻆色用于控制对资源的访问权限，但它与成本监控无直接关系。 此选项错误，因为它无法直接帮助实现按项目监控成本。",
+   "D": "错误：management groups: 管理组（management groups）用于组织和管理多个订阅，但它主要用于权限管理和策略应用，而不是直接用于成本监控。 此选项错误，因为它无法直接实现按项目监控成本。",
+   "E": "错误：Azure boards: Azure Boards 是 Azure DevOps 的一部分，用于项目管理和任务跟踪，与成本管理无关。 此选项错误，因为它无法帮助实现按项目监控成本。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 65,
+  "type": "matching",
+  "question": "您有一个包含多个存储账戶的 Azure 订阅。 您为存储账戶分配了 Azure Policy 定义。 您需要推荐一个解决方案以满足以下要求： • 触发按需的 Azure Policy 合规性扫描。 • 通过查询 Log Analytics 收集的日志来触发 Azure Monitor 不合规警报。 您应该为每个要求推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "An Azure template",
+   "The Azure Command-Line Interface (CLI)",
+   "The Azure portal",
+   "Azure activity logs",
+   "Log Analytics workspace",
+   "Storage accounts"
+  ],
+  "matches": [
+   {
+    "use_case": "To trigger the compliance scans, use",
+    "correct_answer": "The Azure Command-Line Interface (CLI)",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "To generate the non-compliance alerts, configure diagnostic settings for the",
+    "correct_answer": "Azure activity logs",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "To trigger the compliance scans, use → The Azure Command-Line Interface (CLI)",
+   "2": "To generate the non-compliance alerts, configure diagnostic settings for the → Azure activity logs",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Policy的功能和使用，包括如何触发合规性扫描。 Azure Monitor和Log Analytics的集成，如何通过日志生成非合规性警报。 2. 选项分析 To trigger the compliance scans, use: An Azure template: 错误。Azure模板主要用于部署资源，而不是触发Azure Policy的合规性扫描。 The Azure Command-Line Interface (CLI): 正确。Azure CLI提供了命令（如`az policy state trigger-scan`）来手动触发Azure Policy的合规性 扫描。 The Azure portal: 错误。Azure⻔戶可以查看合规性状态，但无法直接触发合规性扫描。 To generate the non-compliance alerts, configure diagnostic settings for the: Azure activity logs: 正确。Azure活动日志记录了资源的操作和状态变化，可以通过Log Analytics查询非合规性事件并生成警报。 Log Analytics workspace: 错误。Log Analytics工作区是存储和查询日志的地方，但警报的触发需要依赖活动日志。 Storage accounts: 错误。存储账戶的诊断设置无法直接生成与Azure Policy非合规性相关的警报。 3. 我的答案 The Azure Command-Line Interface (CLI) Azure activity logs 4. 官方答案 The Azure Command-Line Interface (CLI) Azure activity logs 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 66,
+  "type": "matching",
+  "question": "热点 - 您有一个 Azure 订阅。 您计划部署五个存储账戶来存储块 blob，以及五个存储账戶来托管文件共享。这些文件共享将通过 SMB 协议进行访问。 您需要为存储账戶推荐一个访问授权解决方案。该解决方案必须满足以下要求： • 最大化安全性。 • 防止使用共享密钥。 • 尽可能支持时间限制的访问。 您应该在解决方案中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "A user delegation shared access signature (SAS) only",
+   "A shared access signature (SAS) and a stored access policy",
+   "Azure AD credentials"
+  ],
+  "matches": [
+   {
+    "use_case": "For the blobs",
+    "correct_answer": "A user delegation shared access signature (SAS) only",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "For the file shares",
+    "correct_answer": "Azure AD credentials",
+    "correct_option_id": "opt-3"
+   }
+  ],
+  "explanations": {
+   "1": "For the blobs → A user delegation shared access signature (SAS) only",
+   "2": "For the file shares → Azure AD credentials",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure存储账戶的访问授权机制，包括Shared Access Signature (SAS)、User Delegation SAS、Stored Access Policy以及Azure AD集成。 如何选择最安全的访问授权方式，同时满足时间限制和避免使用共享密钥的要求。 2. 选项分析 For the blobs: A user delegation shared access signature (SAS) only: 正确。User Delegation SAS是基于Azure AD身份验证的SAS，提供更高的安全性，并 支持时间限制。它避免了使用存储账戶密钥，符合题目要求。 A shared access signature (SAS) and a stored access policy: 错误。普通的SAS依赖存储账戶密钥，不符合“防止使用共享密钥”的要求。 虽然Stored Access Policy可以提供额外的管理功能，但它无法解决共享密钥的问题。 A user delegation shared access signature (SAS) and a stored access policy: 错误。虽然User Delegation SAS符合要求，但Stored Access Policy在这种情况下并不是必要的，且题目没有要求额外的管理功能。 For the file shares: Azure AD credentials: 正确。Azure文件共享可以通过Azure AD进行身份验证，提供更高的安全性，并避免使用共享密钥。它也支持时 间限制，符合题目要求。 A user delegation shared access signature (SAS) only: 错误。User Delegation SAS适用于Blob存储，而不是文件共享。文件共享需要使用 Azure AD进行身份验证。 A user delegation shared access signature (SAS) and a stored access policy: 错误。同样，User Delegation SAS不适用于文件共享，且 Stored Access Policy在这种情况下没有意义。 3. 我的答案 For the blobs: A user delegation shared access signature (SAS) only For the file shares: Azure AD credentials 4. 官方答案 For the blobs: A user delegation shared access signature (SAS) only For the file shares: Azure AD credentials 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 67,
+  "type": "matching",
+  "question": "您有一个 Azure 订阅。该订阅包含 100 台运行 Windows Server 2022 的虚拟机，并安装了 Azure Monitor Agent。 您需要推荐一个解决方案，以满足以下要求： • 将 JSON 格式的日志从虚拟机转发到 Log Analytics 工作区 • 转换日志并将数据存储在 Log Analytics 工作区中的表中 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "Azure Event Grid",
+   "Azure Lighthouse",
+   "Azure Purview",
+   "The Log Analytics agent",
+   "The Azure Monitor agent",
+   "The Azure Connected Machine agent"
+  ],
+  "matches": [
+   {
+    "use_case": "To collect the event logs",
+    "correct_answer": "Azure Lighthouse",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "To support the DCRs",
+    "correct_answer": "The Azure Monitor agent",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "To collect the event logs → Azure Lighthouse",
+   "2": "To support the DCRs → The Azure Monitor agent",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Monitor的日志收集与处理功能。 如何使用数据收集端点（Data Collection Endpoint, DCE）来转发日志。 如何使用KQL（Kusto Query Language）来查询和转换日志数据。 2. 选项分析 To forward the logs: A linked storage account for the Log Analytics workspace: 错误。链接的存储账戶主要用于存储诊断日志或备份数据，而不是直接用于转 发JSON格式的日志到Log Analytics工作区。 An Azure Monitor data collection endpoint: 正确。数据收集端点（DCE）是Azure Monitor中用于安全地收集和转发日志数据的推荐解决 方案，支持JSON格式的日志转发。 A service endpoint: 错误。服务端点用于虚拟网络与Azure服务之间的安全连接，与日志转发无关。 To transform the logs and store the data: A KQL query: 正确。KQL（Kusto Query Language）是Log Analytics工作区中用于查询和转换数据的语言，支持复杂的日志处理和存储。 A WQL query: 错误。WQL（Windows Management Instrumentation Query Language）主要用于查询Windows系统信息，与Log Analytics工作 区无关。 An XPath query: 错误。XPath主要用于查询XML数据，与JSON格式的日志处理无关。 3. 我的答案 An Azure Monitor data collection endpoint A KQL query 4. 官方答案 An Azure Monitor data collection endpoint A KQL query 5. 与官方答案的比较 我的答案与官方答案一致。 没有需要重新思考的部分。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 68,
+  "type": "matching",
+  "question": "热点问题 - 您有五个 Azure 订阅。每个订阅都链接到一个单独的 Azure AD 租戶，并包含运行 Windows Server 2022 的虚拟机。 您计划从虚拟机收集 Windows 安全事件，并将它们发送到一个 Log Analytics 工作区。 您需要推荐一个解决方案，以满足以下要求： • 从多个订阅收集事件日志 • 支持使用数据收集规则 (DCRs) 来定义要收集的事件 您应该为每个要求推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "Azure Event Grid",
+   "Azure Lighthouse",
+   "Azure Purview",
+   "The Log Analytics agent",
+   "The Azure Monitor agent",
+   "The Azure Connected Machine agent"
+  ],
+  "matches": [
+   {
+    "use_case": "To collect the event logs",
+    "correct_answer": "Azure Lighthouse",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "To support the DCRs",
+    "correct_answer": "The Azure Monitor agent",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "To collect the event logs → Azure Lighthouse",
+   "2": "To support the DCRs → The Azure Monitor agent",
+   "_full": "题目分析与解答 1. 考察的知识点 跨订阅资源管理：如何在多个 Azure 订阅中收集数据。 数据收集规则 (DCR)：如何使用 Azure Monitor 的新功能定义和管理数据收集。 代理选择：了解不同的 Azure 代理及其功能。 2. 选项分析 To collect the event logs: Azure Event Grid: 错误。Azure Event Grid 是用于事件路由的服务，主要用于事件驱动的架构，而不是用于跨订阅收集日志。 Azure Lighthouse: 正确。Azure Lighthouse 允许跨订阅和跨租戶管理资源，是实现跨订阅日志收集的推荐解决方案。 Azure Purview: 错误。Azure Purview 是数据治理服务，与日志收集无关。 To support the DCRs: The Log Analytics agent: 错误。Log Analytics agent 是旧版代理，不支持数据收集规则 (DCR)。 The Azure Monitor agent: 正确。Azure Monitor agent 是新版代理，支持数据收集规则 (DCR)，并且是推荐的解决方案。 The Azure Connected Machine agent: 错误。Azure Connected Machine agent 主要用于管理非 Azure 环境中的虚拟机，不支持 DCR。 3. 我的答案 To collect the event logs: Azure Lighthouse To support the DCRs: The Azure Monitor agent 4. 官方答案 To collect the event logs: Azure Lighthouse To support the DCRs: The Azure Monitor agent 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的部分。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 69,
+  "type": "single",
+  "question": "你有100台运行Windows Server 2012 R2的服务器，这些服务器托管Microsoft SQL Server 2014实例。这些实例托管的数据库具有以下特 性： ✑ 使用CLR实现存储过程。 ✑ 最大的数据库目前为3 TB。没有任何数据库会超过4 TB。 你计划将所有数据从SQL Server迁移到Azure。 你需要推荐一个服务来托管这些数据库。解决方案必须满足以下要求： ✑ 尽可能减少迁移数据库的管理开销。 ✑ 确保用戶可以使用Azure Active Directory (Azure AD)凭据进行身份验证。 ✑ 尽量减少为迁移而需要进行的数据库更改数量。 你应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure SQL Database elastic pools",
+   "B": "Azure SQL Managed Instance",
+   "C": "Azure SQL Database single databases",
+   "D": "SQL Server 2016 on Azure virtual machines"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Azure SQL Database elastic pools Elastic pools适用于多个小型数据库共享资源的场景。 ( 不支持CLR存储过程，且不适合单个大型数据库（如3TB）。 此选项错误。",
+   "B": "正确：Azure SQL Managed Instance 支持CLR存储过程，兼容SQL Server功能。 支持Azure AD认证，减少管理开销。 适合迁移大型数据库（如3TB），无需大量代码更改。 此选项正确。",
+   "C": "错误：Azure SQL Database single databases 单一数据库服务适合独立数据库，但不支持CLR存储过程。 不适合迁移大型数据库（如3TB）。 此选项错误。",
+   "D": "错误：SQL Server 2016 on Azure virtual machines 支持CLR存储过程，完全兼容SQL Server功能。 需要手动管理虚拟机，增加管理开销。 虽然满足技术需求，但不符合“尽量减少管理开销”的要求。 此选项错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 70,
+  "type": "multiple",
+  "question": "你有一个包含名为 store1 的 Azure Blob Storage 账戶的 Azure 订阅。 你有一个名为 Server1 的本地文件服务器，该服务器运行 Windows Server 2016。Server1 存储了 500 GB 的公司文件。 你需要将 Server1 中的公司文件副本存储到 store1 中。 哪两个可能的 Azure 服务可以实现此目标？每个正确答案都提供了一个完整的解决方案。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "an Azure Logic Apps integration account",
+   "B": "an Azure Import/Export job",
+   "C": "Azure Data Factory",
+   "D": "an Azure Analysis services On-premises data gateway",
+   "E": "an Azure Batch account"
+  },
+  "answer": [
+   "B",
+   "C"
+  ],
+  "explanations": {
+   "A": "错误：an Azure Logic Apps integration account 错误：Azure Logic Apps主要用于自动化工作流和集成服务，不适合用于大规模数据迁移。",
+   "B": "正确：an Azure Import/Export job 正确：Azure Import/Export服务允许用戶将大量数据通过硬盘导入到Azure Blob Storage中，非常适合这种场景。",
+   "C": "正确：Azure Data Factory 正确：Azure Data Factory是一种数据集成服务，可以用于将本地数据迁移到Azure Blob Storage。",
+   "D": "错误：an Azure Analysis services On-premises data gateway 错误：Azure Analysis Services主要用于数据建模和分析，不适合用于数据迁移。",
+   "E": "错误：an Azure Batch account ( 错误：Azure Batch主要用于运行大规模并行计算任务，与数据迁移无关。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 71,
+  "type": "single",
+  "question": "你有一个包含两个应用程序 App1 和 App2 的 Azure 订阅。App1 是一个销售处理应用程序。当 App1 中的交易需要运输时，会向 Azure Storage account queue 添加一条消息，然后 App2 监听队列以处理相关交易。 未来，将会添加额外的应用程序，这些应用程序将根据交易的具体细节处理部分运输请求。 你需要推荐一个替代方案来替换存储账戶队列，以确保每个额外的应用程序都能够读取相关交易。 你应该推荐什么？",
+  "options": {
+   "A": "一个 Azure Data Factory pipeline",
+   "B": "多个存储账戶队列",
+   "C": "一个 Azure Service Bus queue",
+   "D": "一个 Azure Service Bus topic"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：one Azure Data Factory pipeline 错误：Azure Data Factory 是用于数据集成和数据管道的工具，主要用于数据的提取、转换和加载（ETL），而不是消息队列服务。 不适合处理消息队列场景。",
+   "B": "错误：multiple storage account queues 错误：虽然可以通过多个存储账戶队列来支持多个应用程序，但这种方法需要额外的逻辑来确保消息的正确分发，增加了复杂性。 不符合题目要求的“推荐替代方案”，因为它无法高效地支持多个应用程序读取相关消息。",
+   "C": "错误：one Azure Service Bus queue 错误：Azure Service Bus Queue 是单一消费者模式，消息只能被一个应用程序消费，无法支持多个应用程序同时读取相关消息。 不满足题目中“多个应用程序读取相关消息”的需求。",
+   "D": "正确：one Azure Service Bus topic 正确：Azure Service Bus Topic 支持发布-订阅模式，允许多个订阅者（应用程序）同时读取相关消息。 每个订阅者可以根据过滤规则读取特定的消息，完全满足题目中“多个应用程序处理特定交易”的需求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 72,
+  "type": "matching",
+  "question": "热点问题 - 您需要为一个应用设计一个存储解决方案，该应用将存储大量频繁使用的数据。该解决方案必须满足以下要求： ✑ 最大化数据吞吐量。 ✑ 防止数据在一年内被修改。 ✑ 最小化读写操作的延迟。 您应该推荐哪种 Azure Storage 账戶类型和存储服务？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域：",
+  "available_options": [
+   "BlobStorage",
+   "BlockBlobStorage",
+   "FileStorage",
+   "StorageV2 with Premium performance",
+   "StorageV2 with Standard performance",
+   "Blob",
+   "File",
+   "Table"
+  ],
+  "matches": [
+   {
+    "use_case": "Storage account type",
+    "correct_answer": "BlockBlobStorage",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Storage service",
+    "correct_answer": "Blob",
+    "correct_option_id": "opt-6"
+   }
+  ],
+  "explanations": {
+   "1": "Storage account type → BlockBlobStorage",
+   "2": "Storage service → Blob",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure存储账戶类型的选择。 Azure存储服务的选择。 如何满足高吞吐量、低延迟以及数据不可修改的需求。 2. 选项分析 Storage account type: BlobStorage: 提供Blob存储服务，但不支持高级性能选项，无法最大化数据吞吐量，因此不符合要求。 Box 1: BlockBlobStorage - Block Blob is a premium storage account type for block blobs and append blobs. Recommended for scenarios with high transactions rates, or scenarios that use smaller objects or require consistently low storage latency. Box 2: Blob - The Archive tier is an offline tier for storing blob data that is rarely accessed. The Archive tier offers the lowest storage costs, but higher data retrieval costs and latency compared to the online tiers (Hot and Cool). Data must remain in the Archive tier for at least 180 days or be subject to an early deletion charge. Reference: https://docs.microsoft.com/en-us/azure/storage/blobs/archive-blob 框 1：BlockBlobStorage - Block Blob 是一种用于块 blob 和追加 blob 的高级存储账戶类型。推荐用于高事务率的场景，或者使用较小对象或需要一致低存储 延迟的场景。 框 2：Blob - Archive 层是一个离线层，用于存储很少访问的 blob 数据。Archive 层提供最低的存储成本，但与在线层（Hot 和 Cool）相比，数据 检索成本和延迟更高。数据必须至少在 Archive 层中保留 180 天，否则将受到提前删除费用的影响。 参考： https://docs.microsoft.com/en-us/azure/storage/blobs/archive-blob BlockBlobStorage: 专⻔优化了块Blob存储，支持高级性能选项，能够最大化数据吞吐量并提供低延迟读写操作，符合要求。 FileStorage: 专⻔用于文件共享存储，不适合存储大量频繁使用的数据，因此不符合要求。 StorageV2 with Premium performance: 支持多种存储服务并提供高级性能，但不专⻔优化块Blob存储，因此不如BlockBlobStorage适 合。 StorageV2 with Standard performance: 性能不如Premium选项，无法最大化数据吞吐量，因此不符合要求。 Storage service: Blob: 专⻔用于存储非结构化数据（如图像、视频等），支持高吞吐量和低延迟读写操作，符合要求。 File: 用于文件共享存储，不适合存储大量频繁使用的数据，因此不符合要求。 Table: 用于存储结构化数据（如NoSQL数据），不适合存储非结构化数据，因此不符合要求。 3. 我的答案 Storage account type: BlockBlobStorage Storage service: Blob 4. 官方答案 Storage account type: BlockBlobStorage Storage service: Blob 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考，答案正确。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 73,
+  "type": "matching",
+  "question": "热点问题 - 您有一个 Azure 订阅，其中包含以下表中显示的存储账戶。 您计划实施两个具有以下表中显示要求的新应用程序。 您应该推荐使用哪些存储账戶来满足每个应用程序的需求？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域：\n\n【題目附表】\n・Name｜Type｜Performance\n・storage1｜StorageV2｜Standard\n・storage2｜StorageV2｜Premium\n・storage3｜BlobStorage｜Standard\n・storage4｜FileStorage｜Premium",
+  "available_options": [
+   "Storage1 and storage2 only",
+   "Storage1 and storage3 only",
+   "Storage1, storage2, and storage3 only",
+   "Storage1, storage2, storage3, and storage4",
+   "Storage4 only",
+   "Storage1 and storage4 only",
+   "Storage1, storage2, and storage4 only"
+  ],
+  "matches": [
+   {
+    "use_case": "App1",
+    "correct_answer": "Storage1 and storage3 only",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "App2",
+    "correct_answer": "Storage1 and storage4 only",
+    "correct_option_id": "opt-6"
+   }
+  ],
+  "explanations": {
+   "1": "App1 → Storage1 and storage3 only",
+   "2": "App2 → Storage1 and storage4 only",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure存储账戶类型及其支持的功能，包括生命周期管理和文件共享。 Azure存储性能层级（Standard vs Premium）。 BlobStorage、FileStorage、StorageV2的功能差异。 2. 选项分析 App1: Use lifecycle management to migrate app data between storage tiers Storage1 and storage2 only: 错误。虽然Storage1支持生命周期管理，但Storage2是Premium性能层级，不支持生命周期管理。 Storage1 and storage3 only: 正确。Storage1和Storage3均为Standard性能层级，并且支持生命周期管理功能。 Box 1: Storage1 and storage3 only Need to use Standard accounts. Data stored in a premium block blob storage account cannot be tiered to hot, cool, or archive using Set Blob Tier or using Azure Blob Storage lifecycle management Box 2: Storage1 and storage4 only Azure File shares requires Premium accounts. Only Storage1 and storage4 are premium. Reference: https://docs.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview#feature-support https://docs.microsoft.com/en- us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#basics 框 1：仅 Storage1 和 Storage3 需要使用标准账戶。 数据存储在 Premium 块 Blob 存储账戶中无法通过 Set Blob Tier 或使用 Azure Blob Storage 生命周期管理分层到热、冷或归档层。 框 2：仅 Storage1 和 Storage4 Azure 文件共享需要 Premium 账戶。只有 Storage1 和 Storage4 是 Premium。 参考： https://docs.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview#feature-support https://docs.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal#basics Storage1, storage2, and storage3 only: 错误。Storage2不支持生命周期管理，因此不能包含在内。 Storage1, storage2, storage3, and storage4: 错误。Storage4是FileStorage类型，不支持生命周期管理。 App2: Store app data in an Azure file share Storage4 only: 正确。Storage4是FileStorage类型，专⻔用于Azure文件共享，完全满足需求。 Storage1 and storage4 only: 正确。Storage1是StorageV2类型，也支持Azure文件共享，Storage4是FileStorage类型，均满足需求。 Storage1, storage2, and storage4 only: 错误。虽然Storage1和Storage4支持文件共享，但Storage2是Premium性能层级，不适合文件共享 场景。 Storage1, storage2, storage3, and storage4: 错误。Storage3是BlobStorage类型，不支持文件共享。 3. 我的答案 App1: Storage1 and storage3 only App2: Storage1 and storage4 only 4. 官方答案 App1: Storage1 and storage3 only App2: Storage1 and storage4 only 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 74,
+  "type": "single",
+  "question": "您正在设计一个将在 Azure 中托管的应用程序。 该应用程序将托管视频文件，文件大小范围从 50 MB 到 12 GB。该应用程序将使用基于证书的身份验证，并将向互联网用戶开放。 您需要为视频文件推荐一个存储选项。解决方案必须提供最快的读取性能，并且必须尽量减少存储成本。 您应该推荐什么？",
+  "options": {
+   "A": "Azure Files",
+   "B": "Azure Data Lake Storage Gen2",
+   "C": "Azure Blob Storage",
+   "D": "Azure SQL Database"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Azure Files Azure Files 是一种文件共享服务，适用于文件存储和共享场景。虽然支持文件存储，但它的性能不如 Azure Blob Storage，尤其是对于 大文件（如视频文件）。此外，成本可能较高，因此不适合此场景。 错误原因：不符合“最快读性能”和“最小化存储成本”的要求。",
+   "B": "错误：Azure Data Lake Storage Gen2 Azure Data Lake Storage Gen2 主要用于大规模数据分析场景，支持大数据处理和分析。虽然它可以存储大文件，但其设计目标是数据 分析，而不是优化视频文件的读取性能。 错误原因：不符合“最快读性能”的要求。",
+   "C": "正确：Azure Blob Storage Azure Blob Storage 是专⻔设计用于存储非结构化数据（如视频、图像等）的服务。它提供了高性能的读取能力，并且成本相对较 低，非常适合存储视频文件。 正确原因：符合“最快读性能”和“最小化存储成本”的要求。",
+   "D": "错误：Azure SQL Database Azure SQL Database 是关系型数据库服务，适用于存储结构化数据。存储视频文件并不是其设计目标，性能和成本都不适合此场景。 错误原因：不适合存储视频文件。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 75,
+  "type": "single",
+  "question": "您正在设计一个 SQL 数据库解决方案。该解决方案将包括 20 个数据库，每个数据库大小为 20 GB，并具有不同的使用模式。 您需要推荐一个数据库平台来托管这些数据库。该解决方案必须满足以下要求： ✑ 该解决方案必须满足 99.99% 的正常运行时间服务级别协议 (SLA)。 ✑ 分配给数据库的计算资源必须能够动态扩展。 ✑ 该解决方案必须具有预留容量。 计算费用必须最小化。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "包含 20 个 Azure SQL 数据库的弹性池",
+   "B": "运行在可用性集中 Azure 虚拟机上的 Microsoft SQL 服务器上的 20 个数据库",
+   "C": "运行在 Azure 虚拟机上的 Microsoft SQL 服务器上的 20 个数据库",
+   "D": "20 个 Azure SQL Database serverless 实例"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：an elastic pool that contains 20 Azure SQL databases 正确：弹性池允许多个Azure SQL数据库共享计算资源，支持动态扩展，且成本优化。 满足99.99%的SLA要求，因为Azure SQL Database本身提供此级别的SLA。 支持预留容量，适合具有不同使用模式的数据库。",
+   "B": "错误：20 databases on a Microsoft SQL server that runs on an Azure virtual machine in an availability set 错误：虽然可用性集提高了虚拟机的高可用性，但运行SQL Server的虚拟机需要手动管理资源分配，无法动态扩展。 成本较高，因为需要为每个虚拟机分配固定的计算资源。 不支持弹性池的功能，无法优化成本。",
+   "C": "错误：20 databases on a Microsoft SQL server that runs on an Azure virtual machine 错误：与选项B类似，运行SQL Server的虚拟机需要手动管理资源分配，无法动态扩展。 不满足99.99%的SLA要求，因为虚拟机的SLA通常低于Azure SQL Database的SLA。 成本较高，且不支持弹性池功能。",
+   "D": "错误：20 instances of Azure SQL Database serverless 错误：虽然Serverless支持动态计算资源分配，但每个数据库都需要单独管理，无法共享资源。 成本可能较高，因为无法利用弹性池的资源共享优势。 不支持预留容量，无法满足题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 76,
+  "type": "matching",
+  "question": "热点问题 - 您有一个本地数据库，计划将其迁移到 Azure。 您需要设计数据库架构以满足以下要求： ✑ 支持向上和向下扩展。 ✑ 支持地理冗余备份。 ✑ 支持最大 75 TB 的数据库。 ✑ 针对在线事务处理 (OLTP) 进行优化。 您应该在设计中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。 热点区域： Box 1: Azure SQL Database - Azure SQL Database: Database size always depends on the underlying service tiers (e.g. Basic, Business Critical, Hyperscale). It supports databases of up to 100 TB with Hyperscale service tier model. Active geo-replication is a feature that lets you to create a continuously synchronized readable secondary database for a primary database. The readable secondary database may be in the same Azure region as the primary, or, more commonly, in a different region. This kind of readable secondary databases are also known as geo-secondaries, or geo-replicas. Azure SQL Database and SQL Managed Instance enable you to dynamically add more resources to your database with minimal downtime. Box 2: Hyperscale - Incorrect Answers: ✑ SQL Server on Azure VM: geo-replication not supported. ✑ Azure Synapse Analytics is not optimized for online transaction processing (OLTP). ✑ Azure SQL Managed Instance max database size is up to currently available instance size (depending on the number of vCores). Max instance storage size (reserved) - 2 TB for 4 vCores - 8 TB for 8 vCores - 16 TB for other sizes Reference: https://docs.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview https://medium.com/awesome-azure/azure- difference-between-azure-sql-database-and-sql-server-on-vm-comparison-azure-sql-vs-sql-server-vm-cf02578a1188 框 1：Azure SQL Database - Azure SQL Database： 数据库大小始终取决于底层服务层（例如 Basic、Business Critical、Hyperscale）。 它支持使用 Hyperscale 服务层模型的最大 100 TB 数据库。 Active geo-replication 是一个功能，可让您为主数据库创建一个持续同步的可读辅助数据库。可读辅助数据库可以与主数据库位于 同一 Azure 区域，也可以更常⻅地位于不同区域。这种类型的可读辅助数据库也称为地理辅助数据库或地理副本。 Azure SQL Database 和 SQL Managed Instance 使您能够以最小的停机时间动态添加更多资源到您的数据库。 框 2：Hyperscale - 错误答案： ✑ SQL Server on Azure VM：不支持地理复制。 ✑ Azure Synapse Analytics 未针对在线事务处理 (OLTP) 进行优化。 ✑ Azure SQL Managed Instance 最大数据库大小取决于当前可用的实例大小（取决于 vCores 的数量）。 最大实例存储大小（保留）： - 4 vCores 为 2 TB - 8 vCores 为 8 TB - 其他大小为 16 TB",
+  "available_options": [
+   "Azure SQL Database",
+   "Azure SQL Managed Instance",
+   "Azure Synapse Analytics",
+   "SQL Server on Azure Virtual Machines",
+   "Basic",
+   "Business Critical",
+   "General Purpose",
+   "Hyperscale",
+   "Premium",
+   "Standard"
+  ],
+  "matches": [
+   {
+    "use_case": "Service",
+    "correct_answer": "Azure SQL Database",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Service tier",
+    "correct_answer": "Hyperscale",
+    "correct_option_id": "opt-8"
+   }
+  ],
+  "explanations": {
+   "1": "Service → Azure SQL Database",
+   "2": "Service tier → Hyperscale",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure数据库服务的选择与特性，包括支持的规模、备份功能、性能优化等。 Azure SQL Database的服务层级及其适用场景。 2. 选项分析 Service: Azure SQL Database: 正确。Azure SQL Database支持弹性扩展（Scaling up and down），提供内置的高可用性和地理冗余备份功能，且 Hyperscale层级支持高达100 TB的数据库容量，非常适合OLTP场景。 Azure SQL Managed Instance: 错误。虽然它支持地理冗余备份和OLTP，但其最大数据库大小限制为8 TB，不满足75 TB的需求。 Azure Synapse Analytics: 错误。Azure Synapse Analytics主要用于数据仓库和分析场景，不适合OLTP场景。 SQL Server on Azure Virtual Machines: 错误。虽然可以支持大规模数据库，但需要手动配置地理冗余备份，且管理复杂性较高，不是 最佳选择。 Service tier: Basic: 错误。Basic层不支持大规模数据库，也不适合OLTP场景。 Business Critical: 错误。虽然支持高性能OLTP，但其最大数据库大小限制为4 TB，不满足75 TB的需求。 General Purpose: 错误。General Purpose层的性能和容量限制不满足题目要求。 Hyperscale: 正确。Hyperscale层支持高达100 TB的数据库容量，提供弹性扩展和优化的OLTP性能，完全满足题目要求。 Premium: 错误。Premium层主要用于Azure SQL Database的单一数据库或弹性池，但其容量限制不满足75 TB的需求。 Standard: 错误。Standard层不支持大规模数据库，也不适合OLTP场景。 3. 我的答案 Service: Azure SQL Database Service tier: Hyperscale 4. 官方答案 Service: Azure SQL Database Service tier: Hyperscale 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考，答案正确。 参考： https://docs.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview https://medium.com/awesome-azure/azure-difference-between-azure-sql-database-and-sql-server-on-vm-comparison-azure-sql-vs-sql-server- vm-cf02578a1188"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8",
+   "opt-9",
+   "opt-10"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 77,
+  "type": "multiple",
+  "question": "您正在规划一个包含 50,000 个 IoT 设备的 Azure IoT Hub 解决方案。 每个设备将流式传输数据，包括温度、设备 ID 和时间数据。每秒大约会写入 50,000 条记录。这些数据将以接近实时的方式进行可视 化。 您需要推荐一个服务来存储和查询数据。 您可以推荐哪两个服务？每个正确答案都提供了一个完整的解决方案。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "Azure Table Storage",
+   "B": "Azure Event Grid",
+   "C": "Azure Cosmos DB SQL API",
+   "D": "Azure Time Series Insights"
+  },
+  "answer": [
+   "C",
+   "D"
+  ],
+  "explanations": {
+   "A": "错误：Azure Table Storage 错误：Azure Table Storage是一个NoSQL存储解决方案，适合存储结构化数据，但它不适合处理高吞吐量的实时数据流，也不支持复 杂查询和实时可视化。",
+   "B": "错误：Azure Event Grid 错误：Azure Event Grid是一个事件路由服务，用于分发事件消息，而不是用于存储和查询数据。它不适合存储和查询50,000条每秒的 数据记录。",
+   "C": "正确：Azure Cosmos DB SQL API 正确：Azure Cosmos DB是一个全球分布式、多模型数据库，支持高吞吐量和低延迟。SQL API可以处理结构化数据（如设备ID、时间 和温度），并支持实时查询。",
+   "D": "正确：Azure Time Series Insights 正确：Azure Time Series Insights是一个专⻔用于处理时间序列数据的服务，支持高吞吐量数据流的存储和实时可视化，非常适合IoT 场景。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 78,
+  "type": "single",
+  "question": "您正在设计一个应用程序，该应用程序将为用戶聚合内容。 您需要为该应用程序推荐一个数据库解决方案。该解决方案必须满足以下要求： ✑ 支持 SQL 命令。 ✑ 支持多主写入。 ✑ 保证低延迟读取操作。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Cosmos DB SQL API",
+   "B": "Azure SQL Database that uses active geo-replication",
+   "C": "Azure SQL Database Hyperscale",
+   "D": "Azure Database for PostgreSQL"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Cosmos DB SQL API 正确：Azure Cosmos DB支持SQL API，允许使用SQL命令查询数据。 正确：Azure Cosmos DB支持多主写入，允许多个区域同时进行写入操作。 正确：Azure Cosmos DB提供低延迟的读取操作，适合需要快速响应的应用场景。",
+   "B": "错误：Azure SQL Database that uses active geo-replication 错误：虽然Azure SQL Database支持SQL命令和地理复制，但它不支持多主写入。 错误：地理复制的读取延迟可能较高，无法保证低延迟读取操作。",
+   "C": "错误：Azure SQL Database Hyperscale 错误：Azure SQL Database Hyperscale支持SQL命令，但它不支持多主写入。 错误：Hyperscale主要用于扩展存储和计算能力，而不是优化低延迟读取。",
+   "D": "错误：Azure Database for PostgreSQL 错误：虽然PostgreSQL支持SQL命令，但它不支持多主写入。 错误：PostgreSQL的读取延迟可能较高，无法保证低延迟读取操作。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 79,
+  "type": "matching",
+  "question": "热点 - 您的 Azure 订阅包含以下表中所示的 Azure SQL 服务器。 该订阅包含以下表中所示的存储账戶。 您创建了以下表中所示的 Azure SQL 数据库。 对于以下每个陈述，如果陈述为真，请选择“是”。否则，请选择“否”。 注意：每个正确选择都值一分。 热点区域：\n\n【題目附表】\n・Name｜Resource group｜Location｜Account kind\n・storage1｜RG1｜East US｜StorageV2 (general purpose v2)\n・storage2｜RG2｜Central US｜BlobStorage",
+  "available_options": [
+   "Yes",
+   "No"
+  ],
+  "matches": [
+   {
+    "use_case": "When you enable auditing for SQLdb1, you can store the audit information to storage1.",
+    "correct_answer": "Yes",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "When you enable auditing for SQLdb2, you can store the audit information to storage2.",
+    "correct_answer": "No",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "When you enable auditing for SQLdb3, you can store the audit information to storage2.",
+    "correct_answer": "No",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "When you enable auditing for SQLdb1, you can store the audit information to storage1. → Yes",
+   "2": "When you enable auditing for SQLdb2, you can store the audit information to storage2. → No",
+   "3": "When you enable auditing for SQLdb3, you can store the audit information to storage2. → No",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure SQL数据库的审计功能（Auditing）配置。 审计日志存储到Azure存储账戶的要求，包括资源组和地理位置的匹配。 2. 选项分析 When you enable auditing for SQLdb1, you can store the audit information to storage1: SQLdb1位于RG1资源组，SQLsvr1也位于RG1资源组，且地理位置为East US。 storage1位于RG1资源组，地理位置为East US，且存储类型为StorageV2（支持审计日志存储）。 资源组和地理位置均匹配，因此可以将SQLdb1的审计信息存储到storage1。 正确 When you enable auditing for SQLdb2, you can store the audit information to storage2: SQLdb2位于RG1资源组，SQLsvr1也位于RG1资源组，且地理位置为East US。 storage2位于RG2资源组，地理位置为Central US，且存储类型为BlobStorage（不支持审计日志存储）。 资源组和地理位置不匹配，且存储类型不支持审计日志存储，因此无法将SQLdb2的审计信息存储到storage2。 错误 When you enable auditing for SQLdb3, you can store the audit information to storage2: SQLdb3位于RG2资源组，SQLsvr2也位于RG2资源组，且地理位置为West US。 storage2位于RG2资源组，但地理位置为Central US，且存储类型为BlobStorage（不支持审计日志存储）。 地理位置不匹配，且存储类型不支持审计日志存储，因此无法将SQLdb3的审计信息存储到storage2。 Box 1: Yes - Auditing works fine for a Standard account. Box 2: No - Auditing limitations: Premium storage is currently not supported. Box 3: No - Auditing limitations: Premium storage is currently not supported. Reference: https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview#auditing-limitations 框 1：是 - 审计在标准账戶上运行良好。 框 2：否 - 审计限制：目前不支持高级存储。 框 3：否 - 审计限制：目前不支持高级存储。 参考： https://docs.microsoft.com/en-us/azure/azure-sql/database/auditing-overview#auditing-limitations 错误 3. 我的答案 When you enable auditing for SQLdb1, you can store the audit information to storage1: Yes When you enable auditing for SQLdb2, you can store the audit information to storage2: No When you enable auditing for SQLdb3, you can store the audit information to storage2: No 4. 官方答案 When you enable auditing for SQLdb1, you can store the audit information to storage1: Yes When you enable auditing for SQLdb2, you can store the audit information to storage2: No When you enable auditing for SQLdb3, you can store the audit information to storage2: No 5. 与官方答案比较 我的答案与官方答案完全一致。 无需重新思考或调整答案。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 80,
+  "type": "matching",
+  "question": "拖放 - 您计划将数据从本地环境导入到 Azure。数据如下表所示。 您应该推荐使用什么工具来迁移数据？要回答，请将适当的工具拖到正确的数据源。每个工具可以使用一次、多次或完全不使用。 您可能需要拖动分隔条或滚动以查看内容。 注意：每个正确的选择都值一分。 选择并放置： Box 1: Data Migration Assistant - The Data Migration Assistant (DMA) helps you upgrade to a modern data platform by detecting compatibility issues that can impact database functionality in your new version of SQL Server or Azure SQL Database. DMA recommends performance and reliability improvements for your target environment and allows you to move your schema, data, and uncontained objects from your source server to your target server. Incorrect: AzCopy is a command-line utility that you can use to copy blobs or files to or from a storage account. Box 2: Azure Cosmos DB Data Migration Tool Azure Cosmos DB Data Migration Tool can used to migrate a SQL Server Database table to Azure Cosmos. Reference: https://docs.microsoft.com/en-us/sql/dma/dma-overview https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-migrationchoices 框 1：Data Migration Assistant - Data Migration Assistant (DMA) 帮助您通过检测可能影响 SQL Server 或 Azure SQL Database 新版本数据库功能的兼容性问题，升级到 现代数据平台。DMA 为目标环境推荐性能和可靠性改进，并允许您将架构、数据和未包含的对象从源服务器移动到目标服务器。\n\n【題目附表】\n・On-premises source｜Azure target\n・A Microsoft SQL Server 2012 database｜An Azure SQL database\n・A table in a Microsoft SQL Server 2014 database｜An Azure Cosmos DB account that uses the SQL API",
+  "available_options": [
+   "AzCopy",
+   "Azure Cosmos DB Data Migration Tool",
+   "Data Management Gateway",
+   "Data Migration Assistant"
+  ],
+  "matches": [
+   {
+    "use_case": "From the SQL Server 2012 database",
+    "correct_answer": "Data Migration Assistant",
+    "correct_option_id": "opt-4"
+   },
+   {
+    "use_case": "From the table in the SQL Server 2014 database",
+    "correct_answer": "Azure Cosmos DB Data Migration Tool",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "From the SQL Server 2012 database → Data Migration Assistant",
+   "2": "From the table in the SQL Server 2014 database → Azure Cosmos DB Data Migration Tool",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure 数据迁移工具的使用，包括 Data Migration Assistant 和 Azure Cosmos DB Data Migration Tool。 如何将本地数据迁移到 Azure 环境中。 2. 选项分析 AzCopy: AzCopy 是一个命令行工具，用于在 Azure 存储账戶之间或从本地到 Azure Blob 存储传输数据。它不适用于 SQL Server 数据库 或 Cosmos DB 数据迁移，因此在此场景中不正确。 Azure Cosmos DB Data Migration Tool: 此工具专⻔用于将数据迁移到 Azure Cosmos DB。对于 SQL Server 2014 数据表迁移到 Cosmos DB 的场景，这是正确的选择。 Data Management Gateway: 此工具用于连接本地数据源与 Azure 数据工厂，但它不是直接的数据迁移工具，因此在此场景中不正确。 Data Migration Assistant: 此工具用于评估和迁移 SQL Server 数据库到 Azure SQL 数据库。对于 SQL Server 2012 数据库迁移到 Azure SQL 数据库的场景，这是正确的选择。 3. 我的答案 From the SQL Server 2012 database: Data Migration Assistant From the table in the SQL Server 2014 database: Azure Cosmos DB Data Migration Tool 4. 官方答案 From the SQL Server 2012 database: Data Migration Assistant From the table in the SQL Server 2014 database: Azure Cosmos DB Data Migration Tool 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的部分。 不正确： AzCopy 是一个命令行工具，可用于将 blob 或文件复制到存储账戶或从存储账戶复制。 框 2：Azure Cosmos DB Data Migration Tool Azure Cosmos DB Data Migration Tool 可用于将 SQL Server 数据库表迁移到 Azure Cosmos。 参考： https://docs.microsoft.com/en-us/sql/dma/dma-overview https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-migrationchoices"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 81,
+  "type": "single",
+  "question": "您将网⻚访问日志数据存储在 Azure Blob Storage。 您计划从访问日志生成每月报告。 您需要推荐一个自动化流程，每月将数据上传到 Azure SQL Database。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Microsoft SQL Server Migration Assistant (SSMA)",
+   "B": "Data Migration Assistant (DMA)",
+   "C": "AzCopy",
+   "D": "Azure Data Factory"
+  },
+  "answer": "D",
+  "explanations": {
+   "A": "错误：Microsoft SQL Server Migration Assistant (SSMA) SSMA主要用于将数据从其他数据库（如Oracle、MySQL等）迁移到SQL Server或Azure SQL Database。 它不适用于从Azure Blob Storage迁移数据，因此此选项错误。",
+   "B": "错误：Data Migration Assistant (DMA) DMA主要用于评估和迁移本地SQL Server数据库到Azure SQL Database。 它不支持从Blob Storage迁移数据，因此此选项错误。",
+   "C": "错误：AzCopy AzCopy是一个命令行工具，用于在Azure存储服务之间传输数据。 虽然AzCopy可以从Blob Storage下载数据，但它无法直接将数据上传到Azure SQL Database，也无法实现自动化数据处理，因此此选项 错误。",
+   "D": "正确：Azure Data Factory Azure Data Factory是一种数据集成服务，可以自动化数据的提取、转换和加载（ETL）过程。 它支持从Azure Blob Storage读取数据并将其写入Azure SQL Database，同时可以设置定时触发器实现每月自动化处理。 此选项正确。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 82,
+  "type": "multiple",
+  "question": "你有一个 Azure 订阅。 你的本地网络包含一个名为 Server1 的文件服务器。Server1 存储了 5 ׀¢׀’ 的公司文件，这些文件很少被访问。 你计划将这些文件复制到 Azure Storage。 你需要为这些文件实施一个存储解决方案，该解决方案满足以下要求： ✑ 文件必须在请求后的 24 小时内可用。 ✑ 存储成本必须最小化。 哪两个可能的存储解决方案可以实现此目标？每个正确答案都提供了一个完整的解决方案。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "container, and set each file to the Archive access tier. 创建一个配置为 Cool 默认访问层的 Azure Blob Storage 账戶。创建一个 blob 容器，将文件复制到该 blob 容器，并将每个文件设置 为 Archive 访问层。",
+   "B": "创建一个通用 v1 存储账戶。创建一个 blob 容器并将文件复制到该 blob 容器。",
+   "C": "and copy the files to the file share. 创建一个配置为 Cool 默认访问层的通用 v2 存储账戶。在存储账戶中创建一个文件共享，并将文件复制到该文件共享。",
+   "D": "blob container, and set each file to the Archive access tier. 创建一个配置为 Hot 默认访问层的通用 v2 存储账戶。创建一个 blob 容器，将文件复制到该 blob 容器，并将每个文件设置为 Archive 访问层。",
+   "E": "创建一个通用 v1 存储账戶。在存储账戶中创建一个文件共享，并将文件复制到该文件共享。"
+  },
+  "answer": [
+   "A",
+   "D"
+  ],
+  "explanations": {
+   "A": "正确：Create an Azure Blob Storage account that is configured for the Cool default access tier. Create a blob container, copy the files to the blob container, and set each file to the Archive access tier. 正确：Cool默认访问层适合不频繁访问的数据，Archive访问层进一步降低存储成本，但需要最多24小时解冻时间，符合题目要求。",
+   "B": "错误：Create a general-purpose v1 storage account. Create a blob container and copy the files to the blob container. 错误：General-purpose v1存储账戶是旧版存储账戶，功能有限且成本较高，不推荐使用。",
+   "C": "错误：Create a general-purpose v2 storage account that is configured for the Cool default access tier. Create a file share in the storage account and copy the files to the file share. 错误：文件共享（File Share）不支持Archive访问层，无法满足成本优化的要求。",
+   "D": "正确：Create a general-purpose v2 storage account that is configured for the Hot default access tier. Create a blob container, copy the files to the blob container, and set each file to the Archive access tier. 正确：虽然默认访问层是Hot，但可以将文件设置为Archive访问层以降低成本，同时满足24小时解冻时间的要求。",
+   "E": "错误：Create a general-purpose v1 storage account. Create a file share in the storage account and copy the files to the file share. 错误：General-purpose v1存储账戶功能有限，且文件共享不支持Archive访问层，无法满足题目要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 83,
+  "type": "single",
+  "question": "您有一个名为 App1 的应用程序，该应用程序使用两个本地 Microsoft SQL Server 数据库，分别名为 DB1 和 DB2。 您计划将 DB1 和 DB2 迁移到 Azure 您需要推荐一个 Azure 解决方案来托管 DB1 和 DB2。该解决方案必须满足以下要求： ✑ 支持跨 DB1 和 DB2 的服务器端事务。 ✑ 最小化更新解决方案的管理工作。 您应该推荐什么？",
+  "options": {
+   "A": "两个 Azure SQL 数据库在一个弹性池中",
+   "B": "两个数据库在同一个 Azure SQL managed instance 上",
+   "C": "两个数据库在 Azure 虚拟机上的同一个 SQL Server 实例中",
+   "D": "两个 Azure SQL 数据库在不同的 Azure SQL Database 服务器上"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：两个 Azure SQL 数据库在一个弹性池中 错误：Azure SQL 数据库弹性池适用于多个数据库共享资源以优化成本，但它不支持跨数据库的服务器端事务。",
+   "B": "正确：两个数据库在同一个 Azure SQL 托管实例上 正确：Azure SQL 托管实例支持跨数据库的服务器端事务，并且提供了与本地 SQL Server 类似的功能，最小化了迁移和管理工作量。",
+   "C": "错误：两个数据库在 Azure 虚拟机上的同一个 SQL Server 实例中 错误：虽然这种方法支持跨数据库事务，但需要手动管理虚拟机和 SQL Server，增加了管理工作量，不符合“最小化管理工作量”的要 求。",
+   "D": "错误：两个 Azure SQL 数据库在不同的 Azure SQL Database 服务器上 错误：Azure SQL 数据库不支持跨服务器的事务，因此无法满足“支持服务器端事务”的要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 84,
+  "type": "single",
+  "question": "您需要设计一个高可用的 Azure SQL 数据库，以满足以下要求： ✑ 数据库副本之间的故障转移必须在没有任何数据丢失的情况下进行。 ✑ 在发生区域故障时，数据库必须保持可用。 ✑ 必须尽量降低成本。 您应该使用哪种部署选项？",
+  "options": {
+   "A": "Azure SQL Database Hyperscale",
+   "B": "Azure SQL Database Premium",
+   "C": "Azure SQL Database Basic",
+   "D": "Azure SQL Managed Instance General Purpose"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Azure SQL Database Hyperscale Hyperscale层级适用于需要处理大规模数据的场景，但它的高可用性机制主要依赖于多个副本和快速恢复，而不是无数据丢失的故障 转移。此选项不完全满足“无数据丢失”和“区域故障时可用”的要求，因此错误。",
+   "B": "正确：Azure SQL Database Premium Premium层级支持“无数据丢失”的故障转移，并且可以配置区域冗余（Zone Redundant）。它专为高性能和高可用性设计，完全满足题 目要求。此选项正确。",
+   "C": "错误：Azure SQL Database Basic Basic层级是最低成本的选项，但它不支持高级的高可用性功能，例如无数据丢失的故障转移和区域冗余。因此错误。",
+   "D": "错误：Azure SQL Managed Instance General Purpose Managed Instance General Purpose层级提供一定的高可用性，但它的故障转移机制可能会导致数据丢失，并且成本较高，不符合“成本 最小化”的要求。因此错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 85,
+  "type": "matching",
+  "question": "热点问题 - 您正在规划一个用于敏感数据的 Azure Storage 解决方案。该数据将每天访问。数据集小于 10 GB。 您需要推荐一个满足以下要求的存储解决方案： ✑ 所有写入存储的数据必须保留五年。 ✑ 数据一旦写入，只能读取。必须防止修改和删除。 ✑ 五年后，数据可以删除，但不能修改。 ✑ 必须尽量减少数据访问费用。 您应该推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域：",
+  "available_options": [
+   "General purpose v2 with Archive access tier for blobs",
+   "General purpose v2 with Cool access tier for blobs",
+   "General purpose v2 with Hot access tier for blobs",
+   "Container access level",
+   "Container access policy",
+   "Storage account resource lock"
+  ],
+  "matches": [
+   {
+    "use_case": "Storage account type",
+    "correct_answer": "General purpose v2 with Hot access tier for blobs",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Configuration to prevent modifications and deletions",
+    "correct_answer": "Container access policy",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "Storage account type → General purpose v2 with Hot access tier for blobs",
+   "2": "Configuration to prevent modifications and deletions → Container access policy",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Storage解决方案的选择，包括存储账戶类型和访问层。 数据保护策略，包括如何防止数据的修改和删除。 成本优化，尤其是数据访问费用的最小化。 2. 选项分析 Storage account type: General purpose v2 with Archive access tier for blobs: Archive层适用于⻓期存储不频繁访问的数据，访问成本较高，不适合每日访问的场景。因此此选项错误。 General purpose v2 with Cool access tier for blobs: Cool层适用于不频繁访问的数据，访问成本比Hot层高，但存储成本较低。由于题目要求数据每日访问，此选项不符合要求，因此错 误。 General purpose v2 with Hot access tier for blobs: Hot层适用于频繁访问的数据，访问成本最低，符合题目要求的数据每日访问场景。因此此选项正确。 Configuration to prevent modifications and deletions: Container access level: 此选项用于设置容器的访问权限（如公共访问或私有访问），但无法防止数据的修改和删除。因此此选项错误。 Container access policy: 此选项允许定义容器的访问策略，可以设置只读权限，从而防止数据的修改和删除，符合题目要求。因此此选项正确。 Storage account resource lock: 资源锁可以防止删除整个存储账戶，但无法防止对存储账戶内数据的修改和删除。因此此选项错误。 3. 我的答案 Storage account type: General purpose v2 with Hot access tier for blobs Configuration to prevent modifications and deletions: Container access policy 4. 官方答案 Storage account type: General purpose v2 with Hot access tier for blobs Configuration to prevent modifications and deletions: Container access policy 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 86,
+  "type": "matching",
+  "question": "热点问题 - 您正在设计一个支持报告的数据存储解决方案。 该解决方案将使用 Azure Event Hubs 以 JSON 格式摄取大量数据。当数据到达时，Event Hubs 将把数据写入存储。该解决方案必须满 足以下要求： ✑ 按日期和时间将数据组织到目录中。 ✑ 允许直接查询存储的数据，将其转换为汇总表，然后存储到数据仓库中。 ✑ 确保数据仓库可以存储 50 TB 的关系数据，并支持 200 到 300 个并发读取操作。 您应该为每种类型的数据存储推荐哪种服务？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。 热点区域： Box 1: Azure Data Lake Storage Gen2 Azure Data Explorer integrates with Azure Blob Storage and Azure Data Lake Storage (Gen1 and Gen2), providing fast, cached, and indexed access to data stored in external storage. You can analyze and query data without prior ingestion into Azure Data Explorer. You can also query across ingested and uningested external data simultaneously. Azure Data Lake Storage is optimized storage for big data analytics workloads. Use cases: Batch, interactive, streaming analytics and machine learning data such as log files, IoT data, click streams, large datasets Box 2: Azure SQL Database Hyperscale Azure SQL Database Hyperscale is optimized for OLTP and high throughput analytics workloads with storage up to 100TB. A Hyperscale database supports up to 100 TB of data and provides high throughput and performance, as well as rapid scaling to adapt to the workload requirements. Connectivity, query processing, database engine features, etc. work like any other database in Azure SQL Database. Hyperscale is a multi-tiered architecture with caching at multiple levels. Effective IOPS will depend on the workload. Compare to: General purpose: 500 IOPS per vCore with 7,000 maximum IOPS Business critical: 5,000 IOPS with 200,000 maximum IOPS Incorrect: * Azure Synapse Analytics Dedicated SQL pool. Max database size: 240 TB - A maximum of 128 concurrent queries will execute and remaining queries will be queued. Reference: https://docs.microsoft.com/en-us/azure/data-explorer/data-lake-query-data https://docs.microsoft.com/en-us/azure/azure- sql/database/service-tier-hyperscale https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse- service-capacity-limits 框 1：Azure Data Lake Storage Gen2 Azure Data Explorer 与 Azure Blob Storage 和 Azure Data Lake Storage (Gen1 和 Gen2) 集成，提供对存储在外部存储中的数据的快速、 缓存和索引访问。您可以在不事先将数据摄取到 Azure Data Explorer 的情况下分析和查询数据。您还可以同时查询已摄取和未摄取 的外部数据。 Azure Data Lake Storage 是针对大数据分析工作负载优化的存储。 使用场景：批处理、交互式、流分析和机器学习数据，例如日志文件、IoT 数据、点击流、大型数据集 框 2：Azure SQL Database Hyperscale Azure SQL Database Hyperscale 针对 OLTP 和高吞吐量分析工作负载进行了优化，支持最多 100TB 的存储。 Hyperscale 数据库支持最多 100 TB 的数据，并提供高吞吐量和性能，以及快速扩展以适应工作负载需求。连接性、查询处理、数",
+  "available_options": [
+   "Azure Blob Storage",
+   "Azure Data Lake Storage Gen2",
+   "Azure Files",
+   "Azure NetApp Files",
+   "Azure Cosmos DB Cassandra API",
+   "Azure Cosmos DB SQL API",
+   "Azure SQL Database Hyperscale",
+   "Azure Synapse Analytics dedicated SQL pools"
+  ],
+  "matches": [
+   {
+    "use_case": "Data store for the ingested data",
+    "correct_answer": "Azure Data Lake Storage Gen2",
+    "correct_option_id": "opt-2"
+   },
+   {
+    "use_case": "Data store for the data warehouse",
+    "correct_answer": "Azure SQL Database Hyperscale",
+    "correct_option_id": "opt-7"
+   }
+  ],
+  "explanations": {
+   "1": "Data store for the ingested data → Azure Data Lake Storage Gen2",
+   "2": "Data store for the data warehouse → Azure SQL Database Hyperscale",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Event Hubs数据存储解决方案的设计。 Azure存储服务的选择，包括Blob Storage、Data Lake Storage Gen2等。 数据仓库服务的选择，包括Azure SQL Database Hyperscale和Azure Synapse Analytics。 2. 选项分析 Data store for the ingested data: Azure Blob Storage: 虽然Blob Storage可以存储大量数据，但它不具备Data Lake Storage Gen2的高级功能，例如分层命名空间和优化的 查询能力。因此不符合要求。 Azure Data Lake Storage Gen2: 这是专⻔为大规模数据存储和分析设计的服务，支持分层命名空间，可以轻松组织数据并支持高效查 询，完全符合题目要求。 Azure Files: 主要用于文件共享，不适合存储和查询大规模数据。 Azure NetApp Files: 主要用于高性能文件存储，不适合大规模数据分析场景。 Data store for the data warehouse: Azure Cosmos DB Cassandra API: 适用于分布式NoSQL数据库，不适合存储关系型数据或支持数据仓库场景。 Azure Cosmos DB SQL API: 虽然支持SQL查询，但它是NoSQL数据库，不适合数据仓库场景。 Azure SQL Database Hyperscale: 支持高达100 TB的关系型数据存储，并且可以支持高并发读操作，完全符合题目要求。 Azure Synapse Analytics dedicated SQL pools: 专为大规模数据分析设计，但题目要求支持关系型数据存储和高并发读操作，Synapse Analytics更适合批量分析而非高并发场景。 3. 我的答案 Data store for the ingested data: Azure Data Lake Storage Gen2 Data store for the data warehouse: Azure SQL Database Hyperscale 4. 官方答案 Data store for the ingested data: Azure Data Lake Storage Gen2 Data store for the data warehouse: Azure SQL Database Hyperscale 5. 与官方答案比较 我的答案与官方答案一致。 没有需要重新思考的地方。 据库引擎功能等与 Azure SQL Database 中的其他数据库类似。 Hyperscale 是一种多层架构，在多个级别进行缓存。有效的 IOPS 将取决于工作负载。 比较： 通用用途：每个 vCore 500 IOPS，最大 7,000 IOPS 业务关键型：5,000 IOPS，最大 200,000 IOPS 不正确： * Azure Synapse Analytics Dedicated SQL pool. 最大数据库大小：240 TB - 最多 128 个并发查询将执行，其余查询将排队。 参考： https://docs.microsoft.com/en-us/azure/data-explorer/data-lake-query-data https://docs.microsoft.com/en-us/azure/azure-sql/database/service-tier-hyperscale https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-service-capacity-limits"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6",
+   "opt-7",
+   "opt-8"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 87,
+  "type": "single",
+  "question": "您有一个名为 App1 的应用程序，该应用程序使用一个本地 Microsoft SQL Server 数据库，名为 DB1。 您计划将 DB1 迁移到 Azure SQL 托管实例。 您需要为该实例启用客戶管理的透明数据加密 (TDE)。解决方案必须最大化加密强度。 您应该为 TDE 保护器使用哪种类型的加密算法和密钥⻓度？",
+  "options": {
+   "A": "RSA 3072",
+   "B": "AES 256",
+   "C": "RSA 4096",
+   "D": "RSA 2048"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：RSA 3072: 正确。RSA 3072 是一种推荐的加密算法和密钥⻓度，提供了强大的加密强度，同时符合现代加密标准。Azure 支持使用 RSA 3072 作为 TDE 保护器的最佳实践。",
+   "B": "错误：AES 256: 错误。虽然 AES 256 是一种强大的对称加密算法，但它通常用于数据加密而不是 TDE 保护器的密钥管理。TDE 保护器需 要使用非对称加密算法（如 RSA）。",
+   "C": "错误：RSA 4096: 错误。虽然 RSA 4096 提供更高的加密强度，但它的性能开销较大，通常不作为 TDE 保护器的推荐选项。Azure 的最佳实 践是使用 RSA 3072。",
+   "D": "错误：RSA 2048: 错误。RSA 2048 是一种较旧的加密标准，虽然仍然安全，但其加密强度低于 RSA 3072，不符合现代加密最佳实践。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 88,
+  "type": "multiple",
+  "question": "您正在规划一个 Azure IoT Hub 解决方案，该解决方案将包括 50,000 个 IoT 设备。 每个设备将流式传输数据，包括温度、设备 ID 和时间数据。每秒大约会写入 50,000 条记录。这些数据将以接近实时的方式进行可视 化。 您需要推荐一个服务来存储和查询数据。 您可以推荐哪两个服务？每个正确答案都提供了一个完整的解决方案。 注意：每个正确选择都值一分。",
+  "options": {
+   "A": "Azure Table Storage",
+   "B": "Azure Event Grid",
+   "C": "Azure Cosmos DB for NoSQL",
+   "D": "Azure Time Series Insights"
+  },
+  "answer": [
+   "C",
+   "D"
+  ],
+  "explanations": {
+   "A": "错误：Azure Table Storage 错误：Azure Table Storage是一种简单的NoSQL存储解决方案，适合存储结构化数据，但它不适合处理高吞吐量的实时数据流，也不 支持复杂的查询和实时可视化。",
+   "B": "错误：Azure Event Grid 错误：Azure Event Grid主要用于事件路由和分发，而不是数据存储或查询。它无法满足存储和实时查询的需求。",
+   "C": "正确：Azure Cosmos DB for NoSQL 正确：Azure Cosmos DB是一种全球分布式、多模型数据库，支持高吞吐量和低延迟查询，非常适合存储和查询实时数据流。",
+   "D": "正确：Azure Time Series Insights 正确：Azure Time Series Insights是一种专⻔设计用于处理时间序列数据的服务，支持实时数据可视化和分析，非常适合IoT场景。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 89,
+  "type": "matching",
+  "question": "热点问题 - 您正在规划一个用于敏感数据的 Azure Storage 解决方案。该数据将每天访问。数据集小于 10 GB。 您需要推荐一个满足以下要求的存储解决方案： • 所有写入存储的数据必须保留五年。 • 数据一旦写入，只能读取。必须防止修改和删除。 • 五年后，数据可以删除，但不能修改。 • 必须尽量减少数据访问费用。 您应该推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "Premium block blobs",
+   "General purpose v2 with Cool access tier for blobs",
+   "General purpose v2 with Hot access tier for blobs",
+   "Container access level",
+   "Container access policy",
+   "Storage account resource lock"
+  ],
+  "matches": [
+   {
+    "use_case": "Storage account type",
+    "correct_answer": "General purpose v2 with Hot access tier for blobs",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Configuration to prevent modifications and deletions",
+    "correct_answer": "Container access policy",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "Storage account type → General purpose v2 with Hot access tier for blobs",
+   "2": "Configuration to prevent modifications and deletions → Container access policy",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Storage解决方案的选择，包括存储类型和访问层。 数据保护策略，包括如何防止数据的修改和删除。 成本优化，尤其是数据访问费用的最小化。 2. 选项分析 Storage account type: Premium block blobs: 错误。Premium block blobs主要用于高性能场景，例如低延迟和高吞吐量需求。题目中数据量较小（小于 10GB），且没有高性能需求，因此不适合选择此类型。 General purpose v2 with Cool access tier for blobs: 错误。Cool access tier适用于不频繁访问的数据，而题目中明确指出数据将每天访 问，因此Cool access tier不符合要求。 General purpose v2 with Hot access tier for blobs: 正确。Hot access tier适用于频繁访问的数据，符合题目中每天访问的需求，同时 General purpose v2支持多种存储功能，适合⻓期数据保留和访问需求。 Configuration to prevent modifications and deletions: Container access level: 错误。Container access level主要用于设置容器的访问权限（例如公共访问或私有访问），无法直接防止数据的 修改和删除。 Container access policy: 正确。Container access policy可以设置存储容器的访问权限和时间范围，能够满足题目中防止数据修改和删除 的要求。 Storage account resource lock: 错误。Resource lock用于锁定整个存储账戶，防止删除或修改资源，但无法针对具体数据进行操作，且 不适合题目中五年后允许删除的需求。 3. 我的答案 Storage account type: General purpose v2 with Hot access tier for blobs Configuration to prevent modifications and deletions: Container access policy 4. 官方答案 Storage account type: General purpose v2 with Hot access tier for blobs Configuration to prevent modifications and deletions: Container access policy 5. 与官方答案的比较 我的答案与官方答案一致。 没有差异，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 90,
+  "type": "matching",
+  "question": "热点问题 - 您正在设计一个数据分析解决方案，该解决方案将使用 Azure Synapse 和 Azure Data Lake Storage Gen2。 您需要推荐 Azure Synapse 池以满足以下要求： • 将数据从 Data Lake Storage 导入到哈希分布表中。 • 在 Delta Lake 中实现查询和更新数据。 您应该为每个要求推荐什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "A dedicated SQL pool",
+   "A serverless Apache Spark pool",
+   "A serverless SQL pool"
+  ],
+  "matches": [
+   {
+    "use_case": "Ingest data from Data Lake Storage into hash-distributed tables",
+    "correct_answer": "A dedicated SQL pool",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Implement, query, and update data in Delta Lake",
+    "correct_answer": "A serverless Apache Spark pool",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "Ingest data from Data Lake Storage into hash-distributed tables → A dedicated SQL pool",
+   "2": "Implement, query, and update data in Delta Lake → A serverless Apache Spark pool",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Synapse Analytics中的不同池的功能和适用场景。 如何使用Azure Synapse与Azure Data Lake Storage Gen2进行数据集成。 Delta Lake的查询和更新操作的支持。 2. 选项分析 Ingest data from Data Lake Storage into hash-distributed tables: A dedicated SQL pool: 正确。Dedicated SQL pool是Azure Synapse中的专用资源池，适合处理结构化数据并支持高性能的分布式表（如 hash-distributed tables）。它可以直接从Data Lake Storage中摄取数据并存储到分布式表中。 A serverless Apache Spark pool: 错误。虽然Apache Spark池可以处理大规模数据并与Data Lake集成，但它主要用于数据处理和分析， 而不是直接支持hash-distributed tables的存储。 A serverless SQL pool: 错误。Serverless SQL池适合查询Data Lake中的数据，但它不支持hash-distributed tables的存储和操作。 Implement, query, and update data in Delta Lake: A dedicated SQL pool: 错误。Dedicated SQL pool不支持Delta Lake的查询和更新操作，因为Delta Lake是基于Apache Spark的技术，专⻔ 用于处理事务性数据湖。 A serverless Apache Spark pool: 正确。Serverless Apache Spark池支持Delta Lake的查询和更新操作，因为它与Apache Spark生态系统兼 容，并且能够处理Delta Lake的事务性功能。 A serverless SQL pool: 错误。Serverless SQL池可以查询Data Lake中的数据，但它不支持Delta Lake的事务性更新操作。 3. 我的答案 Ingest data from Data Lake Storage into hash-distributed tables: A dedicated SQL pool Implement, query, and update data in Delta Lake: A serverless Apache Spark pool 4. 官方答案 Ingest data from Data Lake Storage into hash-distributed tables: A dedicated SQL pool Implement, query, and update data in Delta Lake: A serverless Apache Spark pool 5. 与官方答案比较 我的答案与官方答案一致。 没有差异，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 91,
+  "type": "single",
+  "question": "您有一个本地存储解决方案。 您需要将该解决方案迁移到 Azure。该解决方案必须支持 Hadoop Distributed File System (HDFS)。 您应该使用什么？",
+  "options": {
+   "A": "Azure Data Lake Storage Gen2",
+   "B": "Azure NetApp Files",
+   "C": "Azure Data Share",
+   "D": "Azure Table storage"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Data Lake Storage Gen2: 正确。Azure Data Lake Storage Gen2 是专⻔设计用于大规模数据分析的存储解决方案，支持 Hadoop Distributed File System (HDFS) 接口，非常适合迁移需要 HDFS 支持的解决方案。",
+   "B": "错误：Azure NetApp Files: 错误。Azure NetApp Files 是一种高性能文件存储服务，主要用于企业级应用程序，但它不支持 HDFS 接口。",
+   "C": "错误：Azure Data Share: 错误。Azure Data Share 是一种数据共享服务，用于跨组织共享数据，而不是存储解决方案，也不支持 HDFS。",
+   "D": "错误：Azure Table storage: 错误。Azure Table storage 是一种 NoSQL 数据存储服务，适用于结构化数据存储，但不支持 HDFS。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 92,
+  "type": "matching",
+  "question": "您有一个本地应用程序名为 App1。 客戶使用 App1 来管理数字图像。 您计划将 App1 迁移到 Azure。 您需要为 App1 推荐一个数据存储解决方案。该解决方案必须满足以下图像存储要求： • 对静态图像进行加密。 • 允许文件大小最多为 50 MB。 • 通过 Azure Front Door 上的 Azure Web Application Firewall (WAF) 管理对图像的访问。 该解决方案必须满足以下客戶账戶要求： • 支持存储的自动扩展。 • 在数据中心发生故障时保持 App1 的可用性。 • 支持从多个 Azure 区域读取和写入数据。 对于每种数据类型，您应该在推荐中包含哪种服务？要回答，请将适当的服务拖到正确的数据类型中。每种服务可以使用一次、多 次或完全不使用。您可能需要拖动分隔条以调整窗格或滚动查看内容。 注意：每个正确答案都值一分。",
+  "available_options": [
+   "Azure Blob storage",
+   "Azure Cosmos DB",
+   "Azure SQL Database",
+   "Azure Table storage"
+  ],
+  "matches": [
+   {
+    "use_case": "Image storage",
+    "correct_answer": "Azure Blob storage",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Customer accounts",
+    "correct_answer": "Azure Cosmos DB",
+    "correct_option_id": "opt-2"
+   }
+  ],
+  "explanations": {
+   "1": "Image storage → Azure Blob storage",
+   "2": "Customer accounts → Azure Cosmos DB",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Blob Storage的特性，包括加密、文件大小限制、可扩展性和高可用性。 Azure Cosmos DB的特性，包括多区域写入、自动扩展和高可用性。 Azure服务的适用场景，例如Blob Storage适用于文件存储，Cosmos DB适用于分布式数据库。 2. 选项分析 Image storage: Azure Blob storage: 正确。Azure Blob Storage支持加密数据存储（加密静态数据），允许存储大文件（最大支持TB级别），并且可以与 Azure Front Door和WAF集成以管理访问。 Azure Cosmos DB: 错误。Cosmos DB是一个分布式数据库服务，主要用于存储结构化数据，而不是大文件或图像。 Azure SQL Database: 错误。SQL Database是关系型数据库服务，不适合存储大文件或图像。 Azure Table storage: 错误。Table Storage是用于存储结构化数据的NoSQL服务，不适合存储图像文件。 Customer accounts: Azure Blob storage: 错误。Blob Storage主要用于存储非结构化数据（如文件和图像），不适合存储客戶账戶信息。 Azure Cosmos DB: 正确。Cosmos DB支持多区域写入、自动扩展和高可用性，非常适合存储客戶账戶信息。 Azure SQL Database: 错误。虽然SQL Database可以存储客戶账戶信息，但它不支持多区域写入和自动扩展，无法满足题目要求。 Azure Table storage: 错误。Table Storage虽然是NoSQL服务，但它的功能有限，无法满足多区域写入和高可用性要求。 3. 我的答案 Image storage: Azure Blob storage Customer accounts: Azure Cosmos DB 4. 官方答案 Image storage: Azure Blob storage Customer accounts: Azure Cosmos DB 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考，答案正确。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 93,
+  "type": "single",
+  "question": "您正在设计一个应用程序，该应用程序将为用戶聚合内容。 您需要为该应用程序推荐一个数据库解决方案。该解决方案必须满足以下要求： • 支持 SQL 命令。 • 支持多主写入。 • 保证低延迟读取操作。 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Cosmos DB for NoSQL",
+   "B": "Azure SQL Database that uses active geo-replication",
+   "C": "Azure SQL Database Hyperscale",
+   "D": "Azure Cosmos DB for PostgreSQL"
+  },
+  "answer": "A",
+  "explanations": {
+   "A": "正确：Azure Cosmos DB for NoSQL 支持SQL命令：Azure Cosmos DB for NoSQL支持SQL-like查询语法。 支持多主写入：Azure Cosmos DB原生支持多主写入，允许在多个区域同时写入数据。 保证低延迟读取：Azure Cosmos DB提供全球分布式架构，确保低延迟读取。 ( 此选项完全符合题目要求。",
+   "B": "错误：Azure SQL Database that uses active geo-replication 支持SQL命令：Azure SQL Database支持SQL命令。 支持多主写入：Azure SQL Database的活动地理复制是主从架构，无法支持多主写入。 保证低延迟读取：地理复制可以提供低延迟读取，但不完全满足多主写入的要求。 此选项部分符合要求，但不支持多主写入。",
+   "C": "错误：Azure SQL Database Hyperscale 支持SQL命令：Azure SQL Database Hyperscale支持SQL命令。 支持多主写入：Hyperscale架构主要用于扩展存储和计算能力，不支持多主写入。 保证低延迟读取：Hyperscale可以优化性能，但不完全满足全球分布式低延迟读取的要求。 此选项部分符合要求，但不支持多主写入。",
+   "D": "错误：Azure Cosmos DB for PostgreSQL 支持SQL命令：Azure Cosmos DB for PostgreSQL支持SQL命令。 支持多主写入：Azure Cosmos DB for PostgreSQL不支持原生多主写入。 保证低延迟读取：此选项不完全满足全球分布式低延迟读取的要求。 此选项部分符合要求，但不支持多主写入。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 94,
+  "type": "single",
+  "question": "您计划将本地 MySQL 数据库迁移到 Azure Database for MySQL Flexible Server。 您需要为 Azure Database for MySQL Flexible Server 配置推荐一个解决方案。该解决方案必须满足以下要求： • 如果数据中心发生故障，数据库必须可访问。 • 必须尽量减少成本。 您应该推荐哪个计算层？",
+  "options": {
+   "A": "Burstable",
+   "B": "General Purpose",
+   "C": "Memory Optimized"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Burstable: 此选项适用于低成本、间歇性工作负载的场景。它不适合需要高可用性或持续性能的场景，因此不符合题目要求。",
+   "B": "正确：General Purpose: 此选项提供均衡的计算和存储性能，支持高可用性配置（例如区域冗余），并且成本适中。符合题目要求。",
+   "C": "错误：Memory Optimized: 此选项适用于需要高性能和大量内存的场景，但成本较高，不符合“成本必须最小化”的要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 95,
+  "type": "single",
+  "question": "您正在设计一个应用程序，该应用程序将使用 Azure Cosmos DB 来整理来自多个国家的销售数据。 您需要为该应用程序推荐一个 API。解决方案必须满足以下要求： • 支持 SQL 查询。 • 支持地理复制。 • 以关系型方式存储和访问数据。 您应该推荐哪个 API？",
+  "options": {
+   "A": "Apache Cassandra",
+   "B": "PostgreSQL",
+   "C": "MongoDB",
+   "D": "NoSQL"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Apache Cassandra: Apache Cassandra是一个分布式NoSQL数据库，支持高可用性和可扩展性。 虽然支持地理复制，但它不支持SQL查询，也不是关系型数据库。 错误原因: 不满足“支持SQL查询”和“关系型存储”的要求。",
+   "B": "正确：PostgreSQL: PostgreSQL是一个关系型数据库，支持SQL查询。 Azure Cosmos DB提供了PostgreSQL API，支持地理复制和关系型数据存储。 正确原因: 满足所有要求，包括SQL查询、地理复制和关系型存储。",
+   "C": "错误：MongoDB: MongoDB是一个NoSQL数据库，支持文档存储。 虽然支持地理复制，但它不支持关系型存储。 错误原因: 不满足“关系型存储”的要求。",
+   "D": "错误：NoSQL: NoSQL是一个广义的术语，指代非关系型数据库。 虽然支持地理复制，但它不支持SQL查询，也不是关系型存储。 错误原因: 不满足“支持SQL查询”和“关系型存储”的要求。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 96,
+  "type": "matching",
+  "question": "您有一个每天生成 50,000 个事件的应用程序。 您计划将事件流式传输到 Azure event hub，并使用 Event Hubs Capture 实现事件的冷路径处理。Event Hubs Capture 的输出将由报告系 统使用。 您需要确定必须配置哪种类型的 Azure 存储以支持 Event Hubs Capture，以及报告系统必须支持哪种入站数据格式。 您应该如何确定？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "Azure Data Lake Storage Gen2",
+   "Premium block blobs",
+   "Premium file shares",
+   "Apache Parquet",
+   "Avro",
+   "JSON"
+  ],
+  "matches": [
+   {
+    "use_case": "Storage type",
+    "correct_answer": "Azure Data Lake Storage Gen2",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Data format",
+    "correct_answer": "Avro",
+    "correct_option_id": "opt-5"
+   }
+  ],
+  "explanations": {
+   "1": "Storage type → Azure Data Lake Storage Gen2",
+   "2": "Data format → Avro",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure Event Hubs Capture的存储要求。 Event Hubs Capture生成的文件格式。 2. 选项分析 Storage type: Azure Data Lake Storage Gen2: 正确。Event Hubs Capture支持将数据存储到Azure Data Lake Storage Gen2，这是一种高性能的存储解决方 案，适合大规模数据处理。 Premium block blobs: 错误。虽然Azure Blob存储可以用于存储数据，但Event Hubs Capture不支持直接将数据存储到Premium block blobs。 Premium file shares: 错误。Azure文件共享主要用于文件存储，不适合Event Hubs Capture的场景。 Data format: Apache Parquet: 错误。虽然Parquet是一种高效的列式存储格式，但Event Hubs Capture不支持直接生成Parquet格式的数据。 Avro: 正确。Event Hubs Capture默认支持Avro格式，这是一种高效的二进制数据序列化格式，适合大规模数据处理。 JSON: 错误。虽然JSON是一种常⻅的数据格式，但Event Hubs Capture不支持直接生成JSON格式的数据。 3. 我的答案 Storage type: Azure Data Lake Storage Gen2 Data format: Avro 4. 官方答案 Storage type: Azure Data Lake Storage Gen2 Data format: Avro 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 97,
+  "type": "single",
+  "question": "您拥有以下表格中显示的资源。 CDB1 托管一个容器，用于存储持续更新的运营数据。 您正在设计一个解决方案，该解决方案将使用 AS1 每日分析运营数据。 您需要推荐一个解决方案来分析数据，而不会影响运营数据存储的性能。 您应该在推荐中包含什么？\n\n【題目附表】\n・Name｜Type\n・AS1｜Azure Synapse Analytics instance\n・CDB1｜Azure Cosmos DB for NoSQL account",
+  "options": {
+   "A": "Azure Data Factory with Azure Cosmos DB and Azure Synapse Analytics connectors",
+   "B": "Azure Synapse Analytics with PolyBase data loading",
+   "C": "Azure Synapse Link for Azure Cosmos DB",
+   "D": "Azure Cosmos DB change feed"
+  },
+  "answer": "C",
+  "explanations": {
+   "A": "错误：Azure Data Factory with Azure Cosmos DB and Azure Synapse Analytics connectors 错误原因：Azure Data Factory可以用于数据集成和数据移动，但它需要定期提取数据，这可能会对操作性数据存储（Azure Cosmos DB）的性能产生影响。因此不符合题目要求“避免影响操作性数据存储性能”。",
+   "B": "错误：Azure Synapse Analytics with PolyBase data loading 错误原因：PolyBase主要用于从外部数据源加载数据到Azure Synapse Analytics中，但它通常需要直接访问数据源，这可能会对操作性 数据存储性能产生影响。因此不符合题目要求。",
+   "C": "正确：Azure Synapse Link for Azure Cosmos DB 正确原因：Azure Synapse Link允许无缝集成Azure Cosmos DB和Azure Synapse Analytics，支持实时分析而不会影响操作性数据存储性 能。它是专⻔设计用于这种场景的解决方案。",
+   "D": "错误：Azure Cosmos DB change feed 错误原因：Azure Cosmos DB的Change Feed可以捕获数据变化，但它需要额外的处理步骤将数据导入到分析平台（如Azure Synapse Analytics）。这可能会增加复杂性，并且不如Azure Synapse Link直接支持实时分析。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 98,
+  "type": "matching",
+  "question": "您有一个 Azure 订阅。该订阅包含一个 Azure SQL 托管实例，该实例存储员工详细信息，包括社会安全号码和电话号码。 您需要配置托管实例以满足以下要求： • 帮助台团队只能看到员工电话号码的最后四位数字。 • 云管理员必须无法看到员工的社会安全号码。 您应该为托管实例中的每一列启用什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确的选择都值一分。",
+  "available_options": [
+   "Always Encrypted",
+   "Column encryption",
+   "Dynamic data masking",
+   "Transparent Data Encryption (TDE)"
+  ],
+  "matches": [
+   {
+    "use_case": "Phone numbers",
+    "correct_answer": "Dynamic data masking",
+    "correct_option_id": "opt-3"
+   },
+   {
+    "use_case": "Social security numbers",
+    "correct_answer": "Always Encrypted",
+    "correct_option_id": "opt-1"
+   }
+  ],
+  "explanations": {
+   "1": "Phone numbers → Dynamic data masking",
+   "2": "Social security numbers → Always Encrypted",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure SQL Managed Instance的安全功能，包括动态数据屏蔽 (Dynamic Data Masking) 和始终加密 (Always Encrypted)。 如何保护敏感数据并满足不同用戶⻆色的访问需求。 2. 选项分析 Phone numbers: Always Encrypted: 错误。Always Encrypted用于保护数据在传输和存储时的安全性，但它不会动态屏蔽数据，无法满足“仅显示最后四 位”的需求。 Column encryption: 错误。Column encryption是加密列数据的功能，但它不提供动态屏蔽功能，无法满足题目要求。 Dynamic data masking: 正确。Dynamic Data Masking允许对数据进行动态屏蔽，可以根据用戶⻆色显示部分数据，例如仅显示最后四 位电话号码。 Transparent Data Encryption (TDE): 错误。TDE用于加密整个数据库以保护数据静态存储的安全性，但它不提供动态屏蔽功能。 Social security numbers: Always Encrypted: 正确。Always Encrypted可以确保数据在传输和存储时保持加密状态，防止未经授权的用戶（如云管理员）访问敏 感数据。 Column encryption: 错误。Column encryption是加密列数据的功能，但它不提供对云管理员的访问限制，无法满足题目要求。 Dynamic data masking: 错误。Dynamic Data Masking用于动态屏蔽数据，但它无法完全防止云管理员访问敏感数据。 Transparent Data Encryption (TDE): 错误。TDE用于加密整个数据库以保护数据静态存储的安全性，但它无法防止云管理员访问敏感数 据。 3. 我的答案 Phone numbers: Dynamic data masking Social security numbers: Always Encrypted 4. 官方答案 Phone numbers: Dynamic data masking Social security numbers: Always Encrypted 5. 与官方答案比较 我的答案与官方答案一致。 无需重新思考，答案正确。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4"
+  ]
+ },
+ {
+  "exam": "AZ-305",
+  "id": 99,
+  "type": "single",
+  "question": "您计划使用 Azure Storage 帐戶来存储数据资产。 您需要推荐一个满足以下要求的解决方案： • 支持不可变存储 • 禁用对存储帐戶的匿名访问 • 支持基于访问控制列表 (ACL) 的 Azure AD 权限 您应该在推荐中包含什么？",
+  "options": {
+   "A": "Azure Files",
+   "B": "Azure Data Lake Storage",
+   "C": "Azure NetApp Files",
+   "D": "Azure Blob Storage"
+  },
+  "answer": "B",
+  "explanations": {
+   "A": "错误：Azure Files Azure Files支持文件共享，但不支持不可变存储，也不支持基于ACL的Azure AD权限控制。因此此选项错误。",
+   "B": "正确：Azure Data Lake Storage Azure Data Lake Storage支持不可变存储，能够禁用匿名访问，并且支持基于ACL的Azure AD权限控制。这是正确的选项。",
+   "C": "错误：Azure NetApp Files Azure NetApp Files主要用于高性能文件存储，不支持不可变存储，也不支持基于ACL的Azure AD权限控制。因此此选项错误。",
+   "D": "错误：Azure Blob Storage Azure Blob Storage支持不可变存储和禁用匿名访问，但不支持基于ACL的Azure AD权限控制。因此此选项错误。"
+  }
+ },
+ {
+  "exam": "AZ-305",
+  "id": 100,
+  "type": "matching",
+  "question": "热点问题 - 您正在设计一个存储解决方案，用于摄取、存储和分析 PB 级的结构化、半结构化和非结构化文本数据。分析后的数据将卸载到 Azure Data Lake Storage Gen2 以进行⻓期保留。 您需要推荐一个存储和分析解决方案，以满足以下要求： • 存储处理后的数据 • 提供交互式分析 • 支持手动扩展、内置自动扩展和自定义自动扩展 您应该在推荐中包含什么？要回答，请在答案区域中选择适当的选项。 注意：每个正确选择都值一分。",
+  "available_options": [
+   "Azure Data Explorer",
+   "Azure Data Lake Analytics",
+   "Log Analytics",
+   "KQL",
+   "Transact-SQL",
+   "U-SQL"
+  ],
+  "matches": [
+   {
+    "use_case": "For storage and interactive analytics",
+    "correct_answer": "Azure Data Explorer",
+    "correct_option_id": "opt-1"
+   },
+   {
+    "use_case": "Query language",
+    "correct_answer": "KQL",
+    "correct_option_id": "opt-4"
+   }
+  ],
+  "explanations": {
+   "1": "For storage and interactive analytics → Azure Data Explorer",
+   "2": "Query language → KQL",
+   "_full": "题目分析与解答 1. 考察的知识点 Azure存储解决方案的选择，包括Azure Data Explorer和Azure Data Lake Analytics的功能和适用场景。 查询语言的选择，包括KQL、Transact-SQL和U-SQL的适用场景。 解决方案的扩展性和分析能力，包括手动扩展、自动扩展和自定义扩展的支持。 2. 选项分析 For storage and interactive analytics: Azure Data Explorer: 正确。Azure Data Explorer是一种快速、可扩展的数据分析服务，支持交互式分析，适合处理结构化、半结构化和 非结构化数据。它还支持手动扩展、内置自动扩展和自定义扩展。 Azure Data Lake Analytics: 错误。Azure Data Lake Analytics主要用于大规模数据处理和分析，但它不支持交互式分析，也不具备内置的 自动扩展功能。 Log Analytics: 错误。Log Analytics主要用于日志数据的分析，不适合处理大规模的结构化、半结构化和非结构化数据。 Query language: KQL: 正确。KQL（Kusto Query Language）是Azure Data Explorer的查询语言，专为交互式分析设计，支持快速查询和数据探索。 Transact-SQL: 错误。Transact-SQL主要用于关系型数据库的查询，不适合Azure Data Explorer的场景。 U-SQL: 错误。U-SQL主要用于Azure Data Lake Analytics的查询，不适合Azure Data Explorer的场景。 3. 我的答案 For storage and interactive analytics: Azure Data Explorer Query language: KQL 4. 官方答案 For storage and interactive analytics: Azure Data Explorer Query language: KQL 5. 与官方答案比较 我的答案与官方答案一致，无需重新思考。"
+  },
+  "available_option_ids": [
+   "opt-1",
+   "opt-2",
+   "opt-3",
+   "opt-4",
+   "opt-5",
+   "opt-6"
+  ]
+ }
+]

@@ -26,11 +26,14 @@
 // Usage:
 //   node scripts/parse-aif-c01.mjs --report   # parse and print stats, write nothing
 //   node scripts/parse-aif-c01.mjs            # parse and write public/data
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { HOTSPOT } from './aif-c01-hotspot-data.mjs'
+import {
+  extractPages, cleanLines, tidy, joinLines, splitLangs,
+  OPTION_LINE, isAnalysisHead, ANALYSIS_END, parseAnalysis, answersWanted,
+} from './lib/aizh-pdf.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const dataDir = resolve(root, 'public/data')
@@ -43,156 +46,7 @@ const PDFS = [
 const CHUNK = 100
 const reportOnly = process.argv.includes('--report')
 
-// ── text extraction ────────────────────────────────────────────────────────
-// Fold only the ranges that carry look-alike Han characters (CJK Radicals
-// Supplement, Kangxi Radicals, CJK Compatibility Ideographs). Full-width
-// punctuation is deliberately left alone.
-const foldLookalikes = (text) => text.replace(/[⺀-⿿豈-﫿]/gu, ch => ch.normalize('NFKC'))
-
-async function extractPages(file) {
-  const data = new Uint8Array(readFileSync(resolve(root, file)))
-  const pdf = await pdfjsLib.getDocument({ data, verbosity: 0 }).promise
-  const pages = []
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const content = await (await pdf.getPage(i)).getTextContent()
-    let text = ''
-    for (const item of content.items) {
-      if (item.str !== undefined) text += item.str
-      if (item.hasEOL) text += '\n'
-    }
-    pages.push(foldLookalikes(text))
-  }
-  return pages
-}
-
-// Watermark/footer furniture, the restated answer line, and the vote block.
-// These interleave with the coaching text at every page break.
-// The page furniture is scrubbed inline rather than by dropping whole lines,
-// because the text layer regularly merges the last line of real content with the
-// watermark beside it ("⼀次或不选择。淘宝/闲鱼: IT认证轻松过，微信: Examtopics").
-// Dropping that line would silently swallow the end of a stem. The answer key is
-// read off the raw block before any of this runs.
-const INLINE_NOISE = [
-  /\s*淘宝\/?闲鱼\s*[:：]\s*IT认证轻松过\s*[，,]?\s*微信\s*[:：]\s*Examt(?:opics)?/g,
-  /\s*淘宝\/?闲鱼\s*[:：]\s*IT认证轻松过/g,
-  /\s*微信\s*[:：]\s*Examt(?:opics)?/g,
-  /\s*IT认证轻松过/g,
-  /\s*Most Voted/g,
-  /\s*Community vote distribution/gi,
-  /\s*社区投票分[布发]/g,
-  /\s*Correct Answer\s*[:：]\s*[A-F]*/g,
-  /\s*正确答案\s*[:：]\s*[A-F]*/g,
-  /\s*🗳/g,
-]
-const scrub = (line) => INLINE_NOISE.reduce((text, re) => text.replace(re, ' '), line)
-
-// What is left over once the furniture is scrubbed: standalone fragments of the
-// watermark, the vote histogram, and the cover page.
-const NOISE = [
-  /^opics$/,
-  /^Examtopics$/,
-  /^(?:淘宝|咸鱼|闲鱼|微信)$/,
-  /^社区投票分[布发]$/,
-  /^Community vote distribution$/i,
-  /^(?:[A-F]{1,3}\s*\(\d+%\)\s*\(?\s*)+$/,
-  /^扫码关注.*$/,
-  /^中文AI解析版$/,
-  /^下载时间.*$/,
-  /^使用指南$/,
-]
-const isNoise = (line) => NOISE.some(re => re.test(line.trim()))
-
-// Collapse the spacing the text layer sprinkles between runs, then close up the
-// gaps it leaves inside CJK text and around full-width punctuation.
-function tidy(text) {
-  return text
-    .replace(/[ \t ]+/g, ' ')
-    .replace(/(?<=[㐀-鿿])\s+(?=[㐀-鿿])/gu, '')
-    .replace(/\s+(?=[，。、？！：；）』」》%])/gu, '')
-    .replace(/(?<=[（『「《])\s+/gu, '')
-    .trim()
-}
-
-// Line breaks in the source are real separators — one sentence ends and the next
-// begins — so each line is tidied on its own and then joined with a space.
-// Tidying the joined string instead would swallow the boundary between two Han
-// characters and run "自动扩展推理端点" straight into "此选项与…".
-const joinLines = (lines) => lines.map(tidy).filter(Boolean).join(' ').trim()
-
-const hasHan = (line) => /[㐀-鿿]/u.test(line)
-
-// Split a stem or option body into its English half and its Chinese half. The
-// source always puts English first, so the first Han-bearing line is the seam.
-function splitLangs(lines) {
-  const seam = lines.findIndex(hasHan)
-  if (seam === -1) return { en: joinLines(lines), zh: '' }
-  return {
-    en: joinLines(lines.slice(0, seam)),
-    zh: joinLines(lines.slice(seam)),
-  }
-}
-
 // ── per-question parsing ───────────────────────────────────────────────────
-const OPTION_LINE = /^([A-F])[.、:：]\s*(.*)$/
-// The coaching write-up opens with one of a handful of labels — sometimes the
-// "题目解析/题目分析" banner, sometimes a bare or numbered "考察的知识点", and in
-// a few sections just "知识点". Any numbered Chinese section heading also marks
-// the boundary, since nothing in a stem or option is numbered that way.
-const ANALYSIS_HEAD = [
-  /^题目(?:解析|分析)/,
-  /^知识点$/,
-  /^(?:\d+\s*[.)、]\s*)?(?:本题|这题)?考察(?:的)?知识点/,
-  /^\d+\s*[.)、]\s*[㐀-鿿]/u,
-]
-const isAnalysisHead = (line) => ANALYSIS_HEAD.some(re => re.test(line))
-// Where the per-option analysis stops and the answer recap begins. Anchored to
-// the whole line: several write-ups open a paragraph with "官方答案可能不正确…",
-// and a prefix match there would truncate the analysis. `结论` is deliberately
-// absent — it appears *inside* each option's analysis.
-const ANALYSIS_END = /^(?:\d+\s*[.)、]\s*)?(?:推荐答案|建议答案|官方答案|我的答案|我选的答案|我选择的答案|我的选择|最终答案|比较与验证|比较与分析|与官方答案.{0,6}(?:比较|一致)|复盘)\s*[:：]?\s*$/
-const SECTION_HEAD = /^\d+\s*[.、]\s*/
-const wanted = (text) => {
-  const en = text.match(/\(?\s*(?:choose|select|pick)\s+(two|three|four|five|2|3|4|5)\s*\.?\s*\)?/i)
-  const words = { two: 2, three: 3, four: 4, five: 5 }
-  if (en) return words[en[1].toLowerCase()] ?? Number(en[1])
-  const zh = text.match(/[选選]\s*[择擇]?\s*(两|兩|二|三|四|五|2|3|4|5)\s*[个個]/)
-  if (zh) return { 两: 2, 兩: 2, 二: 2, 三: 3, 四: 4, 五: 5 }[zh[1]] ?? Number(zh[1])
-  return null
-}
-
-// The write-up analyses each option under a heading that repeats the option
-// text ("B. Partial dependence plots (PDPs)(部分依赖图)"). Capture the body
-// under each heading, stopping at the next option or the next numbered section.
-function parseAnalysis(lines) {
-  const found = new Map()
-  let current = null
-  for (const raw of lines) {
-    const line = raw.trim()
-    if (!line) continue
-    if (ANALYSIS_END.test(line)) break
-    const option = line.match(OPTION_LINE)
-    // A heading is an option letter whose body is not itself prose about
-    // several options; treat any `X.`-led line as the start of that option.
-    if (option && /^[A-F]$/.test(option[1])) {
-      current = option[1]
-      if (!found.has(current)) found.set(current, [])
-      // The heading restates the option before the analysis, either on the same
-      // line ("A. Nova Lite: Nova Lite 通常是…") or on its own. Keep whatever
-      // followed the letter; only the letter prefix itself is dropped.
-      if (option[2]) found.get(current).push(option[2])
-      continue
-    }
-    if (SECTION_HEAD.test(line)) { current = null; continue }
-    if (current) found.get(current).push(line)
-  }
-  const out = {}
-  for (const [letter, body] of found) {
-    const text = joinLines(body)
-    if (text) out[letter] = text
-  }
-  return out
-}
-
 // HOTSPOT sections carry no lettered options: the answer key comes from the
 // transcribed widget in aif-c01-hotspot-data.mjs, and only the stem and the
 // coaching text are taken from the PDF. Row-level explanations state the choice
@@ -254,9 +108,7 @@ function parseHotspot(id, lines) {
 }
 
 function parseBlock(id, block) {
-  const lines = block.split('\n')
-    .map(l => scrub(l).replace(/\s+$/, ''))
-    .filter(l => l.trim() && !isNoise(l))
+  const lines = cleanLines(block)
 
   const answerMatch = block.match(/Correct Answer\s*[:：]\s*([A-F](?:\s*[,、]?\s*[A-F])*)/)
   const letters = answerMatch ? [...new Set(answerMatch[1].replace(/[^A-F]/g, '').split(''))] : []
@@ -306,7 +158,7 @@ function parseBlock(id, block) {
 
   const analysis = parseAnalysis(analysisLines)
   const optionLetters = Object.keys(optionsEn)
-  const need = wanted(question.en) ?? wanted(question.zh)
+  const need = answersWanted(question.en) ?? answersWanted(question.zh)
   const type = letters.length > 1 || (need !== null && need > 1) ? 'multiple' : 'single'
 
   // Verdicts come from the answer key, not from the Chinese wording, so a
@@ -352,7 +204,7 @@ function parseBlock(id, block) {
 
 // ── run ────────────────────────────────────────────────────────────────────
 const pages = []
-for (const file of PDFS) pages.push(...await extractPages(file))
+for (const file of PDFS) pages.push(...await extractPages(resolve(root, file)))
 const full = pages.join('\n')
 const parts = full.split(/Topic\s*\d+\s*Question\s*#(\d+)/)
 const blocks = new Map()

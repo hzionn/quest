@@ -11,6 +11,7 @@ export const CERTIFICATIONS = [
   { id: 'gcp-cdl', provider: 'GCP', name: 'Google Cloud Digital Leader', exams: ['GCP-CDL'], badge: 'gcp-logo.png' },
   { id: 'azure-az900', provider: 'Azure', name: 'Microsoft Certified: Azure Fundamentals', exams: ['AZ-900'], badge: 'azure-logo.png' },
   { id: 'azure-az104', provider: 'Azure', name: 'Microsoft Certified: Azure Administrator Associate', exams: ['AZ-104'], badge: 'azure-logo.png' },
+  { id: 'azure-az305', provider: 'Azure', name: 'Microsoft Certified: Azure Solutions Architect Expert', exams: ['AZ-305'], badge: 'azure-logo.png' },
 ]
 
 export function isCertificationEarned(entry) {
