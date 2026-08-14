@@ -154,6 +154,10 @@ async function loadQuestionsFromGitHub(token) {
 }
 
 // ── Initial State ──
+// The question types the type filter offers. Used to validate a filter value
+// restored from a saved session, so a value that no longer exists cannot leak in.
+const QUESTION_TYPES = ['single', 'multiple', 'matching', 'ordering']
+
 const initialState = {
   darkMode: false,
   activeTab: isAdmin ? 'upload' : 'practice',
@@ -353,8 +357,7 @@ function reducer(state, action) {
     case 'START_PRACTICE': {
       let filtered = [...state.questions]
       if (state.filterExam) filtered = filtered.filter(q => q.exam === state.filterExam)
-      if (state.filterType === 'official') filtered = filtered.filter(q => q.officialNo)
-      else if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
+      if (state.filterType) filtered = filtered.filter(q => q.type === state.filterType)
       if (state.filterSearch) {
         const rangeMatch = state.filterSearch.trim().match(/^(\d+)\s*[-~～]\s*(\d+)$/)
         if (rangeMatch) {
@@ -414,7 +417,11 @@ function reducer(state, action) {
       return {
         ...state,
         filterExam: snap.exam || '',
-        filterType: snap.filterType || '',
+        // A session saved before the 壓題參考 filter was removed can still carry
+        // filterType: 'official'. Left as-is it would survive into the type
+        // dropdown and filter the next practice run down to nothing, so anything
+        // that is not a real question type is dropped back to "全部".
+        filterType: QUESTION_TYPES.includes(snap.filterType) ? snap.filterType : '',
         filterSearch: snap.filterSearch || '',
         activeTab: snap.activeTab === 'upload' ? 'practice' : (snap.activeTab || 'practice'),
         practiceFiltered: questions,
@@ -2287,9 +2294,6 @@ function PracticeTab({ state, dispatch, examTypes }) {
                 <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{displayExam(currentQ.exam)}</span>
                 <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{typeLabels[currentQ.type]}</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{currentQ.id}</span>
-                {currentQ.officialNo && (
-                  <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{currentQ.officialNo}</span>
-                )}
                 <span className="text-sm text-gray-400 dark:text-gray-500">({practiceIndex + 1} / {practiceFiltered.length})</span>
                 {state.combo >= 2 && (
                   <span
@@ -2565,7 +2569,6 @@ function FilterBar({ state, dispatch, examTypes, showStart }) {
             className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400 outline-none transition-all duration-200"
           >
             <option value="">全部</option>
-            <option value="official">壓題參考（93 題）</option>
             <option value="single">單選題</option>
             <option value="multiple">多選題</option>
             <option value="matching">配對題</option>
@@ -3494,9 +3497,6 @@ function ExamTab({ state, dispatch, examTypes, qMap }) {
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{displayExam(examQ.exam)}</span>
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold">{typeLabels[examQ.type]}</span>
               <span className="text-sm text-gray-400 dark:text-gray-500 font-mono">#{examQ.id}</span>
-              {examQ.officialNo && (
-                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold" title="壓題參考編號">壓題 #{examQ.officialNo}</span>
-              )}
             </div>
             <CaseStudyBox text={examQ.caseStudy} />
             <p className="text-base md:text-lg leading-relaxed mb-6 whitespace-pre-wrap break-words">{examQ.question}</p>

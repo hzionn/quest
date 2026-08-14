@@ -16,8 +16,7 @@
       "B": "Correct. Enabling streaming returns tokens as they are generated so users see output immediately rather than waiting for the full response, minimizing perceived latency for a responsive experience.",
       "C": "Incorrect. The temperature parameter controls the randomness and creativity of the output, not response speed, so raising it does not reduce latency.",
       "D": "Incorrect. Omitting max_output_tokens can allow longer responses that take more time; it is not a technique for lowering latency, and streaming is the appropriate solution."
-    },
-    "officialNo": 71
+    }
   },
   {
     "exam": "PCA",
@@ -36,8 +35,7 @@
       "B": "Incorrect. Transferring an entire reservation moves capacity wholesale rather than flexibly sharing spare GPUs, and it does not keep production capacity guaranteed while lending idle capacity to development.",
       "C": "Incorrect. Anchoring the shared reservation in the production project rather than a neutral owner project is not the recommended topology for flexibly sharing GPU capacity between the two environments.",
       "D": "Incorrect. Two separate reservations silo capacity in each project and prevent shifting unused GPUs from production to development, which defeats the requirement."
-    },
-    "officialNo": 72
+    }
   },
   {
     "exam": "PCA",
@@ -56,8 +54,7 @@
       "B": "Correct. Storage Transfer Service is purpose-built for large bucket-to-bucket transfers, runs in parallel for speed, and resumes after interruption copying only new or changed objects, matching every requirement.",
       "C": "Incorrect. A plain copy command is not designed to resume automatically after an interruption or to efficiently sync only changed objects at this scale, and it also introduces naming-conflict handling rather than reliable resumable transfer.",
       "D": "Incorrect. This targets the wrong destination region (us-west1 instead of asia-southeast1) and CLI rsync is less efficient and robust for a multi-terabyte cross-continent transfer than Storage Transfer Service."
-    },
-    "officialNo": 73
+    }
   },
   {
     "exam": "PCA",
@@ -76,8 +73,7 @@
       "B": "Incorrect. Configuring a second MIG as a failover backend leaves that standby capacity idle during normal operation, which violates the requirement that all provisioned resources actively serve traffic.",
       "C": "Correct. A single regional MIG spreads instances across zones and self-heals by recreating lost capacity in surviving zones, while the regional load balancer's health checks keep all instances serving and automatically route around a failed instance or zone.",
       "D": "Incorrect. Unmanaged instance groups do not autoscale or self-heal, so lost capacity would not be automatically recreated after a zonal failure."
-    },
-    "officialNo": 74
+    }
   },
   {
     "exam": "PCA",
@@ -96,8 +92,7 @@
       "B": "Incorrect. The Recreate deployment strategy terminates the old version before starting the new one, causing downtime, which violates the zero-downtime requirement.",
       "C": "Correct. Cloud Run scales rapidly on request volume to absorb flash-sale spikes, and revision traffic splitting enables zero-downtime canary rollouts with instant rollback to a previous revision.",
       "D": "Incorrect. A single Compute Engine instance cannot scale to massive spikes and is a single point of failure, and rebooting to deploy a new image causes downtime with no safe rollback."
-    },
-    "officialNo": 75
+    }
   },
   {
     "exam": "PCA",
@@ -116,8 +111,7 @@
       "B": "Correct. Migration Center automatically discovers the on-premises environment, maps dependencies, and produces total-cost-of-ownership estimates, delivering the detailed assessment with minimal effort.",
       "C": "Incorrect. Building a custom script against the vSphere API and importing into BigQuery is high effort and does not provide the built-in dependency mapping and TCO estimation that Migration Center offers out of the box.",
       "D": "Incorrect. The pricing calculator only estimates cost from manually entered specifications; it does not discover the environment or identify dependencies."
-    },
-    "officialNo": 77
+    }
   },
   {
     "exam": "PCA",
@@ -136,8 +130,7 @@
       "B": "Correct. Grouping tightly coupled components into migration waves using dependency mapping and testing performance at each wave is the Google-recommended way to systematically de-risk the migration and validate performance before cutover.",
       "C": "Incorrect. A simultaneous lift-and-shift of all tiers over one weekend is precisely the high-risk, all-at-once approach the business wants to avoid and provides no incremental validation.",
       "D": "Incorrect. Focusing on connectivity and migrating the database first ignores the tight coupling between tiers and does not provide a dependency-driven, wave-based validation plan."
-    },
-    "officialNo": 78
+    }
   },
   {
     "exam": "PCA",
@@ -156,8 +149,7 @@
       "B": "Incorrect. Object ACLs are legacy fine-grained controls that are hard to operate and audit at scale; Google recommends uniform bucket-level access with IAM instead.",
       "C": "Incorrect. The roles/storage.objectAdmin role grants broad read, write, and delete permissions, which violates least privilege for read-oriented sensitive reports and over-provisions access.",
       "D": "Correct. Uniform bucket-level access removes per-object ACLs so access is managed solely through IAM, and granting predefined storage roles to the Google Groups ties access to corporate identities for clear audit trails in a simple, scalable model."
-    },
-    "officialNo": 80
+    }
   },
   {
     "exam": "PCA",
@@ -176,8 +168,7 @@
       "B": "Correct. A regional Filestore Enterprise instance provides a single high-throughput, low-latency shared NFS file system that hundreds of VMs can mount concurrently for parallel read and write processing.",
       "C": "Incorrect. Object storage does not offer POSIX shared-file-system semantics or the low-latency concurrent read and write access required, and multi-region adds latency.",
       "D": "Incorrect. Multi-writer Regional Persistent Disk supports only a very small number of attached VMs and is not a shared file system for hundreds of instances, so it cannot meet the requirement."
-    },
-    "officialNo": 81
+    }
   },
   {
     "exam": "PCA",
@@ -196,8 +187,7 @@
       "B": "Incorrect. A monitoring dashboard with alerts only detects misconfigurations after they are deployed; it does not empower teams to self-serve secure, pre-approved patterns by default.",
       "C": "Incorrect. Organization policies and IAM recommender constrain configurations and suggest improvements but do not provide a self-service catalog of complete, pre-approved architectural patterns to deploy.",
       "D": "Correct. Service Catalog lets platform teams publish governed, pre-approved solutions, including Terraform scripts, that developers deploy in a self-service manner, ensuring security and consistency by default without manual approvals."
-    },
-    "officialNo": 84
+    }
   },
   {
     "exam": "PCA",
@@ -216,8 +206,7 @@
       "B": "Incorrect. A shared dashboard URL still points at your dev project's data and does not give the Ops team an independent dashboard scoped to their production environment.",
       "C": "Correct. Exporting the dashboard's JSON definition lets the Ops team import it into their own workspace and point it at production, replicating it quickly with minimal effort.",
       "D": "Incorrect. Granting project viewer access still requires the Ops team to manually recreate every chart, which is more effort than importing the exported JSON."
-    },
-    "officialNo": 85
+    }
   },
   {
     "exam": "PCA",
@@ -236,7 +225,6 @@
       "B": "Incorrect. Filtering by pod name and timestamp cannot reliably reconstruct a single request's path across services and does not correlate the logs into one trace.",
       "C": "Incorrect. Aggregate error-count metrics on a shared dashboard show that errors occurred but do not let you follow an individual user request across all the microservices.",
       "D": "Correct. Cloud Trace with automatic traceparent header propagation, provided by a service mesh or instrumentation, correlates each request across all microservices and links their logs to a single trace without developers writing correlation code."
-    },
-    "officialNo": 86
+    }
   }
 ]
